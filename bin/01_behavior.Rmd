@@ -49,29 +49,13 @@ plot_grid(a,b,c,d,e,f,nrow=2, rel_widths=c(1,1.1,1.75,1,1.1,1.75))
 ```
 
 
+#### Reshape data and plot a heatmap of group average values 
 
-#### Reshape data and plot a heatmap of group average values
-```{r}
-behaviorAPAaverages <- makeagroupmatrix(behavior) 
-head(behaviorAPAaverages)
+```{r, message=FALSE, results='hide'}
+makeagroupaveheatmap(behavior)
 ```
 
-
-```{r, echo=FALSE}
-behav_annot <- as.data.frame(colnames(behaviorAPAaverages))
-names(behav_annot)[names(behav_annot)=="colnames(behaviorAPAaverages)"] <- "APA"
-rownames(behav_annot) <- behav_annot$APA
-behav_colors = list(
-  APA =  c(Yoked = (values=c("#878787")), Same = (values=c("#f4a582")),
-            Conflict = (values=c("#b2182b"))))
-pheatmap(behaviorAPAaverages, 
-         show_colnames=FALSE, show_rownames=TRUE,
-         annotation_col = behav_annot, 
-         annotation_colors = behav_colors,
-         annotation_names_col=TRUE,
-         fontsize = 15, fontsize_row = 8, fontsize_col = 10,
-         cellwidth=75, 
-         height = 3,
-         border_color = "grey60"
-)
+#### Reshape data and plot a correlation matrix
+```{r, message=FALSE, results='hide'}
+makecorrelationheatmap(behavior)
 ```

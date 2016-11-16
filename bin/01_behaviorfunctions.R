@@ -39,16 +39,43 @@ onebehaviornolegend <- function(data, xcol, ycol, yaxislabel, colorcode){
   return(plot)
 }
 
-## calculate a group average and make it a matrix ----
-makeagroupmatrix <- function(data){
+## make a heatmap from group averages ----
+makeagroupaveheatmap <- function(data){
+  #first melt the data to make long
   longdata <- melt(data, id = c(1:18));
   longdata <- longdata %>% drop_na();
+  # then widen with group averages, add row names, scale, and transpose
   averagedata <- dcast(longdata, APA ~ variable, value.var= "value", fun.aggregate=mean);
   rownames(averagedata) <- averagedata$APA;    
   averagedata[1] <- NULL;
   averagedata <- scale(averagedata)
   averagedata <- t(averagedata)
-  return(averagedata)
-}  
+  #next lines create the annotations
+  columnannotations <- as.data.frame(colnames(averagedata))
+  names(columnannotations)[names(columnannotations)=="colnames(averagedata)"] <- "APA"
+  rownames(columnannotations) <- columnannotations$APA
+  columnannotationcolors = list(
+    APA =  c(Yoked = (values=c("#878787")), Same = (values=c("#f4a582")),
+           Conflict = (values=c("#b2182b"))))
+#now plot the heatmap
+  plot <- pheatmap(averagedata, 
+         show_colnames=FALSE, show_rownames=TRUE,
+         annotation_col = columnannotations, 
+         annotation_colors = columnannotationcolors,
+         annotation_names_col=TRUE,
+         fontsize = 15, fontsize_row = 8, fontsize_col = 10,
+         cellwidth=75, 
+         height = 3,
+         border_color = "grey60"
+         )
+  return(plot)
+}
 
-##
+## correlation heatmat ----
+makecorrelationheatmap <- function(data){
+  datacols <- data[c(19:59)];
+  cormat <- cor(datacols);
+  plot <- pheatmap(cormat, 
+                   show_colnames=FALSE, show_rownames=TRUE, border_color ="grey60")
+  return(plot)         
+} 
