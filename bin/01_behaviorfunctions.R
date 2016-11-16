@@ -7,7 +7,7 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
     theme_cowplot(font_size = 12, line_size = 0.5) + 
     background_grid(major = "xy", minor = "none") + 
     theme(axis.text.x = element_text(angle=60, vjust=0.5)) +
-    scale_colour_manual(name="APA Training", values=c( "#b2182b","#f4a582",  "#878787"),
+    scale_colour_manual(name="APA Training", values=c( "#7f3b08","#e08214",  "#8073ac"),
                         breaks = c("Yoked", "Same", "Conflict")) +
     scale_y_continuous(name=yaxislabel) + 
     scale_x_continuous(name =NULL, 
@@ -27,7 +27,7 @@ onebehaviornolegend <- function(data, xcol, ycol, yaxislabel, colorcode){
     theme_cowplot(font_size = 12, line_size = 0.5) + 
     background_grid(major = "xy", minor = "none") + 
     theme(axis.text.x = element_text(angle=60, vjust=0.5)) +
-    scale_colour_manual(name="APA Training", values=c("#b2182b","#f4a582", "#878787"),
+    scale_colour_manual(name="APA Training", values=c("#7f3b08","#e08214", "#8073ac"),
                         breaks = c("Yoked", "Same", "Conflict")) +
     scale_y_continuous(name=yaxislabel) + 
     scale_x_continuous(name =NULL, 
@@ -55,8 +55,8 @@ makeagroupaveheatmap <- function(data){
   names(columnannotations)[names(columnannotations)=="colnames(averagedata)"] <- "APA"
   rownames(columnannotations) <- columnannotations$APA
   columnannotationcolors = list(
-    APA =  c(Yoked = (values=c("#878787")), Same = (values=c("#f4a582")),
-           Conflict = (values=c("#b2182b"))))
+    APA =  c(Yoked = (values=c("#8073ac")), Same = (values=c("#e08214")),
+           Conflict = (values=c("#7f3b08"))))
 #now plot the heatmap
   plot <- pheatmap(averagedata, 
          show_colnames=FALSE, show_rownames=TRUE,
@@ -79,3 +79,33 @@ makecorrelationheatmap <- function(data){
                    show_colnames=FALSE, show_rownames=TRUE, border_color ="grey60")
   return(plot)         
 } 
+
+
+## PCA ----
+makepcaplot <- function(data){
+  #first melt the data to make long
+  longdata <- melt(data, id = c(1:18));
+  longdata <- longdata %>% drop_na();
+  longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
+  longdata <- dcast(longdata, ID + APA ~ bysession, value.var= "value", fun.aggregate = mean)
+  # calculate and save PCs
+  Z <- longdata[,3:371]
+  Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
+  pc = prcomp(Z, scale.=TRUE)
+  loadings <- pc$rotation
+  scores <- pc$x
+  #get ready for ggplot
+  scoresdf <- as.data.frame(scores)
+  scoresdf$ID <-  longdata$ID
+  scoresdf$APA <- longdata$APA
+  plot <- ggplot(scoresdf, aes(PC1, PC2, colour=APA )) + 
+    geom_point(size = 5) +
+    theme_cowplot(font_size = 20) + 
+    theme(strip.background = element_blank()) +
+    scale_colour_manual(name="APA Training",
+                        values=c("#7f3b08","#e08214", "#8073ac"),
+                        breaks=c("Yoked", "Same", "Conflict"))+ 
+    labs(x = "Behavior PC1", y = "Behavior PC2") 
+  return(plot)
+  }  
+

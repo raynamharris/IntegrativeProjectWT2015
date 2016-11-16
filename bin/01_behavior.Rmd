@@ -30,7 +30,7 @@ library(pheatmap)
 ```
 
 #### Plot behavior data by session
-```{r}
+```{r, echo=FALSE}
 a <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="Path1stEntr", 
              yaxislabel="Path to 1st Entrance (m)", colorcode="APA")
 b <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="Path2ndEntr",
@@ -51,11 +51,17 @@ plot_grid(a,b,c,d,e,f,nrow=2, rel_widths=c(1,1.1,1.75,1,1.1,1.75))
 
 #### Reshape data and plot a heatmap of group average values 
 
-```{r, message=FALSE, results='hide'}
+```{r, message=FALSE, results='hide', echo=FALSE}
 makeagroupaveheatmap(behavior)
 ```
 
 #### Reshape data and plot a correlation matrix
-```{r, message=FALSE, results='hide'}
+```{r, message=FALSE, results='hide', echo=FALSE}
 makecorrelationheatmap(behavior)
 ```
+
+#### Reshape data and plot a PCA
+```{r, message=FALSE,  echo=FALSE}
+makepcaplot(behavior)
+```
+
