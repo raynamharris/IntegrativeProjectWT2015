@@ -34,26 +34,18 @@ library(pheatmap)
 a <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="Path1stEntr", 
              yaxislabel="Path to 1st Entrance (m)", colorcode="APA")
 b <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="Path2ndEntr",
-             yaxislabel="Path to 2nd Entrance (m)", colorcode="APA")
-c <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeOPP",
-             yaxislabel="% Time Opposite \nof the Shock Zone", colorcode="APA")
+             yaxislabel="Path to\n2nd Entrance (m)", colorcode="APA")
+c <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="TotalPathArena.m",
+             yaxislabel="Total Path (m)", colorcode="APA")
 d <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeTarget",
              yaxislabel="% Time in the Shock Zone", colorcode="APA")
-e <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="NumEntrances",
-             yaxislabel="Number of Shock Zone Entrances", colorcode="APA")
-f <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeCW",
-             yaxislabel="% Time Clockwise \nof the Shock Zone", colorcode="APA")
-
-plot_grid(a,b,c,d,e,f,nrow=2, rel_widths=c(1,1,1.75,1,1,1.75))
-
-
-g <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", 
-             ycol="TotalPathArena.m", yaxislabel="Total Path (m)", colorcode="APA")
-h <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="SpeedArena.cm.s",
+e <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeOPP",
+             yaxislabel="% Time Opposite\nof the Shock Zone", colorcode="APA")
+f <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="SpeedArena.cm.s",
              yaxislabel="Average Speed (cm/s)", colorcode="APA")
-i <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="SpeedArena.cm.s",
-             yaxislabel="Average Speed (cm/s)", colorcode="APA")
-plot_grid(g,h,i, nrow=1, rel_widths=c(1,1,1.75))
+
+
+plot_grid(a,b,c,d,e,f,nrow=2, rel_widths=c(1,1.1,1.75,1,1.1,1.75))
 ```
 
 
