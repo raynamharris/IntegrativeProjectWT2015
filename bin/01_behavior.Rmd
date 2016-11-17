@@ -41,11 +41,18 @@ plot_grid(a2,b2, nrow=1, rel_widths=c(1,1))
 ### stats
 ```{r, echo=FALSE, message=FALSE}
 library(nlme)
-retention <- behavior %>% filter(TrainSessionCombo %in% c("T6_C3", "Retention")) %>%  droplevels() 
-nlme1 <- lme(Path2ndEntr  ~ APA * TrainSessionCombo,
+T4_C1 <- behavior %>% filter(TrainSessionCombo %in% c("T4_C1")) %>%  droplevels() 
+nlme1 <- lme(Path2ndEntr  ~ APA ,
               random = ~ 1|ID,
-              data = retention)
+              data = T4_C1)
 summary(nlme1)
+
+T6_C3 <- behavior %>% filter(TrainSessionCombo %in% c("T6_C3")) %>%  droplevels()
+nlme2 <- lme(Path2ndEntr  ~ APA ,
+              random = ~ 1|ID,
+              data = T6_C3)
+summary(nlme2)
+
 ```
 
 #### Plot behavior data by session

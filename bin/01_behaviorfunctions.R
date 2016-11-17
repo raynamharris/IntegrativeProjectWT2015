@@ -10,6 +10,7 @@ boxplot <- function(data, xcol, ycol, yaxislabel, colorcode, session){
     scale_x_discrete(name=NULL)
 }
 
+
 ## plot function for single behavior with wide data ----
 onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
   plot <- data %>% 
