@@ -25,7 +25,6 @@ library(cowplot) ## for some easy to use themes
 library(tidyr) ## for respahing data
 library(dplyr) ## for filtering and selecting rows
 library(reshape2) ## for melting dataframe
-#library(plyr) ## for renmaing factors
 library(pheatmap)
 ```
 
@@ -34,6 +33,8 @@ library(pheatmap)
 a <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="Path1stEntr", 
              yaxislabel="Path to 1st Entrance (m)", colorcode="APA")
 b <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="Path2ndEntr",
+             yaxislabel="Path to\n2nd Entrance (m)", colorcode="APA")
+b2 <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="Path2ndEntr",
              yaxislabel="Path to\n2nd Entrance (m)", colorcode="APA")
 c <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="TotalPathArena.m",
              yaxislabel="Total Path (m)", colorcode="APA")
@@ -44,7 +45,7 @@ e <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="pTime
 f <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="SpeedArena.cm.s",
              yaxislabel="Average Speed (cm/s)", colorcode="APA")
 
-
+b2
 plot_grid(a,b,c,d,e,f,nrow=2, rel_widths=c(1,1.1,1.75,1,1.1,1.75))
 ```
 
@@ -57,11 +58,19 @@ makeagroupaveheatmap(behavior)
 
 #### Reshape data and plot a correlation matrix
 ```{r, message=FALSE, results='hide', echo=FALSE}
-makecorrelationheatmap(behavior)
+makecorrelationheatmap(data=behavior, APAgroup = "Conflict", clusterTF =T)
+makecorrelationheatmap(data=behavior, APAgroup = "Same", clusterTF =T)
+makecorrelationheatmap(data=behavior, APAgroup = "Yoked", clusterTF =T)
 ```
 
 #### Reshape data and plot a PCA
-```{r, message=FALSE,  echo=FALSE}
-makepcaplot(behavior)
+```{r, echo=FALSE}
+scoresdf <- makepcadf(behavior)
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC4",colorcode="APA")
 ```
+
+
+
+
 

@@ -72,17 +72,18 @@ makeagroupaveheatmap <- function(data){
 }
 
 ## correlation heatmat ----
-makecorrelationheatmap <- function(data){
-  datacols <- data[c(19:59)];
+makecorrelationheatmap <- function(data, APAgroup, clusterTF){
+  dataslim <- data %>% filter(APA==APAgroup)
+  datacols <- dataslim[c(19:59)];
   cormat <- cor(datacols);
   plot <- pheatmap(cormat, 
-                   show_colnames=FALSE, show_rownames=TRUE, border_color ="grey60")
+                   show_colnames=FALSE, show_rownames=TRUE, border_color ="grey60", 
+                   main=APAgroup, cluster_rows = clusterTF, cluster_cols = clusterTF)
   return(plot)         
 } 
 
-
 ## PCA ----
-makepcaplot <- function(data){
+makepcadf <- function(data){
   #first melt the data to make long
   longdata <- melt(data, id = c(1:18));
   longdata <- longdata %>% drop_na();
@@ -98,14 +99,19 @@ makepcaplot <- function(data){
   scoresdf <- as.data.frame(scores)
   scoresdf$ID <-  longdata$ID
   scoresdf$APA <- longdata$APA
-  plot <- ggplot(scoresdf, aes(PC1, PC2, colour=APA )) + 
+  return(scoresdf)
+}
+
+makepcaplot <- function(data,xcol,ycol,colorcode){
+  plot <- data %>% 
+    ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
     geom_point(size = 5) +
+    stat_ellipse(level = 0.95)+
     theme_cowplot(font_size = 20) + 
     theme(strip.background = element_blank()) +
     scale_colour_manual(name="APA Training",
                         values=c("#7f3b08","#e08214", "#8073ac"),
-                        breaks=c("Yoked", "Same", "Conflict"))+ 
-    labs(x = "Behavior PC1", y = "Behavior PC2") 
+                        breaks=c("Yoked", "Same", "Conflict")) #+ 
+    #labs(x = "Behavior xcol", y = "Behavior ycol") 
   return(plot)
-  }  
-
+}
