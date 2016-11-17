@@ -6,7 +6,8 @@ boxplot <- function(data, xcol, ycol, yaxislabel, colorcode, session){
     scale_fill_manual(name="APA Training", 
                         values=c("#8073ac","#e08214",  "#7f3b08"),
                         breaks = c("Yoked", "Same", "Conflict")) +
-    scale_y_continuous(name=yaxislabel) 
+    scale_y_continuous(name=yaxislabel) +
+    scale_x_discrete(name=NULL)
 }
 
 ## plot function for single behavior with wide data ----
