@@ -10,6 +10,7 @@ This is an R Markdown document detailing the behavior data analysis.
 #### Import the behavior data and functions
 ```{r}
 behavior <- read.csv("~/Github/IntegrativeProjectWT2015/data/01_behaviordata.csv", header = T)
+behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
 ```
 
 ```{r import funciton}
@@ -26,6 +27,25 @@ library(tidyr) ## for respahing data
 library(dplyr) ## for filtering and selecting rows
 library(reshape2) ## for melting dataframe
 library(pheatmap)
+```
+
+#### Mice learn to avoid the shock zone and they remember 24 hours later! 
+
+```{r, echo=FALSE}
+a2 <- boxplot(data = behavior,xcol = "TrainSessionCombo", ycol = "Path2ndEntr", yaxislabel = "Path to\n2nd Entrance (m)", colorcode = "APA", session ="Retention")
+b2 <- boxplot(data = behavior,xcol = "TrainSessionCombo", ycol = "pTimeOPP", yaxislabel = "% Time Opposite\nof the Shock Zone", colorcode = "APA", session ="Retention")
+plot_grid(a2,b2, nrow=1, rel_widths=c(1,1))
+
+```
+
+### stats
+```{r, echo=FALSE, message=FALSE}
+library(nlme)
+retention <- behavior %>% filter(TrainSessionCombo %in% c("T6_C3", "Retention")) %>%  droplevels() 
+nlme1 <- lme(Path2ndEntr  ~ APA * TrainSessionCombo,
+              random = ~ 1|ID,
+              data = retention)
+summary(nlme1)
 ```
 
 #### Plot behavior data by session

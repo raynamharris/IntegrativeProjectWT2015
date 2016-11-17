@@ -1,3 +1,14 @@
+## box plot ----
+boxplot <- function(data, xcol, ycol, yaxislabel, colorcode, session){
+  data %>% filter(TrainSessionCombo==session) %>%  droplevels() %>%
+    ggplot(aes_string(x=xcol, y=ycol, fill=colorcode)) + 
+    geom_boxplot() + theme_bw() + 
+    scale_fill_manual(name="APA Training", 
+                        values=c("#8073ac","#e08214",  "#7f3b08"),
+                        breaks = c("Yoked", "Same", "Conflict")) +
+    scale_y_continuous(name=yaxislabel) 
+}
+
 ## plot function for single behavior with wide data ----
 onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
   plot <- data %>% 
@@ -7,7 +18,7 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
     theme_cowplot(font_size = 12, line_size = 0.5) + 
     background_grid(major = "xy", minor = "none") + 
     theme(axis.text.x = element_text(angle=60, vjust=0.5)) +
-    scale_colour_manual(name="APA Training", values=c( "#7f3b08","#e08214",  "#8073ac"),
+    scale_colour_manual(name="APA Training", values=c("#8073ac","#e08214",  "#7f3b08"),
                         breaks = c("Yoked", "Same", "Conflict")) +
     scale_y_continuous(name=yaxislabel) + 
     scale_x_continuous(name =NULL, 
@@ -27,7 +38,7 @@ onebehaviornolegend <- function(data, xcol, ycol, yaxislabel, colorcode){
     theme_cowplot(font_size = 12, line_size = 0.5) + 
     background_grid(major = "xy", minor = "none") + 
     theme(axis.text.x = element_text(angle=60, vjust=0.5)) +
-    scale_colour_manual(name="APA Training", values=c("#7f3b08","#e08214", "#8073ac"),
+    scale_colour_manual(name="APA Training", values=c("#8073ac","#e08214",  "#7f3b08"),
                         breaks = c("Yoked", "Same", "Conflict")) +
     scale_y_continuous(name=yaxislabel) + 
     scale_x_continuous(name =NULL, 
@@ -110,7 +121,7 @@ makepcaplot <- function(data,xcol,ycol,colorcode){
     theme_cowplot(font_size = 20) + 
     theme(strip.background = element_blank()) +
     scale_colour_manual(name="APA Training",
-                        values=c("#7f3b08","#e08214", "#8073ac"),
+                        values=c("#8073ac","#e08214",  "#7f3b08"),
                         breaks=c("Yoked", "Same", "Conflict")) #+ 
     #labs(x = "Behavior xcol", y = "Behavior ycol") 
   return(plot)
