@@ -1,0 +1,11 @@
+---
+title: "RNAseq Analysis"
+author: "Rayna M Harris"
+date: "11/17/2016"
+output: html_document
+---
+
+
+
+### need to incorporate exportation of a .tsv file rather than a csv file with the count and tpm data
+write.table(test, file='test.tsv', quote=FALSE, sep='\t', col.names = NA)
