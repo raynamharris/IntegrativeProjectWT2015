@@ -32,9 +32,19 @@ library(pheatmap)
 #### Mice learn to avoid the shock zone and they remember 24 hours later! 
 
 ```{r, echo=FALSE}
-a2 <- boxplot(data = behavior,xcol = "TrainSessionCombo", ycol = "Path2ndEntr", yaxislabel = "Path to\n2nd Entrance (m)", colorcode = "APA", session ="Retention")
-b2 <- boxplot(data = behavior,xcol = "TrainSessionCombo", ycol = "pTimeOPP", yaxislabel = "% Time Opposite\nof the Shock Zone", colorcode = "APA", session ="Retention")
-plot_grid(a2,b2, nrow=1, rel_widths=c(1,1))
+a <- myboxplot(data = behavior,xcol = "TrainSessionCombo", ycol = "pTimeOPP", yaxislabel = "% Time Spent Opposite of the Shock Zone", colorcode = "APA", session ="Retention")
+b <- myboxplot(data = behavior,xcol = "TrainSessionCombo", ycol = "Path1stEntr", yaxislabel = "Path to 1st Shock Zone Entrance  (m)", colorcode = "APA", session ="Retention")
+c <- onebehavior(data=behavior, 
+                 xcol="TrainSessionComboNum", 
+                 ycol="Time2ndEntr",
+             yaxislabel="Time to 2nd Shock Zone Entrance (s)", colorcode="APA")
+plot_grid(a,b,c, nrow=1, rel_widths = c(0.25,0.25, 0.5)) 
+
+ggplot(data = behavior, aes(x=APA, y=pTimeOPP, fill = factor(TrainGroup))) +
+  geom_boxplot()
+
+## add text to R script
+
 
 ```
 
@@ -53,24 +63,20 @@ nlme2 <- lme(Path2ndEntr  ~ APA ,
               data = T6_C3)
 summary(nlme2)
 
+retention <- behavior %>% filter(TrainSessionCombo %in% c("Retention")) %>%  droplevels()
+nlme3 <- lme(Path1stEntr  ~ APA ,
+              random = ~ 1|ID,
+              data = retention)
+summary(nlme3)
+
 ```
 
 #### Plot behavior data by session
 ```{r, echo=FALSE}
-a <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="Path1stEntr", 
-             yaxislabel="Path to 1st Entrance (m)", colorcode="APA")
-b <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="Path2ndEntr",
-             yaxislabel="Path to\n2nd Entrance (m)", colorcode="APA")
-b2 <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="Path2ndEntr",
-             yaxislabel="Path to\n2nd Entrance (m)", colorcode="APA")
-c <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="TotalPathArena.m",
-             yaxislabel="Total Path (m)", colorcode="APA")
-d <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeTarget",
-             yaxislabel="% Time in the Shock Zone", colorcode="APA")
-e <- onebehaviornolegend(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeOPP",
-             yaxislabel="% Time Opposite\nof the Shock Zone", colorcode="APA")
-f <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="SpeedArena.cm.s",
-             yaxislabel="Average Speed (cm/s)", colorcode="APA")
+c <- onebehavior(data=behavior, 
+                 xcol="TrainSessionComboNum", 
+                 ycol="Time2ndEntr",
+             yaxislabel="Time to 2nd Shock Zone Entrance (s)", colorcode="APA")
 
 b2
 plot_grid(a,b,c,d,e,f,nrow=2, rel_widths=c(1,1.1,1.75,1,1.1,1.75))

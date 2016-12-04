@@ -1,13 +1,18 @@
 ## box plot ----
-boxplot <- function(data, xcol, ycol, yaxislabel, colorcode, session){
-  data %>% filter(TrainSessionCombo==session) %>%  droplevels() %>%
+myboxplot <- function(data, xcol, ycol, yaxislabel, colorcode, session, title){
+  plot <- data %>% filter(TrainSessionCombo==session) %>%  droplevels() %>%
     ggplot(aes_string(x=xcol, y=ycol, fill=colorcode)) + 
-    geom_boxplot() + theme_bw() + 
+    geom_boxplot() +  
     scale_fill_manual(name="APA Training", 
                         values=c("#8073ac","#e08214",  "#7f3b08"),
                         breaks = c("Yoked", "Same", "Conflict")) +
     scale_y_continuous(name=yaxislabel) +
-    scale_x_discrete(name=NULL)
+    scale_x_discrete(name=NULL) +   
+    theme_cowplot(font_size = 20) +
+    theme(legend.position="bottom") +
+    theme(legend.text = element_text(size = 10)) + 
+    theme(legend.title=element_blank()) 
+  return(plot)
 }
 
 
@@ -17,7 +22,7 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
     ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
     geom_point(size=1) + geom_jitter() +
     stat_smooth(alpha=0.5)  +
-    theme_cowplot(font_size = 12, line_size = 0.5) + 
+    theme_cowplot(font_size = 20, line_size = 0.5) + 
     background_grid(major = "xy", minor = "none") + 
     theme(axis.text.x = element_text(angle=60, vjust=0.5)) +
     scale_colour_manual(name="APA Training", values=c("#8073ac","#e08214",  "#7f3b08"),
@@ -25,9 +30,11 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
     scale_y_continuous(name=yaxislabel) + 
     scale_x_continuous(name =NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Hab", "2" = "T1", "3" = "T2", 
+                       labels=c("1" = "Habituation", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention"))
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention"))+
+    theme(legend.position="bottom") +
+    theme(legend.title=element_blank()) 
   return(plot)
 }
 
