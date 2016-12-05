@@ -2,7 +2,7 @@
 title: "Behavior Analysis"
 author: "Rayna M Harris"
 date: "11/15/2016"
-output: html_document
+output: md_document
 ---
 
 This is an R Markdown document detailing the behavior data analysis.
