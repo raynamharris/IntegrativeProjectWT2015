@@ -2,7 +2,7 @@ This is an R Markdown document detailing the behavior data analysis.
 
 #### Import the behavior data and functions
 
-    behavior <- read.csv("~/Github/IntegrativeProjectWT2015/data/01_behaviordata.csv", header = T)
+    behavior <- read.csv("../data/01_behaviordata.csv", header = T)
     behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
 
     source("01_behaviorfunctions.R")
