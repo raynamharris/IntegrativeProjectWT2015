@@ -9,7 +9,7 @@ This is an R Markdown document detailing the behavior data analysis.
 
 #### Mice learn to avoid the shock zone and they remember 24 hours later!
 
-![](01_behavior_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+![](01_behavior_files/figure-markdown_strict/unnamed-chunk-3-1.png)![](01_behavior_files/figure-markdown_strict/unnamed-chunk-3-2.png)![](01_behavior_files/figure-markdown_strict/unnamed-chunk-3-3.png)![](01_behavior_files/figure-markdown_strict/unnamed-chunk-3-4.png)![](01_behavior_files/figure-markdown_strict/unnamed-chunk-3-5.png)
 
 ### stats
 

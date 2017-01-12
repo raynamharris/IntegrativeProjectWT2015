@@ -1,0 +1,122 @@
+---
+title: "rnaseq"
+author: "Rayna M Harris"
+date: "1/12/2017"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r 02c_tpmbygene}
+library(dplyr)
+library(reshape2)
+
+#set working directory to source file location
+
+#start from 02b_kallistoa_gather or read these files
+count <- read.csv("../data/02_count.csv", row.names=1, check.names=FALSE )
+tpm <- read.csv("../data/02_tpm.csv", row.names=1, check.names=FALSE )
+geneids <- read.csv("../data/02_geneids.csv")
+
+
+# merge tpm and gene id dataframe
+tpmbygene <-  full_join(geneids, tpm)
+str(tpmbygene)
+
+countbygene <- full_join(geneids, count)
+str(countbygene)
+head(countbygene)
+
+## remove unnecesary columns (aka, keep gene name and counts for samples)
+tpmbygene <- tpmbygene[-c(1:6,8:12)]  
+countbygene <- countbygene[-c(1:6,8:12)]  
+
+## lenghten 
+tpmbygene <- melt(tpmbygene, id=c("gene"))
+head(tpmbygene)
+
+countbygene <- melt(countbygene, id=c("gene"))
+head(countbygene)
+
+## string split to remove last for characters aka "_S##"
+countbygene$variable <- gsub('.{4}$', '', countbygene$variable)
+tpmbygene$variable <- gsub('.{4}$', '', tpmbygene$variable)
+head(countbygene)
+
+#replace _ with - in name
+countbygene$variable <- gsub("\\_", "-", countbygene$variable)
+tpmbygene$variable <- gsub("\\_", "-", tpmbygene$variable)
+head(countbygene)
+
+## remove 147 and 148 because they are home cage animals
+#tpmbygene <- tpmbygene %>% dplyr::filter(!grepl("147-|148-", variable)) 
+#countbygene <- countbygene %>% dplyr::filter(!grepl("147-|148-", variable)) 
+
+#then widen by sum
+tpmbygene <- dcast(tpmbygene, gene ~ variable, value.var= "value", fun.aggregate=mean)
+countbygene  <- dcast(countbygene, gene ~ variable, value.var= "value", fun.aggregate=mean)
+
+## make gene the row name then round all value to nearest 1s place
+row.names(tpmbygene) <- tpmbygene$gene
+tpmbygene[1] <- NULL
+tpmbygene <- round(tpmbygene)
+summary(tpmbygene)
+
+row.names(countbygene) <- countbygene$gene
+countbygene[1] <- NULL
+countbygene <- round(countbygene)
+summary(countbygene)
+```
+
+```{r 02d_JA16444byregion}
+library(ggdendro) ## for dendrograms!!
+library(magrittr) ## to use the weird pipe
+library(gplots) ##for making awesome plots
+library(cowplot) ## for some easy to use themes
+library(tidyr)
+library(dplyr) ## for filtering and selecting rows
+library(reshape2) #@ for melting dataframe
+library(plyr) ## for renmaing factors
+library(ggplot2) ## for awesome plots!
+
+## start after 02c_tpmbygene
+
+Traits <- read.csv("../data/02_JA16444samples.csv", sep=",", header = TRUE, stringsAsFactors=FALSE, na.string = "NA")
+rownames(Traits) <- Traits$RNAseqID    # set $genoAPAsessionInd as rownames
+names(Traits)
+
+#keeping informative volumns
+Traits <- Traits[c(1,3,5:6,10:11)] 
+tail(Traits)
+str(Traits)
+
+## remove 100 and 100 animals because they aren't APA trained
+## remove 147 and 148 because they are home cage animals
+## remove mice 147D_CA1_1 and 145B_CA3_1 because these were bad samples with no reads
+
+Traits <- Traits %>% dplyr::filter(!grepl("100|101|147-|148-|147D-CA1-1|145B-CA3-1|147-|148-", RNAseqID)) 
+
+
+## adding combinatorial traits
+Traits$APAconflict <- as.factor(paste(Traits$APA, Traits$Conflict, sep="_")) 
+summary(Traits)
+
+#make a column that thas id without the dash
+Traits$ID <- gsub("[[:punct:]]", "", Traits$Mouse)
+
+
+## make gene the row name then round all value to nearest 1s place
+row.names(Traits) <- Traits$RNAseqID
+
+
+## relevel APA conflict and rename columsn
+## rename columns 
+names(Traits)[names(Traits)=="APA"] <- "TrainGroup"
+names(Traits)[names(Traits)=="APAconflict"] <- "APA"
+Traits$APA <- revalue(Traits$APA, c("Trained_Conflict" = "Conflict")) 
+Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Trained")) 
+Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Yoked")) 
+Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Yoked")) 
+```
