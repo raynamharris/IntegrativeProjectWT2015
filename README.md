@@ -13,4 +13,4 @@ In a talk for the eisen lab, I presented some slide with the following figures:
 
 ![spatialtraining2](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-2.png "But there is a lot of variability")
 
-![spatialtraining3](./bin/01_behavior_files/figure-markdown_strict/uunnamed-chunk-5-3.png "Heatmap")
+![spatialtraining3](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-5-3.png "Heatmap")
