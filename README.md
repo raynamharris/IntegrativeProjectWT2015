@@ -11,8 +11,6 @@ In a talk for the eisen lab, I presented some slide with the following figures:
 
 ![spatialtraining1](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-3.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
 
-![spatialtraining2](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-5.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
+![spatialtraining2](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-2.png "But there is a lot of variability")
 
-![spatialtraining32](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-2.png "But there is a lot of variability")
-
-
+![spatialtraining3](./bin/01_behavior_files/figure-markdown_strict/uunnamed-chunk-5-3.png "Heatmap")
