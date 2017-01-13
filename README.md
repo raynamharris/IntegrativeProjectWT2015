@@ -7,6 +7,12 @@ The R markdown file to reproducible run the code [is here](./bin/01_behavior.Rmd
 
 In a talk for the eisen lab, I presented some slide with the following figures:
 
+### Spatially trained mice (orange & browns boxes) avoid the shock zone
+
 ![spatialtraining1](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-3.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
+
+![spatialtraining2](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-5.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
+
+![spatialtraining32](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-2.png "But there is a lot of variability")
 
 
