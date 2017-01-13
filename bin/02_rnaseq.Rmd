@@ -120,3 +120,258 @@ Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Trained"))
 Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Yoked")) 
 Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Yoked")) 
 ```
+
+```{r}
+## continue from 02-d_JA16444byregion
+
+library("DESeq2")
+library("ggplot2")
+library("dplyr")
+library("magrittr")
+
+
+# 1.3.3 Count matrix input ----
+countData <- countbygene 
+colData <- Traits %>%
+  arrange(RNAseqID)
+head(countData)
+head(colData)
+
+
+savecols <- as.character(colData$RNAseqID) #select the sample name column that corresponds to row names
+savecols <- as.vector(savecols) # make it a vector
+countData <- countData %>% select(one_of(savecols)) # select just the columns that match the samples in colData
+## remove counts with count value  < 2
+countData[countData < 2] <- 0
+
+## haven't removed outliers remove outliers
+# 146B-DG, 146D-DG, 148B-CA1
+
+
+# factors must be factors
+cols = c(1:4,7)
+colData[,cols] %<>% lapply(function(x) as.factor(as.character(x)))
+colData$Slice <- as.factor(colData$Slice)
+str(colData)
+
+
+## change "trained" to "same"
+colData$APA <- revalue(colData$APA, c("Trained"="Same"))
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Punch + APA + Punch*APA)
+dds
+
+#class: DESeqDataSet 
+#dim: 22485 45 
+#metadata(1): version
+#assays(1): counts
+#rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+#rowData names(0):
+#  colnames(42): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
+#colData names(7): Mouse Conflict ... APAconflict ID
+
+
+## 1.3.6 Pre-filtering
+
+dds <- dds[ rowSums(counts(dds)) > 1, ]
+
+## 1.3.7 Note on factor levels
+#str(dds$TrainGroup)
+#levels(dds$TrainGroup)
+#str(dds$Punch)
+#dds$TrainGroup <- factor(dds$TrainGroup, levels=c("Yoked","Trained"))
+dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1"))
+dds$APA <- factor(dds$APA, levels=c("Yoked", "Same", "Conflict"))
+
+
+## 1.4  Differential expression analysi
+
+dds <- DESeq(dds)
+
+# general deseq
+res <- results(dds, independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+summary(res)
+sum(res$padj < 0.1, na.rm = TRUE) #14
+res05 <- results(dds, alpha=0.05)
+summary(res05) #23
+sum(res05$padj < 0.05, na.rm=TRUE)
+
+## 1.5 exploring and reporting results
+
+plotMA(res, main="DESeq2")
+resMLE <- results(dds)
+head(resMLE, 4)
+
+
+## 1.5 more info
+mcols(res)$description
+
+## for variance stablized gene expression and log transformed data
+rld <- rlog(dds, blind=FALSE)
+vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
+vsd.fast <- vst(dds, blind=FALSE)
+head(assay(rld), 3)
+
+#####save data space!! ####
+#save.image("~/Github/BehavEphyRNAseq/bin/deseq.Rdata")
+
+## DEG by contrasts
+
+resAPASC <- results(dds, contrast = c("APA", "Same", "Conflict"), independentFiltering = F)
+sum(resAPASC$padj < 0.1, na.rm = TRUE) #118
+resAPAYS <- results(dds, contrast = c("APA", "Yoked", "Same"), independentFiltering = F)
+sum(resAPAYS$padj < 0.1, na.rm = TRUE) #118
+resAPAYC <- results(dds, contrast = c("APA", "Yoked", "Conflict"), independentFiltering = F)
+sum(resAPAYC$padj < 0.1, na.rm = TRUE) #118
+
+
+resPunchCA1DG <- results(dds, contrast = c("Punch", "CA1", "DG"), independentFiltering = F)
+sum(resPunchCA1DG$padj < 0.1, na.rm = TRUE) #3219
+resPunchCA1CA3 <- results(dds, contrast = c("Punch", "CA1", "CA3"), independentFiltering = F)
+sum(resPunchCA1CA3$padj < 0.1, na.rm = TRUE) #2266
+resPunchCA3DG <- results(dds, contrast = c("Punch", "CA3", "DG"), independentFiltering = F)
+sum(resPunchCA3DG$padj < 0.1, na.rm = TRUE) #4029
+
+##  now bind the table of 
+
+valsAPAYS <- cbind(resAPAYS$pvalue, resAPAYS$padj) 
+valsAPAYC <- cbind(resAPAYC$pvalue, resAPAYC$padj) 
+
+
+valsPunchCA1DG <- cbind(resPunchCA1DG$pvalue, resPunchCA1DG$padj) 
+valsPunchCA1CA3 <- cbind(resPunchCA1CA3$pvalue, resPunchCA1CA3$padj) 
+valsPunchCA3DG <- cbind(resPunchCA3DG$pvalue, resPunchCA3DG$padj) 
+
+
+colnames(valsAPAYS)=c("pval.APAYS", "padj.APAYS")
+colnames(valsAPAYC)=c("pval.APAYC", "padj.APAYC")
+
+colnames(valsPunchCA1DG)=c("pval.CA1DG", "padj.CA1DG")
+colnames(valsPunchCA1CA3)=c("pval.CA1CA3", "padj.CA1CA3")
+colnames(valsPunchCA3DG)=c("pval.CA3DG", "padj.CA3DG")
+
+
+rldd <- assay(rld)
+rldpvals <- cbind(rldd, valsAPAYS, valsAPAYC, valsPunchCA1DG, valsPunchCA1CA3, valsPunchCA3DG)
+
+head(rldpvals)
+dim(rldpvals)
+#14347    56
+table(complete.cases(rldpvals))
+#   TRUE 
+#  17422 
+
+### venn diagram
+
+
+
+# 2.2.1 Heatmap of the count matrix
+#install.packages("pheatmap")
+library("pheatmap")
+nt <- normTransform(dds) # defaults to log2(x+1) 
+
+## making pheatmaps annoations
+df <- as.data.frame(colData(dds)[,c("Punch","APA")])
+str(df)
+
+
+ann_colors = list(
+  APA =  c(Yoked = (values=c("#8073ac")), Same = (values=c("#e08214")), Conflict = (values=c("#7f3b08"))),
+  Punch =  c(DG = (values=c("#006837")),  CA3 = (values=c("#41ab5d")), 
+             CA1 = (values=c("#d9f0a3"))))
+
+
+#### top variance genes des by brain region
+DEGes <- as.data.frame(rldpvals) # convert matrix to dataframe
+DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+#DEGes$padjmin <- with(DEGes, pmin(padj.APATY, padj.CA1DG, padj.CA1CA3, padj.CA3DG)) # put the min pvalue in a new column
+DEGes$padjmin <- with(DEGes, pmin(padj.APAYS, padj.APAYC, padj.CA1DG, padj.CA1CA3, padj.CA3DG)) # put the min pvalue in a new column
+DEGes <- DEGes %>% filter(padjmin < 0.01)
+rownames(DEGes) <- DEGes$rownames
+#drop.cols <- c("padj.APATY", "padj.CA1DG" , "padj.CA1CA3" , "padj.CA3DG" , "pval.APATY", "pval.CA1DG" , "pval.CA1CA3" , "pval.CA3DG" , "rownames", "padjmin")
+drop.cols <- c("padj.APAYS", "padj.APAYC","padj.CA1DG" , "padj.CA1CA3" , "padj.CA3DG" , "pval.APAYS","pval.APAYC", "pval.CA1DG" , "pval.CA1CA3" , "pval.CA3DG" , "rownames", "padjmin")
+
+DEGes <- DEGes %>% select(-one_of(drop.cols))
+DEGes <- as.matrix(DEGes)
+DEGes <- DEGes - rowMeans(DEGes)
+
+
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         fontsize = 12, fontsize_row = 10, 
+         #cellwidth=10, cellheight=10,
+         #width = 10,
+         border_color = "grey60"
+)
+
+#### top variance genes des by brain region
+DEGes <- as.data.frame(rldpvals) # convert matrix to dataframe
+DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+#DEGes$padjmin <- with(DEGes, pmin(padj.APATY, padj.CA1DG, padj.CA1CA3, padj.CA3DG)) # put the min pvalue in a new column
+DEGes$padjmin <- with(DEGes, pmin(padj.APAYS, padj.APAYC)) # put the min pvalue in a new column
+DEGes <- DEGes %>% filter(padjmin < 0.01)
+rownames(DEGes) <- DEGes$rownames
+#drop.cols <- c("padj.APATY", "padj.CA1DG" , "padj.CA1CA3" , "padj.CA3DG" , "pval.APATY", "pval.CA1DG" , "pval.CA1CA3" , "pval.CA3DG" , "rownames", "padjmin")
+drop.cols <- c("padj.APAYS", "padj.APAYC","padj.CA1DG" , "padj.CA1CA3" , "padj.CA3DG" , "pval.APAYS","pval.APAYC", "pval.CA1DG" , "pval.CA1CA3" , "pval.CA3DG" , "rownames", "padjmin")
+
+DEGes <- DEGes %>% select(-one_of(drop.cols))
+DEGes <- as.matrix(DEGes)
+DEGes <- DEGes - rowMeans(DEGes)
+
+
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         fontsize = 12, fontsize_row = 10, 
+         #cellwidth=10, cellheight=10,
+         #width = 10,
+         border_color = "grey60"
+)
+
+
+## regular pca
+plotPCA(rld, intgroup=c("TrainGroup", "Punch"), returnData=TRUE)
+pcadata <- plotPCA(rld, intgroup=c("TrainGroup", "Punch"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+
+ggplot(pcadata, aes(PC1, PC2, color=Punch, shape=TrainGroup)) +
+  geom_point(size=5) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +  
+  stat_ellipse(level = 0.95, (aes(color=Punch)),size=1.5)   + 
+  scale_color_manual(values=c("#006837", "#41ab5d", "#d9f0a3")) +
+  geom_text(aes(label=name),vjust=2)
+
+ggplot(pcadata, aes(PC1, PC2, color=Punch, shape=APA)) +
+  geom_point(size=5) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +  
+  #stat_ellipse(level = 0.95, (aes(color=Punch)),size=1.5)   + 
+  scale_color_manual(values=c("#006837", "#41ab5d", "#d9f0a3")) + 
+  theme(axis.title.x = element_text(size=20),
+        axis.title.y = element_text(size=20),
+        legend.title = element_text(size=18),
+        legend.text = element_text(size=18))
+
+
+## stats
+library(edgeR)
+counts <- countData
+dim( counts )
+colSums( counts ) / 1e06  # in millions of reads
+table( rowSums( counts ) )[ 1:30 ] # Number of genes with low counts
+
+rowsum <- as.data.frame(colSums( counts ) / 1e06 )
+names(rowsum)[1] <- "millioncounts"
+rowsum$sample <- row.names(rowsum)
+
+ggplot(rowsum, aes(x=millioncounts)) + 
+  geom_histogram(binwidth = 1, colour = "black", fill = "darkgrey") +
+  theme_classic() +
+  scale_x_continuous(name = "Millions of Gene Counts per Sample",
+                     breaks = seq(0, 8, 1),
+                     limits=c(0, 8)) +
+  scale_y_continuous(name = "Number of Samples")
+ ```
