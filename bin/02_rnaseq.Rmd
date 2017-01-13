@@ -220,27 +220,25 @@ head(assay(rld), 3)
 
 ## DEG by contrasts
 
-resAPASC <- results(dds, contrast = c("APA", "Same", "Conflict"), independentFiltering = F)
-sum(resAPASC$padj < 0.1, na.rm = TRUE) #118
+resAPASC <- results(dds, contrast = c("APA", "Same", "Conflict"), independentFiltering = F) 
+sum(resAPASC$padj < 0.1, na.rm = TRUE) #0
 resAPAYS <- results(dds, contrast = c("APA", "Yoked", "Same"), independentFiltering = F)
-sum(resAPAYS$padj < 0.1, na.rm = TRUE) #118
+sum(resAPAYS$padj < 0.1, na.rm = TRUE) #103
 resAPAYC <- results(dds, contrast = c("APA", "Yoked", "Conflict"), independentFiltering = F)
-sum(resAPAYC$padj < 0.1, na.rm = TRUE) #118
+sum(resAPAYC$padj < 0.1, na.rm = TRUE) #58
 
 
 resPunchCA1DG <- results(dds, contrast = c("Punch", "CA1", "DG"), independentFiltering = F)
-sum(resPunchCA1DG$padj < 0.1, na.rm = TRUE) #3219
+sum(resPunchCA1DG$padj < 0.1, na.rm = TRUE) #2872
 resPunchCA1CA3 <- results(dds, contrast = c("Punch", "CA1", "CA3"), independentFiltering = F)
-sum(resPunchCA1CA3$padj < 0.1, na.rm = TRUE) #2266
+sum(resPunchCA1CA3$padj < 0.1, na.rm = TRUE) #2078
 resPunchCA3DG <- results(dds, contrast = c("Punch", "CA3", "DG"), independentFiltering = F)
-sum(resPunchCA3DG$padj < 0.1, na.rm = TRUE) #4029
+sum(resPunchCA3DG$padj < 0.1, na.rm = TRUE) #3833
 
 ##  now bind the table of 
 
 valsAPAYS <- cbind(resAPAYS$pvalue, resAPAYS$padj) 
 valsAPAYC <- cbind(resAPAYC$pvalue, resAPAYC$padj) 
-
-
 valsPunchCA1DG <- cbind(resPunchCA1DG$pvalue, resPunchCA1DG$padj) 
 valsPunchCA1CA3 <- cbind(resPunchCA1CA3$pvalue, resPunchCA1CA3$padj) 
 valsPunchCA3DG <- cbind(resPunchCA3DG$pvalue, resPunchCA3DG$padj) 
@@ -248,7 +246,6 @@ valsPunchCA3DG <- cbind(resPunchCA3DG$pvalue, resPunchCA3DG$padj)
 
 colnames(valsAPAYS)=c("pval.APAYS", "padj.APAYS")
 colnames(valsAPAYC)=c("pval.APAYC", "padj.APAYC")
-
 colnames(valsPunchCA1DG)=c("pval.CA1DG", "padj.CA1DG")
 colnames(valsPunchCA1CA3)=c("pval.CA1CA3", "padj.CA1CA3")
 colnames(valsPunchCA3DG)=c("pval.CA3DG", "padj.CA3DG")
@@ -289,7 +286,7 @@ DEGes <- as.data.frame(rldpvals) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
 #DEGes$padjmin <- with(DEGes, pmin(padj.APATY, padj.CA1DG, padj.CA1CA3, padj.CA3DG)) # put the min pvalue in a new column
 DEGes$padjmin <- with(DEGes, pmin(padj.APAYS, padj.APAYC, padj.CA1DG, padj.CA1CA3, padj.CA3DG)) # put the min pvalue in a new column
-DEGes <- DEGes %>% filter(padjmin < 0.01)
+DEGes <- DEGes %>% filter(padjmin < 0.000001)
 rownames(DEGes) <- DEGes$rownames
 #drop.cols <- c("padj.APATY", "padj.CA1DG" , "padj.CA1CA3" , "padj.CA3DG" , "pval.APATY", "pval.CA1DG" , "pval.CA1CA3" , "pval.CA3DG" , "rownames", "padjmin")
 drop.cols <- c("padj.APAYS", "padj.APAYC","padj.CA1DG" , "padj.CA1CA3" , "padj.CA3DG" , "pval.APAYS","pval.APAYC", "pval.CA1DG" , "pval.CA1CA3" , "pval.CA3DG" , "rownames", "padjmin")
@@ -332,8 +329,9 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 
 
 ## regular pca
-plotPCA(rld, intgroup=c("TrainGroup", "Punch"), returnData=TRUE)
-pcadata <- plotPCA(rld, intgroup=c("TrainGroup", "Punch"), returnData=TRUE)
+
+plotPCA(rld, intgroup=c("APA", "Punch"), returnData=TRUE)
+pcadata <- plotPCA(rld, intgroup=c("APA", "Punch"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 
 ggplot(pcadata, aes(PC1, PC2, color=Punch, shape=TrainGroup)) +

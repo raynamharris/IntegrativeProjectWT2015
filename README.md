@@ -14,3 +14,6 @@ In a talk for the eisen lab, I presented some slide with the following figures:
 ![spatialtraining2](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-2.png "But there is a lot of variability")
 
 ![spatialtraining3](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-5-3.png "Heatmap")
+
+### Gene expression most notably different across brain regions 
+![spatialtraining1](./bin/02_rnaseq_files/heatmap.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
