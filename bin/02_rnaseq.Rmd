@@ -1,30 +1,30 @@
 ---
-title: "rnaseq"
+title: "deseq2"
 author: "Rayna M Harris"
 date: "1/12/2017"
 output: html_document
 ---
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## RNAseq gene expression analysis with DESeq2 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+This 
 
-```{r 02c_tpmbygene}
+```{r setup}
 library(dplyr)
 library(reshape2)
 
-#set working directory to source file location
+```
 
-#start from 02b_kallistoa_gather or read these files
+
+```{r getdata}
+#run kallisto.Rmd to create your own interemediate files or read these files
 count <- read.csv("../data/02_count.csv", row.names=1, check.names=FALSE )
-tpm <- read.csv("../data/02_tpm.csv", row.names=1, check.names=FALSE )
 geneids <- read.csv("../data/02_geneids.csv")
+```
 
 
-# merge tpm and gene id dataframe
-tpmbygene <-  full_join(geneids, tpm)
-str(tpmbygene)
-
+```{r wrangledata}
+# merge count and gene id dataframes
 countbygene <- full_join(geneids, count)
 str(countbygene)
 head(countbygene)
@@ -113,7 +113,6 @@ row.names(Traits) <- Traits$RNAseqID
 
 ## relevel APA conflict and rename columsn
 ## rename columns 
-names(Traits)[names(Traits)=="APA"] <- "TrainGroup"
 names(Traits)[names(Traits)=="APAconflict"] <- "APA"
 Traits$APA <- revalue(Traits$APA, c("Trained_Conflict" = "Conflict")) 
 Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Trained")) 
@@ -121,8 +120,8 @@ Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Yoked"))
 Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Yoked")) 
 ```
 
-```{r}
-## continue from 02-d_JA16444byregion
+```{r 02d_JA16444byregion}
+## continue from 02d_JA16444byregion
 
 library("DESeq2")
 library("ggplot2")
@@ -144,8 +143,8 @@ countData <- countData %>% select(one_of(savecols)) # select just the columns th
 ## remove counts with count value  < 2
 countData[countData < 2] <- 0
 
-## haven't removed outliers remove outliers
-# 146B-DG, 146D-DG, 148B-CA1
+## if haven't removed outliers remove outliers
+## 146B-DG, 146D-DG, 148B-CA1
 
 
 # factors must be factors
@@ -178,10 +177,6 @@ dds
 dds <- dds[ rowSums(counts(dds)) > 1, ]
 
 ## 1.3.7 Note on factor levels
-#str(dds$TrainGroup)
-#levels(dds$TrainGroup)
-#str(dds$Punch)
-#dds$TrainGroup <- factor(dds$TrainGroup, levels=c("Yoked","Trained"))
 dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1"))
 dds$APA <- factor(dds$APA, levels=c("Yoked", "Same", "Conflict"))
 
