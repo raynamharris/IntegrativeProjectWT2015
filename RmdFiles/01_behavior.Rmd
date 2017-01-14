@@ -7,6 +7,7 @@ output: md_document
 
 This is an R Markdown document detailing the behavior data analysis.
 
+
 #### Import the behavior data and functions
 ```{r}
 behavior <- read.csv("../data/01_behaviordata.csv", header = T)
@@ -14,7 +15,7 @@ behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
 ```
 
 ```{r import funciton}
-source("01_behaviorfunctions.R")
+source("functions_behavior.R")
 ```
 
 ```{r, echo=FALSE, message=FALSE}
@@ -28,6 +29,10 @@ library(plyr) ## for renmaing factors
 library(dplyr) ## for filtering and selecting rows
 library(reshape2) ## for melting dataframe
 library(pheatmap)
+
+# set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/allregions_allgroups/')
+
 ```
 
 #### Mice learn to avoid the shock zone and they remember 24 hours later! 
