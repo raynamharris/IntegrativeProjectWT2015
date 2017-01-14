@@ -1,19 +1,28 @@
-This repo contains the experiment for one chapter of my thesis, which will be published as one research publication.
-- data: contains all the relevant data 
-- bin: contains the R scripts, functions, and R markdown files are in bin.
-- bin/figures: contains the Rmd output .png files
+This repo contains the experiment that I like to call "Integrative Wild Type 2015" because it reflect that behavior, electrophysiology, and RNAseq data were collected from WT mice in 2015 and analyzed in an integrative fashion. The title of the paper is: 
 
-The R markdown file to reproducible run the code [is here](./bin/01_behavior.Rmd). View the resulting [markdown file here](./bin/01_behavior.md). 
+The R markdown files to reproducible run the code are saved in [the  RmdFiles subdirectory](./RmdFiles). Rather than have a single Rmd file for the entire project, the workflow is broken down into pieces. The workflows to recreated the figures are specified by the figure name. 
+
+- Figure 1
+- Figure 2
+- Figure 3
+
+Individual figures were combined into one panel using Adobe Illustrator. The workflows to reproduce the tidy data are outlined in separate files for behavior, physiology, and gene expression. 
+
+- Behavior Data Tidying
+- Transcript quantification with Kallisto
+- Differential gene expression quantification with DESeq2 
+
+
 
 In a talk for the eisen lab, I presented some slide with the following figures:
 
 ### Spatially trained mice (orange & browns boxes) avoid the shock zone
 
-![spatialtraining1](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-3.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
+![spatialtraining1](./RmdFiles/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-3.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
 
-![spatialtraining2](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-2.png "But there is a lot of variability")
+![spatialtraining2](./RmdFiles/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-2.png "But there is a lot of variability")
 
-![spatialtraining3](./bin/01_behavior_files/figure-markdown_strict/unnamed-chunk-5-3.png "Heatmap")
+![spatialtraining3](./RmdFiles/01_behavior_files/figure-markdown_strict/unnamed-chunk-5-3.png "Heatmap")
 
 ### Gene expression most notably different across brain regions 
-![spatialtraining1](./bin/02_rnaseq_files/heatmap.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
+![spatialtraining1](./RmdFiles/02_rnaseq_files/heatmap.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
