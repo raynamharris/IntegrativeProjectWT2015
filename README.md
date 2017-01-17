@@ -13,10 +13,13 @@ Individual figures were combined into one panel using Adobe Illustrator. The wor
 - Differential gene expression quantification with DESeq2 
 
 
+### Talk figures
 
 In a talk for the eisen lab, I presented some slide with the following figures:
 
-### Spatially trained mice (orange & browns boxes) avoid the shock zone
+![paradigm](.figures/methods_behavior.png "paradigm")
+
+![paradigm](.figures/allenslicephoto-01.tif "allen brain and slice photo")
 
 ![spatialtraining1](./RmdFiles/01_behavior_files/figure-markdown_strict/unnamed-chunk-3-3.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
 
@@ -24,5 +27,4 @@ In a talk for the eisen lab, I presented some slide with the following figures:
 
 ![spatialtraining3](./RmdFiles/01_behavior_files/figure-markdown_strict/unnamed-chunk-5-3.png "Heatmap")
 
-### Gene expression most notably different across brain regions 
 ![spatialtraining1](./RmdFiles/02_rnaseq_files/heatmap.png "Spatially trained mice (orange & browns boxes) avoid the shock zone")
