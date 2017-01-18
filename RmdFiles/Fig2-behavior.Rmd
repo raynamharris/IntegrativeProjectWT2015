@@ -2,7 +2,10 @@
 title: "Figure 2: Behavior Data Analysis"
 author: "Rayna M Harris"
 date: "January 14, 2017"
-output: html_document
+output:
+  md_document:
+    variant: markdown_github
+
 ---
   
 This R Markdown document will create the behavioral analysis figures
