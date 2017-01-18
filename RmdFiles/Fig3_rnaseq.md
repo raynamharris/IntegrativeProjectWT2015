@@ -18,6 +18,9 @@ library(dplyr)
 
 ``` r
 library(reshape2)
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/Fig3/')
 ```
 
 ``` r
@@ -1255,7 +1258,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 )
 ```
 
-![](02_rnaseq_files/figure-markdown_github/02d_JA16444byregion_continuation-1.png)![](02_rnaseq_files/figure-markdown_github/02d_JA16444byregion_continuation-2.png)
+![](../figures/Fig3/02d_JA16444byregion_continuation-1.png)![](../figures/Fig3/02d_JA16444byregion_continuation-2.png)
 
 ``` r
 #### top variance genes des by brain region
@@ -1282,7 +1285,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 )
 ```
 
-![](02_rnaseq_files/figure-markdown_github/02d_JA16444byregion_continuation-3.png)
+![](../figures/Fig3/02d_JA16444byregion_continuation-3.png)
 
 ``` r
 ## regular pca
@@ -1354,7 +1357,7 @@ ggplot(pcadata, aes(PC1, PC2, color=Punch, shape=APA)) +
         legend.text = element_text(size=18))
 ```
 
-![](02_rnaseq_files/figure-markdown_github/02d_JA16444byregion_continuation-4.png)
+![](../figures/Fig3/02d_JA16444byregion_continuation-4.png)
 
 ``` r
 ## stats
@@ -1428,4 +1431,4 @@ ggplot(rowsum, aes(x=millioncounts)) +
   scale_y_continuous(name = "Number of Samples")
 ```
 
-![](02_rnaseq_files/figure-markdown_github/02d_JA16444byregion_continuation-5.png)
+![](../figures/Fig3/02d_JA16444byregion_continuation-5.png)

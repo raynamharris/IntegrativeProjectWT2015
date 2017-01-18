@@ -14,6 +14,8 @@ output:
 library(dplyr)
 library(reshape2)
 
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/Fig3/')
 ```
 
 
