@@ -2,12 +2,13 @@
 title: "deseq2"
 author: "Rayna M Harris"
 date: "1/12/2017"
-output: html_document
+output:
+  md_document:
+    variant: markdown_github
+
 ---
 
 ## RNAseq gene expression analysis with DESeq2 
-
-This 
 
 ```{r setup}
 library(dplyr)
@@ -30,42 +31,30 @@ str(countbygene)
 head(countbygene)
 
 ## remove unnecesary columns (aka, keep gene name and counts for samples)
-tpmbygene <- tpmbygene[-c(1:6,8:12)]  
 countbygene <- countbygene[-c(1:6,8:12)]  
 
 ## lenghten 
-tpmbygene <- melt(tpmbygene, id=c("gene"))
-head(tpmbygene)
-
 countbygene <- melt(countbygene, id=c("gene"))
 head(countbygene)
 
 ## string split to remove last for characters aka "_S##"
 countbygene$variable <- gsub('.{4}$', '', countbygene$variable)
-tpmbygene$variable <- gsub('.{4}$', '', tpmbygene$variable)
 head(countbygene)
 
 #replace _ with - in name
 countbygene$variable <- gsub("\\_", "-", countbygene$variable)
-tpmbygene$variable <- gsub("\\_", "-", tpmbygene$variable)
 head(countbygene)
 
-## remove 147 and 148 because they are home cage animals
-#tpmbygene <- tpmbygene %>% dplyr::filter(!grepl("147-|148-", variable)) 
-#countbygene <- countbygene %>% dplyr::filter(!grepl("147-|148-", variable)) 
+
 
 #then widen by sum
-tpmbygene <- dcast(tpmbygene, gene ~ variable, value.var= "value", fun.aggregate=mean)
 countbygene  <- dcast(countbygene, gene ~ variable, value.var= "value", fun.aggregate=mean)
 
-## make gene the row name then round all value to nearest 1s place
-row.names(tpmbygene) <- tpmbygene$gene
-tpmbygene[1] <- NULL
-tpmbygene <- round(tpmbygene)
-summary(tpmbygene)
-
+## make gene the row name 
 row.names(countbygene) <- countbygene$gene
 countbygene[1] <- NULL
+
+## round all value to nearest 1s place
 countbygene <- round(countbygene)
 summary(countbygene)
 ```
@@ -98,7 +87,6 @@ str(Traits)
 
 Traits <- Traits %>% dplyr::filter(!grepl("100|101|147-|148-|147D-CA1-1|145B-CA3-1|147-|148-", RNAseqID)) 
 
-
 ## adding combinatorial traits
 Traits$APAconflict <- as.factor(paste(Traits$APA, Traits$Conflict, sep="_")) 
 summary(Traits)
@@ -110,22 +98,25 @@ Traits$ID <- gsub("[[:punct:]]", "", Traits$Mouse)
 ## make gene the row name then round all value to nearest 1s place
 row.names(Traits) <- Traits$RNAseqID
 
-
-## relevel APA conflict and rename columsn
-## rename columns 
+## delete old APA column. rename APAconflict APA (for simplicity)
+Traits$APA <- NULL
 names(Traits)[names(Traits)=="APAconflict"] <- "APA"
+
+
+## rename factors
 Traits$APA <- revalue(Traits$APA, c("Trained_Conflict" = "Conflict")) 
-Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Trained")) 
+Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Same")) 
 Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Yoked")) 
 Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Yoked")) 
 ```
 
-```{r 02d_JA16444byregion}
+```{r 02d_JA16444byregion_continuation}
 ## continue from 02d_JA16444byregion
 
 library("DESeq2")
 library("ggplot2")
 library("dplyr")
+library("plyr")
 library("magrittr")
 
 
@@ -139,12 +130,9 @@ head(colData)
 
 savecols <- as.character(colData$RNAseqID) #select the sample name column that corresponds to row names
 savecols <- as.vector(savecols) # make it a vector
-countData <- countData %>% select(one_of(savecols)) # select just the columns that match the samples in colData
+countData <- countData %>% dplyr::select(one_of(savecols)) # select just the columns that match the samples in colData
 ## remove counts with count value  < 2
 countData[countData < 2] <- 0
-
-## if haven't removed outliers remove outliers
-## 146B-DG, 146D-DG, 148B-CA1
 
 
 # factors must be factors
@@ -153,10 +141,7 @@ colData[,cols] %<>% lapply(function(x) as.factor(as.character(x)))
 colData$Slice <- as.factor(colData$Slice)
 str(colData)
 
-
-## change "trained" to "same"
-colData$APA <- revalue(colData$APA, c("Trained"="Same"))
-
+## create DESeq object
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ Punch + APA + Punch*APA)
@@ -178,7 +163,7 @@ dds <- dds[ rowSums(counts(dds)) > 1, ]
 
 ## 1.3.7 Note on factor levels
 dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1"))
-dds$APA <- factor(dds$APA, levels=c("Yoked", "Same", "Conflict"))
+#dds$APA <- factor(dds$APA, levels=c("Yoked", "Same", "Conflict"))
 
 
 ## 1.4  Differential expression analysi
@@ -329,13 +314,6 @@ plotPCA(rld, intgroup=c("APA", "Punch"), returnData=TRUE)
 pcadata <- plotPCA(rld, intgroup=c("APA", "Punch"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 
-ggplot(pcadata, aes(PC1, PC2, color=Punch, shape=TrainGroup)) +
-  geom_point(size=5) +
-  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-  ylab(paste0("PC2: ",percentVar[2],"% variance")) +  
-  stat_ellipse(level = 0.95, (aes(color=Punch)),size=1.5)   + 
-  scale_color_manual(values=c("#006837", "#41ab5d", "#d9f0a3")) +
-  geom_text(aes(label=name),vjust=2)
 
 ggplot(pcadata, aes(PC1, PC2, color=Punch, shape=APA)) +
   geom_point(size=5) +
@@ -367,4 +345,4 @@ ggplot(rowsum, aes(x=millioncounts)) +
                      breaks = seq(0, 8, 1),
                      limits=c(0, 8)) +
   scale_y_continuous(name = "Number of Samples")
- ```
+```
