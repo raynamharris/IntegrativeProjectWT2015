@@ -12,7 +12,7 @@ output:
 This workflow was modified from the DESeq2 tutorial found at: https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf
 
 First I load a handful of packages for data wrangling, gene expression analysis, data visualization, and statistics.
-```{r setup, message=F}
+```{r setup, message=F, warning=F}
 library(dplyr) ## for filtering and selecting rows
 library(plyr) ## for renmaing factors
 library(reshape2) ## for melting dataframe
@@ -169,7 +169,6 @@ prettyvenn <- venn.diagram(
   cat.default.pos = "text",
   #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
   cat.cex = 1, cat.fontfamily = "sans")
-dev.off()
 grid.draw(prettyvenn)
 
 candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
@@ -184,7 +183,6 @@ prettyvenn <- venn.diagram(
   cat.default.pos = "text",
   #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
   cat.cex = 1, cat.fontfamily = "sans")
-dev.off()
 grid.draw(prettyvenn)
 ```
 

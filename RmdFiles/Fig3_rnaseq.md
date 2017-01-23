@@ -16,11 +16,6 @@ library(ggplot2) ## for awesome plots!
 library(DESeq2) ## for gene expression analysis
 library(pheatmap) ## for awesome heatmaps
 library(edgeR)  ## for basic read counts status
-```
-
-    ## Warning: package 'edgeR' was built under R version 3.3.2
-
-``` r
 library(VennDiagram) ## for Venn Diagrams
 ```
 
@@ -522,13 +517,6 @@ prettyvenn <- venn.diagram(
   cat.default.pos = "text",
   #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
   cat.cex = 1, cat.fontfamily = "sans")
-dev.off()
-```
-
-    ## null device 
-    ##           1
-
-``` r
 grid.draw(prettyvenn)
 
 candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
@@ -543,15 +531,10 @@ prettyvenn <- venn.diagram(
   cat.default.pos = "text",
   #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
   cat.cex = 1, cat.fontfamily = "sans")
-dev.off()
-```
-
-    ## null device 
-    ##           1
-
-``` r
 grid.draw(prettyvenn)
 ```
+
+![](../figures/Fig3/venndiagram-1.png)
 
 Now let's look at a heat map of the data
 
