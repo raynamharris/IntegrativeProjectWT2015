@@ -518,6 +518,12 @@ prettyvenn <- venn.diagram(
   #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
   cat.cex = 1, cat.fontfamily = "sans")
 grid.draw(prettyvenn)
+```
+
+![](../figures/Fig3/venndiagram-1.png)
+
+``` r
+plot.new()
 
 candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
@@ -534,7 +540,7 @@ prettyvenn <- venn.diagram(
 grid.draw(prettyvenn)
 ```
 
-![](../figures/Fig3/venndiagram-1.png)
+![](../figures/Fig3/venndiagram-2.png)
 
 Now let's look at a heat map of the data
 

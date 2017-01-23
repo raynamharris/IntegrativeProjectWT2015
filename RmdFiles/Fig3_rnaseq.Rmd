@@ -171,6 +171,8 @@ prettyvenn <- venn.diagram(
   cat.cex = 1, cat.fontfamily = "sans")
 grid.draw(prettyvenn)
 
+plot.new()
+
 candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
 prettyvenn <- venn.diagram(
