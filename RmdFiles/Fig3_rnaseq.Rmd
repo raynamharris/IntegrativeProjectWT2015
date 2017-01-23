@@ -1,317 +1,226 @@
 ---
-title: "deseq2"
+title: "Figure 2: DESeq2 Data Analysis"
 author: "Rayna M Harris"
-date: "1/12/2017"
+date: "January 23, 2017"
 output:
   md_document:
     variant: markdown_github
-
 ---
 
 ## RNAseq gene expression analysis with DESeq2 
 
-```{r setup}
-library(dplyr)
-library(reshape2)
+This workflow was modified from the DESeq2 tutorial found at: https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf
 
+First I load a handful of packages for data wrangling, gene expression analysis, data visualization, and statistics.
+```{r setup, message=F}
+library(dplyr) ## for filtering and selecting rows
+library(plyr) ## for renmaing factors
+library(reshape2) ## for melting dataframe
+library(magrittr) ## to use the weird pipe
+library(gplots) ##for making awesome plots
+library(cowplot) ## for some easy to use themes
+library(ggplot2) ## for awesome plots!
+library(DESeq2) ## for gene expression analysis
+library(pheatmap) ## for awesome heatmaps
+library(edgeR)  ## for basic read counts status
+library(VennDiagram) ## for Venn Diagrams
+```
+
+Then, I set all path so that all the figures are saved in the specified subdirectory. 
+```{r figurepath, message=F}
 ## set output file for figures 
 knitr::opts_chunk$set(fig.path = '../figures/Fig3/')
 ```
 
+Now, I create data frames from three csv files
+- count: Contains counts for all transcripts generated from the program Kallisto. This data can be reproducibed from the file kallisto.Rmd
+- geneids: Contains the ensemble ids and gene names for all the transcripts in the counts data frame. This file will be used to convert transcipt counts to gene counts. This file was also created via kallisto.Rmd file
+- Traits: This file contains all the information I collected for each sample that was sequenced. Not all columns will be needed, so some are removed later. 
 
-```{r getdata}
-#run kallisto.Rmd to create your own interemediate files or read these files
+```{r getdata, message=F}
 count <- read.csv("../data/02_count.csv", row.names=1, check.names=FALSE )
 geneids <- read.csv("../data/02_geneids.csv")
+Traits <- read.csv("../data/02_JA16444samples.csv", sep=",", header = TRUE, stringsAsFactors=FALSE, na.string = "NA")
 ```
 
+Rather than analyze transcript level counts, I want to examine gene-level counts. In this next section, I do some data wrangling to tidy the data and summarize the counts for all transcripts belonging to the same gene. 
 
-```{r wrangledata}
-# merge count and gene id dataframes
-countbygene <- full_join(geneids, count)
-str(countbygene)
+```{r countbygene}
+countbygene <- full_join(geneids, count) # merge count and gene id dataframes
+countbygene <- countbygene[-c(1:6,8:12)] # remove unnecesary columns (aka, keep gene name and counts for samples)
+countbygene <- melt(countbygene, id=c("gene")) # lenghten 
+countbygene$variable <- gsub('.{4}$', '', countbygene$variable) # string split to remove last for characters aka "_S##"
+countbygene$variable <- gsub("\\_", "-", countbygene$variable) #replace _ with - in name
+countbygene  <- dcast(countbygene, gene ~ variable, value.var= "value", fun.aggregate=mean) # widen by sum
+row.names(countbygene) <- countbygene$gene # make gene the row name 
+countbygene[1] <- NULL # now remove the gene name from the df
+countbygene <- round(countbygene) # round all value to nearest 1s place
 head(countbygene)
-
-## remove unnecesary columns (aka, keep gene name and counts for samples)
-countbygene <- countbygene[-c(1:6,8:12)]  
-
-## lenghten 
-countbygene <- melt(countbygene, id=c("gene"))
-head(countbygene)
-
-## string split to remove last for characters aka "_S##"
-countbygene$variable <- gsub('.{4}$', '', countbygene$variable)
-head(countbygene)
-
-#replace _ with - in name
-countbygene$variable <- gsub("\\_", "-", countbygene$variable)
-head(countbygene)
-
-
-
-#then widen by sum
-countbygene  <- dcast(countbygene, gene ~ variable, value.var= "value", fun.aggregate=mean)
-
-## make gene the row name 
-row.names(countbygene) <- countbygene$gene
-countbygene[1] <- NULL
-
-## round all value to nearest 1s place
-countbygene <- round(countbygene)
 summary(countbygene)
 ```
 
-```{r 02d_JA16444byregion}
-library(ggdendro) ## for dendrograms!!
-library(magrittr) ## to use the weird pipe
-library(gplots) ##for making awesome plots
-library(cowplot) ## for some easy to use themes
-library(tidyr)
-library(dplyr) ## for filtering and selecting rows
-library(reshape2) #@ for melting dataframe
-library(plyr) ## for renmaing factors
-library(ggplot2) ## for awesome plots!
+In this next section, I tidy the trait data for each sample so that I can calculate differential gene expression for the traits of interest. I also remove some samples for reasons described within the code blocks.
 
-## start after 02c_tpmbygene
-
-Traits <- read.csv("../data/02_JA16444samples.csv", sep=",", header = TRUE, stringsAsFactors=FALSE, na.string = "NA")
+```{r traits}
 rownames(Traits) <- Traits$RNAseqID    # set $genoAPAsessionInd as rownames
-names(Traits)
+Traits <- Traits[c(1,3,5:6,10:11)]  #keeping informative volumns
+Traits <- Traits %>% dplyr::filter(!grepl("100|101|147-|148-|147D-CA1-1|145B-CA3-1", RNAseqID))  # remove 100, 100, 147, and 148 animals because we aren't interested in these homecage animals that were not trained in the active place avoidance experiement. Remove mice 147D_CA1_1 and 145B_CA3_1 because these were bad samples with no reads
+Traits$APAconflict <- as.factor(paste(Traits$APA, Traits$Conflict, sep="_")) # adding combinatorial traits columns
+Traits$ID <- gsub("[[:punct:]]", "", Traits$Mouse) #make a column that thas id without the dash
+row.names(Traits) <- Traits$RNAseqID # make gene the row name 
+Traits$APA <- NULL ## delete old APA column
+names(Traits)[names(Traits)=="APAconflict"] <- "APA" #rename APAconflict APA (for simplicity)
 
-#keeping informative volumns
-Traits <- Traits[c(1,3,5:6,10:11)] 
-tail(Traits)
-str(Traits)
-
-## remove 100 and 100 animals because they aren't APA trained
-## remove 147 and 148 because they are home cage animals
-## remove mice 147D_CA1_1 and 145B_CA3_1 because these were bad samples with no reads
-
-Traits <- Traits %>% dplyr::filter(!grepl("100|101|147-|148-|147D-CA1-1|145B-CA3-1|147-|148-", RNAseqID)) 
-
-## adding combinatorial traits
-Traits$APAconflict <- as.factor(paste(Traits$APA, Traits$Conflict, sep="_")) 
-summary(Traits)
-
-#make a column that thas id without the dash
-Traits$ID <- gsub("[[:punct:]]", "", Traits$Mouse)
-
-
-## make gene the row name then round all value to nearest 1s place
-row.names(Traits) <- Traits$RNAseqID
-
-## delete old APA column. rename APAconflict APA (for simplicity)
-Traits$APA <- NULL
-names(Traits)[names(Traits)=="APAconflict"] <- "APA"
-
-
-## rename factors
+# rename factors & group all yoked animals into 1 group
 Traits$APA <- revalue(Traits$APA, c("Trained_Conflict" = "Conflict")) 
 Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Same")) 
 Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Yoked")) 
 Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Yoked")) 
+head(Traits)
 ```
 
-```{r 02d_JA16444byregion_continuation}
-## continue from 02d_JA16444byregion
+Now, we are ready to calculate differential gene expression using the DESeq package. For simplicity, I will use the standard nameing of "countData" and "colData" for the gene counts and gene information, respectively.
 
-library("DESeq2")
-library("ggplot2")
-library("dplyr")
-library("plyr")
-library("magrittr")
+```{r prepforDESeq2}
+countData <- countbygene #set the countdata to be the countbygene df
+colData <- Traits %>% arrange(RNAseqID) #set the coldata to be the countbygene df
 
-
-# 1.3.3 Count matrix input ----
-countData <- countbygene 
-colData <- Traits %>%
-  arrange(RNAseqID)
-head(countData)
-head(colData)
-
-
+## colData and countData must contain the exact same sample. I'll use the next three lines to make that happen
 savecols <- as.character(colData$RNAseqID) #select the sample name column that corresponds to row names
 savecols <- as.vector(savecols) # make it a vector
 countData <- countData %>% dplyr::select(one_of(savecols)) # select just the columns that match the samples in colData
-## remove counts with count value  < 2
-countData[countData < 2] <- 0
 
 
-# factors must be factors
+# colData must be factors
 cols = c(1:4,7)
 colData[,cols] %<>% lapply(function(x) as.factor(as.character(x)))
 colData$Slice <- as.factor(colData$Slice)
 str(colData)
+```
 
-## create DESeq object
+Now, we are create differential gene expression object and remove genes with 0 counts. Before filtering, there are 22,485 genes in the object. After filtering genes with 0 counts, we will be left with 17,746 genes that are expressed in a least 1 sample. Then, we can caluate the size factors, estimate gene dispersion estimates, fit a model, test for outliers, and remove outliers.
+
+```{r DESeq2}
+## create DESeq object using the factors Punch and APA
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ Punch + APA + Punch*APA)
-dds
 
-#class: DESeqDataSet 
-#dim: 22485 45 
-#metadata(1): version
-#assays(1): counts
-#rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
-#rowData names(0):
-#  colnames(42): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
-#colData names(7): Mouse Conflict ... APAconflict ID
-
-
-## 1.3.6 Pre-filtering
-
-dds <- dds[ rowSums(counts(dds)) > 1, ]
-
-## 1.3.7 Note on factor levels
+## DESeq2 1.3.7 specify the factor levels
 dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1"))
-#dds$APA <- factor(dds$APA, levels=c("Yoked", "Same", "Conflict"))
+dds$APA <- factor(dds$APA, levels=c("Yoked", "Same", "Conflict"))
 
 
-## 1.4  Differential expression analysi
+dds # view the DESeq object - note numnber of genes
 
+## DESeq2 1.3.6 Pre-filtering genes with 0 counts
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+
+dds # view the DESeq object - note numnber of genes
+
+## DESeq2 1.4  Differential expression analysi
 dds <- DESeq(dds)
-
-# general deseq
-res <- results(dds, independentFiltering = F)
-resOrdered <- res[order(res$padj),]
-summary(res)
-sum(res$padj < 0.1, na.rm = TRUE) #14
-res05 <- results(dds, alpha=0.05)
-summary(res05) #23
-sum(res05$padj < 0.05, na.rm=TRUE)
-
-## 1.5 exploring and reporting results
-
-plotMA(res, main="DESeq2")
-resMLE <- results(dds)
-head(resMLE, 4)
-
-
-## 1.5 more info
-mcols(res)$description
 
 ## for variance stablized gene expression and log transformed data
 rld <- rlog(dds, blind=FALSE)
 vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
 vsd.fast <- vst(dds, blind=FALSE)
-head(assay(rld), 3)
+```
 
-#####save data space!! ####
-#save.image("~/Github/BehavEphyRNAseq/bin/deseq.Rdata")
+Now, we can calculate the number of differentiall expressed genes for each contrast. See the function in "resvalsfunction.R" for details.
 
-## DEG by contrasts
+```{r DESeq2contrasts}
+source("resvalsfunction.R")
+contrast1 <- resvals(contrastvector = c("Punch", "DG", "CA1"), mypadj = 0.1)
+contrast2 <- resvals(contrastvector = c("Punch", "CA3", "CA1"), mypadj = 0.1)
+contrast3 <- resvals(contrastvector = c("Punch", "DG", "CA3"), mypadj = 0.1)
+contrast4 <- resvals(contrastvector = c("APA", "Yoked", "Same"), mypadj = 0.1)
+contrast5 <- resvals(contrastvector = c("APA", "Yoked", "Conflict"), mypadj = 0.1)
+contrast6 <- resvals(contrastvector = c("APA", "Same", "Conflict"), mypadj = 0.1)
 
-resAPASC <- results(dds, contrast = c("APA", "Same", "Conflict"), independentFiltering = F) 
-sum(resAPASC$padj < 0.1, na.rm = TRUE) #0
-resAPAYS <- results(dds, contrast = c("APA", "Yoked", "Same"), independentFiltering = F)
-sum(resAPAYS$padj < 0.1, na.rm = TRUE) #103
-resAPAYC <- results(dds, contrast = c("APA", "Yoked", "Conflict"), independentFiltering = F)
-sum(resAPAYC$padj < 0.1, na.rm = TRUE) #58
+#create a new DF with the gene counts
+## note: contrast1 had 0 differentially expressed genes, so it is not included 
+rldpadjs <- assay(rld)
+rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5)
+rldpadjs <- as.data.frame(rldpadjs)
+rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
+head(rldpadjs)
+```
 
+Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
 
-resPunchCA1DG <- results(dds, contrast = c("Punch", "CA1", "DG"), independentFiltering = F)
-sum(resPunchCA1DG$padj < 0.1, na.rm = TRUE) #2872
-resPunchCA1CA3 <- results(dds, contrast = c("Punch", "CA1", "CA3"), independentFiltering = F)
-sum(resPunchCA1CA3$padj < 0.1, na.rm = TRUE) #2078
-resPunchCA3DG <- results(dds, contrast = c("Punch", "CA3", "DG"), independentFiltering = F)
-sum(resPunchCA3DG$padj < 0.1, na.rm = TRUE) #3833
+```{r venndiagram}
+venn1 <- row.names(rldpadjs[rldpadjs[1] <0.1 & !is.na(rldpadjs[1]),])
+venn2 <- row.names(rldpadjs[rldpadjs[2] <0.1 & !is.na(rldpadjs[2]),])
+venn3 <- row.names(rldpadjs[rldpadjs[3] <0.1 & !is.na(rldpadjs[3]),])
+venn4 <- row.names(rldpadjs[rldpadjs[4] <0.1 & !is.na(rldpadjs[4]),])
+venn5 <- row.names(rldpadjs[rldpadjs[5] <0.1 & !is.na(rldpadjs[5]),])
 
-##  now bind the table of 
+## check order for correctness
+candidates <- list("DG vs CA1" = venn1, "Yoked vs Same" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
-valsAPAYS <- cbind(resAPAYS$pvalue, resAPAYS$padj) 
-valsAPAYC <- cbind(resAPAYC$pvalue, resAPAYC$padj) 
-valsPunchCA1DG <- cbind(resPunchCA1DG$pvalue, resPunchCA1DG$padj) 
-valsPunchCA1CA3 <- cbind(resPunchCA1CA3$pvalue, resPunchCA1CA3$padj) 
-valsPunchCA3DG <- cbind(resPunchCA3DG$pvalue, resPunchCA3DG$padj) 
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "white", "white", "white", "white"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+dev.off()
+grid.draw(prettyvenn)
 
+candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
-colnames(valsAPAYS)=c("pval.APAYS", "padj.APAYS")
-colnames(valsAPAYC)=c("pval.APAYC", "padj.APAYC")
-colnames(valsPunchCA1DG)=c("pval.CA1DG", "padj.CA1DG")
-colnames(valsPunchCA1CA3)=c("pval.CA1CA3", "padj.CA1CA3")
-colnames(valsPunchCA3DG)=c("pval.CA3DG", "padj.CA3DG")
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "white", "white", "white"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+dev.off()
+grid.draw(prettyvenn)
+```
 
+Now let's look at a heat map of the data
 
-rldd <- assay(rld)
-rldpvals <- cbind(rldd, valsAPAYS, valsAPAYC, valsPunchCA1DG, valsPunchCA1CA3, valsPunchCA3DG)
-
-head(rldpvals)
-dim(rldpvals)
-#14347    56
-table(complete.cases(rldpvals))
-#   TRUE 
-#  17422 
-
-### venn diagram
-
-
-
-# 2.2.1 Heatmap of the count matrix
-#install.packages("pheatmap")
-library("pheatmap")
-nt <- normTransform(dds) # defaults to log2(x+1) 
-
-## making pheatmaps annoations
-df <- as.data.frame(colData(dds)[,c("Punch","APA")])
-str(df)
-
-
+```{r heatmap}
+## set coloring for heat map anntations
+df <- as.data.frame(colData(dds)[,c("Punch","APA")]) ## matrix to df
 ann_colors = list(
   APA =  c(Yoked = (values=c("#8073ac")), Same = (values=c("#e08214")), Conflict = (values=c("#7f3b08"))),
   Punch =  c(DG = (values=c("#006837")),  CA3 = (values=c("#41ab5d")), 
              CA1 = (values=c("#d9f0a3"))))
 
-
-#### top variance genes des by brain region
-DEGes <- as.data.frame(rldpvals) # convert matrix to dataframe
+DEGes <- assay(rld)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5)
+DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-#DEGes$padjmin <- with(DEGes, pmin(padj.APATY, padj.CA1DG, padj.CA1CA3, padj.CA3DG)) # put the min pvalue in a new column
-DEGes$padjmin <- with(DEGes, pmin(padj.APAYS, padj.APAYC, padj.CA1DG, padj.CA1CA3, padj.CA3DG)) # put the min pvalue in a new column
-DEGes <- DEGes %>% filter(padjmin < 0.000001)
-rownames(DEGes) <- DEGes$rownames
-#drop.cols <- c("padj.APATY", "padj.CA1DG" , "padj.CA1CA3" , "padj.CA3DG" , "pval.APATY", "pval.CA1DG" , "pval.CA1CA3" , "pval.CA3DG" , "rownames", "padjmin")
-drop.cols <- c("padj.APAYS", "padj.APAYC","padj.CA1DG" , "padj.CA1CA3" , "padj.CA3DG" , "pval.APAYS","pval.APAYC", "pval.CA1DG" , "pval.CA1CA3" , "pval.CA3DG" , "rownames", "padjmin")
-
-DEGes <- DEGes %>% select(-one_of(drop.cols))
-DEGes <- as.matrix(DEGes)
-DEGes <- DEGes - rowMeans(DEGes)
-
-
-pheatmap(DEGes, show_colnames=F, show_rownames = F,
-         annotation_col=df, annotation_colors = ann_colors,
-         fontsize = 12, fontsize_row = 10, 
-         #cellwidth=10, cellheight=10,
-         #width = 10,
-         border_color = "grey60"
-)
-
-#### top variance genes des by brain region
-DEGes <- as.data.frame(rldpvals) # convert matrix to dataframe
-DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-#DEGes$padjmin <- with(DEGes, pmin(padj.APATY, padj.CA1DG, padj.CA1CA3, padj.CA3DG)) # put the min pvalue in a new column
-DEGes$padjmin <- with(DEGes, pmin(padj.APAYS, padj.APAYC)) # put the min pvalue in a new column
+DEGes$padjmin <- with(DEGes, pmin(padjPunchDGCA1, padjPunchCA3CA1, padjPunchDGCA3, padjAPAYokedSame, padjAPAYokedConflict)) # create new col with min padj
 DEGes <- DEGes %>% filter(padjmin < 0.01)
 rownames(DEGes) <- DEGes$rownames
-#drop.cols <- c("padj.APATY", "padj.CA1DG" , "padj.CA1CA3" , "padj.CA3DG" , "pval.APATY", "pval.CA1DG" , "pval.CA1CA3" , "pval.CA3DG" , "rownames", "padjmin")
-drop.cols <- c("padj.APAYS", "padj.APAYC","padj.CA1DG" , "padj.CA1CA3" , "padj.CA3DG" , "pval.APAYS","pval.APAYC", "pval.CA1DG" , "pval.CA1CA3" , "pval.CA3DG" , "rownames", "padjmin")
-
-DEGes <- DEGes %>% select(-one_of(drop.cols))
+drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
+DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
 DEGes <- as.matrix(DEGes)
 DEGes <- DEGes - rowMeans(DEGes)
-
+head(DEGes)
 
 pheatmap(DEGes, show_colnames=F, show_rownames = F,
          annotation_col=df, annotation_colors = ann_colors,
          fontsize = 12, fontsize_row = 10, 
-         #cellwidth=10, cellheight=10,
-         #width = 10,
          border_color = "grey60"
 )
+```
 
+Now lets look at a principle component analysis of the data
 
-## regular pca
-
+```{r pca}
 plotPCA(rld, intgroup=c("APA", "Punch"), returnData=TRUE)
 pcadata <- plotPCA(rld, intgroup=c("APA", "Punch"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -327,10 +236,14 @@ ggplot(pcadata, aes(PC1, PC2, color=Punch, shape=APA)) +
         axis.title.y = element_text(size=20),
         legend.title = element_text(size=18),
         legend.text = element_text(size=18))
+```
 
+Now for some basic stats about the read and gene counts
+
+```{r stats}
 
 ## stats
-library(edgeR)
+
 counts <- countData
 dim( counts )
 colSums( counts ) / 1e06  # in millions of reads
