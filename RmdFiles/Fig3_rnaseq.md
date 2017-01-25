@@ -495,6 +495,56 @@ head(rldpadjs)
     ## 0610010F05Rik                1                    1
     ## 0610010K14Rik                1                    1
 
+Here, the goal is the analyze the distribution of pvalues to see if they are randomly distributed or if that is a tendency towards and increase or decrease of low pvalues. There, I'm showing the pval and adjusted pvale (padj) for all for two-way comparision.
+
+``` r
+head(rldpadjs)
+```
+
+    ##               padjPunchDGCA1 padjPunchCA3CA1 padjPunchDGCA3
+    ## 0610007P14Rik      0.9988301       1.0000000      1.0000000
+    ## 0610009B22Rik      0.9058675       0.5192173      0.1194886
+    ## 0610009L18Rik      0.6977672       0.6926354      0.9805026
+    ## 0610009O20Rik      0.7262958       0.9875592      0.4348464
+    ## 0610010F05Rik      0.7090649       0.1991185      0.4357406
+    ## 0610010K14Rik      0.9988301       0.5327519      0.2821504
+    ##               padjAPAYokedSame padjAPAYokedConflict
+    ## 0610007P14Rik                1                    1
+    ## 0610009B22Rik                1                    1
+    ## 0610009L18Rik                1                    1
+    ## 0610009O20Rik                1                    1
+    ## 0610010F05Rik                1                    1
+    ## 0610010K14Rik                1                    1
+
+``` r
+rldpadjslong <- rldpadjs
+rldpadjslong$gene <- row.names(rldpadjslong) 
+rldpadjslong <- melt(rldpadjslong, id=c("gene"))
+head(rldpadjslong)
+```
+
+    ##            gene       variable     value
+    ## 1 0610007P14Rik padjPunchDGCA1 0.9988301
+    ## 2 0610009B22Rik padjPunchDGCA1 0.9058675
+    ## 3 0610009L18Rik padjPunchDGCA1 0.6977672
+    ## 4 0610009O20Rik padjPunchDGCA1 0.7262958
+    ## 5 0610010F05Rik padjPunchDGCA1 0.7090649
+    ## 6 0610010K14Rik padjPunchDGCA1 0.9988301
+
+``` r
+qplot(value, data=rldpadjslong, geom="histogram") + 
+  facet_grid( ~ variable) +
+  scale_y_log10()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 85 rows containing non-finite values (stat_bin).
+
+    ## Warning: Stacking not well defined when ymin != 0
+
+![](../figures/Fig3/pvaluedistribution-1.png)
+
 Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
 
 ``` r

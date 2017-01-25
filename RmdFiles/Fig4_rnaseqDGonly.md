@@ -23,7 +23,7 @@ Then, I set all path so that all the figures are saved in the specified subdirec
 
 ``` r
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/Fig3/')
+knitr::opts_chunk$set(fig.path = '../figures/FigDGonly/')
 ```
 
 Now, I create data frames from three csv files - count: Contains counts for all transcripts generated from the program Kallisto. This data can be reproducibed from the file kallisto.Rmd - geneids: Contains the ensemble ids and gene names for all the transcripts in the counts data frame. This file will be used to convert transcipt counts to gene counts. This file was also created via kallisto.Rmd file - Traits: This file contains all the information I collected for each sample that was sequenced. Not all columns will be needed, so some are removed later.
@@ -495,7 +495,7 @@ prettyvenn <- venn.diagram(
 grid.draw(prettyvenn)
 ```
 
-![](../figures/Fig3/venndiagram-1.png)
+![](../figures/FigDGonly/venndiagram-1.png)
 
 Now let's look at a heat map of the data
 
@@ -556,7 +556,7 @@ pheatmap(DEGes, show_colnames=T, show_rownames = T,
 )
 ```
 
-![](../figures/Fig3/heatmap-1.png)
+![](../figures/FigDGonly/heatmap-1.png)
 
 Now lets look at a principle component analysis of the data
 
@@ -601,7 +601,7 @@ ggplot(pcadata, aes(PC1, PC2, shape=APA)) +
 
     ## Too few points to calculate an ellipse
 
-![](../figures/Fig3/pca-1.png)
+![](../figures/FigDGonly/pca-1.png)
 
 Now for some basic stats about the read and gene counts
 
@@ -649,4 +649,4 @@ ggplot(rowsum, aes(x=millioncounts)) +
   scale_y_continuous(name = "Number of Samples")
 ```
 
-![](../figures/Fig3/stats-1.png)
+![](../figures/FigDGonly/stats-1.png)

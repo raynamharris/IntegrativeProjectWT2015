@@ -29,7 +29,7 @@ library(VennDiagram) ## for Venn Diagrams
 Then, I set all path so that all the figures are saved in the specified subdirectory. 
 ```{r figurepath, message=F}
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/Fig3/')
+knitr::opts_chunk$set(fig.path = '../figures/FigDGonly/')
 ```
 
 Now, I create data frames from three csv files

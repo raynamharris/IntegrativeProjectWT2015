@@ -1,5 +1,5 @@
 ---
-title: "Figure 2: DESeq2 Data Analysis"
+title: "Figure 3: DESeq2 Data Analysis"
 author: "Rayna M Harris"
 date: "January 23, 2017"
 output:
@@ -145,6 +145,20 @@ rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast
 rldpadjs <- as.data.frame(rldpadjs)
 rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
 head(rldpadjs)
+```
+
+
+Here, the goal is the analyze the distribution of pvalues to see if they are randomly distributed or if that is a tendency towards and increase or decrease of low pvalues. There, I'm showing the pval and adjusted pvale (padj) for all for two-way comparision. 
+
+```{r pvaluedistribution}
+head(rldpadjs)
+rldpadjslong <- rldpadjs
+rldpadjslong$gene <- row.names(rldpadjslong) 
+rldpadjslong <- melt(rldpadjslong, id=c("gene"))
+head(rldpadjslong)
+qplot(value, data=rldpadjslong, geom="histogram") + 
+  facet_grid( ~ variable) +
+  scale_y_log10()
 ```
 
 Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
