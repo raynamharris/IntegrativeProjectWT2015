@@ -5,7 +5,7 @@ The R markdown files to reproducible run the code are saved in [the  RmdFiles su
 Click "summary" to view a markdown file with documention and figure. 
 Click "Rmd file" to view the bioinformatic workflow.
 
-- Figure 1 - images of the experimental paradigm ([summary](.RmdFiles/Fig1-illustrations.md), made with Adobe Illustrator)
-- Figure 2 - analysis of the leanring and memory behavioral data ([summary](.RmdFiles/Fig2-behavior.md), [Rmd file](.RmdFiles/Fig2-behavior.Rmd)
-- Figure 3 - anlaysis of all hippocampal transcriptomic data ([summary](.RmdFiles/Fig3_rnaseq.md), [Rmd file]((.RmdFiles/Fig3_rnaseq.Rmd)))
-- Figure 4 - anlaysis of just the DG hippocampal transcriptomic data ([summary](.RmdFiles/Fig4_rnaseqDGonly.md), [Rmd file](.RmdFiles/Fig4_rnaseqDGonly.Rmd))
+- Figure 1 - images of the experimental paradigm ([summary](./RmdFiles/Fig1-illustrations.md), made with Adobe Illustrator)
+- Figure 2 - analysis of the leanring and memory behavioral data ([summary](./RmdFiles/Fig2-behavior.md), [Rmd file](./RmdFiles/Fig2-behavior.Rmd)
+- Figure 3 - anlaysis of all hippocampal transcriptomic data ([summary](./RmdFiles/Fig3_rnaseq.md), [Rmd file]((./RmdFiles/Fig3_rnaseq.Rmd)))
+- Figure 4 - anlaysis of just the DG hippocampal transcriptomic data ([summary](./RmdFiles/Fig4_rnaseqDGonly.md), [Rmd file](./RmdFiles/Fig4_rnaseqDGonly.Rmd))
