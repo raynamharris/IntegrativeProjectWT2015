@@ -6,8 +6,8 @@ I illustrate the methods section, I created the following images in Adobe Illust
 
 This shows the active place avoidance paradigm.
 
-![paradigm](.figures/methods_behavior.png "paradigm")
+![paradigm](./figures/methods_behavior.png "paradigm")
 
 This shows the size location of the hippomcapal tissue punches.
 
-![paradigm](.figures/allenslicephoto-01.tif "allen brain and slice photo")
+![paradigm](./figures/allenslicephoto-01.png "allen brain and slice photo")
