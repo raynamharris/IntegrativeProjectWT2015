@@ -3,7 +3,7 @@ This repo contains the experiment that I like to call "Integrative Wild Type 201
 
 ## Workflow
 
-The R markdown files to reproducible run the code are saved in [the  RmdFiles subdirectory](./RmdFiles). Rather than have a single Rmd file for the entire project, the workflow is broken down into pieces. The workflows to recreated the figures are specified by the figure name. 
+The R markdown files to reproducible run the code are saved in the  RmdFiles subdirectory. Rather than have a single Rmd file for the entire project, the workflow is broken down into pieces. The workflows to recreated the figures are specified by the figure name. 
 
 Click "summary" to view a markdown file with documention and figure. 
 Click "Rmd file" to view the bioinformatic workflow.
