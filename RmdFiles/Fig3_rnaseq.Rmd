@@ -159,6 +159,13 @@ head(rldpadjslong)
 qplot(value, data=rldpadjslong, geom="histogram") + 
   facet_grid( ~ variable) +
   scale_y_log10()
+
+ggplot(rldpadjslong, aes(x=value)) + geom_density()
+ggplot(rldpadjslong, aes(x=value, fill=variable)) +
+  geom_density(alpha=.3) 
+ggplot(rldpadjslong, aes(x=value, fill=variable)) +
+  geom_density(alpha=.3) +
+  scale_y_log10()
 ```
 
 Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
@@ -226,7 +233,7 @@ DEGes <- DEGes - rowMeans(DEGes)
 head(DEGes)
 
 pheatmap(DEGes, show_colnames=F, show_rownames = F,
-         annotation_col=df, annotation_colors = ann_colors,
+         #annotation_col=df, annotation_colors = ann_colors,
          fontsize = 12, fontsize_row = 10, 
          border_color = "grey60"
 )

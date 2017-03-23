@@ -29,7 +29,7 @@ library(VennDiagram) ## for Venn Diagrams
 Then, I set all path so that all the figures are saved in the specified subdirectory. 
 ```{r figurepath, message=F}
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/FigDGonly/')
+knitr::opts_chunk$set(fig.path = '../figures/Fig4/')
 ```
 
 Now, I create data frames from three csv files
@@ -107,15 +107,12 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               design = ~ APA)
 
 ## DESeq2 1.3.7 specify the factor levels
-#dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1"))
 dds$APA <- factor(dds$APA, levels=c("Yoked", "Same", "Conflict"))
 
-
 dds # view the DESeq object - note numnber of genes
-
+head(dds)
 ## DESeq2 1.3.6 Pre-filtering genes with 0 counts
 dds <- dds[ rowSums(counts(dds)) > 1, ] 
-
 dds # view the DESeq object - note numnber of genes
 
 ## DESeq2 1.4  Differential expression analysi
@@ -123,8 +120,6 @@ dds <- DESeq(dds)
 
 ## for variance stablized gene expression and log transformed data
 rld <- rlog(dds, blind=FALSE)
-#vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
-#vsd.fast <- vst(dds, blind=FALSE)
 ```
 
 Now, we can calculate the number of differentiall expressed genes for each contrast. See the function in "resvalsfunction.R" for details.
@@ -144,6 +139,26 @@ rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
 head(rldpadjs)
 ```
 
+Now, let's look at the distribution of pvalues with a histogram
+
+```{r pvaluedistribution}
+head(rldpadjs)
+rldpadjslong <- rldpadjs
+rldpadjslong$gene <- row.names(rldpadjslong) 
+rldpadjslong <- melt(rldpadjslong, id=c("gene"))
+head(rldpadjslong)
+qplot(value, data=rldpadjslong, geom="histogram") + 
+  facet_grid( ~ variable) +
+  scale_y_log10()
+
+
+ggplot(rldpadjslong, aes(x=value)) + geom_density()
+ggplot(rldpadjslong, aes(x=value, fill=variable)) +
+  geom_density(alpha=.3) 
+
+```
+
+
 Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
 
 ```{r venndiagram}
@@ -153,8 +168,6 @@ venn3 <- row.names(rldpadjs[rldpadjs[3] <0.1 & !is.na(rldpadjs[3]),])
 
 ## check order for correctness
 candidates <- list("Yoked vs Same" = venn1, "Yoked vs Conflict" = venn2,"Same vs conflict" = venn3)
-
-
 
 prettyvenn <- venn.diagram(
   scaled=T,
@@ -191,8 +204,8 @@ DEGes <- DEGes - rowMeans(DEGes)
 head(DEGes)
 
 pheatmap(DEGes, show_colnames=T, show_rownames = T,
-         #annotation_col=df, annotation_colors = ann_colors,
-         fontsize = 12, fontsize_row = 10, 
+         annotation_col=df, annotation_colors = ann_colors,
+         fontsize = 4, fontsize_row = 4, 
          border_color = "grey60"
 )
 ```

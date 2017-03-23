@@ -23,7 +23,7 @@ Then, I set all path so that all the figures are saved in the specified subdirec
 
 ``` r
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/FigDGonly/')
+knitr::opts_chunk$set(fig.path = '../figures/Fig4/')
 ```
 
 Now, I create data frames from three csv files - count: Contains counts for all transcripts generated from the program Kallisto. This data can be reproducibed from the file kallisto.Rmd - geneids: Contains the ensemble ids and gene names for all the transcripts in the counts data frame. This file will be used to convert transcipt counts to gene counts. This file was also created via kallisto.Rmd file - Traits: This file contains all the information I collected for each sample that was sequenced. Not all columns will be needed, so some are removed later.
@@ -470,6 +470,49 @@ head(rldpadjs)
     ## 0610010F05Rik                1                    1                   1
     ## 0610010K14Rik                1                    1                   1
 
+Now, let's look at the distribution of pvalues with a histogram
+
+``` r
+head(rldpadjs)
+```
+
+    ##               padjAPAYokedSame padjAPAYokedConflict padjAPASameConflict
+    ## 0610007P14Rik                1                    1                   1
+    ## 0610009B22Rik                1                    1                   1
+    ## 0610009L18Rik                1                    1                   1
+    ## 0610009O20Rik                1                    1                   1
+    ## 0610010F05Rik                1                    1                   1
+    ## 0610010K14Rik                1                    1                   1
+
+``` r
+rldpadjslong <- rldpadjs
+rldpadjslong$gene <- row.names(rldpadjslong) 
+rldpadjslong <- melt(rldpadjslong, id=c("gene"))
+head(rldpadjslong)
+```
+
+    ##            gene         variable value
+    ## 1 0610007P14Rik padjAPAYokedSame     1
+    ## 2 0610009B22Rik padjAPAYokedSame     1
+    ## 3 0610009L18Rik padjAPAYokedSame     1
+    ## 4 0610009O20Rik padjAPAYokedSame     1
+    ## 5 0610010F05Rik padjAPAYokedSame     1
+    ## 6 0610010K14Rik padjAPAYokedSame     1
+
+``` r
+qplot(value, data=rldpadjslong, geom="histogram") + 
+  facet_grid( ~ variable) +
+  scale_y_log10()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 360 rows containing non-finite values (stat_bin).
+
+    ## Warning: Stacking not well defined when ymin != 0
+
+![](../figures/Fig4/pvaluedistribution-1.png)
+
 Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
 
 ``` r
@@ -495,7 +538,7 @@ prettyvenn <- venn.diagram(
 grid.draw(prettyvenn)
 ```
 
-![](../figures/FigDGonly/venndiagram-1.png)
+![](../figures/Fig4/venndiagram-1.png)
 
 Now let's look at a heat map of the data
 
@@ -551,12 +594,12 @@ head(DEGes)
 ``` r
 pheatmap(DEGes, show_colnames=T, show_rownames = T,
          #annotation_col=df, annotation_colors = ann_colors,
-         fontsize = 12, fontsize_row = 10, 
+         fontsize = 4, fontsize_row = 4, 
          border_color = "grey60"
 )
 ```
 
-![](../figures/FigDGonly/heatmap-1.png)
+![](../figures/Fig4/heatmap-1.png)
 
 Now lets look at a principle component analysis of the data
 
@@ -601,7 +644,7 @@ ggplot(pcadata, aes(PC1, PC2, shape=APA)) +
 
     ## Too few points to calculate an ellipse
 
-![](../figures/FigDGonly/pca-1.png)
+![](../figures/Fig4/pca-1.png)
 
 Now for some basic stats about the read and gene counts
 
@@ -649,4 +692,4 @@ ggplot(rowsum, aes(x=millioncounts)) +
   scale_y_continuous(name = "Number of Samples")
 ```
 
-![](../figures/FigDGonly/stats-1.png)
+![](../figures/Fig4/stats-1.png)

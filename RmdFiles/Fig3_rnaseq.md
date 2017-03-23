@@ -545,6 +545,33 @@ qplot(value, data=rldpadjslong, geom="histogram") +
 
 ![](../figures/Fig3/pvaluedistribution-1.png)
 
+``` r
+ggplot(rldpadjslong, aes(x=value)) + geom_density()
+```
+
+    ## Warning: Removed 85 rows containing non-finite values (stat_density).
+
+![](../figures/Fig3/pvaluedistribution-2.png)
+
+``` r
+ggplot(rldpadjslong, aes(x=value, fill=variable)) +
+  geom_density(alpha=.3) 
+```
+
+    ## Warning: Removed 85 rows containing non-finite values (stat_density).
+
+![](../figures/Fig3/pvaluedistribution-3.png)
+
+``` r
+ggplot(rldpadjslong, aes(x=value, fill=variable)) +
+  geom_density(alpha=.3) +
+  scale_y_log10()
+```
+
+    ## Warning: Removed 85 rows containing non-finite values (stat_density).
+
+![](../figures/Fig3/pvaluedistribution-4.png)
+
 Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
 
 ``` r
@@ -682,7 +709,7 @@ head(DEGes)
 
 ``` r
 pheatmap(DEGes, show_colnames=F, show_rownames = F,
-         annotation_col=df, annotation_colors = ann_colors,
+         #annotation_col=df, annotation_colors = ann_colors,
          fontsize = 12, fontsize_row = 10, 
          border_color = "grey60"
 )

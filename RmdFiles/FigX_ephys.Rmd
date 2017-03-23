@@ -1,0 +1,91 @@
+---
+title: "Electrophysiology"
+author: "Rayna M Harris"
+date: "March 23, 2017"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r setup, message=F}
+## load libraries 
+library(ggplot2) ## for awesome plots!
+library(cowplot) ## for some easy to use themes
+library(tidyr) ## for respahing data
+library(plyr) ## for renmaing factors
+library(dplyr) ## for filtering and selecting rows
+library(reshape)  ## widen a
+library(car) ## for statistics
+
+## load functions 
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/ephys/')
+```
+
+```{r data,  message=F}
+## read summarized ephys data and relevel factors
+ephys <- read.csv("../data/03_ephys.csv", header = T)
+ephys$Group <- factor(ephys$Group, levels = c("control", "consistent", "conflict"))
+summary(ephys)
+
+ephyslong <- melt(ephys)
+```
+
+
+## the data
+```{r dataviz}
+ephys %>%
+  ggplot(aes(x=Group, y=PTP_3_10, color=Group)) +  
+  geom_boxplot() + theme(legend.position="none")
+
+ephys %>%
+  ggplot(aes(x=Group, y=EarlyPotentiation_11_20, color=Group)) +  
+  geom_boxplot() + theme(legend.position="none")
+
+ephys %>%
+  ggplot(aes(x=Group, y=LatePotentiation_26_end, color=Group)) +  
+  geom_boxplot() + theme(legend.position="none")
+
+ephys %>%
+  ggplot(aes(x=Group, y=MaxfEPSP, color=Group)) +  
+  geom_boxplot() + theme(legend.position="none")
+
+ephyslong %>%
+  ggplot(aes(x=Group, y=value, color=Group)) +  
+  geom_boxplot() + facet_wrap(~ variable, scales = "free") +
+  theme(legend.position="none")
+```
+
+
+## stats
+```{r statistics}
+summary(ephys)
+# Levene's Test
+# is variance signficant? NO? ==> use anova
+leveneTest(PTP_3_10~Group, data=ephys)
+# group  2   2.728 0.09088 .  ==> not significant
+leveneTest(EarlyPotentiation_11_20~Group, data=ephys)
+## group  2  1.7926 0.1936  ==>  not significant
+leveneTest(LatePotentiation_26_end~Group, data=ephys)
+## group  2  0.3244 0.7269  ==> not significant
+leveneTest(MaxfEPSP~Group, data=ephys)
+## group  2  0.2189 0.8054  ==> not significant
+
+##  one way anova 
+avoTime <- aov(ephys$PTP_3_10 ~ ephys$Group)
+summary(avoTime)
+TukeyHSD(avoTime)
+
+avoNum <- aov(ephys$EarlyPotentiation_11_20 ~ ephys$Group)
+summary(avoNum)
+TukeyHSD(avoNum)
+
+avoNum <- aov(ephys$LatePotentiation_26_end ~ ephys$Group)
+summary(avoNum)
+TukeyHSD(avoNum)
+
+avoNum <- aov(ephys$MaxfEPSP ~ ephys$Group)
+summary(avoNum)
+TukeyHSD(avoNum)
+```
