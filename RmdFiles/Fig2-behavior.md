@@ -163,8 +163,8 @@ Given the correlational structure of the data, I next reduced the dimentionality
 
 ``` r
 source("functions_behavior.R")
-
 scoresdf <- makepcadf(behavior) #create the 
+
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA")
 ```
 
@@ -177,10 +177,46 @@ makepcaplot(data=scoresdf,xcol="PC1",ycol="PC3",colorcode="APA")
 ![](../figures/Fig2/PCA-2.png)
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC2",ycol="PC3",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC4",colorcode="APA")
 ```
 
 ![](../figures/Fig2/PCA-3.png)
+
+``` r
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC5",colorcode="APA")
+```
+
+![](../figures/Fig2/PCA-4.png)
+
+``` r
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA")
+```
+
+![](../figures/Fig2/PCA-5.png)
+
+``` r
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC7",colorcode="APA")
+```
+
+![](../figures/Fig2/PCA-6.png)
+
+``` r
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC8",colorcode="APA")
+```
+
+![](../figures/Fig2/PCA-7.png)
+
+``` r
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC9",colorcode="APA")
+```
+
+![](../figures/Fig2/PCA-8.png)
+
+``` r
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC10",colorcode="APA")
+```
+
+![](../figures/Fig2/PCA-9.png)
 
 ``` r
 loadings <- makepcaloadingsdf(behavior)

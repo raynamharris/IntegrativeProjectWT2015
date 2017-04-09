@@ -188,9 +188,10 @@ makepcaloadingsdf <- function(data){
   return(loadings)
 }
 
+
 makepcaplot <- function(data,xcol,ycol,colorcode){
   plot <- data %>% 
-    ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
+    ggplot(aes_string(x=xcol, y=ycol, color=colorcode, label=data$ID)) +
     geom_point(size = 5) +
     stat_ellipse(level = 0.95)+
     theme_cowplot(font_size = 20) + 
@@ -198,7 +199,8 @@ makepcaplot <- function(data,xcol,ycol,colorcode){
     scale_colour_manual(name="APA Training",
                         values=colorvalAPA,
                         breaks=c("Yoked", "Same", "Conflict")) +
-    theme(legend.position="none") 
+    theme(legend.position="none") +
+    geom_text()
   return(plot)
 }
 
