@@ -73,19 +73,23 @@ leveneTest(MaxfEPSP~Group, data=ephys)
 ## group  2  0.2189 0.8054  ==> not significant
 
 ##  one way anova 
-avoTime <- aov(ephys$PTP_3_10 ~ ephys$Group)
-summary(avoTime)
-TukeyHSD(avoTime)
+myanova <- aov(ephys$PTP_3_10 ~ ephys$Group)
+summary(myanova)
+TukeyHSD(myanova)
 
-avoNum <- aov(ephys$EarlyPotentiation_11_20 ~ ephys$Group)
-summary(avoNum)
-TukeyHSD(avoNum)
+myanova <- aov(ephys$EarlyPotentiation_11_20 ~ ephys$Group)
+summary(myanova)
+TukeyHSD(myanova)
 
-avoNum <- aov(ephys$LatePotentiation_26_end ~ ephys$Group)
-summary(avoNum)
-TukeyHSD(avoNum)
+myanova <- aov(ephys$LatePotentiation_26_end ~ ephys$Group)
+summary(myanova)
+TukeyHSD(myanova)
 
-avoNum <- aov(ephys$MaxfEPSP ~ ephys$Group)
-summary(avoNum)
-TukeyHSD(avoNum)
+myanova <- aov(ephys$MaxfEPSP ~ ephys$Group)
+summary(myanova)
+TukeyHSD(myanova)
+
+myanova <- aov(ephys$MaxfEPSP ~ ephys$Group)
+summary(myanova)
+TukeyHSD(myanova)
 ```

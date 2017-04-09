@@ -1,0 +1,25 @@
+---
+title: "Integration"
+author: "Rayna M Harris"
+date: "March 23, 2017"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r setup, message=F}
+
+
+```
+
+```{r data,  message=F}
+behavior <- read.csv("../data/01_behaviordata.csv", header = T)
+ephys <- ephys <- read.csv("../data/03_ephys.csv", header = T)
+
+behaviorphys <- full_join(behavior, ephys, by = "Mouse")
+
+
+
+
+behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
+retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  droplevels() 

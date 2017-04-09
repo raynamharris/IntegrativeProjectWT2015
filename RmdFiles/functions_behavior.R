@@ -4,7 +4,7 @@ myboxplot <- function(data, xcol, ycol, colorcode, session, yaxislabel){
     ggplot(aes_string(x=xcol, y=ycol, fill=colorcode)) + 
     geom_boxplot() + 
     scale_fill_manual(name="Group", 
-                        values=c("#8073ac","#e08214",  "#7f3b08"),
+                        values=colorvalAPA,
                         breaks = c("Yoked", "Same", "Conflict")) +
     #scale_y_continuous(name=NULL) +
     scale_y_continuous(name=yaxislabel) + 
@@ -21,7 +21,7 @@ myboxplotnolegend <- function(data, xcol, ycol, colorcode, session, yaxislabel){
     ggplot(aes_string(x=xcol, y=ycol, fill=colorcode)) + 
     geom_boxplot() + 
     scale_fill_manual(name="Group", 
-                      values=c("#8073ac","#e08214",  "#7f3b08"),
+                      values=colorvalAPA,
                       breaks = c("Yoked", "Same", "Conflict")) +
     #scale_y_continuous(name=NULL) +
     scale_y_continuous(name=yaxislabel) + 
@@ -42,7 +42,7 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
     theme_cowplot(font_size = 15, line_size = 0.5) + 
     #background_grid(major = "xy", minor = "none") + 
     theme(axis.text.x = element_text(angle=60, vjust=0.5)) +
-    scale_colour_manual(name="APA Training", values=c("#8073ac","#e08214",  "#7f3b08"),
+    scale_colour_manual(name="APA Training", values=colorvalAPA,
                         breaks = c("Yoked", "Same", "Conflict")) +
     scale_y_continuous(name=yaxislabel) + 
     scale_x_continuous(name = "Training Session", 
@@ -50,30 +50,13 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
                        labels=c("1" = "Habituation", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
                                 "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
-    theme(legend.position="none") 
+    theme(legend.position="top",
+          legend.title=element_blank()) 
   return(plot)
 }
 
 
-onebehaviornolegend <- function(data, xcol, ycol, yaxislabel, colorcode){
-  plot <- data %>% 
-    ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
-    geom_point(size=1) + geom_jitter() +
-    stat_smooth(alpha=0.5)  +
-    theme_cowplot(font_size = 12, line_size = 0.5) + 
-    background_grid(major = "xy", minor = "none") + 
-    theme(axis.text.x = element_text(angle=60, vjust=0.5)) +
-    scale_colour_manual(name="APA Training", values=c("#8073ac","#e08214",  "#7f3b08"),
-                        breaks = c("Yoked", "Same", "Conflict")) +
-    scale_y_continuous(name=yaxislabel) + 
-    scale_x_continuous(name =NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Hab", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
-    theme(legend.position="none") 
-  return(plot)
-}
+
 
 ## make a heatmap from group averages ----
 makeagroupaveheatmap <- function(data){
@@ -91,9 +74,9 @@ makeagroupaveheatmap <- function(data){
   names(columnannotations)[names(columnannotations)=="colnames(averagedata)"] <- "APA"
   rownames(columnannotations) <- columnannotations$APA
   columnannotationcolors = list(
-    APA =  c(Yoked = (values=c("#8073ac")), Same = (values=c("#e08214")),
-           Conflict = (values=c("#7f3b08"))))
-#now plot the heatmap
+    APA =  c(Yoked = (values=c("#404040")), Same = (values=c("#f4a582")),
+           Conflict = (values=c("#ca0020"))))
+  #now plot the heatmap
   plot <- pheatmap(averagedata, 
          show_colnames=FALSE, show_rownames=TRUE,
          annotation_col = columnannotations, 
@@ -106,8 +89,6 @@ makeagroupaveheatmap <- function(data){
          annotation_legend = FALSE)
   return(plot)
 }
-
-
 
 ## make a heatmap from all sessions ----
 makesessionheatmap <- function(data){
@@ -133,19 +114,19 @@ makesessionheatmap <- function(data){
   columnannotations$Session <- revalue(columnannotations$Session, c("T6" = "T6_C3")) 
     columnannotations$column <- NULL
     columnannotationcolors = list(
-    APA =  c(Yoked = (values=c("#8073ac")), 
-             Same = (values=c("#e08214")),
-             Conflict = (values=c("#7f3b08"))),
-    Session =  c(Hab = (values=c("#ffffff")), 
-             T1 = (values=c("#d9d9d9")),
-             T2 = (values=c("#d9d9d9")),
-             T3 = (values=c("#d9d9d9")),
-             Retest = (values=c("#969696")),
-             T4_C1 = (values=c("#525252")),
-             T5_C2 = (values=c("#525252")),
-             T6_C3 = (values=c("#525252")),
-             Retention = (values=c("#000000"))))
-  #now plot the heatmap
+    APA =  c(Yoked = (values=c("#404040")), 
+             Same = (values=c("#f4a582")),
+             Conflict = (values=c("#ca0020"))),
+    Session =  c(Hab = (values=c("#eff3ff")), 
+             T1 = (values=c("#bdd7e7")),
+             T2 = (values=c("#6baed6")),
+             T3 = (values=c("#3182bd")),
+             Retest = (values=c("#08519c")),
+             T4_C1 = (values=c("#cbc9e2")),
+             T5_C2 = (values=c("#9e9ac8")),
+             T6_C3 = (values=c("#756bb1")),
+             Retention = (values=c("#54278f"))))
+        #now plot the heatmap
   plot <- pheatmap(averagedata, 
                    show_colnames=FALSE, show_rownames=TRUE,
                    annotation_col = columnannotations, 
@@ -192,6 +173,21 @@ makepcadf <- function(data){
   return(scoresdf)
 }
 
+
+makepcaloadingsdf <- function(data){
+  #first melt the data to make long
+  longdata <- melt(data, id = c(1:18));
+  longdata <- longdata %>% drop_na();
+  longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
+  longdata <- dcast(longdata, ID + APA ~ bysession, value.var= "value", fun.aggregate = mean)
+  # calculate and save PCs
+  Z <- longdata[,3:371]
+  Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
+  pc = prcomp(Z, scale.=TRUE)
+  loadings <- pc$rotation
+  return(loadings)
+}
+
 makepcaplot <- function(data,xcol,ycol,colorcode){
   plot <- data %>% 
     ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
@@ -200,10 +196,21 @@ makepcaplot <- function(data,xcol,ycol,colorcode){
     theme_cowplot(font_size = 20) + 
     theme(strip.background = element_blank()) +
     scale_colour_manual(name="APA Training",
-                        values=c("#8073ac","#e08214",  "#7f3b08"),
+                        values=colorvalAPA,
                         breaks=c("Yoked", "Same", "Conflict")) +
     theme(legend.position="none") 
   return(plot)
 }
+
+colorvalAPA <- c("#404040", "#f4a582", "#ca0020")
+#ca0020 ## red - conflict 
+#f4a582 ## pink - same
+#404040 ## darkgrey - yoked
+
+colorvalAPA2 <- c("##bababa", "#404040","##f4a582", "#ca0020")
+#ca0020 ## red - conflict 
+#f4a582 ## pink - same
+#bababa ## grey - yoked to same
+#404040 ## darkgrey - yoked to conflict
 
 

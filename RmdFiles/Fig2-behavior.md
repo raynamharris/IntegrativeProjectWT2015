@@ -1,33 +1,52 @@
 This R Markdown document will create the behavioral analysis figures
 
-Setup
------
-
 ``` r
 ## load libraries 
 library(magrittr) ## to use the weird pipe
 library(ggplot2) ## for awesome plots!
+```
+
+    ## Warning: package 'ggplot2' was built under R version 3.3.2
+
+``` r
 library(gplots) ##for making awesome plots
 library(cowplot) ## for some easy to use themes
 library(tidyr) ## for respahing data
+```
+
+    ## Warning: package 'tidyr' was built under R version 3.3.2
+
+``` r
 library(plyr) ## for renmaing factors
 library(dplyr) ## for filtering and selecting rows
 library(reshape2) ## for melting dataframe
 library(pheatmap) ## for pretty heat maps
 library(car) ## for statistics
-library(relaimpo) ## for linear model predictions
+```
 
+    ## Warning: package 'car' was built under R version 3.3.2
+
+``` r
+library(relaimpo) ## for linear model predictions
+```
+
+    ## Warning: package 'Matrix' was built under R version 3.3.2
+
+``` r
 ## load functions 
 source("functions_behavior.R")
 
 ## set output file for figures 
 knitr::opts_chunk$set(fig.path = '../figures/Fig2/')
+```
 
+``` r
 ## read intermediate data (raw data from video tracker program analyzed in matlab)
 behavior <- read.csv("../data/01_behaviordata.csv", header = T)
 
 ## relevel factors
 behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
+behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "YokedConflict","Same", "Conflict"))
 
 ## create a log transformed time for first entrance
 behavior$Time1stEntrLog <- log(behavior$Time1stEntr)
@@ -35,6 +54,46 @@ behavior$Time1stEntrLog <- log(behavior$Time1stEntr)
 ## subset to view just the data from the retention session
 retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  droplevels() 
 ```
+
+``` r
+behaviorsummary <- summarise(group_by(behavior, APA), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
+A <- ggplot(behaviorsummary, aes(x=APA, y=m, color=APA)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA), width=.1) +
+    geom_point(size = 2) +
+    scale_y_continuous(name="Time to First Entrance (s)") +
+    scale_x_discrete(name=NULL) +
+  theme_cowplot(font_size = 16, line_size = 1) +
+  background_grid(major = "xy", minor = "none") +
+  scale_color_manual(values = colorvalAPA) +
+  theme(legend.position="none") 
+
+behaviorsummary <- summarise(group_by(behavior, APA), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+
+B <- ggplot(behaviorsummary, aes(x=APA, y=m, color=APA)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se), width=.1) +
+    geom_point(size = 2) +
+    scale_y_continuous(name="Number of Entrances") +
+    scale_x_discrete(name=NULL) +
+  theme_cowplot(font_size = 16, line_size = 1) +
+  background_grid(major = "xy", minor = "none") +
+  scale_color_manual(values = colorvalAPA) +
+  theme(legend.position="none")
+
+plot_grid(A,B, nrow=1, labels=c("A", "B"))
+```
+
+![](../figures/Fig2/summary%20stats-1.png)
+
+``` r
+meansem <- plot_grid(A,B, nrow=1, labels=c("A", "B"))
+
+pdf(file="../figures/Fig1/meansem.pdf", width=6, height=3)
+plot(meansem)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
 
 Behavior Data Visualization
 ---------------------------
@@ -59,14 +118,33 @@ plot_grid(A,B, nrow=1, rel_widths=c(0.45, 0.55), labels=c("A", "B"))
 ![](../figures/Fig2/avoidancebehavior-1.png)
 
 ``` r
+boxplot <- plot_grid(A,B, nrow=1, rel_widths=c(0.45, 0.55), labels=c("A", "B"))
+
+pdf(file="../figures/Fig1/boxplot.pdf", width=6, height=3)
+plot(boxplot)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
 C <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeOPP",
                   yaxislabel=" Proportion of time spent\n opposite the shock zone",
                   colorcode="APA")
 
-plot_grid(C, nrow=1, labels=c("C"))
+pdf(file="../figures/Fig1/onebehavior.pdf", width=6, height=4)
+plot(C)
 ```
 
-![](../figures/Fig2/avoidancebehavior-2.png)
+    ## `geom_smooth()` using method = 'loess'
+
+``` r
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
 
 ### Heatmap
 
@@ -79,28 +157,34 @@ makesessionheatmap(behavior)
 
 ![](../figures/Fig2/heatmap-1.png)
 
-### Correlation matrix
-
-The next image shows (with more resolution than the previous) that may behaviors are correlated. Here, I'm showing just the behavior data on the retension session for the conflict trained animals
-
-``` r
-makecorrelationheatmap(data=retention, APAgroup = "Conflict", clusterTF =T)
-```
-
-![](../figures/Fig2/correlationmatrix-1.png)
-
 ### Principle component analysis (PCA)
 
 Given the correlational structure of the data, I next reduced the dimentionality with a PCA anlaysis. You can see that PC1 speparates trained and untraned animals (D,E) but neither PC2 (D) nor PC3 (E) separate same and conflict aniamls. Elipses show 95% confidence interval.
 
 ``` r
+source("functions_behavior.R")
+
 scoresdf <- makepcadf(behavior) #create the 
-D <- makepcaplot(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA")
-E <- makepcaplot(data=scoresdf,xcol="PC1",ycol="PC3",colorcode="APA")
-plot_grid(D,E, nrow=1, labels=c("D", "E"))
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA")
 ```
 
 ![](../figures/Fig2/PCA-1.png)
+
+``` r
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC3",colorcode="APA")
+```
+
+![](../figures/Fig2/PCA-2.png)
+
+``` r
+makepcaplot(data=scoresdf,xcol="PC2",ycol="PC3",colorcode="APA")
+```
+
+![](../figures/Fig2/PCA-3.png)
+
+``` r
+loadings <- makepcaloadingsdf(behavior)
+```
 
 ### stats
 
