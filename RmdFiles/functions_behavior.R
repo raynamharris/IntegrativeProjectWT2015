@@ -188,6 +188,21 @@ makepcaloadingsdf <- function(data){
   return(loadings)
 }
 
+mkrotationdata <- function(data){
+  #first melt the data to make long
+  longdata <- melt(data, id = c(1:18));
+  longdata <- longdata %>% drop_na();
+  longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
+  longdata <- dcast(longdata, ID + APA ~ bysession, value.var= "value", fun.aggregate = mean)
+  # calculate and save PCs
+  Z <- longdata[,3:371]
+  Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
+  pc = prcomp(Z, scale.=TRUE)
+  rotation_data <- data.frame(pc$rotation, variable=row.names(pc$rotation))
+  str(rotation_data)
+  return(rotation_data)
+}
+
 
 makepcaplot <- function(data,xcol,ycol,colorcode){
   plot <- data %>% 

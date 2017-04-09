@@ -33,6 +33,15 @@ library(relaimpo) ## for linear model predictions
     ## Warning: package 'Matrix' was built under R version 3.3.2
 
 ``` r
+# install.packages("devtools")
+#library("devtools")
+#install_github("kassambara/factoextra")
+library("factoextra") # for fancy pca plots
+```
+
+    ## Warning: package 'factoextra' was built under R version 3.3.2
+
+``` r
 ## load functions 
 source("functions_behavior.R")
 
@@ -162,7 +171,6 @@ makesessionheatmap(behavior)
 Given the correlational structure of the data, I next reduced the dimentionality with a PCA anlaysis. You can see that PC1 speparates trained and untraned animals (D,E) but neither PC2 (D) nor PC3 (E) separate same and conflict aniamls. Elipses show 95% confidence interval.
 
 ``` r
-source("functions_behavior.R")
 scoresdf <- makepcadf(behavior) #create the 
 
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA")
@@ -177,50 +185,161 @@ makepcaplot(data=scoresdf,xcol="PC1",ycol="PC3",colorcode="APA")
 ![](../figures/Fig2/PCA-2.png)
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC4",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC2",ycol="PC3",colorcode="APA")
 ```
 
 ![](../figures/Fig2/PCA-3.png)
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC5",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC4",colorcode="APA")
 ```
 
 ![](../figures/Fig2/PCA-4.png)
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC5",colorcode="APA")
 ```
 
 ![](../figures/Fig2/PCA-5.png)
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC7",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA")
 ```
 
 ![](../figures/Fig2/PCA-6.png)
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC8",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC7",colorcode="APA")
 ```
 
 ![](../figures/Fig2/PCA-7.png)
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC9",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC8",colorcode="APA")
 ```
 
 ![](../figures/Fig2/PCA-8.png)
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC10",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC9",colorcode="APA")
 ```
 
 ![](../figures/Fig2/PCA-9.png)
 
 ``` r
-loadings <- makepcaloadingsdf(behavior)
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC10",colorcode="APA")
 ```
+
+![](../figures/Fig2/PCA-10.png)
+
+``` r
+source("functions_behavior.R")
+
+# capture the rotation matrix in a data frame
+rotation_data <- mkrotationdata(behavior)
+```
+
+    ## 'data.frame':    360 obs. of  35 variables:
+    ##  $ PC1     : num  -0.0441 -0.049 -0.0233 -0.0414 -0.017 ...
+    ##  $ PC2     : num  0.0231 -0.0202 0.0262 -0.0455 0.0466 ...
+    ##  $ PC3     : num  0.0757 0.0738 0.0351 0.0183 0.012 ...
+    ##  $ PC4     : num  -0.0987 -0.1047 -0.0887 -0.071 -0.0571 ...
+    ##  $ PC5     : num  -0.02711 -0.02321 -0.02452 -0.00852 -0.07279 ...
+    ##  $ PC6     : num  -0.0215 -0.0179 -0.0305 -0.0114 0.0113 ...
+    ##  $ PC7     : num  -0.01731 -0.06523 0.06213 -0.10985 0.00896 ...
+    ##  $ PC8     : num  -0.1057 -0.0675 -0.1347 0.0086 0.0485 ...
+    ##  $ PC9     : num  0.0408 0.0561 0.0339 0.0312 0.1213 ...
+    ##  $ PC10    : num  0.0115 0.0532 -0.0177 0.0375 -0.0291 ...
+    ##  $ PC11    : num  -0.13857 -0.0563 -0.13212 0.00426 -0.13492 ...
+    ##  $ PC12    : num  -0.0358 -0.0116 -0.0637 -0.0132 -0.0184 ...
+    ##  $ PC13    : num  -0.00952 -0.03178 0.0117 0.07186 -0.06115 ...
+    ##  $ PC14    : num  0.02667 0.05893 -0.00494 0.10288 0.04849 ...
+    ##  $ PC15    : num  -0.0486 -0.0975 0.0156 -0.1 0.017 ...
+    ##  $ PC16    : num  0.0126 0.0338 0.0188 0.0495 -0.0434 ...
+    ##  $ PC17    : num  0.02118 0.02026 0.07371 -0.06109 0.00136 ...
+    ##  $ PC18    : num  0.0474 0.0369 0.0461 0.0291 0.0213 ...
+    ##  $ PC19    : num  0.00154 -0.03977 -0.02195 -0.09976 -0.03083 ...
+    ##  $ PC20    : num  -0.006 0.0534 -0.1055 0.0741 -0.0121 ...
+    ##  $ PC21    : num  0.0838 0.0272 0.0806 -0.0904 0.0954 ...
+    ##  $ PC22    : num  0.01047 0.09824 0.06281 -0.02868 -0.00431 ...
+    ##  $ PC23    : num  0.03905 -0.01752 -0.00796 -0.07779 0.08059 ...
+    ##  $ PC24    : num  -0.0424 -0.0148 -0.0056 0.0215 0.1458 ...
+    ##  $ PC25    : num  0.0334 0.0125 -0.0428 -0.0477 0.0806 ...
+    ##  $ PC26    : num  -0.0887 -0.0712 -0.0675 -0.1032 0.0442 ...
+    ##  $ PC27    : num  -0.013009 0.008914 0.000234 0.081901 -0.047246 ...
+    ##  $ PC28    : num  -0.0156 0.0372 -0.07 0.0401 -0.0193 ...
+    ##  $ PC29    : num  0.04799 0.00863 0.000895 0.045915 -0.044004 ...
+    ##  $ PC30    : num  -0.04214 -0.03311 0.04827 0.01359 0.00935 ...
+    ##  $ PC31    : num  -0.00415 -0.0528 0.05691 -0.04775 0.10618 ...
+    ##  $ PC32    : num  -0.0168 0.0344 -0.1252 0.0473 -0.1981 ...
+    ##  $ PC33    : num  0.0338 0.0536 0.066 0.0211 -0.0472 ...
+    ##  $ PC34    : num  -0.22674 0.00302 0.33786 -0.06677 0.08603 ...
+    ##  $ variable: Factor w/ 360 levels "Hab_AnnularAvg",..: 1 2 3 4 5 6 7 8 9 10 ...
+
+``` r
+# define a pleasing arrow style
+arrow_style <- arrow(length = unit(0.05, "inches"),
+                     type = "closed")
+# now plot, using geom_segment() for arrows and geom_text for labels
+ggplot(rotation_data) + 
+  geom_segment(aes(xend=PC1, yend=PC2), x=0, y=0, arrow=arrow_style) + 
+  geom_text(aes(x=PC1, y=PC2, label=variable), hjust=0, size=3, color='red') + 
+  coord_fixed() # fix aspect ratio to 1:1
+```
+
+![](../figures/Fig2/PCA-11.png)
+
+``` r
+library("factoextra")
+res.pca <- behavior[c(20:58)]  
+res.pca <- prcomp(res.pca,  scale = TRUE)
+fviz_pca_ind(res.pca)
+```
+
+![](../figures/Fig2/PCA-12.png)
+
+``` r
+fviz_pca_ind(res.pca, label="none", habillage=behavior$APA,
+             addEllipses=TRUE, ellipse.level=0.95) + scale_color_manual(values=colorvalAPA)
+```
+
+![](../figures/Fig2/PCA-13.png)
+
+``` r
+fviz_pca_var(res.pca, select.var = list(contrib = 20))
+```
+
+![](../figures/Fig2/PCA-14.png)
+
+``` r
+fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 20))
+```
+
+![](../figures/Fig2/PCA-15.png)
+
+``` r
+frizvectors <- fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 20), axes = c(2, 3))
+
+
+fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(2, 3))
+```
+
+![](../figures/Fig2/PCA-16.png)
+
+``` r
+fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(1, 2))
+```
+
+![](../figures/Fig2/PCA-17.png)
+
+``` r
+pdf(file="../figures/Fig1/frizvectors.pdf", width=4, height=4)
+plot(frizvectors)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
 
 ### stats
 
