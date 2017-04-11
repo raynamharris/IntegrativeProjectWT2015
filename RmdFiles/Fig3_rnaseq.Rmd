@@ -222,7 +222,7 @@ source("figureoptions.R")
 
 
 DEGes <- assay(rld)
-DEGes <- base::cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
 DEGes$padjmin <- with(DEGes, pmin(padjPunchDGCA1, padjPunchCA3CA1, padjPunchDGCA3, padjAPASameYoked, padjAPAConflictYoked, padjAPAConflictSame)) # create new col with min padj
@@ -237,6 +237,12 @@ head(DEGes)
 ## set anntation variables
 df <- as.data.frame(colData(dds)[,c("Punch","APA")]) ## matrix to df
 ann_colors = ann_colors1
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+
 
 source("figureoptions.R")
 pheatmap(DEGes, show_colnames=T, show_rownames = F,

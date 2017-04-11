@@ -15,9 +15,6 @@ colorvalPunch <- c("#d95f02","#7570b3", "#1b9e77" )
 
 ## pheatmap
 colorpalette <-  colorRampPalette(c("Deep Sky Blue 3", "white", "red"))( 30 )
-paletteLength <- 30
-myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
-              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
 
 ann_colors1 = list(
   APA =  c(Yoked = (values=c("#404040")), Same = (values=c("#f4a582")), Conflict = (values=c("#ca0020"))),

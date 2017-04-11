@@ -14,9 +14,11 @@ library(gplots) ##for making awesome plots
 library(cowplot) ## for some easy to use themes
 library(ggplot2) ## for awesome plots!
 library(DESeq2) ## for gene expression analysis
+library(genefilter)  ## for PCA fuction
 library(pheatmap) ## for awesome heatmaps
 library(edgeR)  ## for basic read counts status
 library(VennDiagram) ## for Venn Diagrams
+library(colorRamps) ## for pheatmap
 ```
 
 Then, I set all path so that all the figures are saved in the specified subdirectory.
@@ -400,6 +402,9 @@ dds # view the DESeq object - note numnber of genes
     ## colData names(7): RNAseqID Mouse ... APA ID
 
 ``` r
+# dim: 17746 45 
+# 17,746 genes and 45 samples
+
 ## DESeq2 1.4  Differential expression analysi
 dds <- DESeq(dds)
 ```
@@ -427,45 +432,45 @@ dds <- DESeq(dds)
 ``` r
 ## for variance stablized gene expression and log transformed data
 rld <- rlog(dds, blind=FALSE)
-vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
-vsd.fast <- vst(dds, blind=FALSE)
+#vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
+#vsd.fast <- vst(dds, blind=FALSE)
 ```
 
 Now, we can calculate the number of differentiall expressed genes for each contrast. See the function in "resvalsfunction.R" for details.
 
 ``` r
 source("resvalsfunction.R")
-contrast1 <- resvals(contrastvector = c("Punch", "DG", "CA1"), mypadj = 0.1)
+contrast1 <- resvals(contrastvector = c("Punch", "DG", "CA1"), mypadj = 0.1) #2999
 ```
 
     ## [1] 2999
 
 ``` r
-contrast2 <- resvals(contrastvector = c("Punch", "CA3", "CA1"), mypadj = 0.1)
+contrast2 <- resvals(contrastvector = c("Punch", "CA3", "CA1"), mypadj = 0.1) #2204
 ```
 
     ## [1] 2204
 
 ``` r
-contrast3 <- resvals(contrastvector = c("Punch", "DG", "CA3"), mypadj = 0.1)
+contrast3 <- resvals(contrastvector = c("Punch", "DG", "CA3"), mypadj = 0.1) # 4110
 ```
 
     ## [1] 4110
 
 ``` r
-contrast4 <- resvals(contrastvector = c("APA", "Yoked", "Same"), mypadj = 0.1)
+contrast4 <- resvals(contrastvector = c("APA", "Same", "Yoked"), mypadj = 0.1) #107
 ```
 
     ## [1] 107
 
 ``` r
-contrast5 <- resvals(contrastvector = c("APA", "Yoked", "Conflict"), mypadj = 0.1)
+contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Yoked"), mypadj = 0.1) #59
 ```
 
     ## [1] 59
 
 ``` r
-contrast6 <- resvals(contrastvector = c("APA", "Same", "Conflict"), mypadj = 0.1)
+contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Same"), mypadj = 0.1) # 0 
 ```
 
     ## [1] 0
@@ -487,7 +492,7 @@ head(rldpadjs)
     ## 0610009O20Rik      0.7262958       0.9875592      0.4348464
     ## 0610010F05Rik      0.7090649       0.1991185      0.4357406
     ## 0610010K14Rik      0.9988301       0.5327519      0.2821504
-    ##               padjAPAYokedSame padjAPAYokedConflict
+    ##               padjAPASameYoked padjAPAConflictYoked
     ## 0610007P14Rik                1                    1
     ## 0610009B22Rik                1                    1
     ## 0610009L18Rik                1                    1
@@ -508,7 +513,7 @@ head(rldpadjs)
     ## 0610009O20Rik      0.7262958       0.9875592      0.4348464
     ## 0610010F05Rik      0.7090649       0.1991185      0.4357406
     ## 0610010K14Rik      0.9988301       0.5327519      0.2821504
-    ##               padjAPAYokedSame padjAPAYokedConflict
+    ##               padjAPASameYoked padjAPAConflictYoked
     ## 0610007P14Rik                1                    1
     ## 0610009B22Rik                1                    1
     ## 0610009L18Rik                1                    1
@@ -541,7 +546,9 @@ qplot(value, data=rldpadjslong, geom="histogram") +
 
     ## Warning: Removed 85 rows containing non-finite values (stat_bin).
 
-    ## Warning: Stacking not well defined when ymin != 0
+    ## Warning: Transformation introduced infinite values in continuous y-axis
+
+    ## Warning: Removed 1 rows containing missing values (geom_bar).
 
 ![](../figures/Fig3/pvaluedistribution-1.png)
 
@@ -622,19 +629,15 @@ grid.draw(prettyvenn)
 Now let's look at a heat map of the data
 
 ``` r
-## set coloring for heat map anntations
-df <- as.data.frame(colData(dds)[,c("Punch","APA")]) ## matrix to df
-ann_colors = list(
-  APA =  c(Yoked = (values=c("#8073ac")), Same = (values=c("#e08214")), Conflict = (values=c("#7f3b08"))),
-  Punch =  c(DG = (values=c("#006837")),  CA3 = (values=c("#41ab5d")), 
-             CA1 = (values=c("#d9f0a3"))))
+source("figureoptions.R")
+
 
 DEGes <- assay(rld)
-DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-DEGes$padjmin <- with(DEGes, pmin(padjPunchDGCA1, padjPunchCA3CA1, padjPunchDGCA3, padjAPAYokedSame, padjAPAYokedConflict)) # create new col with min padj
-DEGes <- DEGes %>% filter(padjmin < 0.01)
+DEGes$padjmin <- with(DEGes, pmin(padjPunchDGCA1, padjPunchCA3CA1, padjPunchDGCA3, padjAPASameYoked, padjAPAConflictYoked, padjAPAConflictSame)) # create new col with min padj
+DEGes <- DEGes %>% filter(padjmin < 0.0001)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
@@ -643,151 +646,179 @@ DEGes <- DEGes - rowMeans(DEGes)
 head(DEGes)
 ```
 
-    ##                143A-CA3-1  143A-DG-1  143B-CA1-1   143B-DG-1  143C-CA1-1
-    ## 1110002E22Rik -1.16230774  1.1705090  0.14432205  1.63110398 -0.66763649
-    ## 1190002N15Rik -1.72506907  0.8755782  0.88793327 -0.82549312  1.32373075
-    ## 1700017B05Rik  1.29813450 -0.2383787 -0.84876206 -1.16200667 -0.65883370
-    ## 1700025G04Rik -0.43111905  0.6047283 -0.33863691  0.02097928 -0.09274292
-    ## 1810010H24Rik -0.36806542  0.7967341  0.06788807  0.74720221  0.12590565
-    ## 1810041L15Rik -0.04800454  1.2368213 -1.69968331  0.78541070 -0.98978547
-    ##                143D-CA1-3  143D-DG-3 144A-CA1-2  144A-CA3-2   144A-DG-2
-    ## 1110002E22Rik -0.54330515  1.3214462 -0.5395372 -0.50186871  1.42087835
-    ## 1190002N15Rik  0.82572960  0.3824383  0.9864699 -2.08732342  2.05439746
-    ## 1700017B05Rik  0.02743781 -1.2656349 -0.5637580  0.94786057  0.00303291
-    ## 1700025G04Rik -0.80203072  0.3368837 -0.7794041  0.40143012  0.74260373
-    ## 1810010H24Rik -0.45798840  0.8737816  0.1875457 -0.29357058 -0.17110780
-    ## 1810041L15Rik -1.37081153  0.9329462 -1.1065663  0.05083861  1.43559517
-    ##               144B-CA1-1   144B-CA3-1  144C-CA1-2  144C-CA3-2  144C-DG-2
-    ## 1110002E22Rik -0.8942817 -0.802574577 -0.59401924 -0.33616232 1.42474894
-    ## 1190002N15Rik  1.0372495 -1.240480093  0.34090582 -1.10153393 1.79036094
-    ## 1700017B05Rik -0.4518229 -0.307333915 -0.47661869  1.19914121 0.05271724
-    ## 1700025G04Rik -0.9835528 -0.307508308 -0.06585606  0.02148736 0.59522838
-    ## 1810010H24Rik -0.5654846 -0.000859784  0.07789520  0.24857348 0.75948850
-    ## 1810041L15Rik -1.1054536 -0.322546654 -0.62252195  0.56542278 1.26503568
+    ##                143A-CA3-1  143A-DG-1 143B-CA1-1   143B-DG-1  143C-CA1-1
+    ## 1110002E22Rik -1.16230774  1.1705090  0.1443221  1.63110398 -0.66763649
+    ## 1190002N15Rik -1.72506907  0.8755782  0.8879333 -0.82549312  1.32373075
+    ## 1700025G04Rik -0.43111905  0.6047283 -0.3386369  0.02097928 -0.09274292
+    ## 1810041L15Rik -0.04800454  1.2368213 -1.6996833  0.78541070 -0.98978547
+    ## 2010300C02Rik -1.31340652  0.8897266  0.4334967  0.66809358  0.73485079
+    ## 2900026A02Rik  0.65091244 -0.3856292  0.1101570 -0.63978949  0.55065486
+    ##               143D-CA1-3  143D-DG-3 144A-CA1-2  144A-CA3-2  144A-DG-2
+    ## 1110002E22Rik -0.5433051  1.3214462 -0.5395372 -0.50186871  1.4208784
+    ## 1190002N15Rik  0.8257296  0.3824383  0.9864699 -2.08732342  2.0543975
+    ## 1700025G04Rik -0.8020307  0.3368837 -0.7794041  0.40143012  0.7426037
+    ## 1810041L15Rik -1.3708115  0.9329462 -1.1065663  0.05083861  1.4355952
+    ## 2010300C02Rik  0.4703677  0.7859521  0.4765327 -1.81468989  1.0252648
+    ## 2900026A02Rik  0.3440413 -0.8201671  0.1175613  0.03695794 -0.3262490
+    ##                144B-CA1-1 144B-CA3-1  144C-CA1-2  144C-CA3-2  144C-DG-2
+    ## 1110002E22Rik -0.89428172 -0.8025746 -0.59401924 -0.33616232  1.4247489
+    ## 1190002N15Rik  1.03724952 -1.2404801  0.34090582 -1.10153393  1.7903609
+    ## 1700025G04Rik -0.98355275 -0.3075083 -0.06585606  0.02148736  0.5952284
+    ## 1810041L15Rik -1.10545361 -0.3225467 -0.62252195  0.56542278  1.2650357
+    ## 2010300C02Rik  0.65401410 -1.7654642  0.39972375 -1.76034410  0.8746844
+    ## 2900026A02Rik  0.04299354  0.3555989  0.42247428 -0.31214165 -0.7943722
     ##                144D-CA3-2  144D-DG-2 145A-CA1-2  145A-CA3-2  145A-DG-2
     ## 1110002E22Rik -1.04344508  0.9574167 -0.6657968  0.01053546  0.1287196
     ## 1190002N15Rik -1.01325284 -0.3124629  0.9819782 -1.11819161  0.6042550
-    ## 1700017B05Rik  0.85948272 -0.2555703 -0.9363856 -0.08544741  0.2783899
     ## 1700025G04Rik  0.12503652  0.7399715 -0.7598524  0.96942707  0.2687021
-    ## 1810010H24Rik -0.03471651  0.2408481 -0.1203884 -0.25561606 -0.1391646
     ## 1810041L15Rik -0.02059493  1.2791806 -1.1638068  0.58498224  0.9643158
+    ## 2010300C02Rik -1.47302251  0.7786152  0.5788095 -1.29248166  0.8329116
+    ## 2900026A02Rik  0.52177486 -0.8143009  0.2483308  0.83910584 -0.6804629
     ##               145B-CA1-1    145B-DG-1  146A-CA1-2 146A-CA3-2  146A-DG-2
     ## 1110002E22Rik -1.0057109  1.556313069 -0.97101273  0.4790266  1.2586023
     ## 1190002N15Rik  0.6006954 -0.005450833  0.77622333 -0.8847532  0.8351507
-    ## 1700017B05Rik -0.3135722 -0.603158148 -0.11444672  0.5592856 -0.5950860
     ## 1700025G04Rik -0.3337989  0.498527522 -0.30895547  0.1440145  0.3725948
-    ## 1810010H24Rik -0.5327576  0.328876963  0.06547299 -0.5579117  0.8581657
     ## 1810041L15Rik -1.1155530  1.438908695 -1.53463962 -0.5755530  1.3098625
-    ##                146B-CA1-2  146B-CA3-2   146B-DG-2  146C-CA1-4 146C-CA3-4
-    ## 1110002E22Rik  0.88401686 -1.03561615  0.38401572  0.70096129 -0.3658572
-    ## 1190002N15Rik  1.38487883 -0.91583497  1.12556775  1.27761462  0.1246173
-    ## 1700017B05Rik  0.38539037  1.04175448 -0.32052087  0.17758647  0.3427710
-    ## 1700025G04Rik -0.35484194  0.07325742  0.19667259 -0.84617479 -0.4568169
-    ## 1810010H24Rik -0.01696541 -0.24961470 -0.01369138 -0.09645644 -0.1931296
-    ## 1810041L15Rik -0.98434885  0.15102121 -0.58976954 -0.89642435 -0.2225356
-    ##                146C-DG-4  146D-CA1-3  146D-CA3-3   146D-DG-3 147C-CA1-3
-    ## 1110002E22Rik -0.5885531 -0.48934895 -1.12381112 -0.11663828 -0.2577157
-    ## 1190002N15Rik  1.2634222 -0.18075430 -2.14192834 -1.08213907  0.9585774
-    ## 1700017B05Rik -0.2862878 -1.46709905  1.72581565 -0.70822971 -0.7567584
-    ## 1700025G04Rik  0.6169602 -0.85871033 -0.08087894  0.80634323 -0.4728886
-    ## 1810010H24Rik  1.1169687 -0.28670975 -0.57631108  0.01662962 -0.2573655
-    ## 1810041L15Rik  1.1958631  0.08952726  0.44251290  0.38603596 -1.2010405
+    ## 2010300C02Rik  0.7389585  0.922357409  0.53630701 -1.6363631  0.9339637
+    ## 2900026A02Rik  0.3651018 -0.571399274  0.01930847  0.0143123 -0.7416213
+    ##               146B-CA1-2  146B-CA3-2  146B-DG-2 146C-CA1-4 146C-CA3-4
+    ## 1110002E22Rik  0.8840169 -1.03561615  0.3840157  0.7009613 -0.3658572
+    ## 1190002N15Rik  1.3848788 -0.91583497  1.1255677  1.2776146  0.1246173
+    ## 1700025G04Rik -0.3548419  0.07325742  0.1966726 -0.8461748 -0.4568169
+    ## 1810041L15Rik -0.9843488  0.15102121 -0.5897695 -0.8964243 -0.2225356
+    ## 2010300C02Rik  0.6439834 -1.28856602  0.3388799  0.5747202 -1.6660136
+    ## 2900026A02Rik  1.0664759  0.34479629 -0.1744598  1.0134571  0.3672177
+    ##                146C-DG-4  146D-CA1-3  146D-CA3-3  146D-DG-3 147C-CA1-3
+    ## 1110002E22Rik -0.5885531 -0.48934895 -1.12381112 -0.1166383 -0.2577157
+    ## 1190002N15Rik  1.2634222 -0.18075430 -2.14192834 -1.0821391  0.9585774
+    ## 1700025G04Rik  0.6169602 -0.85871033 -0.08087894  0.8063432 -0.4728886
+    ## 1810041L15Rik  1.1958631  0.08952726  0.44251290  0.3860360 -1.2010405
+    ## 2010300C02Rik  0.7136684  0.83476305 -0.62190265  0.5138686  0.4790476
+    ## 2900026A02Rik -0.8158377 -0.10987738  0.90540184 -0.8907663  0.3455518
     ##               147C-CA3-3  147C-DG-3 147D-CA3-1  147D-DG-1 148A-CA1-3
     ## 1110002E22Rik -0.6316126  1.9010310 -1.2350377  1.2330545 -0.9265685
     ## 1190002N15Rik -1.0288397  1.1482525 -1.8759059 -0.3891130  1.1655303
-    ## 1700017B05Rik  0.6984457 -0.2595952  0.5180043  0.1401251 -0.4115819
     ## 1700025G04Rik  0.3067797  0.7224128  0.5653680  0.3044112 -0.2727652
-    ## 1810010H24Rik -0.4623700  0.4051276 -0.4309390  0.6399662 -0.4059048
     ## 1810041L15Rik  0.2208505  1.2363855  0.3938438  1.2096327 -0.9118822
+    ## 2010300C02Rik -2.2423442  0.8305160 -1.8826382  1.0570480  0.6302767
+    ## 2900026A02Rik -0.3011663 -0.4559534  0.4627074 -0.9888167  0.5044014
     ##               148A-CA3-3  148A-DG-3 148B-CA1-4  148B-CA3-4   148B-DG-4
     ## 1110002E22Rik -0.2256539  1.6226887 -0.4095695 -1.16175529  0.06600623
     ## 1190002N15Rik -2.2072486  0.2817692 -0.1913985 -1.32352344 -1.38262954
-    ## 1700017B05Rik  0.7634976 -0.4472843  1.0062427  1.10535223  0.40370498
     ## 1700025G04Rik -0.2047959  0.6032214 -1.1253419 -0.08870245 -0.07166697
-    ## 1810010H24Rik -0.0977259  0.2627586 -0.2325531 -0.58918127 -0.41327959
     ## 1810041L15Rik -0.4364960  0.8592621 -1.0321960 -0.24462694  0.16058534
+    ## 2010300C02Rik -0.7159305  0.8271941 -0.0417834 -1.36541525  0.70176984
+    ## 2900026A02Rik  0.2057696 -0.7726839  0.4426075  0.45346379 -0.15544157
 
 ``` r
-pheatmap(DEGes, show_colnames=F, show_rownames = F,
-         #annotation_col=df, annotation_colors = ann_colors,
-         fontsize = 12, fontsize_row = 10, 
-         border_color = "grey60"
-)
+## set anntation variables
+df <- as.data.frame(colData(dds)[,c("Punch","APA")]) ## matrix to df
+ann_colors = ann_colors1
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+
+
+source("figureoptions.R")
+pheatmap(DEGes, show_colnames=T, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = colorpalette,
+         #cellwidth = 12, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
 ```
 
 ![](../figures/Fig3/heatmap-1.png)
 
+``` r
+# for adobe
+pheatmap(DEGes, show_colnames=T, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = colorpalette,
+         #cellwidth = 12, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/Fig3/HeatmapPadj-1.pdf"
+         )
+```
+
 Now lets look at a principle component analysis of the data
 
 ``` r
-plotPCA(rld, intgroup=c("APA", "Punch"), returnData=TRUE)
-```
+source("functions_RNAseq.R")
 
-    ##                   PC1         PC2          group      APA Punch       name
-    ## 143A-CA3-1 -17.792212 -15.2604021 Conflict : CA3 Conflict   CA3 143A-CA3-1
-    ## 143A-DG-1   30.272394  -1.0154986  Conflict : DG Conflict    DG  143A-DG-1
-    ## 143B-CA1-1 -14.570296  16.0530334    Yoked : CA1    Yoked   CA1 143B-CA1-1
-    ## 143B-DG-1   26.771138  -1.7319963     Yoked : DG    Yoked    DG  143B-DG-1
-    ## 143C-CA1-1 -14.901443  18.0914921     Same : CA1     Same   CA1 143C-CA1-1
-    ## 143D-CA1-3 -15.163203  17.5024305    Yoked : CA1    Yoked   CA1 143D-CA1-3
-    ## 143D-DG-3   26.985562  -1.1966857     Yoked : DG    Yoked    DG  143D-DG-3
-    ## 144A-CA1-2 -10.002146  11.7128574 Conflict : CA1 Conflict   CA1 144A-CA1-2
-    ## 144A-CA3-2 -13.386024 -12.9115544 Conflict : CA3 Conflict   CA3 144A-CA3-2
-    ## 144A-DG-2   31.076199  -0.2770855  Conflict : DG Conflict    DG  144A-DG-2
-    ## 144B-CA1-1 -16.237056  17.7079186    Yoked : CA1    Yoked   CA1 144B-CA1-1
-    ## 144B-CA3-1 -10.207559 -12.2683464    Yoked : CA3    Yoked   CA3 144B-CA3-1
-    ## 144C-CA1-2 -10.382000  13.6851480     Same : CA1     Same   CA1 144C-CA1-2
-    ## 144C-CA3-2 -15.353031 -13.6441111     Same : CA3     Same   CA3 144C-CA3-2
-    ## 144C-DG-2   32.994388   0.6484256      Same : DG     Same    DG  144C-DG-2
-    ## 144D-CA3-2 -16.476016 -16.0102716    Yoked : CA3    Yoked   CA3 144D-CA3-2
-    ## 144D-DG-2   30.847370  -1.0912677     Yoked : DG    Yoked    DG  144D-DG-2
-    ## 145A-CA1-2 -15.574394  18.0431051 Conflict : CA1 Conflict   CA1 145A-CA1-2
-    ## 145A-CA3-2  -7.963753  -9.8483263 Conflict : CA3 Conflict   CA3 145A-CA3-2
-    ## 145A-DG-2   28.237011   0.3650217  Conflict : DG Conflict    DG  145A-DG-2
-    ## 145B-CA1-1 -14.750868  17.0780543    Yoked : CA1    Yoked   CA1 145B-CA1-1
-    ## 145B-DG-1   28.933376  -1.1425224     Yoked : DG    Yoked    DG  145B-DG-1
-    ## 146A-CA1-2 -14.667132  16.1055163 Conflict : CA1 Conflict   CA1 146A-CA1-2
-    ## 146A-CA3-2 -14.345862 -15.6450410 Conflict : CA3 Conflict   CA3 146A-CA3-2
-    ## 146A-DG-2   28.274114  -0.4573622  Conflict : DG Conflict    DG  146A-DG-2
-    ## 146B-CA1-2 -11.670416  15.8397533    Yoked : CA1    Yoked   CA1 146B-CA1-2
-    ## 146B-CA3-2 -17.980826 -14.9389457    Yoked : CA3    Yoked   CA3 146B-CA3-2
-    ## 146B-DG-2    7.737648  -1.4794107     Yoked : DG    Yoked    DG  146B-DG-2
-    ## 146C-CA1-4 -12.287822  17.9126305     Same : CA1     Same   CA1 146C-CA1-4
-    ## 146C-CA3-4 -15.458569 -35.8629446     Same : CA3     Same   CA3 146C-CA3-4
-    ## 146C-DG-4   26.503359   0.3968615      Same : DG     Same    DG  146C-DG-4
-    ## 146D-CA1-3 -10.305140  11.5331103    Yoked : CA1    Yoked   CA1 146D-CA1-3
-    ## 146D-CA3-3 -15.013848 -15.1077783    Yoked : CA3    Yoked   CA3 146D-CA3-3
-    ## 146D-DG-3    9.177987  -2.7725621     Yoked : DG    Yoked    DG  146D-DG-3
-    ## 147C-CA1-3 -14.136545  16.8557902     Same : CA1     Same   CA1 147C-CA1-3
-    ## 147C-CA3-3 -15.181895 -14.8710062     Same : CA3     Same   CA3 147C-CA3-3
-    ## 147C-DG-3   32.130716   0.1262738      Same : DG     Same    DG  147C-DG-3
-    ## 147D-CA3-1 -16.985316 -16.0287160    Yoked : CA3    Yoked   CA3 147D-CA3-1
-    ## 147D-DG-1   33.087908  -1.2145155     Yoked : DG    Yoked    DG  147D-DG-1
-    ## 148A-CA1-3 -11.943096  15.8531531 Conflict : CA1 Conflict   CA1 148A-CA1-3
-    ## 148A-CA3-3 -18.249825 -16.1718546 Conflict : CA3 Conflict   CA3 148A-CA3-3
-    ## 148A-DG-3   28.737964  -0.9842093  Conflict : DG Conflict    DG  148A-DG-3
-    ## 148B-CA1-4 -11.769117  13.1580821    Yoked : CA1    Yoked   CA1 148B-CA1-4
-    ## 148B-CA3-4 -17.594947 -15.3859638    Yoked : CA3    Yoked   CA3 148B-CA3-4
-    ## 148B-DG-4    8.583223  -1.3502797     Yoked : DG    Yoked    DG  148B-DG-4
-
-``` r
-pcadata <- plotPCA(rld, intgroup=c("APA", "Punch"), returnData=TRUE)
+# create the dataframe using my function pcadataframe
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 
+#pcadata$Treatment <- factor(pcadata$Treatment, levels = c("homecage", "shocked"))
 
-ggplot(pcadata, aes(PC1, PC2, color=Punch, shape=APA)) +
-  geom_point(size=5) +
-  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-  ylab(paste0("PC2: ",percentVar[2],"% variance")) +  
-  #stat_ellipse(level = 0.95, (aes(color=Punch)),size=1.5)   + 
-  scale_color_manual(values=c("#006837", "#41ab5d", "#d9f0a3")) + 
-  theme(axis.title.x = element_text(size=20),
-        axis.title.y = element_text(size=20),
-        legend.title = element_text(size=18),
-        legend.text = element_text(size=18))
+## plot a bunch of pca plots using my ggplot functions DESeqPCAfunction.R, with the color defined infigureoptions.R
+plotPC1PC2(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
 ```
 
 ![](../figures/Fig3/pca-1.png)
+
+``` r
+plotPC2PC6(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+```
+
+![](../figures/Fig3/pca-2.png)
+
+``` r
+# I like this plot because it shows that DGxSame samples are a small cluster
+plotPC2PC4(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+```
+
+![](../figures/Fig3/pca-3.png)
+
+``` r
+# I think this plot shows greater variance in yoked than in trained
+
+
+# I think this plot shows greater variance in yoked than in trained
+PCA12 <- plotPC1PC2(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+PCA26 <- plotPC2PC6(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+PCA24 <- plotPC2PC4(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+
+pdf(file="../figures/Fig3/PCA12.pdf", width=4.5, height=3)
+plot(PCA12)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
+plot(PCA26)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+pdf(file="../figures/Fig3/PCA24.pdf", width=4.5, height=3)
+plot(PCA24)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
 
 Now for some basic stats about the read and gene counts
 
