@@ -174,7 +174,7 @@ frizvectors <- fviz_pca_var(res.pca, geom = c("point", "text"), select.var = lis
 
 fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(2, 3))
 
-fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(1, 2))
+fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(1, 4))
 
 
 

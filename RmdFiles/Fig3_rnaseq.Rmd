@@ -21,10 +21,14 @@ library(gplots) ##for making awesome plots
 library(cowplot) ## for some easy to use themes
 library(ggplot2) ## for awesome plots!
 library(DESeq2) ## for gene expression analysis
+library(genefilter)  ## for PCA fuction
 library(pheatmap) ## for awesome heatmaps
 library(edgeR)  ## for basic read counts status
 library(VennDiagram) ## for Venn Diagrams
+library(colorRamps) ## for pheatmap
+
 ```
+
 
 Then, I set all path so that all the figures are saved in the specified subdirectory. 
 ```{r figurepath, message=F}
@@ -117,26 +121,28 @@ dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ] 
 
 dds # view the DESeq object - note numnber of genes
+# dim: 17746 45 
+# 17,746 genes and 45 samples
 
 ## DESeq2 1.4  Differential expression analysi
 dds <- DESeq(dds)
 
 ## for variance stablized gene expression and log transformed data
 rld <- rlog(dds, blind=FALSE)
-vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
-vsd.fast <- vst(dds, blind=FALSE)
+#vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
+#vsd.fast <- vst(dds, blind=FALSE)
 ```
 
 Now, we can calculate the number of differentiall expressed genes for each contrast. See the function in "resvalsfunction.R" for details.
 
 ```{r DESeq2contrasts}
 source("resvalsfunction.R")
-contrast1 <- resvals(contrastvector = c("Punch", "DG", "CA1"), mypadj = 0.1)
-contrast2 <- resvals(contrastvector = c("Punch", "CA3", "CA1"), mypadj = 0.1)
-contrast3 <- resvals(contrastvector = c("Punch", "DG", "CA3"), mypadj = 0.1)
-contrast4 <- resvals(contrastvector = c("APA", "Yoked", "Same"), mypadj = 0.1)
-contrast5 <- resvals(contrastvector = c("APA", "Yoked", "Conflict"), mypadj = 0.1)
-contrast6 <- resvals(contrastvector = c("APA", "Same", "Conflict"), mypadj = 0.1)
+contrast1 <- resvals(contrastvector = c("Punch", "DG", "CA1"), mypadj = 0.1) #2999
+contrast2 <- resvals(contrastvector = c("Punch", "CA3", "CA1"), mypadj = 0.1) #2204
+contrast3 <- resvals(contrastvector = c("Punch", "DG", "CA3"), mypadj = 0.1) # 4110
+contrast4 <- resvals(contrastvector = c("APA", "Same", "Yoked"), mypadj = 0.1) #107
+contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Yoked"), mypadj = 0.1) #59
+contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Same"), mypadj = 0.1) # 0 
 
 #create a new DF with the gene counts
 ## note: contrast1 had 0 differentially expressed genes, so it is not included 
@@ -212,19 +218,15 @@ grid.draw(prettyvenn)
 Now let's look at a heat map of the data
 
 ```{r heatmap}
-## set coloring for heat map anntations
-df <- as.data.frame(colData(dds)[,c("Punch","APA")]) ## matrix to df
-ann_colors = list(
-  APA =  c(Yoked = (values=c("#8073ac")), Same = (values=c("#e08214")), Conflict = (values=c("#7f3b08"))),
-  Punch =  c(DG = (values=c("#006837")),  CA3 = (values=c("#41ab5d")), 
-             CA1 = (values=c("#d9f0a3"))))
+source("figureoptions.R")
+
 
 DEGes <- assay(rld)
-DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5)
+DEGes <- base::cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-DEGes$padjmin <- with(DEGes, pmin(padjPunchDGCA1, padjPunchCA3CA1, padjPunchDGCA3, padjAPAYokedSame, padjAPAYokedConflict)) # create new col with min padj
-DEGes <- DEGes %>% filter(padjmin < 0.01)
+DEGes$padjmin <- with(DEGes, pmin(padjPunchDGCA1, padjPunchCA3CA1, padjPunchDGCA3, padjAPASameYoked, padjAPAConflictYoked, padjAPAConflictSame)) # create new col with min padj
+DEGes <- DEGes %>% filter(padjmin < 0.0001)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
@@ -232,31 +234,75 @@ DEGes <- as.matrix(DEGes)
 DEGes <- DEGes - rowMeans(DEGes)
 head(DEGes)
 
-pheatmap(DEGes, show_colnames=F, show_rownames = F,
-         #annotation_col=df, annotation_colors = ann_colors,
-         fontsize = 12, fontsize_row = 10, 
-         border_color = "grey60"
-)
+## set anntation variables
+df <- as.data.frame(colData(dds)[,c("Punch","APA")]) ## matrix to df
+ann_colors = ann_colors1
+
+source("figureoptions.R")
+pheatmap(DEGes, show_colnames=T, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = colorpalette,
+         #cellwidth = 12, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+
+# for adobe
+pheatmap(DEGes, show_colnames=T, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = colorpalette,
+         #cellwidth = 12, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/Fig3/HeatmapPadj-1.pdf"
+         )
+
+
 ```
 
 Now lets look at a principle component analysis of the data
 
 ```{r pca}
-plotPCA(rld, intgroup=c("APA", "Punch"), returnData=TRUE)
-pcadata <- plotPCA(rld, intgroup=c("APA", "Punch"), returnData=TRUE)
+source("functions_RNAseq.R")
+
+# create the dataframe using my function pcadataframe
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 
+#pcadata$Treatment <- factor(pcadata$Treatment, levels = c("homecage", "shocked"))
 
-ggplot(pcadata, aes(PC1, PC2, color=Punch, shape=APA)) +
-  geom_point(size=5) +
-  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-  ylab(paste0("PC2: ",percentVar[2],"% variance")) +  
-  #stat_ellipse(level = 0.95, (aes(color=Punch)),size=1.5)   + 
-  scale_color_manual(values=c("#006837", "#41ab5d", "#d9f0a3")) + 
-  theme(axis.title.x = element_text(size=20),
-        axis.title.y = element_text(size=20),
-        legend.title = element_text(size=18),
-        legend.text = element_text(size=18))
+## plot a bunch of pca plots using my ggplot functions DESeqPCAfunction.R, with the color defined infigureoptions.R
+plotPC1PC2(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+plotPC2PC6(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+# I like this plot because it shows that DGxSame samples are a small cluster
+plotPC2PC4(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+# I think this plot shows greater variance in yoked than in trained
+
+
+# I think this plot shows greater variance in yoked than in trained
+PCA12 <- plotPC1PC2(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+PCA26 <- plotPC2PC6(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+PCA24 <- plotPC2PC4(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+
+pdf(file="../figures/Fig3/PCA12.pdf", width=4.5, height=3)
+plot(PCA12)
+dev.off()
+pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
+plot(PCA26)
+dev.off()
+pdf(file="../figures/Fig3/PCA24.pdf", width=4.5, height=3)
+plot(PCA24)
+dev.off()
 ```
 
 Now for some basic stats about the read and gene counts

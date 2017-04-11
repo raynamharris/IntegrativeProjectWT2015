@@ -327,7 +327,7 @@ fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10)
 ![](../figures/Fig2/PCA-16.png)
 
 ``` r
-fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(1, 2))
+fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(1, 4))
 ```
 
 ![](../figures/Fig2/PCA-17.png)
