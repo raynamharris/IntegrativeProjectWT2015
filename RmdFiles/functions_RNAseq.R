@@ -18,10 +18,13 @@ pcadataframe <- function (object, intgroup = "condition", ntop = 500, returnData
   else {
     colData(object)[[intgroup]]
   }
-  d <- data.frame(PC1 = pca$x[, 1], PC2 = pca$x[, 2], PC3 = pca$x[, 3], PC4 = pca$x[, 4],PC5 = pca$x[, 5],PC6 = pca$x[, 6],group = group, 
+  d <- data.frame(PC1 = pca$x[, 1], PC2 = pca$x[, 2], PC3 = pca$x[, 3], 
+                  PC4 = pca$x[, 4], PC5 = pca$x[, 5], PC6 = pca$x[, 6], 
+                  PC7 = pca$x[, 7], PC8 = pca$x[, 8], PC9 = pca$x[, 9],
+                  group = group, 
                   intgroup.df, name = colnames(object))
   if (returnData) {
-    attr(d, "percentVar") <- percentVar[1:6]
+    attr(d, "percentVar") <- percentVar[1:9]
     return(d)
   }
 }
@@ -29,16 +32,16 @@ pcadataframe <- function (object, intgroup = "condition", ntop = 500, returnData
 
 plotPCs <- function(df, xcol, ycol, aescolor, colorname, aesshape, shapename, colorvalues){
   ggplot(df, aes(df[xcol], df[ycol], color=aescolor, shape=aesshape)) +
-    geom_point(size=5) +
+    geom_point(size=3) +
     xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
     ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
     theme_classic() +
     #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=1) + 
     scale_colour_manual(name=colorname, values=c(colorvalues))+
     scale_shape_discrete(name=shapename) +
-    theme(axis.text = element_text(size=14),
-          axis.title.x = element_text(size=16),
-          axis.title.y = element_text(size=16),
-          legend.title = element_text(size=16),
-          legend.text = element_text(size=14))
+    theme(axis.text = element_text(size=12),
+          axis.title.x = element_text(size=14),
+          axis.title.y = element_text(size=14),
+          legend.title = element_text(size=14),
+          legend.text = element_text(size=12))
 }

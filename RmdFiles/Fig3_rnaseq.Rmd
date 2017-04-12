@@ -283,16 +283,16 @@ percentVar <- round(100 * attr(pcadata, "percentVar"))
 #pcadata$Treatment <- factor(pcadata$Treatment, levels = c("homecage", "shocked"))
 
 ## pca plots 
-plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
-plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 # I think this plot shows greater variance in yoked than in trained
-plotPCs(pcadata, 2,6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plotPCs(pcadata, 2, 6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 # I like this plot because it shows that DGxSame samples are a small cluster
-
+plotPCs(pcadata, 1, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 
 # pdf the same pca plots descripbed above of the above
 pdf(file="../figures/Fig3/PCA12.pdf", width=4.5, height=3)
-PCA12 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+PCA12 <- plotPCs(pcadata, 1,2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA12)
 dev.off()
 
@@ -304,6 +304,11 @@ dev.off()
 pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
 PCA26 <- plotPCs(pcadata, 2,6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA26)
+dev.off()
+
+pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
+PCA15 <- plotPCs(pcadata, 1,5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plot(PCA15)
 dev.off()
 ```
 
