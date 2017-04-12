@@ -26,7 +26,6 @@ library(pheatmap) ## for awesome heatmaps
 library(edgeR)  ## for basic read counts status
 library(VennDiagram) ## for Venn Diagrams
 library(colorRamps) ## for pheatmap
-
 ```
 
 
@@ -219,8 +218,6 @@ Now let's look at a heat map of the data
 
 ```{r heatmap}
 source("figureoptions.R")
-
-
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
@@ -280,43 +277,40 @@ Now lets look at a principle component analysis of the data
 
 ```{r pca}
 source("functions_RNAseq.R")
-
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
-
 #pcadata$Treatment <- factor(pcadata$Treatment, levels = c("homecage", "shocked"))
 
-## plot a bunch of pca plots using my ggplot functions DESeqPCAfunction.R, with the color defined infigureoptions.R
-plotPC1PC2(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
-plotPC2PC6(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+## pca plots 
+plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+# I think this plot shows greater variance in yoked than in trained
+plotPCs(pcadata, 2,6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 # I like this plot because it shows that DGxSame samples are a small cluster
-plotPC2PC4(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
-# I think this plot shows greater variance in yoked than in trained
 
 
-# I think this plot shows greater variance in yoked than in trained
-PCA12 <- plotPC1PC2(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
-PCA26 <- plotPC2PC6(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
-PCA24 <- plotPC2PC4(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
-
+# pdf the same pca plots descripbed above of the above
 pdf(file="../figures/Fig3/PCA12.pdf", width=4.5, height=3)
+PCA12 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA12)
 dev.off()
-pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
-plot(PCA26)
-dev.off()
+
 pdf(file="../figures/Fig3/PCA24.pdf", width=4.5, height=3)
+PCA24 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA24)
+dev.off()
+
+pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
+PCA26 <- plotPCs(pcadata, 2,6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plot(PCA26)
 dev.off()
 ```
 
 Now for some basic stats about the read and gene counts
 
 ```{r stats}
-
 ## stats
-
 counts <- countData
 dim( counts )
 colSums( counts ) / 1e06  # in millions of reads
@@ -334,3 +328,4 @@ ggplot(rowsum, aes(x=millioncounts)) +
                      limits=c(0, 8)) +
   scale_y_continuous(name = "Number of Samples")
 ```
+
