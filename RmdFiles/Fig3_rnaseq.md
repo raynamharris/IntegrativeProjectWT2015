@@ -630,8 +630,6 @@ Now let's look at a heat map of the data
 
 ``` r
 source("figureoptions.R")
-
-
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
@@ -759,52 +757,60 @@ Now lets look at a principle component analysis of the data
 
 ``` r
 source("functions_RNAseq.R")
-
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
-
 #pcadata$Treatment <- factor(pcadata$Treatment, levels = c("homecage", "shocked"))
 
-## plot a bunch of pca plots using my ggplot functions DESeqPCAfunction.R, with the color defined infigureoptions.R
-plotPC1PC2(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+## pca plots 
+plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 ```
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
 ![](../figures/Fig3/pca-1.png)
 
 ``` r
-plotPC2PC6(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 ```
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
 ![](../figures/Fig3/pca-2.png)
 
 ``` r
-# I like this plot because it shows that DGxSame samples are a small cluster
-plotPC2PC4(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
+# I think this plot shows greater variance in yoked than in trained
+plotPCs(pcadata, 2, 6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 ```
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
 ![](../figures/Fig3/pca-3.png)
 
 ``` r
-# I think this plot shows greater variance in yoked than in trained
-
-
-# I think this plot shows greater variance in yoked than in trained
-PCA12 <- plotPC1PC2(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
-PCA26 <- plotPC2PC6(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
-PCA24 <- plotPC2PC4(aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch", colorvalues = colorvalAPA)
-
-pdf(file="../figures/Fig3/PCA12.pdf", width=4.5, height=3)
-plot(PCA12)
-dev.off()
+# I like this plot because it shows that DGxSame samples are a small cluster
+plotPCs(pcadata, 1, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 ```
 
-    ## quartz_off_screen 
-    ##                 2
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
+![](../figures/Fig3/pca-4.png)
 
 ``` r
-pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
-plot(PCA26)
+# pdf the same pca plots descripbed above of the above
+pdf(file="../figures/Fig3/PCA12.pdf", width=4.5, height=3)
+PCA12 <- plotPCs(pcadata, 1,2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plot(PCA12)
+```
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
+``` r
 dev.off()
 ```
 
@@ -813,7 +819,46 @@ dev.off()
 
 ``` r
 pdf(file="../figures/Fig3/PCA24.pdf", width=4.5, height=3)
+PCA24 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA24)
+```
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
+``` r
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
+PCA26 <- plotPCs(pcadata, 2,6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plot(PCA26)
+```
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
+``` r
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
+PCA15 <- plotPCs(pcadata, 1,5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plot(PCA15)
+```
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
+``` r
 dev.off()
 ```
 
@@ -824,7 +869,6 @@ Now for some basic stats about the read and gene counts
 
 ``` r
 ## stats
-
 counts <- countData
 dim( counts )
 ```
