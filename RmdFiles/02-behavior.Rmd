@@ -1,13 +1,11 @@
 ---
-title: "Figure 2: Behavior Data Analysis"
+title: "Behavior Data Analysis"
 author: "Rayna M Harris"
 date: "January 14, 2017"
 output:
   md_document:
     variant: markdown_github
-
 ---
-This R Markdown document will create the behavioral analysis figures
 
 ```{r setup, message=F}
 ## load libraries 
@@ -23,20 +21,19 @@ library(pheatmap) ## for pretty heat maps
 library(car) ## for statistics
 library(relaimpo) ## for linear model predictions
 
-
 # install.packages("devtools")
 #library("devtools")
 #install_github("kassambara/factoextra")
 library("factoextra") # for fancy pca plots
 
-
-
 ## load functions 
 source("functions_behavior.R")
+source("figureoptions.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/Fig2/')
+knitr::opts_chunk$set(fig.path = '../figures/02_behavior/')
 ```
+
 
 ```{r data, message=F}
 ## read intermediate data (raw data from video tracker program analyzed in matlab)
@@ -80,7 +77,7 @@ B <- ggplot(behaviorsummary, aes(x=APA, y=m, color=APA)) +
 plot_grid(A,B, nrow=1, labels=c("A", "B"))
 meansem <- plot_grid(A,B, nrow=1, labels=c("A", "B"))
 
-pdf(file="../figures/Fig1/meansem.pdf", width=6, height=3)
+pdf(file="../figures/02_behavior/meansem.pdf", width=6, height=3)
 plot(meansem)
 dev.off()
 
@@ -104,7 +101,7 @@ B <- myboxplot(data = behavior, xcol = "TrainSessionCombo",
 plot_grid(A,B, nrow=1, rel_widths=c(0.45, 0.55), labels=c("A", "B"))
 boxplot <- plot_grid(A,B, nrow=1, rel_widths=c(0.45, 0.55), labels=c("A", "B"))
 
-pdf(file="../figures/Fig1/boxplot.pdf", width=6, height=3)
+pdf(file="../figures/02_behavior/boxplot.pdf", width=6, height=3)
 plot(boxplot)
 dev.off()
 
@@ -113,7 +110,7 @@ C <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeOPP",
                   yaxislabel=" Proportion of time spent\n opposite the shock zone",
                   colorcode="APA")
 
-pdf(file="../figures/Fig1/onebehavior.pdf", width=6, height=4)
+pdf(file="../figures/02_behavior/onebehavior.pdf", width=6, height=4)
 plot(C)
 dev.off()
 
@@ -177,11 +174,9 @@ fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10)
 fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(1, 4))
 
 
-
-pdf(file="../figures/Fig1/frizvectors.pdf", width=4, height=4)
+pdf(file="../figures/02_behavior/frizvectors.pdf", width=4, height=4)
 plot(frizvectors)
 dev.off()
-
 ```
 
 

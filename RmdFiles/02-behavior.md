@@ -1,5 +1,3 @@
-This R Markdown document will create the behavioral analysis figures
-
 ``` r
 ## load libraries 
 library(magrittr) ## to use the weird pipe
@@ -44,9 +42,10 @@ library("factoextra") # for fancy pca plots
 ``` r
 ## load functions 
 source("functions_behavior.R")
+source("figureoptions.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/Fig2/')
+knitr::opts_chunk$set(fig.path = '../figures/02_behavior/')
 ```
 
 ``` r
@@ -91,12 +90,12 @@ B <- ggplot(behaviorsummary, aes(x=APA, y=m, color=APA)) +
 plot_grid(A,B, nrow=1, labels=c("A", "B"))
 ```
 
-![](../figures/Fig2/summary%20stats-1.png)
+![](../figures/02_behavior/summary%20stats-1.png)
 
 ``` r
 meansem <- plot_grid(A,B, nrow=1, labels=c("A", "B"))
 
-pdf(file="../figures/Fig1/meansem.pdf", width=6, height=3)
+pdf(file="../figures/02_behavior/meansem.pdf", width=6, height=3)
 plot(meansem)
 dev.off()
 ```
@@ -124,12 +123,12 @@ B <- myboxplot(data = behavior, xcol = "TrainSessionCombo",
 plot_grid(A,B, nrow=1, rel_widths=c(0.45, 0.55), labels=c("A", "B"))
 ```
 
-![](../figures/Fig2/avoidancebehavior-1.png)
+![](../figures/02_behavior/avoidancebehavior-1.png)
 
 ``` r
 boxplot <- plot_grid(A,B, nrow=1, rel_widths=c(0.45, 0.55), labels=c("A", "B"))
 
-pdf(file="../figures/Fig1/boxplot.pdf", width=6, height=3)
+pdf(file="../figures/02_behavior/boxplot.pdf", width=6, height=3)
 plot(boxplot)
 dev.off()
 ```
@@ -142,7 +141,7 @@ C <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeOPP",
                   yaxislabel=" Proportion of time spent\n opposite the shock zone",
                   colorcode="APA")
 
-pdf(file="../figures/Fig1/onebehavior.pdf", width=6, height=4)
+pdf(file="../figures/02_behavior/onebehavior.pdf", width=6, height=4)
 plot(C)
 ```
 
@@ -164,7 +163,7 @@ The next image shows how all the behaviors measured change over time. Here, the 
 makesessionheatmap(behavior)
 ```
 
-![](../figures/Fig2/heatmap-1.png)
+![](../figures/02_behavior/heatmap-1.png)
 
 ### Principle component analysis (PCA)
 
@@ -176,61 +175,61 @@ scoresdf <- makepcadf(behavior) #create the
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA")
 ```
 
-![](../figures/Fig2/PCA-1.png)
+![](../figures/02_behavior/PCA-1.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC3",colorcode="APA")
 ```
 
-![](../figures/Fig2/PCA-2.png)
+![](../figures/02_behavior/PCA-2.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC2",ycol="PC3",colorcode="APA")
 ```
 
-![](../figures/Fig2/PCA-3.png)
+![](../figures/02_behavior/PCA-3.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC4",colorcode="APA")
 ```
 
-![](../figures/Fig2/PCA-4.png)
+![](../figures/02_behavior/PCA-4.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC5",colorcode="APA")
 ```
 
-![](../figures/Fig2/PCA-5.png)
+![](../figures/02_behavior/PCA-5.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA")
 ```
 
-![](../figures/Fig2/PCA-6.png)
+![](../figures/02_behavior/PCA-6.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC7",colorcode="APA")
 ```
 
-![](../figures/Fig2/PCA-7.png)
+![](../figures/02_behavior/PCA-7.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC8",colorcode="APA")
 ```
 
-![](../figures/Fig2/PCA-8.png)
+![](../figures/02_behavior/PCA-8.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC9",colorcode="APA")
 ```
 
-![](../figures/Fig2/PCA-9.png)
+![](../figures/02_behavior/PCA-9.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC10",colorcode="APA")
 ```
 
-![](../figures/Fig2/PCA-10.png)
+![](../figures/02_behavior/PCA-10.png)
 
 ``` r
 source("functions_behavior.R")
@@ -287,7 +286,7 @@ ggplot(rotation_data) +
   coord_fixed() # fix aspect ratio to 1:1
 ```
 
-![](../figures/Fig2/PCA-11.png)
+![](../figures/02_behavior/PCA-11.png)
 
 ``` r
 library("factoextra")
@@ -296,26 +295,26 @@ res.pca <- prcomp(res.pca,  scale = TRUE)
 fviz_pca_ind(res.pca)
 ```
 
-![](../figures/Fig2/PCA-12.png)
+![](../figures/02_behavior/PCA-12.png)
 
 ``` r
 fviz_pca_ind(res.pca, label="none", habillage=behavior$APA,
              addEllipses=TRUE, ellipse.level=0.95) + scale_color_manual(values=colorvalAPA)
 ```
 
-![](../figures/Fig2/PCA-13.png)
+![](../figures/02_behavior/PCA-13.png)
 
 ``` r
 fviz_pca_var(res.pca, select.var = list(contrib = 20))
 ```
 
-![](../figures/Fig2/PCA-14.png)
+![](../figures/02_behavior/PCA-14.png)
 
 ``` r
 fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 20))
 ```
 
-![](../figures/Fig2/PCA-15.png)
+![](../figures/02_behavior/PCA-15.png)
 
 ``` r
 frizvectors <- fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 20), axes = c(2, 3))
@@ -324,16 +323,16 @@ frizvectors <- fviz_pca_var(res.pca, geom = c("point", "text"), select.var = lis
 fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(2, 3))
 ```
 
-![](../figures/Fig2/PCA-16.png)
+![](../figures/02_behavior/PCA-16.png)
 
 ``` r
 fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(1, 4))
 ```
 
-![](../figures/Fig2/PCA-17.png)
+![](../figures/02_behavior/PCA-17.png)
 
 ``` r
-pdf(file="../figures/Fig1/frizvectors.pdf", width=4, height=4)
+pdf(file="../figures/02_behavior/frizvectors.pdf", width=4, height=4)
 plot(frizvectors)
 dev.off()
 ```
@@ -438,14 +437,14 @@ qqnorm(mymodel$residuals)
 qqline(mymodel$residuals,col='red')
 ```
 
-![](../figures/Fig2/statistics-1.png)
+![](../figures/02_behavior/statistics-1.png)
 
 ``` r
 plot(mymodel$fitted.values,mymodel$residuals)
 abline(h=0, col='red')
 ```
 
-![](../figures/Fig2/statistics-2.png)
+![](../figures/02_behavior/statistics-2.png)
 
 ``` r
 summary(mymodel)
@@ -585,14 +584,14 @@ qqnorm(mymodel2$residuals)
 qqline(mymodel2$residuals,col='red')
 ```
 
-![](../figures/Fig2/statistics-3.png)
+![](../figures/02_behavior/statistics-3.png)
 
 ``` r
 plot(mymodel2$fitted.values,mymodel2$residuals)
 abline(h=0, col='red')
 ```
 
-![](../figures/Fig2/statistics-4.png)
+![](../figures/02_behavior/statistics-4.png)
 
 ``` r
 summary(mymodel2)
