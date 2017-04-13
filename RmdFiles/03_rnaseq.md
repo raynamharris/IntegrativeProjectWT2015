@@ -25,7 +25,7 @@ Then, I set all path so that all the figures are saved in the specified subdirec
 
 ``` r
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/Fig3/')
+knitr::opts_chunk$set(fig.path = '../figures/03_RNAseq/')
 ```
 
 Now, I create data frames from three csv files - count: Contains counts for all transcripts generated from the program Kallisto. This data can be reproducibed from the file kallisto.Rmd - geneids: Contains the ensemble ids and gene names for all the transcripts in the counts data frame. This file will be used to convert transcipt counts to gene counts. This file was also created via kallisto.Rmd file - Traits: This file contains all the information I collected for each sample that was sequenced. Not all columns will be needed, so some are removed later.
@@ -550,7 +550,7 @@ qplot(value, data=rldpadjslong, geom="histogram") +
 
     ## Warning: Removed 1 rows containing missing values (geom_bar).
 
-![](../figures/Fig3/pvaluedistribution-1.png)
+![](../figures/03_RNAseq/pvaluedistribution-1.png)
 
 ``` r
 ggplot(rldpadjslong, aes(x=value)) + geom_density()
@@ -558,7 +558,7 @@ ggplot(rldpadjslong, aes(x=value)) + geom_density()
 
     ## Warning: Removed 85 rows containing non-finite values (stat_density).
 
-![](../figures/Fig3/pvaluedistribution-2.png)
+![](../figures/03_RNAseq/pvaluedistribution-2.png)
 
 ``` r
 ggplot(rldpadjslong, aes(x=value, fill=variable)) +
@@ -567,7 +567,7 @@ ggplot(rldpadjslong, aes(x=value, fill=variable)) +
 
     ## Warning: Removed 85 rows containing non-finite values (stat_density).
 
-![](../figures/Fig3/pvaluedistribution-3.png)
+![](../figures/03_RNAseq/pvaluedistribution-3.png)
 
 ``` r
 ggplot(rldpadjslong, aes(x=value, fill=variable)) +
@@ -577,7 +577,7 @@ ggplot(rldpadjslong, aes(x=value, fill=variable)) +
 
     ## Warning: Removed 85 rows containing non-finite values (stat_density).
 
-![](../figures/Fig3/pvaluedistribution-4.png)
+![](../figures/03_RNAseq/pvaluedistribution-4.png)
 
 Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
 
@@ -604,7 +604,7 @@ prettyvenn <- venn.diagram(
 grid.draw(prettyvenn)
 ```
 
-![](../figures/Fig3/venndiagram-1.png)
+![](../figures/03_RNAseq/venndiagram-1.png)
 
 ``` r
 plot.new()
@@ -624,7 +624,7 @@ prettyvenn <- venn.diagram(
 grid.draw(prettyvenn)
 ```
 
-![](../figures/Fig3/venndiagram-2.png)
+![](../figures/03_RNAseq/venndiagram-2.png)
 
 Now let's look at a heat map of the data
 
@@ -734,7 +734,7 @@ pheatmap(DEGes, show_colnames=T, show_rownames = F,
          )
 ```
 
-![](../figures/Fig3/heatmap-1.png)
+![](../figures/03_RNAseq/heatmap-1.png)
 
 ``` r
 # for adobe
@@ -749,7 +749,7 @@ pheatmap(DEGes, show_colnames=T, show_rownames = F,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
-         filename = "../figures/Fig3/HeatmapPadj-1.pdf"
+         filename = "../figures/03_RNAseq/HeatmapPadj-1.pdf"
          )
 ```
 
@@ -769,7 +769,7 @@ plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pca
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/Fig3/pca-1.png)
+![](../figures/03_RNAseq/pca-1.png)
 
 ``` r
 plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
@@ -778,7 +778,7 @@ plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pca
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/Fig3/pca-2.png)
+![](../figures/03_RNAseq/pca-2.png)
 
 ``` r
 # I think this plot shows greater variance in yoked than in trained
@@ -788,7 +788,7 @@ plotPCs(pcadata, 2, 6, aescolor = pcadata$APA, colorname = "APA", aesshape = pca
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/Fig3/pca-3.png)
+![](../figures/03_RNAseq/pca-3.png)
 
 ``` r
 # I like this plot because it shows that DGxSame samples are a small cluster
@@ -798,11 +798,11 @@ plotPCs(pcadata, 1, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pca
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/Fig3/pca-4.png)
+![](../figures/03_RNAseq/pca-4.png)
 
 ``` r
 # pdf the same pca plots descripbed above of the above
-pdf(file="../figures/Fig3/PCA12.pdf", width=4.5, height=3)
+pdf(file="../figures/03_RNAseq/PCA12.pdf", width=4.5, height=3)
 PCA12 <- plotPCs(pcadata, 1,2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA12)
 ```
@@ -818,7 +818,7 @@ dev.off()
     ##                 2
 
 ``` r
-pdf(file="../figures/Fig3/PCA24.pdf", width=4.5, height=3)
+pdf(file="../figures/03_RNAseq/PCA24.pdf", width=4.5, height=3)
 PCA24 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA24)
 ```
@@ -834,7 +834,7 @@ dev.off()
     ##                 2
 
 ``` r
-pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
+pdf(file="../figures/03_RNAseq/PCA26.pdf", width=4.5, height=3)
 PCA26 <- plotPCs(pcadata, 2,6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA26)
 ```
@@ -850,7 +850,7 @@ dev.off()
     ##                 2
 
 ``` r
-pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
+pdf(file="../figures/03_RNAseq/PCA26.pdf", width=4.5, height=3)
 PCA15 <- plotPCs(pcadata, 1,5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA15)
 ```
@@ -920,4 +920,4 @@ ggplot(rowsum, aes(x=millioncounts)) +
   scale_y_continuous(name = "Number of Samples")
 ```
 
-![](../figures/Fig3/stats-1.png)
+![](../figures/03_RNAseq/stats-1.png)

@@ -32,7 +32,7 @@ library(colorRamps) ## for pheatmap
 Then, I set all path so that all the figures are saved in the specified subdirectory. 
 ```{r figurepath, message=F}
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/Fig3/')
+knitr::opts_chunk$set(fig.path = '../figures/03_RNAseq/')
 ```
 
 Now, I create data frames from three csv files
@@ -267,7 +267,7 @@ pheatmap(DEGes, show_colnames=T, show_rownames = F,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
-         filename = "../figures/Fig3/HeatmapPadj-1.pdf"
+         filename = "../figures/03_RNAseq/HeatmapPadj-1.pdf"
          )
 
 
@@ -291,22 +291,22 @@ plotPCs(pcadata, 2, 6, aescolor = pcadata$APA, colorname = "APA", aesshape = pca
 plotPCs(pcadata, 1, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 
 # pdf the same pca plots descripbed above of the above
-pdf(file="../figures/Fig3/PCA12.pdf", width=4.5, height=3)
+pdf(file="../figures/03_RNAseq/PCA12.pdf", width=4.5, height=3)
 PCA12 <- plotPCs(pcadata, 1,2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA12)
 dev.off()
 
-pdf(file="../figures/Fig3/PCA24.pdf", width=4.5, height=3)
+pdf(file="../figures/03_RNAseq/PCA24.pdf", width=4.5, height=3)
 PCA24 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA24)
 dev.off()
 
-pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
+pdf(file="../figures/03_RNAseq/PCA26.pdf", width=4.5, height=3)
 PCA26 <- plotPCs(pcadata, 2,6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA26)
 dev.off()
 
-pdf(file="../figures/Fig3/PCA26.pdf", width=4.5, height=3)
+pdf(file="../figures/03_RNAseq/PCA26.pdf", width=4.5, height=3)
 PCA15 <- plotPCs(pcadata, 1,5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA15)
 dev.off()
