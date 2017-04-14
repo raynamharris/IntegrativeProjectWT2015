@@ -10,12 +10,7 @@ library(tidyr) ## for respahing data
 library(plyr) ## for renmaing factors
 library(dplyr) ## for filtering and selecting rows
 library(reshape2) ## for melting dataframe
-library(car) ## for statistics
-```
 
-    ## Warning: package 'car' was built under R version 3.3.2
-
-``` r
 ## load functions 
 source("functions_behavior.R")
 ```
@@ -233,10 +228,19 @@ rotationdf <- mkrotationdf(behavior) #loadings for specific factors
     ##  $ variable: Factor w/ 360 levels "Hab_AnnularAvg",..: 1 2 3 4 5 6 7 8 9 10 ...
 
 ``` r
-res.pca <- behavior[c(20:58)]  # for 2nd pca analysis
-res.pca <- prcomp(res.pca,  scale = TRUE)
+behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 ```
 
 ``` r
-write.csv(behavior, file = "../data/01a_behavior.csv", row.names = F)
+write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
+write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
+write.csv(behaviorsummaryTime, file = "../data/01a_behaviorsummaryTime.csv", row.names = FALSE)
+write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
+
+
+write.csv(scaledaveragedata, file = "../data/01a_scaledaveragedata.csv", row.names = TRUE)
+write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.names = TRUE)
+write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
+write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
+write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
 ```
