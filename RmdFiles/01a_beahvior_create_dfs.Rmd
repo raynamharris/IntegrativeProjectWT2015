@@ -24,10 +24,14 @@ source("functions_behavior.R")
 ```{r behaivordata, message=F}
 ## read intermediate data (raw data from video tracker program analyzed in matlab)
 behavior <- read.csv("../data/01_behaviordata.csv", header = T)
-
 ## relevel factors
 behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
 behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "YokedConflict","Same", "Conflict"))
+str(behavior$APA)
+## revalue factors
+levels(behavior$APA) <- c("control","consistent","conflict")
+levels(behavior$APA2) <- c("yoked-consistent","yoked-conflict","consistent","conflict")
+
 ## log transformation 
 behavior$Time1stEntrLog <- log(behavior$Time1stEntr) 
 summary(behavior)
@@ -65,17 +69,14 @@ behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 
 ```
 
-```{r writefiles}
+#```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
 write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
 write.csv(behaviorsummaryTime, file = "../data/01a_behaviorsummaryTime.csv", row.names = FALSE)
 write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
-
-
 write.csv(scaledaveragedata, file = "../data/01a_scaledaveragedata.csv", row.names = TRUE)
 write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.names = TRUE)
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
 write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
 write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
-
-```
+#```

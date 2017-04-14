@@ -1,35 +1,32 @@
 ## box plot ----
-myboxplot <- function(data, xcol, ycol, colorcode, session, yaxislabel){
+myboxplotlegendtop <- function(data, xcol, ycol, colorcode, session, yaxislabel){
   plot <- data %>% filter(TrainSessionCombo==session) %>%  droplevels() %>%
     ggplot(aes_string(x=xcol, y=ycol, fill=colorcode)) + 
     geom_boxplot() + 
     scale_fill_manual(name="Group", 
-                      values=colorvalAPA,
-                      breaks = c("Yoked", "Same", "Conflict")) +
-    #scale_y_continuous(name=NULL) +
+                      values=colorvalAPA) +
     scale_y_continuous(name=yaxislabel) + 
     scale_x_discrete(name=NULL) +   
     theme_cowplot(font_size = 15) +
-    #theme(legend.position="bottom") +
-    theme(legend.text = element_text(size = 10)) 
+    theme(legend.justification=c(1,1), legend.position=c(1,1), 
+          legend.title = element_blank(), axis.text.x = element_blank())
     return(plot)
 }
 
 ## box plot no legend ----
-myboxplotnolegend <- function(data, xcol, ycol, colorcode, session, yaxislabel){
+myboxplotlegendbottom <- function(data, xcol, ycol, colorcode, session, yaxislabel){
   plot <- data %>% filter(TrainSessionCombo==session) %>%  droplevels() %>%
     ggplot(aes_string(x=xcol, y=ycol, fill=colorcode)) + 
     geom_boxplot() + 
     scale_fill_manual(name="Group", 
-                      values=colorvalAPA,
-                      breaks = c("Yoked", "Same", "Conflict")) +
-    #scale_y_continuous(name=NULL) +
+                      values=colorvalAPA) +
     scale_y_continuous(name=yaxislabel) + 
     scale_x_discrete(name=NULL) +   
     theme_cowplot(font_size = 15) +
     #theme(legend.position="bottom") +
     theme(legend.text = element_text(size = 10))  +
-    theme(legend.position="none") 
+    theme(legend.justification=c(1,0), legend.position=c(1,0), 
+          legend.title = element_blank(), axis.text.x = element_blank())
   return(plot)
 }
 
@@ -41,7 +38,6 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
     stat_smooth(alpha=0.5)  +
     theme_cowplot(font_size = 15, line_size = 0.5) + 
     #background_grid(major = "xy", minor = "none") + 
-    theme(axis.text.x = element_text(angle=60, vjust=0.5)) +
     scale_colour_manual(name="APA Training", values=colorvalAPA,
                         breaks = c("Yoked", "Same", "Conflict")) +
     scale_y_continuous(name=yaxislabel) + 
@@ -50,8 +46,8 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
                        labels=c("1" = "Habituation", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
                                 "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
-    theme(legend.position="top",
-          legend.title=element_blank()) 
+    theme(legend.justification=c(1,1), legend.position=c(1,1),
+          axis.text.x = element_text(angle=60, vjust=0.5))
   return(plot)
 }
 
@@ -161,9 +157,9 @@ makepcaplot <- function(data,xcol,ycol,colorcode){
     theme(strip.background = element_blank()) +
     scale_colour_manual(name="APA Training",
                         values=colorvalAPA,
-                        breaks=c("Yoked", "Same", "Conflict")) +
-    theme(legend.position="none") +
-    geom_text()
+                        breaks=c("Yoked", "Same", "Conflict"))  +
+    geom_text() +
+    theme(legend.position="none")
   return(plot)
 }
 

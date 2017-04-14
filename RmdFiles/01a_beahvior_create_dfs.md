@@ -18,10 +18,19 @@ source("functions_behavior.R")
 ``` r
 ## read intermediate data (raw data from video tracker program analyzed in matlab)
 behavior <- read.csv("../data/01_behaviordata.csv", header = T)
-
 ## relevel factors
 behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
 behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "YokedConflict","Same", "Conflict"))
+str(behavior$APA)
+```
+
+    ##  Factor w/ 3 levels "Yoked","Same",..: 2 2 2 2 2 2 2 2 2 2 ...
+
+``` r
+## revalue factors
+levels(behavior$APA) <- c("control","consistent","conflict")
+levels(behavior$APA2) <- c("yoked-consistent","yoked-conflict","consistent","conflict")
+
 ## log transformation 
 behavior$Time1stEntrLog <- log(behavior$Time1stEntr) 
 summary(behavior)
@@ -43,22 +52,22 @@ summary(behavior)
     ##                3rd Qu.:2.000   T2       : 34              15141C :  9  
     ##                Max.   :4.000   T3       : 34              15141D :  9  
     ##                                (Other)  :102              (Other):252  
-    ##  Experimenter       Housing    TestLocation       APA     
-    ##  Maddy:306    AnimalRoom:306   MBL:306      Yoked   :153  
-    ##                                             Same    : 72  
-    ##                                             Conflict: 81  
-    ##                                                           
-    ##                                                           
-    ##                                                           
-    ##                                                           
-    ##             APA2    TrainSessionCombo              pair1    
-    ##  YokedSame    :72   Hab      : 34     15140A_Hab      :  1  
-    ##  YokedConflict:81   Retention: 34     15140A_Retention:  1  
-    ##  Same         :72   Retest   : 34     15140A_Retest   :  1  
-    ##  Conflict     :81   T1       : 34     15140A_T1       :  1  
-    ##                     T2       : 34     15140A_T2       :  1  
-    ##                     T3       : 34     15140A_T3       :  1  
-    ##                     (Other)  :102     (Other)         :300  
+    ##  Experimenter       Housing    TestLocation         APA     
+    ##  Maddy:306    AnimalRoom:306   MBL:306      control   :153  
+    ##                                             consistent: 72  
+    ##                                             conflict  : 81  
+    ##                                                             
+    ##                                                             
+    ##                                                             
+    ##                                                             
+    ##                APA2    TrainSessionCombo              pair1    
+    ##  yoked-consistent:72   Hab      : 34     15140A_Hab      :  1  
+    ##  yoked-conflict  :81   Retention: 34     15140A_Retention:  1  
+    ##  consistent      :72   Retest   : 34     15140A_Retest   :  1  
+    ##  conflict        :81   T1       : 34     15140A_T1       :  1  
+    ##                        T2       : 34     15140A_T2       :  1  
+    ##                        T3       : 34     15140A_T3       :  1  
+    ##                        (Other)  :102     (Other)         :300  
     ##               pair2     TrainSessionComboNum SdevSpeedArena 
     ##  15140A_Hab      :  1   Min.   :1            Min.   :0.570  
     ##  15140A_Retention:  1   1st Qu.:3            1st Qu.:2.170  
@@ -159,11 +168,11 @@ behaviorsummaryTime
 ```
 
     ## # A tibble: 3 × 3
-    ##        APA         m        se
-    ##     <fctr>     <dbl>     <dbl>
-    ## 1    Yoked  26.88229  2.154333
-    ## 2     Same 185.86528 27.074418
-    ## 3 Conflict 146.74296 21.844412
+    ##          APA         m        se
+    ##       <fctr>     <dbl>     <dbl>
+    ## 1    control  26.88229  2.154333
+    ## 2 consistent 185.86528 27.074418
+    ## 3   conflict 146.74296 21.844412
 
 ``` r
 behaviorsummaryNum <- summarise(group_by(behavior, APA), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
@@ -171,11 +180,11 @@ behaviorsummaryNum
 ```
 
     ## # A tibble: 3 × 3
-    ##        APA         m        se
-    ##     <fctr>     <dbl>     <dbl>
-    ## 1    Yoked 17.692810 0.5713821
-    ## 2     Same  7.291667 1.1242173
-    ## 3 Conflict  9.259259 1.1796602
+    ##          APA         m        se
+    ##       <fctr>     <dbl>     <dbl>
+    ## 1    control 17.692810 0.5713821
+    ## 2 consistent  7.291667 1.1242173
+    ## 3   conflict  9.259259 1.1796602
 
 ``` r
 ## see the makesessionheatmap documentataion for data tidying and plot specifications
@@ -231,16 +240,5 @@ rotationdf <- mkrotationdf(behavior) #loadings for specific factors
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 ```
 
-``` r
-write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
-write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
-write.csv(behaviorsummaryTime, file = "../data/01a_behaviorsummaryTime.csv", row.names = FALSE)
-write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
-
-
-write.csv(scaledaveragedata, file = "../data/01a_scaledaveragedata.csv", row.names = TRUE)
-write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.names = TRUE)
-write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
-write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
-write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
-```
+`{r writefiles} write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE) write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE) write.csv(behaviorsummaryTime, file = "../data/01a_behaviorsummaryTime.csv", row.names = FALSE) write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE) write.csv(scaledaveragedata, file = "../data/01a_scaledaveragedata.csv", row.names = TRUE) write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.names = TRUE) write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE) write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE) write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE) #`
+========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
