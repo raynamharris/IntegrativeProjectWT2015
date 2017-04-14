@@ -1,0 +1,71 @@
+---
+title: "Behavior Data Analysis"
+author: "Rayna M Harris"
+date: "January 14, 2017"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r setup, message=F}
+## load libraries 
+#library(magrittr) ## to use the weird pipe
+library(tidyr) ## for respahing data
+library(plyr) ## for renmaing factors
+library(dplyr) ## for filtering and selecting rows
+library(reshape2) ## for melting dataframe
+library(car) ## for statistics
+
+## load functions 
+source("functions_behavior.R")
+
+```
+
+
+```{r behaivordata, message=F}
+## read intermediate data (raw data from video tracker program analyzed in matlab)
+behavior <- read.csv("../data/01_behaviordata.csv", header = T)
+
+## relevel factors
+behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
+behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "YokedConflict","Same", "Conflict"))
+## log transformation 
+behavior$Time1stEntrLog <- log(behavior$Time1stEntr) 
+summary(behavior)
+```
+
+```{r retention, message=F}
+## subset to view just the data from the retention session
+retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  droplevels() 
+```
+
+```{r behaviorsummary}
+behaviorsummaryTime <- summarise(group_by(behavior, APA), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
+behaviorsummaryTime
+
+behaviorsummaryNum <- summarise(group_by(behavior, APA), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+behaviorsummaryNum
+```
+
+
+
+
+```{r heatmap,  message=FALSE, results='hide'}
+## see the makesessionheatmap documentataion for data tidying and plot specifications
+scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior))
+summary(scaledaveragedata)
+columnannotations <- as.data.frame(makecolumnannotations(scaledaveragedata))
+summary(columnannotations)
+```
+
+
+```{r PCA}
+scoresdf <- makepcadf(behavior) #create the df of pcas
+rotationdf <- mkrotationdf(behavior) #loadings for specific factors
+res.pca <- behavior[c(20:58)]  # for 2nd pca analysis
+res.pca <- prcomp(res.pca,  scale = TRUE)
+```
+
+```{r writefiles}
+write.csv(behavior, file = "../data/01a_behavior.csv", row.names = F)
+```

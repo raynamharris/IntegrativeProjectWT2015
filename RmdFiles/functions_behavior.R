@@ -4,15 +4,15 @@ myboxplot <- function(data, xcol, ycol, colorcode, session, yaxislabel){
     ggplot(aes_string(x=xcol, y=ycol, fill=colorcode)) + 
     geom_boxplot() + 
     scale_fill_manual(name="Group", 
-                        values=colorvalAPA,
-                        breaks = c("Yoked", "Same", "Conflict")) +
+                      values=colorvalAPA,
+                      breaks = c("Yoked", "Same", "Conflict")) +
     #scale_y_continuous(name=NULL) +
     scale_y_continuous(name=yaxislabel) + 
     scale_x_discrete(name=NULL) +   
     theme_cowplot(font_size = 15) +
     #theme(legend.position="bottom") +
     theme(legend.text = element_text(size = 10)) 
-  return(plot)
+    return(plot)
 }
 
 ## box plot no legend ----
@@ -57,42 +57,8 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
 
 
 
-
-## make a heatmap from group averages ----
-makeagroupaveheatmap <- function(data){
-  #first melt the data to make long
-  longdata <- melt(data, id = c(1:18));
-  longdata <- longdata %>% drop_na();
-  # then widen with group averages, add row names, scale, and transpose
-  averagedata <- dcast(longdata, APA ~ variable, value.var= "value", fun.aggregate=mean);
-  rownames(averagedata) <- averagedata$APA;    
-  averagedata[1] <- NULL;
-  averagedata <- scale(averagedata)
-  averagedata <- t(averagedata)
-  #next lines create the annotations
-  columnannotations <- as.data.frame(colnames(averagedata))
-  names(columnannotations)[names(columnannotations)=="colnames(averagedata)"] <- "APA"
-  rownames(columnannotations) <- columnannotations$APA
-  columnannotationcolors = list(
-    APA =  c(Yoked = (values=c("#404040")), Same = (values=c("#f4a582")),
-           Conflict = (values=c("#ca0020"))))
-  #now plot the heatmap
-  plot <- pheatmap(averagedata, 
-         show_colnames=FALSE, show_rownames=TRUE,
-         annotation_col = columnannotations, 
-         annotation_colors = columnannotationcolors,
-         annotation_names_col=TRUE,
-         fontsize = 15, fontsize_row = 8, fontsize_col = 10,
-         #cellwidth=75, 
-         #height = 3,
-         border_color = "grey60",
-         annotation_legend = FALSE)
-  return(plot)
-}
-
 ## make a heatmap from all sessions ----
-makesessionheatmap <- function(data){
-  #first melt the data to make long
+makescaledaveragedata <- function(data){
   longdata <- melt(data, id = c(1:18));  #longdata <- melt(behavior, id = c(1:18))
   longdata <- longdata %>% drop_na();
   # then widen with group averages, add row names, scale, and transpose
@@ -100,11 +66,15 @@ makesessionheatmap <- function(data){
   averagedata <- dcast(longdata, APAsession ~ variable, value.var= "value", fun.aggregate=mean);
   rownames(averagedata) <- averagedata$APAsession;    
   averagedata[1] <- NULL;
-  averagedata <- scale(averagedata)
-  averagedata <- t(averagedata)
+  scaledaveragedata <- scale(averagedata)
+  scaledaveragedata <- t(scaledaveragedata)
   #next lines create the annotations
-  columnannotations <- as.data.frame(colnames(averagedata))
-  names(columnannotations)[names(columnannotations)=="colnames(averagedata)"] <- "column"
+  return(scaledaveragedata)
+}  
+
+makecolumnannotations <- function(data){  
+  columnannotations <- as.data.frame(colnames(data))
+  names(columnannotations)[names(columnannotations)=="colnames(data)"] <- "column"
   rownames(columnannotations) <- columnannotations$column
   columnannotations$APA <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 1)
   columnannotations$Session <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 2)
@@ -112,33 +82,11 @@ makesessionheatmap <- function(data){
   columnannotations$Session <- revalue(columnannotations$Session, c("T4" = "T4_C1")) 
   columnannotations$Session <- revalue(columnannotations$Session, c("T5" = "T5_C2")) 
   columnannotations$Session <- revalue(columnannotations$Session, c("T6" = "T6_C3")) 
-    columnannotations$column <- NULL
-    columnannotationcolors = list(
-    APA =  c(Yoked = (values=c("#404040")), 
-             Same = (values=c("#f4a582")),
-             Conflict = (values=c("#ca0020"))),
-    Session =  c(Hab = (values=c("#eff3ff")), 
-             T1 = (values=c("#bdd7e7")),
-             T2 = (values=c("#6baed6")),
-             T3 = (values=c("#3182bd")),
-             Retest = (values=c("#08519c")),
-             T4_C1 = (values=c("#cbc9e2")),
-             T5_C2 = (values=c("#9e9ac8")),
-             T6_C3 = (values=c("#756bb1")),
-             Retention = (values=c("#54278f"))))
-        #now plot the heatmap
-  plot <- pheatmap(averagedata, 
-                   show_colnames=FALSE, show_rownames=TRUE,
-                   annotation_col = columnannotations, 
-                   annotation_colors = columnannotationcolors,
-                   annotation_names_col=TRUE,
-                   fontsize = 15, fontsize_row = 8, fontsize_col = 10,
-                   #cellwidth=75, 
-                   #height = 3,
-                   border_color = "grey60",
-                   annotation_legend = TRUE)
-  return(plot)
+  columnannotations$column <- NULL
+  return(columnannotations)
 }
+
+
 
 
 
@@ -188,7 +136,7 @@ makepcaloadingsdf <- function(data){
   return(loadings)
 }
 
-mkrotationdata <- function(data){
+mkrotationdf <- function(data){
   #first melt the data to make long
   longdata <- melt(data, id = c(1:18));
   longdata <- longdata %>% drop_na();
@@ -198,9 +146,9 @@ mkrotationdata <- function(data){
   Z <- longdata[,3:371]
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
-  rotation_data <- data.frame(pc$rotation, variable=row.names(pc$rotation))
-  str(rotation_data)
-  return(rotation_data)
+  rotationdf <- data.frame(pc$rotation, variable=row.names(pc$rotation))
+  str(rotationdf)
+  return(rotationdf)
 }
 
 

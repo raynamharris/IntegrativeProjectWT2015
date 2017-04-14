@@ -45,7 +45,7 @@ source("functions_behavior.R")
 source("figureoptions.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02_behavior/')
+knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
 ```
 
 ``` r
@@ -90,12 +90,12 @@ B <- ggplot(behaviorsummary, aes(x=APA, y=m, color=APA)) +
 plot_grid(A,B, nrow=1, labels=c("A", "B"))
 ```
 
-![](../figures/02_behavior/summary%20stats-1.png)
+![](../figures/01_behavior/summary%20stats-1.png)
 
 ``` r
 meansem <- plot_grid(A,B, nrow=1, labels=c("A", "B"))
 
-pdf(file="../figures/02_behavior/meansem.pdf", width=6, height=3)
+pdf(file="../figures/01_behavior/meansem.pdf", width=6, height=3)
 plot(meansem)
 dev.off()
 ```
@@ -123,12 +123,12 @@ B <- myboxplot(data = behavior, xcol = "TrainSessionCombo",
 plot_grid(A,B, nrow=1, rel_widths=c(0.45, 0.55), labels=c("A", "B"))
 ```
 
-![](../figures/02_behavior/avoidancebehavior-1.png)
+![](../figures/01_behavior/avoidancebehavior-1.png)
 
 ``` r
 boxplot <- plot_grid(A,B, nrow=1, rel_widths=c(0.45, 0.55), labels=c("A", "B"))
 
-pdf(file="../figures/02_behavior/boxplot.pdf", width=6, height=3)
+pdf(file="../figures/01_behavior/boxplot.pdf", width=6, height=3)
 plot(boxplot)
 dev.off()
 ```
@@ -141,7 +141,7 @@ C <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeOPP",
                   yaxislabel=" Proportion of time spent\n opposite the shock zone",
                   colorcode="APA")
 
-pdf(file="../figures/02_behavior/onebehavior.pdf", width=6, height=4)
+pdf(file="../figures/01_behavior/onebehavior.pdf", width=6, height=4)
 plot(C)
 ```
 
@@ -158,13 +158,6 @@ dev.off()
 
 The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown in red and negative values show in blue. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group (purple, orange, brown) and training session (from white to black according to increasing time spend in the active place avoidance group).
 
-``` r
-## see the makesessionheatmap documentataion for data tidying and plot specifications
-makesessionheatmap(behavior)
-```
-
-![](../figures/02_behavior/heatmap-1.png)
-
 ### Principle component analysis (PCA)
 
 Given the correlational structure of the data, I next reduced the dimentionality with a PCA anlaysis. You can see that PC1 speparates trained and untraned animals (D,E) but neither PC2 (D) nor PC3 (E) separate same and conflict aniamls. Elipses show 95% confidence interval.
@@ -175,67 +168,67 @@ scoresdf <- makepcadf(behavior) #create the
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA")
 ```
 
-![](../figures/02_behavior/PCA-1.png)
+![](../figures/01_behavior/PCA-1.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC3",colorcode="APA")
 ```
 
-![](../figures/02_behavior/PCA-2.png)
+![](../figures/01_behavior/PCA-2.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC2",ycol="PC3",colorcode="APA")
 ```
 
-![](../figures/02_behavior/PCA-3.png)
+![](../figures/01_behavior/PCA-3.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC4",colorcode="APA")
 ```
 
-![](../figures/02_behavior/PCA-4.png)
+![](../figures/01_behavior/PCA-4.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC5",colorcode="APA")
 ```
 
-![](../figures/02_behavior/PCA-5.png)
+![](../figures/01_behavior/PCA-5.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA")
 ```
 
-![](../figures/02_behavior/PCA-6.png)
+![](../figures/01_behavior/PCA-6.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC7",colorcode="APA")
 ```
 
-![](../figures/02_behavior/PCA-7.png)
+![](../figures/01_behavior/PCA-7.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC8",colorcode="APA")
 ```
 
-![](../figures/02_behavior/PCA-8.png)
+![](../figures/01_behavior/PCA-8.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC9",colorcode="APA")
 ```
 
-![](../figures/02_behavior/PCA-9.png)
+![](../figures/01_behavior/PCA-9.png)
 
 ``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC10",colorcode="APA")
 ```
 
-![](../figures/02_behavior/PCA-10.png)
+![](../figures/01_behavior/PCA-10.png)
 
 ``` r
 source("functions_behavior.R")
 
 # capture the rotation matrix in a data frame
-rotation_data <- mkrotationdata(behavior)
+rotationdf <- mkrotationdf(behavior)
 ```
 
     ## 'data.frame':    360 obs. of  35 variables:
@@ -280,13 +273,13 @@ rotation_data <- mkrotationdata(behavior)
 arrow_style <- arrow(length = unit(0.05, "inches"),
                      type = "closed")
 # now plot, using geom_segment() for arrows and geom_text for labels
-ggplot(rotation_data) + 
+ggplot(rotationdf) + 
   geom_segment(aes(xend=PC1, yend=PC2), x=0, y=0, arrow=arrow_style) + 
   geom_text(aes(x=PC1, y=PC2, label=variable), hjust=0, size=3, color='red') + 
   coord_fixed() # fix aspect ratio to 1:1
 ```
 
-![](../figures/02_behavior/PCA-11.png)
+![](../figures/01_behavior/PCA-11.png)
 
 ``` r
 library("factoextra")
@@ -295,26 +288,26 @@ res.pca <- prcomp(res.pca,  scale = TRUE)
 fviz_pca_ind(res.pca)
 ```
 
-![](../figures/02_behavior/PCA-12.png)
+![](../figures/01_behavior/PCA-12.png)
 
 ``` r
 fviz_pca_ind(res.pca, label="none", habillage=behavior$APA,
              addEllipses=TRUE, ellipse.level=0.95) + scale_color_manual(values=colorvalAPA)
 ```
 
-![](../figures/02_behavior/PCA-13.png)
+![](../figures/01_behavior/PCA-13.png)
 
 ``` r
 fviz_pca_var(res.pca, select.var = list(contrib = 20))
 ```
 
-![](../figures/02_behavior/PCA-14.png)
+![](../figures/01_behavior/PCA-14.png)
 
 ``` r
 fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 20))
 ```
 
-![](../figures/02_behavior/PCA-15.png)
+![](../figures/01_behavior/PCA-15.png)
 
 ``` r
 frizvectors <- fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 20), axes = c(2, 3))
@@ -323,16 +316,16 @@ frizvectors <- fviz_pca_var(res.pca, geom = c("point", "text"), select.var = lis
 fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(2, 3))
 ```
 
-![](../figures/02_behavior/PCA-16.png)
+![](../figures/01_behavior/PCA-16.png)
 
 ``` r
 fviz_pca_var(res.pca, geom = c("point", "text"), select.var = list(contrib = 10), axes = c(1, 4))
 ```
 
-![](../figures/02_behavior/PCA-17.png)
+![](../figures/01_behavior/PCA-17.png)
 
 ``` r
-pdf(file="../figures/02_behavior/frizvectors.pdf", width=4, height=4)
+pdf(file="../figures/01_behavior/frizvectors.pdf", width=4, height=4)
 plot(frizvectors)
 dev.off()
 ```
@@ -437,14 +430,14 @@ qqnorm(mymodel$residuals)
 qqline(mymodel$residuals,col='red')
 ```
 
-![](../figures/02_behavior/statistics-1.png)
+![](../figures/01_behavior/statistics-1.png)
 
 ``` r
 plot(mymodel$fitted.values,mymodel$residuals)
 abline(h=0, col='red')
 ```
 
-![](../figures/02_behavior/statistics-2.png)
+![](../figures/01_behavior/statistics-2.png)
 
 ``` r
 summary(mymodel)
@@ -584,14 +577,14 @@ qqnorm(mymodel2$residuals)
 qqline(mymodel2$residuals,col='red')
 ```
 
-![](../figures/02_behavior/statistics-3.png)
+![](../figures/01_behavior/statistics-3.png)
 
 ``` r
 plot(mymodel2$fitted.values,mymodel2$residuals)
 abline(h=0, col='red')
 ```
 
-![](../figures/02_behavior/statistics-4.png)
+![](../figures/01_behavior/statistics-4.png)
 
 ``` r
 summary(mymodel2)

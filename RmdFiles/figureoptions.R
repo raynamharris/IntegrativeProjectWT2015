@@ -22,3 +22,19 @@ ann_colors1 = list(
             CA3 = (values=c("#1b9e77")), 
             DG = (values=c("#d95f02"))))
 
+
+session_colors1 = list(
+  APA =  c(Yoked = (values=c("#404040")), 
+           Same = (values=c("#f4a582")),
+           Conflict = (values=c("#ca0020"))),
+  Session =  c(Hab = (values=c("#eff3ff")), 
+               T1 = (values=c("#bdd7e7")),
+               T2 = (values=c("#6baed6")),
+               T3 = (values=c("#3182bd")),
+               Retest = (values=c("#08519c")),
+               T4_C1 = (values=c("#cbc9e2")),
+               T5_C2 = (values=c("#9e9ac8")),
+               T6_C3 = (values=c("#756bb1")),
+               Retention = (values=c("#54278f"))))
+
+

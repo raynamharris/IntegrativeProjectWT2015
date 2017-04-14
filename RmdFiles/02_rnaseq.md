@@ -850,7 +850,7 @@ dev.off()
     ##                 2
 
 ``` r
-pdf(file="../figures/03_RNAseq/PCA26.pdf", width=4.5, height=3)
+pdf(file="../figures/03_RNAseq/PCA15.pdf", width=4.5, height=3)
 PCA15 <- plotPCs(pcadata, 1,5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA15)
 ```
