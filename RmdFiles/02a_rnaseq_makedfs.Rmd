@@ -16,24 +16,10 @@ First I load a handful of packages for data wrangling, gene expression analysis,
 library(dplyr) ## for filtering and selecting rows
 library(plyr) ## for renmaing factors
 library(reshape2) ## for melting dataframe
-library(magrittr) ## to use the weird pipe
-library(gplots) ##for making awesome plots
-library(cowplot) ## for some easy to use themes
-library(ggplot2) ## for awesome plots!
 library(DESeq2) ## for gene expression analysis
-library(genefilter)  ## for PCA fuction
-library(pheatmap) ## for awesome heatmaps
 library(edgeR)  ## for basic read counts status
-library(VennDiagram) ## for Venn Diagrams
-library(colorRamps) ## for pheatmap
 ```
 
-
-Then, I set all path so that all the figures are saved in the specified subdirectory. 
-```{r figurepath, message=F}
-## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/03_RNAseq/')
-```
 
 Now, I create data frames from three csv files
 - count: Contains counts for all transcripts generated from the program Kallisto. This data can be reproducibed from the file kallisto.Rmd
@@ -165,12 +151,13 @@ qplot(value, data=rldpadjslong, geom="histogram") +
   facet_grid( ~ variable) +
   scale_y_log10()
 
-ggplot(rldpadjslong, aes(x=value)) + geom_density()
-ggplot(rldpadjslong, aes(x=value, fill=variable)) +
-  geom_density(alpha=.3) 
-ggplot(rldpadjslong, aes(x=value, fill=variable)) +
-  geom_density(alpha=.3) +
-  scale_y_log10()
+myhistogram(contrastvector = c("Punch", "DG", "CA1"), mypval = 0.05)
+myhistogram(contrastvector = c("Punch", "CA3", "CA1"), mypval = 0.05)
+myhistogram(contrastvector = c("Punch", "DG", "CA3"), mypval = 0.05)
+myhistogram(contrastvector = c("APA", "Same", "Yoked"), mypval = 0.05)
+myhistogram(contrastvector = c("APA", "Conflict", "Yoked"), mypval = 0.05)
+myhistogram(contrastvector = c("APA", "Conflict", "Same"), mypval = 0.05)
+
 ```
 
 Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
@@ -276,6 +263,7 @@ pheatmap(DEGes, show_colnames=T, show_rownames = F,
 Now lets look at a principle component analysis of the data
 
 ```{r pca}
+library(genefilter)  ## for PCA fuction
 source("functions_RNAseq.R")
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
@@ -292,14 +280,6 @@ aov2 <- aov(PC2 ~ Punch, data=pcadata)
 summary(aov2) 
 TukeyHSD(aov2, which = "Punch") 
 
-aov3 <- aov(PC3 ~ Punch, data=pcadata)
-summary(aov3) 
-TukeyHSD(aov3, which = "Punch") 
-
-aov4 <- aov(PC4 ~ Punch, data=pcadata)
-summary(aov4) 
-TukeyHSD(aov4, which = "Punch") 
-
 aov4 <- aov(PC4 ~ APA, data=pcadata)
 summary(aov4) 
 TukeyHSD(aov4, which = "APA") 
@@ -308,30 +288,46 @@ aov5 <- aov(PC5 ~ APA, data=pcadata)
 summary(aov5) 
 TukeyHSD(aov5, which = "APA") 
 
-aov6 <- aov(PC6 ~ APA, data=pcadata)
-summary(aov6) 
-TukeyHSD(aov6, which = "APA") 
 
-aov7 <- aov(PC7 ~ APA, data=pcadata)
-summary(aov7) 
-TukeyHSD(aov7, which = "APA") 
 
-aov8 <- aov(PC8 ~ APA, data=pcadata)
-summary(aov8) 
-TukeyHSD(aov8, which = "APA") 
+lm1245 <- lm(PC1+PC2+PC4+PC5~APA*Punch, data=pcadata)
+summary(lm1245)
+anova(lm1245) #punch ***
 
-aov9 <- aov(PC9 ~ APA, data=pcadata)
-summary(aov9) 
-TukeyHSD(aov9, which = "APA") 
+lm12 <- lm(PC1+PC2~APA*Punch, data=pcadata)
+summary(lm12)
+anova(lm12) #punch ***, APA:Punch .
+
+lm1 <- lm(PC1~APA*Punch, data=pcadata)
+summary(lm1)
+anova(lm1) #punch ***
+
+lm24 <- lm(PC2+PC4~APA*Punch, data=pcadata)
+summary(lm24)
+anova(lm24) # APA . #PUnch ***
+
+lm5 <- lm(PC5~APA*Punch, data=pcadata)
+summary(lm5)
+anova(lm5) # APA ***
+
+lm4 <- lm(PC4~APA*Punch, data=pcadata)
+summary(lm4)
+anova(lm4)
+
+lm3 <- lm(PC3~APA*Punch, data=pcadata)
+summary(lm3) #something DG-CA3 specific 
+anova(lm3) # APA . 
+
+
 
 
 ## pca plots 
 plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
-plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plotPCs(pcadata, 2, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 # I think this plot shows greater variance in yoked than in trained
 plotPCs(pcadata, 2, 6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 # I like this plot because it shows that DGxSame samples are a small cluster
-plotPCs(pcadata, 2, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plotPCs(pcadata, 2, 3, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 
 # pdf the same pca plots descripbed above of the above
 pdf(file="../figures/03_RNAseq/PCA12.pdf", width=4.5, height=3)

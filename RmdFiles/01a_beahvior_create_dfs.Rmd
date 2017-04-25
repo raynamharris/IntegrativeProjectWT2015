@@ -63,6 +63,12 @@ summary(columnannotations)
 
 
 ```{r PCA}
+longdata <- makelongdata(behavior)
+Z <- longdata[,3:371]
+Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
+pc = prcomp(Z, scale.=TRUE)
+loadings <- pc$rotation
+scores <- pc$x
 scoresdf <- makepcadf(behavior) #create the df of pcas
 rotationdf <- mkrotationdf(behavior) #loadings for specific factors
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis

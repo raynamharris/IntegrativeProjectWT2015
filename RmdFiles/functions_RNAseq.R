@@ -45,3 +45,14 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, aesshape, shapename, co
           legend.title = element_text(size=14),
           legend.text = element_text(size=12))
 }
+
+myhistogram <- function(contrastvector, mypval){
+  res <- results(dds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = F)
+  vals <- cbind(res$pvalue)
+  pvalcolname <- as.character(paste(contrastvector[2], "vs",contrastvector[3], sep=" "))
+  colnames(vals) <- c(pvalcolname)
+  vals <- as.data.frame(vals)
+  histogram <- hist(vals)
+  return(histogram)
+  print(histogram)
+}

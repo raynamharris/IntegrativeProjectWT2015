@@ -11,7 +11,8 @@ output:
 library(ggplot2) ## for awesome plots!
 library(cowplot) ## for some easy to use themes
 library(dplyr) ## for filtering and selecting rows
-library(factoextra)
+library(factoextra)  ##pca with vectors
+library(car) ## stats
 
 ## load functions 
 source("functions_behavior.R")
@@ -27,18 +28,21 @@ behavior <- read.csv("../data/01a_behavior.csv", header = T)
 retention <- read.csv("../data/01a_retention.csv", header = T) 
 behaviorsummaryTime <- read.csv("../data/01a_behaviorsummaryTime.csv", header = T)
 behaviorsummaryNum <- read.csv("../data/01a_behaviorsummaryNum.csv", header = T)
-scaledaveragedata <- read.csv("../data/01a_scaledaveragedata.csv", header = T)
-columnannotations <- read.csv("../data/01a_columnannotations.csv", header = T)
+scaledaveragedata <- read.csv("../data/01a_scaledaveragedata.csv", header = T, row.names = 1)
+columnannotations <- read.csv("../data/01a_columnannotations.csv", header = T, row.names = 1)
 scoresdf <- read.csv("../data/01a_scoresdf.csv", header = T)
-rotationdf <- read.csv("../data/01a_rotationdf.csv", header = T)
-behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T)
+rotationdf <- read.csv("../data/01a_rotationdf.csv", header = T, row.names = 1)
+behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.names = 1)
+```
 
+```{r setfactorlevels}
+behavior$APA <- factor(behavior$APA, levels = c("control", "consistent", "conflict"))
+behaviorsummaryTime$APA <- factor(behaviorsummaryTime$APA, levels = c("control", "consistent", "conflict"))
+behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "consistent", "conflict"))
+scoresdf$APA <- factor(scoresdf$APA, levels = c("control", "consistent", "conflict"))
 ```
 
 ```{r avoidancebehavior}
-behaviorsummaryTime$APA <- factor(behaviorsummaryTime$APA, levels = c("control", "consistent", "conflict"))
-behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "consistent", "conflict"))
-
 A <- ggplot(behaviorsummaryTime, aes(x=APA, y=m, color=APA)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA), width=.1) +
     geom_point(size = 2) +
@@ -52,7 +56,7 @@ theme(axis.ticks = element_blank(), axis.text.x = element_blank())
 
 B <- ggplot(behaviorsummaryNum, aes(x=APA, y=m, color=APA)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se), width=.1) +
-    geom_point(size = 2) +
+    geom_point(size = 2) + 
     scale_y_continuous(name="Number of Entrances") +
     scale_x_discrete(name=NULL) +
   theme_cowplot(font_size = 14, line_size = 1) +
@@ -98,6 +102,21 @@ pdf(file="../figures/01_behavior/avoidancebehavior-3.pdf", width=6, height=4)
 plot(timeopp)
 dev.off()
 
+## hab to retest
+habtoretest <- behavior %>% 
+  filter(TrainSessionCombo %in% c("Hab", "Retest", "T1", "T3", "T2")) %>% droplevels()
+onebehaviorhabtoretest(data=habtoretest, xcol="TrainSessionComboNum", ycol="pTimeOPP",
+                  yaxislabel=" Proportion of time spent\n opposite the shock zone",
+                  colorcode="APA")
+## c4 to rentetion
+c4toretention <- behavior %>% 
+  filter(TrainSessionCombo %in% c("Retention", "T4_C1", "T5_C2", "T6_C3")) %>% droplevels()
+onebehaviorc4toRentention(data=c4toretention, xcol="TrainSessionComboNum", ycol="pTimeOPP",
+                  yaxislabel=" Proportion of time spent\n opposite the shock zone",
+                  colorcode="APA")
+
+
+levels(behavior$TrainSessionCombo)
 ```
 
 ### Heatmap
@@ -113,20 +132,87 @@ The next image shows how all the behaviors measured change over time. Here, the 
 Given the correlational structure of the data, I next reduced the dimentionality with a PCA anlaysis. You can see that PC1 speparates trained and untraned animals (D,E) but neither PC2 (D) nor PC3 (E) separate same and conflict aniamls. Elipses show 95% confidence interval.
 
 ```{r PCA}
+## pca anlysis
+behaviormatrix %>% 
+  scale() %>%                 # scale to 0 mean and unit variance
+  prcomp() ->                 # do PCA
+  pca                         # store result as `pca`
+percent <- 100*pca$sdev^2/sum(pca$sdev^2)
+perc_data <- data.frame(percent=percent, PC=1:length(percent))
+ggplot(perc_data, aes(x=PC, y=percent)) + 
+  geom_bar(stat="identity") + 
+  geom_text(aes(label=round(percent, 2)), size=4, vjust=-.5) + 
+  xlim(0, 10)
+
+
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA")
+
+## statistics
+aov1 <- aov(PC1 ~ APA, data=scoresdf)
+summary(aov1) # p = 2.53e-14
+TukeyHSD(aov1, which = "APA") # p<< 0.001 for both control comparisions
+
+aov2 <- aov(PC2 ~ APA, data=scoresdf)
+summary(aov2) # p = 0.0906
+TukeyHSD(aov2, which = "APA") # p = 0.0852578 for conflict
+
+aov3 <- aov(PC3 ~ APA, data=scoresdf)
+summary(aov3) # p = 0.0633
+TukeyHSD(aov3, which = "APA") # p = 0.0557503 for conflict
+
+aov6 <- aov(PC6 ~ APA, data=scoresdf)
+summary(aov6) # p = 0.0226
+TukeyHSD(aov6, which = "APA") # p = 0.0175577 for conflict
+
+
+lm1 <- lm(PC1~APA, data=scoresdf)
+summary(lm1)
+
+lm16 <- lm(PC1+PC6~APA, data=scoresdf)
+summary(lm16)
+
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC3",colorcode="APA")
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC4",colorcode="APA")
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC5",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC2",ycol="PC4",colorcode="APA")
+
+
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA")
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC7",colorcode="APA")
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC8",colorcode="APA")
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC9",colorcode="APA")
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC10",colorcode="APA")
+## statistics
+aov6 <- aov(PC6 ~ APA, data=scoresdf)
+summary(aov6) # p = 0.0584 
+TukeyHSD(aov6, which = "APA") # consistent-conflict p= 0.0175577
+
+
+
+
 ```
 
 ```{r fviz_pca}
 res.pca <- prcomp(behaviormatrix,  scale = TRUE)
-
 fviz_pca_var(res.pca, select.var = list(contrib = 8), axes = c(1, 2))
-fviz_pca_var(res.pca, select.var = list(contrib = 8), axes = c(2, 3))
+fviz_pca_var(res.pca, select.var = list(contrib = 8), axes = c(1, 6))
+fviz_pca_var(res.pca, select.var = list(contrib = 8), axes = c(1, 9))
+```
+
+```{r otherpca}
+library(ggfortify)
+df <- behaviormatrix
+autoplot(prcomp(df))
+autoplot(prcomp(df), data = behavior, colour = 'APA', loadings = TRUE, loadings.label = TRUE, loadings.label.size = 5, scale = 0)
+
+library(cluster)
+autoplot(clara(behaviormatrix, 3))
+autoplot(fanny(behaviormatrix, 2), frame = TRUE)
+```
+
+```{r wilkepca}
+# capture the rotation matrix in a data frame
+rotation_data <- rotationdf
+# define a pleasing arrow style
+arrow_style <- arrow(length = unit(0.05, "inches"),
+                     type = "closed")
+# now plot, using geom_segment() for arrows and geom_text for labels
+ggplot(rotation_data) + 
+  geom_segment(aes(xend=PC1, yend=PC2), x=0, y=0, arrow=arrow_style) + 
+  geom_text(aes(x=PC1, y=PC2, label=variable), hjust=0, size=3, color='red')
 ```

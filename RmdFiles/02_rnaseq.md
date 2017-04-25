@@ -762,6 +762,256 @@ pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 #pcadata$Treatment <- factor(pcadata$Treatment, levels = c("homecage", "shocked"))
 
+
+## statistics
+aov1 <- aov(PC1 ~ Punch, data=pcadata)
+summary(aov1) 
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)    
+    ## Punch        2  16357    8179   258.6 <2e-16 ***
+    ## Residuals   42   1328      32                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+TukeyHSD(aov1, which = "Punch") 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC1 ~ Punch, data = pcadata)
+    ## 
+    ## $Punch
+    ##               diff        lwr        upr     p adj
+    ## CA3-DG  -40.789018 -45.788812 -35.789223 0.0000000
+    ## CA1-DG  -38.870942 -43.781048 -33.960837 0.0000000
+    ## CA1-CA3   1.918075  -3.158899   6.995049 0.6321716
+
+``` r
+aov2 <- aov(PC2 ~ Punch, data=pcadata)
+summary(aov2) 
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)    
+    ## Punch        2   7342    3671   281.1 <2e-16 ***
+    ## Residuals   42    548      13                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+TukeyHSD(aov2, which = "Punch") 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC2 ~ Punch, data = pcadata)
+    ## 
+    ## $Punch
+    ##              diff       lwr       upr p adj
+    ## CA3-DG  -15.17325 -18.38626 -11.96024     0
+    ## CA1-DG   16.63236  13.47698  19.78773     0
+    ## CA1-CA3  31.80561  28.54300  35.06822     0
+
+``` r
+aov3 <- aov(PC3 ~ Punch, data=pcadata)
+summary(aov3) 
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## Punch        2    275   137.4   1.125  0.334
+    ## Residuals   42   5127   122.1
+
+``` r
+TukeyHSD(aov3, which = "Punch") 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC3 ~ Punch, data = pcadata)
+    ## 
+    ## $Punch
+    ##              diff        lwr       upr     p adj
+    ## CA3-DG  -3.302981 -13.126373  6.520412 0.6947553
+    ## CA1-DG   2.855344  -6.791829 12.502518 0.7536389
+    ## CA1-CA3  6.158325  -3.816705 16.133355 0.3012731
+
+``` r
+aov4 <- aov(PC4 ~ Punch, data=pcadata)
+summary(aov4) 
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## Punch        2   30.5   15.25   0.343  0.712
+    ## Residuals   42 1867.1   44.45
+
+``` r
+TukeyHSD(aov4, which = "Punch") 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC4 ~ Punch, data = pcadata)
+    ## 
+    ## $Punch
+    ##               diff       lwr      upr     p adj
+    ## CA3-DG  -1.6613656 -7.589421 4.266690 0.7758507
+    ## CA1-DG  -1.7699209 -7.591635 4.051793 0.7420821
+    ## CA1-CA3 -0.1085553 -6.128119 5.911008 0.9989423
+
+``` r
+aov4 <- aov(PC4 ~ APA, data=pcadata)
+summary(aov4) 
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA          2  248.4  124.21   3.163 0.0525 .
+    ## Residuals   42 1649.2   39.27                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+TukeyHSD(aov4, which = "APA") 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC4 ~ APA, data = pcadata)
+    ## 
+    ## $APA
+    ##                      diff        lwr       upr     p adj
+    ## Same-Yoked     -5.1094387 -10.958650 0.7397731 0.0974699
+    ## Conflict-Yoked -4.3723453  -9.625093 0.8804020 0.1193240
+    ## Conflict-Same   0.7370934  -5.566203 7.0403901 0.9565290
+
+``` r
+aov5 <- aov(PC5 ~ APA, data=pcadata)
+summary(aov5) 
+```
+
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## APA          2  344.0  172.02   10.25 0.000237 ***
+    ## Residuals   42  704.9   16.78                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+TukeyHSD(aov5, which = "APA") 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC5 ~ APA, data = pcadata)
+    ## 
+    ## $APA
+    ##                     diff       lwr       upr     p adj
+    ## Same-Yoked      6.292086  2.468029 10.116143 0.0007279
+    ## Conflict-Yoked  4.834118  1.400013  8.268223 0.0039365
+    ## Conflict-Same  -1.457968 -5.578894  2.662958 0.6684477
+
+``` r
+aov6 <- aov(PC6 ~ APA, data=pcadata)
+summary(aov6) 
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA          2    8.7   4.344   0.312  0.733
+    ## Residuals   42  583.9  13.901
+
+``` r
+TukeyHSD(aov6, which = "APA") 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC6 ~ APA, data = pcadata)
+    ## 
+    ## $APA
+    ##                      diff       lwr      upr     p adj
+    ## Same-Yoked      0.8732517 -2.607034 4.353538 0.8156918
+    ## Conflict-Yoked -0.3225804 -3.447970 2.802809 0.9659597
+    ## Conflict-Same  -1.1958322 -4.946299 2.554635 0.7204826
+
+``` r
+aov7 <- aov(PC7 ~ APA, data=pcadata)
+summary(aov7) 
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA          2   30.7   15.33   1.398  0.258
+    ## Residuals   42  460.4   10.96
+
+``` r
+TukeyHSD(aov7, which = "APA") 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC7 ~ APA, data = pcadata)
+    ## 
+    ## $APA
+    ##                      diff       lwr      upr     p adj
+    ## Same-Yoked      0.5557728 -2.534874 3.646419 0.9003939
+    ## Conflict-Yoked -1.5415589 -4.317041 1.233923 0.3764263
+    ## Conflict-Same  -2.0973317 -5.427911 1.233247 0.2874849
+
+``` r
+aov8 <- aov(PC8 ~ APA, data=pcadata)
+summary(aov8) 
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA          2   15.7   7.872   0.743  0.482
+    ## Residuals   42  444.8  10.589
+
+``` r
+TukeyHSD(aov8, which = "APA") 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC8 ~ APA, data = pcadata)
+    ## 
+    ## $APA
+    ##                      diff       lwr      upr     p adj
+    ## Same-Yoked     -1.1783304 -4.215888 1.859228 0.6168276
+    ## Conflict-Yoked  0.4306017 -2.297206 3.158409 0.9222790
+    ## Conflict-Same   1.6089321 -1.664437 4.882301 0.4632131
+
+``` r
+aov9 <- aov(PC9 ~ APA, data=pcadata)
+summary(aov9) 
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA          2   27.4  13.678   1.419  0.253
+    ## Residuals   42  404.8   9.637
+
+``` r
+TukeyHSD(aov9, which = "APA") 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC9 ~ APA, data = pcadata)
+    ## 
+    ## $APA
+    ##                      diff       lwr      upr     p adj
+    ## Same-Yoked      1.7161792 -1.181565 4.613923 0.3305806
+    ## Conflict-Yoked -0.3225604 -2.924811 2.279690 0.9512959
+    ## Conflict-Same  -2.0387396 -5.161441 1.083961 0.2627314
+
+``` r
 ## pca plots 
 plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 ```
@@ -792,7 +1042,7 @@ plotPCs(pcadata, 2, 6, aescolor = pcadata$APA, colorname = "APA", aesshape = pca
 
 ``` r
 # I like this plot because it shows that DGxSame samples are a small cluster
-plotPCs(pcadata, 1, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plotPCs(pcadata, 2, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 ```
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
@@ -850,9 +1100,9 @@ dev.off()
     ##                 2
 
 ``` r
-pdf(file="../figures/03_RNAseq/PCA15.pdf", width=4.5, height=3)
-PCA15 <- plotPCs(pcadata, 1,5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
-plot(PCA15)
+pdf(file="../figures/03_RNAseq/PCA25.pdf", width=4.5, height=3)
+PCA25 <- plotPCs(pcadata, 2,5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plot(PCA25)
 ```
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.

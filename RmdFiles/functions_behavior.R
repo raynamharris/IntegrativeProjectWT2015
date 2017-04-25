@@ -2,7 +2,7 @@
 myboxplotlegendtop <- function(data, xcol, ycol, colorcode, session, yaxislabel){
   plot <- data %>% filter(TrainSessionCombo==session) %>%  droplevels() %>%
     ggplot(aes_string(x=xcol, y=ycol, fill=colorcode)) + 
-    geom_boxplot() + 
+    geom_boxplot() +
     scale_fill_manual(name="Group", 
                       values=colorvalAPA) +
     scale_y_continuous(name=yaxislabel) + 
@@ -21,7 +21,7 @@ myboxplotlegendbottom <- function(data, xcol, ycol, colorcode, session, yaxislab
     scale_fill_manual(name="Group", 
                       values=colorvalAPA) +
     scale_y_continuous(name=yaxislabel) + 
-    scale_x_discrete(name=NULL) +   
+    #scale_x_discrete(name=NULL) +   
     theme_cowplot(font_size = 15) +
     #theme(legend.position="bottom") +
     theme(legend.text = element_text(size = 10))  +
@@ -35,7 +35,7 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
   plot <- data %>% 
     ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
     geom_point(size=1) + geom_jitter() +
-    stat_smooth(alpha=0.5)  +
+    stat_smooth(alpha=0.5, method = "loess")  +
     theme_cowplot(font_size = 15, line_size = 0.5) + 
     #background_grid(major = "xy", minor = "none") + 
     scale_colour_manual(name="APA Training", values=colorvalAPA,
@@ -47,11 +47,48 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
                                 "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
     theme(legend.justification=c(1,1), legend.position=c(1,1),
-          axis.text.x = element_text(angle=60, vjust=0.5))
+          axis.text.x = element_text(angle=60, vjust=0.5)) 
+  return(plot)
+}
+
+onebehaviorhabtoretest <- function(data, xcol, ycol, yaxislabel, colorcode){
+  plot <- data %>% 
+    ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
+    geom_point(size=1) + geom_jitter() +
+    stat_smooth(alpha=0.5)  +
+    theme_cowplot(font_size = 15, line_size = 0.5) + 
+    #background_grid(major = "xy", minor = "none") + 
+    scale_colour_manual(name="APA Training", values=colorvalAPA,
+                        breaks = c("Control", "Consistent", "Conflict")) +
+    scale_y_continuous(name=yaxislabel) + 
+    scale_x_continuous(name = "Training Session", 
+                       breaks = c(1, 2, 3, 4, 5),
+                       labels=c("1" = "Habituation", "2" = "T1", "3" = "T2", 
+                                "4" = "T3", "5" = "Retest")) +
+    theme(legend.justification=c(1,1), legend.position=c(1,1),
+          axis.text.x = element_text(angle=60, vjust=0.5)) 
   return(plot)
 }
 
 
+onebehaviorc4toRentention <- function(data, xcol, ycol, yaxislabel, colorcode){
+  plot <- data %>% 
+    ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
+    geom_point(size=1) + geom_jitter() +
+    stat_smooth(alpha=0.5, method = "loess")  +
+    theme_cowplot(font_size = 15, line_size = 0.5) + 
+    #background_grid(major = "xy", minor = "none") + 
+    scale_colour_manual(name="APA Training", values=colorvalAPA,
+                        breaks = c("Control", "Consistent", "Conflict")) +
+    scale_y_continuous(name=yaxislabel) + 
+    scale_x_continuous(name = "Training Session", 
+                       breaks = c(1, 2, 3, 4),
+                       labels=c("1" = "T4_C1", "2" = "T5_C2", "3" = "T6_C3", 
+                                "4" = "Retention")) +
+    theme(legend.justification=c(1,1), legend.position=c(1,1),
+          axis.text.x = element_text(angle=60, vjust=0.5)) 
+  return(plot)
+}
 
 ## make a heatmap from all sessions ----
 makescaledaveragedata <- function(data){
@@ -82,10 +119,6 @@ makecolumnannotations <- function(data){
   return(columnannotations)
 }
 
-
-
-
-
 ## correlation heatmat ----
 makecorrelationheatmap <- function(data, APAgroup, clusterTF){
   dataslim <- data %>% filter(APA==APAgroup)
@@ -98,6 +131,15 @@ makecorrelationheatmap <- function(data, APAgroup, clusterTF){
 } 
 
 ## PCA ----
+makelongdata <- function(data){
+  #first melt the data to make long
+  longdata <- melt(data, id = c(1:18));
+  longdata <- longdata %>% drop_na();
+  longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
+  longdata <- dcast(longdata, ID + APA ~ bysession, value.var= "value", fun.aggregate = mean)
+  return(longdata)
+}
+
 makepcadf <- function(data){
   #first melt the data to make long
   longdata <- melt(data, id = c(1:18));
@@ -155,11 +197,10 @@ makepcaplot <- function(data,xcol,ycol,colorcode){
     stat_ellipse(level = 0.95)+
     theme_cowplot(font_size = 20) + 
     theme(strip.background = element_blank()) +
-    scale_colour_manual(name="APA Training",
-                        values=colorvalAPA,
-                        breaks=c("Yoked", "Same", "Conflict"))  +
-    geom_text() +
-    theme(legend.position="none")
+    scale_colour_manual(name=NULL,
+                        values=colorvalAPA)  +
+    #geom_text() + 
+    theme(legend.position="bottom")
   return(plot)
 }
 
