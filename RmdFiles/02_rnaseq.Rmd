@@ -32,7 +32,7 @@ library(colorRamps) ## for pheatmap
 Then, I set all path so that all the figures are saved in the specified subdirectory. 
 ```{r figurepath, message=F}
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/03_RNAseq/')
+knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
 ```
 
 Now, I create data frames from three csv files
@@ -152,26 +152,30 @@ rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
 head(rldpadjs)
 ```
 
+```{r volcanoplots}
+res <- results(dds, contrast = c("Punch", "DG", "CA1"))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Volcano plot", xlim=c(-10,10)))
+with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
+with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
 
-Here, the goal is the analyze the distribution of pvalues to see if they are randomly distributed or if that is a tendency towards and increase or decrease of low pvalues. There, I'm showing the pval and adjusted pvale (padj) for all for two-way comparision. 
+res <- results(dds, contrast = c("APA", "Same", "Yoked"))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Volcano plot", xlim=c(-10,10)))
+with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
+with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+```
+
 
 ```{r pvaluedistribution}
-head(rldpadjs)
-rldpadjslong <- rldpadjs
-rldpadjslong$gene <- row.names(rldpadjslong) 
-rldpadjslong <- melt(rldpadjslong, id=c("gene"))
-head(rldpadjslong)
-qplot(value, data=rldpadjslong, geom="histogram") + 
-  facet_grid( ~ variable) +
-  scale_y_log10()
-
-ggplot(rldpadjslong, aes(x=value)) + geom_density()
-ggplot(rldpadjslong, aes(x=value, fill=variable)) +
-  geom_density(alpha=.3) 
-ggplot(rldpadjslong, aes(x=value, fill=variable)) +
-  geom_density(alpha=.3) +
-  scale_y_log10()
+source("resvalsfunction.R")
+myhistogram(contrastvector = c('Punch', 'CA1', 'DG'), mypval = 0.1)
+myhistogram(contrastvector = c('Punch', 'CA3', 'DG'), mypval = 0.1)
+myhistogram(contrastvector = c('Punch', 'CA1', 'CA3'), mypval = 0.1)
+myhistogram(contrastvector = c("APA", "Same", "Yoked"), mypval = 0.1)
+myhistogram(contrastvector = c("APA", "Conflict", "Yoked"), mypval = 0.1)
+myhistogram(contrastvector = c("APA", "Conflict", "Same"), mypval = 0.1)
 ```
+
+Here, the goal is the analyze the distribution of pvalues to see if they are randomly distributed or if that is a tendency towards and increase or decrease of low pvalues. There, I'm showing the pval and adjusted pvale (padj) for all for two-way comparision. 
 
 Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
 
@@ -267,7 +271,7 @@ pheatmap(DEGes, show_colnames=T, show_rownames = F,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
-         filename = "../figures/03_RNAseq/HeatmapPadj-1.pdf"
+         filename = "../figures/02_RNAseq/HeatmapPadj-1.pdf"
          )
 
 
@@ -334,22 +338,22 @@ plotPCs(pcadata, 2, 6, aescolor = pcadata$APA, colorname = "APA", aesshape = pca
 plotPCs(pcadata, 2, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 
 # pdf the same pca plots descripbed above of the above
-pdf(file="../figures/03_RNAseq/PCA12.pdf", width=4.5, height=3)
+pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
 PCA12 <- plotPCs(pcadata, 1,2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA12)
 dev.off()
 
-pdf(file="../figures/03_RNAseq/PCA24.pdf", width=4.5, height=3)
+pdf(file="../figures/02_RNAseq/PCA24.pdf", width=4.5, height=3)
 PCA24 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA24)
 dev.off()
 
-pdf(file="../figures/03_RNAseq/PCA26.pdf", width=4.5, height=3)
+pdf(file="../figures/02_RNAseq/PCA26.pdf", width=4.5, height=3)
 PCA26 <- plotPCs(pcadata, 2,6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA26)
 dev.off()
 
-pdf(file="../figures/03_RNAseq/PCA25.pdf", width=4.5, height=3)
+pdf(file="../figures/02_RNAseq/PCA25.pdf", width=4.5, height=3)
 PCA25 <- plotPCs(pcadata, 2,5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA25)
 dev.off()
