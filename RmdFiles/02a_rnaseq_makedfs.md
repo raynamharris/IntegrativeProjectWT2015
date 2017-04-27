@@ -12,6 +12,14 @@ library(reshape2) ## for melting dataframe
 library(DESeq2) ## for gene expression analysis
 library(edgeR)  ## for basic read counts status
 library(magrittr) ## to use the weird pipe
+library(genefilter)  ## for PCA fuction
+
+## Functions
+source("functions_RNAseq.R")
+source("resvalsfunction.R")
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/02_rnaseq/')
 ```
 
 Now, I create data frames from three csv files - count: Contains counts for all transcripts generated from the program Kallisto. This data can be reproducibed from the file kallisto.Rmd - geneids: Contains the ensemble ids and gene names for all the transcripts in the counts data frame. This file will be used to convert transcipt counts to gene counts. This file was also created via kallisto.Rmd file - Traits: This file contains all the information I collected for each sample that was sequenced. Not all columns will be needed, so some are removed later.
@@ -486,10 +494,21 @@ head(rldpadjs)
     ## 0610010F05Rik                1                    1                   1
     ## 0610010K14Rik                1                    1                   1
 
+``` r
+volcano1 <- respadjfold(contrastvector = c("Punch", "DG", "CA1")) 
+volcano2 <- respadjfold(contrastvector = c("Punch", "CA3", "CA1")) 
+volcano3 <- respadjfold(contrastvector = c("Punch", "DG", "CA3")) 
+volcano4 <- respadjfold(contrastvector = c("APA", "Same", "Yoked")) 
+volcano5 <- respadjfold(contrastvector = c("APA", "Conflict", "Yoked")) 
+volcano6 <- respadjfold(contrastvector = c("APA", "Conflict", "Same")) 
+
+volcanos <- cbind(volcano1,volcano2, volcano3, volcano4, volcano5, volcano6)
+volcanos <- as.data.frame(volcanos)
+```
+
 Now let's look at a heat map of the data
 
 ``` r
-source("figureoptions.R")
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
@@ -576,8 +595,6 @@ df <- as.data.frame(colData(dds)[,c("Punch","APA")]) ## matrix to df
 Now lets look at a principle component analysis of the data
 
 ``` r
-library(genefilter)  ## for PCA fuction
-source("functions_RNAseq.R")
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -1017,4 +1034,69 @@ write.csv(rldpadjs, file = "../data/02a_rldpadjs.csv", row.names = T)
 write.csv(DEGes, file = "../data/02a_DEGes.csv", row.names = T)
 write.csv(df, file = "../data/02a_df.csv", row.names = F)
 write.csv(pcadata, file = "../data/02a_pcadata.csv", row.names = F)
+percentVar
 ```
+
+    ## [1] 42 19 13  5  3  1  1  1  1
+
+make volcano plos here.. still perfecting
+-----------------------------------------
+
+``` r
+# DG left, CA1 right
+res <- results(dds, contrast =c("Punch", "DG", "CA1"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA1", xlim=c(-10,10)))
+with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
+with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+```
+
+![](../figures/02_rnaseq/volcano%20plots-1.png)
+
+``` r
+# CA3 left, CA1 right
+res <- results(dds, contrast =c("Punch", "CA3", "CA1"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1-CA3", xlim=c(-10,10)))
+with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
+with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+```
+
+![](../figures/02_rnaseq/volcano%20plots-2.png)
+
+``` r
+# DG left CA3 right
+res <- results(dds, contrast =c("Punch", "DG", "CA3"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 - DG", xlim=c(-10,10)))
+with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
+with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+```
+
+![](../figures/02_rnaseq/volcano%20plots-3.png)
+
+``` r
+# Conflict left Same right
+res <- results(dds, contrast =c("APA", "Conflict", "Same"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Same - Conflict", xlim=c(-10,10)))
+with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
+with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+```
+
+![](../figures/02_rnaseq/volcano%20plots-4.png)
+
+``` r
+#
+res <- results(dds, contrast =c("APA", "Conflict", "Yoked"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Yoked - Conflict", xlim=c(-10,10)))
+with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
+with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+```
+
+![](../figures/02_rnaseq/volcano%20plots-5.png)
+
+``` r
+res <- results(dds, contrast =c("APA", "Same", "Yoked"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Yoked - Same", xlim=c(-10,10)))
+with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
+with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+```
+
+![](../figures/02_rnaseq/volcano%20plots-6.png)

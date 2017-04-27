@@ -187,14 +187,9 @@ ggplot(rowsum, aes(x=millioncounts)) +
 ## Volcano plot
 
 #```{r volcanoplot}
-volcanos %>%
-  filter(abs(foldchangePunchDGCA1) > 1 ) %>%
-ggplot(aes(foldchangePunchDGCA1,pvalPunchDGCA1)) + geom_point(na.rm = TRUE) + scale_y_reverse() 
 
-volcanos %>%
-  filter(abs(foldchangeAPASameYoked) > 1 ) %>%
-ggplot(aes(foldchangeAPASameYoked,pvalAPASameYoked)) + geom_point(na.rm = TRUE) + scale_y_reverse()
-
-padjAPASameYoked
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Volcano plot"))
+with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
+with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
 
 ```
