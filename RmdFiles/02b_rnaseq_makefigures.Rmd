@@ -1,0 +1,200 @@
+---
+title: "02b_rnaseq_makefigures"
+author: "Rayna M Harris"
+date: "4/26/2017"
+output: md_document
+---
+
+```{r setup, message=F}
+library(ggplot2) ## for awesome plots!
+library(cowplot) ## for some easy to use themes
+library(dplyr) ## for filtering and selecting rows
+library(car) ## stats
+library(VennDiagram) ## venn diagrams
+library(pheatmap) ## awesome heatmaps
+
+## load functions 
+source("figureoptions.R")
+source("functions_RNAseq.R")
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/02_rnaseq/')
+```
+
+```{r data, message=F}
+colData <- read.csv("../data/02a_colData.csv", header = T)
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+rldpadjs <- read.csv("../data/02a_rldpadjs.csv", header = T, row.names = 1)
+DEGes <- read.csv("../data/02a_DEGes.csv", header = T, check.names = F, row.names = 1)
+df <- read.csv("../data/02a_df.csv", header = T)
+pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
+```
+
+## P-value distributions
+Here, the goal is the analyze the distribution of pvalues to see if they are randomly distributed or if that is a tendency towards and increase or decrease of low pvalues. There, I'm showing the pval and adjusted pvale (padj) for all for two-way comparision. 
+
+```{r pvaluedistribution}
+ggplot(rldpadjs, aes(x = padjPunchDGCA1)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+ggplot(rldpadjs, aes(x = padjPunchCA3CA1)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+ggplot(rldpadjs, aes(x = padjPunchDGCA3)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+ggplot(rldpadjs, aes(x = padjAPASameYoked)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+ggplot(rldpadjs, aes(x = padjAPAConflictYoked)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+```
+
+## Venn Diagrams of DEgenes
+Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
+
+```{r venndiagram}
+venn1 <- row.names(rldpadjs[rldpadjs[1] <0.1 & !is.na(rldpadjs[1]),])
+venn2 <- row.names(rldpadjs[rldpadjs[2] <0.1 & !is.na(rldpadjs[2]),])
+venn3 <- row.names(rldpadjs[rldpadjs[3] <0.1 & !is.na(rldpadjs[3]),])
+venn4 <- row.names(rldpadjs[rldpadjs[4] <0.1 & !is.na(rldpadjs[4]),])
+venn5 <- row.names(rldpadjs[rldpadjs[5] <0.1 & !is.na(rldpadjs[5]),])
+
+## check order for correctness
+candidates <- list("DG vs CA1" = venn1, "Yoked vs Same" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
+
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "white", "white", "white", "white"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+grid.draw(prettyvenn)
+
+plot.new()
+
+candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
+
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "white", "white", "white"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+grid.draw(prettyvenn)
+```
+
+## Heatmaps
+
+```{r heatmap}
+source("figureoptions.R")
+ann_colors = ann_colors1 #use 
+
+# make sure the data is a matrix
+DEGes <- as.matrix(DEGes) 
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+
+
+
+pheatmap(DEGes, show_colnames=T, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = colorpalette,
+         #cellwidth = 12, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+
+# for adobe
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = colorpalette,
+         #cellwidth = 12, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/02_RNAseq/HeatmapPadj-1.pdf"
+         )
+```
+
+```{r pca}
+## pca plots
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+
+plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plotPCs(pcadata, 2, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+# I think this plot shows greater variance in yoked than in trained
+plotPCs(pcadata, 2, 6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+# I like this plot because it shows that DGxSame samples are a small cluster
+plotPCs(pcadata, 2, 3, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+
+
+# pdf the same pca plots descripbed above of the above
+pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
+PCA12 <- plotPCs(pcadata, 1,2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plot(PCA12)
+dev.off()
+
+pdf(file="../figures/02_RNAseq/PCA24.pdf", width=4.5, height=3)
+PCA24 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plot(PCA24)
+dev.off()
+
+pdf(file="../figures/02_RNAseq/PCA26.pdf", width=4.5, height=3)
+PCA26 <- plotPCs(pcadata, 2,6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plot(PCA26)
+dev.off()
+
+pdf(file="../figures/02_RNAseq/PCA25.pdf", width=4.5, height=3)
+PCA25 <- plotPCs(pcadata, 2,5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plot(PCA25)
+dev.off()
+```
+
+## Total Gene Counts Per Sample
+
+```{r totalRNAseqcounts}
+## stats
+counts <- countData
+dim( counts )
+colSums( counts ) / 1e06  # in millions of reads
+table( rowSums( counts ) )[ 1:30 ] # Number of genes with low counts
+
+rowsum <- as.data.frame(colSums( counts ) / 1e06 )
+names(rowsum)[1] <- "millioncounts"
+rowsum$sample <- row.names(rowsum)
+
+ggplot(rowsum, aes(x=millioncounts)) + 
+  geom_histogram(binwidth = 1, colour = "black", fill = "darkgrey") +
+  theme_classic() +
+  scale_x_continuous(name = "Millions of Gene Counts per Sample",
+                     breaks = seq(0, 8, 1),
+                     limits=c(0, 8)) +
+  scale_y_continuous(name = "Number of Samples")
+```
+
+## Volcano plot
+
+#```{r volcanoplot}
+volcanos %>%
+  filter(abs(foldchangePunchDGCA1) > 1 ) %>%
+ggplot(aes(foldchangePunchDGCA1,pvalPunchDGCA1)) + geom_point(na.rm = TRUE) + scale_y_reverse() 
+
+volcanos %>%
+  filter(abs(foldchangeAPASameYoked) > 1 ) %>%
+ggplot(aes(foldchangeAPASameYoked,pvalAPASameYoked)) + geom_point(na.rm = TRUE) + scale_y_reverse()
+
+padjAPASameYoked
+
+```

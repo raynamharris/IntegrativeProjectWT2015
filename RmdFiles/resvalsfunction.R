@@ -9,13 +9,11 @@ resvals <- function(contrastvector, mypadj){
   return(vals)
 }
 
-myhistogram <- function(contrastvector, mypval){
+respadjfold <- function(contrastvector){
   res <- results(dds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = F)
-  vals <- cbind(res$pvalue)
-  pvalcolname <- as.character(paste(contrastvector[2], "vs",contrastvector[3], sep=" "))
-  colnames(vals) <- c(pvalcolname)
-  vals <- as.data.frame(vals)
-  histogram <- hist(vals)
-  return(histogram)
-  print(histogram)
+  vals <- cbind(res$log2FoldChange, res$pval)
+  foldcolname <- as.character(paste("foldchange",contrastvector[1],contrastvector[2],contrastvector[3], sep=""))
+  pvalcolname <- as.character(paste("pval",contrastvector[1],contrastvector[2],contrastvector[3], sep=""))
+  colnames(vals) <- c(foldcolname, pvalcolname)
+  return(vals)
 }
