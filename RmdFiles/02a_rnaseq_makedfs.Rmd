@@ -132,9 +132,9 @@ Now, we can calculate the number of differentiall expressed genes for each contr
 
 ```{r DESeq2contrasts}
 source("resvalsfunction.R")
-contrast1 <- resvals(contrastvector = c("Punch", "DG", "CA1"), mypadj = 0.1) #2999
-contrast2 <- resvals(contrastvector = c("Punch", "CA3", "CA1"), mypadj = 0.1) #2204
-contrast3 <- resvals(contrastvector = c("Punch", "DG", "CA3"), mypadj = 0.1) # 4110
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.1) #2999
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.1) #2204
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.1) # 4110
 contrast4 <- resvals(contrastvector = c("APA", "Same", "Yoked"), mypadj = 0.1) #107
 contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Yoked"), mypadj = 0.1) #59
 contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Same"), mypadj = 0.1) # 0 
@@ -149,9 +149,9 @@ head(rldpadjs)
 ```
 
 ```{r Volcanoplots}
-volcano1 <- respadjfold(contrastvector = c("Punch", "DG", "CA1")) 
-volcano2 <- respadjfold(contrastvector = c("Punch", "CA3", "CA1")) 
-volcano3 <- respadjfold(contrastvector = c("Punch", "DG", "CA3")) 
+volcano1 <- respadjfold(contrastvector = c("Punch", "CA1", "DG")) 
+volcano2 <- respadjfold(contrastvector = c("Punch", "CA1", "CA3")) 
+volcano3 <- respadjfold(contrastvector = c("Punch", "CA3", "DG")) 
 volcano4 <- respadjfold(contrastvector = c("APA", "Same", "Yoked")) 
 volcano5 <- respadjfold(contrastvector = c("APA", "Conflict", "Yoked")) 
 volcano6 <- respadjfold(contrastvector = c("APA", "Conflict", "Same")) 
@@ -167,7 +167,7 @@ DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-DEGes$padjmin <- with(DEGes, pmin(padjPunchDGCA1, padjPunchCA3CA1, padjPunchDGCA3, padjAPASameYoked, padjAPAConflictYoked, padjAPAConflictSame)) # create new col with min padj
+DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPASameYoked, padjAPAConflictYoked, padjAPAConflictSame)) # create new col with min padj
 DEGes <- DEGes %>% filter(padjmin < 0.0001)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -248,39 +248,57 @@ percentVar
 ```
 
 ## make volcano plos here.. still perfecting
-```{r volcano plots}
-# DG left, CA1 right
-res <- results(dds, contrast =c("Punch", "DG", "CA1"), independentFiltering = F)
+```{r volcanoplots}
+
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA1", xlim=c(-10,10)))
 with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
 with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+head(res)
 
-# CA3 left, CA1 right
-res <- results(dds, contrast =c("Punch", "CA3", "CA1"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1-CA3", xlim=c(-10,10)))
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("Punch"))
+
+res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3-CA1", xlim=c(-10,10)))
 with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
 with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
 
-# DG left CA3 right
-res <- results(dds, contrast =c("Punch", "DG", "CA3"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 - DG", xlim=c(-10,10)))
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("Punch"))
+
+
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA3", xlim=c(-10,10)))
 with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
 with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
 
-# Conflict left Same right
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("Punch"))
+
+
 res <- results(dds, contrast =c("APA", "Conflict", "Same"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Same - Conflict", xlim=c(-10,10)))
 with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
 with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
 
-#
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("APA"))
+
+
 res <- results(dds, contrast =c("APA", "Conflict", "Yoked"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Yoked - Conflict", xlim=c(-10,10)))
 with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
 with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
 
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("APA"))
+
 res <- results(dds, contrast =c("APA", "Same", "Yoked"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Yoked - Same", xlim=c(-10,10)))
 with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
 with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("APA"), transform = T)
 ```
