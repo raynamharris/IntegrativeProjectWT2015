@@ -34,9 +34,9 @@ pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
 Here, the goal is the analyze the distribution of pvalues to see if they are randomly distributed or if that is a tendency towards and increase or decrease of low pvalues. There, I'm showing the pval and adjusted pvale (padj) for all for two-way comparision. 
 
 ```{r pvaluedistribution}
-ggplot(rldpadjs, aes(x = padjPunchDGCA1)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
-ggplot(rldpadjs, aes(x = padjPunchCA3CA1)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
-ggplot(rldpadjs, aes(x = padjPunchDGCA3)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+ggplot(rldpadjs, aes(x = padjPunchCA1DG)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+ggplot(rldpadjs, aes(x = padjPunchCA1CA3)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+ggplot(rldpadjs, aes(x = padjPunchCA3DG)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 ggplot(rldpadjs, aes(x = padjAPASameYoked)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 ggplot(rldpadjs, aes(x = padjAPAConflictYoked)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 ```
@@ -87,6 +87,9 @@ grid.draw(prettyvenn)
 
 ```{r heatmap}
 source("figureoptions.R")
+
+rownames(df) <- names(countData)
+
 ann_colors = ann_colors1 #use 
 
 # make sure the data is a matrix
@@ -97,9 +100,7 @@ paletteLength <- 30
 myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
 
-
-
-pheatmap(DEGes, show_colnames=T, show_rownames = F,
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
          annotation_col=df, annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 25,
          fontsize = 11, 
@@ -130,34 +131,27 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 
 ```{r pca}
 ## pca plots
-percentVar <- round(100 * attr(pcadata, "percentVar"))
 
+## I haven't been able to get this to work , so I hand coded the vector from a previous analysis of this
+#percentVar <- round(100 * attr(pcadata, "percentVar"))
+percentVar <- c(49,21,5,3,2,1,1,1,1)
+
+
+# separates brain regions
+plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+# PC4 significant for training
 plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
-plotPCs(pcadata, 2, 5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
-# I think this plot shows greater variance in yoked than in trained
-plotPCs(pcadata, 2, 6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
-# I like this plot because it shows that DGxSame samples are a small cluster
-plotPCs(pcadata, 2, 3, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 
 
 # pdf the same pca plots descripbed above of the above
 pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
-PCA12 <- plotPCs(pcadata, 1,2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
 plot(PCA12)
 dev.off()
 
-pdf(file="../figures/02_RNAseq/PCA24.pdf", width=4.5, height=3)
-PCA24 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
-plot(PCA24)
-dev.off()
-
-pdf(file="../figures/02_RNAseq/PCA26.pdf", width=4.5, height=3)
-PCA26 <- plotPCs(pcadata, 2,6, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
-plot(PCA26)
-dev.off()
-
 pdf(file="../figures/02_RNAseq/PCA25.pdf", width=4.5, height=3)
-PCA25 <- plotPCs(pcadata, 2,5, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+PCA25 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalAPA)
 plot(PCA25)
 dev.off()
 ```
@@ -184,12 +178,3 @@ ggplot(rowsum, aes(x=millioncounts)) +
   scale_y_continuous(name = "Number of Samples")
 ```
 
-## Volcano plot
-
-#```{r volcanoplot}
-
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Volcano plot"))
-with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
-with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
-
-```

@@ -299,7 +299,10 @@ In this next section, I tidy the trait data for each sample so that I can calcul
 ``` r
 rownames(Traits) <- Traits$RNAseqID    # set $genoAPAsessionInd as rownames
 Traits <- Traits[c(1,3,5:6,10:11)]  #keeping informative volumns
-Traits <- Traits %>% dplyr::filter(!grepl("100|101|147-|148-|147D-CA1-1|145B-CA3-1", RNAseqID))  # remove 100, 100, 147, and 148 animals because we aren't interested in these homecage animals that were not trained in the active place avoidance experiement. Remove mice 147D_CA1_1 and 145B_CA3_1 because these were bad samples with no reads
+Traits <- Traits %>% dplyr::filter(!grepl("100|101|147-|148-|147D-CA1-1|145B-CA3-1|146C-CA3-4", RNAseqID))  
+# remove 100, 100, 147, and 148:  homecage animals
+# Remove 147D_CA1_1 and 145B_CA3_1: bad samples with no reads.
+# Remove 146C-CA3-4: outlier on all pc analyses
 Traits$APAconflict <- as.factor(paste(Traits$APA, Traits$Conflict, sep="_")) # adding combinatorial traits columns
 Traits$ID <- gsub("[[:punct:]]", "", Traits$Mouse) #make a column that thas id without the dash
 row.names(Traits) <- Traits$RNAseqID # make gene the row name 
@@ -341,8 +344,8 @@ colData$Slice <- as.factor(colData$Slice)
 str(colData)
 ```
 
-    ## 'data.frame':    45 obs. of  7 variables:
-    ##  $ RNAseqID: Factor w/ 45 levels "143A-CA3-1","143A-DG-1",..: 1 2 3 4 5 6 7 8 9 10 ...
+    ## 'data.frame':    44 obs. of  7 variables:
+    ##  $ RNAseqID: Factor w/ 44 levels "143A-CA3-1","143A-DG-1",..: 1 2 3 4 5 6 7 8 9 10 ...
     ##  $ Mouse   : Factor w/ 18 levels "15-143A","15-143B",..: 1 1 2 2 3 4 4 5 5 5 ...
     ##  $ Conflict: Factor w/ 2 levels "Conflict","NoConflict": 1 1 1 1 2 2 2 1 1 1 ...
     ##  $ Punch   : Factor w/ 3 levels "CA1","CA3","DG": 2 3 1 3 1 1 3 1 2 3 ...
@@ -371,12 +374,12 @@ dds # view the DESeq object - note numnber of genes
 ```
 
     ## class: DESeqDataSet 
-    ## dim: 22485 45 
+    ## dim: 22485 44 
     ## metadata(1): version
     ## assays(1): counts
     ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
-    ## colnames(45): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
+    ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
     ## colData names(7): RNAseqID Mouse ... APA ID
 
 ``` r
@@ -387,12 +390,12 @@ dds # view the DESeq object - note numnber of genes
 ```
 
     ## class: DESeqDataSet 
-    ## dim: 17746 45 
+    ## dim: 17674 44 
     ## metadata(1): version
     ## assays(1): counts
-    ## rownames(17746): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rownames(17674): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
-    ## colnames(45): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
+    ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
     ## colData names(7): RNAseqID Mouse ... APA ID
 
 ``` r
@@ -415,7 +418,7 @@ dds <- DESeq(dds)
 
     ## fitting model and testing
 
-    ## -- replacing outliers and refitting for 18 genes
+    ## -- replacing outliers and refitting for 7 genes
     ## -- DESeq argument 'minReplicatesForReplace' = 7 
     ## -- original counts are preserved in counts(dds)
 
@@ -434,37 +437,37 @@ Now, we can calculate the number of differentiall expressed genes for each contr
 
 ``` r
 source("resvalsfunction.R")
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.1) #2999
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.05) #2497
 ```
 
-    ## [1] 2999
+    ## [1] 2497
 
 ``` r
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.1) #2204
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.05) #1803
 ```
 
-    ## [1] 2204
+    ## [1] 1803
 
 ``` r
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.1) # 4110
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #3445
 ```
 
-    ## [1] 4110
+    ## [1] 3445
 
 ``` r
-contrast4 <- resvals(contrastvector = c("APA", "Same", "Yoked"), mypadj = 0.1) #107
+contrast4 <- resvals(contrastvector = c("APA", "Same", "Yoked"), mypadj = 0.05) #95
 ```
 
-    ## [1] 107
+    ## [1] 95
 
 ``` r
-contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Yoked"), mypadj = 0.1) #59
+contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Yoked"), mypadj = 0.05) #42
 ```
 
-    ## [1] 59
+    ## [1] 42
 
 ``` r
-contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Same"), mypadj = 0.1) # 0 
+contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Same"), mypadj = 0.05) # 0 
 ```
 
     ## [1] 0
@@ -480,12 +483,12 @@ head(rldpadjs)
 ```
 
     ##               padjPunchCA1DG padjPunchCA1CA3 padjPunchCA3DG
-    ## 0610007P14Rik      0.9988301       1.0000000      1.0000000
-    ## 0610009B22Rik      0.9058675       0.5192173      0.1194886
-    ## 0610009L18Rik      0.6977672       0.6926354      0.9805026
-    ## 0610009O20Rik      0.7262958       0.9875592      0.4348464
-    ## 0610010F05Rik      0.7090649       0.1991185      0.4357406
-    ## 0610010K14Rik      0.9988301       0.5327519      0.2821504
+    ## 0610007P14Rik      0.9959885       1.0000000      0.9953218
+    ## 0610009B22Rik      0.8920416       0.4918862      0.1034590
+    ## 0610009L18Rik      0.6926063       0.6752603      0.9767398
+    ## 0610009O20Rik      0.7325075       0.9860516      0.4348118
+    ## 0610010F05Rik      0.7118161       0.1823768      0.3936081
+    ## 0610010K14Rik      0.9959885       0.5247152      0.2851455
     ##               padjAPASameYoked padjAPAConflictYoked padjAPAConflictSame
     ## 0610007P14Rik                1                    1                   1
     ## 0610009B22Rik                1                    1                   1
@@ -514,7 +517,7 @@ DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, con
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
 DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPASameYoked, padjAPAConflictYoked, padjAPAConflictSame)) # create new col with min padj
-DEGes <- DEGes %>% filter(padjmin < 0.0001)
+DEGes <- DEGes %>% filter(padjmin < 0.05)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
@@ -523,69 +526,69 @@ DEGes <- DEGes - rowMeans(DEGes)
 head(DEGes)
 ```
 
-    ##                143A-CA3-1  143A-DG-1 143B-CA1-1   143B-DG-1  143C-CA1-1
-    ## 1110002E22Rik -1.16230774  1.1705090  0.1443221  1.63110398 -0.66763649
-    ## 1190002N15Rik -1.72506907  0.8755782  0.8879333 -0.82549312  1.32373075
-    ## 1700025G04Rik -0.43111905  0.6047283 -0.3386369  0.02097928 -0.09274292
-    ## 1810041L15Rik -0.04800454  1.2368213 -1.6996833  0.78541070 -0.98978547
-    ## 2010300C02Rik -1.31340652  0.8897266  0.4334967  0.66809358  0.73485079
-    ## 2900026A02Rik  0.65091244 -0.3856292  0.1101570 -0.63978949  0.55065486
-    ##               143D-CA1-3  143D-DG-3 144A-CA1-2  144A-CA3-2  144A-DG-2
-    ## 1110002E22Rik -0.5433051  1.3214462 -0.5395372 -0.50186871  1.4208784
-    ## 1190002N15Rik  0.8257296  0.3824383  0.9864699 -2.08732342  2.0543975
-    ## 1700025G04Rik -0.8020307  0.3368837 -0.7794041  0.40143012  0.7426037
-    ## 1810041L15Rik -1.3708115  0.9329462 -1.1065663  0.05083861  1.4355952
-    ## 2010300C02Rik  0.4703677  0.7859521  0.4765327 -1.81468989  1.0252648
-    ## 2900026A02Rik  0.3440413 -0.8201671  0.1175613  0.03695794 -0.3262490
-    ##                144B-CA1-1 144B-CA3-1  144C-CA1-2  144C-CA3-2  144C-DG-2
-    ## 1110002E22Rik -0.89428172 -0.8025746 -0.59401924 -0.33616232  1.4247489
-    ## 1190002N15Rik  1.03724952 -1.2404801  0.34090582 -1.10153393  1.7903609
-    ## 1700025G04Rik -0.98355275 -0.3075083 -0.06585606  0.02148736  0.5952284
-    ## 1810041L15Rik -1.10545361 -0.3225467 -0.62252195  0.56542278  1.2650357
-    ## 2010300C02Rik  0.65401410 -1.7654642  0.39972375 -1.76034410  0.8746844
-    ## 2900026A02Rik  0.04299354  0.3555989  0.42247428 -0.31214165 -0.7943722
-    ##                144D-CA3-2  144D-DG-2 145A-CA1-2  145A-CA3-2  145A-DG-2
-    ## 1110002E22Rik -1.04344508  0.9574167 -0.6657968  0.01053546  0.1287196
-    ## 1190002N15Rik -1.01325284 -0.3124629  0.9819782 -1.11819161  0.6042550
-    ## 1700025G04Rik  0.12503652  0.7399715 -0.7598524  0.96942707  0.2687021
-    ## 1810041L15Rik -0.02059493  1.2791806 -1.1638068  0.58498224  0.9643158
-    ## 2010300C02Rik -1.47302251  0.7786152  0.5788095 -1.29248166  0.8329116
-    ## 2900026A02Rik  0.52177486 -0.8143009  0.2483308  0.83910584 -0.6804629
-    ##               145B-CA1-1    145B-DG-1  146A-CA1-2 146A-CA3-2  146A-DG-2
-    ## 1110002E22Rik -1.0057109  1.556313069 -0.97101273  0.4790266  1.2586023
-    ## 1190002N15Rik  0.6006954 -0.005450833  0.77622333 -0.8847532  0.8351507
-    ## 1700025G04Rik -0.3337989  0.498527522 -0.30895547  0.1440145  0.3725948
-    ## 1810041L15Rik -1.1155530  1.438908695 -1.53463962 -0.5755530  1.3098625
-    ## 2010300C02Rik  0.7389585  0.922357409  0.53630701 -1.6363631  0.9339637
-    ## 2900026A02Rik  0.3651018 -0.571399274  0.01930847  0.0143123 -0.7416213
-    ##               146B-CA1-2  146B-CA3-2  146B-DG-2 146C-CA1-4 146C-CA3-4
-    ## 1110002E22Rik  0.8840169 -1.03561615  0.3840157  0.7009613 -0.3658572
-    ## 1190002N15Rik  1.3848788 -0.91583497  1.1255677  1.2776146  0.1246173
-    ## 1700025G04Rik -0.3548419  0.07325742  0.1966726 -0.8461748 -0.4568169
-    ## 1810041L15Rik -0.9843488  0.15102121 -0.5897695 -0.8964243 -0.2225356
-    ## 2010300C02Rik  0.6439834 -1.28856602  0.3388799  0.5747202 -1.6660136
-    ## 2900026A02Rik  1.0664759  0.34479629 -0.1744598  1.0134571  0.3672177
-    ##                146C-DG-4  146D-CA1-3  146D-CA3-3  146D-DG-3 147C-CA1-3
-    ## 1110002E22Rik -0.5885531 -0.48934895 -1.12381112 -0.1166383 -0.2577157
-    ## 1190002N15Rik  1.2634222 -0.18075430 -2.14192834 -1.0821391  0.9585774
-    ## 1700025G04Rik  0.6169602 -0.85871033 -0.08087894  0.8063432 -0.4728886
-    ## 1810041L15Rik  1.1958631  0.08952726  0.44251290  0.3860360 -1.2010405
-    ## 2010300C02Rik  0.7136684  0.83476305 -0.62190265  0.5138686  0.4790476
-    ## 2900026A02Rik -0.8158377 -0.10987738  0.90540184 -0.8907663  0.3455518
-    ##               147C-CA3-3  147C-DG-3 147D-CA3-1  147D-DG-1 148A-CA1-3
-    ## 1110002E22Rik -0.6316126  1.9010310 -1.2350377  1.2330545 -0.9265685
-    ## 1190002N15Rik -1.0288397  1.1482525 -1.8759059 -0.3891130  1.1655303
-    ## 1700025G04Rik  0.3067797  0.7224128  0.5653680  0.3044112 -0.2727652
-    ## 1810041L15Rik  0.2208505  1.2363855  0.3938438  1.2096327 -0.9118822
-    ## 2010300C02Rik -2.2423442  0.8305160 -1.8826382  1.0570480  0.6302767
-    ## 2900026A02Rik -0.3011663 -0.4559534  0.4627074 -0.9888167  0.5044014
-    ##               148A-CA3-3  148A-DG-3 148B-CA1-4  148B-CA3-4   148B-DG-4
-    ## 1110002E22Rik -0.2256539  1.6226887 -0.4095695 -1.16175529  0.06600623
-    ## 1190002N15Rik -2.2072486  0.2817692 -0.1913985 -1.32352344 -1.38262954
-    ## 1700025G04Rik -0.2047959  0.6032214 -1.1253419 -0.08870245 -0.07166697
-    ## 1810041L15Rik -0.4364960  0.8592621 -1.0321960 -0.24462694  0.16058534
-    ## 2010300C02Rik -0.7159305  0.8271941 -0.0417834 -1.36541525  0.70176984
-    ## 2900026A02Rik  0.2057696 -0.7726839  0.4426075  0.45346379 -0.15544157
+    ##                143A-CA3-1   143A-DG-1 143B-CA1-1  143B-DG-1 143C-CA1-1
+    ## 1110002E22Rik -1.17062965  1.16379383  0.1336557  1.6190139 -0.6782200
+    ## 1110008P14Rik  0.36927931  0.08527737  0.1932882  0.3345603 -0.2305912
+    ## 1110012L19Rik -1.01406115  0.15190875 -0.4999942  1.4520809  0.1372077
+    ## 1190002N15Rik -1.71094068  0.87439179  0.8886826 -0.8287686  1.3205345
+    ## 1700001L19Rik -0.38880277  0.04666205  0.0797948 -0.8249946  0.1009883
+    ## 1700001O22Rik  0.03095492 -0.34440929  1.4238938 -1.0345635  1.0126539
+    ##                143D-CA1-3  143D-DG-3 144A-CA1-2 144A-CA3-2    144A-DG-2
+    ## 1110002E22Rik -0.54696368  1.3063606 -0.5532396 -0.4945070  1.409349738
+    ## 1110008P14Rik  0.08968605 -0.2042056  0.1854291  1.1511067 -0.966571550
+    ## 1110012L19Rik -0.75569759 -0.1356544  0.8681495  0.8474443 -1.004864720
+    ## 1190002N15Rik  0.82641426  0.3743473  0.9836874 -2.0396439  2.043854141
+    ## 1700001L19Rik  1.57735013  0.1742612  0.1614121 -0.1651675  0.181071220
+    ## 1700001O22Rik  1.18417461  0.3604488  1.3026481 -0.5132948  0.007678619
+    ##                144B-CA1-1  144B-CA3-1  144C-CA1-2 144C-CA3-2  144C-DG-2
+    ## 1110002E22Rik -0.90331591 -0.79872707 -0.60823782 -0.3420103  1.4161957
+    ## 1110008P14Rik -0.91125940  0.32456437 -0.21269379  0.9871236 -0.4374099
+    ## 1110012L19Rik  0.05513958  0.06754007  0.62029557 -0.1587617  0.2596652
+    ## 1190002N15Rik  1.03636092 -1.22646311  0.33962537 -1.0881270  1.7848510
+    ## 1700001L19Rik  0.23195726 -0.54942243  0.08975955 -0.8300424 -0.2683466
+    ## 1700001O22Rik  0.80736819 -0.31618449  0.54993501 -0.8464314 -0.8591813
+    ##                144D-CA3-2  144D-DG-2  145A-CA1-2   145A-CA3-2  145A-DG-2
+    ## 1110002E22Rik -1.04515942  0.9459104 -0.68141493  0.003149581  0.1129408
+    ## 1110008P14Rik  0.57648302 -0.0829272 -0.01396450  0.865795418 -0.1037691
+    ## 1110012L19Rik -0.14371378  0.3498476  0.01343134  1.181093959 -0.2921593
+    ## 1190002N15Rik -0.99788302 -0.3156500  0.98076845 -1.100280568  0.5961078
+    ## 1700001L19Rik -0.15054695  0.1614783  0.68929978 -0.073316637 -0.6968575
+    ## 1700001O22Rik -0.01174999  0.1163171  0.76595195 -0.037995397 -0.6998790
+    ##               145B-CA1-1    145B-DG-1 146A-CA1-2 146A-CA3-2   146A-DG-2
+    ## 1110002E22Rik -1.0087776  1.545806825 -0.9723121  0.4703477  1.24339240
+    ## 1110008P14Rik -0.9133877  0.104118151 -0.1087641  0.8081349 -0.02833311
+    ## 1110012L19Rik -0.8976013  0.250077842  0.6959071  0.2851445  0.47524730
+    ## 1190002N15Rik  0.5991391 -0.008861396  0.7765526 -0.8766732  0.82531605
+    ## 1700001L19Rik  0.5472203  0.063293967  0.3618480 -0.5915478  0.28772501
+    ## 1700001O22Rik  0.8345009 -0.518189707  1.4729829  0.5655674 -0.24786451
+    ##               146B-CA1-2  146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4
+    ## 1110002E22Rik  0.8727357 -1.03834593  0.3640463  0.6892547 -0.5833415
+    ## 1110008P14Rik -1.3376166  0.62794995 -0.1849090 -0.8267128 -0.9006632
+    ## 1110012L19Rik -0.1129676 -0.91956311 -0.1624537 -0.8041846  0.2800476
+    ## 1190002N15Rik  1.3822158 -0.90607154  1.1001809  1.2744499  1.2563017
+    ## 1700001L19Rik  0.9251486  0.08585096 -0.2031513  0.6850137 -0.2845466
+    ## 1700001O22Rik  0.3916913 -0.52158600 -0.1824397  1.1653560 -0.2562017
+    ##               146D-CA1-3 146D-CA3-3  146D-DG-3 147C-CA1-3 147C-CA3-3
+    ## 1110002E22Rik -0.4829639 -1.1312959 -0.1209408 -0.2732693 -0.6465445
+    ## 1110008P14Rik  0.2578079 -0.4310780 -0.8579243 -0.5717336  0.2038659
+    ## 1110012L19Rik -0.4644786 -0.3874941 -0.1277593 -0.1296321 -0.5829517
+    ## 1190002N15Rik -0.1794671 -2.1265122 -1.0563482  0.9527176 -1.0217795
+    ## 1700001L19Rik -0.5115538 -0.4761342 -0.1681240  0.3040984 -0.1849206
+    ## 1700001O22Rik -0.5019169 -1.1061821 -0.1467142  0.4333845 -1.2396908
+    ##                147C-DG-3  147D-CA3-1  147D-DG-1  148A-CA1-3  148A-CA3-3
+    ## 1110002E22Rik  1.8955758 -1.24750682  1.2232659 -0.94352026 -0.23573927
+    ## 1110008P14Rik -0.4257153  0.83081817 -0.1715680 -0.02561183  1.04656762
+    ## 1110012L19Rik  0.3212809 -0.06717396  0.3567257  0.01871763 -0.23589012
+    ## 1190002N15Rik  1.1439133 -1.86266575 -0.3923846  1.16426445 -2.18577660
+    ## 1700001L19Rik  0.2139276 -0.30761652 -0.1121860  0.69108355  0.08359638
+    ## 1700001O22Rik -0.3924831 -1.20579228 -0.8352275  0.74035623 -0.89759923
+    ##                 148A-DG-3 148B-CA1-4  148B-CA3-4  148B-DG-4
+    ## 1110002E22Rik  1.61172630 -0.4036172 -1.16990160  0.0539803
+    ## 1110008P14Rik  0.09149396  0.1377390  0.49551158  0.1808092
+    ## 1110012L19Rik -0.18345983 -0.3928404 -0.09674135  0.8831455
+    ## 1190002N15Rik  0.27408930 -0.1918781 -1.31171728 -1.3708738
+    ## 1700001L19Rik -0.44746094 -0.4353280 -0.31880166  0.2460275
+    ## 1700001O22Rik -1.05861891 -0.4230747 -0.02269119  1.0540977
 
 ``` r
 ## the heatmap annotation file
@@ -598,17 +601,20 @@ Now lets look at a principle component analysis of the data
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
-#pcadata$Treatment <- factor(pcadata$Treatment, levels = c("homecage", "shocked"))
+percentVar
+```
 
+    ## [1] 49 21  5  3  2  1  1  1  1
 
+``` r
 ## statistics
 aov1 <- aov(PC1 ~ Punch, data=pcadata)
 summary(aov1) 
 ```
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2  16357    8179   258.6 <2e-16 ***
-    ## Residuals   42   1328      32                   
+    ## Punch        2  16378    8189     254 <2e-16 ***
+    ## Residuals   41   1322      32                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -623,9 +629,9 @@ TukeyHSD(aov1, which = "Punch")
     ## 
     ## $Punch
     ##               diff        lwr        upr     p adj
-    ## CA3-DG  -40.789018 -45.788812 -35.789223 0.0000000
-    ## CA1-DG  -38.870942 -43.781048 -33.960837 0.0000000
-    ## CA1-CA3   1.918075  -3.158899   6.995049 0.6321716
+    ## CA3-DG  -40.657971 -45.813529 -35.502413 0.0000000
+    ## CA1-DG  -39.611585 -44.573891 -34.649278 0.0000000
+    ## CA1-CA3   1.046387  -4.185641   6.278415 0.8781712
 
 ``` r
 aov2 <- aov(PC2 ~ Punch, data=pcadata)
@@ -633,8 +639,8 @@ summary(aov2)
 ```
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2   7342    3671   281.1 <2e-16 ***
-    ## Residuals   42    548      13                   
+    ## Punch        2   7310    3655   948.1 <2e-16 ***
+    ## Residuals   41    158       4                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -649,18 +655,44 @@ TukeyHSD(aov2, which = "Punch")
     ## 
     ## $Punch
     ##              diff       lwr       upr p adj
-    ## CA3-DG  -15.17325 -18.38626 -11.96024     0
-    ## CA1-DG   16.63236  13.47698  19.78773     0
-    ## CA1-CA3  31.80561  28.54300  35.06822     0
+    ## CA3-DG  -16.60420 -18.38688 -14.82152     0
+    ## CA1-DG   15.78048  14.06463  17.49634     0
+    ## CA1-CA3  32.38468  30.57556  34.19380     0
+
+``` r
+aov3 <- aov(PC3 ~ APA, data=pcadata)
+summary(aov3) 
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA          2  221.8  110.92   2.634 0.0839 .
+    ## Residuals   41 1726.8   42.12                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+TukeyHSD(aov3, which = "APA")
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC3 ~ APA, data = pcadata)
+    ## 
+    ## $APA
+    ##                      diff        lwr       upr     p adj
+    ## Same-Yoked     -4.5144437 -10.801630 1.7727431 0.2006707
+    ## Conflict-Yoked -4.4831349  -9.927998 0.9617286 0.1244768
+    ## Conflict-Same   0.0313088  -6.710948 6.7735655 0.9999297
 
 ``` r
 aov4 <- aov(PC4 ~ APA, data=pcadata)
 summary(aov4) 
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA          2  248.4  124.21   3.163 0.0525 .
-    ## Residuals   42 1649.2   39.27                 
+    ##             Df Sum Sq Mean Sq F value  Pr(>F)    
+    ## APA          2  382.4  191.18   11.35 0.00012 ***
+    ## Residuals   41  690.8   16.85                    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -674,21 +706,19 @@ TukeyHSD(aov4, which = "APA")
     ## Fit: aov(formula = PC4 ~ APA, data = pcadata)
     ## 
     ## $APA
-    ##                      diff        lwr       upr     p adj
-    ## Same-Yoked     -5.1094387 -10.958650 0.7397731 0.0974699
-    ## Conflict-Yoked -4.3723453  -9.625093 0.8804020 0.1193240
-    ## Conflict-Same   0.7370934  -5.566203 7.0403901 0.9565290
+    ##                     diff       lwr       upr     p adj
+    ## Same-Yoked      6.988720  3.012118 10.965321 0.0003232
+    ## Conflict-Yoked  4.893361  1.449523  8.337199 0.0036237
+    ## Conflict-Same  -2.095358 -6.359788  2.169072 0.4629850
 
 ``` r
 aov5 <- aov(PC5 ~ APA, data=pcadata)
 summary(aov5) 
 ```
 
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## APA          2  344.0  172.02   10.25 0.000237 ***
-    ## Residuals   42  704.9   16.78                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA          2    6.0   3.018   0.207  0.814
+    ## Residuals   41  598.3  14.593
 
 ``` r
 TukeyHSD(aov5, which = "APA") 
@@ -700,330 +730,54 @@ TukeyHSD(aov5, which = "APA")
     ## Fit: aov(formula = PC5 ~ APA, data = pcadata)
     ## 
     ## $APA
-    ##                     diff       lwr       upr     p adj
-    ## Same-Yoked      6.292086  2.468029 10.116143 0.0007279
-    ## Conflict-Yoked  4.834118  1.400013  8.268223 0.0039365
-    ## Conflict-Same  -1.457968 -5.578894  2.662958 0.6684477
+    ##                      diff       lwr      upr     p adj
+    ## Same-Yoked      0.7175734 -2.983349 4.418496 0.8850340
+    ## Conflict-Yoked -0.3255313 -3.530624 2.879562 0.9669609
+    ## Conflict-Same  -1.0431047 -5.011902 2.925692 0.7995031
 
 ``` r
-lm1245 <- lm(PC1+PC2+PC4+PC5~APA*Punch, data=pcadata)
-summary(lm1245)
+lm124 <- lm(PC1+PC2+PC4~APA*Punch, data=pcadata)
+summary(lm124)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = PC1 + PC2 + PC4 + PC5 ~ APA * Punch, data = pcadata)
+    ## lm(formula = PC1 + PC2 + PC4 ~ APA * Punch, data = pcadata)
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -24.8772  -4.5919  -0.4995   4.2877  26.7964 
+    ## -14.7950  -2.6364   0.1244   2.2727  19.8373 
     ## 
     ## Coefficients:
     ##                      Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)           20.2304     3.4449   5.872 1.03e-06 ***
-    ## APASame               13.4230     6.5965   2.035  0.04928 *  
-    ## APAConflict            9.4336     5.5548   1.698  0.09808 .  
-    ## PunchCA3             -54.2560     5.2622 -10.310 2.73e-12 ***
-    ## PunchCA1             -16.7549     5.0429  -3.323  0.00206 ** 
-    ## APASame:PunchCA3     -14.5893     9.5386  -1.529  0.13488    
-    ## APAConflict:PunchCA3  -0.8948     8.1035  -0.110  0.91269    
-    ## APASame:PunchCA1     -14.4878     8.9896  -1.612  0.11578    
-    ## APAConflict:PunchCA1 -14.8916     8.2555  -1.804  0.07963 .  
+    ## (Intercept)            15.774      2.505   6.297 3.14e-07 ***
+    ## APASame                20.708      4.797   4.317 0.000124 ***
+    ## APAConflict            16.416      4.039   4.064 0.000259 ***
+    ## PunchCA3              -51.557      3.826 -13.474 2.05e-15 ***
+    ## PunchCA1              -16.670      3.667  -4.546 6.27e-05 ***
+    ## APASame:PunchCA3      -10.584      7.515  -1.408 0.167821    
+    ## APAConflict:PunchCA3   -9.754      5.892  -1.655 0.106780    
+    ## APASame:PunchCA1      -15.659      6.537  -2.396 0.022076 *  
+    ## APAConflict:PunchCA1  -14.350      6.003  -2.390 0.022342 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 9.744 on 36 degrees of freedom
-    ## Multiple R-squared:  0.8802, Adjusted R-squared:  0.8535 
-    ## F-statistic: 33.05 on 8 and 36 DF,  p-value: 2.405e-14
+    ## Residual standard error: 7.085 on 35 degrees of freedom
+    ## Multiple R-squared:  0.933,  Adjusted R-squared:  0.9177 
+    ## F-statistic: 60.97 on 8 and 35 DF,  p-value: < 2.2e-16
 
 ``` r
-anova(lm1245) #punch ***
+anova(lm124) 
 ```
 
     ## Analysis of Variance Table
     ## 
-    ## Response: PC1 + PC2 + PC4 + PC5
-    ##           Df  Sum Sq Mean Sq  F value Pr(>F)    
-    ## APA        2    29.9    15.0   0.1576 0.8548    
-    ## Punch      2 24444.6 12222.3 128.7363 <2e-16 ***
-    ## APA:Punch  4   630.3   157.6   1.6599 0.1807    
-    ## Residuals 36  3417.9    94.9                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-lm12 <- lm(PC1+PC2~APA*Punch, data=pcadata)
-summary(lm12)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = PC1 + PC2 ~ APA * Punch, data = pcadata)
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -14.5310  -1.6759  -0.4062   2.0174  11.8553 
-    ## 
-    ## Coefficients:
-    ##                      Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)            20.018      2.297   8.713 2.15e-10 ***
-    ## APASame                10.915      4.399   2.481   0.0179 *  
-    ## APAConflict             8.828      3.704   2.383   0.0226 *  
-    ## PunchCA3              -50.685      3.509 -14.443  < 2e-16 ***
-    ## PunchCA1              -17.960      3.363  -5.340 5.29e-06 ***
-    ## APASame:PunchCA3      -17.039      6.361  -2.679   0.0111 *  
-    ## APAConflict:PunchCA3   -6.476      5.404  -1.198   0.2386    
-    ## APASame:PunchCA1       -9.264      5.995  -1.545   0.1310    
-    ## APAConflict:PunchCA1   -8.504      5.506  -1.545   0.1312    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 6.498 on 36 degrees of freedom
-    ## Multiple R-squared:  0.9406, Adjusted R-squared:  0.9274 
-    ## F-statistic: 71.21 on 8 and 36 DF,  p-value: < 2.2e-16
-
-``` r
-anova(lm12) #punch ***, APA:Punch .
-```
-
-    ## Analysis of Variance Table
-    ## 
-    ## Response: PC1 + PC2
-    ##           Df  Sum Sq Mean Sq  F value  Pr(>F)    
-    ## APA        2    15.6     7.8   0.1847 0.83215    
-    ## Punch      2 23676.0 11838.0 280.3566 < 2e-16 ***
-    ## APA:Punch  4   364.4    91.1   2.1576 0.09363 .  
-    ## Residuals 36  1520.1    42.2                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-lm1 <- lm(PC1~APA*Punch, data=pcadata)
-summary(lm1)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = PC1 ~ APA * Punch, data = pcadata)
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -13.7779  -1.6680  -0.0219   1.8247  11.5724 
-    ## 
-    ## Coefficients:
-    ##                      Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)            21.516      1.906  11.289 2.21e-13 ***
-    ## APASame                 9.027      3.649   2.474   0.0182 *  
-    ## APAConflict             7.804      3.073   2.539   0.0156 *  
-    ## PunchCA3              -37.225      2.911 -12.787 5.97e-15 ***
-    ## PunchCA1              -35.011      2.790 -12.549 1.04e-14 ***
-    ## APASame:PunchCA3       -8.649      5.277  -1.639   0.1099    
-    ## APAConflict:PunchCA3   -6.442      4.483  -1.437   0.1594    
-    ## APASame:PunchCA1       -8.459      4.973  -1.701   0.0976 .  
-    ## APAConflict:PunchCA1   -7.356      4.567  -1.611   0.1160    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 5.39 on 36 degrees of freedom
-    ## Multiple R-squared:  0.9409, Adjusted R-squared:  0.9277 
-    ## F-statistic: 71.58 on 8 and 36 DF,  p-value: < 2.2e-16
-
-``` r
-anova(lm1) #punch ***
-```
-
-    ## Analysis of Variance Table
-    ## 
-    ## Response: PC1
-    ##           Df  Sum Sq Mean Sq  F value Pr(>F)    
-    ## APA        2    53.5    26.8   0.9211 0.4073    
-    ## Punch      2 16435.7  8217.8 282.8135 <2e-16 ***
-    ## APA:Punch  4   150.2    37.6   1.2924 0.2913    
-    ## Residuals 36  1046.1    29.1                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-lm24 <- lm(PC2+PC4~APA*Punch, data=pcadata)
-summary(lm24)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = PC2 + PC4 ~ APA * Punch, data = pcadata)
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -19.6941  -3.5179  -0.9017   3.5206  14.7222 
-    ## 
-    ## Coefficients:
-    ##                      Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)             2.895      2.611   1.109 0.274903    
-    ## APASame                -4.500      5.000  -0.900 0.374029    
-    ## APAConflict            -5.657      4.210  -1.344 0.187479    
-    ## PunchCA3              -18.938      3.988  -4.749 3.23e-05 ***
-    ## PunchCA1               16.058      3.822   4.201 0.000167 ***
-    ## APASame:PunchCA3       -3.228      7.229  -0.447 0.657885    
-    ## APAConflict:PunchCA3    8.872      6.142   1.445 0.157218    
-    ## APASame:PunchCA1       -1.118      6.813  -0.164 0.870520    
-    ## APAConflict:PunchCA1   -3.000      6.257  -0.479 0.634559    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 7.385 on 36 degrees of freedom
-    ## Multiple R-squared:  0.7994, Adjusted R-squared:  0.7549 
-    ## F-statistic: 17.94 on 8 and 36 DF,  p-value: 1.952e-10
-
-``` r
-anova(lm24) # APA . #PUnch ***
-```
-
-    ## Analysis of Variance Table
-    ## 
-    ## Response: PC2 + PC4
-    ##           Df Sum Sq Mean Sq F value    Pr(>F)    
-    ## APA        2  317.5   158.7  2.9106   0.06735 .  
-    ## Punch      2 7220.7  3610.3 66.2005 8.694e-13 ***
-    ## APA:Punch  4  286.9    71.7  1.3150   0.28297    
-    ## Residuals 36 1963.3    54.5                      
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-lm5 <- lm(PC5~APA*Punch, data=pcadata)
-summary(lm5)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = PC5 ~ APA * Punch, data = pcadata)
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -9.2338 -1.2624 -0.0495  1.8372  7.9686 
-    ## 
-    ## Coefficients:
-    ##                      Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)            -4.180      1.511  -2.767  0.00887 **
-    ## APASame                 8.896      2.892   3.076  0.00400 **
-    ## APAConflict             7.286      2.436   2.991  0.00499 **
-    ## PunchCA3                1.908      2.307   0.827  0.41380   
-    ## PunchCA1                2.198      2.211   0.994  0.32681   
-    ## APASame:PunchCA3       -2.712      4.182  -0.649  0.52077   
-    ## APAConflict:PunchCA3   -3.325      3.553  -0.936  0.35558   
-    ## APASame:PunchCA1       -4.910      3.942  -1.246  0.22093   
-    ## APAConflict:PunchCA1   -4.537      3.620  -1.253  0.21821   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 4.272 on 36 degrees of freedom
-    ## Multiple R-squared:  0.3735, Adjusted R-squared:  0.2343 
-    ## F-statistic: 2.683 on 8 and 36 DF,  p-value: 0.0201
-
-``` r
-anova(lm5) # APA ***
-```
-
-    ## Analysis of Variance Table
-    ## 
-    ## Response: PC5
-    ##           Df Sum Sq Mean Sq F value    Pr(>F)    
-    ## APA        2 344.04 172.022  9.4239 0.0005112 ***
-    ## Punch      2   2.18   1.090  0.0597 0.9421068    
-    ## APA:Punch  4  45.58  11.394  0.6242 0.6482456    
-    ## Residuals 36 657.14  18.254                      
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-lm4 <- lm(PC4~APA*Punch, data=pcadata)
-summary(lm4)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = PC4 ~ APA * Punch, data = pcadata)
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -11.319  -3.737  -1.061   2.737  15.997 
-    ## 
-    ## Coefficients:
-    ##                      Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)            4.3922     2.2404   1.960   0.0577 .
-    ## APASame               -6.3882     4.2901  -1.489   0.1452  
-    ## APAConflict           -6.6803     3.6126  -1.849   0.0727 .
-    ## PunchCA3              -5.4792     3.4223  -1.601   0.1181  
-    ## PunchCA1              -0.9930     3.2797  -0.303   0.7638  
-    ## APASame:PunchCA3       5.1624     6.2035   0.832   0.4108  
-    ## APAConflict:PunchCA3   8.9067     5.2702   1.690   0.0997 .
-    ## APASame:PunchCA1      -0.3136     5.8464  -0.054   0.9575  
-    ## APAConflict:PunchCA1  -1.8514     5.3690  -0.345   0.7322  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 6.337 on 36 degrees of freedom
-    ## Multiple R-squared:  0.2382, Adjusted R-squared:  0.06889 
-    ## F-statistic: 1.407 on 8 and 36 DF,  p-value: 0.227
-
-``` r
-anova(lm4)
-```
-
-    ## Analysis of Variance Table
-    ## 
-    ## Response: PC4
-    ##           Df  Sum Sq Mean Sq F value  Pr(>F)  
-    ## APA        2  248.42 124.210  3.0931 0.05759 .
-    ## Punch      2   22.24  11.120  0.2769 0.75971  
-    ## APA:Punch  4  181.31  45.327  1.1288 0.35837  
-    ## Residuals 36 1445.64  40.157                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-lm3 <- lm(PC3~APA*Punch, data=pcadata)
-summary(lm3) #something DG-CA3 specific 
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = PC3 ~ APA * Punch, data = pcadata)
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -24.353  -1.301  -0.174   1.395  48.448 
-    ## 
-    ## Coefficients:
-    ##                      Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)            0.3420     3.5768   0.096   0.9244  
-    ## APASame                0.1100     6.8491   0.016   0.9873  
-    ## APAConflict           -0.9178     5.7674  -0.159   0.8745  
-    ## PunchCA3              -9.5652     5.4637  -1.751   0.0885 .
-    ## PunchCA1               3.7741     5.2359   0.721   0.4757  
-    ## APASame:PunchCA3      25.1110     9.9037   2.536   0.0157 *
-    ## APAConflict:PunchCA3   2.5741     8.4137   0.306   0.7614  
-    ## APASame:PunchCA1      -1.7961     9.3337  -0.192   0.8485  
-    ## APAConflict:PunchCA1  -1.8397     8.5715  -0.215   0.8313  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 10.12 on 36 degrees of freedom
-    ## Multiple R-squared:  0.3179, Adjusted R-squared:  0.1663 
-    ## F-statistic: 2.097 on 8 and 36 DF,  p-value: 0.06192
-
-``` r
-anova(lm3) # APA . 
-```
-
-    ## Analysis of Variance Table
-    ## 
-    ## Response: PC3
-    ##           Df Sum Sq Mean Sq F value  Pr(>F)  
-    ## APA        2  464.8  232.39  2.2706 0.11785  
-    ## Punch      2  236.4  118.19  1.1548 0.32651  
-    ## APA:Punch  4 1016.1  254.03  2.4820 0.06101 .
-    ## Residuals 36 3684.5  102.35                  
+    ## Response: PC1 + PC2 + PC4
+    ##           Df  Sum Sq Mean Sq  F value    Pr(>F)    
+    ## APA        2  1077.0   538.5  10.7273 0.0002325 ***
+    ## Punch      2 22958.2 11479.1 228.6763 < 2.2e-16 ***
+    ## APA:Punch  4   448.5   112.1   2.2339 0.0852730 .  
+    ## Residuals 35  1756.9    50.2                       
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1034,10 +788,8 @@ write.csv(rldpadjs, file = "../data/02a_rldpadjs.csv", row.names = T)
 write.csv(DEGes, file = "../data/02a_DEGes.csv", row.names = T)
 write.csv(df, file = "../data/02a_df.csv", row.names = F)
 write.csv(pcadata, file = "../data/02a_pcadata.csv", row.names = F)
-percentVar
+write.table(percentVar, file = "../data/02a_percentVar.txt")
 ```
-
-    ## [1] 42 19 13  5  3  1  1  1  1
 
 make volcano plos here.. still perfecting
 -----------------------------------------
@@ -1045,35 +797,12 @@ make volcano plos here.. still perfecting
 ``` r
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA1", xlim=c(-10,10)))
-with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
-with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
 ![](../figures/02_rnaseq/volcanoplots-1.png)
-
-``` r
-head(res)
-```
-
-    ## log2 fold change (MLE): Punch CA1 vs DG 
-    ## Wald test p-value: Punch CA1 vs DG 
-    ## DataFrame with 6 rows and 6 columns
-    ##                baseMean log2FoldChange     lfcSE       stat    pvalue
-    ##               <numeric>      <numeric> <numeric>  <numeric> <numeric>
-    ## 0610007P14Rik 20.443582     0.03753014 0.2759176  0.1360194 0.8918060
-    ## 0610009B22Rik  6.633035     0.35502261 0.5529896  0.6420060 0.5208693
-    ## 0610009L18Rik  3.638280    -0.85567004 0.8427590 -1.0153199 0.3099533
-    ## 0610009O20Rik 45.886996    -0.28890628 0.2991055 -0.9659010 0.3340937
-    ## 0610010F05Rik  7.767207    -0.34684497 0.3492937 -0.9929896 0.3207150
-    ## 0610010K14Rik  1.808516    -0.10150655 0.6648150 -0.1526839 0.8786475
-    ##                    padj
-    ##               <numeric>
-    ## 0610007P14Rik 0.9988301
-    ## 0610009B22Rik 0.9058675
-    ## 0610009L18Rik 0.6977672
-    ## 0610009O20Rik 0.7262958
-    ## 0610010F05Rik 0.7090649
-    ## 0610010K14Rik 0.9988301
 
 ``` r
 topGene <- rownames(res)[which.min(res$padj)]
@@ -1085,8 +814,9 @@ plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 ``` r
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3-CA1", xlim=c(-10,10)))
-with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
-with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
 ![](../figures/02_rnaseq/volcanoplots-3.png)
@@ -1101,8 +831,9 @@ plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 ``` r
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA3", xlim=c(-10,10)))
-with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
-with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
 ![](../figures/02_rnaseq/volcanoplots-5.png)
@@ -1117,8 +848,9 @@ plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 ``` r
 res <- results(dds, contrast =c("APA", "Conflict", "Same"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Same - Conflict", xlim=c(-10,10)))
-with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
-with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
 ![](../figures/02_rnaseq/volcanoplots-7.png)
@@ -1133,8 +865,9 @@ plotCounts(dds, gene = topGene, intgroup=c("APA"))
 ``` r
 res <- results(dds, contrast =c("APA", "Conflict", "Yoked"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Yoked - Conflict", xlim=c(-10,10)))
-with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
-with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
 ![](../figures/02_rnaseq/volcanoplots-9.png)
@@ -1149,8 +882,9 @@ plotCounts(dds, gene = topGene, intgroup=c("APA"))
 ``` r
 res <- results(dds, contrast =c("APA", "Same", "Yoked"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Yoked - Same", xlim=c(-10,10)))
-with(subset(res, padj<.1 ), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
-with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
 ![](../figures/02_rnaseq/volcanoplots-11.png)

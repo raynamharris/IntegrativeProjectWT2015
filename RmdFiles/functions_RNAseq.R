@@ -32,10 +32,11 @@ pcadataframe <- function (object, intgroup = "condition", ntop = 500, returnData
 
 plotPCs <- function(df, xcol, ycol, aescolor, colorname, aesshape, shapename, colorvalues){
   ggplot(df, aes(df[xcol], df[ycol], color=aescolor, shape=aesshape)) +
-    geom_point(size=3) +
+    geom_point(size=2) +
     xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
     ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
     theme_classic() +
+    
     #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=1) + 
     scale_colour_manual(name=colorname, values=c(colorvalues))+
     scale_shape_discrete(name=shapename) +
