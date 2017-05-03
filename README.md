@@ -9,9 +9,9 @@ Click "summary" to view a markdown file with documention and figure.
 Click "Rmd file" to view the bioinformatic workflow.
 
 - Overview - summer the experimental paradigm ([summary](./RmdFiles/01_schematics.md), made with Adobe Illustrator)
-- Behavior - analysis of the leanring and memory behavioral data ([summary](./RmdFiles/Fig2-behavior.md), [Rmd file](./RmdFiles/02-behavior.Rmd)
-- Gene expression - anlaysis of all hippocampal transcriptomic data ([summary](./RmdFiles/Fig3_rnaseq.md), [Rmd file]((./RmdFiles/Fig3_rnaseq.Rmd)))
-
+- Behavior - analysis of the leanring and memory behavioral data ([analysis](./RmdFiles/01a_beahvior_create_dfs.md), [figures](./RmdFiles/01b_behavior_figures.md)
+- Gene expression - anlaysis of all hippocampal transcriptomic data ([analysis](./RmdFiles/02a_rnaseq_makedfs.md), [figures](./RmdFiles/02b_rnaseq_makefigures.md))
+- Gene expression - anlaysis of DG, CA1, and CA3 separately ([analysis & figures](./RmdFiles/02c_brainregionspecific.md)
 
 ## Working Abstract
 
