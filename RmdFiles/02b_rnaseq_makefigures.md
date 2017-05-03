@@ -51,13 +51,13 @@ pvale (padj) for all for two-way comparision.
 
 ![](../figures/02_rnaseq/pvaluedistribution-3.png)
 
-    ggplot(rldpadjs, aes(x = padjAPASameYoked)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+    ggplot(rldpadjs, aes(x = padjAPAConsistentControl)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 
     ## Warning: Removed 5 rows containing non-finite values (stat_bin).
 
 ![](../figures/02_rnaseq/pvaluedistribution-4.png)
 
-    ggplot(rldpadjs, aes(x = padjAPAConflictYoked)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+    ggplot(rldpadjs, aes(x = padjAPAConflictControl)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 
     ## Warning: Removed 5 rows containing non-finite values (stat_bin).
 
@@ -76,7 +76,7 @@ padj) and plot some venn diagrams.
     venn5 <- row.names(rldpadjs[rldpadjs[5] <0.1 & !is.na(rldpadjs[5]),])
 
     ## check order for correctness
-    candidates <- list("DG vs CA1" = venn1, "Yoked vs Same" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
+    candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
     prettyvenn <- venn.diagram(
       scaled=T,
@@ -134,7 +134,7 @@ Heatmaps
              #width=4.5, height=3,
              border_color = "grey60" ,
              color = colorpalette,
-             #cellwidth = 12, 
+             cellwidth = 8, 
              clustering_method="average",
              breaks=myBreaks,
              clustering_distance_cols="correlation" 
@@ -145,12 +145,12 @@ Heatmaps
     # for adobe
     pheatmap(DEGes, show_colnames=F, show_rownames = F,
              annotation_col=df, annotation_colors = ann_colors,
-             treeheight_row = 0, treeheight_col = 25,
-             fontsize = 11, 
+             treeheight_row = 0, treeheight_col = 50,
+             fontsize = 10, 
              #width=4.5, height=3,
              border_color = "grey60" ,
              color = colorpalette,
-             #cellwidth = 12, 
+             cellwidth = 8, 
              clustering_method="average",
              breaks=myBreaks,
              clustering_distance_cols="correlation",
@@ -163,9 +163,12 @@ Heatmaps
     #percentVar <- round(100 * attr(pcadata, "percentVar"))
     percentVar <- c(49,21,5,3,2,1,1,1,1)
 
+    pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
+    pcadata$APA <- factor(pcadata$APA, levels=c("Control", "Consistent", "Conflict"))
+
 
     # separates brain regions
-    plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+    plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
@@ -189,7 +192,7 @@ Heatmaps
 
     # pdf the same pca plots descripbed above of the above
     pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
-    PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+    PCA12 <- plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
     plot(PCA12)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.

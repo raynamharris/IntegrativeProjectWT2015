@@ -309,21 +309,21 @@ row.names(Traits) <- Traits$RNAseqID # make gene the row name
 Traits$APA <- NULL ## delete old APA column
 names(Traits)[names(Traits)=="APAconflict"] <- "APA" #rename APAconflict APA (for simplicity)
 
-# rename factors & group all yoked animals into 1 group
+# rename factors & group all Control animals into 1 group
 Traits$APA <- revalue(Traits$APA, c("Trained_Conflict" = "Conflict")) 
-Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Same")) 
-Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Yoked")) 
-Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Yoked")) 
+Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Consistent")) 
+Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Control")) 
+Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Control")) 
 head(Traits)
 ```
 
-    ##              RNAseqID   Mouse   Conflict Punch Slice      APA     ID
-    ## 143A-CA3-1 143A-CA3-1 15-143A   Conflict   CA3     1 Conflict 15143A
-    ## 143A-DG-1   143A-DG-1 15-143A   Conflict    DG     1 Conflict 15143A
-    ## 143B-CA1-1 143B-CA1-1 15-143B   Conflict   CA1     1    Yoked 15143B
-    ## 143B-DG-1   143B-DG-1 15-143B   Conflict    DG     1    Yoked 15143B
-    ## 143C-CA1-1 143C-CA1-1 15-143C NoConflict   CA1     1     Same 15143C
-    ## 143D-CA1-3 143D-CA1-3 15-143D NoConflict   CA1     3    Yoked 15143D
+    ##              RNAseqID   Mouse   Conflict Punch Slice        APA     ID
+    ## 143A-CA3-1 143A-CA3-1 15-143A   Conflict   CA3     1   Conflict 15143A
+    ## 143A-DG-1   143A-DG-1 15-143A   Conflict    DG     1   Conflict 15143A
+    ## 143B-CA1-1 143B-CA1-1 15-143B   Conflict   CA1     1    Control 15143B
+    ## 143B-DG-1   143B-DG-1 15-143B   Conflict    DG     1    Control 15143B
+    ## 143C-CA1-1 143C-CA1-1 15-143C NoConflict   CA1     1 Consistent 15143C
+    ## 143D-CA1-3 143D-CA1-3 15-143D NoConflict   CA1     3    Control 15143D
 
 Now, we are ready to calculate differential gene expression using the DESeq package. For simplicity, I will use the standard nameing of "countData" and "colData" for the gene counts and gene information, respectively.
 
@@ -350,7 +350,7 @@ str(colData)
     ##  $ Conflict: Factor w/ 2 levels "Conflict","NoConflict": 1 1 1 1 2 2 2 1 1 1 ...
     ##  $ Punch   : Factor w/ 3 levels "CA1","CA3","DG": 2 3 1 3 1 1 3 1 2 3 ...
     ##  $ Slice   : Factor w/ 4 levels "1","2","3","4": 1 1 1 1 1 3 3 2 2 2 ...
-    ##  $ APA     : Factor w/ 3 levels "Conflict","Same",..: 1 1 3 3 2 3 3 1 1 1 ...
+    ##  $ APA     : Factor w/ 3 levels "Conflict","Consistent",..: 1 1 3 3 2 3 3 1 1 1 ...
     ##  $ ID      : Factor w/ 18 levels "15143A","15143B",..: 1 1 2 2 3 4 4 5 5 5 ...
 
 Now, we are create differential gene expression object and remove genes with 0 counts. Before filtering, there are 22,485 genes in the object. After filtering genes with 0 counts, we will be left with 17,746 genes that are expressed in a least 1 sample. Then, we can caluate the size factors, estimate gene dispersion estimates, fit a model, test for outliers, and remove outliers.
@@ -364,10 +364,16 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
 
     ## converting counts to integer mode
 
+    ## it appears that the last variable in the design formula, 'APA',
+    ##   has a factor level, 'Control', which is not the reference level. we recommend
+    ##   to use factor(...,levels=...) or relevel() to set this as the reference level
+    ##   before proceeding. for more information, please see the 'Note on factor levels'
+    ##   in vignette('DESeq2').
+
 ``` r
 ## DESeq2 1.3.7 specify the factor levels
 dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1"))
-dds$APA <- factor(dds$APA, levels=c("Yoked", "Same", "Conflict"))
+dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
 
 
 dds # view the DESeq object - note numnber of genes
@@ -455,19 +461,19 @@ contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #3
     ## [1] 3445
 
 ``` r
-contrast4 <- resvals(contrastvector = c("APA", "Same", "Yoked"), mypadj = 0.05) #95
+contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #95
 ```
 
     ## [1] 95
 
 ``` r
-contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Yoked"), mypadj = 0.05) #42
+contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #42
 ```
 
     ## [1] 42
 
 ``` r
-contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Same"), mypadj = 0.05) # 0 
+contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 0 
 ```
 
     ## [1] 0
@@ -489,21 +495,28 @@ head(rldpadjs)
     ## 0610009O20Rik      0.7325075       0.9860516      0.4348118
     ## 0610010F05Rik      0.7118161       0.1823768      0.3936081
     ## 0610010K14Rik      0.9959885       0.5247152      0.2851455
-    ##               padjAPASameYoked padjAPAConflictYoked padjAPAConflictSame
-    ## 0610007P14Rik                1                    1                   1
-    ## 0610009B22Rik                1                    1                   1
-    ## 0610009L18Rik                1                    1                   1
-    ## 0610009O20Rik                1                    1                   1
-    ## 0610010F05Rik                1                    1                   1
-    ## 0610010K14Rik                1                    1                   1
+    ##               padjAPAConsistentControl padjAPAConflictControl
+    ## 0610007P14Rik                        1                      1
+    ## 0610009B22Rik                        1                      1
+    ## 0610009L18Rik                        1                      1
+    ## 0610009O20Rik                        1                      1
+    ## 0610010F05Rik                        1                      1
+    ## 0610010K14Rik                        1                      1
+    ##               padjAPAConflictConsistent
+    ## 0610007P14Rik                         1
+    ## 0610009B22Rik                         1
+    ## 0610009L18Rik                         1
+    ## 0610009O20Rik                         1
+    ## 0610010F05Rik                         1
+    ## 0610010K14Rik                         1
 
 ``` r
 volcano1 <- respadjfold(contrastvector = c("Punch", "CA1", "DG")) 
 volcano2 <- respadjfold(contrastvector = c("Punch", "CA1", "CA3")) 
 volcano3 <- respadjfold(contrastvector = c("Punch", "CA3", "DG")) 
-volcano4 <- respadjfold(contrastvector = c("APA", "Same", "Yoked")) 
-volcano5 <- respadjfold(contrastvector = c("APA", "Conflict", "Yoked")) 
-volcano6 <- respadjfold(contrastvector = c("APA", "Conflict", "Same")) 
+volcano4 <- respadjfold(contrastvector = c("APA", "Consistent", "Control")) 
+volcano5 <- respadjfold(contrastvector = c("APA", "Conflict", "Control")) 
+volcano6 <- respadjfold(contrastvector = c("APA", "Conflict", "Consistent")) 
 
 volcanos <- cbind(volcano1,volcano2, volcano3, volcano4, volcano5, volcano6)
 volcanos <- as.data.frame(volcanos)
@@ -516,7 +529,7 @@ DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPASameYoked, padjAPAConflictYoked, padjAPAConflictSame)) # create new col with min padj
+DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPAConsistentControl, padjAPAConflictControl, padjAPAConflictConsistent)) # create new col with min padj
 DEGes <- DEGes %>% filter(padjmin < 0.05)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -680,10 +693,10 @@ TukeyHSD(aov3, which = "APA")
     ## Fit: aov(formula = PC3 ~ APA, data = pcadata)
     ## 
     ## $APA
-    ##                      diff        lwr       upr     p adj
-    ## Same-Yoked     -4.5144437 -10.801630 1.7727431 0.2006707
-    ## Conflict-Yoked -4.4831349  -9.927998 0.9617286 0.1244768
-    ## Conflict-Same   0.0313088  -6.710948 6.7735655 0.9999297
+    ##                           diff        lwr       upr     p adj
+    ## Consistent-Control  -4.5144437 -10.801630 1.7727431 0.2006707
+    ## Conflict-Control    -4.4831349  -9.927998 0.9617286 0.1244768
+    ## Conflict-Consistent  0.0313088  -6.710948 6.7735655 0.9999297
 
 ``` r
 aov4 <- aov(PC4 ~ APA, data=pcadata)
@@ -706,34 +719,56 @@ TukeyHSD(aov4, which = "APA")
     ## Fit: aov(formula = PC4 ~ APA, data = pcadata)
     ## 
     ## $APA
-    ##                     diff       lwr       upr     p adj
-    ## Same-Yoked      6.988720  3.012118 10.965321 0.0003232
-    ## Conflict-Yoked  4.893361  1.449523  8.337199 0.0036237
-    ## Conflict-Same  -2.095358 -6.359788  2.169072 0.4629850
+    ##                          diff       lwr       upr     p adj
+    ## Consistent-Control   6.988720  3.012118 10.965321 0.0003232
+    ## Conflict-Control     4.893361  1.449523  8.337199 0.0036237
+    ## Conflict-Consistent -2.095358 -6.359788  2.169072 0.4629850
 
 ``` r
-aov5 <- aov(PC5 ~ APA, data=pcadata)
-summary(aov5) 
+lm4 <- lm(PC4~APA*Punch, data=pcadata)
+summary(lm4)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA          2    6.0   3.018   0.207  0.814
-    ## Residuals   41  598.3  14.593
+    ## 
+    ## Call:
+    ## lm(formula = PC4 ~ APA * Punch, data = pcadata)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -9.4323 -1.4618 -0.1373  1.9425  7.8508 
+    ## 
+    ## Coefficients:
+    ##                        Estimate Std. Error t value Pr(>|t|)   
+    ## (Intercept)             -4.4281     1.4859  -2.980  0.00521 **
+    ## APAConsistent            9.4512     2.8453   3.322  0.00210 **
+    ## APAConflict              7.6810     2.3960   3.206  0.00287 **
+    ## PunchCA3                 2.2419     2.2698   0.988  0.33006   
+    ## PunchCA1                 2.4031     2.1752   1.105  0.27678   
+    ## APAConsistent:PunchCA3  -0.8595     4.4577  -0.193  0.84822   
+    ## APAConflict:PunchCA3    -3.9863     3.4953  -1.140  0.26183   
+    ## APAConsistent:PunchCA1  -5.3914     3.8775  -1.390  0.17317   
+    ## APAConflict:PunchCA1    -4.9338     3.5609  -1.386  0.17464   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 4.203 on 35 degrees of freedom
+    ## Multiple R-squared:  0.4239, Adjusted R-squared:  0.2922 
+    ## F-statistic: 3.219 on 8 and 35 DF,  p-value: 0.007569
 
 ``` r
-TukeyHSD(aov5, which = "APA") 
+anova(lm4) 
 ```
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
+    ## Analysis of Variance Table
     ## 
-    ## Fit: aov(formula = PC5 ~ APA, data = pcadata)
-    ## 
-    ## $APA
-    ##                      diff       lwr      upr     p adj
-    ## Same-Yoked      0.7175734 -2.983349 4.418496 0.8850340
-    ## Conflict-Yoked -0.3255313 -3.530624 2.879562 0.9669609
-    ## Conflict-Same  -1.0431047 -5.011902 2.925692 0.7995031
+    ## Response: PC4
+    ##           Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## APA        2 382.37 191.184 10.8237 0.000219 ***
+    ## Punch      2   7.06   3.532  0.1999 0.819703    
+    ## APA:Punch  4  65.51  16.376  0.9271 0.459370    
+    ## Residuals 35 618.22  17.663                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
 lm124 <- lm(PC1+PC2+PC4~APA*Punch, data=pcadata)
@@ -749,16 +784,16 @@ summary(lm124)
     ## -14.7950  -2.6364   0.1244   2.2727  19.8373 
     ## 
     ## Coefficients:
-    ##                      Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)            15.774      2.505   6.297 3.14e-07 ***
-    ## APASame                20.708      4.797   4.317 0.000124 ***
-    ## APAConflict            16.416      4.039   4.064 0.000259 ***
-    ## PunchCA3              -51.557      3.826 -13.474 2.05e-15 ***
-    ## PunchCA1              -16.670      3.667  -4.546 6.27e-05 ***
-    ## APASame:PunchCA3      -10.584      7.515  -1.408 0.167821    
-    ## APAConflict:PunchCA3   -9.754      5.892  -1.655 0.106780    
-    ## APASame:PunchCA1      -15.659      6.537  -2.396 0.022076 *  
-    ## APAConflict:PunchCA1  -14.350      6.003  -2.390 0.022342 *  
+    ##                        Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)              15.774      2.505   6.297 3.14e-07 ***
+    ## APAConsistent            20.708      4.797   4.317 0.000124 ***
+    ## APAConflict              16.416      4.039   4.064 0.000259 ***
+    ## PunchCA3                -51.557      3.826 -13.474 2.05e-15 ***
+    ## PunchCA1                -16.670      3.667  -4.546 6.27e-05 ***
+    ## APAConsistent:PunchCA3  -10.584      7.515  -1.408 0.167821    
+    ## APAConflict:PunchCA3     -9.754      5.892  -1.655 0.106780    
+    ## APAConsistent:PunchCA1  -15.659      6.537  -2.396 0.022076 *  
+    ## APAConflict:PunchCA1    -14.350      6.003  -2.390 0.022342 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -796,7 +831,7 @@ make volcano plos here.. still perfecting
 
 ``` r
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA1", xlim=c(-10,10)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA1", xlim=c(-8,8)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -805,6 +840,8 @@ with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col=
 ![](../figures/02_rnaseq/volcanoplots-1.png)
 
 ``` r
+#abline(h=(-log10(0.05)),  col = "gray60")
+
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 ```
@@ -813,7 +850,7 @@ plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 
 ``` r
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3-CA1", xlim=c(-10,10)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3-CA1", xlim=c(-8,8)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -822,6 +859,8 @@ with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col=
 ![](../figures/02_rnaseq/volcanoplots-3.png)
 
 ``` r
+#abline(h=(-log10(0.05)),  col = "gray60")
+
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 ```
@@ -830,7 +869,7 @@ plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 
 ``` r
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA3", xlim=c(-10,10)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA3", xlim=c(-8,8)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -839,6 +878,8 @@ with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col=
 ![](../figures/02_rnaseq/volcanoplots-5.png)
 
 ``` r
+#abline(h=(-log10(0.05)),  col = "gray60")
+
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 ```
@@ -846,8 +887,8 @@ plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 ![](../figures/02_rnaseq/volcanoplots-6.png)
 
 ``` r
-res <- results(dds, contrast =c("APA", "Conflict", "Same"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Same - Conflict", xlim=c(-10,10)))
+res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -856,6 +897,8 @@ with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col=
 ![](../figures/02_rnaseq/volcanoplots-7.png)
 
 ``` r
+#abline(h=(-log10(0.05)),  col = "gray60")
+
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA"))
 ```
@@ -863,8 +906,8 @@ plotCounts(dds, gene = topGene, intgroup=c("APA"))
 ![](../figures/02_rnaseq/volcanoplots-8.png)
 
 ``` r
-res <- results(dds, contrast =c("APA", "Conflict", "Yoked"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Yoked - Conflict", xlim=c(-10,10)))
+res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -873,6 +916,8 @@ with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col=
 ![](../figures/02_rnaseq/volcanoplots-9.png)
 
 ``` r
+#abline(h=(-log10(0.05)),  col = "gray60")
+
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA"))
 ```
@@ -880,8 +925,8 @@ plotCounts(dds, gene = topGene, intgroup=c("APA"))
 ![](../figures/02_rnaseq/volcanoplots-10.png)
 
 ``` r
-res <- results(dds, contrast =c("APA", "Same", "Yoked"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Yoked - Same", xlim=c(-10,10)))
+res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -890,6 +935,8 @@ with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col=
 ![](../figures/02_rnaseq/volcanoplots-11.png)
 
 ``` r
+#abline(h=(-log10(0.05)),  col = "gray60")
+
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA"), transform = T)
 ```

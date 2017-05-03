@@ -1,0 +1,167 @@
+---
+title: "Brain region specific only"
+author: "Rayna M Harris"
+date: "May 2, 2017"
+output: md_document
+---
+```{r setup, message=F, warning=F}
+library(dplyr) ## for filtering and selecting rows
+library(plyr) ## for renmaing factors
+library(reshape2) ## for melting dataframe
+library(DESeq2) ## for gene expression analysis
+library(edgeR)  ## for basic read counts status
+library(magrittr) ## to use the weird pipe
+library(genefilter)  ## for PCA fuction
+library(ggplot2) ## for awesome plots!
+library(pheatmap) ## awesome heatmaps
+
+
+## Functions
+source("functions_RNAseq.R")
+source("resvalsfunction.R")
+source("figureoptions.R")
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/02_rnaseq/')
+```
+
+## CA1 only differential gene expression
+Zero genes have padj < 0.05
+
+```{r CA1only}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
+
+colData <- colData %>% 
+  filter(Punch == "CA1") 
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA )
+dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 16467 15  
+dds <- DESeq(dds)
+rld <- rlog(dds, blind=FALSE)
+
+contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #0
+contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #0
+contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 0 
+```
+
+## CA3 only differential gene expression
+
+```{r CA3only}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
+
+colData <- colData %>% 
+  filter(Punch == "CA3") 
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA )
+dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 16467 15  
+dds <- DESeq(dds)
+rld <- rlog(dds, blind=FALSE)
+
+contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #0
+contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #0
+contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 3 
+```
+
+
+
+```{r DGonly}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
+
+colData <- colData %>% 
+  filter(Punch == "DG") 
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA )
+dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 16467 15  
+dds <- DESeq(dds)
+rld <- rlog(dds, blind=FALSE)
+
+contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #101
+contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #39
+contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 0 
+
+res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent"))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict"))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+percentVar
+
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+aov1 <- aov(PC1 ~ APA, data=pcadata)
+summary(aov1) 
+TukeyHSD(aov1, which = "APA")
+pcadata$Punch <- factor(pcadata$APA, levels=c("Control", "Consistent", "Conflict"))
+plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$APA, shapename = "APA",  colorvalues = colorvalAPA)
+
+DEGes <- assay(rld)
+DEGes <- cbind(DEGes, contrast4, contrast5, contrast6)
+DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
+DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+DEGes$padjmin <- with(DEGes, pmin(padjAPAConsistentControl, padjAPAConflictControl, padjAPAConflictConsistent)) # create new col with min padj
+DEGes <- DEGes %>% filter(padjmin < 0.05)
+rownames(DEGes) <- DEGes$rownames
+drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
+DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
+DEGes <- as.matrix(DEGes)
+DEGes <- DEGes - rowMeans(DEGes)
+head(DEGes)
+
+df <- as.data.frame(colData(dds)[,c("APA", "Punch")]) #
+rownames(df) <- names(countData)
+ann_colors = ann_colors1 
+DEGes <- as.matrix(DEGes) 
+paletteLength <- 30
+myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = colorpalette,
+         cellwidth = 8, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+```
+

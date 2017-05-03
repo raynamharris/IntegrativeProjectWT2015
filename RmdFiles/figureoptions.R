@@ -9,7 +9,7 @@ colorvalAPA2 <- c("##bababa", "#404040","#f4a582", "#ca0020")
 #bababa ## grey - yoked to same
 #404040 ## darkgrey - yoked to conflict
 
-colorvalPunch <- c("#d95f02","#7570b3", "#1b9e77")
+colorvalPunch <- c("#d95f02","#1b9e77", "#7570b3")
 
 
 
@@ -17,15 +17,15 @@ colorvalPunch <- c("#d95f02","#7570b3", "#1b9e77")
 colorpalette <-  colorRampPalette(c("Deep Sky Blue 3", "white", "red"))( 30 )
 
 ann_colors1 = list(
-  APA =  c(Yoked = (values=c("#404040")), Same = (values=c("#f4a582")), Conflict = (values=c("#ca0020"))),
+  APA =  c(Control = (values=c("#404040")), Consistent = (values=c("#f4a582")), Conflict = (values=c("#ca0020"))),
   Punch = c(CA1 = (values=c("#7570b3")),
             CA3 = (values=c("#1b9e77")), 
             DG = (values=c("#d95f02"))))
 
 
 session_colors1 = list(
-  APA =  c(Yoked = (values=c("#404040")), 
-           Same = (values=c("#f4a582")),
+  APA =  c(Control = (values=c("#404040")), 
+           Consistent = (values=c("#f4a582")),
            Conflict = (values=c("#ca0020"))),
   Session =  c(Hab = (values=c("#eff3ff")), 
                T1 = (values=c("#bdd7e7")),

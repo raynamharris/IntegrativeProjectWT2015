@@ -73,11 +73,11 @@ row.names(Traits) <- Traits$RNAseqID # make gene the row name
 Traits$APA <- NULL ## delete old APA column
 names(Traits)[names(Traits)=="APAconflict"] <- "APA" #rename APAconflict APA (for simplicity)
 
-# rename factors & group all yoked animals into 1 group
+# rename factors & group all Control animals into 1 group
 Traits$APA <- revalue(Traits$APA, c("Trained_Conflict" = "Conflict")) 
-Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Same")) 
-Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Yoked")) 
-Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Yoked")) 
+Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Consistent")) 
+Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Control")) 
+Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Control")) 
 head(Traits)
 ```
 
@@ -110,7 +110,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
 
 ## DESeq2 1.3.7 specify the factor levels
 dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1"))
-dds$APA <- factor(dds$APA, levels=c("Yoked", "Same", "Conflict"))
+dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
 
 
 dds # view the DESeq object - note numnber of genes
@@ -138,9 +138,9 @@ source("resvalsfunction.R")
 contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.05) #2497
 contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.05) #1803
 contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #3445
-contrast4 <- resvals(contrastvector = c("APA", "Same", "Yoked"), mypadj = 0.05) #95
-contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Yoked"), mypadj = 0.05) #42
-contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Same"), mypadj = 0.05) # 0 
+contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #95
+contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #42
+contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 0 
 
 #create a new DF with the gene counts
 ## note: contrast1 had 0 differentially expressed genes, so it is not included 
@@ -155,9 +155,9 @@ head(rldpadjs)
 volcano1 <- respadjfold(contrastvector = c("Punch", "CA1", "DG")) 
 volcano2 <- respadjfold(contrastvector = c("Punch", "CA1", "CA3")) 
 volcano3 <- respadjfold(contrastvector = c("Punch", "CA3", "DG")) 
-volcano4 <- respadjfold(contrastvector = c("APA", "Same", "Yoked")) 
-volcano5 <- respadjfold(contrastvector = c("APA", "Conflict", "Yoked")) 
-volcano6 <- respadjfold(contrastvector = c("APA", "Conflict", "Same")) 
+volcano4 <- respadjfold(contrastvector = c("APA", "Consistent", "Control")) 
+volcano5 <- respadjfold(contrastvector = c("APA", "Conflict", "Control")) 
+volcano6 <- respadjfold(contrastvector = c("APA", "Conflict", "Consistent")) 
 
 volcanos <- cbind(volcano1,volcano2, volcano3, volcano4, volcano5, volcano6)
 volcanos <- as.data.frame(volcanos)
@@ -170,7 +170,7 @@ DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPASameYoked, padjAPAConflictYoked, padjAPAConflictSame)) # create new col with min padj
+DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPAConsistentControl, padjAPAConflictControl, padjAPAConflictConsistent)) # create new col with min padj
 DEGes <- DEGes %>% filter(padjmin < 0.05)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -209,9 +209,9 @@ aov4 <- aov(PC4 ~ APA, data=pcadata)
 summary(aov4) 
 TukeyHSD(aov4, which = "APA") 
 
-aov5 <- aov(PC5 ~ APA, data=pcadata)
-summary(aov5) 
-TukeyHSD(aov5, which = "APA") 
+lm4 <- lm(PC4~APA*Punch, data=pcadata)
+summary(lm4)
+anova(lm4) 
 
 lm124 <- lm(PC1+PC2+PC4~APA*Punch, data=pcadata)
 summary(lm124)
@@ -232,60 +232,64 @@ write.table(percentVar, file = "../data/02a_percentVar.txt")
 ```{r volcanoplots}
 
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA1", xlim=c(-10,10)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA1", xlim=c(-8,8)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-
+#abline(h=(-log10(0.05)),  col = "gray60")
 
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3-CA1", xlim=c(-10,10)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3-CA1", xlim=c(-8,8)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-
+#abline(h=(-log10(0.05)),  col = "gray60")
 
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 
 
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA3", xlim=c(-10,10)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA3", xlim=c(-8,8)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+#abline(h=(-log10(0.05)),  col = "gray60")
 
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 
 
-res <- results(dds, contrast =c("APA", "Conflict", "Same"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Same - Conflict", xlim=c(-10,10)))
+res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+#abline(h=(-log10(0.05)),  col = "gray60")
 
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA"))
 
 
-res <- results(dds, contrast =c("APA", "Conflict", "Yoked"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Yoked - Conflict", xlim=c(-10,10)))
+res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+#abline(h=(-log10(0.05)),  col = "gray60")
 
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA"))
 
-res <- results(dds, contrast =c("APA", "Same", "Yoked"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Yoked - Same", xlim=c(-10,10)))
+res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+#abline(h=(-log10(0.05)),  col = "gray60")
 
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA"), transform = T)

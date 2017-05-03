@@ -37,8 +37,8 @@ Here, the goal is the analyze the distribution of pvalues to see if they are ran
 ggplot(rldpadjs, aes(x = padjPunchCA1DG)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 ggplot(rldpadjs, aes(x = padjPunchCA1CA3)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 ggplot(rldpadjs, aes(x = padjPunchCA3DG)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
-ggplot(rldpadjs, aes(x = padjAPASameYoked)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
-ggplot(rldpadjs, aes(x = padjAPAConflictYoked)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+ggplot(rldpadjs, aes(x = padjAPAConsistentControl)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
+ggplot(rldpadjs, aes(x = padjAPAConflictControl)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 ```
 
 ## Venn Diagrams of DEgenes
@@ -52,7 +52,7 @@ venn4 <- row.names(rldpadjs[rldpadjs[4] <0.1 & !is.na(rldpadjs[4]),])
 venn5 <- row.names(rldpadjs[rldpadjs[5] <0.1 & !is.na(rldpadjs[5]),])
 
 ## check order for correctness
-candidates <- list("DG vs CA1" = venn1, "Yoked vs Same" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
+candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
 prettyvenn <- venn.diagram(
   scaled=T,
@@ -107,7 +107,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          #width=4.5, height=3,
          border_color = "grey60" ,
          color = colorpalette,
-         #cellwidth = 12, 
+         cellwidth = 8, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation" 
@@ -116,12 +116,12 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 # for adobe
 pheatmap(DEGes, show_colnames=F, show_rownames = F,
          annotation_col=df, annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 25,
-         fontsize = 11, 
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 10, 
          #width=4.5, height=3,
          border_color = "grey60" ,
          color = colorpalette,
-         #cellwidth = 12, 
+         cellwidth = 8, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
@@ -136,9 +136,12 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 #percentVar <- round(100 * attr(pcadata, "percentVar"))
 percentVar <- c(49,21,5,3,2,1,1,1,1)
 
+pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
+pcadata$APA <- factor(pcadata$APA, levels=c("Control", "Consistent", "Conflict"))
+
 
 # separates brain regions
-plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
 plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 # PC4 significant for training
 plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
@@ -146,7 +149,7 @@ plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pca
 
 # pdf the same pca plots descripbed above of the above
 pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
-PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+PCA12 <- plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
 plot(PCA12)
 dev.off()
 
