@@ -19,7 +19,7 @@ source("functions_RNAseq.R")
 source("resvalsfunction.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02_rnaseq/')
+knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
 ```
 
 Now, I create data frames from three csv files - count: Contains counts for all transcripts generated from the program Kallisto. This data can be reproducibed from the file kallisto.Rmd - geneids: Contains the ensemble ids and gene names for all the transcripts in the counts data frame. This file will be used to convert transcipt counts to gene counts. This file was also created via kallisto.Rmd file - Traits: This file contains all the information I collected for each sample that was sequenced. Not all columns will be needed, so some are removed later.
@@ -837,7 +837,7 @@ with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=2
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-1.png)
+![](../figures/02_RNAseq/volcanoplots-1.png)
 
 ``` r
 #abline(h=(-log10(0.05)),  col = "gray60")
@@ -846,7 +846,7 @@ topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-2.png)
+![](../figures/02_RNAseq/volcanoplots-2.png)
 
 ``` r
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
@@ -856,7 +856,7 @@ with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=2
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-3.png)
+![](../figures/02_RNAseq/volcanoplots-3.png)
 
 ``` r
 #abline(h=(-log10(0.05)),  col = "gray60")
@@ -865,7 +865,7 @@ topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-4.png)
+![](../figures/02_RNAseq/volcanoplots-4.png)
 
 ``` r
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
@@ -875,7 +875,7 @@ with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=2
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-5.png)
+![](../figures/02_RNAseq/volcanoplots-5.png)
 
 ``` r
 #abline(h=(-log10(0.05)),  col = "gray60")
@@ -884,7 +884,7 @@ topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-6.png)
+![](../figures/02_RNAseq/volcanoplots-6.png)
 
 ``` r
 res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
@@ -894,7 +894,7 @@ with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=2
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-7.png)
+![](../figures/02_RNAseq/volcanoplots-7.png)
 
 ``` r
 #abline(h=(-log10(0.05)),  col = "gray60")
@@ -903,7 +903,7 @@ topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-8.png)
+![](../figures/02_RNAseq/volcanoplots-8.png)
 
 ``` r
 res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
@@ -913,7 +913,7 @@ with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=2
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-9.png)
+![](../figures/02_RNAseq/volcanoplots-9.png)
 
 ``` r
 #abline(h=(-log10(0.05)),  col = "gray60")
@@ -922,7 +922,7 @@ topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-10.png)
+![](../figures/02_RNAseq/volcanoplots-10.png)
 
 ``` r
 res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
@@ -932,7 +932,7 @@ with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=2
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 ```
 
-![](../figures/02_rnaseq/volcanoplots-11.png)
+![](../figures/02_RNAseq/volcanoplots-11.png)
 
 ``` r
 #abline(h=(-log10(0.05)),  col = "gray60")
@@ -941,4 +941,4 @@ topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA"), transform = T)
 ```
 
-![](../figures/02_rnaseq/volcanoplots-12.png)
+![](../figures/02_RNAseq/volcanoplots-12.png)

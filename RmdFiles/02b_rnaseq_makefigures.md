@@ -16,7 +16,7 @@
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02_rnaseq/')
+    knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
@@ -37,31 +37,31 @@ pvale (padj) for all for two-way comparision.
 
     ## Warning: Removed 5 rows containing non-finite values (stat_bin).
 
-![](../figures/02_rnaseq/pvaluedistribution-1.png)
+![](../figures/02_RNAseq/pvaluedistribution-1.png)
 
     ggplot(rldpadjs, aes(x = padjPunchCA1CA3)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 
     ## Warning: Removed 5 rows containing non-finite values (stat_bin).
 
-![](../figures/02_rnaseq/pvaluedistribution-2.png)
+![](../figures/02_RNAseq/pvaluedistribution-2.png)
 
     ggplot(rldpadjs, aes(x = padjPunchCA3DG)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 
     ## Warning: Removed 5 rows containing non-finite values (stat_bin).
 
-![](../figures/02_rnaseq/pvaluedistribution-3.png)
+![](../figures/02_RNAseq/pvaluedistribution-3.png)
 
     ggplot(rldpadjs, aes(x = padjAPAConsistentControl)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 
     ## Warning: Removed 5 rows containing non-finite values (stat_bin).
 
-![](../figures/02_rnaseq/pvaluedistribution-4.png)
+![](../figures/02_RNAseq/pvaluedistribution-4.png)
 
     ggplot(rldpadjs, aes(x = padjAPAConflictControl)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 
     ## Warning: Removed 5 rows containing non-finite values (stat_bin).
 
-![](../figures/02_rnaseq/pvaluedistribution-5.png)
+![](../figures/02_RNAseq/pvaluedistribution-5.png)
 
 Venn Diagrams of DEgenes
 ------------------------
@@ -90,7 +90,7 @@ padj) and plot some venn diagrams.
       cat.cex = 1, cat.fontfamily = "sans")
     grid.draw(prettyvenn)
 
-![](../figures/02_rnaseq/venndiagram-1.png)
+![](../figures/02_RNAseq/venndiagram-1.png)
 
     plot.new()
 
@@ -108,7 +108,7 @@ padj) and plot some venn diagrams.
       cat.cex = 1, cat.fontfamily = "sans")
     grid.draw(prettyvenn)
 
-![](../figures/02_rnaseq/venndiagram-2.png)
+![](../figures/02_RNAseq/venndiagram-2.png)
 
 Heatmaps
 --------
@@ -140,7 +140,7 @@ Heatmaps
              clustering_distance_cols="correlation" 
              )
 
-![](../figures/02_rnaseq/heatmap-1.png)
+![](../figures/02_RNAseq/heatmap-1.png)
 
     # for adobe
     pheatmap(DEGes, show_colnames=F, show_rownames = F,
@@ -173,14 +173,14 @@ Heatmaps
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02_rnaseq/pca-1.png)
+![](../figures/02_RNAseq/pca-1.png)
 
     plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02_rnaseq/pca-2.png)
+![](../figures/02_RNAseq/pca-2.png)
 
     # PC4 significant for training
     plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
@@ -188,7 +188,7 @@ Heatmaps
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02_rnaseq/pca-3.png)
+![](../figures/02_RNAseq/pca-3.png)
 
     # pdf the same pca plots descripbed above of the above
     pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
@@ -263,4 +263,4 @@ Total Gene Counts Per Sample
                          limits=c(0, 8)) +
       scale_y_continuous(name = "Number of Samples")
 
-![](../figures/02_rnaseq/totalRNAseqcounts-1.png)
+![](../figures/02_RNAseq/totalRNAseqcounts-1.png)

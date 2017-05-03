@@ -78,6 +78,13 @@ rld <- rlog(dds, blind=FALSE)
 contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #0
 contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #0
 contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 3 
+
+res <- results(dds, contrast = c("APA", "Conflict", "Consistent"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+# Oprd1 = Opioid Receptor Delta 1
+# Crnkl1 = Crooked Neck Pre- MRNA Splicing Factor 1
+# Slc9a2 = Solute Carrier Family 9 Member A2
 ```
 
 
@@ -105,18 +112,33 @@ rld <- rlog(dds, blind=FALSE)
 contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #101
 contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #39
 contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 0 
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
 
 res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent"))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
 
 res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict"))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
 
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -132,17 +154,15 @@ plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pca
 
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast4, contrast5, contrast6)
-DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
-DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-DEGes$padjmin <- with(DEGes, pmin(padjAPAConsistentControl, padjAPAConflictControl, padjAPAConflictConsistent)) # create new col with min padj
+DEGes <- as.data.frame(DEGes) 
+DEGes$rownames <- rownames(DEGes)  
+DEGes$padjmin <- with(DEGes, pmin(padjAPAConsistentControl, padjAPAConflictControl, padjAPAConflictConsistent)) 
 DEGes <- DEGes %>% filter(padjmin < 0.05)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
 DEGes <- as.matrix(DEGes)
 DEGes <- DEGes - rowMeans(DEGes)
-head(DEGes)
-
 df <- as.data.frame(colData(dds)[,c("APA", "Punch")]) #
 rownames(df) <- names(countData)
 ann_colors = ann_colors1 
@@ -150,7 +170,6 @@ DEGes <- as.matrix(DEGes)
 paletteLength <- 30
 myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
-
 pheatmap(DEGes, show_colnames=F, show_rownames = F,
          annotation_col=df, annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 25,
@@ -158,7 +177,8 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          #width=4.5, height=3,
          border_color = "grey60" ,
          color = colorpalette,
-         cellwidth = 8, 
+         cellwidth = 8,
+         cellheight = 2,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation" 
