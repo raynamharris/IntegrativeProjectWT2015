@@ -22,7 +22,7 @@ source("resvalsfunction.R")
 source("figureoptions.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02_rnaseq/')
+knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
 ```
 
 ## CA1 only differential gene expression

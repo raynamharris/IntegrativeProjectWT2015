@@ -15,7 +15,7 @@
     source("figureoptions.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02_rnaseq/')
+    knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
 
 CA1 only differential gene expression
 -------------------------------------
@@ -209,7 +209,7 @@ CA3 only differential gene expression
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 
-![](../figures/02_rnaseq/DGonly-1.png)
+![](../figures/02_RNAseq/DGonly-1.png)
 
     res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
     with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict"))
@@ -217,7 +217,7 @@ CA3 only differential gene expression
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 
-![](../figures/02_rnaseq/DGonly-2.png)
+![](../figures/02_RNAseq/DGonly-2.png)
 
     pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
     percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -256,7 +256,7 @@ CA3 only differential gene expression
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02_rnaseq/DGonly-3.png)
+![](../figures/02_RNAseq/DGonly-3.png)
 
     DEGes <- assay(rld)
     DEGes <- cbind(DEGes, contrast4, contrast5, contrast6)
@@ -321,4 +321,4 @@ CA3 only differential gene expression
              clustering_distance_cols="correlation" 
              )
 
-![](../figures/02_rnaseq/DGonly-4.png)
+![](../figures/02_RNAseq/DGonly-4.png)
