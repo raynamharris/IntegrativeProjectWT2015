@@ -51,6 +51,30 @@ rld <- rlog(dds, blind=FALSE)
 contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #0
 contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #0
 contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 0 
+
+res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
 ```
 
 ## CA3 only differential gene expression
@@ -71,7 +95,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               design = ~ APA )
 dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
 dds <- dds[ rowSums(counts(dds)) > 1, ] 
-dds # dim: 16467 15  
+dds # dim: 16658 16   
 dds <- DESeq(dds)
 rld <- rlog(dds, blind=FALSE)
 
@@ -82,9 +106,36 @@ contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj
 res <- results(dds, contrast = c("APA", "Conflict", "Consistent"), independentFiltering = F)
 resOrdered <- res[order(res$padj),]
 head(resOrdered)
+
 # Oprd1 = Opioid Receptor Delta 1
 # Crnkl1 = Crooked Neck Pre- MRNA Splicing Factor 1
 # Slc9a2 = Solute Carrier Family 9 Member A2
+
+
+
+res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
 ```
 
 
@@ -105,7 +156,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               design = ~ APA )
 dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
 dds <- dds[ rowSums(counts(dds)) > 1, ] 
-dds # dim: 16467 15  
+dds # dim: 16658 16  
 dds <- DESeq(dds)
 rld <- rlog(dds, blind=FALSE)
 

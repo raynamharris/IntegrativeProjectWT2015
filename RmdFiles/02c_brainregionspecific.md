@@ -84,6 +84,91 @@ Zero genes have padj &lt; 0.05
 
     ## [1] 0
 
+    res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/CA1only-1.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): APA Consistent vs Control 
+    ## Wald test p-value: APA Consistent vs Control 
+    ## DataFrame with 6 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue      padj
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric> <numeric>
+    ## Glcci1  5.602879      1.0177457 0.2662372  3.822702 1.319970e-04 0.3922617
+    ## Inhbb  18.952241     -1.0058674 0.2595364 -3.875631 1.063488e-04 0.3922617
+    ## Iqub    2.478759      0.8935553 0.2350271  3.801925 1.435764e-04 0.3922617
+    ## Tgm3    3.319002      0.9249198 0.2338192  3.955705 7.630939e-05 0.3922617
+    ## Zfp128  5.388675      1.0090286 0.2655825  3.799304 1.451030e-04 0.3922617
+    ## Zfp72   5.205219      0.9384218 0.2465670  3.805950 1.412609e-04 0.3922617
+
+    res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/CA1only-2.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): APA Conflict vs Control 
+    ## Wald test p-value: APA Conflict vs Control 
+    ## DataFrame with 6 rows and 6 columns
+    ##           baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Golt1b   56.322500     -0.7054837 0.1660531 -4.248542 2.151663e-05
+    ## Otulin   14.218996      1.0407084 0.2431337  4.280396 1.865613e-05
+    ## Ctcfl    42.289654     -1.0613954 0.2585936 -4.104493 4.052032e-05
+    ## Dolk     15.738734      0.9483241 0.2526001  3.754251 1.738605e-04
+    ## Gnaz   2111.356747     -0.9156856 0.2431812 -3.765446 1.662524e-04
+    ## Itga10    9.836368     -1.0273637 0.2641075 -3.889946 1.002667e-04
+    ##             padj
+    ##        <numeric>
+    ## Golt1b 0.1744999
+    ## Otulin 0.1744999
+    ## Ctcfl  0.2190799
+    ## Dolk   0.3525021
+    ## Gnaz   0.3525021
+    ## Itga10 0.3525021
+
+    res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/CA1only-3.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): APA Conflict vs Consistent 
+    ## Wald test p-value: APA Conflict vs Consistent 
+    ## DataFrame with 6 rows and 6 columns
+    ##                baseMean log2FoldChange     lfcSE       stat       pvalue
+    ##               <numeric>      <numeric> <numeric>  <numeric>    <numeric>
+    ## Csmd2         143.98509     -0.7886069 0.1791680 -4.4014939 1.075081e-05
+    ## Atp6v0c       236.46491      0.5569021 0.1369149  4.0675064 4.751891e-05
+    ## Pebp1         233.46432      0.5517977 0.1473922  3.7437369 1.813035e-04
+    ## Rps3           82.17330      0.6916195 0.1848090  3.7423473 1.823093e-04
+    ## Psmb3          79.90954      0.7068087 0.1957780  3.6102559 3.058951e-04
+    ## 0610007P14Rik  20.26220      0.1695772 0.2300323  0.7371886 4.610077e-01
+    ##                    padj
+    ##               <numeric>
+    ## Csmd2         0.1743781
+    ## Atp6v0c       0.3853784
+    ## Pebp1         0.7392642
+    ## Rps3          0.7392642
+    ## Psmb3         0.9923237
+    ## 0610007P14Rik 1.0000000
+
 CA3 only differential gene expression
 -------------------------------------
 
@@ -102,7 +187,7 @@ CA3 only differential gene expression
                                   design = ~ APA )
     dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
     dds <- dds[ rowSums(counts(dds)) > 1, ] 
-    dds # dim: 16467 15  
+    dds # dim: 16658 16   
 
     ## class: DESeqDataSet 
     ## dim: 16208 13 
@@ -169,6 +254,101 @@ CA3 only differential gene expression
     # Crnkl1 = Crooked Neck Pre- MRNA Splicing Factor 1
     # Slc9a2 = Solute Carrier Family 9 Member A2
 
+
+
+    res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/CA3only-1.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): APA Consistent vs Control 
+    ## Wald test p-value: APA Consistent vs Control 
+    ## DataFrame with 6 rows and 6 columns
+    ##                 baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##                <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Rhpn2           5.547833      1.5696323 0.3440295  4.562493 5.054968e-06
+    ## Slc9a2         55.359865     -1.1656652 0.2598634 -4.485684 7.268025e-06
+    ## Sod3           23.106068      1.3263207 0.3031901  4.374552 1.216823e-05
+    ## Gsr            49.332636     -1.0682644 0.2804942 -3.808508 1.398079e-04
+    ## Timm8a1        20.715590     -1.2706030 0.3398954 -3.738218 1.853295e-04
+    ## 2900026A02Rik 119.066102     -0.8481215 0.2336842 -3.629350 2.841359e-04
+    ##                     padj
+    ##                <numeric>
+    ## Rhpn2         0.05844582
+    ## Slc9a2        0.05844582
+    ## Sod3          0.06523388
+    ## Gsr           0.56213244
+    ## Timm8a1       0.59613085
+    ## 2900026A02Rik 0.70385437
+
+    res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/CA3only-2.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): APA Conflict vs Control 
+    ## Wald test p-value: APA Conflict vs Control 
+    ## DataFrame with 6 rows and 6 columns
+    ##                baseMean log2FoldChange     lfcSE       stat     pvalue
+    ##               <numeric>      <numeric> <numeric>  <numeric>  <numeric>
+    ## 0610007P14Rik 24.841302     0.14578018 0.2792956  0.5219566 0.60170057
+    ## 0610009B22Rik 10.482645    -0.08970333 0.3416280 -0.2625760 0.79287737
+    ## 0610009L18Rik  5.960207     0.15455867 0.3456736  0.4471232 0.65478613
+    ## 0610009O20Rik 55.086602     0.53006956 0.2117222  2.5036087 0.01229339
+    ## 0610010F05Rik 10.326053    -0.11174704 0.2983520 -0.3745476 0.70799691
+    ## 0610010K14Rik  1.461658     0.17646004 0.3116177  0.5662709 0.57120967
+    ##                    padj
+    ##               <numeric>
+    ## 0610007P14Rik         1
+    ## 0610009B22Rik         1
+    ## 0610009L18Rik         1
+    ## 0610009O20Rik         1
+    ## 0610010F05Rik         1
+    ## 0610010K14Rik         1
+
+    res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/CA3only-3.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): APA Conflict vs Consistent 
+    ## Wald test p-value: APA Conflict vs Consistent 
+    ## DataFrame with 6 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Oprd1   32.67546      -1.702574 0.3310140 -5.143512 2.696499e-07
+    ## Crnkl1  21.85210       1.493098 0.3359650  4.444206 8.821700e-06
+    ## Slc9a2  55.35987       1.212602 0.2693665  4.501680 6.741829e-06
+    ## Mkrn2   67.46938       1.175035 0.2857154  4.112605 3.912190e-05
+    ## Vps52   88.93894       0.858954 0.2124660  4.042783 5.282041e-05
+    ## Lrrk2   41.08331      -1.290874 0.3239656 -3.984601 6.759371e-05
+    ##               padj
+    ##          <numeric>
+    ## Oprd1  0.004336779
+    ## Crnkl1 0.047293136
+    ## Slc9a2 0.047293136
+    ## Mkrn2  0.157299361
+    ## Vps52  0.169902130
+    ## Lrrk2  0.181184928
+
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
     colData <- read.csv("../data/02a_colData.csv", header = T)
     colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
@@ -184,7 +364,7 @@ CA3 only differential gene expression
                                   design = ~ APA )
     dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
     dds <- dds[ rowSums(counts(dds)) > 1, ] 
-    dds # dim: 16467 15  
+    dds # dim: 16658 16  
 
     ## class: DESeqDataSet 
     ## dim: 16658 16 
