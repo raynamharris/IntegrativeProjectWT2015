@@ -85,7 +85,7 @@ Zero genes have padj &lt; 0.05
     ## [1] 0
 
     res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -108,7 +108,7 @@ Zero genes have padj &lt; 0.05
     ## Zfp72   5.205219      0.9384218 0.2465670  3.805950 1.412609e-04 0.3922617
 
     res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -139,7 +139,7 @@ Zero genes have padj &lt; 0.05
     ## Itga10 0.3525021
 
     res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -257,7 +257,7 @@ CA3 only differential gene expression
 
 
     res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -288,7 +288,7 @@ CA3 only differential gene expression
     ## 2900026A02Rik 0.70385437
 
     res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -319,7 +319,7 @@ CA3 only differential gene expression
     ## 0610010K14Rik         1
 
     res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
