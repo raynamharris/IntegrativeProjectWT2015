@@ -176,6 +176,7 @@ with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col=
 resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
+
 res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
@@ -191,7 +192,6 @@ with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=2
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 resOrdered <- res[order(res$padj),]
 head(resOrdered)
-
 
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -238,3 +238,157 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          )
 ```
 
+
+```{r ConsistentOnly}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+
+colData <- colData %>% 
+  filter(APA == "Consistent") 
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Punch )
+
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 16435 9    
+dds <- DESeq(dds)
+dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
+rld <- rlog(dds, blind=FALSE)
+
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.05) #1683
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.05) #1212
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #2107
+
+
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+
+res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+```
+
+
+```{r ConflictOnly}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+
+colData <- colData %>% 
+  filter(APA == "Conflict") 
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Punch )
+
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 16576 14    
+dds <- DESeq(dds)
+dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
+rld <- rlog(dds, blind=FALSE)
+
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.05) #2526
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.05) #1318
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #3776
+
+
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+```
+
+```{r ControlOnly}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+
+colData <- colData %>% 
+  filter(APA == "Control") 
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Punch )
+
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 16716 21     
+dds <- DESeq(dds)
+dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
+rld <- rlog(dds, blind=FALSE)
+
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.05) #2013
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.05) #1391
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #2728
+
+
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+```

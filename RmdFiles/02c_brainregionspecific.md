@@ -108,6 +108,7 @@ Zero genes have padj &lt; 0.05
     ## Zfp72   5.205219      0.9384218 0.2465670  3.805950 1.412609e-04 0.3922617
 
     res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+
     with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
@@ -599,3 +600,452 @@ CA3 only differential gene expression
              )
 
 ![](../figures/02_RNAseq/DGonly-5.png)
+
+    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+    colData <- read.csv("../data/02a_colData.csv", header = T)
+
+    colData <- colData %>% 
+      filter(APA == "Consistent") 
+    savecols <- as.character(colData$RNAseqID) 
+    savecols <- as.vector(savecols) 
+    countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+    dds <- DESeqDataSetFromMatrix(countData = countData,
+                                  colData = colData,
+                                  design = ~ Punch )
+
+    dds <- dds[ rowSums(counts(dds)) > 1, ] 
+    dds # dim: 16435 9    
+
+    ## class: DESeqDataSet 
+    ## dim: 16435 9 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(16435): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(0):
+    ## colnames(9): 143C-CA1-1 144C-CA1-2 ... 147C-CA3-3 147C-DG-3
+    ## colData names(7): RNAseqID Mouse ... APA ID
+
+    dds <- DESeq(dds)
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
+    dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
+    rld <- rlog(dds, blind=FALSE)
+
+    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.05) #1683
+
+    ## [1] 1683
+
+    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.05) #1212
+
+    ## [1] 1212
+
+    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #2107
+
+    ## [1] 2107
+
+    res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ConsistentOnly-1.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA1 vs DG 
+    ## Wald test p-value: Punch CA1 vs DG 
+    ## DataFrame with 6 rows and 6 columns
+    ##          baseMean log2FoldChange     lfcSE      stat        pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>     <numeric>
+    ## Dkk3     895.8230       4.526971 0.1847608  24.50179 1.413504e-132
+    ## Gm2115   400.2670       5.720196 0.2502937  22.85394 1.335480e-115
+    ## Wfs1     312.5904       5.555131 0.2707270  20.51931  1.447595e-93
+    ## Pou3f1   353.2435       5.679073 0.2875507  19.74981  8.051865e-87
+    ## Fibcd1   549.4555       4.115181 0.2332721  17.64112  1.190824e-69
+    ## Neurod6  309.0811       5.990503 0.3512197  17.05628  3.138966e-65
+    ##                  padj
+    ##             <numeric>
+    ## Dkk3    2.311079e-128
+    ## Gm2115  1.091755e-111
+    ## Wfs1     7.889393e-90
+    ## Pou3f1   3.291200e-83
+    ## Fibcd1   3.893994e-66
+    ## Neurod6  8.553683e-62
+
+    res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ConsistentOnly-2.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA1 vs CA3 
+    ## Wald test p-value: Punch CA1 vs CA3 
+    ## DataFrame with 6 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Fibcd1  549.4555       5.826608 0.3004258  19.39450 8.588171e-84
+    ## Wfs1    312.5904       5.082187 0.2746683  18.50300 1.953040e-76
+    ## Doc2b   506.4223       7.388551 0.4218699  17.51381 1.124089e-68
+    ## Pou3f1  353.2435       4.921683 0.2858065  17.22033 1.869170e-66
+    ## Atp2b1 3325.8107       2.299362 0.1375359  16.71827 9.648541e-63
+    ## Gm2115  400.2670       2.929397 0.1956911  14.96949 1.162076e-50
+    ##                padj
+    ##           <numeric>
+    ## Fibcd1 1.404166e-79
+    ## Wfs1   1.596610e-72
+    ## Doc2b  6.126283e-65
+    ## Pou3f1 7.640234e-63
+    ## Atp2b1 3.155073e-59
+    ## Gm2115 3.166657e-47
+
+    res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ConsistentOnly-3.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA3 vs DG 
+    ## Wald test p-value: Punch CA3 vs DG 
+    ## DataFrame with 6 rows and 6 columns
+    ##        baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##       <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## C1ql3  442.9018      -6.744794 0.3626855 -18.59681 3.409907e-77
+    ## Dkk3   895.8230       3.877978 0.2095721  18.50426 1.907644e-76
+    ## Cpne7  342.1539       7.154973 0.3999470  17.88980 1.416045e-71
+    ## Doc2b  506.4223      -7.290686 0.4267249 -17.08521 1.912439e-65
+    ## Npas4 2021.2741      -6.070518 0.3705434 -16.38275 2.540063e-60
+    ## Lct    334.1662      -7.146334 0.4375191 -16.33377 5.676887e-60
+    ##               padj
+    ##          <numeric>
+    ## C1ql3 5.575198e-73
+    ## Dkk3  1.559499e-72
+    ## Cpne7 7.717443e-68
+    ## Doc2b 7.817096e-62
+    ## Npas4 8.306005e-57
+    ## Lct   1.546952e-56
+
+    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+    colData <- read.csv("../data/02a_colData.csv", header = T)
+
+    colData <- colData %>% 
+      filter(APA == "Conflict") 
+    savecols <- as.character(colData$RNAseqID) 
+    savecols <- as.vector(savecols) 
+    countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+    dds <- DESeqDataSetFromMatrix(countData = countData,
+                                  colData = colData,
+                                  design = ~ Punch )
+
+    dds <- dds[ rowSums(counts(dds)) > 1, ] 
+    dds # dim: 16576 14    
+
+    ## class: DESeqDataSet 
+    ## dim: 16576 14 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(16576): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(0):
+    ## colnames(14): 143A-CA3-1 143A-DG-1 ... 148A-CA3-3 148A-DG-3
+    ## colData names(7): RNAseqID Mouse ... APA ID
+
+    dds <- DESeq(dds)
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
+    dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
+    rld <- rlog(dds, blind=FALSE)
+
+    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.05) #2526
+
+    ## [1] 2526
+
+    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.05) #1318
+
+    ## [1] 1318
+
+    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #3776
+
+    ## [1] 3776
+
+    res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ConflictOnly-1.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA1 vs DG 
+    ## Wald test p-value: Punch CA1 vs DG 
+    ## DataFrame with 6 rows and 6 columns
+    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Stmn2    635.0074       3.607199 0.1847806  19.52152 7.205791e-85
+    ## Neurod6  436.8957       5.624931 0.2913316  19.30766 4.631032e-83
+    ## Wfs1     203.5509       5.533648 0.2966880  18.65141 1.229967e-77
+    ## Cck      602.8712       3.890345 0.2318081  16.78261 3.271210e-63
+    ## Gm2115   273.6611       4.973517 0.2999401  16.58170 9.451234e-62
+    ## Khdrbs3  416.1697       3.915947 0.2415860  16.20933 4.332690e-59
+    ##                 padj
+    ##            <numeric>
+    ## Stmn2   1.181533e-80
+    ## Neurod6 3.796752e-79
+    ## Wfs1    6.722591e-74
+    ## Cck     1.340951e-59
+    ## Gm2115  3.099438e-58
+    ## Khdrbs3 1.184052e-55
+
+    res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ConflictOnly-2.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA1 vs CA3 
+    ## Wald test p-value: Punch CA1 vs CA3 
+    ## DataFrame with 6 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Doc2b  417.54425       6.352406 0.3236889  19.62504 9.450525e-86
+    ## Adcy1 3571.11259       2.856500 0.1680295  16.99999 8.213549e-65
+    ## Itpka  893.89613       2.682391 0.1636019  16.39584 2.047928e-60
+    ## Wfs1   203.55086       5.116992 0.3125175  16.37346 2.959168e-60
+    ## Bok     83.72915      -4.269617 0.2883193 -14.80864 1.288203e-49
+    ## Neto1  249.78404      -3.200822 0.2179199 -14.68806 7.687873e-49
+    ##               padj
+    ##          <numeric>
+    ## Doc2b 1.549603e-81
+    ## Adcy1 6.733878e-61
+    ## Itpka 1.119329e-56
+    ## Wfs1  1.213037e-56
+    ## Bok   4.224534e-46
+    ## Neto1 2.100967e-45
+
+    res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ConflictOnly-3.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA3 vs DG 
+    ## Wald test p-value: Punch CA3 vs DG 
+    ## DataFrame with 6 rows and 6 columns
+    ##          baseMean log2FoldChange     lfcSE      stat        pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>     <numeric>
+    ## Stmn2    635.0074       5.379389 0.1775006  30.30632 9.463133e-202
+    ## Adcy1   3571.1126      -4.672532 0.1594125 -29.31096 7.519651e-189
+    ## Neurod6  436.8957       6.089515 0.2823393  21.56807 3.583206e-103
+    ## Fam163b  839.9362      -5.347787 0.2662799 -20.08333  1.032357e-89
+    ## Doc2b    417.5442      -6.105896 0.3165350 -19.28980  6.542772e-83
+    ## Pitpnm2  212.7116      -3.530919 0.1971005 -17.91431  9.119041e-72
+    ##                  padj
+    ##             <numeric>
+    ## Stmn2   1.551670e-197
+    ## Adcy1   6.164986e-185
+    ## Neurod6  1.958461e-99
+    ## Fam163b  4.231891e-86
+    ## Doc2b    2.145636e-79
+    ## Pitpnm2  2.492082e-68
+
+    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+    colData <- read.csv("../data/02a_colData.csv", header = T)
+
+    colData <- colData %>% 
+      filter(APA == "Control") 
+    savecols <- as.character(colData$RNAseqID) 
+    savecols <- as.vector(savecols) 
+    countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+    dds <- DESeqDataSetFromMatrix(countData = countData,
+                                  colData = colData,
+                                  design = ~ Punch )
+
+    dds <- dds[ rowSums(counts(dds)) > 1, ] 
+    dds # dim: 16716 21     
+
+    ## class: DESeqDataSet 
+    ## dim: 16716 21 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(16716): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(0):
+    ## colnames(21): 143B-CA1-1 143B-DG-1 ... 148B-CA3-4 148B-DG-4
+    ## colData names(7): RNAseqID Mouse ... APA ID
+
+    dds <- DESeq(dds)
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
+    ## -- replacing outliers and refitting for 224 genes
+    ## -- DESeq argument 'minReplicatesForReplace' = 7 
+    ## -- original counts are preserved in counts(dds)
+
+    ## estimating dispersions
+
+    ## fitting model and testing
+
+    dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
+    rld <- rlog(dds, blind=FALSE)
+
+    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.05) #2013
+
+    ## [1] 2013
+
+    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.05) #1391
+
+    ## [1] 1391
+
+    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #2728
+
+    ## [1] 2728
+
+    res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ControlOnly-1.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA1 vs DG 
+    ## Wald test p-value: Punch CA1 vs DG 
+    ## DataFrame with 6 rows and 6 columns
+    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Ncald   102.77845      -4.293895 0.2190587 -19.60157 1.499188e-85
+    ## Kctd4    87.21767      -5.409615 0.2906505 -18.61210 2.563906e-77
+    ## Fam163b 494.20098      -3.786996 0.2411539 -15.70365 1.427937e-55
+    ## Stxbp6   48.54075      -5.077638 0.3266725 -15.54351 1.760579e-54
+    ## Actr3b  114.60165       1.844193 0.1207630  15.27118 1.189935e-52
+    ## Pex5l    35.38824       3.188539 0.2215074  14.39473 5.584640e-47
+    ##                 padj
+    ##            <numeric>
+    ## Ncald   2.499147e-81
+    ## Kctd4   2.137016e-73
+    ## Fam163b 7.934571e-52
+    ## Stxbp6  7.337212e-51
+    ## Actr3b  3.967245e-49
+    ## Pex5l   1.551599e-43
+
+    res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ControlOnly-2.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA1 vs CA3 
+    ## Wald test p-value: Punch CA1 vs CA3 
+    ## DataFrame with 6 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Itpka  552.19533       2.833217 0.1406084  20.14970 2.707693e-90
+    ## Fibcd1 307.21960       6.736320 0.3356504  20.06945 1.365001e-89
+    ## Ncald  102.77845      -4.090027 0.2198669 -18.60229 3.078810e-77
+    ## Nptxr  783.30036      -2.635561 0.1454049 -18.12567 1.999071e-73
+    ## Kctd4   87.21767      -4.769426 0.2920732 -16.32956 6.082363e-60
+    ## Doc2b  267.97255       5.740528 0.3543529  16.20003 5.040052e-59
+    ##                padj
+    ##           <numeric>
+    ## Itpka  4.513723e-86
+    ## Fibcd1 1.137728e-85
+    ## Ncald  1.710792e-73
+    ## Nptxr  8.331127e-70
+    ## Kctd4  2.027860e-56
+    ## Doc2b  1.400295e-55
+
+    res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ControlOnly-3.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA3 vs DG 
+    ## Wald test p-value: Punch CA3 vs DG 
+    ## DataFrame with 6 rows and 6 columns
+    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Fam163b 494.20098      -5.293706 0.2516780 -21.03365 3.228482e-98
+    ## C1ql3   188.90951      -6.876556 0.3683186 -18.67013 8.664531e-78
+    ## Stxbp6   48.54075      -4.073782 0.2407414 -16.92181 3.107183e-64
+    ## Pitpnm2 118.25428      -2.888456 0.1835521 -15.73643 8.510688e-56
+    ## Plk5     43.29762      -6.999293 0.4491666 -15.58284 9.522247e-55
+    ## Doc2b   267.97255      -5.267664 0.3488636 -15.09949 1.631791e-51
+    ##                 padj
+    ##            <numeric>
+    ## Fam163b 5.381879e-94
+    ## C1ql3   7.221887e-74
+    ## Stxbp6  1.726558e-60
+    ## Pitpnm2 3.546829e-52
+    ## Plk5    3.174717e-51
+    ## Doc2b   4.533659e-48
