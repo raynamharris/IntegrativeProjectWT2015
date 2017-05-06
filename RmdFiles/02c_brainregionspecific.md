@@ -85,7 +85,7 @@ Zero genes have padj &lt; 0.05
     ## [1] 0
 
     res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -109,7 +109,7 @@ Zero genes have padj &lt; 0.05
 
     res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
 
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -140,7 +140,7 @@ Zero genes have padj &lt; 0.05
     ## Itga10 0.3525021
 
     res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -258,7 +258,7 @@ CA3 only differential gene expression
 
 
     res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -289,7 +289,7 @@ CA3 only differential gene expression
     ## 2900026A02Rik 0.70385437
 
     res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -320,7 +320,7 @@ CA3 only differential gene expression
     ## 0610010K14Rik         1
 
     res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -436,7 +436,7 @@ CA3 only differential gene expression
     ## Lrrk2  0.181184928
 
     res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -467,7 +467,7 @@ CA3 only differential gene expression
     ## Fbxo33 2.364779e-06
 
     res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -498,7 +498,7 @@ CA3 only differential gene expression
     ## Ptgs2   1.186769e-03
 
     res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -656,7 +656,7 @@ CA3 only differential gene expression
     ## [1] 2107
 
     res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -687,7 +687,7 @@ CA3 only differential gene expression
     ## Neurod6  8.553683e-62
 
     res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: CA3 - CA1", xlim=c(-8,8), ylim=c(0,100)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -718,7 +718,7 @@ CA3 only differential gene expression
     ## Gm2115 3.166657e-47
 
     res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -803,7 +803,7 @@ CA3 only differential gene expression
     ## [1] 3776
 
     res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -834,7 +834,7 @@ CA3 only differential gene expression
     ## Khdrbs3 1.184052e-55
 
     res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: CA3 - CA1", xlim=c(-8,8), ylim=c(0,100)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -865,7 +865,7 @@ CA3 only differential gene expression
     ## Neto1 2.100967e-45
 
     res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -943,8 +943,8 @@ CA3 only differential gene expression
     ## fitting model and testing
 
     dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
-    rld <- rlog(dds, blind=FALSE)
 
+    rld <- rlog(dds, blind=FALSE)
     contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.05) #2013
 
     ## [1] 2013
@@ -958,7 +958,7 @@ CA3 only differential gene expression
     ## [1] 2728
 
     res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -989,7 +989,7 @@ CA3 only differential gene expression
     ## Pex5l   1.551599e-43
 
     res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: CA3 - CA1", xlim=c(-8,8), ylim=c(0,100)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -1020,7 +1020,7 @@ CA3 only differential gene expression
     ## Doc2b  1.400295e-55
 
     res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
     with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
     with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -1049,3 +1049,23 @@ CA3 only differential gene expression
     ## Pitpnm2 3.546829e-52
     ## Plk5    3.174717e-51
     ## Doc2b   4.533659e-48
+
+    res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+    res$threshold = as.factor(res$padj < 0.05)
+    resdf <- as.data.frame(res$stat)
+    resdf$log2FoldChange <- res$log2FoldChange
+    resdf$pvalue <- res$pvalue
+    resdf$padj <- res$padj
+    resdf$threshold <- res$threshold
+    ggplot(data=resdf, 
+                aes(x=log2FoldChange, y =-log10(pvalue), 
+                colour=threshold)) +
+      geom_point(alpha=0.4, size=1.75) +
+      xlim(c(-6, 6)) +
+      xlab("log2 fold change") + ylab("-log10 p-value") +
+      theme_bw() +
+      theme(legend.position="none")
+
+    ## Warning: Removed 51 rows containing missing values (geom_point).
+
+![](../figures/02_RNAseq/ggplotvolcano-1.png)

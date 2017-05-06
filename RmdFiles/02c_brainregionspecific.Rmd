@@ -53,7 +53,7 @@ contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 
 contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 0 
 
 res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -62,7 +62,7 @@ head(resOrdered)
 
 res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
 
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -71,7 +71,7 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -116,7 +116,7 @@ head(resOrdered)
 
 
 res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -124,7 +124,7 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -132,7 +132,7 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3 Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -169,7 +169,7 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-2,2), ylim=c(0,12)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -178,7 +178,7 @@ head(resOrdered)
 
 
 res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -186,7 +186,7 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-2,2), ylim=c(0,12)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -265,7 +265,7 @@ contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #2
 
 
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -274,7 +274,7 @@ head(resOrdered)
 
 
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: CA3 - CA1", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -282,7 +282,7 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -318,7 +318,7 @@ contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #3
 
 
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -326,7 +326,7 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: CA3 - CA1", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -334,7 +334,7 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Conflict: DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -360,15 +360,14 @@ dds <- dds[ rowSums(counts(dds)) > 1, ]
 dds # dim: 16716 21     
 dds <- DESeq(dds)
 dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
-rld <- rlog(dds, blind=FALSE)
 
+rld <- rlog(dds, blind=FALSE)
 contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypadj = 0.05) #2013
 contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypadj = 0.05) #1391
 contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypadj = 0.05) #2728
 
-
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -376,7 +375,7 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: CA3 - CA1", xlim=c(-8,8), ylim=c(0,140)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: CA3 - CA1", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -384,11 +383,29 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA3", xlim=c(-8,8), ylim=c(0,140)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control: DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
+```
+
+```{r ggplotvolcano}
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+res$threshold = as.factor(res$padj < 0.05)
+resdf <- as.data.frame(res$stat)
+resdf$log2FoldChange <- res$log2FoldChange
+resdf$pvalue <- res$pvalue
+resdf$padj <- res$padj
+resdf$threshold <- res$threshold
+ggplot(data=resdf, 
+            aes(x=log2FoldChange, y =-log10(pvalue), 
+            colour=threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  xlim(c(-6, 6)) +
+  xlab("log2 fold change") + ylab("-log10 p-value") +
+  theme_bw() +
+  theme(legend.position="none")
 ```

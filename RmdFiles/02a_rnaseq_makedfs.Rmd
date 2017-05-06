@@ -232,7 +232,7 @@ write.table(percentVar, file = "../data/02a_percentVar.txt")
 ```{r volcanoplots}
 
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA1", xlim=c(-8,8)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -242,7 +242,7 @@ topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3-CA1", xlim=c(-8,8)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA3-CA1", xlim=c(-8,8), ylim=c(0,14)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -253,7 +253,7 @@ plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 
 
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA3", xlim=c(-8,8)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -264,7 +264,7 @@ plotCounts(dds, gene = topGene, intgroup=c("Punch"))
 
 
 res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent - Conflict", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -275,7 +275,7 @@ plotCounts(dds, gene = topGene, intgroup=c("APA"))
 
 
 res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control - Conflict", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
@@ -285,7 +285,7 @@ topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA"))
 
 res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Control - Consistent", xlim=c(-8,8), ylim=c(0,100)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
