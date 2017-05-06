@@ -61,10 +61,12 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
 res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="CA1 Control - Conflict", xlim=c(-2,2), ylim=c(0,12)))
 with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
 with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
 with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
 resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
