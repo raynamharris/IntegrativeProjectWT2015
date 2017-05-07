@@ -7,7 +7,7 @@
     library(genefilter)  ## for PCA fuction
     library(ggplot2) ## for awesome plots!
     library(pheatmap) ## awesome heatmaps
-
+    library(VennDiagram)
 
     ## Functions
     source("functions_RNAseq.R")
@@ -412,29 +412,6 @@ CA3 only differential gene expression
 
     ## [1] 0
 
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered)
-
-    ## log2 fold change (MAP): APA Conflict vs Consistent 
-    ## Wald test p-value: APA Conflict vs Consistent 
-    ## DataFrame with 6 rows and 6 columns
-    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Oprd1   32.67546      -1.702574 0.3310140 -5.143512 2.696499e-07
-    ## Crnkl1  21.85210       1.493098 0.3359650  4.444206 8.821700e-06
-    ## Slc9a2  55.35987       1.212602 0.2693665  4.501680 6.741829e-06
-    ## Mkrn2   67.46938       1.175035 0.2857154  4.112605 3.912190e-05
-    ## Vps52   88.93894       0.858954 0.2124660  4.042783 5.282041e-05
-    ## Lrrk2   41.08331      -1.290874 0.3239656 -3.984601 6.759371e-05
-    ##               padj
-    ##          <numeric>
-    ## Oprd1  0.004336779
-    ## Crnkl1 0.047293136
-    ## Slc9a2 0.047293136
-    ## Mkrn2  0.157299361
-    ## Vps52  0.169902130
-    ## Lrrk2  0.181184928
-
     res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
     with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
     with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
@@ -599,7 +576,68 @@ CA3 only differential gene expression
              clustering_distance_cols="correlation" 
              )
 
+    rldpvals <- assay(rld)
+    rldpvals <- cbind(rldpvals, contrast4, contrast5, contrast6)
+    rldpvals <- as.data.frame(rldpvals)
+    rldpvals <- rldpvals[ , grepl( "padj|pval" , names( rldpvals ) ) ]
+
+
+    # venn with padj values
+    venn1 <- row.names(rldpvals[rldpvals[2] <0.05 & !is.na(rldpvals[2]),])
+    venn2 <- row.names(rldpvals[rldpvals[4] <0.05 & !is.na(rldpvals[4]),])
+    venn3 <- row.names(rldpvals[rldpvals[6] <0.05 & !is.na(rldpvals[6]),])
+    venn12 <- union(venn1,venn2)
+    venn123 <- union(venn12,venn3)
+
+    ## check order for correctness
+    candidates <- list("Control-Consistent" = venn1, "Control-Conflict" = venn2,"Consistent-Conflict" = venn3)
+
+    prettyvenn <- venn.diagram(
+      scaled=T,
+      x = candidates, filename=NULL, 
+      col = "black",
+      fill = c( "pink", "red", "grey"),
+      alpha = 0.5,
+      cex = 1, fontfamily = "sans", #fontface = "bold",
+      cat.default.pos = "text",
+      cat.dist = c(0.06, 0.06, 0.05), cat.pos = 1,
+      cat.cex = 1, cat.fontfamily = "sans")
+    #dev.off()
+    grid.draw(prettyvenn)
+
 ![](../figures/02_RNAseq/DGonly-5.png)
+
+    # save files for big venn diagram
+    write(venn123, "../data/20c_vennDGAll.txt")
+    write(venn1, "../data/20c_vennDGControlConsistent.txt")
+
+
+    res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+    table(res$padj<0.05)
+
+    ## 
+    ## FALSE  TRUE 
+    ## 16437   101
+
+    table(res$pvalue<0.05)
+
+    ## 
+    ## FALSE  TRUE 
+    ## 15857   681
+
+    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+    logs$logP <- as.numeric(as.character(logs$logP))
+    sign <- rep(1,nrow(logs))
+    sign[res$log2FoldChange<0]=-1  ##change to correct model
+    table(sign)
+
+    ## sign
+    ##   -1    1 
+    ## 9385 7273
+
+    logs$logP <- logs$logP*sign
+
+    write.csv(logs, file = "./02d_GO_MWU/padjAPAConsistentControlDG.csv", row.names = F)
 
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
     colData <- read.csv("../data/02a_colData.csv", header = T)

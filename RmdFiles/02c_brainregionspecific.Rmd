@@ -14,7 +14,7 @@ library(magrittr) ## to use the weird pipe
 library(genefilter)  ## for PCA fuction
 library(ggplot2) ## for awesome plots!
 library(pheatmap) ## awesome heatmaps
-
+library(VennDiagram)
 
 ## Functions
 source("functions_RNAseq.R")
@@ -165,8 +165,6 @@ rld <- rlog(dds, blind=FALSE)
 contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #101
 contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #39
 contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 0 
-resOrdered <- res[order(res$padj),]
-head(resOrdered)
 
 res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
 with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
@@ -236,7 +234,70 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          breaks=myBreaks,
          clustering_distance_cols="correlation" 
          )
+
+rldpvals <- assay(rld)
+rldpvals <- cbind(rldpvals, contrast4, contrast5, contrast6)
+rldpvals <- as.data.frame(rldpvals)
+rldpvals <- rldpvals[ , grepl( "padj|pval" , names( rldpvals ) ) ]
+
+
+# venn with padj values
+venn1 <- row.names(rldpvals[rldpvals[2] <0.05 & !is.na(rldpvals[2]),])
+venn2 <- row.names(rldpvals[rldpvals[4] <0.05 & !is.na(rldpvals[4]),])
+venn3 <- row.names(rldpvals[rldpvals[6] <0.05 & !is.na(rldpvals[6]),])
+venn12 <- union(venn1,venn2)
+venn123 <- union(venn12,venn3)
+venn1minus2 <- setdiff(venn1,venn2)
+# save files for big venn diagram
+write(venn123, "../data/20c_vennDGAll.txt")
+write(venn1, "../data/20c_vennDGControlConsistent.txt")
+write(venn2, "../data/20c_vennDGControlConflict.txt")
+write(venn1minus2, "../data/20c_vennDGControlminusConsistent.txt")
+
+
+
+## check order for correctness
+candidates <- list("Control-Consistent" = venn1, "Control-Conflict" = venn2,"Consistent-Conflict" = venn3)
+
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "pink", "red", "grey"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  cat.dist = c(0.06, 0.06, 0.05), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+#dev.off()
+grid.draw(prettyvenn)
+
+
+
+res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+table(res$padj<0.05)
+table(res$pvalue<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  ##change to correct model
+table(sign)
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02d_GO_MWU/padjAPAConsistentControlDG.csv", row.names = F)
+
+res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+table(res$padj<0.05)
+table(res$pvalue<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  ##change to correct model
+table(sign)
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02d_GO_MWU/padjAPAConflictControlDG.csv", row.names = F)
 ```
+
+
 
 
 ```{r ConsistentOnly}
@@ -409,3 +470,4 @@ ggplot(data=resdf,
   theme_bw() +
   theme(legend.position="none")
 ```
+
