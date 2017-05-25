@@ -576,6 +576,8 @@ CA3 only differential gene expression
              clustering_distance_cols="correlation" 
              )
 
+![](../figures/02_RNAseq/DGonly-5.png)
+
     rldpvals <- assay(rld)
     rldpvals <- cbind(rldpvals, contrast4, contrast5, contrast6)
     rldpvals <- as.data.frame(rldpvals)
@@ -588,6 +590,14 @@ CA3 only differential gene expression
     venn3 <- row.names(rldpvals[rldpvals[6] <0.05 & !is.na(rldpvals[6]),])
     venn12 <- union(venn1,venn2)
     venn123 <- union(venn12,venn3)
+    venn1minus2 <- setdiff(venn1,venn2)
+    # save files for big venn diagram
+    write(venn123, "../data/20c_vennDGAll.txt")
+    write(venn1, "../data/20c_vennDGControlConsistent.txt")
+    write(venn2, "../data/20c_vennDGControlConflict.txt")
+    write(venn1minus2, "../data/20c_vennDGControlminusConsistent.txt")
+
+
 
     ## check order for correctness
     candidates <- list("Control-Consistent" = venn1, "Control-Conflict" = venn2,"Consistent-Conflict" = venn3)
@@ -596,7 +606,7 @@ CA3 only differential gene expression
       scaled=T,
       x = candidates, filename=NULL, 
       col = "black",
-      fill = c( "pink", "red", "grey"),
+      fill = c( "white", "white", "white"),
       alpha = 0.5,
       cex = 1, fontfamily = "sans", #fontface = "bold",
       cat.default.pos = "text",
@@ -605,12 +615,7 @@ CA3 only differential gene expression
     #dev.off()
     grid.draw(prettyvenn)
 
-![](../figures/02_RNAseq/DGonly-5.png)
-
-    # save files for big venn diagram
-    write(venn123, "../data/20c_vennDGAll.txt")
-    write(venn1, "../data/20c_vennDGControlConsistent.txt")
-
+![](../figures/02_RNAseq/DGvenn-1.png)
 
     res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
     table(res$padj<0.05)
@@ -636,8 +641,33 @@ CA3 only differential gene expression
     ## 9385 7273
 
     logs$logP <- logs$logP*sign
-
     write.csv(logs, file = "./02d_GO_MWU/padjAPAConsistentControlDG.csv", row.names = F)
+
+    res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+    table(res$padj<0.05)
+
+    ## 
+    ## FALSE  TRUE 
+    ## 16499    39
+
+    table(res$pvalue<0.05)
+
+    ## 
+    ## FALSE  TRUE 
+    ## 16029   509
+
+    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+    logs$logP <- as.numeric(as.character(logs$logP))
+    sign <- rep(1,nrow(logs))
+    sign[res$log2FoldChange<0]=-1  ##change to correct model
+    table(sign)
+
+    ## sign
+    ##   -1    1 
+    ## 9607 7051
+
+    logs$logP <- logs$logP*sign
+    write.csv(logs, file = "./02d_GO_MWU/padjAPAConflictControlDG.csv", row.names = F)
 
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
     colData <- read.csv("../data/02a_colData.csv", header = T)

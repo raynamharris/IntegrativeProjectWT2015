@@ -100,7 +100,7 @@ paletteLength <- 30
 myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
 
-pheatmap(DEGes, show_colnames=F, show_rownames = F,
+pheatmap(DEGes, show_colnames=T, show_rownames = F,
          annotation_col=df, annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 25,
          fontsize = 11, 

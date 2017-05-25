@@ -162,8 +162,8 @@ dds # dim: 16658 16
 dds <- DESeq(dds)
 rld <- rlog(dds, blind=FALSE)
 
-contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #101
-contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #39
+contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypadj = 0.05) #101 or 105 106
+contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypadj = 0.05) #39 # or 34 or 49
 contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypadj = 0.05) # 0 
 
 res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
@@ -221,7 +221,7 @@ DEGes <- as.matrix(DEGes)
 paletteLength <- 30
 myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
-pheatmap(DEGes, show_colnames=F, show_rownames = F,
+pheatmap(DEGes, show_colnames=T, show_rownames = F,
          annotation_col=df, annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 25,
          fontsize = 11, 
@@ -234,6 +234,9 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          breaks=myBreaks,
          clustering_distance_cols="correlation" 
          )
+```
+
+```{r DGvenn}
 
 rldpvals <- assay(rld)
 rldpvals <- cbind(rldpvals, contrast4, contrast5, contrast6)
@@ -263,7 +266,7 @@ prettyvenn <- venn.diagram(
   scaled=T,
   x = candidates, filename=NULL, 
   col = "black",
-  fill = c( "pink", "red", "grey"),
+  fill = c( "white", "white", "white"),
   alpha = 0.5,
   cex = 1, fontfamily = "sans", #fontface = "bold",
   cat.default.pos = "text",

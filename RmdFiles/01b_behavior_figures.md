@@ -7,10 +7,16 @@ library(ggplot2) ## for awesome plots!
 ``` r
 library(cowplot) ## for some easy to use themes
 library(dplyr) ## for filtering and selecting rows
-library(factoextra)
+library(factoextra)  ##pca with vectors
 ```
 
     ## Warning: package 'factoextra' was built under R version 3.3.2
+
+``` r
+library(car) ## stats
+```
+
+    ## Warning: package 'car' was built under R version 3.3.2
 
 ``` r
 ## load functions 
@@ -259,19 +265,95 @@ levels(behavior$TrainSessionCombo)
 The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown in red and negative values show in blue. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group (purple, orange, brown) and training session (from white to black according to increasing time spend in the active place avoidance group).
 
 ``` r
-## see the makesessionheatmap documentataion for data tidying and plot specifications
-#makesessionheatmap(behavior)
+library(superheat)
+
+superheat(scaledaveragedata,
+          # change the size of the labels
+          left.label.size = 0.3, 
+          bottom.label.size = 0.4,
+          bottom.label.text.angle = 90, 
+          # cluster rows and add dendrogram
+          pretty.order.cols = TRUE,
+          n.clusters.rows = 3,
+          left.label = 'variable',
+          # change color
+          heat.pal = c("Deep Sky Blue 3", "white", "red"),
+          # These two lines help you darken the color
+          heat.lim = c(-1.5, 1.5), 
+          extreme.values.na = FALSE)
 ```
+
+![](../figures/01_behavior/heatmap-1.png)
+
+``` r
+scaledaveragedatatranposed <- t(scaledaveragedata)
+
+superheat(scaledaveragedatatranposed,
+          # change the size of the labels
+          left.label.size = 0.25, 
+          bottom.label.size = 0.45,
+          bottom.label.text.angle = 90, 
+          # cluster rows and add dendrogram
+          pretty.order.cols = TRUE,
+          n.clusters.rows = 4,
+          left.label = 'variable',
+          # change color
+          heat.pal = c("Deep Sky Blue 3", "white", "red"),
+          # These two lines darken the color
+          heat.lim = c(-1.5, 1.5), 
+          extreme.values.na = FALSE)
+```
+
+![](../figures/01_behavior/heatmap-2.png)
+
+``` r
+superheat(scaledaveragedatatranposed,
+          # change the size of the labels
+          left.label.size = 0.25, 
+          bottom.label.size = 0.45,
+          bottom.label.text.angle = 90, 
+          # cluster rows and add dendrogram
+          pretty.order.cols = TRUE,
+          n.clusters.rows = 3,
+          left.label = 'variable',
+          # change color
+          heat.pal = c("Deep Sky Blue 3", "white", "red"),
+          # These two lines darken the color
+          heat.lim = c(-1.5, 1.5), 
+          extreme.values.na = FALSE)
+```
+
+![](../figures/01_behavior/heatmap-3.png)
 
 ### Principle component analysis (PCA)
 
 Given the correlational structure of the data, I next reduced the dimentionality with a PCA anlaysis. You can see that PC1 speparates trained and untraned animals (D,E) but neither PC2 (D) nor PC3 (E) separate same and conflict aniamls. Elipses show 95% confidence interval.
 
 ``` r
+## pca anlysis
+behaviormatrix %>% 
+  scale() %>%                 # scale to 0 mean and unit variance
+  prcomp() ->                 # do PCA
+  pca                         # store result as `pca`
+percent <- 100*pca$sdev^2/sum(pca$sdev^2)
+perc_data <- data.frame(percent=percent, PC=1:length(percent))
+ggplot(perc_data, aes(x=PC, y=percent)) + 
+  geom_bar(stat="identity") + 
+  geom_text(aes(label=round(percent, 2)), size=4, vjust=-.5) + 
+  xlim(0, 10)
+```
+
+    ## Warning: Removed 29 rows containing missing values (position_stack).
+
+    ## Warning: Removed 29 rows containing missing values (geom_text).
+
+![](../figures/01_behavior/PCA-1.png)
+
+``` r
 makepcaplot(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA")
 ```
 
-![](../figures/01_behavior/PCA-1.png)
+![](../figures/01_behavior/PCA-2.png)
 
 ``` r
 ## statistics
@@ -301,28 +383,156 @@ TukeyHSD(aov1, which = "APA") # p<< 0.001 for both control comparisions
     ## conflict-consistent   0.2109558  -4.551502   4.973413 0.9934703
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC3",colorcode="APA")
+aov2 <- aov(PC2 ~ APA, data=scoresdf)
+summary(aov2) # p = 0.0906
 ```
 
-![](../figures/01_behavior/PCA-2.png)
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA          2  106.1   53.05   2.597 0.0906 .
+    ## Residuals   31  633.2   20.42                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC4",colorcode="APA")
+TukeyHSD(aov2, which = "APA") # p = 0.0852578 for conflict
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC2 ~ APA, data = scoresdf)
+    ## 
+    ## $APA
+    ##                          diff        lwr       upr     p adj
+    ## consistent-control  -3.434152 -8.2030827  1.334778 0.1955003
+    ## conflict-control     1.418463 -3.1667701  6.003695 0.7290903
+    ## conflict-consistent  4.852615 -0.5521726 10.257403 0.0852578
+
+``` r
+aov3 <- aov(PC3 ~ APA, data=scoresdf)
+summary(aov3) # p = 0.0633
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA          2   95.0   47.50    3.02 0.0633 .
+    ## Residuals   31  487.5   15.73                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+TukeyHSD(aov3, which = "APA") # p = 0.0557503 for conflict
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC3 ~ APA, data = scoresdf)
+    ## 
+    ## $APA
+    ##                          diff         lwr      upr     p adj
+    ## consistent-control  -1.812712 -5.99726370 2.371839 0.5417745
+    ## conflict-control     2.833634 -1.18973029 6.856997 0.2090687
+    ## conflict-consistent  4.646346 -0.09614557 9.388837 0.0557503
+
+``` r
+aov6 <- aov(PC6 ~ APA, data=scoresdf)
+summary(aov6) # p = 0.0226
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA          2   96.1   48.03   4.293 0.0226 *
+    ## Residuals   31  346.9   11.19                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+TukeyHSD(aov6, which = "APA") # p = 0.0175577 for conflict
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC6 ~ APA, data = scoresdf)
+    ## 
+    ## $APA
+    ##                          diff        lwr      upr     p adj
+    ## consistent-control  -2.152715 -5.6824153 1.376985 0.3043094
+    ## conflict-control     2.583185 -0.8105525 5.976922 0.1633660
+    ## conflict-consistent  4.735900  0.7355730 8.736227 0.0175577
+
+``` r
+lm1 <- lm(PC1~APA, data=scoresdf)
+summary(lm1)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = PC1 ~ APA, data = scoresdf)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -11.5071  -2.5761   0.0012   2.0463   7.0257 
+    ## 
+    ## Coefficients:
+    ##               Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)     9.7219     0.9658   10.07 2.74e-11 ***
+    ## APAconsistent -19.5554     1.7074  -11.45 1.14e-12 ***
+    ## APAconflict   -19.3444     1.6416  -11.78 5.54e-13 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 3.982 on 31 degrees of freedom
+    ## Multiple R-squared:  0.8673, Adjusted R-squared:  0.8588 
+    ## F-statistic: 101.3 on 2 and 31 DF,  p-value: 2.531e-14
+
+``` r
+lm16 <- lm(PC1+PC6~APA, data=scoresdf)
+summary(lm16)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = PC1 + PC6 ~ APA, data = scoresdf)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -12.4439  -3.4814  -0.5956   3.6301  13.1110 
+    ## 
+    ## Coefficients:
+    ##               Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)      9.545      1.341   7.119 5.33e-08 ***
+    ## APAconsistent  -21.708      2.370  -9.160 2.50e-10 ***
+    ## APAconflict    -16.761      2.279  -7.356 2.79e-08 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 5.528 on 31 degrees of freedom
+    ## Multiple R-squared:  0.7717, Adjusted R-squared:  0.7569 
+    ## F-statistic: 52.38 on 2 and 31 DF,  p-value: 1.143e-10
+
+``` r
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC3",colorcode="APA")
 ```
 
 ![](../figures/01_behavior/PCA-3.png)
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC5",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC4",colorcode="APA")
 ```
 
 ![](../figures/01_behavior/PCA-4.png)
 
 ``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA")
+makepcaplot(data=scoresdf,xcol="PC2",ycol="PC4",colorcode="APA")
 ```
 
 ![](../figures/01_behavior/PCA-5.png)
+
+``` r
+makepcaplot(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA")
+```
+
+![](../figures/01_behavior/PCA-6.png)
 
 ``` r
 ## statistics
@@ -350,63 +560,6 @@ TukeyHSD(aov6, which = "APA") # consistent-conflict p= 0.0175577
     ## consistent-control  -2.152715 -5.6824153 1.376985 0.3043094
     ## conflict-control     2.583185 -0.8105525 5.976922 0.1633660
     ## conflict-consistent  4.735900  0.7355730 8.736227 0.0175577
-
-``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC7",colorcode="APA")
-```
-
-![](../figures/01_behavior/PCA-6.png)
-
-``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC8",colorcode="APA")
-```
-
-![](../figures/01_behavior/PCA-7.png)
-
-``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC9",colorcode="APA")
-```
-
-![](../figures/01_behavior/PCA-8.png)
-
-``` r
-## statistics
-aov9 <- aov(PC9 ~ APA, data=scoresdf)
-summary(aov9) # p = 0.0584
-```
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA          2  62.55   31.28   3.117 0.0584 .
-    ## Residuals   31 311.07   10.04                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-TukeyHSD(aov9, which = "APA") # consistent-conflict p= 0.0722
-```
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC9 ~ APA, data = scoresdf)
-    ## 
-    ## $APA
-    ##                           diff        lwr      upr     p adj
-    ## consistent-control  -0.7833752 -4.1260684 2.559318 0.8334263
-    ## conflict-control     2.7406860 -0.4732478 5.954620 0.1065599
-    ## conflict-consistent  3.5240612 -0.2643244 7.312447 0.0722837
-
-``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA")
-```
-
-![](../figures/01_behavior/PCA-9.png)
-
-``` r
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC9",colorcode="APA")
-```
-
-![](../figures/01_behavior/PCA-10.png)
 
 ``` r
 res.pca <- prcomp(behaviormatrix,  scale = TRUE)

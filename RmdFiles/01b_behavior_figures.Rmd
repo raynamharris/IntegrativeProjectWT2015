@@ -123,8 +123,57 @@ levels(behavior$TrainSessionCombo)
 The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown in red and negative values show in blue. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group (purple, orange, brown) and training session (from white to black according to increasing time spend in the active place avoidance group). 
 
 ```{r heatmap,  message=FALSE, results='hide'}
-## see the makesessionheatmap documentataion for data tidying and plot specifications
-#makesessionheatmap(behavior)
+library(superheat)
+
+superheat(scaledaveragedata,
+          # change the size of the labels
+          left.label.size = 0.3, 
+          bottom.label.size = 0.4,
+          bottom.label.text.angle = 90, 
+          # cluster rows and add dendrogram
+          pretty.order.cols = TRUE,
+          n.clusters.rows = 3,
+          left.label = 'variable',
+          # change color
+          heat.pal = c("Deep Sky Blue 3", "white", "red"),
+          # These two lines help you darken the color
+          heat.lim = c(-1.5, 1.5), 
+          extreme.values.na = FALSE)
+
+
+
+scaledaveragedatatranposed <- t(scaledaveragedata)
+
+superheat(scaledaveragedatatranposed,
+          # change the size of the labels
+          left.label.size = 0.25, 
+          bottom.label.size = 0.45,
+          bottom.label.text.angle = 90, 
+          # cluster rows and add dendrogram
+          pretty.order.cols = TRUE,
+          n.clusters.rows = 4,
+          left.label = 'variable',
+          # change color
+          heat.pal = c("Deep Sky Blue 3", "white", "red"),
+          # These two lines darken the color
+          heat.lim = c(-1.5, 1.5), 
+          extreme.values.na = FALSE)
+
+superheat(scaledaveragedatatranposed,
+          # change the size of the labels
+          left.label.size = 0.25, 
+          bottom.label.size = 0.45,
+          bottom.label.text.angle = 90, 
+          # cluster rows and add dendrogram
+          pretty.order.cols = TRUE,
+          n.clusters.rows = 3,
+          left.label = 'variable',
+          # change color
+          #heat.pal = c("Deep Sky Blue 3", "white", "red"),
+          # These two lines darken the color
+          heat.lim = c(-1.5, 1.5), 
+          extreme.values.na = FALSE)
+
 ```
 
 
