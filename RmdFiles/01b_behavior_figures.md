@@ -317,10 +317,12 @@ superheat(scaledaveragedatatranposed,
           n.clusters.rows = 3,
           left.label = 'variable',
           # change color
-          heat.pal = c("Deep Sky Blue 3", "white", "red"),
+          #heat.pal = c("Deep Sky Blue 3", "white", "red"),
           # These two lines darken the color
           heat.lim = c(-1.5, 1.5), 
-          extreme.values.na = FALSE)
+          extreme.values.na = FALSE,
+          bottom.label.text.size = 6,
+          left.label.text.size = 6)
 ```
 
 ![](../figures/01_behavior/heatmap-3.png)

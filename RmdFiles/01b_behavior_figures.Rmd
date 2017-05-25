@@ -172,7 +172,9 @@ superheat(scaledaveragedatatranposed,
           #heat.pal = c("Deep Sky Blue 3", "white", "red"),
           # These two lines darken the color
           heat.lim = c(-1.5, 1.5), 
-          extreme.values.na = FALSE)
+          extreme.values.na = FALSE,
+          bottom.label.text.size = 6,
+          left.label.text.size = 6)
 
 ```
 
