@@ -321,8 +321,8 @@ superheat(scaledaveragedatatranposed,
           # These two lines darken the color
           heat.lim = c(-1.5, 1.5), 
           extreme.values.na = FALSE,
-          bottom.label.text.size = 6,
-          left.label.text.size = 6)
+          bottom.label.text.size = 4,
+          left.label.text.size = 4)
 ```
 
 ![](../figures/01_behavior/heatmap-3.png)
