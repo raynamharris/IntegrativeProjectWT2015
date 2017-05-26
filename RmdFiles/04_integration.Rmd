@@ -45,6 +45,7 @@ names(behaviorpca)[names(behaviorpca)=="PC10"] <- "Behavior_PC10"
 
 
 ```{r superheatmap}
+library(superheat)
 # plot a heatmap of the numerical iris variables
 # cluster by species and plot Sepal.Length on the right
 # save the superheat object to access the membership vectors
@@ -56,10 +57,10 @@ head(iris)
 
 sh2 <- superheat(X = behaviorpca[,-c(10,11,12)],
                 yr = behaviorpca[,10],
-                yr.axis.name = "PC1",
+                yr.axis.name = "PC10",
                 membership.rows = behaviorpca$APA,
                 pretty.order.cols = TRUE,
                 bottom.label.size = 0.2,
                 bottom.label.text.angle = 90)
-
+```
 
