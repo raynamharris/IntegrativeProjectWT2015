@@ -152,7 +152,7 @@ sh2 <- superheat(X = behaviorpca[,-c(10,11,12)],
                 yr.axis.name = "PC10",
                 membership.rows = behaviorpca$APA,
                 pretty.order.cols = TRUE,
-                bottom.label.size = 0.2,
+                bottom.label.size = 1,
                 bottom.label.text.angle = 90)
 ```
 
