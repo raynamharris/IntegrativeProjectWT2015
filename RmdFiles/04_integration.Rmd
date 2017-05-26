@@ -7,19 +7,59 @@ output:
     variant: markdown_github
 ---
 
+## Setup
 ```{r setup, message=F}
 
 
 ```
 
-```{r data,  message=F}
-behavior <- read.csv("../data/01_behaviordata.csv", header = T)
-ephys <- ephys <- read.csv("../data/03_ephys.csv", header = T)
+## Import Data
+```{r importdata}
+behaviorpca <- read.csv("../data/01a_scoresdf.csv", header = T)
+behavior <- read.csv("../data/01a_behavior.csv", header = T)
+ephys <- read.csv("../data/03_ephys.csv", header = T)
+pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
 
-behaviorphys <- full_join(behavior, ephys, by = "Mouse")
+head(behaviorpca)  # behavior pcas
+head(ephys) # beahvior pcas with ephys
+head(pcadata)  # rnaseq pcas
+```
+
+## Wrangle Data
+```{r wrangle data}
+## slim behavior ephy to top 10 pcs
+behaviorpca <- behaviorpca[(c(1:10,35:36))]
+## rename the columsn
+names(behaviorpca)[names(behaviorpca)=="ID"] <- "Mouse"
+names(behaviorpca)[names(behaviorpca)=="PC1"] <- "Behavior_PC1"
+names(behaviorpca)[names(behaviorpca)=="PC2"] <- "Behavior_PC2"
+names(behaviorpca)[names(behaviorpca)=="PC3"] <- "Behavior_PC3"
+names(behaviorpca)[names(behaviorpca)=="PC4"] <- "Behavior_PC4"
+names(behaviorpca)[names(behaviorpca)=="PC5"] <- "Behavior_PC5"
+names(behaviorpca)[names(behaviorpca)=="PC6"] <- "Behavior_PC6"
+names(behaviorpca)[names(behaviorpca)=="PC7"] <- "Behavior_PC7"
+names(behaviorpca)[names(behaviorpca)=="PC8"] <- "Behavior_PC8"
+names(behaviorpca)[names(behaviorpca)=="PC9"] <- "Behavior_PC9"
+names(behaviorpca)[names(behaviorpca)=="PC10"] <- "Behavior_PC10"
+```
 
 
+```{r superheatmap}
+# plot a heatmap of the numerical iris variables
+# cluster by species and plot Sepal.Length on the right
+# save the superheat object to access the membership vectors
+sh <- superheat(X = iris[,-c(1, 5)],
+                yr = iris[,1],
+                yr.axis.name = "Sepal.Length",
+                membership.rows = iris$Species)
+head(iris)
+
+sh2 <- superheat(X = behaviorpca[,-c(10,11,12)],
+                yr = behaviorpca[,10],
+                yr.axis.name = "PC1",
+                membership.rows = behaviorpca$APA,
+                pretty.order.cols = TRUE,
+                bottom.label.size = 0.2,
+                bottom.label.text.angle = 90)
 
 
-behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
-retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  droplevels() 
