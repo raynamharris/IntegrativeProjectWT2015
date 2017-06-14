@@ -17,8 +17,8 @@ colorvalPunch <- c("#d95f02","#1b9e77", "#7570b3")
 colorpalette <-  colorRampPalette(c("Deep Sky Blue 3", "white", "red"))( 30 )
 
 ann_colors1 = list(
-  APA =  c(Control = (values=c("#404040")), Consistent = (values=c("#f4a582")), Conflict = (values=c("#ca0020"))),
-  Punch = c(CA1 = (values=c("#7570b3")),
+  Group =  c(control = (values=c("#404040")), consistent = (values=c("#f4a582")), conflict = (values=c("#ca0020"))),
+  Region = c(CA1 = (values=c("#7570b3")),
             CA3 = (values=c("#1b9e77")), 
             DG = (values=c("#d95f02"))))
 
@@ -36,5 +36,3 @@ session_colors1 = list(
                T5_C2 = (values=c("#9e9ac8")),
                T6_C3 = (values=c("#756bb1")),
                Retention = (values=c("#54278f"))))
-
-

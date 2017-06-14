@@ -1,0 +1,326 @@
+---
+title: "03_cognitiontest.Rmd"
+author: "Rayna M Harris"
+date: "March 6, 2017"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+#source("http://www.bioconductor.org/biocLite.R")
+#biocLite("DESeq2")
+library(DESeq2)
+library(VennDiagram)
+library(genefilter)
+library(pheatmap)
+library(cowplot)
+library(RColorBrewer)
+library(dplyr)
+library(plyr)
+library(ggplot2)
+library(edgeR)
+library(knitr) 
+library(pvclust)
+
+# set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/02_DESeq/')
+
+# user defined funcitons and options
+source("resvalsfunction.R") 
+source("figureoptions.R")
+```
+
+
+```{r importdata, include=FALSE}
+# this starts with data genearated from code described in KallistoGather.Rmd
+colData <- read.csv('../data/WT2015ColData.csv')
+rownames(colData) <- colData$RNAseqID
+countData <-  read.csv('../data/WT2015CountData.csv', check.names = F, row.names = 1)
+```
+
+
+```{r viewcoldata, echo=FALSE,message=FALSE, warning=FALSE}
+colData %>% select(Group,Region)  %>%  summary()
+```
+
+### Differential gene expresssion analysis
+
+Raw reads were downloaded from the Amazon cloud server to the Stampede Cluster at the Texas Advanced Computing Facility for processing and analysis. RNA quality was checked using the bioinformatic program FASTQC (citation). Low quality reads and adapter sequences were removed using the program Cutadapt (Martin, 2011). Kallisto was use for fast read mapping and counting (Bray et al., 2016). Transcript from a single gene were combined into a count total for each gene. In the end, we meausred the expression of 22,485 genes in 48 samples.
+
+```{r viewscountData, echo=FALSE,message=FALSE, warning=FALSE}
+dim(countData)
+```
+
+We used DESeq2 (Love et al., 2014) for gene expression normalization and quantification using the following experimental design: `Group + Region + Group * Region`. Genes with less than 2 counts across all samples were filtered, leaving us with 17815 genes for analysis of differntial expression.
+
+```{r, include=FALSE}
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Group + Region + Group * Region )
+dds <- dds[ rowSums(counts(dds)) > 2, ] ## filter genes with 0 counts
+dds <- DESeq(dds) # Differential expression analysis
+rld <- rlog(dds, blind=FALSE) # log transform data
+```
+
+```{r, echo=TRUE, message=TRUE,comment=FALSE, warning=FALSE}
+dim(rld)
+```
+
+We identified 423 genes were differentially expressed between the yoked control and cognitively trained animals, 3485 genes that were differentially expressed across subfields, and 324 showed an interaction at FDR p < 0.05 (Fig. 4B). We see a large effect of brain region on gene expression, with 20% of detectable genes begin differentially expressed between one or more brain-region comparisons (3485 differentially expressed genes /17320 measured genes). This is an order of magnitude greater than the 2% of the transcriptome that changed in response to learning (423 DEGs /17320 genes measured).
+
+```{r signficiantgenes, include=FALSE}
+## DEG by contrasts
+source("resvalsfunction.R")
+contrast1 <- resvals(contrastvector = c('Region', 'CA1', 'DG'), mypval = 0.05)
+contrast2 <- resvals(contrastvector = c('Region', 'CA3', 'DG'), mypval = 0.05)
+contrast3 <- resvals(contrastvector = c('Region', 'CA1', 'CA3'), mypval = 0.05)
+contrast4 <- resvals(contrastvector = c('Group', 'consistent', 'control'), mypval = 0.05)
+contrast5 <- resvals(contrastvector = c('Group', 'conflict', 'control'), mypval = 0.05)
+contrast6 <- resvals(contrastvector = c('Group', 'conflict', 'consistent'), mypval = 0.05)
+```
+
+```{r VennDiagramPadj, echo=FALSE}
+#create a new DF with the gene counts
+rldpvals <- assay(rld)
+rldpvals <- cbind(rldpvals, contrast1, contrast2, contrast3, contrast4, contrast5)
+rldpvals <- as.data.frame(rldpvals)
+rldpvals <- rldpvals[ , grepl( "padj|pval" , names( rldpvals ) ) ]
+
+
+# venn with padj values
+venn1 <- row.names(rldpvals[rldpvals[2] <0.05 & !is.na(rldpvals[2]),])
+venn2 <- row.names(rldpvals[rldpvals[4] <0.05 & !is.na(rldpvals[4]),])
+venn3 <- row.names(rldpvals[rldpvals[6] <0.05 & !is.na(rldpvals[6]),])
+venn4 <- row.names(rldpvals[rldpvals[8] <0.05 & !is.na(rldpvals[8]),])
+venn5 <- row.names(rldpvals[rldpvals[10] <0.05 & !is.na(rldpvals[10]),])
+
+venn12 <- union(venn1,venn2)
+venn123 <- union(venn12,venn3)
+
+
+```
+
+Hierarchical clustering of the differentially expressed genes separates samples by both subfield and treatment (Fig. 4C). 
+
+Then, we visuazlied the data as a heatmap showing the relative log fold change of gene expression across samples. Genes were filtered for a minimimum adjust p value < 0.05 in any two-way contrast. The row mean for each gene was subtracted for the raw value to allow for analysis of fold change rather than raw magnitudes. The samples cluster primarily by brain region with some small treatment-driven. 
+
+```{r HeatmapPadj, echo=FALSE, message=TRUE, comment=FALSE, warning=FALSE}
+## Any padj <0.05
+DEGes <- assay(rld)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5)
+DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
+DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+
+DEGes$padjmin <- with(DEGes, pmin(padjGroupconflictcontrol, padjGroupconsistentcontrol,  padjRegionCA1DG ,padjRegionCA3DG, padjRegionCA1CA3 )) # put the min pvalue in a new column
+DEGes <- DEGes %>% filter(padjmin < 0.05)
+
+rownames(DEGes) <- DEGes$rownames
+drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
+DEGes <- DEGes %>% select(-one_of(drop.cols))
+DEGes <- as.matrix(DEGes)
+DEGes <- DEGes - rowMeans(DEGes)
+
+
+# setting color options
+source("figureoptions.R")
+ann_colors <- ann_colors1
+colorpalette <- colorpalette
+df <- as.data.frame(colData(dds)[,c("Group", "Region")])
+paletteLength <- 30
+myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+
+
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         fontsize = 14, fontsize_row = 7, 
+         treeheight_row = 0, treeheight_col = 25,
+         cellwidth = 12, 
+         border_color = "grey60" ,
+         color = colorpalette,
+         clustering_distance_cols="correlation" ,
+         breaks=myBreaks,
+         clustering_method="average"
+         )
+
+
+```
+
+```{r pvclust}
+#result <- pvclust(DEGes, method.dist="cor", method.hclust="average", nboot=1000)
+#plot(result)
+```
+
+A principal component analysis .... 
+
+
+```{r PCA, include=FALSE}
+source("DESeqPCAfunction.R")
+source("figureoptions.R")
+
+# create the dataframe using my function pcadataframe
+pcadata <- pcadataframe(rld, intgroup=c("Group", "Region"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+
+pcadata$Group <- factor(pcadata$Group, levels = c("control", "consistent", "conflict"))
+
+
+# PC1 vs PC2 for adobe
+plotPC2PC1(aescolor = pcadata$Region, colorname = "Region", aesshape = pcadata$Group, shapename = "Group", colorvalues = pcadata$Region)
+
+```
+
+
+```{r, echo=TRUE, message=FALSE, comment=FALSE, warning=FALSE}
+aov1 <- aov(PC1 ~ Region, data=pcadata)
+summary(aov1) 
+```
+
+
+```{r, echo=TRUE, message=FALSE, comment=FALSE, warning=FALSE}
+TukeyHSD(aov1, which = "Region")
+```
+
+
+```{r, echo=TRUE, message=FALSE, comment=FALSE, warning=FALSE}
+aov2 <- aov(PC2 ~ Region, data=pcadata)
+summary(aov2) 
+```
+
+
+
+```{r, echo=TRUE, message=FALSE, comment=FALSE, warning=FALSE}
+TukeyHSD(aov2, which = "Region") 
+```
+
+
+```{r, echo=TRUE, message=FALSE, comment=FALSE, warning=FALSE}
+aov3 <- aov(PC3 ~ Group, data=pcadata)
+summary(aov3) 
+```
+
+
+
+```{r, echo=TRUE, message=FALSE, comment=FALSE, warning=FALSE}
+aov4 <- aov(PC4 ~ Group, data=pcadata)
+summary(aov4) 
+```
+
+
+```{r histogram}
+myhistogram(contrastvector = c('Region', 'CA1', 'DG'), mypval = 0.05)
+myhistogram(contrastvector = c('Region', 'CA3', 'DG'), mypval = 0.05)
+myhistogram(contrastvector = c('Region', 'CA1', 'CA3'), mypval = 0.05)
+myhistogram(contrastvector = c('Group', 'consistent', 'control'), mypval = 0.05)
+myhistogram(contrastvector = c('Group', 'conflict', 'control'), mypval = 0.05)
+myhistogram(contrastvector = c('Group', 'conflict', 'consistent'), mypval = 0.05)
+```
+
+
+
+```{r DGonly}
+colData <- colData %>%
+  filter(Region == "DG") 
+savecols <- as.character(colData$RNAseqID) #selects all good samples
+savecols <- as.vector(savecols) # make it a vector
+countData <- countData %>% select(one_of(savecols)) # keep good samples
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Group )
+dds <- dds[ rowSums(counts(dds)) > 2, ] ## filter genes with 0 counts
+dds <- DESeq(dds) # Differential expression analysis
+rld <- rlog(dds, blind=FALSE) # log transform data
+dim(rld)
+
+contrast4 <- resvals(contrastvector = c('Group', 'consistent', 'control'), mypval = 0.05)
+contrast5 <- resvals(contrastvector = c('Group', 'conflict', 'control'), mypval = 0.05)
+contrast6 <- resvals(contrastvector = c('Group', 'conflict', 'consistent'), mypval = 0.05)
+
+
+rldpvals <- assay(rld)
+rldpvals <- cbind(rldpvals, contrast4, contrast5)
+rldpvals <- as.data.frame(rldpvals)
+rldpvals <- rldpvals[ , grepl( "padj|pval" , names( rldpvals ) ) ]
+
+
+# venn with padj values
+venn1 <- row.names(rldpvals[rldpvals[2] <0.05 & !is.na(rldpvals[2]),])
+venn2 <- row.names(rldpvals[rldpvals[4] <0.05 & !is.na(rldpvals[4]),])
+venn1
+venn2
+
+candidates <- list("Consistent" = venn1, "Conflict" = venn2)
+
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "white", "white"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  cat.dist = c(0.08, 0.08), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+#dev.off()
+grid.draw(prettyvenn)
+
+
+```
+
+```{r CA1only}
+colData <- read.csv('../data/WT2015ColData.csv')
+rownames(colData) <- colData$RNAseqID
+countData <-  read.csv('../data/WT2015CountData.csv', check.names = F, row.names = 1)
+
+colData <- colData %>%
+  filter(Region == "CA1") 
+savecols <- as.character(colData$RNAseqID) #selects all good samples
+savecols <- as.vector(savecols) # make it a vector
+countData <- countData %>% select(one_of(savecols)) # keep good samples
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Group )
+dds <- dds[ rowSums(counts(dds)) > 2, ] ## filter genes with 0 counts
+dds <- DESeq(dds) # Differential expression analysis
+rld <- rlog(dds, blind=FALSE) # log transform data
+dim(rld)
+
+contrast4 <- resvals(contrastvector = c('Group', 'consistent', 'control'), mypval = 0.05)
+contrast5 <- resvals(contrastvector = c('Group', 'conflict', 'control'), mypval = 0.05)
+contrast6 <- resvals(contrastvector = c('Group', 'conflict', 'consistent'), mypval = 0.05)
+
+rldpvals <- assay(rld)
+rldpvals <- cbind(rldpvals, contrast4)
+rldpvals <- as.data.frame(rldpvals)
+rldpvals <- rldpvals[ , grepl( "padj|pval" , names( rldpvals ) ) ]
+
+
+# venn with padj values
+venn1 <- row.names(rldpvals[rldpvals[2] <0.05 & !is.na(rldpvals[2]),])
+venn1
+```
+
+```{r CA3only}
+colData <- read.csv('../data/WT2015ColData.csv')
+rownames(colData) <- colData$RNAseqID
+countData <-  read.csv('../data/WT2015CountData.csv', check.names = F, row.names = 1)
+
+colData <- colData %>%
+  filter(Region == "CA3") 
+savecols <- as.character(colData$RNAseqID) #selects all good samples
+savecols <- as.vector(savecols) # make it a vector
+countData <- countData %>% select(one_of(savecols)) # keep good samples
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Group )
+dds <- dds[ rowSums(counts(dds)) > 2, ] ## filter genes with 0 counts
+dds <- DESeq(dds) # Differential expression analysis
+rld <- rlog(dds, blind=FALSE) # log transform data
+dim(rld)
+
+contrast4 <- resvals(contrastvector = c('Group', 'consistent', 'control'), mypval = 0.05)
+contrast5 <- resvals(contrastvector = c('Group', 'conflict', 'control'), mypval = 0.05)
+contrast6 <- resvals(contrastvector = c('Group', 'conflict', 'consistent'), mypval = 0.05)
+```

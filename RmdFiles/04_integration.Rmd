@@ -9,8 +9,9 @@ output:
 
 ## Setup
 ```{r setup, message=F}
-
-
+library(plyr)
+library(dplyr)
+library(reshape2)
 ```
 
 ## Import Data
@@ -19,28 +20,60 @@ behaviorpca <- read.csv("../data/01a_scoresdf.csv", header = T)
 behavior <- read.csv("../data/01a_behavior.csv", header = T)
 ephys <- read.csv("../data/03_ephys.csv", header = T)
 pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
-
-head(behaviorpca)  # behavior pcas
-head(ephys) # beahvior pcas with ephys
-head(pcadata)  # rnaseq pcas
+rossetta <- read.csv("../data/00_rossettastone.csv", header = F)
 ```
 
+
+```{r subsetfordissociation}
+# clearnup the rosetts data and filter extraneous samples
+names(rossetta)[1] <- "organism"
+names(rossetta)[2] <- "ID"
+names(rossetta)[3] <- "Region"
+names(rossetta)[4] <- "RNAseqID"
+names(rossetta)[5] <- "R1filename"
+rossetta$R2filename <- rossetta$R1filename
+rossetta$R2filename <- gsub("R1", "R2", rossetta$R2filename)
+rossetta$Mouse <- gsub("15-101", "15-100", rossetta$Mouse)
+write.csv(rossetta, "../../DissociationTest/data/00_metadata.csv")
+```
+
+
 ## Wrangle Data
-```{r wrangle data}
-## slim behavior ephy to top 10 pcs
-behaviorpca <- behaviorpca[(c(1:10,35:36))]
-## rename the columsn
-names(behaviorpca)[names(behaviorpca)=="ID"] <- "Mouse"
+```{r wrangledata}
+# clearnup the rosetts data and filter extraneous samples
+rossetta <- read.csv("../data/00_rossettastone.csv", header = F)
+names(rossetta)[1] <- "Mouse"
+names(rossetta)[2] <- "ID"
+names(rossetta)[3] <- "Region"
+names(rossetta)[4] <- "RNAseqID"
+names(rossetta)[5] <- "R1filename"
+rossetta$R1filename <- NULL
+rossetta <- rossetta %>% dplyr::filter(Mouse != "15-100", Mouse != "15-101", Mouse != "15-147")
+head(rossetta) # dictionary of names
+
+## slim behavior ephy to top 5 pcs and rename the columsn
+behaviorpca <- behaviorpca[(c(1:5,35:36))]
 names(behaviorpca)[names(behaviorpca)=="PC1"] <- "Behavior_PC1"
 names(behaviorpca)[names(behaviorpca)=="PC2"] <- "Behavior_PC2"
 names(behaviorpca)[names(behaviorpca)=="PC3"] <- "Behavior_PC3"
 names(behaviorpca)[names(behaviorpca)=="PC4"] <- "Behavior_PC4"
 names(behaviorpca)[names(behaviorpca)=="PC5"] <- "Behavior_PC5"
-names(behaviorpca)[names(behaviorpca)=="PC6"] <- "Behavior_PC6"
-names(behaviorpca)[names(behaviorpca)=="PC7"] <- "Behavior_PC7"
-names(behaviorpca)[names(behaviorpca)=="PC8"] <- "Behavior_PC8"
-names(behaviorpca)[names(behaviorpca)=="PC9"] <- "Behavior_PC9"
-names(behaviorpca)[names(behaviorpca)=="PC10"] <- "Behavior_PC10"
+
+
+behaviorpca <- behaviorpca %>% dplyr::filter(ID != "15148", ID !=  "15140A", ID !=  "15140B", ID !=  "15140C", ID !=  "15140D", ID !=  "15141C", ID !=  "15141D", ID !=  "15142C", ID !=  "15142D", ID !=  "15142A", ID !=  "15142B", ID !=  "15145C", ID !=  "15145C", ID !=  "15145D", ID !=  "15147A", ID !=  "15147B", ID !=  "15148C", ID !=  "15148D")
+
+pcadata <- pcadata[(c(1:9,11,13))]
+names(pcadata)[names(pcadata)=="name"] <- "RNAseqID"
+
+#wident then length RNAseq data so each row is an animals
+pcadatabyregion <- left_join(pcadata, rossetta)
+pcadatabyregion <- melt(pcadatabyregion, id = c(10:14))
+pcadatabyregion$RegionPC <- as.factor(paste(pcadatabyregion$Region, pcadatabyregion$variable, sep="_"))
+pcadatabyregion <- dcast(pcadatabyregion, Mouse + ID ~ RegionPC)
+
+
+alldata <- left_join(behaviorpca, pcadatabyregion)
+
 ```
 
 
@@ -55,12 +88,15 @@ sh <- superheat(X = iris[,-c(1, 5)],
                 membership.rows = iris$Species)
 head(iris)
 
-sh2 <- superheat(X = behaviorpca[,-c(10,11,12)],
-                yr = behaviorpca[,10],
-                yr.axis.name = "PC10",
-                membership.rows = behaviorpca$APA,
+sh2 <- superheat(X = alldata[,-c(6,7,8)],
+                #yr = behaviorpca[,10],
+                #yr.axis.name = "PC10",
+                membership.rows = alldata$APA,
                 pretty.order.cols = TRUE,
-                bottom.label.size = 1,
-                bottom.label.text.angle = 90)
+                col.dendrogram = TRUE,
+                bottom.label.size = 0.4,
+                bottom.label.text.angle = 90,
+                scale = TRUE)
 ```
+
 
