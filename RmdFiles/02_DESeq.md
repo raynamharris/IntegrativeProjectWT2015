@@ -1,3 +1,10 @@
+    # this starts with data genearated from code described in KallistoGather.Rmd
+    colData <- read.csv('../data/WT2015ColData.csv')
+    rownames(colData) <- colData$RNAseqID
+    countData <-  read.csv('../data/WT2015CountData.csv', check.names = F, row.names = 1)
+
+    colData %>% select(Group,Region)  %>%  summary()
+
     ##         Group    Region  
     ##  conflict  :14   CA1:17  
     ##  consistent:13   CA3:13  
@@ -14,6 +21,8 @@ mapping and counting (Bray et al., 2016). Transcript from a single gene
 were combined into a count total for each gene. In the end, we meausred
 the expression of 22,485 genes in 48 samples.
 
+    dim(countData)
+
     ## [1] 22485    48
 
 We used DESeq2 (Love et al., 2014) for gene expression normalization and
@@ -21,6 +30,34 @@ quantification using the following experimental design:
 `Group + Region + Group * Region`. Genes with less than 2 counts across
 all samples were filtered, leaving us with 17815 genes for analysis of
 differntial expression.
+
+    dds <- DESeqDataSetFromMatrix(countData = countData,
+                                  colData = colData,
+                                  design = ~ Group + Region + Group * Region )
+    dds <- dds[ rowSums(counts(dds)) > 2, ] ## filter genes with 0 counts
+    dds <- DESeq(dds) # Differential expression analysis
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
+    ## -- replacing outliers and refitting for 6 genes
+    ## -- DESeq argument 'minReplicatesForReplace' = 7 
+    ## -- original counts are preserved in counts(dds)
+
+    ## estimating dispersions
+
+    ## fitting model and testing
+
+    rld <- rlog(dds, blind=FALSE) # log transform data
 
     dim(rld)
 
@@ -35,6 +72,36 @@ expressed between one or more brain-region comparisons (3485
 differentially expressed genes /17320 measured genes). This is an order
 of magnitude greater than the 2% of the transcriptome that changed in
 response to learning (423 DEGs /17320 genes measured).
+
+    ## DEG by contrasts
+    source("resvalsfunction.R")
+    contrast1 <- resvals(contrastvector = c('Region', 'CA1', 'DG'), mypval = 0.05)
+
+    ## [1] 2111
+
+    contrast2 <- resvals(contrastvector = c('Region', 'CA3', 'DG'), mypval = 0.05)
+
+    ## [1] 3627
+
+    contrast3 <- resvals(contrastvector = c('Region', 'CA1', 'CA3'), mypval = 0.05)
+
+    ## [1] 1157
+
+    contrast4 <- resvals(contrastvector = c('Group', 'consistent', 'control'), mypval = 0.05)
+
+    ## [1] 6
+
+    contrast5 <- resvals(contrastvector = c('Group', 'conflict', 'control'), mypval = 0.05)
+
+    ## [1] 3
+
+    contrast6 <- resvals(contrastvector = c('Group', 'conflict', 'consistent'), mypval = 0.05)
+
+    ## [1] 0
+
+    ## [1] "Fam19a2" "Lars2"   "Sdhaf2"  "Stox2"   "Tgm3"    "Uckl1"
+
+    ## [1] "Fam19a2" "Il4ra"   "Lars2"
 
 Hierarchical clustering of the differentially expressed genes separates
 samples by both subfield and treatment (Fig. 4C).

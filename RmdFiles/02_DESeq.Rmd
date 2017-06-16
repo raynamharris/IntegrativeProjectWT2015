@@ -29,8 +29,7 @@ source("resvalsfunction.R")
 source("figureoptions.R")
 ```
 
-
-```{r importdata, include=FALSE}
+```{r importdata}
 # this starts with data genearated from code described in KallistoGather.Rmd
 colData <- read.csv('../data/WT2015ColData.csv')
 rownames(colData) <- colData$RNAseqID
@@ -38,7 +37,7 @@ countData <-  read.csv('../data/WT2015CountData.csv', check.names = F, row.names
 ```
 
 
-```{r viewcoldata, echo=FALSE,message=FALSE, warning=FALSE}
+```{r viewcoldata}
 colData %>% select(Group,Region)  %>%  summary()
 ```
 
@@ -46,13 +45,13 @@ colData %>% select(Group,Region)  %>%  summary()
 
 Raw reads were downloaded from the Amazon cloud server to the Stampede Cluster at the Texas Advanced Computing Facility for processing and analysis. RNA quality was checked using the bioinformatic program FASTQC (citation). Low quality reads and adapter sequences were removed using the program Cutadapt (Martin, 2011). Kallisto was use for fast read mapping and counting (Bray et al., 2016). Transcript from a single gene were combined into a count total for each gene. In the end, we meausred the expression of 22,485 genes in 48 samples.
 
-```{r viewscountData, echo=FALSE,message=FALSE, warning=FALSE}
+```{r viewscountData, message=FALSE, warning=FALSE}
 dim(countData)
 ```
 
 We used DESeq2 (Love et al., 2014) for gene expression normalization and quantification using the following experimental design: `Group + Region + Group * Region`. Genes with less than 2 counts across all samples were filtered, leaving us with 17815 genes for analysis of differntial expression.
 
-```{r, include=FALSE}
+```{r}
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ Group + Region + Group * Region )
@@ -67,7 +66,7 @@ dim(rld)
 
 We identified 423 genes were differentially expressed between the yoked control and cognitively trained animals, 3485 genes that were differentially expressed across subfields, and 324 showed an interaction at FDR p < 0.05 (Fig. 4B). We see a large effect of brain region on gene expression, with 20% of detectable genes begin differentially expressed between one or more brain-region comparisons (3485 differentially expressed genes /17320 measured genes). This is an order of magnitude greater than the 2% of the transcriptome that changed in response to learning (423 DEGs /17320 genes measured).
 
-```{r signficiantgenes, include=FALSE}
+```{r signficiantgenes}
 ## DEG by contrasts
 source("resvalsfunction.R")
 contrast1 <- resvals(contrastvector = c('Region', 'CA1', 'DG'), mypval = 0.05)
@@ -93,9 +92,8 @@ venn3 <- row.names(rldpvals[rldpvals[6] <0.05 & !is.na(rldpvals[6]),])
 venn4 <- row.names(rldpvals[rldpvals[8] <0.05 & !is.na(rldpvals[8]),])
 venn5 <- row.names(rldpvals[rldpvals[10] <0.05 & !is.na(rldpvals[10]),])
 
-venn12 <- union(venn1,venn2)
-venn123 <- union(venn12,venn3)
-
+venn4
+venn5
 
 ```
 
@@ -134,7 +132,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          annotation_col=df, annotation_colors = ann_colors,
          fontsize = 14, fontsize_row = 7, 
          treeheight_row = 0, treeheight_col = 25,
-         cellwidth = 12, 
+         cellwidth = 6, 
          border_color = "grey60" ,
          color = colorpalette,
          clustering_distance_cols="correlation" ,

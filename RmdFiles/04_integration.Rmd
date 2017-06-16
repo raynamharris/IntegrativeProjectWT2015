@@ -24,7 +24,7 @@ rossetta <- read.csv("../data/00_rossettastone.csv", header = F)
 ```
 
 
-```{r subsetfordissociation}
+```{r metadata}
 # clearnup the rosetts data and filter extraneous samples
 names(rossetta)[1] <- "organism"
 names(rossetta)[2] <- "ID"
@@ -33,8 +33,33 @@ names(rossetta)[4] <- "RNAseqID"
 names(rossetta)[5] <- "R1filename"
 rossetta$R2filename <- rossetta$R1filename
 rossetta$R2filename <- gsub("R1", "R2", rossetta$R2filename)
-rossetta$Mouse <- gsub("15-101", "15-100", rossetta$Mouse)
-write.csv(rossetta, "../../DissociationTest/data/00_metadata.csv")
+
+## previously used for the Dissocation Test. No longer functional
+#rossetta$Mouse <- gsub("15-101", "15-100", rossetta$Mouse)
+#write.csv(rossetta, "../../DissociationTest/data/00_metadata.csv")
+
+colData <- read.csv("../data/IntegrativeWT2015ColData.csv", header = T)
+colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_CA1" = "142C-CA1-S")) 
+colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_DG" = "142C-DG-S")) 
+colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_CA1" = "143C-CA1-S")) 
+colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_DG" = "143C-DG-S"))
+
+metadata <- full_join(colData, rossetta)
+names(metadata)[1] <- "samplename"
+metadata$title <- as.factor(paste(metadata$ID,metadata$Region, metadata$Group, sep=" "))
+names(metadata)[6] <- "sourcename"
+metadata$char1 <- "Mus musculus"
+metadata$char2 <- "C57BL/6"
+metadata$mol <- "RNA"
+metadata$des <- " "
+metadata$processes <- as.factor(paste(metadata$samplename,"/abundance.txt"))
+metadata$process2 <- "IntegrativeWT2015ColData.csv"
+str(metadata)
+
+metadata <- select(metadata, samplename, title, sourcename, organism, char1, char2, mol, des, Group, processes, R1filename, R2filename, process2)
+
+write.csv(metadata, "../data/00_metadata.csv")
+
 ```
 
 
