@@ -43,10 +43,10 @@ retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  dropleve
 ```
 
 ```{r behaviorsummary}
-behaviorsummaryTime <- summarise(group_by(behavior, APA), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
+behaviorsummaryTime <- summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
 behaviorsummaryTime
 
-behaviorsummaryNum <- summarise(group_by(behavior, APA), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+behaviorsummaryNum <- summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
 behaviorsummaryNum
 ```
 

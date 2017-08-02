@@ -35,19 +35,18 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
   plot <- data %>% 
     ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
     geom_point(size=1) + geom_jitter() +
-    stat_smooth(alpha=0.5, method = "loess")  +
-    theme_cowplot(font_size = 15, line_size = 0.5) + 
+    stat_smooth(alpha=0.25, method = "loess")  +
+    theme_cowplot(font_size = 14, line_size = 0.5) + 
     #background_grid(major = "xy", minor = "none") + 
     scale_colour_manual(name="APA Training", values=colorvalAPA,
                         breaks = c("Yoked", "Same", "Conflict")) +
     scale_y_continuous(name=yaxislabel) + 
-    scale_x_continuous(name = "Training Session", 
+    scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Habituation", "2" = "T1", "3" = "T2", 
+                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
-    theme(legend.justification=c(1,1), legend.position=c(1,1),
-          axis.text.x = element_text(angle=60, vjust=0.5)) 
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
+    theme(legend.justification=c(1,1), legend.position=c(1,1)) 
   return(plot)
 }
 
