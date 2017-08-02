@@ -212,6 +212,7 @@ scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior))
 summary(scaledaveragedata)
 columnannotations <- as.data.frame(makecolumnannotations(scaledaveragedata))
 summary(columnannotations)
+scaledaveragedata <- scaledaveragedata[-1,]
 ```
 
 ``` r

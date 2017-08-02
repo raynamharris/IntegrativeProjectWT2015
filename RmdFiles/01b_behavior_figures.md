@@ -141,6 +141,7 @@ The next image shows how all the behaviors measured change over time. Here, the 
 
 ``` r
 library(superheat)
+scaledaveragedatatranposed <- t(scaledaveragedata)
 
 superheat(scaledaveragedata,
           # change the size of the labels
@@ -152,7 +153,7 @@ superheat(scaledaveragedata,
           n.clusters.rows = 3,
           left.label = 'variable',
           # change color
-          heat.pal = c("Deep Sky Blue 3", "white", "red"),
+          #heat.pal = c("Deep Sky Blue 3", "white", "red"),
           # These two lines help you darken the color
           heat.lim = c(-1.5, 1.5), 
           extreme.values.na = FALSE)
@@ -161,46 +162,32 @@ superheat(scaledaveragedata,
 ![](../figures/01_behavior/heatmap-1.png)
 
 ``` r
-scaledaveragedatatranposed <- t(scaledaveragedata)
+## make annotation df and ann_colors for pheatmap
+df <- columnannotations
+ann_colors = session_colors2 
 
-superheat(scaledaveragedatatranposed,
-          # change the size of the labels
-          left.label.size = 0.25, 
-          bottom.label.size = 0.45,
-          bottom.label.text.angle = 90, 
-          # cluster rows and add dendrogram
-          pretty.order.cols = TRUE,
-          n.clusters.rows = 4,
-          left.label = 'variable',
-          # change color
-          heat.pal = c("Deep Sky Blue 3", "white", "red"),
-          # These two lines darken the color
-          heat.lim = c(-1.5, 1.5), 
-          extreme.values.na = FALSE)
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
+
+library(pheatmap)
+library(viridis)
+pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 8, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
 ```
 
 ![](../figures/01_behavior/heatmap-2.png)
-
-``` r
-superheat(scaledaveragedatatranposed,
-          # change the size of the labels
-          left.label.size = 0.25, 
-          bottom.label.size = 0.45,
-          bottom.label.text.angle = 90, 
-          # cluster rows and add dendrogram
-          pretty.order.cols = TRUE,
-          n.clusters.rows = 3,
-          left.label = 'variable',
-          # change color
-          heat.pal = c("Deep Sky Blue 3", "white", "red"),
-          # These two lines darken the color
-          heat.lim = c(-1.5, 1.5), 
-          extreme.values.na = FALSE,
-          bottom.label.text.size = 4,
-          left.label.text.size = 4)
-```
-
-![](../figures/01_behavior/heatmap-3.png)
 
 ### Principle component analysis (PCA)
 
