@@ -10,7 +10,7 @@ output:
 ```{r setup, message=F}
 library(ggplot2) ## for awesome plots!
 library(cowplot) ## for some easy to use themes
-#library(dplyr) ## for filtering and selecting rows
+library(dplyr) ## for filtering and selecting rows
 library(factoextra)  ##pca with vectors
 library(car) ## stats
 

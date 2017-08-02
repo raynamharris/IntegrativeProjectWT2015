@@ -163,28 +163,48 @@ retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  dropleve
 ```
 
 ``` r
-behaviorsummaryTime <- summarise(group_by(behavior, APA), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
+behaviorsummaryTime <- summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
 behaviorsummaryTime
 ```
 
-    ## # A tibble: 3 × 3
-    ##          APA         m        se
-    ##       <fctr>     <dbl>     <dbl>
-    ## 1    control  26.88229  2.154333
-    ## 2 consistent 185.86528 27.074418
-    ## 3   conflict 146.74296 21.844412
+    ## Source: local data frame [27 x 4]
+    ## Groups: APA [?]
+    ## 
+    ##           APA TrainSessionComboNum        m       se
+    ##        <fctr>                <int>    <dbl>    <dbl>
+    ## 1     control                    1 11.66765 2.172617
+    ## 2     control                    2 12.99706 4.081765
+    ## 3     control                    3 41.59588 7.201730
+    ## 4     control                    4 28.79882 5.581521
+    ## 5     control                    5 24.91706 6.749053
+    ## 6     control                    6 30.78412 4.045806
+    ## 7     control                    7 15.08588 2.535963
+    ## 8     control                    8 34.96000 8.202296
+    ## 9     control                    9 41.13412 9.478989
+    ## 10 consistent                    1  6.14125 2.268263
+    ## # ... with 17 more rows
 
 ``` r
-behaviorsummaryNum <- summarise(group_by(behavior, APA), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+behaviorsummaryNum <- summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
 behaviorsummaryNum
 ```
 
-    ## # A tibble: 3 × 3
-    ##          APA         m        se
-    ##       <fctr>     <dbl>     <dbl>
-    ## 1    control 17.692810 0.5713821
-    ## 2 consistent  7.291667 1.1242173
-    ## 3   conflict  9.259259 1.1796602
+    ## Source: local data frame [27 x 4]
+    ## Groups: APA [?]
+    ## 
+    ##           APA TrainSessionComboNum        m        se
+    ##        <fctr>                <int>    <dbl>     <dbl>
+    ## 1     control                    1 31.88235 1.2153502
+    ## 2     control                    2 21.05882 1.1129934
+    ## 3     control                    3 14.41176 1.2006702
+    ## 4     control                    4 15.11765 1.2715274
+    ## 5     control                    5 16.47059 0.9930555
+    ## 6     control                    6 14.94118 1.0017286
+    ## 7     control                    7 14.17647 0.8838223
+    ## 8     control                    8 15.76471 1.3787500
+    ## 9     control                    9 15.41176 1.0916084
+    ## 10 consistent                    1 31.12500 2.1333868
+    ## # ... with 17 more rows
 
 ``` r
 ## see the makesessionheatmap documentataion for data tidying and plot specifications
@@ -195,6 +215,12 @@ summary(columnannotations)
 ```
 
 ``` r
+longdata <- makelongdata(behavior)
+Z <- longdata[,3:371]
+Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
+pc = prcomp(Z, scale.=TRUE)
+loadings <- pc$rotation
+scores <- pc$x
 scoresdf <- makepcadf(behavior) #create the df of pcas
 rotationdf <- mkrotationdf(behavior) #loadings for specific factors
 ```
@@ -240,5 +266,14 @@ rotationdf <- mkrotationdf(behavior) #loadings for specific factors
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 ```
 
-`{r writefiles} write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE) write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE) write.csv(behaviorsummaryTime, file = "../data/01a_behaviorsummaryTime.csv", row.names = FALSE) write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE) write.csv(scaledaveragedata, file = "../data/01a_scaledaveragedata.csv", row.names = TRUE) write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.names = TRUE) write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE) write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE) write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE) #`
-========================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+``` r
+write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
+write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
+write.csv(behaviorsummaryTime, file = "../data/01a_behaviorsummaryTime.csv", row.names = FALSE)
+write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
+write.csv(scaledaveragedata, file = "../data/01a_scaledaveragedata.csv", row.names = TRUE)
+write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.names = TRUE)
+write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
+write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
+write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
+```

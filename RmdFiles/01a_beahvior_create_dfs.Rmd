@@ -75,7 +75,7 @@ behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 
 ```
 
-#```{r writefiles}
+```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
 write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
 write.csv(behaviorsummaryTime, file = "../data/01a_behaviorsummaryTime.csv", row.names = FALSE)
@@ -85,4 +85,4 @@ write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.nam
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
 write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
 write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
-#```
+```

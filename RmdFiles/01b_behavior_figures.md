@@ -40,6 +40,12 @@ behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.nam
 ```
 
 ``` r
+levels(behavior$APA)
+```
+
+    ## [1] "conflict"   "consistent" "control"
+
+``` r
 behavior$APA <- factor(behavior$APA, levels = c("control", "consistent", "conflict"))
 behaviorsummaryTime$APA <- factor(behaviorsummaryTime$APA, levels = c("control", "consistent", "conflict"))
 behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "consistent", "conflict"))
@@ -47,39 +53,30 @@ scoresdf$APA <- factor(scoresdf$APA, levels = c("control", "consistent", "confli
 ```
 
 ``` r
-A <- ggplot(behaviorsummaryTime, aes(x=APA, y=m, color=APA)) + 
+# plotting mean and se for time to first entrance
+firstentrance <- ggplot(behaviorsummaryTime, aes(x=, TrainSessionComboNum, y=m, color=APA)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA), width=.1) +
     geom_point(size = 2) +
+   geom_line() +
     scale_y_continuous(name="Time to First Entrance (s)") +
-    scale_x_discrete(name=NULL) +
+    scale_x_continuous(name = NULL, 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
+                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
   theme_cowplot(font_size = 14, line_size = 1) +
-  background_grid(major = "xy", minor = "none") +
-  scale_color_manual(values = colorvalAPA) +
-theme(legend.justification=c(1,0), legend.position=c(1,0), legend.title = element_blank()) + 
-theme(axis.ticks = element_blank(), axis.text.x = element_blank())
+  background_grid(major = "none", minor = "none") +
+  scale_color_manual(values = colorvalAPA) + 
+  theme(legend.position="none") 
 
-B <- ggplot(behaviorsummaryNum, aes(x=APA, y=m, color=APA)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se), width=.1) +
-    geom_point(size = 2) + 
-    scale_y_continuous(name="Number of Entrances") +
-    scale_x_discrete(name=NULL) +
-  theme_cowplot(font_size = 14, line_size = 1) +
-  background_grid(major = "xy", minor = "none") +
-  scale_color_manual(values = colorvalAPA) +
-theme(legend.justification=c(1,1), legend.position=c(1,1), legend.title = element_blank()) + theme(axis.ticks = element_blank(), axis.text.x = element_blank())
-
-
-plot_grid(A,B, nrow=1, labels=c("A", "B"), rel_widths = c(1, 1))
+firstentrance
 ```
 
 ![](../figures/01_behavior/avoidancebehavior-1.png)
 
 ``` r
-meansem <- plot_grid(A,B, nrow=1, labels=c("A", "B"), rel_widths = c(1, 1))
-
-
-pdf(file="../figures/01_behavior/avoidancebehavior-1.pdf", width=6, height=3)
-plot(meansem)
+pdf(file="../figures/01_behavior/firstentrance.pdf", width=6, height=3)
+plot(firstentrance)
 dev.off()
 ```
 
@@ -87,25 +84,30 @@ dev.off()
     ##                 2
 
 ``` r
-A <- myboxplotlegendtop(data = behavior,xcol = "TrainSessionCombo", 
-                ycol = "Time1stEntr", colorcode = "APA", session ="Retention",
-                yaxislabel="\n Time to 1st Entrance (s)")
+# plotting mean and se for time to total number of entrances
+numentrance1 <- ggplot(behaviorsummaryNum, aes(x=, TrainSessionComboNum, y=m, color=APA)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA), width=.1) +
+    geom_point(size = 2) +
+   geom_line() +
+    scale_y_continuous(name="Number of Entrances") +
+    scale_x_continuous(name = NULL, 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
+                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
+  theme_cowplot(font_size = 14, line_size = 1) +
+  background_grid(major = "none", minor = "none") +
+  scale_color_manual(values = colorvalAPA) + 
+  theme(legend.position="none") 
 
-B <- myboxplotlegendbottom(data = behavior, xcol = "TrainSessionCombo", 
-                ycol = "NumEntrances", colorcode = "APA", 
-                session ="Retention",
-                yaxislabel="\n Number of Entrances") 
-
-plot_grid(A,B, nrow=1,  labels=c("A", "B"))
+numentrance1
 ```
 
 ![](../figures/01_behavior/avoidancebehavior-2.png)
 
 ``` r
-boxplot <- plot_grid(A,B, nrow=1, labels=c("A", "B"))
-
-pdf(file="../figures/01_behavior/avoidancebehavior-2.pdf", width=8.5, height=3)
-plot(boxplot)
+pdf(file="../figures/01_behavior/numentrance1.pdf", width=6, height=3)
+plot(numentrance1)
 dev.off()
 ```
 
@@ -113,152 +115,25 @@ dev.off()
     ##                 2
 
 ``` r
-onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeOPP",
-                  yaxislabel=" Proportion of time spent\n opposite the shock zone",
+# plotting all data points and linear model smoothing for number of entrances
+numentrance2 <- onebehavior(data=behavior, 
+                            xcol="TrainSessionComboNum", ycol="NumEntrances",
+                  yaxislabel="Number of Entrances",
                   colorcode="APA")
+
+numentrance2
 ```
 
 ![](../figures/01_behavior/avoidancebehavior-3.png)
 
 ``` r
-timeopp <- onebehavior(data=behavior, xcol="TrainSessionComboNum", ycol="pTimeOPP",
-                  yaxislabel=" Proportion of time spent\n opposite the shock zone",
-                  colorcode="APA")
-
-pdf(file="../figures/01_behavior/avoidancebehavior-3.pdf", width=6, height=4)
-plot(timeopp)
+pdf(file="../figures/01_behavior/numentrance2.pdf", width=6, height=3)
+plot(numentrance2)
 dev.off()
 ```
 
     ## quartz_off_screen 
     ##                 2
-
-``` r
-## hab to retest
-habtoretest <- behavior %>% 
-  filter(TrainSessionCombo %in% c("Hab", "Retest", "T1", "T3", "T2")) %>% droplevels()
-onebehaviorhabtoretest(data=habtoretest, xcol="TrainSessionComboNum", ycol="pTimeOPP",
-                  yaxislabel=" Proportion of time spent\n opposite the shock zone",
-                  colorcode="APA")
-```
-
-    ## `geom_smooth()` using method = 'loess'
-
-![](../figures/01_behavior/avoidancebehavior-4.png)
-
-``` r
-## c4 to rentetion
-c4toretention <- behavior %>% 
-  filter(TrainSessionCombo %in% c("Retention", "T4_C1", "T5_C2", "T6_C3")) %>% droplevels()
-onebehaviorc4toRentention(data=c4toretention, xcol="TrainSessionComboNum", ycol="pTimeOPP",
-                  yaxislabel=" Proportion of time spent\n opposite the shock zone",
-                  colorcode="APA")
-```
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : pseudoinverse used at 5.985
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : neighborhood radius 2.015
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : reciprocal condition number 4.896e-17
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : There are other near singularities as well. 4.0602
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : pseudoinverse used
-    ## at 5.985
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : neighborhood radius
-    ## 2.015
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : reciprocal
-    ## condition number 4.896e-17
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : There are other
-    ## near singularities as well. 4.0602
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : pseudoinverse used at 5.985
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : neighborhood radius 2.015
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : reciprocal condition number 4.5798e-17
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : There are other near singularities as well. 4.0602
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : pseudoinverse used
-    ## at 5.985
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : neighborhood radius
-    ## 2.015
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : reciprocal
-    ## condition number 4.5798e-17
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : There are other
-    ## near singularities as well. 4.0602
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : pseudoinverse used at 5.985
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : neighborhood radius 2.015
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : reciprocal condition number 4.896e-17
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric =
-    ## parametric, : There are other near singularities as well. 4.0602
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : pseudoinverse used
-    ## at 5.985
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : neighborhood radius
-    ## 2.015
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : reciprocal
-    ## condition number 4.896e-17
-
-    ## Warning in predLoess(object$y, object$x, newx = if
-    ## (is.null(newdata)) object$x else if (is.data.frame(newdata))
-    ## as.matrix(model.frame(delete.response(terms(object)), : There are other
-    ## near singularities as well. 4.0602
-
-![](../figures/01_behavior/avoidancebehavior-5.png)
-
-``` r
-levels(behavior$TrainSessionCombo)
-```
-
-    ## [1] "Hab"       "Retention" "Retest"    "T1"        "T2"        "T3"       
-    ## [7] "T4_C1"     "T5_C2"     "T6_C3"
 
 ### Heatmap
 
@@ -317,7 +192,7 @@ superheat(scaledaveragedatatranposed,
           n.clusters.rows = 3,
           left.label = 'variable',
           # change color
-          #heat.pal = c("Deep Sky Blue 3", "white", "red"),
+          heat.pal = c("Deep Sky Blue 3", "white", "red"),
           # These two lines darken the color
           heat.lim = c(-1.5, 1.5), 
           extreme.values.na = FALSE,
