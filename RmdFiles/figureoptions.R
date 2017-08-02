@@ -1,4 +1,4 @@
--colorvalAPA <- c("#404040", "#f4a582", "#ca0020")
+colorvalAPA <- c("#404040", "#f4a582", "#ca0020")
 #404040 ## darkgrey - yoked
 #ca0020 ## red - conflict 
 #f4a582 ## pink - same
