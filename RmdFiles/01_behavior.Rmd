@@ -21,11 +21,6 @@ library(pheatmap) ## for pretty heat maps
 library(car) ## for statistics
 library(relaimpo) ## for linear model predictions
 
-# install.packages("devtools")
-#library("devtools")
-#install_github("kassambara/factoextra")
-library("factoextra") # for fancy pca plots
-
 ## load functions 
 source("functions_behavior.R")
 source("figureoptions.R")
@@ -39,9 +34,10 @@ knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
 ## read intermediate data (raw data from video tracker program analyzed in matlab)
 behavior <- read.csv("../data/01_behaviordata.csv", header = T)
 
-## relevel factors
+## relevel then renmae factors
 behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
-behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "YokedConflict","Same", "Conflict"))
+levels(behavior$APA) <- c("control","consistent","conflict")
+
 
 ## create a log transformed time for first entrance
 behavior$Time1stEntrLog <- log(behavior$Time1stEntr)
