@@ -36,9 +36,8 @@ columnannotations <- read.csv("../data/01a_columnannotations.csv", header = T, r
 scoresdf <- read.csv("../data/01a_scoresdf.csv", header = T)
 rotationdf <- read.csv("../data/01a_rotationdf.csv", header = T, row.names = 1)
 behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.names = 1)
-```
 
-```{r setfactorlevels}
+#set factor levels
 levels(behavior$APA)
 behavior$APA <- factor(behavior$APA, levels = c("control", "consistent", "conflict"))
 behaviorsummaryTime$APA <- factor(behaviorsummaryTime$APA, levels = c("control", "consistent", "conflict"))
@@ -139,7 +138,7 @@ pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          #width=4.5, height=3,
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 8, 
+         cellwidth = 6, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation" 
@@ -148,12 +147,11 @@ pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
 # pheatmapfor adobe
 pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          annotation_col=df, annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 0,
-         fontsize = 11, 
-         #width=4.5, height=3,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 10, 
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 6, 
+         cellwidth = 8, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
@@ -240,27 +238,4 @@ pdf(file="../figures/01_behavior/fviz36.pdf", width=3, height=3)
 plot(fviz36)
 dev.off()
 
-```
-
-```{r otherpca}
-library(ggfortify)
-df <- behaviormatrix
-autoplot(prcomp(df))
-autoplot(prcomp(df), data = behavior, colour = 'APA', loadings = TRUE, loadings.label = TRUE, loadings.label.size = 5, scale = 0)
-
-library(cluster)
-autoplot(clara(behaviormatrix, 3), frame = TRUE)
-autoplot(fanny(behaviormatrix, 2), frame = TRUE)
-```
-
-```{r wilkepca}
-# capture the rotation matrix in a data frame
-rotation_data <- rotationdf
-# define a pleasing arrow style
-arrow_style <- arrow(length = unit(0.05, "inches"),
-                     type = "closed")
-# now plot, using geom_segment() for arrows and geom_text for labels
-ggplot(rotation_data) + 
-  geom_segment(aes(xend=PC1, yend=PC2), x=0, y=0, arrow=arrow_style) + 
-  geom_text(aes(x=PC1, y=PC2, label=variable), hjust=0, size=3, color='red')
 ```
