@@ -30,6 +30,8 @@ knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
 ```
 
 
+To help make production of these figures more reproducible, I first import some intermediate data files that I cleaned and manipulated for data vizualization. I also relevel factors here to overide the defalut alphabetical plotting. 
+
 ```{r data, message=F}
 behavior <- read.csv("../data/01a_behavior.csv", header = T)
 retention <- read.csv("../data/01a_retention.csv", header = T) 
@@ -49,7 +51,10 @@ behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "
 scoresdf$APA <- factor(scoresdf$APA, levels = c("control", "consistent", "conflict"))
 ```
 
-```{r avoidancebehavior}
+## Figure 1B: 
+First, I visualze the group mean and standard error for the time it takes before an individual mouse enters the spatial region marked "schock zone" or equivilent (Fig. 1A).
+
+```{r numentrance1}
 # plotting mean and se for time to first entrance
 firstentrance <- ggplot(behaviorsummaryTime, aes(x=, TrainSessionComboNum, y=m, color=APA)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA), width=.1) +
@@ -92,7 +97,12 @@ numentrance1
 pdf(file="../figures/01_behavior/numentrance1.pdf", width=6, height=3)
 plot(numentrance1)
 dev.off()
+```
 
+### Supplemnentary time series plot
+Here I visualze the individual data points for each annimal then use a linar model to fit a 95% confidence internal for  the time it take a mouse to enter the "schock zone" or equivilent .
+
+```{r numentrance2}
 # plotting all data points and linear model smoothing for number of entrances
 numentrance2 <- onebehavior(data=behavior, 
                             xcol="TrainSessionComboNum", ycol="NumEntrances",
@@ -103,13 +113,14 @@ numentrance2
 pdf(file="../figures/01_behavior/numentrance2.pdf", width=6, height=3)
 plot(numentrance2)
 dev.off()
-
 ```
 
-### Heatmap
-The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown in red and negative values show in blue. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group (purple, orange, brown) and training session (from white to black according to increasing time spend in the active place avoidance group). 
+### Supplmentary heatmap
+The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown the viridis color scheme with yellow being positive and purple being negative. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group and training session. 
 
-```{r heatmap,  message=FALSE, results='hide'}
+This particular graph clusters the data according to a kmean of 3 rather than by heriarchical clustering. I use the R package superheat.
+
+```{r superheat,  message=FALSE, results='hide'}
 scaledaveragedatatranposed <- t(scaledaveragedata)
 
 superheat(scaledaveragedata,
@@ -124,7 +135,14 @@ superheat(scaledaveragedata,
           heat.lim = c(-1.5, 1.5), 
           extreme.values.na = FALSE)
 
+```
 
+### ## Figure 1C: 
+
+Here I use heirarhical cluster to identify patterns in the behavioral data. You see three distint  
+
+
+```{r pheatmap,  message=FALSE, results='hide'}
 ## make annotation df and ann_colors for pheatmap
 df <- columnannotations
 ann_colors = session_colors 
@@ -137,12 +155,12 @@ myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2)
 ## pheatmap for markdown
 pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          annotation_col=df, annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 25,
-         fontsize = 11, 
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 8, 
          #width=4.5, height=3,
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 6, 
+         cellwidth = 10, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation" 
@@ -152,10 +170,10 @@ pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
 pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          annotation_col=df, annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 50,
-         fontsize = 10, 
+         fontsize = 8, 
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 8, 
+         cellwidth = 6, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",

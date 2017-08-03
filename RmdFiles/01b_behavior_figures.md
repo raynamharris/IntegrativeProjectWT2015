@@ -35,6 +35,8 @@ source("figureoptions.R")
 knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
 ```
 
+To help make production of these figures more reproducible, I first import some intermediate data files that I cleaned and manipulated for data vizualization. I also relevel factors here to overide the defalut alphabetical plotting.
+
 ``` r
 behavior <- read.csv("../data/01a_behavior.csv", header = T)
 retention <- read.csv("../data/01a_retention.csv", header = T) 
@@ -59,6 +61,8 @@ behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "
 scoresdf$APA <- factor(scoresdf$APA, levels = c("control", "consistent", "conflict"))
 ```
 
+First, I visualze the group mean and standard error for the time it takes before an individual mouse enters the spatial region marked "schock zone" or equivilent (Fig. 1A).
+
 ``` r
 # plotting mean and se for time to first entrance
 firstentrance <- ggplot(behaviorsummaryTime, aes(x=, TrainSessionComboNum, y=m, color=APA)) + 
@@ -79,7 +83,7 @@ firstentrance <- ggplot(behaviorsummaryTime, aes(x=, TrainSessionComboNum, y=m, 
 firstentrance
 ```
 
-![](../figures/01_behavior/avoidancebehavior-1.png)
+![](../figures/01_behavior/numentrance1-1.png)
 
 ``` r
 pdf(file="../figures/01_behavior/firstentrance.pdf", width=6, height=3)
@@ -111,7 +115,7 @@ numentrance1 <- ggplot(behaviorsummaryNum, aes(x=, TrainSessionComboNum, y=m, co
 numentrance1
 ```
 
-![](../figures/01_behavior/avoidancebehavior-2.png)
+![](../figures/01_behavior/numentrance1-2.png)
 
 ``` r
 pdf(file="../figures/01_behavior/numentrance1.pdf", width=6, height=3)
@@ -121,6 +125,8 @@ dev.off()
 
     ## quartz_off_screen 
     ##                 2
+
+Supplemnentary: Here I visualze the individual data points for each annimal then use a linar model to fit a 95% confidence internal for the time it take a mouse to enter the "schock zone" or equivilent .
 
 ``` r
 # plotting all data points and linear model smoothing for number of entrances
@@ -132,7 +138,7 @@ numentrance2 <- onebehavior(data=behavior,
 numentrance2
 ```
 
-![](../figures/01_behavior/avoidancebehavior-3.png)
+![](../figures/01_behavior/numentrance2-1.png)
 
 ``` r
 pdf(file="../figures/01_behavior/numentrance2.pdf", width=6, height=3)
