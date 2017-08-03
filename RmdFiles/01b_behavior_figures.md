@@ -4,30 +4,15 @@ After wrangling the behaivoral data in the previous script ([01a\_beahvior\_crea
 
 ``` r
 library(ggplot2) ## for awesome plots!
-```
-
-    ## Warning: package 'ggplot2' was built under R version 3.3.2
-
-``` r
 library(cowplot) ## for some easy to use themes
 library(dplyr) ## for filtering and selecting rows
 library(factoextra)  ##pca with vectors
-```
-
-    ## Warning: package 'factoextra' was built under R version 3.3.2
-
-``` r
 library(car) ## stats
-```
-
-    ## Warning: package 'car' was built under R version 3.3.2
-
-``` r
 library(superheat) # for kmeans clustered heatmap
 library(pheatmap)  # for pretty heatmap
 library(viridis) # for awesome color pallette
 
-## load functions 
+## load user-written functions 
 source("functions_behavior.R")
 source("figureoptions.R")
 
@@ -49,22 +34,16 @@ rotationdf <- read.csv("../data/01a_rotationdf.csv", header = T, row.names = 1)
 behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.names = 1)
 
 #set factor levels
-levels(behavior$APA)
-```
-
-    ## [1] "conflict"   "consistent" "control"
-
-``` r
 behavior$APA <- factor(behavior$APA, levels = c("control", "consistent", "conflict"))
 behaviorsummaryTime$APA <- factor(behaviorsummaryTime$APA, levels = c("control", "consistent", "conflict"))
 behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "consistent", "conflict"))
 scoresdf$APA <- factor(scoresdf$APA, levels = c("control", "consistent", "conflict"))
 ```
 
-Figure 1B:
-----------
+Supplementary Figure 1B:
+------------------------
 
-First, I visualze the group mean and standard error for the time it takes before an individual mouse enters the spatial region marked "schock zone" or equivilent (Fig. 1A).
+Time to first entrance is a common measure for learning adn memory tests. As you can see, however, there is quite a lot of variation within treatment group across time.
 
 ``` r
 # plotting mean and se for time to first entrance
@@ -97,6 +76,11 @@ dev.off()
     ## quartz_off_screen 
     ##                 2
 
+Figure 1B: Standard vizualization of mean avoidance beavior
+-----------------------------------------------------------
+
+First, I visualze the group mean and standard error for the time it takes before an individual mouse enters the spatial region marked "schock zone" or equivilent (Fig. 1A).
+
 ``` r
 # plotting mean and se for time to total number of entrances
 numentrance1 <- ggplot(behaviorsummaryNum, aes(x=, TrainSessionComboNum, y=m, color=APA)) + 
@@ -118,7 +102,7 @@ numentrance1 <- ggplot(behaviorsummaryNum, aes(x=, TrainSessionComboNum, y=m, co
 numentrance1
 ```
 
-![](../figures/01_behavior/numentrance1-2.png)
+![](../figures/01_behavior/unnamed-chunk-1-1.png)
 
 ``` r
 pdf(file="../figures/01_behavior/numentrance1.pdf", width=6, height=3)
@@ -178,7 +162,8 @@ superheat(scaledaveragedata,
 
 ![](../figures/01_behavior/superheat-1.png)
 
-### \#\# Figure 1C:
+Figure 1C: Hierarchical clusering of time series behavioral data
+----------------------------------------------------------------
 
 Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed (Fig. 1C). The row dendrogram helps visuzlise the interaction between treatment group and (grey: control, pink: consistent, red: conflict) and training session (white: habitutation, shades of brown: training sessino 1-3, dark down: retest, shades of purple: training session 4-6 or conflict session 1-3, dark purple: retention).
 
@@ -225,18 +210,21 @@ pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          )
 ```
 
-### Principle component analysis (PCA)
+### Figure 1D1 and 1D2: Principle component analysis
 
-Given the correlational structure of the data, I next reduced the dimentionality with a PCA anlaysis. You can see that PC1 speparates trained and untraned animals (D,E) but neither PC2 (D) nor PC3 (E) separate same and conflict aniamls. Elipses show 95% confidence interval.
+Next, I next reduced the dimentionality of the data with a PCA anlaysis. PC1 explains 35% of the variation in the data. All other PCs explain less than 10% of the variation.
 
 ``` r
-## pca anlysis
+## data wraningly for pca anlysis
 behaviormatrix %>% 
   scale() %>%                 # scale to 0 mean and unit variance
   prcomp() ->                 # do PCA
   pca                         # store result as `pca`
 percent <- 100*pca$sdev^2/sum(pca$sdev^2)
 perc_data <- data.frame(percent=percent, PC=1:length(percent))
+res.pca <- prcomp(behaviormatrix,  scale = TRUE)
+
+# plot of percent contribution
 ggplot(perc_data, aes(x=PC, y=percent)) + 
   geom_bar(stat="identity") + 
   geom_text(aes(label=round(percent, 2)), size=4, vjust=-.5) + 
@@ -248,6 +236,26 @@ ggplot(perc_data, aes(x=PC, y=percent)) +
     ## Warning: Removed 29 rows containing missing values (geom_text).
 
 ![](../figures/01_behavior/PCA-1.png)
+
+### Figure 1D1: 35% of behaivor variance (PC1) separates yoked from trained
+
+PC1 encompases differences between yoked trained indivdual but does not significantly differ between consistent and conflict trained aniamls. To confirm statistical significance of this visual pattern, we conducted a two-way treatment x region ANOVA and confirmed a significant effect of region (F2,31= 101.39; p = 2.5e-14). Post hoc Tukey tests confirmed conflict = consistent &lt; control). The major contibutors to this variation are number of shocks and distance to first entrance.
+
+``` r
+pca12 <- makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA", newxlab = "PC1 (35.7%)", newylab = "PC2 (9.7%)")
+pca12
+```
+
+![](../figures/01_behavior/PC12-1.png)
+
+``` r
+pdf(file="../figures/01_behavior/pca12.pdf", width=3, height=3)
+plot(pca12)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
 
 ``` r
 ## statistics
@@ -277,30 +285,52 @@ TukeyHSD(aov1, which = "APA") # p<< 0.001 for both control comparisions
     ## conflict-consistent   0.2109558  -4.551502   4.973413 0.9934703
 
 ``` r
-aov2 <- aov(PC2 ~ APA, data=scoresdf)
-summary(aov2) # p = 0.0906
+fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 2), axes = c(1, 2))
+fviz12
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA          2  106.1   53.05   2.597 0.0906 .
-    ## Residuals   31  633.2   20.42                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+![](../figures/01_behavior/PC12-2.png)
 
 ``` r
-TukeyHSD(aov2, which = "APA") # p = 0.0852578 for conflict-consistent 
+pdf(file="../figures/01_behavior/fviz12.pdf", width=3, height=3)
+plot(fviz12)
+dev.off()
 ```
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC2 ~ APA, data = scoresdf)
-    ## 
-    ## $APA
-    ##                          diff        lwr       upr     p adj
-    ## consistent-control  -3.434152 -8.2030827  1.334778 0.1955003
-    ## conflict-control     1.418463 -3.1667701  6.003695 0.7290903
-    ## conflict-consistent  4.852615 -0.5521726 10.257403 0.0852578
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+pca36 <-makepcaplotwithpercent(data=scoresdf,xcol="PC3",ycol="PC6",colorcode="APA", newxlab = "PC3 (8.4%)", newylab = "PC6 (3.6%)")
+pca36
+```
+
+![](../figures/01_behavior/PC36-1.png)
+
+``` r
+pdf(file="../figures/01_behavior/pca36.pdf", width=3, height=3)
+plot(pca36)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+fviz36 <- fviz_pca_var(res.pca, select.var = list(contrib = 2), axes = c(3, 6))
+fviz36
+```
+
+![](../figures/01_behavior/PC36-2.png)
+
+``` r
+pdf(file="../figures/01_behavior/fviz36.pdf", width=3, height=3)
+plot(fviz36)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
 
 ``` r
 aov3 <- aov(PC3 ~ APA, data=scoresdf)
@@ -354,6 +384,34 @@ TukeyHSD(aov6, which = "APA") # p = 0.0175577 for conflict-consistent
     ## conflict-control     2.583185 -0.8105525 5.976922 0.1633660
     ## conflict-consistent  4.735900  0.7355730 8.736227 0.0175577
 
+PC2 and 9 also difference by p &lt; 0.01.
+
+``` r
+aov2 <- aov(PC2 ~ APA, data=scoresdf)
+summary(aov2) # p = 0.0906
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA          2  106.1   53.05   2.597 0.0906 .
+    ## Residuals   31  633.2   20.42                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+TukeyHSD(aov2, which = "APA") # p = 0.0852578 for conflict-consistent 
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC2 ~ APA, data = scoresdf)
+    ## 
+    ## $APA
+    ##                          diff        lwr       upr     p adj
+    ## consistent-control  -3.434152 -8.2030827  1.334778 0.1955003
+    ## conflict-control     1.418463 -3.1667701  6.003695 0.7290903
+    ## conflict-consistent  4.852615 -0.5521726 10.257403 0.0852578
+
 ``` r
 aov9 <- aov(PC9 ~ APA, data=scoresdf)
 summary(aov9) # p =  0.0584
@@ -379,6 +437,8 @@ TukeyHSD(aov9, which = "APA") # p = 0.0722837 for conflict-consistent
     ## consistent-control  -0.7833752 -4.1260684 2.559318 0.8334263
     ## conflict-control     2.7406860 -0.4732478 5.954620 0.1065599
     ## conflict-consistent  3.5240612 -0.2643244 7.312447 0.0722837
+
+Here are some stats modeling combinatorail PCs. I'm really not sure if this makes sense. I should probabaly model some behavior time interaction....
 
 ``` r
 lm1 <- lm(PC1~APA, data=scoresdf)
@@ -454,69 +514,3 @@ summary(lm136)
     ## Residual standard error: 6.839 on 31 degrees of freedom
     ## Multiple R-squared:  0.6935, Adjusted R-squared:  0.6737 
     ## F-statistic: 35.07 on 2 and 31 DF,  p-value: 1.096e-08
-
-``` r
-pca12 <- makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA", newxlab = "PC1 (35.7%)", newylab = "PC2 (9.7%)")
-pca12
-```
-
-![](../figures/01_behavior/PCA-2.png)
-
-``` r
-pdf(file="../figures/01_behavior/pca12.pdf", width=3, height=3)
-plot(pca12)
-dev.off()
-```
-
-    ## quartz_off_screen 
-    ##                 2
-
-``` r
-pca36 <-makepcaplotwithpercent(data=scoresdf,xcol="PC3",ycol="PC6",colorcode="APA", newxlab = "PC3 (8.4%)", newylab = "PC6 (3.6%)")
-pca36
-```
-
-![](../figures/01_behavior/PCA-3.png)
-
-``` r
-pdf(file="../figures/01_behavior/pca36.pdf", width=3, height=3)
-plot(pca36)
-dev.off()
-```
-
-    ## quartz_off_screen 
-    ##                 2
-
-``` r
-res.pca <- prcomp(behaviormatrix,  scale = TRUE)
-
-fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 2), axes = c(1, 2))
-fviz12
-```
-
-![](../figures/01_behavior/fviz_pca-1.png)
-
-``` r
-pdf(file="../figures/01_behavior/fviz12.pdf", width=3, height=3)
-plot(fviz12)
-dev.off()
-```
-
-    ## quartz_off_screen 
-    ##                 2
-
-``` r
-fviz36 <- fviz_pca_var(res.pca, select.var = list(contrib = 2), axes = c(3, 6))
-fviz36
-```
-
-![](../figures/01_behavior/fviz_pca-2.png)
-
-``` r
-pdf(file="../figures/01_behavior/fviz36.pdf", width=3, height=3)
-plot(fviz36)
-dev.off()
-```
-
-    ## quartz_off_screen 
-    ##                 2
