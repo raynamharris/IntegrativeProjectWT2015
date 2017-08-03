@@ -134,9 +134,9 @@ DG Consistent versus Control
       geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
       theme_bw(base_size = 16) + # clean up theme
       theme(legend.position = "none") + # remove legend 
-      ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
-      xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
-      ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+      #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+      #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
+      #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
       geom_vline(xintercept = 0, colour = "black") + # add line at 0
       geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
       xlim(c(-2.5, 2.5)) +  
@@ -211,9 +211,9 @@ DG Conflict vs. Control
       geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
       theme_bw(base_size = 16) + # clean up theme
       theme(legend.position = "none") + # remove legend 
-      ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
-      xlab(expression(log[2]("Conflict" / "Control"))) + # x-axis label
-      ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+      #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+      #xlab(expression(log[2]("Conflict" / "Control"))) + # x-axis label
+      #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
       geom_vline(xintercept = 0, colour = "black") + # add line at 0
       geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
       xlim(c(-2.5, 2.5)) +  
@@ -285,9 +285,9 @@ DG Conflict vs. Control
       geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
       theme_bw(base_size = 16) + # clean up theme
       theme(legend.position = "none") + # remove legend 
-      ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
-      xlab(expression(log[2]("Conflict" / "Consistent"))) + # x-axis label
-      ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+      #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+      #xlab(expression(log[2]("Conflict" / "Consistent"))) + # x-axis label
+      #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
       geom_vline(xintercept = 0, colour = "black") + # add line at 0
       geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
       xlim(c(-2.5, 2.5)) +  

@@ -79,10 +79,6 @@ padj) and plot some venn diagrams.
 
 
     ## 4 way 
-    dev.off()
-
-    ## null device 
-    ##           1
 
     candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,  "DG vs CA3" = venn3, "Control vs Conflict" = venn5)
 
@@ -98,12 +94,10 @@ padj) and plot some venn diagrams.
       cat.cex = 1, cat.fontfamily = "sans")
     grid.draw(prettyvenn)
 
+![](../figures/02_RNAseq/venndiagram2-1.png)
 
     ## other 4 way
-    dev.off()
 
-    ## null device 
-    ##           1
 
     candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
@@ -119,12 +113,7 @@ padj) and plot some venn diagrams.
       cat.cex = 1, cat.fontfamily = "sans")
     grid.draw(prettyvenn)
 
-
-    ## thre way
-    dev.off()
-
-    ## null device 
-    ##           1
+![](../figures/02_RNAseq/venndiagram3-1.png)
 
     candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
@@ -139,6 +128,8 @@ padj) and plot some venn diagrams.
       #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
       cat.cex = 1, cat.fontfamily = "sans")
     grid.draw(prettyvenn)
+
+![](../figures/02_RNAseq/venndiagram3way-1.png)
 
 Heatmaps
 --------
