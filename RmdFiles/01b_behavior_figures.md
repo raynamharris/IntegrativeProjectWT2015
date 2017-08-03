@@ -1,3 +1,7 @@
+These analyses combined can be summarized in this figure:
+
+<img src=".../figures/01_behavior/01_avoidancebehvaior-01.png" width="1370" />
+
 ``` r
 library(ggplot2) ## for awesome plots!
 ```
@@ -41,9 +45,8 @@ columnannotations <- read.csv("../data/01a_columnannotations.csv", header = T, r
 scoresdf <- read.csv("../data/01a_scoresdf.csv", header = T)
 rotationdf <- read.csv("../data/01a_rotationdf.csv", header = T, row.names = 1)
 behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.names = 1)
-```
 
-``` r
+#set factor levels
 levels(behavior$APA)
 ```
 
@@ -180,7 +183,7 @@ pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          #width=4.5, height=3,
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 8, 
+         cellwidth = 6, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation" 
@@ -193,12 +196,11 @@ pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
 # pheatmapfor adobe
 pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          annotation_col=df, annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 0,
-         fontsize = 11, 
-         #width=4.5, height=3,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 10, 
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 6, 
+         cellwidth = 8, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
@@ -501,52 +503,3 @@ dev.off()
 
     ## quartz_off_screen 
     ##                 2
-
-``` r
-library(ggfortify)
-```
-
-    ## Warning: package 'ggfortify' was built under R version 3.3.2
-
-``` r
-df <- behaviormatrix
-autoplot(prcomp(df))
-```
-
-![](../figures/01_behavior/otherpca-1.png)
-
-``` r
-autoplot(prcomp(df), data = behavior, colour = 'APA', loadings = TRUE, loadings.label = TRUE, loadings.label.size = 5, scale = 0)
-```
-
-![](../figures/01_behavior/otherpca-2.png)
-
-``` r
-library(cluster)
-autoplot(clara(behaviormatrix, 3), frame = TRUE)
-```
-
-![](../figures/01_behavior/otherpca-3.png)
-
-``` r
-autoplot(fanny(behaviormatrix, 2), frame = TRUE)
-```
-
-    ## Warning in fanny(behaviormatrix, 2): the memberships are all very close to
-    ## 1/k. Maybe decrease 'memb.exp' ?
-
-![](../figures/01_behavior/otherpca-4.png)
-
-``` r
-# capture the rotation matrix in a data frame
-rotation_data <- rotationdf
-# define a pleasing arrow style
-arrow_style <- arrow(length = unit(0.05, "inches"),
-                     type = "closed")
-# now plot, using geom_segment() for arrows and geom_text for labels
-ggplot(rotation_data) + 
-  geom_segment(aes(xend=PC1, yend=PC2), x=0, y=0, arrow=arrow_style) + 
-  geom_text(aes(x=PC1, y=PC2, label=variable), hjust=0, size=3, color='red')
-```
-
-![](../figures/01_behavior/wilkepca-1.png)
