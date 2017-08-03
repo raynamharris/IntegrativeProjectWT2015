@@ -32,3 +32,7 @@ session_colors = list(
                T6_C3 = (values=c("#756bb1")),
                Retention = (values=c("#54278f"))))
 
+DGConflictControl <- c("#bdbdbd","#ca0020")
+DGConsistentControl <- c("#bdbdbd","#f4a582")
+DGConflictConsistent <- c("#bdbdbd","#404040")
+

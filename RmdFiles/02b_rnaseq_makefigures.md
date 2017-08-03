@@ -75,6 +75,11 @@ padj) and plot some venn diagrams.
     venn4 <- row.names(rldpadjs[rldpadjs[4] <0.1 & !is.na(rldpadjs[4]),])
     venn5 <- row.names(rldpadjs[rldpadjs[5] <0.1 & !is.na(rldpadjs[5]),])
 
+    dev.off()
+
+    ## null device 
+    ##           1
+
     ## check order for correctness
     candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
@@ -90,9 +95,10 @@ padj) and plot some venn diagrams.
       cat.cex = 1, cat.fontfamily = "sans")
     grid.draw(prettyvenn)
 
-![](../figures/02_RNAseq/venndiagram-1.png)
+    dev.off()
 
-    plot.new()
+    ## null device 
+    ##           1
 
     candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
@@ -107,8 +113,6 @@ padj) and plot some venn diagrams.
       #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
       cat.cex = 1, cat.fontfamily = "sans")
     grid.draw(prettyvenn)
-
-![](../figures/02_RNAseq/venndiagram-2.png)
 
 Heatmaps
 --------
@@ -127,7 +131,7 @@ Heatmaps
     myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
                   seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
 
-    pheatmap(DEGes, show_colnames=F, show_rownames = F,
+    pheatmap(DEGes, show_colnames=T, show_rownames = F,
              annotation_col=df, annotation_colors = ann_colors,
              treeheight_row = 0, treeheight_col = 25,
              fontsize = 11, 
