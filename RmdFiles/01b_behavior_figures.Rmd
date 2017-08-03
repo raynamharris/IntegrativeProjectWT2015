@@ -139,7 +139,7 @@ superheat(scaledaveragedata,
 
 ### ## Figure 1C: 
 
-Here I use heirarhical cluster to identify patterns in the behavioral data. You see three distint  
+Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed (Fig. 1C). The row dendrogram helps visuzlise the interaction between treatment group and (grey: control, pink: consistent, red: conflict) and training session (white: habitutation, shades of brown: training sessino 1-3, dark down: retest, shades of purple: training session 4-6 or conflict session 1-3, dark purple: retention). 
 
 
 ```{r pheatmap,  message=FALSE, results='hide'}

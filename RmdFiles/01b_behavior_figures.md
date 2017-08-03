@@ -61,6 +61,9 @@ behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "
 scoresdf$APA <- factor(scoresdf$APA, levels = c("control", "consistent", "conflict"))
 ```
 
+Figure 1B:
+----------
+
 First, I visualze the group mean and standard error for the time it takes before an individual mouse enters the spatial region marked "schock zone" or equivilent (Fig. 1A).
 
 ``` r
@@ -126,7 +129,9 @@ dev.off()
     ## quartz_off_screen 
     ##                 2
 
-Supplemnentary: Here I visualze the individual data points for each annimal then use a linar model to fit a 95% confidence internal for the time it take a mouse to enter the "schock zone" or equivilent .
+### Supplemnentary time series plot
+
+Here I visualze the individual data points for each annimal then use a linar model to fit a 95% confidence internal for the time it take a mouse to enter the "schock zone" or equivilent .
 
 ``` r
 # plotting all data points and linear model smoothing for number of entrances
@@ -149,9 +154,11 @@ dev.off()
     ## quartz_off_screen 
     ##                 2
 
-### Heatmap
+### Supplmentary heatmap
 
-The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown in red and negative values show in blue. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group (purple, orange, brown) and training session (from white to black according to increasing time spend in the active place avoidance group).
+The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown the viridis color scheme with yellow being positive and purple being negative. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group and training session.
+
+This particular graph clusters the data according to a kmean of 3 rather than by heriarchical clustering. I use the R package superheat.
 
 ``` r
 scaledaveragedatatranposed <- t(scaledaveragedata)
@@ -169,7 +176,11 @@ superheat(scaledaveragedata,
           extreme.values.na = FALSE)
 ```
 
-![](../figures/01_behavior/heatmap-1.png)
+![](../figures/01_behavior/superheat-1.png)
+
+### \#\# Figure 1C:
+
+Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed (Fig. 1C). The row dendrogram helps visuzlise the interaction between treatment group and (grey: control, pink: consistent, red: conflict) and training session (white: habitutation, shades of brown: training sessino 1-3, dark down: retest, shades of purple: training session 4-6 or conflict session 1-3, dark purple: retention).
 
 ``` r
 ## make annotation df and ann_colors for pheatmap
@@ -184,29 +195,29 @@ myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2)
 ## pheatmap for markdown
 pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          annotation_col=df, annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 25,
-         fontsize = 11, 
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 8, 
          #width=4.5, height=3,
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 6, 
+         cellwidth = 10, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation" 
          )
 ```
 
-![](../figures/01_behavior/heatmap-2.png)
+![](../figures/01_behavior/pheatmap-1.png)
 
 ``` r
 # pheatmapfor adobe
 pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          annotation_col=df, annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 50,
-         fontsize = 10, 
+         fontsize = 8, 
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 8, 
+         cellwidth = 6, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
