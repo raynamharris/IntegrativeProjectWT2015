@@ -51,9 +51,30 @@ venn3 <- row.names(rldpadjs[rldpadjs[3] <0.1 & !is.na(rldpadjs[3]),])
 venn4 <- row.names(rldpadjs[rldpadjs[4] <0.1 & !is.na(rldpadjs[4]),])
 venn5 <- row.names(rldpadjs[rldpadjs[5] <0.1 & !is.na(rldpadjs[5]),])
 
+
+
+
+## 4 way 
 dev.off()
 
-## check order for correctness
+candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,  "DG vs CA3" = venn3, "Control vs Conflict" = venn5)
+
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "white", "white", "white", "white"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+grid.draw(prettyvenn)
+
+
+## other 4 way
+dev.off()
+
 candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
 prettyvenn <- venn.diagram(
@@ -68,8 +89,9 @@ prettyvenn <- venn.diagram(
   cat.cex = 1, cat.fontfamily = "sans")
 grid.draw(prettyvenn)
 
-dev.off()
 
+## thre way
+dev.off()
 candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
 prettyvenn <- venn.diagram(
