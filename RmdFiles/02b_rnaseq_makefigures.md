@@ -80,7 +80,7 @@ padj) and plot some venn diagrams.
 
     ## 4 way 
 
-    candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,  "DG vs CA3" = venn3, "Control vs Conflict" = venn5)
+    candidates <- list("DG vs CA3" = venn3, "Control vs Consistent" = venn4, "DG vs CA1" = venn1,  "Control vs Conflict" = venn5)
 
     prettyvenn <- venn.diagram(
       scaled=T,

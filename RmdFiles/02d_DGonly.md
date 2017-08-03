@@ -143,7 +143,10 @@ DG Consistent versus Control
       ylim(c(0, 10)) +  
       scale_color_manual(values = c("Consistent" = "#f4a582",
                                     "Control" = "#404040", 
-                                    "none" = "#bdbdbd")) # change colors
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank())
 
     colored
 
@@ -220,9 +223,10 @@ DG Conflict vs. Control
       ylim(c(0, 10)) +    
       scale_color_manual(values = c("Conflict" = "#ca0020", 
                                     "Control" = "#404040", 
-                                    "none" = "#bdbdbd")) # change colors
-
-
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank())
 
     colored
 
@@ -294,7 +298,11 @@ DG Conflict vs. Control
       ylim(c(0, 10)) +  
       scale_color_manual(values = c("Conflict" = "#ca0020", 
                                     "Consistent" = "#f4a582", 
-                                    "none" = "#bdbdbd")) # change colors
+                                    "none" = "#bdbdbd")) +
+      theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank())
 
     colored
 

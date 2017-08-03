@@ -59,7 +59,7 @@ venn5 <- row.names(rldpadjs[rldpadjs[5] <0.1 & !is.na(rldpadjs[5]),])
 
 ```{r venndiagram2}
 
-candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,  "DG vs CA3" = venn3, "Control vs Conflict" = venn5)
+candidates <- list("DG vs CA3" = venn3, "Control vs Consistent" = venn4, "DG vs CA1" = venn1,  "Control vs Conflict" = venn5)
 
 prettyvenn <- venn.diagram(
   scaled=T,
