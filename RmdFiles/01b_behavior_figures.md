@@ -1,6 +1,6 @@
 These analyses combined can be summarized in this figure:
 
-<img src=".../figures/01_behavior/01_avoidancebehvaior-01.png" width="1370" />
+<img src="../figures/01_behavior/01_avoidancebehvaior-01.png" width="1370" />
 
 ``` r
 library(ggplot2) ## for awesome plots!
