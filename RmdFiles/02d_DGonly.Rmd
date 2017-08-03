@@ -61,12 +61,6 @@ res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFilt
 resOrdered <- res[order(res$padj),]
 head(resOrdered)
 
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
-with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
-with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
-with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-
-
 data <- data.frame(gene = row.names(res),
                    pvalue = -log10(res$padj), 
                    lfc = res$log2FoldChange)
@@ -110,13 +104,6 @@ DG Conflict vs. Control
 res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
 resOrdered <- res[order(res$padj),]
 head(resOrdered)
-
-# easy defalut pllot
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
-with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
-with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
-with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-
 
 
 # more complicated but beautiful ggplot from https://twbattaglia.github.io/2016/12/17/volcano-plot/
@@ -165,11 +152,6 @@ dev.off()
 res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
 resOrdered <- res[order(res$padj),]
 head(resOrdered)
-
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
-with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
-with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
-with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
 
 
 data <- data.frame(gene = row.names(res),

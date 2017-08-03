@@ -108,13 +108,6 @@ DG Consistent versus Control
     ## Fzd5   1.806943e-06
     ## Fbxo33 2.364779e-06
 
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Consistent", xlim=c(-8,8), ylim=c(0,14)))
-    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
-    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
-    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-
-![](../figures/02_RNAseq/DGConsistentControl-1.png)
-
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
                        lfc = res$log2FoldChange)
@@ -154,7 +147,7 @@ DG Consistent versus Control
 
     colored
 
-![](../figures/02_RNAseq/DGConsistentControl-2.png)
+![](../figures/02_RNAseq/DGConsistentControl-1.png)
 
     pdf(file="../figures/02_RNAseq/DGConsistentControl.pdf", width=3, height=3)
     plot(colored)
@@ -188,14 +181,6 @@ DG Conflict vs. Control
     ## Fzd5    8.937443e-04
     ## Frmd6   9.061303e-04
     ## Ptgs2   1.186769e-03
-
-    # easy defalut pllot
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Control - Conflict", xlim=c(-8,8), ylim=c(0,14)))
-    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
-    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#404040")))
-    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-
-![](../figures/02_RNAseq/DGConflictControl-1.png)
 
     # more complicated but beautiful ggplot from https://twbattaglia.github.io/2016/12/17/volcano-plot/
     # Add gene names Add the -log10 pvalue Add the pre-calculated log2 fold change
@@ -241,7 +226,7 @@ DG Conflict vs. Control
 
     colored
 
-![](../figures/02_RNAseq/DGConflictControl-2.png)
+![](../figures/02_RNAseq/DGConflictControl-1.png)
 
     pdf(file="../figures/02_RNAseq/DGConflictControl.pdf", width=3, height=3)
     plot(colored)
@@ -273,13 +258,6 @@ DG Conflict vs. Control
     ## 0610009O20Rik         1
     ## 0610010F05Rik         1
     ## 0610010K14Rik         1
-
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="DG Consistent - Conflict", xlim=c(-8,8), ylim=c(0,14)))
-    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#ca0020")))
-    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#f4a582")))
-    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-
-![](../figures/02_RNAseq/DGConflictConsistent-1.png)
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -320,7 +298,7 @@ DG Conflict vs. Control
 
     colored
 
-![](../figures/02_RNAseq/DGConflictConsistent-2.png)
+![](../figures/02_RNAseq/DGConflictConsistent-1.png)
 
     pdf(file="../figures/02_RNAseq/DGConflictConsistent.pdf", width=3, height=3)
     plot(colored)
