@@ -18,30 +18,17 @@ ann_colors1 = list(
             DG = (values=c("#d95f02"))))
 
 
-session_colors1 = list(
-  APA =  c(Control = (values=c("#404040")), 
-           Consistent = (values=c("#f4a582")),
-           Conflict = (values=c("#ca0020"))),
+session_colors = list(
+  APA =  c(control = (values=c("#404040")), 
+           consistent = (values=c("#f4a582")),
+           conflict = (values=c("#ca0020"))),
   Session =  c(Hab = (values=c("#eff3ff")), 
-               T1 = (values=c("#bdd7e7")),
-               T2 = (values=c("#6baed6")),
-               T3 = (values=c("#3182bd")),
-               Retest = (values=c("#08519c")),
+               T1 = (values=c("#dfc27d")),
+               T2 = (values=c("#bf812d")),
+               T3 = (values=c("#8c510a")),
+               Retest = (values=c("#543005")),
                T4_C1 = (values=c("#cbc9e2")),
                T5_C2 = (values=c("#9e9ac8")),
                T6_C3 = (values=c("#756bb1")),
                Retention = (values=c("#54278f"))))
 
-session_colors2 = list(
-  APA =  c(control = (values=c("#404040")), 
-           consistent = (values=c("#f4a582")),
-           conflict = (values=c("#ca0020"))),
-  Session =  c(Hab = (values=c("#eff3ff")), 
-               T1 = (values=c("#bdd7e7")),
-               T2 = (values=c("#6baed6")),
-               T3 = (values=c("#3182bd")),
-               Retest = (values=c("#08519c")),
-               T4_C1 = (values=c("#cbc9e2")),
-               T5_C2 = (values=c("#9e9ac8")),
-               T6_C3 = (values=c("#756bb1")),
-               Retention = (values=c("#54278f"))))

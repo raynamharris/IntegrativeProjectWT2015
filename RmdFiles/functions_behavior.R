@@ -45,8 +45,8 @@ onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
-    theme(legend.justification=c(1,1), legend.position=c(1,1)) 
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) + 
+    theme(legend.position="top") 
   return(plot)
 }
 
@@ -197,9 +197,23 @@ makepcaplot <- function(data,xcol,ycol,colorcode){
     theme_cowplot(font_size = 20) + 
     theme(strip.background = element_blank()) +
     scale_colour_manual(name=NULL,
-                        values=colorvalAPA)  +
-    #geom_text() + 
-    theme(legend.position="bottom")
+                        values=colorvalAPA) +
+    theme(legend.position="none")
+    
+  return(plot)
+}
+
+makepcaplotwithpercent <- function(data,xcol,ycol,colorcode, newylab, newxlab){
+  plot <- data %>% 
+    ggplot(aes_string(x=xcol, y=ycol, color=colorcode, label=data$ID)) +
+    geom_point(size = 1) +
+    stat_ellipse(level = 0.95) +
+    theme_cowplot(font_size = 15, line_size = 0.5) + 
+    theme(strip.background = element_blank()) +
+    scale_colour_manual(name=NULL,
+                        values=colorvalAPA) +
+    theme(legend.position="none") +
+    ylab(newylab) + xlab(newxlab)
   return(plot)
 }
 

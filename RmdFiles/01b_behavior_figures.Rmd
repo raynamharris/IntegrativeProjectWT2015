@@ -13,6 +13,9 @@ library(cowplot) ## for some easy to use themes
 library(dplyr) ## for filtering and selecting rows
 library(factoextra)  ##pca with vectors
 library(car) ## stats
+library(superheat) # for kmeans clustered heatmap
+library(pheatmap)  # for pretty heatmap
+library(viridis) # for awesome color pallette
 
 ## load functions 
 source("functions_behavior.R")
@@ -76,10 +79,11 @@ numentrance1 <- ggplot(behaviorsummaryNum, aes(x=, TrainSessionComboNum, y=m, co
                        labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
                                 "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
-  theme_cowplot(font_size = 14, line_size = 1) +
+  theme_cowplot(font_size = 14, line_size = 0.5) +
   background_grid(major = "none", minor = "none") +
   scale_color_manual(values = colorvalAPA) + 
-  theme(legend.position="none") 
+  theme(legend.position=c(0.8, 0.8))  + 
+  theme(legend.title=element_blank())
 
 numentrance1
 pdf(file="../figures/01_behavior/numentrance1.pdf", width=6, height=3)
@@ -103,7 +107,6 @@ dev.off()
 The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown in red and negative values show in blue. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group (purple, orange, brown) and training session (from white to black according to increasing time spend in the active place avoidance group). 
 
 ```{r heatmap,  message=FALSE, results='hide'}
-library(superheat)
 scaledaveragedatatranposed <- t(scaledaveragedata)
 
 superheat(scaledaveragedata,
@@ -115,24 +118,20 @@ superheat(scaledaveragedata,
           pretty.order.cols = TRUE,
           n.clusters.rows = 3,
           left.label = 'variable',
-          # change color
-          #heat.pal = c("Deep Sky Blue 3", "white", "red"),
-          # These two lines help you darken the color
           heat.lim = c(-1.5, 1.5), 
           extreme.values.na = FALSE)
 
 
 ## make annotation df and ann_colors for pheatmap
 df <- columnannotations
-ann_colors = session_colors2 
+ann_colors = session_colors 
 
 # set color breaks
 paletteLength <- 30
 myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
 
-library(pheatmap)
-library(viridis)
+## pheatmap for markdown
 pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          annotation_col=df, annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 25,
@@ -146,8 +145,22 @@ pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          clustering_distance_cols="correlation" 
          )
 
-```
+# pheatmapfor adobe
+pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 0,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 6, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/01_behavior/pheatmap.pdf"
+         )
 
+```
 
 ### Principle component analysis (PCA)
 Given the correlational structure of the data, I next reduced the dimentionality with a PCA anlaysis. You can see that PC1 speparates trained and untraned animals (D,E) but neither PC2 (D) nor PC3 (E) separate same and conflict aniamls. Elipses show 95% confidence interval.
@@ -166,8 +179,6 @@ ggplot(perc_data, aes(x=PC, y=percent)) +
   xlim(0, 10)
 
 
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA")
-
 ## statistics
 aov1 <- aov(PC1 ~ APA, data=scoresdf)
 summary(aov1) # p = 2.53e-14
@@ -175,15 +186,19 @@ TukeyHSD(aov1, which = "APA") # p<< 0.001 for both control comparisions
 
 aov2 <- aov(PC2 ~ APA, data=scoresdf)
 summary(aov2) # p = 0.0906
-TukeyHSD(aov2, which = "APA") # p = 0.0852578 for conflict
+TukeyHSD(aov2, which = "APA") # p = 0.0852578 for conflict-consistent 
 
 aov3 <- aov(PC3 ~ APA, data=scoresdf)
 summary(aov3) # p = 0.0633
-TukeyHSD(aov3, which = "APA") # p = 0.0557503 for conflict
+TukeyHSD(aov3, which = "APA") # p = 0.0557503 for conflict-consistent 
 
 aov6 <- aov(PC6 ~ APA, data=scoresdf)
 summary(aov6) # p = 0.0226
-TukeyHSD(aov6, which = "APA") # p = 0.0175577 for conflict
+TukeyHSD(aov6, which = "APA") # p = 0.0175577 for conflict-consistent 
+
+aov9 <- aov(PC9 ~ APA, data=scoresdf)
+summary(aov9) # p =  0.0584
+TukeyHSD(aov9, which = "APA") # p = 0.0722837 for conflict-consistent 
 
 
 lm1 <- lm(PC1~APA, data=scoresdf)
@@ -192,27 +207,39 @@ summary(lm1)
 lm16 <- lm(PC1+PC6~APA, data=scoresdf)
 summary(lm16)
 
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC3",colorcode="APA")
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC4",colorcode="APA")
-makepcaplot(data=scoresdf,xcol="PC2",ycol="PC4",colorcode="APA")
+lm136 <- lm(PC1+PC3+PC6~APA, data=scoresdf)
+summary(lm136)
 
+pca12 <- makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA", newxlab = "PC1 (35.7%)", newylab = "PC2 (9.7%)")
+pca12
+pdf(file="../figures/01_behavior/pca12.pdf", width=3, height=3)
+plot(pca12)
+dev.off()
 
-makepcaplot(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA")
-## statistics
-aov6 <- aov(PC6 ~ APA, data=scoresdf)
-summary(aov6) # p = 0.0584 
-TukeyHSD(aov6, which = "APA") # consistent-conflict p= 0.0175577
-
-
+pca36 <-makepcaplotwithpercent(data=scoresdf,xcol="PC3",ycol="PC6",colorcode="APA", newxlab = "PC3 (8.4%)", newylab = "PC6 (3.6%)")
+pca36
+pdf(file="../figures/01_behavior/pca36.pdf", width=3, height=3)
+plot(pca36)
+dev.off()
 
 
 ```
 
 ```{r fviz_pca}
 res.pca <- prcomp(behaviormatrix,  scale = TRUE)
-fviz_pca_var(res.pca, select.var = list(contrib = 8), axes = c(1, 2))
-fviz_pca_var(res.pca, select.var = list(contrib = 8), axes = c(1, 6))
-fviz_pca_var(res.pca, select.var = list(contrib = 8), axes = c(1, 9))
+
+fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 2), axes = c(1, 2))
+fviz12
+pdf(file="../figures/01_behavior/fviz12.pdf", width=3, height=3)
+plot(fviz12)
+dev.off()
+
+fviz36 <- fviz_pca_var(res.pca, select.var = list(contrib = 2), axes = c(3, 6))
+fviz36
+pdf(file="../figures/01_behavior/fviz36.pdf", width=3, height=3)
+plot(fviz36)
+dev.off()
+
 ```
 
 ```{r otherpca}
@@ -222,7 +249,7 @@ autoplot(prcomp(df))
 autoplot(prcomp(df), data = behavior, colour = 'APA', loadings = TRUE, loadings.label = TRUE, loadings.label.size = 5, scale = 0)
 
 library(cluster)
-autoplot(clara(behaviormatrix, 3))
+autoplot(clara(behaviormatrix, 3), frame = TRUE)
 autoplot(fanny(behaviormatrix, 2), frame = TRUE)
 ```
 
