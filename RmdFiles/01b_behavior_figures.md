@@ -1,4 +1,4 @@
-These analyses combined can be summarized in this figure:
+After wrangling the behaivoral data in the previous script ([01a\_beahvior\_create\_dfs.Rmd](./01a_beahvior_create_dfs.Rmd)), conducted the analyses descirbed in this scipt. All plots are generate as **.png** files for markdown viewing and as **.pdf** files for incorporation to Adobe Illustrator.
 
 <img src="../figures/01_behavior/01_avoidancebehvaior-01.png" width="1370" />
 
