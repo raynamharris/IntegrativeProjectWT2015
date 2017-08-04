@@ -213,7 +213,7 @@ Heatmaps
 
     # pdf the same pca plots descripbed above of the above
     pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
-    PCA12 <- plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+    PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
     plot(PCA12)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
@@ -225,7 +225,7 @@ Heatmaps
     ##                 2
 
     pdf(file="../figures/02_RNAseq/PCA25.pdf", width=4.5, height=3)
-    PCA25 <- plotPCs(pcadata, 2,4, aescolor = pcadata$APA, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalAPA)
+    PCA25 <- plotPCs(pcadata, 4,2, aescolor = pcadata$APA, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalAPA)
     plot(PCA25)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
