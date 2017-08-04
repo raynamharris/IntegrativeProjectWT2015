@@ -1,3 +1,7 @@
+The figures made from this script were compiled in Adobe.
+
+<img src="../figures/02_RNAseq/02_rnaseq-01.png" width="1370" />
+
     library(dplyr) ## for filtering and selecting rows
     library(plyr) ## for renmaing factors
     library(reshape2) ## for melting dataframe
