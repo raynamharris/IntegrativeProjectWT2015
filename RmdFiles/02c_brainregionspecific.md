@@ -384,7 +384,7 @@ CA3 only differential gene expression
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02_RNAseq/DGonly-1.png)
+![](../figures/02_RNAseq/DGonly2-1.png)
 
     DEGes <- assay(rld)
     DEGes <- cbind(DEGes, contrast4, contrast5, contrast6)
@@ -418,7 +418,7 @@ CA3 only differential gene expression
              clustering_distance_cols="correlation" 
              )
 
-![](../figures/02_RNAseq/DGonly-2.png)
+![](../figures/02_RNAseq/DGonly2-2.png)
 
     rldpvals <- assay(rld)
     rldpvals <- cbind(rldpvals, contrast4, contrast5, contrast6)
@@ -510,153 +510,6 @@ CA3 only differential gene expression
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02d_GO_MWU/padjAPAConflictControlDG.csv", row.names = F)
-
-    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-    colData <- read.csv("../data/02a_colData.csv", header = T)
-
-    colData <- colData %>% 
-      filter(APA == "Consistent") 
-    savecols <- as.character(colData$RNAseqID) 
-    savecols <- as.vector(savecols) 
-    countData <- countData %>% dplyr::select(one_of(savecols)) 
-
-    dds <- DESeqDataSetFromMatrix(countData = countData,
-                                  colData = colData,
-                                  design = ~ Punch )
-
-    dds <- dds[ rowSums(counts(dds)) > 1, ] 
-    dds # dim: 16435 9    
-
-    ## class: DESeqDataSet 
-    ## dim: 16435 9 
-    ## metadata(1): version
-    ## assays(1): counts
-    ## rownames(16435): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
-    ## rowData names(0):
-    ## colnames(9): 143C-CA1-1 144C-CA1-2 ... 147C-CA3-3 147C-DG-3
-    ## colData names(7): RNAseqID Mouse ... APA ID
-
-    dds <- DESeq(dds)
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates
-
-    ## fitting model and testing
-
-    dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
-    rld <- rlog(dds, blind=FALSE)
-
-    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) #1683
-
-    ## [1] 1683
-
-    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) #1212
-
-    ## [1] 1212
-
-    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) #2107
-
-    ## [1] 2107
-
-    res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
-    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
-    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
-    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-
-![](../figures/02_RNAseq/ConsistentOnly-1.png)
-
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered)
-
-    ## log2 fold change (MAP): Punch CA1 vs DG 
-    ## Wald test p-value: Punch CA1 vs DG 
-    ## DataFrame with 6 rows and 6 columns
-    ##          baseMean log2FoldChange     lfcSE      stat        pvalue
-    ##         <numeric>      <numeric> <numeric> <numeric>     <numeric>
-    ## Dkk3     895.8230       4.526971 0.1847608  24.50179 1.413504e-132
-    ## Gm2115   400.2670       5.720196 0.2502937  22.85394 1.335480e-115
-    ## Wfs1     312.5904       5.555131 0.2707270  20.51931  1.447595e-93
-    ## Pou3f1   353.2435       5.679073 0.2875507  19.74981  8.051865e-87
-    ## Fibcd1   549.4555       4.115181 0.2332721  17.64112  1.190824e-69
-    ## Neurod6  309.0811       5.990503 0.3512197  17.05628  3.138966e-65
-    ##                  padj
-    ##             <numeric>
-    ## Dkk3    2.311079e-128
-    ## Gm2115  1.091755e-111
-    ## Wfs1     7.889393e-90
-    ## Pou3f1   3.291200e-83
-    ## Fibcd1   3.893994e-66
-    ## Neurod6  8.553683e-62
-
-    res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: CA3 - CA1", xlim=c(-8,8), ylim=c(0,100)))
-    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
-    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
-    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-
-![](../figures/02_RNAseq/ConsistentOnly-2.png)
-
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered)
-
-    ## log2 fold change (MAP): Punch CA1 vs CA3 
-    ## Wald test p-value: Punch CA1 vs CA3 
-    ## DataFrame with 6 rows and 6 columns
-    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Fibcd1  549.4555       5.826608 0.3004258  19.39450 8.588171e-84
-    ## Wfs1    312.5904       5.082187 0.2746683  18.50300 1.953040e-76
-    ## Doc2b   506.4223       7.388551 0.4218699  17.51381 1.124089e-68
-    ## Pou3f1  353.2435       4.921683 0.2858065  17.22033 1.869170e-66
-    ## Atp2b1 3325.8107       2.299362 0.1375359  16.71827 9.648541e-63
-    ## Gm2115  400.2670       2.929397 0.1956911  14.96949 1.162076e-50
-    ##                padj
-    ##           <numeric>
-    ## Fibcd1 1.404166e-79
-    ## Wfs1   1.596610e-72
-    ## Doc2b  6.126283e-65
-    ## Pou3f1 7.640234e-63
-    ## Atp2b1 3.155073e-59
-    ## Gm2115 3.166657e-47
-
-    res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
-    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
-    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
-    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-
-![](../figures/02_RNAseq/ConsistentOnly-3.png)
-
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered)
-
-    ## log2 fold change (MAP): Punch CA3 vs DG 
-    ## Wald test p-value: Punch CA3 vs DG 
-    ## DataFrame with 6 rows and 6 columns
-    ##        baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##       <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## C1ql3  442.9018      -6.744794 0.3626855 -18.59681 3.409907e-77
-    ## Dkk3   895.8230       3.877978 0.2095721  18.50426 1.907644e-76
-    ## Cpne7  342.1539       7.154973 0.3999470  17.88980 1.416045e-71
-    ## Doc2b  506.4223      -7.290686 0.4267249 -17.08521 1.912439e-65
-    ## Npas4 2021.2741      -6.070518 0.3705434 -16.38275 2.540063e-60
-    ## Lct    334.1662      -7.146334 0.4375191 -16.33377 5.676887e-60
-    ##               padj
-    ##          <numeric>
-    ## C1ql3 5.575198e-73
-    ## Dkk3  1.559499e-72
-    ## Cpne7 7.717443e-68
-    ## Doc2b 7.817096e-62
-    ## Npas4 8.306005e-57
-    ## Lct   1.546952e-56
 
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
     colData <- read.csv("../data/02a_colData.csv", header = T)
@@ -925,10 +778,10 @@ CA3 only differential gene expression
       #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
       #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
       #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
-      geom_vline(xintercept = 0, colour = "black") + # add line at 0
-      geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+      #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+      #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
       xlim(c(-8, 8)) +  
-      ylim(c(0, 95)) +   
+      ylim(c(0, 100)) +   
       scale_color_manual(values = c("CA1" = "#7570b3",
                                     "DG" = "#d95f02", 
                                     "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
@@ -1036,10 +889,10 @@ CA3 only differential gene expression
       #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
       #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
       #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
-      geom_vline(xintercept = 0, colour = "black") + # add line at 0
-      geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+      #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+      #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
       xlim(c(-8, 8)) +  
-      ylim(c(0, 95)) +  
+      ylim(c(0, 100)) +  
       scale_color_manual(values = c("CA3" = "#1b9e77",
                                     "DG" = "#d95f02", 
                                     "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
@@ -1057,3 +910,581 @@ CA3 only differential gene expression
 
     ## quartz_off_screen 
     ##                 2
+
+    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+    colData <- read.csv("../data/02a_colData.csv", header = T)
+
+    colData <- colData %>% 
+      filter(APA == "Consistent") 
+    savecols <- as.character(colData$RNAseqID) 
+    savecols <- as.vector(savecols) 
+    countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+    dds <- DESeqDataSetFromMatrix(countData = countData,
+                                  colData = colData,
+                                  design = ~ Punch )
+
+    dds <- dds[ rowSums(counts(dds)) > 1, ] 
+    dds # dim: 16716 21     
+
+    ## class: DESeqDataSet 
+    ## dim: 16435 9 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(16435): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(0):
+    ## colnames(9): 143C-CA1-1 144C-CA1-2 ... 147C-CA3-3 147C-DG-3
+    ## colData names(7): RNAseqID Mouse ... APA ID
+
+    dds <- DESeq(dds)
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
+    dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
+
+    rld <- rlog(dds, blind=FALSE)
+    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) #2013
+
+    ## [1] 1683
+
+    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) #1391
+
+    ## [1] 1212
+
+    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) #2728
+
+    ## [1] 2107
+
+    res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ConsistentOnly-1.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA1 vs DG 
+    ## Wald test p-value: Punch CA1 vs DG 
+    ## DataFrame with 6 rows and 6 columns
+    ##          baseMean log2FoldChange     lfcSE      stat        pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>     <numeric>
+    ## Dkk3     895.8230       4.526971 0.1847608  24.50179 1.413504e-132
+    ## Gm2115   400.2670       5.720196 0.2502937  22.85394 1.335480e-115
+    ## Wfs1     312.5904       5.555131 0.2707270  20.51931  1.447595e-93
+    ## Pou3f1   353.2435       5.679073 0.2875507  19.74981  8.051865e-87
+    ## Fibcd1   549.4555       4.115181 0.2332721  17.64112  1.190824e-69
+    ## Neurod6  309.0811       5.990503 0.3512197  17.05628  3.138966e-65
+    ##                  padj
+    ##             <numeric>
+    ## Dkk3    2.311079e-128
+    ## Gm2115  1.091755e-111
+    ## Wfs1     7.889393e-90
+    ## Pou3f1   3.291200e-83
+    ## Fibcd1   3.893994e-66
+    ## Neurod6  8.553683e-62
+
+    data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    head(data)
+
+    ##            gene      pvalue        lfc
+    ## 1 0610007P14Rik 0.006917519 -0.1519072
+    ## 2 0610009B22Rik 0.021233607 -0.3818998
+    ## 3 0610009L18Rik 0.013555589  0.4131756
+    ## 4 0610009O20Rik 0.031193755 -0.2268451
+    ## 5 0610010F05Rik 0.021731460 -0.3416711
+    ## 6 0610010K14Rik 0.017542662  0.4627727
+
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "CA1", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "DG", 
+                                        no = "none")))
+
+    # Color corresponds to fold change directionality
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+      #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
+      #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+      #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+      #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+      xlim(c(-8, 8)) +  
+      ylim(c(0, 100)) +   
+      scale_color_manual(values = c("CA1" = "#7570b3",
+                                    "DG" = "#d95f02", 
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+                                                                 panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank())
+
+    colored
+
+![](../figures/02_RNAseq/ConsistentOnly-2.png)
+
+    pdf(file="../figures/02_RNAseq/ConsistentDGCA1.pdf", width=3, height=3)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: CA3 - CA1", xlim=c(-8,8), ylim=c(0,100)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ConsistentOnly-3.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA1 vs CA3 
+    ## Wald test p-value: Punch CA1 vs CA3 
+    ## DataFrame with 6 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Fibcd1  549.4555       5.826608 0.3004258  19.39450 8.588171e-84
+    ## Wfs1    312.5904       5.082187 0.2746683  18.50300 1.953040e-76
+    ## Doc2b   506.4223       7.388551 0.4218699  17.51381 1.124089e-68
+    ## Pou3f1  353.2435       4.921683 0.2858065  17.22033 1.869170e-66
+    ## Atp2b1 3325.8107       2.299362 0.1375359  16.71827 9.648541e-63
+    ## Gm2115  400.2670       2.929397 0.1956911  14.96949 1.162076e-50
+    ##                padj
+    ##           <numeric>
+    ## Fibcd1 1.404166e-79
+    ## Wfs1   1.596610e-72
+    ## Doc2b  6.126283e-65
+    ## Pou3f1 7.640234e-63
+    ## Atp2b1 3.155073e-59
+    ## Gm2115 3.166657e-47
+
+    res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+    with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
+    with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+    with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+    with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+
+![](../figures/02_RNAseq/ConsistentOnly-4.png)
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): Punch CA3 vs DG 
+    ## Wald test p-value: Punch CA3 vs DG 
+    ## DataFrame with 6 rows and 6 columns
+    ##        baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##       <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## C1ql3  442.9018      -6.744794 0.3626855 -18.59681 3.409907e-77
+    ## Dkk3   895.8230       3.877978 0.2095721  18.50426 1.907644e-76
+    ## Cpne7  342.1539       7.154973 0.3999470  17.88980 1.416045e-71
+    ## Doc2b  506.4223      -7.290686 0.4267249 -17.08521 1.912439e-65
+    ## Npas4 2021.2741      -6.070518 0.3705434 -16.38275 2.540063e-60
+    ## Lct    334.1662      -7.146334 0.4375191 -16.33377 5.676887e-60
+    ##               padj
+    ##          <numeric>
+    ## C1ql3 5.575198e-73
+    ## Dkk3  1.559499e-72
+    ## Cpne7 7.717443e-68
+    ## Doc2b 7.817096e-62
+    ## Npas4 8.306005e-57
+    ## Lct   1.546952e-56
+
+    data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    head(data)
+
+    ##            gene      pvalue       lfc
+    ## 1 0610007P14Rik 0.034169323 0.1885209
+    ## 2 0610009B22Rik 0.051744658 0.3736352
+    ## 3 0610009L18Rik 0.086102774 0.5826211
+    ## 4 0610009O20Rik 0.110858432 0.3065070
+    ## 5 0610010F05Rik 0.044281826 0.2810195
+    ## 6 0610010K14Rik 0.008700811 0.1434965
+
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "CA3", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "DG", 
+                                        no = "none")))
+
+    # Color corresponds to fold change directionality
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+      #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
+      #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+      #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+      #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+      xlim(c(-8, 8)) +  
+      ylim(c(0, 100)) +  
+      scale_color_manual(values = c("CA3" = "#1b9e77",
+                                    "DG" = "#d95f02", 
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+                                                                 panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank())
+
+    colored
+
+![](../figures/02_RNAseq/ConsistentOnly-5.png)
+
+    pdf(file="../figures/02_RNAseq/ConsistentDGCA3.pdf", width=3, height=3)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+    colData <- read.csv("../data/02a_colData.csv", header = T)
+    colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
+
+    colData <- colData %>% 
+      filter(Punch == "DG") 
+    savecols <- as.character(colData$RNAseqID) 
+    savecols <- as.vector(savecols) 
+    countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+    dds <- DESeqDataSetFromMatrix(countData = countData,
+                                  colData = colData,
+                                  design = ~ APA )
+    dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
+    dds <- dds[ rowSums(counts(dds)) > 1, ] 
+    dds # dim: 16658 16  
+
+    ## class: DESeqDataSet 
+    ## dim: 16658 16 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(16658): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(0):
+    ## colnames(16): 143A-DG-1 143B-DG-1 ... 148A-DG-3 148B-DG-4
+    ## colData names(7): RNAseqID Mouse ... APA ID
+
+    dds <- DESeq(dds)
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
+    ## -- replacing outliers and refitting for 217 genes
+    ## -- DESeq argument 'minReplicatesForReplace' = 7 
+    ## -- original counts are preserved in counts(dds)
+
+    ## estimating dispersions
+
+    ## fitting model and testing
+
+    rld <- rlog(dds, blind=FALSE)
+
+    contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypval = 0.05) #101 or 105 106
+
+    ## [1] 101
+
+    contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypval = 0.05) #39 # or 34 or 49
+
+    ## [1] 39
+
+    contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypval = 0.05) # 0 
+
+    ## [1] 0
+
+DG Consistent versus Control
+
+    res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): APA Consistent vs Control 
+    ## Wald test p-value: APA Consistent vs Control 
+    ## DataFrame with 6 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Dbpht2 181.53137       1.683569 0.2398804  7.018368 2.244744e-12
+    ## Frmd6  198.12270       2.028448 0.2851703  7.113109 1.134573e-12
+    ## Smad7   43.60596       1.959971 0.2825822  6.935932 4.035513e-12
+    ## Nptx2  290.83992       1.645930 0.2478177  6.641696 3.100944e-11
+    ## Fzd5    13.76731       1.845721 0.2974478  6.205192 5.463003e-10
+    ## Fbxo33 136.27874       1.778941 0.2900217  6.133819 8.579438e-10
+    ##                padj
+    ##           <numeric>
+    ## Dbpht2 1.856178e-08
+    ## Frmd6  1.856178e-08
+    ## Smad7  2.224644e-08
+    ## Nptx2  1.282085e-07
+    ## Fzd5   1.806943e-06
+    ## Fbxo33 2.364779e-06
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    head(data)
+
+    ##            gene pvalue         lfc
+    ## 1 0610007P14Rik      0 -0.03291479
+    ## 2 0610009B22Rik      0  0.33035450
+    ## 3 0610009L18Rik      0 -0.19518724
+    ## 4 0610009O20Rik      0  0.07372248
+    ## 5 0610010F05Rik      0  0.13789974
+    ## 6 0610010K14Rik      0 -0.30478554
+
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "Consistent", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "Control", 
+                                        no = "none")))
+
+    # Color corresponds to fold change directionality
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+      #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
+      #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+      #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+      #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+      xlim(c(-2.5, 2.5)) +  
+      ylim(c(0, 10)) +  
+      scale_color_manual(values = c("Consistent" = "#f4a582",
+                                    "Control" = "#404040", 
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank())
+
+    colored
+
+![](../figures/02_RNAseq/DGConsistentControl-1.png)
+
+    pdf(file="../figures/02_RNAseq/DGConsistentControl.pdf", width=3, height=3)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+DG Conflict vs. Control
+
+    res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): APA Conflict vs Control 
+    ## Wald test p-value: APA Conflict vs Control 
+    ## DataFrame with 6 rows and 6 columns
+    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Smad7    43.60596       1.577382 0.2674566  5.897714 3.685717e-09
+    ## Slc16a1  52.06814       1.462991 0.2556169  5.723373 1.044295e-08
+    ## Acan     24.88123       1.426065 0.2579754  5.527911 3.240663e-08
+    ## Fzd5     13.76731       1.514113 0.2920253  5.184868 2.161674e-07
+    ## Frmd6   198.12270       1.396548 0.2716736  5.140537 2.739540e-07
+    ## Ptgs2   108.75785       1.400222 0.2770016  5.054925 4.305609e-07
+    ##                 padj
+    ##            <numeric>
+    ## Smad7   6.095439e-05
+    ## Slc16a1 8.635273e-05
+    ## Acan    1.786469e-04
+    ## Fzd5    8.937443e-04
+    ## Frmd6   9.061303e-04
+    ## Ptgs2   1.186769e-03
+
+    # more complicated but beautiful ggplot from https://twbattaglia.github.io/2016/12/17/volcano-plot/
+    # Add gene names Add the -log10 pvalue Add the pre-calculated log2 fold change
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    head(data)
+
+    ##            gene pvalue         lfc
+    ## 1 0610007P14Rik      0 -0.08607642
+    ## 2 0610009B22Rik      0  0.06203906
+    ## 3 0610009L18Rik      0 -0.12910088
+    ## 4 0610009O20Rik      0  0.26619780
+    ## 5 0610010F05Rik      0 -0.03799577
+    ## 6 0610010K14Rik      0 -0.17209938
+
+    # Modify dataset to add new coloumn of colors
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "Conflict", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "Control", 
+                                        no = "none")))
+
+    # Color corresponds to fold change directionality
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+      #xlab(expression(log[2]("Conflict" / "Control"))) + # x-axis label
+      #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+      #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+      #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+      xlim(c(-2.5, 2.5)) +  
+      ylim(c(0, 10)) +    
+      scale_color_manual(values = c("Conflict" = "#ca0020", 
+                                    "Control" = "#404040", 
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank())
+
+    colored
+
+![](../figures/02_RNAseq/DGConflictControl-1.png)
+
+    pdf(file="../figures/02_RNAseq/DGConflictControl.pdf", width=3, height=3)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered)
+
+    ## log2 fold change (MAP): APA Conflict vs Consistent 
+    ## Wald test p-value: APA Conflict vs Consistent 
+    ## DataFrame with 6 rows and 6 columns
+    ##                baseMean log2FoldChange     lfcSE       stat    pvalue
+    ##               <numeric>      <numeric> <numeric>  <numeric> <numeric>
+    ## 0610007P14Rik 19.985725    -0.05316163 0.2729119 -0.1947941 0.8455541
+    ## 0610009B22Rik  3.905466    -0.26831543 0.2860755 -0.9379182 0.3482864
+    ## 0610009L18Rik  2.662007     0.06608636 0.2351167  0.2810790 0.7786498
+    ## 0610009O20Rik 48.633267     0.19247532 0.2253767  0.8540160 0.3930961
+    ## 0610010F05Rik  7.709806    -0.17589551 0.2913225 -0.6037829 0.5459880
+    ## 0610010K14Rik  2.232061     0.13268616 0.2603819  0.5095829 0.6103437
+    ##                    padj
+    ##               <numeric>
+    ## 0610007P14Rik         1
+    ## 0610009B22Rik         1
+    ## 0610009L18Rik         1
+    ## 0610009O20Rik         1
+    ## 0610010F05Rik         1
+    ## 0610010K14Rik         1
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    head(data)
+
+    ##            gene pvalue         lfc
+    ## 1 0610007P14Rik      0 -0.05316163
+    ## 2 0610009B22Rik      0 -0.26831543
+    ## 3 0610009L18Rik      0  0.06608636
+    ## 4 0610009O20Rik      0  0.19247532
+    ## 5 0610010F05Rik      0 -0.17589551
+    ## 6 0610010K14Rik      0  0.13268616
+
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "Conflict", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "Consistent", 
+                                        no = "none")))
+
+    # Color corresponds to fold change directionality
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+      #xlab(expression(log[2]("Conflict" / "Consistent"))) + # x-axis label
+      #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+      #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+      #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+      xlim(c(-2.5, 2.5)) +  
+      ylim(c(0, 10)) +  
+      scale_color_manual(values = c("Conflict" = "#ca0020", 
+                                    "Consistent" = "#f4a582", 
+                                    "none" = "#bdbdbd")) +
+      theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank())
+
+    colored
+
+![](../figures/02_RNAseq/DGConflictConsistent-1.png)
+
+    pdf(file="../figures/02_RNAseq/DGConflictConsistent.pdf", width=3, height=3)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
+    percentVar <- round(100 * attr(pcadata, "percentVar"))
+    percentVar
+
+    ## [1] 31 20 11  6  6  5  4  3  3
+
+    pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
+    percentVar <- round(100 * attr(pcadata, "percentVar"))
+    aov1 <- aov(PC1 ~ APA, data=pcadata)
+    summary(aov1) 
+
+    ##             Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## APA          2  891.8   445.9   7.525 0.00675 **
+    ## Residuals   13  770.3    59.3                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    TukeyHSD(aov1, which = "APA")
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC1 ~ APA, data = pcadata)
+    ## 
+    ## $APA
+    ##                           diff       lwr       upr     p adj
+    ## Consistent-Control  -16.911835 -30.67185 -3.151817 0.0163925
+    ## Conflict-Control    -13.437796 -25.02477 -1.850824 0.0230507
+    ## Conflict-Consistent   3.474039 -11.36916 18.317242 0.8129880
+
+    pcadata$Punch <- factor(pcadata$APA, levels=c("Control", "Consistent", "Conflict"))
+    plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$APA, shapename = "APA",  colorvalues = colorvalAPA)
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
+![](../figures/02_RNAseq/pca-1.png)

@@ -142,7 +142,7 @@ head(resOrdered)
 
 
 
-```{r DGonly}
+```{r DGonly2}
 
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -256,57 +256,6 @@ write.csv(logs, file = "./02d_GO_MWU/padjAPAConflictControlDG.csv", row.names = 
 
 
 
-```{r ConsistentOnly}
-countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-colData <- read.csv("../data/02a_colData.csv", header = T)
-
-colData <- colData %>% 
-  filter(APA == "Consistent") 
-savecols <- as.character(colData$RNAseqID) 
-savecols <- as.vector(savecols) 
-countData <- countData %>% dplyr::select(one_of(savecols)) 
-
-dds <- DESeqDataSetFromMatrix(countData = countData,
-                              colData = colData,
-                              design = ~ Punch )
-
-dds <- dds[ rowSums(counts(dds)) > 1, ] 
-dds # dim: 16435 9    
-dds <- DESeq(dds)
-dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
-rld <- rlog(dds, blind=FALSE)
-
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) #1683
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) #1212
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) #2107
-
-
-res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
-with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
-with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
-with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-resOrdered <- res[order(res$padj),]
-head(resOrdered)
-
-
-res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: CA3 - CA1", xlim=c(-8,8), ylim=c(0,100)))
-with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
-with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
-with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-resOrdered <- res[order(res$padj),]
-head(resOrdered)
-
-res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
-with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
-with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
-with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
-with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
-resOrdered <- res[order(res$padj),]
-head(resOrdered)
-
-```
 
 
 ```{r ConflictOnly}
@@ -411,10 +360,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
   #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
   #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
-  geom_vline(xintercept = 0, colour = "black") + # add line at 0
-  geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+  #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+  #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
   xlim(c(-8, 8)) +  
-  ylim(c(0, 95)) +   
+  ylim(c(0, 100)) +   
   scale_color_manual(values = c("CA1" = "#7570b3",
                                 "DG" = "#d95f02", 
                                 "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
@@ -465,10 +414,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
   #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
   #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
-  geom_vline(xintercept = 0, colour = "black") + # add line at 0
-  geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+  #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+  #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
   xlim(c(-8, 8)) +  
-  ylim(c(0, 95)) +  
+  ylim(c(0, 100)) +  
   scale_color_manual(values = c("CA3" = "#1b9e77",
                                 "DG" = "#d95f02", 
                                 "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
@@ -485,3 +434,316 @@ dev.off()
 ```
 
 
+```{r ConsistentOnly}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+
+colData <- colData %>% 
+  filter(APA == "Consistent") 
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Punch )
+
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 16716 21     
+dds <- DESeq(dds)
+dds$APA <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
+
+rld <- rlog(dds, blind=FALSE)
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) #2013
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) #1391
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) #2728
+
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA1", xlim=c(-8,8), ylim=c(0,100)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+
+data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+data <- na.omit(data)
+head(data)
+
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "CA1", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "DG", 
+                                    no = "none")))
+
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+  #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
+  #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+  #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+  #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+  xlim(c(-8, 8)) +  
+  ylim(c(0, 100)) +   
+  scale_color_manual(values = c("CA1" = "#7570b3",
+                                "DG" = "#d95f02", 
+                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+                                                             panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank())
+
+colored
+
+pdf(file="../figures/02_RNAseq/ConsistentDGCA1.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+
+
+
+res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: CA3 - CA1", xlim=c(-8,8), ylim=c(0,100)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#7570b3")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Consistent: DG - CA3", xlim=c(-8,8), ylim=c(0,100)))
+with(subset(res, log2FoldChange>0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#1b9e77")))
+with(subset(res, log2FoldChange<0), points(log2FoldChange, -log10(pvalue), pch=20, col=c("#d95f02")))
+with(subset(res, padj>.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="grey"))
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+data <- na.omit(data)
+head(data)
+
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "CA3", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "DG", 
+                                    no = "none")))
+
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+  #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
+  #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+  #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+  #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+  xlim(c(-8, 8)) +  
+  ylim(c(0, 100)) +  
+  scale_color_manual(values = c("CA3" = "#1b9e77",
+                                "DG" = "#d95f02", 
+                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+                                                             panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank())
+
+colored
+
+pdf(file="../figures/02_RNAseq/ConsistentDGCA3.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+
+```
+
+
+```{r DGonly}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
+
+colData <- colData %>% 
+  filter(Punch == "DG") 
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA )
+dds$APA <- factor(dds$APA, levels=c("Control", "Consistent", "Conflict"))
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 16658 16  
+dds <- DESeq(dds)
+rld <- rlog(dds, blind=FALSE)
+
+contrast4 <- resvals(contrastvector = c("APA", "Consistent", "Control"), mypval = 0.05) #101 or 105 106
+contrast5 <- resvals(contrastvector = c("APA", "Conflict", "Control"), mypval = 0.05) #39 # or 34 or 49
+contrast6 <- resvals(contrastvector = c("APA", "Conflict", "Consistent"), mypval = 0.05) # 0 
+
+```
+
+DG Consistent versus Control
+
+```{r DGConsistentControl}
+res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+head(data)
+
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "Consistent", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "Control", 
+                                    no = "none")))
+
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+  #xlab(expression(log[2]("Consistent" / "Control"))) + # x-axis label
+  #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+  #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+  #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+  xlim(c(-2.5, 2.5)) +  
+  ylim(c(0, 10)) +  
+  scale_color_manual(values = c("Consistent" = "#f4a582",
+                                "Control" = "#404040", 
+                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank())
+
+colored
+
+pdf(file="../figures/02_RNAseq/DGConsistentControl.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+
+
+```
+
+DG Conflict vs. Control
+```{r DGConflictControl}
+res <- results(dds, contrast =c("APA", "Conflict", "Control"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+
+# more complicated but beautiful ggplot from https://twbattaglia.github.io/2016/12/17/volcano-plot/
+# Add gene names Add the -log10 pvalue Add the pre-calculated log2 fold change
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+head(data)
+
+# Modify dataset to add new coloumn of colors
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "Conflict", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "Control", 
+                                    no = "none")))
+
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+  #xlab(expression(log[2]("Conflict" / "Control"))) + # x-axis label
+  #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+  #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+  #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+  xlim(c(-2.5, 2.5)) +  
+  ylim(c(0, 10)) +    
+  scale_color_manual(values = c("Conflict" = "#ca0020", 
+                                "Control" = "#404040", 
+                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank())
+
+colored
+
+pdf(file="../figures/02_RNAseq/DGConflictControl.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+
+```
+
+```{r DGConflictConsistent}
+
+res <- results(dds, contrast =c("APA", "Conflict", "Consistent"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered)
+
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+head(data)
+
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "Conflict", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "Consistent", 
+                                    no = "none")))
+
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  #ggtitle(label = "Volcano Plot", subtitle = "Colored by directionality") +  # add title
+  #xlab(expression(log[2]("Conflict" / "Consistent"))) + # x-axis label
+  #ylab(expression(-log[10]("adjusted p-value"))) + # y-axis label
+  #geom_vline(xintercept = 0, colour = "black") + # add line at 0
+  #geom_hline(yintercept = 1.3, colour = "black") + # p(0.05) = 1.3
+  xlim(c(-2.5, 2.5)) +  
+  ylim(c(0, 10)) +  
+  scale_color_manual(values = c("Conflict" = "#ca0020", 
+                                "Consistent" = "#f4a582", 
+                                "none" = "#bdbdbd")) +
+  theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank())
+
+colored
+pdf(file="../figures/02_RNAseq/DGConflictConsistent.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+```
+
+
+```{r pca}
+
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+percentVar
+
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+aov1 <- aov(PC1 ~ APA, data=pcadata)
+summary(aov1) 
+TukeyHSD(aov1, which = "APA")
+pcadata$Punch <- factor(pcadata$APA, levels=c("Control", "Consistent", "Conflict"))
+plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$APA, shapename = "APA",  colorvalues = colorvalAPA)
+
+
+```
