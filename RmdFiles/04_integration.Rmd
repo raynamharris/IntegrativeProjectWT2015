@@ -12,6 +12,9 @@ output:
 library(plyr)
 library(dplyr)
 library(reshape2)
+
+knitr::opts_chunk$set(fig.path = '../figures/04_integration/')
+
 ```
 
 ## Import Data
