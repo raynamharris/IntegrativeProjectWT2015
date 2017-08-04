@@ -63,12 +63,12 @@ From Experitment 1: Dissociation Test Molecular Function (MF)
     # Data viz
     gomwuPlot(input,goAnnotations,goDivision,
         absValue=-log(0.05,10),  
-        level1=0.05, 
+        level1=0.01, 
         level2=0.05, 
-        level3=0.05, 
+        level3=0.001, 
         txtsize=1.4,    
         treeHeight=0.5, 
-      colors=c("grey73","lightcoral","grey73","lightcoral") 
+      colors=c("grey73","lightsalmon","grey73","lightsalmon") 
     )
 
     ## Warning in plot.formula(c(1:top) ~ c(1:top), type = "n", axes = F, xlab =
@@ -79,8 +79,8 @@ From Experitment 1: Dissociation Test Molecular Function (MF)
 
 ![](../../figures/02_RNAseq/GOConsistentControlDG-1.png)
 
-    ## GO terms dispayed:  37 
-    ## "Good genes" accounted for:  220 out of 429 ( 51% )
+    ## GO terms dispayed:  20 
+    ## "Good genes" accounted for:  162 out of 429 ( 38% )
 
     # input files
     input="padjAPAConflictControlDG.csv" 
@@ -98,9 +98,9 @@ From Experitment 1: Dissociation Test Molecular Function (MF)
     # Data viz
     gomwuPlot(input,goAnnotations,goDivision,
         absValue=-log(0.05,10),  
-        level1=0.05, 
+        level1=0.01, 
         level2=0.05, 
-        level3=0.05, 
+        level3=0.001, 
         txtsize=1.4,    
         treeHeight=0.5, 
       colors=c("grey73","red","grey73","red") 
@@ -114,8 +114,8 @@ From Experitment 1: Dissociation Test Molecular Function (MF)
 
 ![](../../figures/02_RNAseq/GOConflictControlDG-1.png)
 
-    ## GO terms dispayed:  26 
-    ## "Good genes" accounted for:  131 out of 321 ( 41% )
+    ## GO terms dispayed:  5 
+    ## "Good genes" accounted for:  47 out of 321 ( 15% )
 
     #library(dplyr)
     #list of all genes. I only care about column 1
@@ -150,7 +150,7 @@ From Experitment 1: Dissociation Test Molecular Function (MF)
         absValue=0.001,   
         level1=0.05, 
         level2=0.05, 
-        level3=0.05, 
+        level3=0.05,
         txtsize=1.5,    
         treeHeight=0.5 
     )
