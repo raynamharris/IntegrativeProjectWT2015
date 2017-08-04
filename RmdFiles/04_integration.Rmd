@@ -108,15 +108,15 @@ alldata <- left_join(behaviorpca, pcadatabyregion)
 
 ```{r superheatmap}
 
-sh2 <- superheat(X = alldata[,-c(6,7,8)],
+sh2 <- superheat(X = alldata[,-c(6:8,15:17,24:26,33:35)],
                 #yr = behaviorpca[,10],
                 #yr.axis.name = "PC10",
                 membership.rows = alldata$APA,
                 pretty.order.cols = TRUE,
                 col.dendrogram = TRUE,
-                bottom.label.size = 0.4,
+                bottom.label.size = 0.3,
+                bottom.label.text.size = 4,
                 bottom.label.text.angle = 90,
                 scale = TRUE)
+
 ```
-
-
