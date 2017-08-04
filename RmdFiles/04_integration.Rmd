@@ -12,6 +12,7 @@ output:
 library(plyr)
 library(dplyr)
 library(reshape2)
+library(superheat)
 
 knitr::opts_chunk$set(fig.path = '../figures/04_integration/')
 
@@ -106,15 +107,6 @@ alldata <- left_join(behaviorpca, pcadatabyregion)
 
 
 ```{r superheatmap}
-library(superheat)
-# plot a heatmap of the numerical iris variables
-# cluster by species and plot Sepal.Length on the right
-# save the superheat object to access the membership vectors
-sh <- superheat(X = iris[,-c(1, 5)],
-                yr = iris[,1],
-                yr.axis.name = "Sepal.Length",
-                membership.rows = iris$Species)
-head(iris)
 
 sh2 <- superheat(X = alldata[,-c(6,7,8)],
                 #yr = behaviorpca[,10],
