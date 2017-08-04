@@ -12,6 +12,7 @@ The figures made from this script were compiled in Adobe.
     library(ggplot2) ## for awesome plots!
     library(pheatmap) ## awesome heatmaps
     library(VennDiagram)
+    library(ggrepel) ## for labeling volcano plot
 
     ## Functions
     source("functions_RNAseq.R")
@@ -383,7 +384,8 @@ CA3 only differential gene expression
     ## Conflict-Consistent -7.298176 -25.670417 11.07406 0.5417691
 
     pcadata$Punch <- factor(pcadata$APA, levels=c("Control", "Consistent", "Conflict"))
-    plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$APA, shapename = "APA",  colorvalues = colorvalAPA)
+
+    plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$APA, shapename = "APA",  colorvalues = colorvalAPA) 
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
@@ -773,6 +775,8 @@ CA3 only differential gene expression
                             no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                         yes = "DG", 
                                         no = "none")))
+    top_labelled <- top_n(data, n = 5, wt = lfc)
+
 
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
@@ -791,7 +795,14 @@ CA3 only differential gene expression
                                     "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       theme(axis.title.x = element_blank())+ 
-      theme(axis.title.y = element_blank())
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
 
     colored
 
@@ -884,6 +895,8 @@ CA3 only differential gene expression
                             no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                         yes = "DG", 
                                         no = "none")))
+    top_labelled <- top_n(data, n = 5, wt = lfc)
+
 
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
@@ -901,8 +914,15 @@ CA3 only differential gene expression
                                     "DG" = "#d95f02", 
                                     "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
-      theme(axis.title.x = element_blank())+ 
-      theme(axis.title.y = element_blank())
+      theme(axis.title.x = element_blank()) + 
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
 
     colored
 
@@ -1018,6 +1038,8 @@ CA3 only differential gene expression
                             no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                         yes = "DG", 
                                         no = "none")))
+    top_labelled <- top_n(data, n = 5, wt = lfc)
+
 
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
@@ -1035,8 +1057,15 @@ CA3 only differential gene expression
                                     "DG" = "#d95f02", 
                                     "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
                                                                  panel.grid.major=element_blank()) + 
-      theme(axis.title.x = element_blank())+ 
-      theme(axis.title.y = element_blank())
+      theme(axis.title.x = element_blank()) + 
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
 
     colored
 
@@ -1129,6 +1158,7 @@ CA3 only differential gene expression
                             no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                         yes = "DG", 
                                         no = "none")))
+    top_labelled <- top_n(data, n = 5, wt = lfc)
 
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
@@ -1147,8 +1177,14 @@ CA3 only differential gene expression
                                     "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
                                                                  panel.grid.major=element_blank()) + 
       theme(axis.title.x = element_blank())+ 
-      theme(axis.title.y = element_blank())
-
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
     colored
 
 ![](../figures/02_RNAseq/ConsistentOnly-5.png)
@@ -1268,6 +1304,8 @@ DG Consistent versus Control
                             no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                         yes = "Control", 
                                         no = "none")))
+    top_labelled <- top_n(data, n = 5, wt = lfc)
+
 
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
@@ -1286,7 +1324,14 @@ DG Consistent versus Control
                                     "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       theme(axis.title.x = element_blank())+ 
-      theme(axis.title.y = element_blank())
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
 
     colored
 
@@ -1348,6 +1393,8 @@ DG Conflict vs. Control
                             no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                         yes = "Control", 
                                         no = "none")))
+    top_labelled <- top_n(data, n = 5, wt = lfc)
+
 
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
@@ -1366,7 +1413,14 @@ DG Conflict vs. Control
                                     "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       theme(axis.title.x = element_blank())+ 
-      theme(axis.title.y = element_blank())
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
 
     colored
 
@@ -1423,6 +1477,8 @@ DG Conflict vs. Control
                             no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                         yes = "Consistent", 
                                         no = "none")))
+    top_labelled <- top_n(data, n = 5, wt = lfc)
+
 
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
@@ -1441,8 +1497,15 @@ DG Conflict vs. Control
                                     "none" = "#bdbdbd")) +
       theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
-      theme(axis.title.x = element_blank())+ 
-      theme(axis.title.y = element_blank())
+      theme(axis.title.x = element_blank()) + 
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
 
     colored
 
