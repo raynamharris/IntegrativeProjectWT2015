@@ -7,7 +7,7 @@ output: md_document
 
 The figures made from this script were compiled in Adobe.
 
-<img src="../figures/02_RNAseq/02_rnaseq-01.png" width="1370" />
+<img src="../figures/02_RNAseq/02_RNAseq-01.png" width="1370" />
 
 ```{r setup, message=F, warning=F}
 library(dplyr) ## for filtering and selecting rows
