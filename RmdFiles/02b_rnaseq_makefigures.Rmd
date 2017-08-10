@@ -12,6 +12,7 @@ library(dplyr) ## for filtering and selecting rows
 library(car) ## stats
 library(VennDiagram) ## venn diagrams
 library(pheatmap) ## awesome heatmaps
+library(viridis) # for awesome color pallette
 
 ## load functions 
 source("figureoptions.R")
@@ -51,15 +52,11 @@ venn3 <- row.names(rldpadjs[rldpadjs[3] <0.1 & !is.na(rldpadjs[3]),])
 venn4 <- row.names(rldpadjs[rldpadjs[4] <0.1 & !is.na(rldpadjs[4]),])
 venn5 <- row.names(rldpadjs[rldpadjs[5] <0.1 & !is.na(rldpadjs[5]),])
 
-
-
-
 ## 4 way 
 ```
 
-```{r venndiagram2}
-
-candidates <- list("DG vs CA3" = venn3, "Control vs Consistent" = venn4, "DG vs CA1" = venn1,  "Control vs Conflict" = venn5)
+```{r venndiagram4}
+candidates <- list("Control vs Consistent" = venn4, "DG vs CA3" = venn3  ,"Control vs Conflict" = venn5, "DG vs CA1" = venn1 )
 
 prettyvenn <- venn.diagram(
   scaled=T,
@@ -73,12 +70,10 @@ prettyvenn <- venn.diagram(
   cat.cex = 1, cat.fontfamily = "sans")
 grid.draw(prettyvenn)
 
-
 ```
 
 ```{r venndiagram3}
-## other 4 way
-
+## other 3 way
 
 candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
@@ -94,10 +89,9 @@ prettyvenn <- venn.diagram(
   cat.cex = 1, cat.fontfamily = "sans")
 grid.draw(prettyvenn)
 
-
 ```
 
-```{r venndiagram3way} 
+```{r venndiagram3brainregions} 
 candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
 prettyvenn <- venn.diagram(
@@ -116,11 +110,8 @@ grid.draw(prettyvenn)
 ## Heatmaps
 
 ```{r heatmap}
-source("figureoptions.R")
-
 rownames(df) <- names(countData)
-
-ann_colors = ann_colors1 #use 
+ann_colors <- ann_colors2 #use 
 
 # make sure the data is a matrix
 DEGes <- as.matrix(DEGes) 
@@ -136,7 +127,7 @@ pheatmap(DEGes, show_colnames=T, show_rownames = F,
          fontsize = 11, 
          #width=4.5, height=3,
          border_color = "grey60" ,
-         color = colorpalette,
+         color = viridis(30),
          cellwidth = 8, 
          clustering_method="average",
          breaks=myBreaks,
@@ -150,7 +141,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          fontsize = 10, 
          #width=4.5, height=3,
          border_color = "grey60" ,
-         color = colorpalette,
+         color = viridis(30),
          cellwidth = 8, 
          clustering_method="average",
          breaks=myBreaks,

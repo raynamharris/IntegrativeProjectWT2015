@@ -10,6 +10,7 @@
 
     library(VennDiagram) ## venn diagrams
     library(pheatmap) ## awesome heatmaps
+    library(viridis) # for awesome color pallette
 
     ## load functions 
     source("figureoptions.R")
@@ -75,12 +76,9 @@ padj) and plot some venn diagrams.
     venn4 <- row.names(rldpadjs[rldpadjs[4] <0.1 & !is.na(rldpadjs[4]),])
     venn5 <- row.names(rldpadjs[rldpadjs[5] <0.1 & !is.na(rldpadjs[5]),])
 
-
-
-
     ## 4 way 
 
-    candidates <- list("DG vs CA3" = venn3, "Control vs Consistent" = venn4, "DG vs CA1" = venn1,  "Control vs Conflict" = venn5)
+    candidates <- list("Control vs Consistent" = venn4, "DG vs CA3" = venn3  ,"Control vs Conflict" = venn5, "DG vs CA1" = venn1 )
 
     prettyvenn <- venn.diagram(
       scaled=T,
@@ -94,10 +92,9 @@ padj) and plot some venn diagrams.
       cat.cex = 1, cat.fontfamily = "sans")
     grid.draw(prettyvenn)
 
-![](../figures/02_RNAseq/venndiagram2-1.png)
+![](../figures/02_RNAseq/venndiagram4-1.png)
 
-    ## other 4 way
-
+    ## other 3 way
 
     candidates <- list("DG vs CA1" = venn1, "Control vs Consistent" = venn4,"DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
 
@@ -129,16 +126,13 @@ padj) and plot some venn diagrams.
       cat.cex = 1, cat.fontfamily = "sans")
     grid.draw(prettyvenn)
 
-![](../figures/02_RNAseq/venndiagram3way-1.png)
+![](../figures/02_RNAseq/venndiagram3brainregions-1.png)
 
 Heatmaps
 --------
 
-    source("figureoptions.R")
-
     rownames(df) <- names(countData)
-
-    ann_colors = ann_colors1 #use 
+    ann_colors <- ann_colors2 #use 
 
     # make sure the data is a matrix
     DEGes <- as.matrix(DEGes) 
@@ -154,7 +148,7 @@ Heatmaps
              fontsize = 11, 
              #width=4.5, height=3,
              border_color = "grey60" ,
-             color = colorpalette,
+             color = viridis(30),
              cellwidth = 8, 
              clustering_method="average",
              breaks=myBreaks,
@@ -170,7 +164,7 @@ Heatmaps
              fontsize = 10, 
              #width=4.5, height=3,
              border_color = "grey60" ,
-             color = colorpalette,
+             color = viridis(30),
              cellwidth = 8, 
              clustering_method="average",
              breaks=myBreaks,

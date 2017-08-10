@@ -17,6 +17,15 @@ ann_colors1 = list(
             CA3 = (values=c("#1b9e77")), 
             DG = (values=c("#d95f02"))))
 
+ann_colors2 = list(
+  APA =  c(Control = (values=c("#404040")), 
+             Consistent = (values=c("#f4a582")), 
+             Conflict = (values=c("#ca0020"))),
+  Punch = c(CA1 = (values=c("#7570b3")),
+             CA3 = (values=c("#1b9e77")), 
+             DG = (values=c("#d95f02"))))
+
+
 
 session_colors = list(
   APA =  c(control = (values=c("#404040")), 
