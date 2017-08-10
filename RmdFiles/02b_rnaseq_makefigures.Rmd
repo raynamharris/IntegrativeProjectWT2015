@@ -5,6 +5,11 @@ date: "4/26/2017"
 output: md_document
 ---
 
+The figures made from this script were compiled in Adobe.
+
+<img src="../figures/02_RNAseq/02_RNAseq-01.png" width="1370" />
+
+
 ```{r setup, message=F}
 library(ggplot2) ## for awesome plots!
 library(cowplot) ## for some easy to use themes
