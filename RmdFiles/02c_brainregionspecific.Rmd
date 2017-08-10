@@ -10,18 +10,14 @@ The figures made from this script were compiled in Adobe.
 <img src="../figures/02_RNAseq/02_RNAseq-01.png" width="1370" />
 
 ```{r setup, message=F, warning=F}
-library(dplyr) ## for filtering and selecting rows
-library(plyr) ## for renmaing factors
-library(reshape2) ## for melting dataframe
-library(DESeq2) ## for gene expression analysis
-library(edgeR)  ## for basic read counts status
-library(magrittr) ## to use the weird pipe
-library(genefilter)  ## for PCA fuction
 library(ggplot2) ## for awesome plots!
+library(cowplot) ## for some easy to use themes
+library(dplyr) ## for filtering and selecting rows
+library(car) ## stats
+library(VennDiagram) ## venn diagrams
 library(pheatmap) ## awesome heatmaps
-library(VennDiagram)
-library(ggrepel) ## for labeling volcano plot
 library(viridis) # for awesome color pallette
+library(DESeq2) ## for gene expression analysis
 
 ## Functions
 source("functions_RNAseq.R")
