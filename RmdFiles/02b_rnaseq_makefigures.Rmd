@@ -25,7 +25,6 @@ library(magrittr) ## to use the weird pipe
 library(genefilter)  ## for PCA fuction
 library(ggrepel) ## for labeling volcano plot
 
-
 ## load functions 
 source("figureoptions.R")
 source("functions_RNAseq.R")
@@ -44,10 +43,10 @@ df <- read.csv("../data/02a_df.csv", header = T)
 pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
 ```
 
-## P-value distributions
+## Supplementray P-value distributions
 Here, the goal is the analyze the distribution of pvalues to see if they are randomly distributed or if that is a tendency towards and increase or decrease of low pvalues. There, I'm showing the pval and adjusted pvale (padj) for all for two-way comparision. 
 
-```{r pvaluedistribution}
+```{r pvaluedistribution, include=FALSE}
 ggplot(rldpadjs, aes(x = padjPunchCA1DG)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 ggplot(rldpadjs, aes(x = padjPunchCA1CA3)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
 ggplot(rldpadjs, aes(x = padjPunchCA3DG)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
@@ -173,22 +172,21 @@ percentVar <- c(49,21,5,3,2,1,1,1,1)
 pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
 pcadata$APA <- factor(pcadata$APA, levels=c("Control", "Consistent", "Conflict"))
 
+plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
 
-# separates brain regions
-plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
-plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
-# PC4 significant for training
-plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
+
+plotPCs(pcadata, 4, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 
 
 # pdf the same pca plots descripbed above of the above
 pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
-PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
 plot(PCA12)
 dev.off()
 
 pdf(file="../figures/02_RNAseq/PCA25.pdf", width=4.5, height=3)
-PCA25 <- plotPCs(pcadata, 4,2, aescolor = pcadata$APA, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalAPA)
+PCA25 <- plotPCs(pcadata, 4, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 plot(PCA25)
 dev.off()
 ```
@@ -214,6 +212,8 @@ ggplot(rowsum, aes(x=millioncounts)) +
                      limits=c(0, 8)) +
   scale_y_continuous(name = "Number of Samples")
 ```
+
+
 
 
 ## CA1 only differential gene expression

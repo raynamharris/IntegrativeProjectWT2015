@@ -1,3 +1,7 @@
+The figures made from this script were compiled in Adobe.
+
+<img src="../figures/02_RNAseq/02_RNAseq-01.png" width="1370" />
+
     library(ggplot2) ## for awesome plots!
 
     ## Warning: package 'ggplot2' was built under R version 3.3.2
@@ -49,43 +53,13 @@
     df <- read.csv("../data/02a_df.csv", header = T)
     pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
 
-P-value distributions
----------------------
+Supplementray P-value distributions
+-----------------------------------
 
 Here, the goal is the analyze the distribution of pvalues to see if they
 are randomly distributed or if that is a tendency towards and increase
 or decrease of low pvalues. There, I'm showing the pval and adjusted
 pvale (padj) for all for two-way comparision.
-
-    ggplot(rldpadjs, aes(x = padjPunchCA1DG)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
-
-    ## Warning: Removed 5 rows containing non-finite values (stat_bin).
-
-![](../figures/02_RNAseq/pvaluedistribution-1.png)
-
-    ggplot(rldpadjs, aes(x = padjPunchCA1CA3)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
-
-    ## Warning: Removed 5 rows containing non-finite values (stat_bin).
-
-![](../figures/02_RNAseq/pvaluedistribution-2.png)
-
-    ggplot(rldpadjs, aes(x = padjPunchCA3DG)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
-
-    ## Warning: Removed 5 rows containing non-finite values (stat_bin).
-
-![](../figures/02_RNAseq/pvaluedistribution-3.png)
-
-    ggplot(rldpadjs, aes(x = padjAPAConsistentControl)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
-
-    ## Warning: Removed 5 rows containing non-finite values (stat_bin).
-
-![](../figures/02_RNAseq/pvaluedistribution-4.png)
-
-    ggplot(rldpadjs, aes(x = padjAPAConflictControl)) + geom_histogram(binwidth = 0.05) + scale_y_log10()
-
-    ## Warning: Removed 5 rows containing non-finite values (stat_bin).
-
-![](../figures/02_RNAseq/pvaluedistribution-5.png)
 
 Venn Diagrams of DEgenes
 ------------------------
@@ -204,24 +178,21 @@ Heatmaps
     pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
     pcadata$APA <- factor(pcadata$APA, levels=c("Control", "Consistent", "Conflict"))
 
-
-    # separates brain regions
-    plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+    plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
 ![](../figures/02_RNAseq/pca-1.png)
 
-    plotPCs(pcadata, 1, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+    plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
 ![](../figures/02_RNAseq/pca-2.png)
 
-    # PC4 significant for training
-    plotPCs(pcadata, 2, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+    plotPCs(pcadata, 4, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
@@ -230,7 +201,7 @@ Heatmaps
 
     # pdf the same pca plots descripbed above of the above
     pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
-    PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+    PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
     plot(PCA12)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
@@ -242,7 +213,7 @@ Heatmaps
     ##                 2
 
     pdf(file="../figures/02_RNAseq/PCA25.pdf", width=4.5, height=3)
-    PCA25 <- plotPCs(pcadata, 4,2, aescolor = pcadata$APA, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalAPA)
+    PCA25 <- plotPCs(pcadata, 4, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
     plot(PCA25)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
