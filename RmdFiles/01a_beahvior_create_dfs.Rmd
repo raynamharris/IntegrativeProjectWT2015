@@ -9,7 +9,6 @@ output:
 
 ```{r setup, message=F}
 ## load libraries 
-#library(magrittr) ## to use the weird pipe
 library(tidyr) ## for respahing data
 library(plyr) ## for renmaing factors
 library(dplyr) ## for filtering and selecting rows
@@ -43,14 +42,12 @@ retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  dropleve
 ```
 
 ```{r behaviorsummary}
-behaviorsummaryTime <- summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
-behaviorsummaryTime
-
 behaviorsummaryNum <- summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
 behaviorsummaryNum
+
+behaviorsummaryNumAPA2 <- summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+behaviorsummaryNumAPA2
 ```
-
-
 
 
 ```{r heatmap,  message=FALSE, results='hide'}
@@ -79,8 +76,9 @@ behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 ```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
 write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
-write.csv(behaviorsummaryTime, file = "../data/01a_behaviorsummaryTime.csv", row.names = FALSE)
 write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
+write.csv(behaviorsummaryNumAPA2, file = "../data/01a_behaviorsummaryNumAPA2.csv", row.names = FALSE)
+
 write.csv(scaledaveragedata, file = "../data/01a_scaledaveragedata.csv", row.names = TRUE)
 write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.names = TRUE)
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)

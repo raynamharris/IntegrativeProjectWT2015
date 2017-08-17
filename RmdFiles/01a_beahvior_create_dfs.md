@@ -1,6 +1,5 @@
 ``` r
 ## load libraries 
-#library(magrittr) ## to use the weird pipe
 library(tidyr) ## for respahing data
 ```
 
@@ -163,28 +162,6 @@ retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  dropleve
 ```
 
 ``` r
-behaviorsummaryTime <- summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
-behaviorsummaryTime
-```
-
-    ## Source: local data frame [27 x 4]
-    ## Groups: APA [?]
-    ## 
-    ##           APA TrainSessionComboNum        m       se
-    ##        <fctr>                <int>    <dbl>    <dbl>
-    ## 1     control                    1 11.66765 2.172617
-    ## 2     control                    2 12.99706 4.081765
-    ## 3     control                    3 41.59588 7.201730
-    ## 4     control                    4 28.79882 5.581521
-    ## 5     control                    5 24.91706 6.749053
-    ## 6     control                    6 30.78412 4.045806
-    ## 7     control                    7 15.08588 2.535963
-    ## 8     control                    8 34.96000 8.202296
-    ## 9     control                    9 41.13412 9.478989
-    ## 10 consistent                    1  6.14125 2.268263
-    ## # ... with 17 more rows
-
-``` r
 behaviorsummaryNum <- summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
 behaviorsummaryNum
 ```
@@ -205,6 +182,28 @@ behaviorsummaryNum
     ## 9     control                    9 15.41176 1.0916084
     ## 10 consistent                    1 31.12500 2.1333868
     ## # ... with 17 more rows
+
+``` r
+behaviorsummaryNumAPA2 <- summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+behaviorsummaryNumAPA2
+```
+
+    ## Source: local data frame [36 x 4]
+    ## Groups: APA2 [?]
+    ## 
+    ##                APA2 TrainSessionComboNum        m       se
+    ##              <fctr>                <int>    <dbl>    <dbl>
+    ## 1  yoked-consistent                    1 31.37500 2.321772
+    ## 2  yoked-consistent                    2 21.37500 2.017225
+    ## 3  yoked-consistent                    3 15.37500 1.400733
+    ## 4  yoked-consistent                    4 14.50000 2.008909
+    ## 5  yoked-consistent                    5 16.87500 0.875000
+    ## 6  yoked-consistent                    6 15.00000 1.558387
+    ## 7  yoked-consistent                    7 13.87500 1.456972
+    ## 8  yoked-consistent                    8 14.87500 1.663017
+    ## 9  yoked-consistent                    9 17.00000 1.500000
+    ## 10   yoked-conflict                    1 32.33333 1.154701
+    ## # ... with 26 more rows
 
 ``` r
 ## see the makesessionheatmap documentataion for data tidying and plot specifications
@@ -270,8 +269,9 @@ behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 ``` r
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
 write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
-write.csv(behaviorsummaryTime, file = "../data/01a_behaviorsummaryTime.csv", row.names = FALSE)
 write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
+write.csv(behaviorsummaryNumAPA2, file = "../data/01a_behaviorsummaryNumAPA2.csv", row.names = FALSE)
+
 write.csv(scaledaveragedata, file = "../data/01a_scaledaveragedata.csv", row.names = TRUE)
 write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.names = TRUE)
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)

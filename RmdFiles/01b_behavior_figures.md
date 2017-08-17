@@ -25,8 +25,8 @@ To help make production of these figures more reproducible, I first import some 
 ``` r
 behavior <- read.csv("../data/01a_behavior.csv", header = T)
 retention <- read.csv("../data/01a_retention.csv", header = T) 
-behaviorsummaryTime <- read.csv("../data/01a_behaviorsummaryTime.csv", header = T)
 behaviorsummaryNum <- read.csv("../data/01a_behaviorsummaryNum.csv", header = T)
+behaviorsummaryNumAPA2 <- read.csv("../data/01a_behaviorsummaryNumAPA2.csv", header = T)
 scaledaveragedata <- read.csv("../data/01a_scaledaveragedata.csv", header = T, row.names = 1)
 columnannotations <- read.csv("../data/01a_columnannotations.csv", header = T, row.names = 1)
 scoresdf <- read.csv("../data/01a_scoresdf.csv", header = T)
@@ -35,46 +35,11 @@ behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.nam
 
 #set factor levels
 behavior$APA <- factor(behavior$APA, levels = c("control", "consistent", "conflict"))
-behaviorsummaryTime$APA <- factor(behaviorsummaryTime$APA, levels = c("control", "consistent", "conflict"))
+
 behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "consistent", "conflict"))
+behaviorsummaryNumAPA2$APA2 <- factor(behaviorsummaryNumAPA2$APA2, levels = c("yoked-consistent", "yoked-conflict" ,"consistent", "conflict"))
 scoresdf$APA <- factor(scoresdf$APA, levels = c("control", "consistent", "conflict"))
 ```
-
-Supplementary Figure 1B:
-------------------------
-
-Time to first entrance is a common measure for learning adn memory tests. As you can see, however, there is quite a lot of variation within treatment group across time.
-
-``` r
-# plotting mean and se for time to first entrance
-firstentrance <- ggplot(behaviorsummaryTime, aes(x=, TrainSessionComboNum, y=m, color=APA)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA), width=.1) +
-    geom_point(size = 2) +
-   geom_line() +
-    scale_y_continuous(name="Time to First Entrance (s)") +
-    scale_x_continuous(name = NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
-  theme_cowplot(font_size = 14, line_size = 1) +
-  background_grid(major = "none", minor = "none") +
-  scale_color_manual(values = colorvalAPA) + 
-  theme(legend.position="none") 
-
-firstentrance
-```
-
-![](../figures/01_behavior/numentrance1-1.png)
-
-``` r
-pdf(file="../figures/01_behavior/firstentrance.pdf", width=6, height=3)
-plot(firstentrance)
-dev.off()
-```
-
-    ## quartz_off_screen 
-    ##                 2
 
 Figure 1B: Standard vizualization of mean avoidance beavior
 -----------------------------------------------------------
@@ -98,15 +63,44 @@ numentrance1 <- ggplot(behaviorsummaryNum, aes(x=, TrainSessionComboNum, y=m, co
   scale_color_manual(values = colorvalAPA) + 
   theme(legend.position=c(0.8, 0.8))  + 
   theme(legend.title=element_blank())
-
 numentrance1
 ```
 
-![](../figures/01_behavior/unnamed-chunk-1-1.png)
+![](../figures/01_behavior/numentrance-1.png)
 
 ``` r
 pdf(file="../figures/01_behavior/numentrance1.pdf", width=6, height=3)
 plot(numentrance1)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+numentrance2 <- ggplot(behaviorsummaryNumAPA2, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+    geom_point(size = 2) +
+   geom_line() +
+    scale_y_continuous(name="Number of Entrances") +
+    scale_x_continuous(name = NULL, 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
+                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
+  theme_cowplot(font_size = 14, line_size = 0.5) +
+  background_grid(major = "none", minor = "none") +
+  scale_color_manual(values = colorvalAPA2) + 
+  theme(legend.position=c(0.8, 0.8))  + 
+  theme(legend.title=element_blank())
+numentrance2
+```
+
+![](../figures/01_behavior/numentrance-2.png)
+
+``` r
+pdf(file="../figures/01_behavior/numentrance2.pdf", width=6, height=3)
+plot(numentrance2)
 dev.off()
 ```
 
@@ -119,7 +113,7 @@ Here I visualze the individual data points for each annimal then use a linar mod
 
 ``` r
 # plotting all data points and linear model smoothing for number of entrances
-numentrance2 <- onebehavior(data=behavior, 
+numentrance3 <- onebehavior(data=behavior, 
                             xcol="TrainSessionComboNum", ycol="NumEntrances",
                   yaxislabel="Number of Entrances",
                   colorcode="APA")
@@ -127,11 +121,11 @@ numentrance2 <- onebehavior(data=behavior,
 numentrance2
 ```
 
-![](../figures/01_behavior/numentrance2-1.png)
+![](../figures/01_behavior/numentrance3-1.png)
 
 ``` r
-pdf(file="../figures/01_behavior/numentrance2.pdf", width=6, height=3)
-plot(numentrance2)
+pdf(file="../figures/01_behavior/numentrance3.pdf", width=6, height=3)
+plot(numentrance3)
 dev.off()
 ```
 

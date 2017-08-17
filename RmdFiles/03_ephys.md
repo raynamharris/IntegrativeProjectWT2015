@@ -23,37 +23,24 @@ library(car) ## for statistics
 
 ``` r
 ## load functions 
+source("figureoptions.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/ephys/')
+knitr::opts_chunk$set(fig.path = '../figures/03_ephys/')
 ```
 
 ``` r
 ## read summarized ephys data and relevel factors
 ephys <- read.csv("../data/03_ephys.csv", header = T)
 ephys$Group <- factor(ephys$Group, levels = c("control", "consistent", "conflict"))
-summary(ephys)
-```
-
-    ##         Group        Mouse       PTP_3_10      EarlyPotentiation_11_20
-    ##  control   :11   15-143B: 1   Min.   : 94.69   Min.   : 81.36         
-    ##  consistent: 6   15-143C: 1   1st Qu.:121.05   1st Qu.:117.08         
-    ##  conflict  : 5   15-143D: 1   Median :132.34   Median :122.92         
-    ##                  15-144A: 1   Mean   :142.15   Mean   :137.44         
-    ##                  15-144B: 1   3rd Qu.:150.69   3rd Qu.:151.13         
-    ##                  15-144C: 1   Max.   :273.40   Max.   :262.75         
-    ##                  (Other):16                                           
-    ##  LatePotentiation_26_end    MaxfEPSP         
-    ##  Min.   : 76.9           Min.   :-0.0077112  
-    ##  1st Qu.:113.8           1st Qu.:-0.0031690  
-    ##  Median :127.8           Median :-0.0029357  
-    ##  Mean   :133.9           Mean   :-0.0031245  
-    ##  3rd Qu.:140.8           3rd Qu.:-0.0022901  
-    ##  Max.   :289.6           Max.   :-0.0009905  
-    ## 
-
-``` r
 ephyslong <- melt(ephys)
+
+## read voltage response data
+ephys2 <- read.csv("../data/03_ephys2.csv", header = T)
+ephys2long <- read.csv("../data/03_ephys3.csv", header = T)
+
+ephys2$APA <- factor(ephys2$APA, levels = c("control", "consistent", "conflict"))
+ephys2long$APA <- factor(ephys2long$APA, levels = c("control", "consistent", "conflict"))
 ```
 
 the data
@@ -62,43 +49,48 @@ the data
 ``` r
 ephys %>%
   ggplot(aes(x=Group, y=PTP_3_10, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none")
+  geom_boxplot() + theme(legend.position="none") +
+  scale_color_manual(values = colorvalAPA)
 ```
 
-![](../figures/ephys/dataviz-1.png)
+![](../figures/03_ephys/dataviz-1.png)
 
 ``` r
 ephys %>%
   ggplot(aes(x=Group, y=EarlyPotentiation_11_20, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none")
+  geom_boxplot() + theme(legend.position="none") +
+  scale_color_manual(values = colorvalAPA)
 ```
 
-![](../figures/ephys/dataviz-2.png)
+![](../figures/03_ephys/dataviz-2.png)
 
 ``` r
 ephys %>%
   ggplot(aes(x=Group, y=LatePotentiation_26_end, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none")
+  geom_boxplot() + theme(legend.position="none") +
+  scale_color_manual(values = colorvalAPA)
 ```
 
-![](../figures/ephys/dataviz-3.png)
+![](../figures/03_ephys/dataviz-3.png)
 
 ``` r
 ephys %>%
   ggplot(aes(x=Group, y=MaxfEPSP, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none")
+  geom_boxplot() + theme(legend.position="none") +
+  scale_color_manual(values = colorvalAPA)
 ```
 
-![](../figures/ephys/dataviz-4.png)
+![](../figures/03_ephys/dataviz-4.png)
 
 ``` r
 ephyslong %>%
   ggplot(aes(x=Group, y=value, color=Group)) +  
   geom_boxplot() + facet_wrap(~ variable, scales = "free") +
-  theme(legend.position="none")
+  theme(legend.position="none") +
+  scale_color_manual(values = colorvalAPA)
 ```
 
-![](../figures/ephys/dataviz-5.png)
+![](../figures/03_ephys/dataviz-5.png)
 
 stats
 -----
@@ -171,8 +163,8 @@ leveneTest(MaxfEPSP~Group, data=ephys)
 ## group  2  0.2189 0.8054  ==> not significant
 
 ##  one way anova 
-avoTime <- aov(ephys$PTP_3_10 ~ ephys$Group)
-summary(avoTime)
+myanova <- aov(ephys$PTP_3_10 ~ ephys$Group)
+summary(myanova)
 ```
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
@@ -180,7 +172,7 @@ summary(avoTime)
     ## Residuals   19  30619    1612
 
 ``` r
-TukeyHSD(avoTime)
+TukeyHSD(myanova)
 ```
 
     ##   Tukey multiple comparisons of means
@@ -195,8 +187,8 @@ TukeyHSD(avoTime)
     ## conflict-consistent  17.63033 -44.12325 79.38392 0.7517521
 
 ``` r
-avoNum <- aov(ephys$EarlyPotentiation_11_20 ~ ephys$Group)
-summary(avoNum)
+myanova <- aov(ephys$EarlyPotentiation_11_20 ~ ephys$Group)
+summary(myanova)
 ```
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
@@ -204,7 +196,7 @@ summary(avoNum)
     ## Residuals   19  30162    1588
 
 ``` r
-TukeyHSD(avoNum)
+TukeyHSD(myanova)
 ```
 
     ##   Tukey multiple comparisons of means
@@ -219,8 +211,8 @@ TukeyHSD(avoNum)
     ## conflict-consistent  39.42767 -21.86398 100.71931 0.2560883
 
 ``` r
-avoNum <- aov(ephys$LatePotentiation_26_end ~ ephys$Group)
-summary(avoNum)
+myanova <- aov(ephys$LatePotentiation_26_end ~ ephys$Group)
+summary(myanova)
 ```
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
@@ -228,7 +220,7 @@ summary(avoNum)
     ## Residuals   19  40301    2121
 
 ``` r
-TukeyHSD(avoNum)
+TukeyHSD(myanova)
 ```
 
     ##   Tukey multiple comparisons of means
@@ -243,8 +235,8 @@ TukeyHSD(avoNum)
     ## conflict-consistent  33.39533 -37.45299 104.24366 0.4689834
 
 ``` r
-avoNum <- aov(ephys$MaxfEPSP ~ ephys$Group)
-summary(avoNum)
+myanova <- aov(ephys$MaxfEPSP ~ ephys$Group)
+summary(myanova)
 ```
 
     ##             Df    Sum Sq   Mean Sq F value Pr(>F)
@@ -252,7 +244,7 @@ summary(avoNum)
     ## Residuals   19 4.647e-05 2.446e-06
 
 ``` r
-TukeyHSD(avoNum)
+TukeyHSD(myanova)
 ```
 
     ##   Tukey multiple comparisons of means
@@ -265,3 +257,22 @@ TukeyHSD(avoNum)
     ## consistent-control   0.0001040076 -0.001912412 0.002120427 0.9905830
     ## conflict-control    -0.0009649891 -0.003107914 0.001177936 0.4997813
     ## conflict-consistent -0.0010689967 -0.003474822 0.001336829 0.5086608
+
+``` r
+ephys2long %>% 
+  ggplot(aes(x=variablenumeric, y=value, color=APA )) + 
+  stat_smooth(alpha=0.2, size=1) +
+  geom_jitter(size=2, width = 0.5) +
+  background_grid(major = "xy", minor = "none") + 
+  theme_cowplot(font_size = 20, line_size = 1) + 
+  scale_y_continuous(trans = "reverse") + 
+  scale_x_continuous(breaks=c(1,2,3,4,5,6,7),
+                     labels=c("0", "10", "15", "20", "30", "40", "50")) +
+  scale_color_manual(values = colorvalAPA) + 
+  labs(x = "Stimulus Strenght (V)", y = "fEPSP Slope") + 
+  theme(legend.position="none")
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](../figures/03_ephys/plots-1.png)

@@ -18,43 +18,87 @@ library(reshape)  ## widen a
 library(car) ## for statistics
 
 ## load functions 
+source("figureoptions.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/ephys/')
+knitr::opts_chunk$set(fig.path = '../figures/03_ephys/')
 ```
 
 ```{r data,  message=F}
 ## read summarized ephys data and relevel factors
 ephys <- read.csv("../data/03_ephys.csv", header = T)
 ephys$Group <- factor(ephys$Group, levels = c("control", "consistent", "conflict"))
-summary(ephys)
-
 ephyslong <- melt(ephys)
+
+## read voltage response data
+ephys2 <- read.csv("../data/03_ephys2.csv", header = T)
+ephys2long <- read.csv("../data/03_ephys3.csv", header = T)
+
+ephys2$APA <- factor(ephys2$APA, levels = c("control", "consistent", "conflict"))
+ephys2long$APA <- factor(ephys2long$APA, levels = c("control", "consistent", "conflict"))
+
 ```
 
 
 ## the data
 ```{r dataviz}
-ephys %>%
-  ggplot(aes(x=Group, y=PTP_3_10, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none")
-
-ephys %>%
-  ggplot(aes(x=Group, y=EarlyPotentiation_11_20, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none")
-
-ephys %>%
-  ggplot(aes(x=Group, y=LatePotentiation_26_end, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none")
-
-ephys %>%
-  ggplot(aes(x=Group, y=MaxfEPSP, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none")
 
 ephyslong %>%
   ggplot(aes(x=Group, y=value, color=Group)) +  
-  geom_boxplot() + facet_wrap(~ variable, scales = "free") +
-  theme(legend.position="none")
+  geom_boxplot() + 
+  facet_wrap(~ variable, scales = "free") +
+  theme(legend.position="none") +
+  scale_color_manual(values = colorvalAPA)
+
+one <- ephys %>%
+  ggplot(aes(x=Group, y=PTP_3_10, color=Group)) +  
+  geom_boxplot() + theme(legend.position="none") +
+  scale_color_manual(values = colorvalAPA) + 
+  scale_y_continuous(name="Pre-Potentiation",
+                     limits = c(100, 300)) + 
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank())
+  
+
+two <- ephys %>%
+  ggplot(aes(x=Group, y=EarlyPotentiation_11_20, color=Group)) +  
+  geom_boxplot() + theme(legend.position="none") +
+  scale_color_manual(values = colorvalAPA) + 
+  scale_y_continuous(name="Early Potentiation",
+                     limits = c(100, 300)) + 
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank())
+
+three <- ephys %>%
+  ggplot(aes(x=Group, y=LatePotentiation_26_end, color=Group)) +  
+  geom_boxplot() + theme(legend.position="none") +
+  scale_color_manual(values = colorvalAPA) + 
+  scale_y_continuous(name="Late Potentiation",
+                     limits = c(100, 300)) + 
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank())
+
+four <- ephys %>%
+  ggplot(aes(x=Group, y=MaxfEPSP, color=Group)) +  
+  geom_boxplot() + theme(legend.position="none") +
+  scale_color_manual(values = colorvalAPA) + 
+  scale_y_continuous(name="Max fEPSP") 
+
+one
+two
+three
+four
+
+pdf(file="../figures/03_ephys/1pre.pdf", width=2, height=4)
+plot(one)
+dev.off()
+
+pdf(file="../figures/03_ephys/2early.pdf", width=2, height=4)
+plot(two)
+dev.off()
+
+pdf(file="../figures/03_ephys/3late.pdf", width=2, height=4)
+plot(three)
+dev.off()
+
+
 ```
 
 
@@ -89,7 +133,21 @@ myanova <- aov(ephys$MaxfEPSP ~ ephys$Group)
 summary(myanova)
 TukeyHSD(myanova)
 
-myanova <- aov(ephys$MaxfEPSP ~ ephys$Group)
-summary(myanova)
-TukeyHSD(myanova)
+```
+
+```{r plots}
+ephys2long %>% 
+  ggplot(aes(x=variablenumeric, y=value, color=APA )) + 
+  stat_smooth(alpha=0.2, size=1) +
+  geom_jitter(size=2, width = 0.5) +
+  background_grid(major = "xy", minor = "none") + 
+  theme_cowplot(font_size = 20, line_size = 1) + 
+  scale_y_continuous(trans = "reverse") + 
+  scale_x_continuous(breaks=c(1,2,3,4,5,6,7),
+                     labels=c("0", "10", "15", "20", "30", "40", "50")) +
+  scale_color_manual(values = colorvalAPA) + 
+  labs(x = "Stimulus Strenght (V)", y = "fEPSP Slope") + 
+  theme(legend.position="none")
+
+
 ```

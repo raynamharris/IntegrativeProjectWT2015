@@ -1,7 +1,20 @@
 colorvalAPA <- c("#404040", "#f4a582", "#ca0020")
 #404040 ## darkgrey - yoked
-#ca0020 ## red - conflict 
 #f4a582 ## pink - same
+#ca0020 ## red - conflict 
+
+
+colorvalAPA2 <-  c( "#bababa","#404040", "#f4a582", "#ca0020")
+#bababa ## light grey - yoked-consistent
+#404040 ## darkgrey - yoked-conflict
+#f4a582 ## pink - consistent
+#ca0020 ## red - conflict 
+
+colorvalAPA3 <-  c( "#bababa","#404040", "#f4a582", "#ca0020")
+#bababa ## light grey - Yoked_NoConflict
+#404040 ## darkgrey - Yoked_Conflict
+#f4a582 ## pink - Trained_NoConflict
+#ca0020 ## red - Trained_Conflict 
 
 colorvalPunch <- c("#d95f02","#1b9e77", "#7570b3")
 
