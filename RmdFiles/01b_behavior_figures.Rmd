@@ -20,10 +20,15 @@ library(car) ## stats
 library(superheat) # for kmeans clustered heatmap
 library(pheatmap)  # for pretty heatmap
 library(viridis) # for awesome color pallette
+library(reshape2) ## for melting dataframe
+library(tidyr) ## for respahing data
+library(plyr)
+
 
 ## load user-written functions 
 source("functions_behavior.R")
 source("figureoptions.R")
+
 
 ## set output file for figures 
 knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
@@ -36,15 +41,12 @@ behavior <- read.csv("../data/01a_behavior.csv", header = T)
 retention <- read.csv("../data/01a_retention.csv", header = T) 
 behaviorsummaryNum <- read.csv("../data/01a_behaviorsummaryNum.csv", header = T)
 behaviorsummaryNumAPA2 <- read.csv("../data/01a_behaviorsummaryNumAPA2.csv", header = T)
-scaledaveragedata <- read.csv("../data/01a_scaledaveragedata.csv", header = T, row.names = 1)
-columnannotations <- read.csv("../data/01a_columnannotations.csv", header = T, row.names = 1)
 scoresdf <- read.csv("../data/01a_scoresdf.csv", header = T)
 rotationdf <- read.csv("../data/01a_rotationdf.csv", header = T, row.names = 1)
 behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.names = 1)
 
 #set factor levels
 behavior$APA <- factor(behavior$APA, levels = c("control", "consistent", "conflict"))
-
 behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "consistent", "conflict"))
 behaviorsummaryNumAPA2$APA2 <- factor(behaviorsummaryNumAPA2$APA2, levels = c("yoked-consistent", "yoked-conflict" ,"consistent", "conflict"))
 scoresdf$APA <- factor(scoresdf$APA, levels = c("control", "consistent", "conflict"))
@@ -121,27 +123,7 @@ plot(numentrance3)
 dev.off()
 ```
 
-### Supplmentary heatmap
-The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown the viridis color scheme with yellow being positive and purple being negative. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group and training session. 
 
-This particular graph clusters the data according to a kmean of 3 rather than by heriarchical clustering. I use the R package superheat.
-
-```{r superheat,  message=FALSE, results='hide'}
-scaledaveragedatatranposed <- t(scaledaveragedata)
-
-superheat(scaledaveragedata,
-          # change the size of the labels
-          left.label.size = 0.3, 
-          bottom.label.size = 0.4,
-          bottom.label.text.angle = 90, 
-          # cluster rows and add dendrogram
-          pretty.order.cols = TRUE,
-          n.clusters.rows = 3,
-          left.label = 'variable',
-          heat.lim = c(-1.5, 1.5), 
-          extreme.values.na = FALSE)
-
-```
 
 ## Figure 1C: Hierarchical clusering of time series behavioral data
 
@@ -150,8 +132,12 @@ Here I use heirarhical cluster to identify patterns in the behavioral data. On t
 
 ```{r pheatmap,  message=FALSE, results='hide'}
 ## make annotation df and ann_colors for pheatmap
-df <- columnannotations
-ann_colors = session_colors 
+scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior))
+
+# create a rubric for the color coding and load the colors from figureoptions.R
+df <- as.data.frame(makecolumnannotations(scaledaveragedata))
+ann_colors = APAsession  # includes color for session & APA
+
 
 # set color breaks
 paletteLength <- 30
@@ -188,6 +174,81 @@ pheatmap(scaledaveragedata, show_colnames=F, show_rownames = F,
 
 ```
 
+
+Now with 4 treatment groups
+
+
+```{r pheatmap2,  message=FALSE, results='hide'}
+## make annotation df and ann_colors for pheatmap
+scaledaveragedata2 <- as.data.frame(makescaledaveragedata2(behavior))
+
+# create a rubric for the color coding and load the colors from figureoptions.R
+df2 <- as.data.frame(makecolumnannotations(scaledaveragedata2))
+ann_colors = APAsession2  # includes color for session & APA
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(scaledaveragedata2), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(scaledaveragedata2)/paletteLength, max(scaledaveragedata2), length.out=floor(paletteLength/2)))
+
+## pheatmap for markdown
+pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = T,
+         annotation_col=df2, 
+         annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 8, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 10, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+
+# pheatmapfor adobe
+pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = F,
+         annotation_col=df2, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 8, 
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 7, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/01_behavior/pheatmap2.pdf"
+         )
+
+```
+
+
+
+
+### Supplmentary heatmap
+The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown the viridis color scheme with yellow being positive and purple being negative. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group and training session. 
+
+This particular graph clusters the data according to a kmean of 3 rather than by heriarchical clustering. I use the R package superheat.
+
+```{r superheat,  message=FALSE, results='hide'}
+scaledaveragedatatranposed <- t(scaledaveragedata)
+
+superheat(scaledaveragedata,
+          # change the size of the labels
+          left.label.size = 0.3, 
+          bottom.label.size = 0.4,
+          bottom.label.text.angle = 90, 
+          # cluster rows and add dendrogram
+          pretty.order.cols = TRUE,
+          n.clusters.rows = 3,
+          left.label = 'variable',
+          heat.lim = c(-1.5, 1.5), 
+          extreme.values.na = FALSE)
+
+```
+
+
+
 ### Figure 1D1 and 1D2: Principle component analysis 
 Next, I next reduced the dimentionality of the data with a PCA anlaysis. PC1 explains 35% of the variation in the data. All other PCs explain less than 10% of the variation.
 
@@ -211,9 +272,10 @@ ggplot(perc_data, aes(x=PC, y=percent)) +
 ### Figure 1D1: 35% of behaivor variance (PC1) separates yoked from trained 
 PC1 encompases differences between yoked trained indivdual but does not significantly differ between consistent and conflict trained aniamls. To confirm statistical significance of this visual pattern, we conducted a two-way treatment x region ANOVA and confirmed a significant effect of region (F2,31= 101.39; p = 2.5e-14). Post hoc Tukey tests confirmed conflict = consistent < control). The major contibutors to this variation are number of shocks and distance to first entrance.
 
-```{r PC12}
+```{r PCAplots}
 pca12 <- makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA", newxlab = "PC1 (35.7%)", newylab = "PC2 (9.7%)")
 pca12
+
 pdf(file="../figures/01_behavior/pca12.pdf", width=3, height=3)
 plot(pca12)
 dev.off()
@@ -223,38 +285,37 @@ aov1 <- aov(PC1 ~ APA, data=scoresdf)
 summary(aov1) # p = 2.53e-14
 TukeyHSD(aov1, which = "APA") # p<< 0.001 for both control comparisions
 
-fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 2), axes = c(1, 2))
+aov2 <- aov(PC2 ~ APA, data=scoresdf)
+summary(aov2) # p = 0.0295 *
+TukeyHSD(aov2, which = "APA") # p > 0.05
+
+fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 5), axes = c(1, 2))
 fviz12
+
 pdf(file="../figures/01_behavior/fviz12.pdf", width=3, height=3)
 plot(fviz12)
 dev.off()
 
-```
 
+aov6 <- aov(PC6 ~ APA, data=scoresdf)
+summary(aov6) # p = 0.0106 *
+TukeyHSD(aov6, which = "APA") # p = 0.0233390 for conflict-consistent 
 
+aov3 <- aov(PC3 ~ APA, data=scoresdf)
+summary(aov3) # p = 0.117
+TukeyHSD(aov3, which = "APA") # p = 0.0557503 for conflict-consistent 
 
-```{r PC36}
-
-pca36 <-makepcaplotwithpercent(data=scoresdf,xcol="PC3",ycol="PC6",colorcode="APA", newxlab = "PC3 (8.4%)", newylab = "PC6 (3.6%)")
+pca36 <-makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA", newxlab = "PC3 (8.4%)", newylab = "PC6 (3.6%)")
 pca36
 pdf(file="../figures/01_behavior/pca36.pdf", width=3, height=3)
 plot(pca36)
 dev.off()
 
-fviz36 <- fviz_pca_var(res.pca, select.var = list(contrib = 2), axes = c(3, 6))
+fviz36 <- fviz_pca_var(res.pca, select.var = list(contrib = 3), axes = c(3, 6))
 fviz36
 pdf(file="../figures/01_behavior/fviz36.pdf", width=3, height=3)
 plot(fviz36)
 dev.off()
-
-aov3 <- aov(PC3 ~ APA, data=scoresdf)
-summary(aov3) # p = 0.0633
-TukeyHSD(aov3, which = "APA") # p = 0.0557503 for conflict-consistent 
-
-aov6 <- aov(PC6 ~ APA, data=scoresdf)
-summary(aov6) # p = 0.0226
-TukeyHSD(aov6, which = "APA") # p = 0.0175577 for conflict-consistent 
-
 
 ```
 
@@ -262,13 +323,11 @@ TukeyHSD(aov6, which = "APA") # p = 0.0175577 for conflict-consistent
 PC2 and 9 also difference by p < 0.01. 
 ```{r otherpcs}
 
-aov2 <- aov(PC2 ~ APA, data=scoresdf)
-summary(aov2) # p = 0.0906
-TukeyHSD(aov2, which = "APA") # p = 0.0852578 for conflict-consistent 
+
 
 aov9 <- aov(PC9 ~ APA, data=scoresdf)
-summary(aov9) # p =  0.0584
-TukeyHSD(aov9, which = "APA") # p = 0.0722837 for conflict-consistent 
+summary(aov9) # p =  0.018
+TukeyHSD(aov9, which = "APA") # p = 0.0939973 for conflict-consistent 
 
 ```
 

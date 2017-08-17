@@ -16,7 +16,13 @@ colorvalAPA3 <-  c( "#bababa","#404040", "#f4a582", "#ca0020")
 #f4a582 ## pink - Trained_NoConflict
 #ca0020 ## red - Trained_Conflict 
 
+
+DGConflictControl <- c("#bdbdbd","#ca0020")
+DGConsistentControl <- c("#bdbdbd","#f4a582")
+DGConflictConsistent <- c("#bdbdbd","#404040")
+
 colorvalPunch <- c("#d95f02","#1b9e77", "#7570b3")
+
 
 ## pheatmap
 colorpalette <-  colorRampPalette(c("Deep Sky Blue 3", "white", "red"))( 30 )
@@ -40,7 +46,7 @@ ann_colors2 = list(
 
 
 
-session_colors = list(
+APAsession = list(
   APA =  c(control = (values=c("#404040")), 
            consistent = (values=c("#f4a582")),
            conflict = (values=c("#ca0020"))),
@@ -54,7 +60,17 @@ session_colors = list(
                T6_C3 = (values=c("#756bb1")),
                Retention = (values=c("#54278f"))))
 
-DGConflictControl <- c("#bdbdbd","#ca0020")
-DGConsistentControl <- c("#bdbdbd","#f4a582")
-DGConflictConsistent <- c("#bdbdbd","#404040")
-
+APAsession2 = list(
+  APA =  c('yoked-consistent' = (values=c("#bababa")),
+           'yoked-conflict' = (values=c("#404040")), 
+           'consistent' = (values=c("#f4a582")),
+           'conflict' = (values=c("#ca0020"))),
+  Session =  c(Hab = (values=c("#eff3ff")), 
+               T1 = (values=c("#dfc27d")),
+               T2 = (values=c("#bf812d")),
+               T3 = (values=c("#8c510a")),
+               Retest = (values=c("#543005")),
+               T4_C1 = (values=c("#cbc9e2")),
+               T5_C2 = (values=c("#9e9ac8")),
+               T6_C3 = (values=c("#756bb1")),
+               Retention = (values=c("#54278f"))))

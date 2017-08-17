@@ -27,6 +27,7 @@ behavior <- read.csv("../data/01_behaviordata.csv", header = T)
 behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
 behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "YokedConflict","Same", "Conflict"))
 str(behavior$APA)
+
 ## revalue factors
 levels(behavior$APA) <- c("control","consistent","conflict")
 levels(behavior$APA2) <- c("yoked-consistent","yoked-conflict","consistent","conflict")
@@ -50,14 +51,8 @@ behaviorsummaryNumAPA2
 ```
 
 
-```{r heatmap,  message=FALSE, results='hide'}
-## see the makesessionheatmap documentataion for data tidying and plot specifications
-scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior))
-summary(scaledaveragedata)
-columnannotations <- as.data.frame(makecolumnannotations(scaledaveragedata))
-summary(columnannotations)
-scaledaveragedata <- scaledaveragedata[-1,]
-```
+
+
 
 
 ```{r PCA}
@@ -78,9 +73,6 @@ write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
 write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
 write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
 write.csv(behaviorsummaryNumAPA2, file = "../data/01a_behaviorsummaryNumAPA2.csv", row.names = FALSE)
-
-write.csv(scaledaveragedata, file = "../data/01a_scaledaveragedata.csv", row.names = TRUE)
-write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.names = TRUE)
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
 write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
 write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)

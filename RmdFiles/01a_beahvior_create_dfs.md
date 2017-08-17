@@ -206,15 +206,6 @@ behaviorsummaryNumAPA2
     ## # ... with 26 more rows
 
 ``` r
-## see the makesessionheatmap documentataion for data tidying and plot specifications
-scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior))
-summary(scaledaveragedata)
-columnannotations <- as.data.frame(makecolumnannotations(scaledaveragedata))
-summary(columnannotations)
-scaledaveragedata <- scaledaveragedata[-1,]
-```
-
-``` r
 longdata <- makelongdata(behavior)
 Z <- longdata[,3:371]
 Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
@@ -271,9 +262,6 @@ write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
 write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
 write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
 write.csv(behaviorsummaryNumAPA2, file = "../data/01a_behaviorsummaryNumAPA2.csv", row.names = FALSE)
-
-write.csv(scaledaveragedata, file = "../data/01a_scaledaveragedata.csv", row.names = TRUE)
-write.csv(columnannotations, file = "../data/01a_columnannotations.csv", row.names = TRUE)
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
 write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
 write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)

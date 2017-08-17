@@ -100,9 +100,24 @@ makescaledaveragedata <- function(data){
   averagedata[1] <- NULL;
   scaledaveragedata <- scale(averagedata)
   scaledaveragedata <- t(scaledaveragedata)
-  #next lines create the annotations
+  scaledaveragedata <- scaledaveragedata[-1,]
   return(scaledaveragedata)
 }  
+
+
+makescaledaveragedata2 <- function(data){
+  longdata <- melt(data, id = c(1:18));  #longdata <- melt(behavior, id = c(1:18))
+  longdata <- longdata %>% drop_na();
+  # then widen with group averages, add row names, scale, and transpose
+  longdata$APAsession <- as.factor(paste(longdata$APA2,longdata$TrainSessionCombo, sep="_"))
+  averagedata <- dcast(longdata, APAsession ~ variable, value.var= "value", fun.aggregate=mean);
+  rownames(averagedata) <- averagedata$APAsession;    
+  averagedata[1] <- NULL;
+  scaledaveragedata <- scale(averagedata)
+  scaledaveragedata <- t(scaledaveragedata)
+  scaledaveragedata <- scaledaveragedata[-1,]
+  return(scaledaveragedata)
+} 
 
 makecolumnannotations <- function(data){  
   columnannotations <- as.data.frame(colnames(data))
@@ -135,7 +150,7 @@ makelongdata <- function(data){
   longdata <- melt(data, id = c(1:18));
   longdata <- longdata %>% drop_na();
   longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
-  longdata <- dcast(longdata, ID + APA ~ bysession, value.var= "value", fun.aggregate = mean)
+  longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
   return(longdata)
 }
 
@@ -144,7 +159,7 @@ makepcadf <- function(data){
   longdata <- melt(data, id = c(1:18));
   longdata <- longdata %>% drop_na();
   longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
-  longdata <- dcast(longdata, ID + APA ~ bysession, value.var= "value", fun.aggregate = mean)
+  longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
   # calculate and save PCs
   Z <- longdata[,3:371]
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
@@ -164,7 +179,7 @@ makepcaloadingsdf <- function(data){
   longdata <- melt(data, id = c(1:18));
   longdata <- longdata %>% drop_na();
   longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
-  longdata <- dcast(longdata, ID + APA ~ bysession, value.var= "value", fun.aggregate = mean)
+  longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
   # calculate and save PCs
   Z <- longdata[,3:371]
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
@@ -178,7 +193,7 @@ mkrotationdf <- function(data){
   longdata <- melt(data, id = c(1:18));
   longdata <- longdata %>% drop_na();
   longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
-  longdata <- dcast(longdata, ID + APA ~ bysession, value.var= "value", fun.aggregate = mean)
+  longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
   # calculate and save PCs
   Z <- longdata[,3:371]
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
@@ -211,7 +226,7 @@ makepcaplotwithpercent <- function(data,xcol,ycol,colorcode, newylab, newxlab){
     theme_cowplot(font_size = 15, line_size = 0.5) + 
     theme(strip.background = element_blank()) +
     scale_colour_manual(name=NULL,
-                        values=colorvalAPA) +
+                        values=colorvalAPA2) +
     theme(legend.position="none") +
     ylab(newylab) + xlab(newxlab)
   return(plot)

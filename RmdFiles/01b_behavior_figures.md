@@ -11,10 +11,15 @@ library(car) ## stats
 library(superheat) # for kmeans clustered heatmap
 library(pheatmap)  # for pretty heatmap
 library(viridis) # for awesome color pallette
+library(reshape2) ## for melting dataframe
+library(tidyr) ## for respahing data
+library(plyr)
+
 
 ## load user-written functions 
 source("functions_behavior.R")
 source("figureoptions.R")
+
 
 ## set output file for figures 
 knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
@@ -27,15 +32,12 @@ behavior <- read.csv("../data/01a_behavior.csv", header = T)
 retention <- read.csv("../data/01a_retention.csv", header = T) 
 behaviorsummaryNum <- read.csv("../data/01a_behaviorsummaryNum.csv", header = T)
 behaviorsummaryNumAPA2 <- read.csv("../data/01a_behaviorsummaryNumAPA2.csv", header = T)
-scaledaveragedata <- read.csv("../data/01a_scaledaveragedata.csv", header = T, row.names = 1)
-columnannotations <- read.csv("../data/01a_columnannotations.csv", header = T, row.names = 1)
 scoresdf <- read.csv("../data/01a_scoresdf.csv", header = T)
 rotationdf <- read.csv("../data/01a_rotationdf.csv", header = T, row.names = 1)
 behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.names = 1)
 
 #set factor levels
 behavior$APA <- factor(behavior$APA, levels = c("control", "consistent", "conflict"))
-
 behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "consistent", "conflict"))
 behaviorsummaryNumAPA2$APA2 <- factor(behaviorsummaryNumAPA2$APA2, levels = c("yoked-consistent", "yoked-conflict" ,"consistent", "conflict"))
 scoresdf$APA <- factor(scoresdf$APA, levels = c("control", "consistent", "conflict"))
@@ -132,6 +134,107 @@ dev.off()
     ## quartz_off_screen 
     ##                 2
 
+Figure 1C: Hierarchical clusering of time series behavioral data
+----------------------------------------------------------------
+
+Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed (Fig. 1C). The row dendrogram helps visuzlise the interaction between treatment group and (grey: control, pink: consistent, red: conflict) and training session (white: habitutation, shades of brown: training sessino 1-3, dark down: retest, shades of purple: training session 4-6 or conflict session 1-3, dark purple: retention).
+
+``` r
+## make annotation df and ann_colors for pheatmap
+scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior))
+
+# create a rubric for the color coding and load the colors from figureoptions.R
+df <- as.data.frame(makecolumnannotations(scaledaveragedata))
+ann_colors = APAsession  # includes color for session & APA
+
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
+
+## pheatmap for markdown
+pheatmap(scaledaveragedata, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 8, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 10, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+```
+
+![](../figures/01_behavior/pheatmap-1.png)
+
+``` r
+# pheatmapfor adobe
+pheatmap(scaledaveragedata, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 8, 
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 7, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/01_behavior/pheatmap.pdf"
+         )
+```
+
+Now with 4 treatment groups
+
+``` r
+## make annotation df and ann_colors for pheatmap
+scaledaveragedata2 <- as.data.frame(makescaledaveragedata2(behavior))
+
+# create a rubric for the color coding and load the colors from figureoptions.R
+df2 <- as.data.frame(makecolumnannotations(scaledaveragedata2))
+ann_colors = APAsession2  # includes color for session & APA
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(scaledaveragedata2), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(scaledaveragedata2)/paletteLength, max(scaledaveragedata2), length.out=floor(paletteLength/2)))
+
+## pheatmap for markdown
+pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = T,
+         annotation_col=df2, 
+         annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 8, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 10, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+```
+
+![](../figures/01_behavior/pheatmap2-1.png)
+
+``` r
+# pheatmapfor adobe
+pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = F,
+         annotation_col=df2, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 8, 
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 7, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/01_behavior/pheatmap2.pdf"
+         )
+```
+
 ### Supplmentary heatmap
 
 The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown the viridis color scheme with yellow being positive and purple being negative. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group and training session.
@@ -155,54 +258,6 @@ superheat(scaledaveragedata,
 ```
 
 ![](../figures/01_behavior/superheat-1.png)
-
-Figure 1C: Hierarchical clusering of time series behavioral data
-----------------------------------------------------------------
-
-Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed (Fig. 1C). The row dendrogram helps visuzlise the interaction between treatment group and (grey: control, pink: consistent, red: conflict) and training session (white: habitutation, shades of brown: training sessino 1-3, dark down: retest, shades of purple: training session 4-6 or conflict session 1-3, dark purple: retention).
-
-``` r
-## make annotation df and ann_colors for pheatmap
-df <- columnannotations
-ann_colors = session_colors 
-
-# set color breaks
-paletteLength <- 30
-myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
-              seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
-
-## pheatmap for markdown
-pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
-         annotation_col=df, annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 50,
-         fontsize = 8, 
-         #width=4.5, height=3,
-         border_color = "grey60" ,
-         color = viridis(30),
-         cellwidth = 10, 
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation" 
-         )
-```
-
-![](../figures/01_behavior/pheatmap-1.png)
-
-``` r
-# pheatmapfor adobe
-pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
-         annotation_col=df, annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 50,
-         fontsize = 8, 
-         border_color = "grey60" ,
-         color = viridis(30),
-         cellwidth = 6, 
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation",
-         filename = "../figures/01_behavior/pheatmap.pdf"
-         )
-```
 
 ### Figure 1D1 and 1D2: Principle component analysis
 
@@ -240,7 +295,7 @@ pca12 <- makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="A
 pca12
 ```
 
-![](../figures/01_behavior/PC12-1.png)
+![](../figures/01_behavior/PCAplots-1.png)
 
 ``` r
 pdf(file="../figures/01_behavior/pca12.pdf", width=3, height=3)
@@ -279,11 +334,37 @@ TukeyHSD(aov1, which = "APA") # p<< 0.001 for both control comparisions
     ## conflict-consistent   0.2109558  -4.551502   4.973413 0.9934703
 
 ``` r
-fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 2), axes = c(1, 2))
+aov2 <- aov(PC2 ~ APA, data=scoresdf)
+summary(aov2) # p = 0.0295 *
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA          2  106.1   53.05   2.597 0.0906 .
+    ## Residuals   31  633.2   20.42                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+TukeyHSD(aov2, which = "APA") # p > 0.05
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC2 ~ APA, data = scoresdf)
+    ## 
+    ## $APA
+    ##                          diff        lwr       upr     p adj
+    ## consistent-control  -3.434152 -8.2030827  1.334778 0.1955003
+    ## conflict-control     1.418463 -3.1667701  6.003695 0.7290903
+    ## conflict-consistent  4.852615 -0.5521726 10.257403 0.0852578
+
+``` r
+fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 5), axes = c(1, 2))
 fviz12
 ```
 
-![](../figures/01_behavior/PC12-2.png)
+![](../figures/01_behavior/PCAplots-2.png)
 
 ``` r
 pdf(file="../figures/01_behavior/fviz12.pdf", width=3, height=3)
@@ -295,40 +376,34 @@ dev.off()
     ##                 2
 
 ``` r
-pca36 <-makepcaplotwithpercent(data=scoresdf,xcol="PC3",ycol="PC6",colorcode="APA", newxlab = "PC3 (8.4%)", newylab = "PC6 (3.6%)")
-pca36
+aov6 <- aov(PC6 ~ APA, data=scoresdf)
+summary(aov6) # p = 0.0106 *
 ```
 
-![](../figures/01_behavior/PC36-1.png)
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA          2   96.1   48.03   4.293 0.0226 *
+    ## Residuals   31  346.9   11.19                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-pdf(file="../figures/01_behavior/pca36.pdf", width=3, height=3)
-plot(pca36)
-dev.off()
+TukeyHSD(aov6, which = "APA") # p = 0.0233390 for conflict-consistent 
 ```
 
-    ## quartz_off_screen 
-    ##                 2
-
-``` r
-fviz36 <- fviz_pca_var(res.pca, select.var = list(contrib = 2), axes = c(3, 6))
-fviz36
-```
-
-![](../figures/01_behavior/PC36-2.png)
-
-``` r
-pdf(file="../figures/01_behavior/fviz36.pdf", width=3, height=3)
-plot(fviz36)
-dev.off()
-```
-
-    ## quartz_off_screen 
-    ##                 2
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC6 ~ APA, data = scoresdf)
+    ## 
+    ## $APA
+    ##                          diff        lwr      upr     p adj
+    ## consistent-control  -2.152715 -5.6824153 1.376985 0.3043094
+    ## conflict-control     2.583185 -0.8105525 5.976922 0.1633660
+    ## conflict-consistent  4.735900  0.7355730 8.736227 0.0175577
 
 ``` r
 aov3 <- aov(PC3 ~ APA, data=scoresdf)
-summary(aov3) # p = 0.0633
+summary(aov3) # p = 0.117
 ```
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
@@ -353,62 +428,42 @@ TukeyHSD(aov3, which = "APA") # p = 0.0557503 for conflict-consistent
     ## conflict-consistent  4.646346 -0.09614557 9.388837 0.0557503
 
 ``` r
-aov6 <- aov(PC6 ~ APA, data=scoresdf)
-summary(aov6) # p = 0.0226
+pca36 <-makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA", newxlab = "PC3 (8.4%)", newylab = "PC6 (3.6%)")
+pca36
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA          2   96.1   48.03   4.293 0.0226 *
-    ## Residuals   31  346.9   11.19                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+![](../figures/01_behavior/PCAplots-3.png)
 
 ``` r
-TukeyHSD(aov6, which = "APA") # p = 0.0175577 for conflict-consistent 
+pdf(file="../figures/01_behavior/pca36.pdf", width=3, height=3)
+plot(pca36)
+dev.off()
 ```
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC6 ~ APA, data = scoresdf)
-    ## 
-    ## $APA
-    ##                          diff        lwr      upr     p adj
-    ## consistent-control  -2.152715 -5.6824153 1.376985 0.3043094
-    ## conflict-control     2.583185 -0.8105525 5.976922 0.1633660
-    ## conflict-consistent  4.735900  0.7355730 8.736227 0.0175577
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+fviz36 <- fviz_pca_var(res.pca, select.var = list(contrib = 3), axes = c(3, 6))
+fviz36
+```
+
+![](../figures/01_behavior/PCAplots-4.png)
+
+``` r
+pdf(file="../figures/01_behavior/fviz36.pdf", width=3, height=3)
+plot(fviz36)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
 
 PC2 and 9 also difference by p &lt; 0.01.
 
 ``` r
-aov2 <- aov(PC2 ~ APA, data=scoresdf)
-summary(aov2) # p = 0.0906
-```
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA          2  106.1   53.05   2.597 0.0906 .
-    ## Residuals   31  633.2   20.42                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-TukeyHSD(aov2, which = "APA") # p = 0.0852578 for conflict-consistent 
-```
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC2 ~ APA, data = scoresdf)
-    ## 
-    ## $APA
-    ##                          diff        lwr       upr     p adj
-    ## consistent-control  -3.434152 -8.2030827  1.334778 0.1955003
-    ## conflict-control     1.418463 -3.1667701  6.003695 0.7290903
-    ## conflict-consistent  4.852615 -0.5521726 10.257403 0.0852578
-
-``` r
 aov9 <- aov(PC9 ~ APA, data=scoresdf)
-summary(aov9) # p =  0.0584
+summary(aov9) # p =  0.018
 ```
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
@@ -418,7 +473,7 @@ summary(aov9) # p =  0.0584
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-TukeyHSD(aov9, which = "APA") # p = 0.0722837 for conflict-consistent 
+TukeyHSD(aov9, which = "APA") # p = 0.0939973 for conflict-consistent 
 ```
 
     ##   Tukey multiple comparisons of means
