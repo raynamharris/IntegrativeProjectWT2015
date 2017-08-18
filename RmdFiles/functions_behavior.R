@@ -169,7 +169,7 @@ makepcadf <- function(data){
   #get ready for ggplot
   scoresdf <- as.data.frame(scores)
   scoresdf$ID <-  longdata$ID
-  scoresdf$APA <- longdata$APA
+  scoresdf$APA2 <- longdata$APA2
   return(scoresdf)
 }
 

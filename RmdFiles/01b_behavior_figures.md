@@ -40,7 +40,8 @@ behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.nam
 behavior$APA <- factor(behavior$APA, levels = c("control", "consistent", "conflict"))
 behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "consistent", "conflict"))
 behaviorsummaryNumAPA2$APA2 <- factor(behaviorsummaryNumAPA2$APA2, levels = c("yoked-consistent", "yoked-conflict" ,"consistent", "conflict"))
-scoresdf$APA <- factor(scoresdf$APA, levels = c("control", "consistent", "conflict"))
+scoresdf$APA <- NULL
+scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("yoked-consistent", "yoked-conflict" ,"consistent", "conflict"))
 ```
 
 Figure 1B: Standard vizualization of mean avoidance beavior
@@ -223,15 +224,18 @@ pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = T,
 # pheatmapfor adobe
 pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = F,
          annotation_col=df2, annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 50,
-         fontsize = 8, 
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 6, 
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 7, 
+         cellwidth = 6,
+         cellheight = 6,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
-         filename = "../figures/01_behavior/pheatmap2.pdf"
+         filename = "../figures/01_behavior/pheatmap2.pdf",
+         legend = TRUE,
+         annotation_legend = FALSE
          )
 ```
 
@@ -291,7 +295,7 @@ ggplot(perc_data, aes(x=PC, y=percent)) +
 PC1 encompases differences between yoked trained indivdual but does not significantly differ between consistent and conflict trained aniamls. To confirm statistical significance of this visual pattern, we conducted a two-way treatment x region ANOVA and confirmed a significant effect of region (F2,31= 101.39; p = 2.5e-14). Post hoc Tukey tests confirmed conflict = consistent &lt; control). The major contibutors to this variation are number of shocks and distance to first entrance.
 
 ``` r
-pca12 <- makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA", newxlab = "PC1 (35.7%)", newylab = "PC2 (9.7%)")
+pca12 <- makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA2", newxlab = "PC1 (35.7%)", newylab = "PC2 (9.7%)")
 pca12
 ```
 
@@ -308,59 +312,72 @@ dev.off()
 
 ``` r
 ## statistics
-aov1 <- aov(PC1 ~ APA, data=scoresdf)
-summary(aov1) # p = 2.53e-14
+aov1 <- aov(PC1 ~ APA2, data=scoresdf)
+summary(aov1) # p = 1.01e-13
 ```
 
     ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## APA          2   3214  1606.8   101.3 2.53e-14 ***
-    ## Residuals   31    492    15.9                     
+    ## APA2         3   3247  1082.5   70.92 1.01e-13 ***
+    ## Residuals   30    458    15.3                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-TukeyHSD(aov1, which = "APA") # p<< 0.001 for both control comparisions
+TukeyHSD(aov1, which = "APA2") # p<< 0.001 for both control comparisions
 ```
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC1 ~ APA, data = scoresdf)
+    ## Fit: aov(formula = PC1 ~ APA2, data = scoresdf)
     ## 
-    ## $APA
-    ##                            diff        lwr        upr     p adj
-    ## consistent-control  -19.5553836 -23.757552 -15.353215 0.0000000
-    ## conflict-control    -19.3444279 -23.384730 -15.304125 0.0000000
-    ## conflict-consistent   0.2109558  -4.551502   4.973413 0.9934703
+    ## $APA2
+    ##                                        diff        lwr        upr
+    ## yoked-conflict-yoked-consistent  -2.8209039  -7.982828   2.341020
+    ## consistent-yoked-consistent     -21.0488034 -26.360379 -15.737228
+    ## conflict-yoked-consistent       -20.8378476 -25.999771 -15.675924
+    ## consistent-yoked-conflict       -18.2278994 -23.389823 -13.065976
+    ## conflict-yoked-conflict         -18.0169437 -23.024745 -13.009142
+    ## conflict-consistent               0.2109558  -4.950968   5.372879
+    ##                                     p adj
+    ## yoked-conflict-yoked-consistent 0.4582117
+    ## consistent-yoked-consistent     0.0000000
+    ## conflict-yoked-consistent       0.0000000
+    ## consistent-yoked-conflict       0.0000000
+    ## conflict-yoked-conflict         0.0000000
+    ## conflict-consistent             0.9994975
 
 ``` r
-aov2 <- aov(PC2 ~ APA, data=scoresdf)
+aov2 <- aov(PC2 ~ APA2, data=scoresdf)
 summary(aov2) # p = 0.0295 *
 ```
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA          2  106.1   53.05   2.597 0.0906 .
-    ## Residuals   31  633.2   20.42                 
+    ## APA2         3  188.7   62.89   3.427 0.0295 *
+    ## Residuals   30  550.6   18.35                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-TukeyHSD(aov2, which = "APA") # p > 0.05
+TukeyHSD(aov2, which = "APA2") # p > 0.05
 ```
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC2 ~ APA, data = scoresdf)
+    ## Fit: aov(formula = PC2 ~ APA2, data = scoresdf)
     ## 
-    ## $APA
-    ##                          diff        lwr       upr     p adj
-    ## consistent-control  -3.434152 -8.2030827  1.334778 0.1955003
-    ## conflict-control     1.418463 -3.1667701  6.003695 0.7290903
-    ## conflict-consistent  4.852615 -0.5521726 10.257403 0.0852578
+    ## $APA2
+    ##                                       diff        lwr        upr     p adj
+    ## yoked-conflict-yoked-consistent  4.4155199  -1.244736 10.0757760 0.1695436
+    ## consistent-yoked-consistent     -1.0965242  -6.920880  4.7278312 0.9556089
+    ## conflict-yoked-consistent        3.7560908  -1.904165  9.4163469 0.2911558
+    ## consistent-yoked-conflict       -5.5120442 -11.172300  0.1482119 0.0585081
+    ## conflict-yoked-conflict         -0.6594291  -6.150684  4.8318258 0.9877336
+    ## conflict-consistent              4.8526151  -0.807641 10.5128711 0.1134571
 
 ``` r
-fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 5), axes = c(1, 2))
+fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 3), axes = c(1, 2))
 fviz12
 ```
 
@@ -376,59 +393,30 @@ dev.off()
     ##                 2
 
 ``` r
-aov6 <- aov(PC6 ~ APA, data=scoresdf)
-summary(aov6) # p = 0.0106 *
-```
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA          2   96.1   48.03   4.293 0.0226 *
-    ## Residuals   31  346.9   11.19                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-TukeyHSD(aov6, which = "APA") # p = 0.0233390 for conflict-consistent 
-```
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC6 ~ APA, data = scoresdf)
-    ## 
-    ## $APA
-    ##                          diff        lwr      upr     p adj
-    ## consistent-control  -2.152715 -5.6824153 1.376985 0.3043094
-    ## conflict-control     2.583185 -0.8105525 5.976922 0.1633660
-    ## conflict-consistent  4.735900  0.7355730 8.736227 0.0175577
-
-``` r
-aov3 <- aov(PC3 ~ APA, data=scoresdf)
+aov3 <- aov(PC3 ~ APA2, data=scoresdf)
 summary(aov3) # p = 0.117
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA          2   95.0   47.50    3.02 0.0633 .
-    ## Residuals   31  487.5   15.73                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA2         3  102.5   34.17   2.135  0.117
+    ## Residuals   30  480.0   16.00
 
 ``` r
 TukeyHSD(aov3, which = "APA") # p = 0.0557503 for conflict-consistent 
 ```
 
+    ## Warning in qtukey(conf.level, length(means), x$df.residual): NaNs produced
+
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC3 ~ APA, data = scoresdf)
+    ## Fit: aov(formula = PC3 ~ APA2, data = scoresdf)
     ## 
-    ## $APA
-    ##                          diff         lwr      upr     p adj
-    ## consistent-control  -1.812712 -5.99726370 2.371839 0.5417745
-    ## conflict-control     2.833634 -1.18973029 6.856997 0.2090687
-    ## conflict-consistent  4.646346 -0.09614557 9.388837 0.0557503
+    ## $<NA>
+    ##      diff lwr upr p adj
 
 ``` r
-pca36 <-makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA", newxlab = "PC3 (8.4%)", newylab = "PC6 (3.6%)")
+pca36 <-makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA2", newxlab = "PC3 (8.4%)", newylab = "PC6 (3.6%)")
 pca36
 ```
 
@@ -462,13 +450,13 @@ dev.off()
 PC2 and 9 also difference by p &lt; 0.01.
 
 ``` r
-aov9 <- aov(PC9 ~ APA, data=scoresdf)
+aov9 <- aov(PC9 ~ APA2, data=scoresdf)
 summary(aov9) # p =  0.018
 ```
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA          2  62.55   31.28   3.117 0.0584 .
-    ## Residuals   31 311.07   10.04                 
+    ## APA2         3  105.2   35.05   3.916  0.018 *
+    ## Residuals   30  268.5    8.95                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -476,90 +464,92 @@ summary(aov9) # p =  0.018
 TukeyHSD(aov9, which = "APA") # p = 0.0939973 for conflict-consistent 
 ```
 
+    ## Warning in qtukey(conf.level, length(means), x$df.residual): NaNs produced
+
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC9 ~ APA, data = scoresdf)
+    ## Fit: aov(formula = PC9 ~ APA2, data = scoresdf)
     ## 
-    ## $APA
-    ##                           diff        lwr      upr     p adj
-    ## consistent-control  -0.7833752 -4.1260684 2.559318 0.8334263
-    ## conflict-control     2.7406860 -0.4732478 5.954620 0.1065599
-    ## conflict-consistent  3.5240612 -0.2643244 7.312447 0.0722837
+    ## $<NA>
+    ##      diff lwr upr p adj
 
 Here are some stats modeling combinatorail PCs. I'm really not sure if this makes sense. I should probabaly model some behavior time interaction....
 
 ``` r
-lm1 <- lm(PC1~APA, data=scoresdf)
+lm1 <- lm(PC1~APA2, data=scoresdf)
 summary(lm1)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = PC1 ~ APA, data = scoresdf)
+    ## lm(formula = PC1 ~ APA2, data = scoresdf)
     ## 
     ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -11.5071  -2.5761   0.0012   2.0463   7.0257 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -10.180  -2.252  -0.098   2.518   7.026 
     ## 
     ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)     9.7219     0.9658   10.07 2.74e-11 ***
-    ## APAconsistent -19.5554     1.7074  -11.45 1.14e-12 ***
-    ## APAconflict   -19.3444     1.6416  -11.78 5.54e-13 ***
+    ##                    Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)          11.215      1.381   8.119 4.60e-09 ***
+    ## APA2yoked-conflict   -2.821      1.898  -1.486    0.148    
+    ## APA2consistent      -21.049      1.953 -10.775 7.82e-12 ***
+    ## APA2conflict        -20.838      1.898 -10.977 5.00e-12 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 3.982 on 31 degrees of freedom
-    ## Multiple R-squared:  0.8673, Adjusted R-squared:  0.8588 
-    ## F-statistic: 101.3 on 2 and 31 DF,  p-value: 2.531e-14
+    ## Residual standard error: 3.907 on 30 degrees of freedom
+    ## Multiple R-squared:  0.8764, Adjusted R-squared:  0.8641 
+    ## F-statistic: 70.92 on 3 and 30 DF,  p-value: 1.009e-13
 
 ``` r
-lm16 <- lm(PC1+PC6~APA, data=scoresdf)
+lm16 <- lm(PC1+PC6~APA2, data=scoresdf)
 summary(lm16)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = PC1 + PC6 ~ APA, data = scoresdf)
+    ## lm(formula = PC1 + PC6 ~ APA2, data = scoresdf)
     ## 
     ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -12.4439  -3.4814  -0.5956   3.6301  13.1110 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -9.6653 -3.1977 -0.1108  4.0493  9.9851 
     ## 
     ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)      9.545      1.341   7.119 5.33e-08 ***
-    ## APAconsistent  -21.708      2.370  -9.160 2.50e-10 ***
-    ## APAconflict    -16.761      2.279  -7.356 2.79e-08 ***
+    ##                    Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)          12.671      1.825   6.942 1.04e-07 ***
+    ## APA2yoked-conflict   -5.905      2.508  -2.354   0.0253 *  
+    ## APA2consistent      -24.834      2.581  -9.621 1.12e-10 ***
+    ## APA2conflict        -19.887      2.508  -7.928 7.55e-09 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 5.528 on 31 degrees of freedom
-    ## Multiple R-squared:  0.7717, Adjusted R-squared:  0.7569 
-    ## F-statistic: 52.38 on 2 and 31 DF,  p-value: 1.143e-10
+    ## Residual standard error: 5.162 on 30 degrees of freedom
+    ## Multiple R-squared:  0.8073, Adjusted R-squared:  0.788 
+    ## F-statistic: 41.88 on 3 and 30 DF,  p-value: 7.628e-11
 
 ``` r
-lm136 <- lm(PC1+PC3+PC6~APA, data=scoresdf)
+lm136 <- lm(PC1+PC3+PC6~APA2, data=scoresdf)
 summary(lm136)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = PC1 + PC3 + PC6 ~ APA, data = scoresdf)
+    ## lm(formula = PC1 + PC3 + PC6 ~ APA2, data = scoresdf)
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -10.755  -4.705  -1.010   3.253  17.750 
+    ## -12.156  -3.382  -1.010   4.361  13.919 
     ## 
     ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)      9.221      1.659   5.559 4.32e-06 ***
-    ## APAconsistent  -23.521      2.932  -8.021 4.67e-09 ***
-    ## APAconflict    -13.928      2.819  -4.940 2.55e-05 ***
+    ##                    Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)          13.052      2.262   5.769 2.66e-06 ***
+    ## APA2yoked-conflict   -7.236      3.109  -2.327   0.0269 *  
+    ## APA2consistent      -27.352      3.199  -8.549 1.54e-09 ***
+    ## APA2conflict        -17.758      3.109  -5.712 3.13e-06 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 6.839 on 31 degrees of freedom
-    ## Multiple R-squared:  0.6935, Adjusted R-squared:  0.6737 
-    ## F-statistic: 35.07 on 2 and 31 DF,  p-value: 1.096e-08
+    ## Residual standard error: 6.399 on 30 degrees of freedom
+    ## Multiple R-squared:  0.7404, Adjusted R-squared:  0.7144 
+    ## F-statistic: 28.52 on 3 and 30 DF,  p-value: 6.395e-09
