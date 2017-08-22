@@ -1,0 +1,152 @@
+---
+title: "02b_rnaseq_4by3results"
+author: "Rayna M Harris"
+date: "8/22/17"
+output: md_document
+---
+
+The figures made from this script were compiled in Adobe.
+
+<img src="../figures/02_RNAseq/02_RNAseq_4by3results.png" width="1370" />
+
+
+```{r setup, message=F}
+library(ggplot2) ## for awesome plots!
+library(cowplot) ## for some easy to use themes
+library(dplyr) ## for filtering and selecting rows
+library(car) ## stats
+library(VennDiagram) ## venn diagrams
+library(pheatmap) ## awesome heatmaps
+library(viridis) # for awesome color pallette
+library(reshape2) ## for melting dataframe
+library(DESeq2) ## for gene expression analysis
+library(edgeR)  ## for basic read counts status
+library(magrittr) ## to use the weird pipe
+library(genefilter)  ## for PCA fuction
+library(ggrepel) ## for labeling volcano plot
+library(colorblindr)
+
+## load functions 
+source("figureoptions.R")
+source("functions_RNAseq.R")
+source("resvalsfunction.R")
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
+```
+
+
+## Design
+
+The major comparision here is 
+Hippocampal subfield: "DG","CA3", "CA1"
+Behavioral Groups: "Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"
+
+
+```{r data, message=F, warning=F}
+colData <- read.csv("../data/02a_colData.csv", header = T)
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+```
+
+
+```{r DESeq2_APA3}
+## create DESeq object using the factors Punch and APA
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Punch + APA3 + Punch*APA3)
+
+## DESeq2 1.3.7 specify the factor levels
+dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1"))
+dds$APA3 <- factor(dds$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+
+dds # view the DESeq object - note numnber of genes
+
+## DESeq2 1.3.6 Pre-filtering genes with 0 counts
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+
+dds # view the DESeq object - note numnber of genes
+# dim: 17674 44
+# 17,647 genes and 44 samples
+
+## DESeq2 1.4  Differential expression analysi
+dds <- DESeq(dds)
+
+## for variance stablized gene expression and log transformed data
+rld <- rlog(dds, blind=FALSE)
+
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) #1159 (less than #2497)
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) #771 (less than #1803)
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) #2122 (less than #3445)
+contrast4 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), mypval = 0.05) #84 (less than #95)
+contrast5 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Yoked_Conflict"), mypval = 0.05) #15 (less than #42)
+contrast6 <- resvals(contrastvector = c("APA3", "Yoked_Conflict", "Yoked_NoConflict"), mypval = 0.05) #12 (more than 0)
+contrast7 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Trained_NoConflict"), mypval = 0.05) #0 (same)
+
+
+#create a new DF with the gene counts
+## note: contrast1 had 0 differentially expressed genes, so it is not included 
+rldpadjs <- assay(rld)
+rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
+rldpadjs <- as.data.frame(rldpadjs)
+rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
+head(rldpadjs)
+```
+
+
+
+```{r DGonlyAPA3}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+colData$APA3 <- factor(colData$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+
+colData <- colData %>% 
+  filter(Punch == "DG") 
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA3 )
+
+dds$APA3 <- factor(dds$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 16658 16  
+dds <- DESeq(dds)
+rld <- rlog(dds, blind=FALSE)
+
+contrast4 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), mypval = 0.05) #74
+contrast5 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Yoked_Conflict"), mypval = 0.05) #2
+contrast6 <- resvals(contrastvector = c("APA3", "Yoked_Conflict", "Yoked_NoConflict"), mypval = 0.05) #0
+contrast7 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Trained_NoConflict"), mypval = 0.05) #0 
+
+
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA3"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+percentVar
+
+aov1 <- aov(PC1 ~ APA3, data=pcadata)
+summary(aov1) 
+TukeyHSD(aov1, which = "APA3") 
+
+aov2 <- aov(PC2 ~ APA3, data=pcadata)
+summary(aov2) 
+TukeyHSD(aov2, which = "APA3") 
+
+pcadata$APA3 <- factor(pcadata$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+
+plotPCs(pcadata, 1, 2, aescolor = pcadata$APA3, colorname = "APA3", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA3)
+plotPCs(pcadata, 3, 4, aescolor = pcadata$APA3, colorname = "APA3", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA3)
+```
+
+
+```{r writecsv}
+#write.csv(rldpadjs, file = "../data/02c_rldpadjs.csv", row.names = T)
+#write.csv(DEGes, file = "../data/02c_DEGes.csv", row.names = T)
+#write.csv(df, file = "../data/02c_df.csv", row.names = F)
+#write.csv(pcadata, file = "../data/02c_pcadata.csv", row.names = F)
+#write.table(percentVar, file = "../data/02c_percentVar.txt")
+```
+
+
