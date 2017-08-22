@@ -54,8 +54,6 @@ countbygene  <- dcast(countbygene, gene ~ variable, value.var= "value", fun.aggr
 row.names(countbygene) <- countbygene$gene # make gene the row name 
 countbygene[1] <- NULL # now remove the gene name from the df
 countbygene <- round(countbygene) # round all value to nearest 1s place
-head(countbygene)
-
 ```
 
 In this next section, I tidy the trait data for each sample so that I can calculate differential gene expression for the traits of interest. I also remove some samples for reasons described within the code blocks.
@@ -101,7 +99,11 @@ countData <- countData %>% dplyr::select(one_of(savecols)) # select just the col
 # colData must be factors
 cols = c(1:8)
 colData[,cols] %<>% lapply(function(x) as.factor(as.character(x)))
-str(colData)
+
+# summary data
+colData %>% select(APA,Punch)  %>%  summary()
+colData %>% select(APA3,Punch)  %>%  summary()
+dim(countData)
 ```
 
 Now, we are create differential gene expression object and remove genes with 0 counts. Before filtering, there are 22,485 genes in the object. After filtering genes with 0 counts, we will be left with 17,746 genes that are expressed in a least 1 sample. Then, we can caluate the size factors, estimate gene dispersion estimates, fit a model, test for outliers, and remove outliers.
@@ -123,8 +125,8 @@ dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ] 
 
 dds # view the DESeq object - note numnber of genes
-# dim: 17674 45 
-# 17,674 genes and 45 samples
+# dim: 17674 44 
+# 17,674 genes and 44 samples
 
 ## DESeq2 1.4  Differential expression analysi
 dds <- DESeq(dds)
@@ -205,6 +207,7 @@ summary(lm124)
 anova(lm124) 
 ```
 
+
 ```{r writecsv}
 write.csv(colData, file = "../data/02a_colData.csv", row.names = F)
 write.csv(countData, file = "../data/02a_countData.csv", row.names = T)
@@ -215,10 +218,6 @@ write.csv(pcadata, file = "../data/02a_pcadata.csv", row.names = F)
 write.table(percentVar, file = "../data/02a_percentVar.txt")
 ```
 
-
-
-
-
 ```{r DESeq2_APA3}
 ## create DESeq object using the factors Punch and APA
 dds <- DESeqDataSetFromMatrix(countData = countData,
@@ -227,7 +226,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
 
 ## DESeq2 1.3.7 specify the factor levels
 dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1"))
-dds$APA <- factor(dds$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+dds$APA3 <- factor(dds$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
 
 dds # view the DESeq object - note numnber of genes
 
@@ -235,8 +234,8 @@ dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ] 
 
 dds # view the DESeq object - note numnber of genes
-# dim: 22485 44
-# 22,485 genes and 44 samples
+# dim: 17674 44
+# 17,647 genes and 44 samples
 
 ## DESeq2 1.4  Differential expression analysi
 dds <- DESeq(dds)
@@ -244,11 +243,11 @@ dds <- DESeq(dds)
 ## for variance stablized gene expression and log transformed data
 rld <- rlog(dds, blind=FALSE)
 
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) #2124 (less than #2497)
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) #1091 (less than #1803)
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) #3249 (less than #3445)
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) #1159 (less than #2497)
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) #771 (less than #1803)
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) #2122 (less than #3445)
 contrast4 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), mypval = 0.05) #84 (less than #95)
-contrast5 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Yoked_Conflict"), mypval = 0.05) #17 (less than #42)
+contrast5 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Yoked_Conflict"), mypval = 0.05) #15 (less than #42)
 contrast6 <- resvals(contrastvector = c("APA3", "Yoked_Conflict", "Yoked_NoConflict"), mypval = 0.05) #12 (more than 0)
 contrast7 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Trained_NoConflict"), mypval = 0.05) #0 (same)
 
@@ -261,3 +260,5 @@ rldpadjs <- as.data.frame(rldpadjs)
 rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
 head(rldpadjs)
 ```
+
+

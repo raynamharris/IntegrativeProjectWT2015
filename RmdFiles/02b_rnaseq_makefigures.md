@@ -38,6 +38,8 @@ The figures made from this script were compiled in Adobe.
 
     ## Warning: package 'ggrepel' was built under R version 3.3.2
 
+    library(colorblindr)
+
     ## load functions 
     source("figureoptions.R")
     source("functions_RNAseq.R")
@@ -776,6 +778,10 @@ experssion in DG with consistent training.
 
 ![](../figures/02_RNAseq/DGConsistentControl-1.png)
 
+    cvd_grid(colored) # to view plot for color blind 
+
+![](../figures/02_RNAseq/DGConsistentControl-2.png)
+
     pdf(file="../figures/02_RNAseq/DGConsistentControl.pdf", width=3, height=3)
     plot(colored)
     dev.off()
@@ -869,6 +875,10 @@ group.
     colored
 
 ![](../figures/02_RNAseq/DGConflictControl-1.png)
+
+    cvd_grid(colored) # to view plot for color blind 
+
+![](../figures/02_RNAseq/DGConflictControl-2.png)
 
     pdf(file="../figures/02_RNAseq/DGConflictControl.pdf", width=3, height=3)
     plot(colored)
@@ -1259,6 +1269,10 @@ Here, I examine only Conflict trained animals to show brain region differences.
 
 ![](../figures/02_RNAseq/ControlOnly-1.png)
 
+    cvd_grid(colored) # to view plot for color blind 
+
+![](../figures/02_RNAseq/ControlOnly-2.png)
+
     pdf(file="../figures/02_RNAseq/ControlDGCA1.pdf", width=3, height=3)
     plot(colored)
     dev.off()
@@ -1357,7 +1371,7 @@ Here, I examine only Conflict trained animals to show brain region differences.
 
     colored
 
-![](../figures/02_RNAseq/ControlOnly-2.png)
+![](../figures/02_RNAseq/ControlOnly-3.png)
 
     pdf(file="../figures/02_RNAseq/ControlDGCA3.pdf", width=3, height=3)
     plot(colored)
