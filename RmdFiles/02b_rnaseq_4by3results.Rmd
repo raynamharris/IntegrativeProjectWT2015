@@ -24,7 +24,7 @@ library(edgeR)  ## for basic read counts status
 library(magrittr) ## to use the weird pipe
 library(genefilter)  ## for PCA fuction
 library(ggrepel) ## for labeling volcano plot
-library(colorblindr)
+library(colorblindr) # simulates color-blind viewing 
 
 ## load functions 
 source("figureoptions.R")
@@ -65,6 +65,7 @@ dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
 ```
 
+# Number of differentially expressed genes per two-way contrast
 
 ```{r Twowaycontrasts3}
 #calculate significance of all two way comparisions
@@ -80,14 +81,8 @@ contrast7 <- resvals(contrastvector = c("APA2", "consistent", "conflict"), mypva
 ```
 
 
-```{r rldpadjs}
-# depends on the previous chunch
-# saves pvalues in object for following chuncks
-rldpadjs <- assay(rld)
-rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
-rldpadjs <- as.data.frame(rldpadjs)
-rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
-```
+
+
 
 
 ## Principle component analysis
@@ -152,13 +147,17 @@ dev.off()
 ## venn diagrams
 
 ```{r venndiagrams}
+rldpadjs <- assay(rld)
+rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
+rldpadjs <- as.data.frame(rldpadjs)
+rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
+
 venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) # CA1 DG
 venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) # CA1 CA3
 venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) # CA3 DG
 venn4 <- row.names(rldpadjs[rldpadjs[4] <0.05 & !is.na(rldpadjs[4]),]) # conflict conflictyoked
 venn5 <- row.names(rldpadjs[rldpadjs[5] <0.05 & !is.na(rldpadjs[5]),]) # consistent consistentyoked
 venn6 <- row.names(rldpadjs[rldpadjs[6] <0.05 & !is.na(rldpadjs[6]),]) # yoked yoked
-
 ```
 
 ```{r venndiagram3}
