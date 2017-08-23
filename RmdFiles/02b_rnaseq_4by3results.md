@@ -483,21 +483,21 @@ Principle component analysis
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02_RNAseq/pca-1.png)
+![](../figures/02_RNAseq/pca_APA3-1.png)
 
     plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02_RNAseq/pca-2.png)
+![](../figures/02_RNAseq/pca_APA3-2.png)
 
     plotPCs(pcadata, 4, 2, aescolor = pcadata$APA3, colorname = "APA3", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA3)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02_RNAseq/pca-3.png)
+![](../figures/02_RNAseq/pca_APA3-3.png)
 
 heatmap
 -------
@@ -611,7 +611,7 @@ heatmap
              clustering_distance_cols="correlation" 
              )
 
-![](../figures/02_RNAseq/heatmap-1.png)
+![](../figures/02_RNAseq/heatmap_APA3-1.png)
 
     # for adobe
     pheatmap(DEGes, show_colnames=F, show_rownames = F,

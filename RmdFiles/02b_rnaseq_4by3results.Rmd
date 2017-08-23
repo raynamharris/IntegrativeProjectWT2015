@@ -66,7 +66,7 @@ rld <- rlog(dds, blind=FALSE) ## log transformed data
 ```
 
 
-```{r Twowaycontrasts}
+```{r Twowaycontrasts_APA3}
 #calculate significance of all two way comparisions
 contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) 
 contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) 
@@ -95,7 +95,7 @@ head(resOrdered, 10)
 ```
 
 
-```{r rldpadjs}
+```{r rldpadjs_APA3}
 # depends on the previous chunch
 # saves pvalues in object for following chuncks
 rldpadjs <- assay(rld)
@@ -107,7 +107,7 @@ rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
 
 ## Principle component analysis
 
-```{r pca}
+```{r pca_APA3}
 
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA3"), returnData=TRUE)
@@ -151,16 +151,9 @@ plotPCs(pcadata, 4, 2, aescolor = pcadata$APA3, colorname = "APA3", aesshape = p
 ```
 
 
-
-
-
-
-
-
-
 ## heatmap
 
-```{r heatmap}
+```{r heatmap_APA3}
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
