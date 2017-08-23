@@ -333,7 +333,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   ylim(c(0, 100)) +   
   scale_color_manual(values = c("CA1" = "#7570b3",
                                 "DG" = "#d95f02", 
-                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   theme(axis.title.x = element_blank())+ 
   theme(axis.title.y = element_blank()) + 
@@ -372,7 +372,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   ylim(c(0, 100)) +  
   scale_color_manual(values = c("CA1" = "#7570b3",
                                 "CA3" = "#1b9e77", 
-                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   theme(axis.title.x = element_blank()) + 
   theme(axis.title.y = element_blank()) + 
@@ -412,7 +412,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   ylim(c(0, 100)) +  
   scale_color_manual(values = c("CA3" = "#1b9e77",
                                 "DG" = "#d95f02", 
-                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   theme(axis.title.x = element_blank()) + 
   theme(axis.title.y = element_blank()) + 
@@ -456,7 +456,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   ylim(c(0, 10)) +  
   scale_color_manual(values = c("consistent" = "#f4a582",
                                 "yoked_consistent" = "#bababa", 
-                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   theme(axis.title.x = element_blank())+ 
   theme(axis.title.y = element_blank()) + 
@@ -500,7 +500,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   ylim(c(0, 10)) +  
   scale_color_manual(values = c("yoked_conflict" = "#404040",
                                 "yoked_consistent" = "#bababa", 
-                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   theme(axis.title.x = element_blank())+ 
   theme(axis.title.y = element_blank()) + 
@@ -543,7 +543,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   ylim(c(0, 10)) +  
   scale_color_manual(values = c("conflict" = "#ca0020",
                                 "yoked_conflict" = "#404040", 
-                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   theme(axis.title.x = element_blank())+ 
   theme(axis.title.y = element_blank()) + 
