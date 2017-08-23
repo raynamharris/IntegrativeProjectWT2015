@@ -107,17 +107,7 @@ dim(countData)
 ```
 
 
-
-
-
-
 ```{r writecsv}
 write.csv(colData, file = "../data/02a_colData.csv", row.names = F)
 write.csv(countData, file = "../data/02a_countData.csv", row.names = T)
 ```
-
-
-
-
-
-

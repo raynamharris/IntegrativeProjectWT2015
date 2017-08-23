@@ -55,36 +55,49 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ Punch + APA3 + Punch*APA3)
 
-## DESeq2 1.3.7 specify the factor levels
-dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1"))
-dds$APA3 <- factor(dds$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1")) ## specify the factor levels
+dds$APA3 <- factor(dds$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict")) ## specify the factor levels
 
 dds # view the DESeq object - note numnber of genes
-
-## DESeq2 1.3.6 Pre-filtering genes with 0 counts
-dds <- dds[ rowSums(counts(dds)) > 1, ] 
-
-dds # view the DESeq object - note numnber of genes
-# dim: 17674 44
-# 17,647 genes and 44 samples
-
-## DESeq2 1.4  Differential expression analysi
-dds <- DESeq(dds)
-
-## for variance stablized gene expression and log transformed data
-rld <- rlog(dds, blind=FALSE)
-
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) #1159 (less than #2497)
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) #771 (less than #1803)
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) #2122 (less than #3445)
-contrast4 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), mypval = 0.05) #84 (less than #95)
-contrast5 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Yoked_Conflict"), mypval = 0.05) #15 (less than #42)
-contrast6 <- resvals(contrastvector = c("APA3", "Yoked_Conflict", "Yoked_NoConflict"), mypval = 0.05) #12 (more than 0)
-contrast7 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Trained_NoConflict"), mypval = 0.05) #0 (same)
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # DESeq2 1.3.6 Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+dds <- DESeq(dds) # Differential expression analysis
+rld <- rlog(dds, blind=FALSE) ## log transformed data
+```
 
 
-#create a new DF with the gene counts
-## note: contrast1 had 0 differentially expressed genes, so it is not included 
+```{r Twowaycontrasts}
+#calculate significance of all two way comparisions
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) 
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) 
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) 
+
+contrast4 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Yoked_NoConflict"), mypval = 0.05) 
+res <- results(dds, contrast =c("APA3", "Trained_Conflict", "Yoked_NoConflict"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+contrast5 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), mypval = 0.05) 
+res <- results(dds, contrast =c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+
+contrast6 <- resvals(contrastvector = c("APA3", "Yoked_Conflict", "Yoked_NoConflict"), mypval = 0.05)  
+res <- results(dds, contrast =c("APA3", "Yoked_NoConflict", "Yoked_Conflict"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+contrast7 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Trained_Conflict"), mypval = 0.05) 
+res <- results(dds, contrast = c("APA3", "Trained_NoConflict", "Trained_Conflict"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+```
+
+
+```{r rldpadjs}
+# depends on the previous chunch
+# saves pvalues in object for following chuncks
 rldpadjs <- assay(rld)
 rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 rldpadjs <- as.data.frame(rldpadjs)
@@ -141,12 +154,72 @@ plotPCs(pcadata, 3, 4, aescolor = pcadata$APA3, colorname = "APA3", aesshape = p
 ```
 
 
+
+```{r heatmap}
+DEGes <- assay(rld)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
+DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
+DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA3Yoked_NoConflictAPA3Yoked_Conflict, padjAPA3Trained_ConflictTrained_NoConflict)) # create new col with min padj
+DEGes <- DEGes %>% filter(padjmin < 0.05)
+rownames(DEGes) <- DEGes$rownames
+drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
+DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
+DEGes <- as.matrix(DEGes)
+DEGes <- DEGes - rowMeans(DEGes)
+head(DEGes)
+
+## the heatmap annotation file
+df <- as.data.frame(colData(dds)[,c("Punch","APA3")]) ## matrix to df
+
+
+rownames(df) <- names(countData)
+ann_colors <- ann_colors3 #use 
+
+# make sure the data is a matrix
+DEGes <- as.matrix(DEGes) 
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+
+pheatmap(DEGes, show_colnames=T, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 8, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+
+# for adobe
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 10, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 8, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/02_RNAseq/HeatmapPadj-1.pdf"
+         )
+```
+
+
 ```{r writecsv}
-#write.csv(rldpadjs, file = "../data/02c_rldpadjs.csv", row.names = T)
-#write.csv(DEGes, file = "../data/02c_DEGes.csv", row.names = T)
-#write.csv(df, file = "../data/02c_df.csv", row.names = F)
-#write.csv(pcadata, file = "../data/02c_pcadata.csv", row.names = F)
-#write.table(percentVar, file = "../data/02c_percentVar.txt")
+#write.csv(rldpadjs, file = "../data/02b_rldpadjs.csv", row.names = T)
+#write.csv(DEGes, file = "../data/02b_DEGes.csv", row.names = T)
+#write.csv(df, file = "../data/02b_df.csv", row.names = F)
+#write.csv(pcadata, file = "../data/02b_pcadata.csv", row.names = F)
+#write.table(percentVar, file = "../data/02b_percentVar.txt")
 ```
 
 
