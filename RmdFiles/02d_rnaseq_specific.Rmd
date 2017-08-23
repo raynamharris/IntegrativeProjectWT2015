@@ -26,7 +26,6 @@ library(colorblindr)
 ## load functions 
 source("figureoptions.R")
 source("functions_RNAseq.R")
-source("resvalsfunction.R")
 
 ## set output file for figures 
 knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
