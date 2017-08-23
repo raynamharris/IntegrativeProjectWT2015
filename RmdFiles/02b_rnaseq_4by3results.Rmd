@@ -70,19 +70,16 @@ rld <- rlog(dds, blind=FALSE) ## log transformed data
 #calculate significance of all two way comparisions
 # see source "functions_RNAseq.R" 
 
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) 
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) 
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) 
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 1159
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 771
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 2122
 
-contrast4 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05)  # conflict yoked
-contrast5 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) #consistent yoked
-contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05)  # yoked
-contrast7 <- resvals(contrastvector = c("APA2", "consistent", "conflict"), mypval = 0.05) # trained
+contrast4 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05)  # conflict yoked # 15
+contrast5 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) #consistent yoked # 84
+contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05)  # yoked # 12
+contrast7 <- resvals(contrastvector = c("APA2", "consistent", "conflict"), mypval = 0.05) # trained # 0
 
 ```
-
-
-
 
 
 
@@ -131,12 +128,12 @@ plotPCs(pcadata, 4, 2, aescolor = pcadata$APA2, colorname = "APA2", aesshape = p
 
 
 # pdf the same pca plots descripbed above of the above
-pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
+pdf(file="../figures/02_RNAseq_4by3/PCA12.pdf", width=4.5, height=3)
 PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
 plot(PCA12)
 dev.off()
 
-pdf(file="../figures/02_RNAseq/PCA42.pdf", width=4.5, height=3)
+pdf(file="../figures/02_RNAseq_4by3/PCA42.pdf", width=4.5, height=3)
 PCA42 <- plotPCs(pcadata, 4, 2, aescolor = pcadata$APA, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA2)
 plot(PCA42)
 dev.off()
@@ -272,7 +269,39 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
-         filename = "../figures/02_RNAseq/pheatmap.pdf"
+         filename = "../figures/02_RNAseq_4by3/pheatmap.pdf"
+         )
+
+# no just the heatmap
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors, 
+         annotation_row = NA, 
+         annotation_legend = FALSE,
+         annotation_names_row = FALSE, annotation_names_col = FALSE,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 11, 
+         border_color = "grey60" ,
+         color = viridis(30),
+         #cellwidth = 7, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors, 
+         annotation_row = NA, 
+         annotation_legend = FALSE,
+         annotation_names_row = FALSE, annotation_names_col = FALSE,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 11, 
+         border_color = "grey60" ,
+         color = viridis(30),
+         #cellwidth = 7, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation", 
+         filename = "../figures/02_RNAseq_4by3/pheatmap_minimal.pdf"
          )
 ```
 
@@ -282,6 +311,125 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 
 ```{r volcanos}
 # gene lists
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "CA1", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "DG", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 3, wt = pvalue)
+
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  xlim(c(-10, 10)) +  
+  ylim(c(0, 100)) +   
+  scale_color_manual(values = c("CA1" = "#7570b3",
+                                "DG" = "#d95f02", 
+                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank()) + 
+  geom_text_repel(data = top_labelled, 
+                          mapping = aes(label = gene), 
+                          size = 3,
+                          fontface = 'bold', 
+                          color = 'black',
+                          box.padding = unit(0.5, "lines"),
+                          point.padding = unit(0.5, "lines"))
+
+colored
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02_RNAseq_4by3/CA1DG.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+
+res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+data <- na.omit(data)
+head(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "CA1", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "CA3", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 3, wt = pvalue)
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  xlim(c(-10, 10)) +  
+  ylim(c(0, 100)) +  
+  scale_color_manual(values = c("CA1" = "#7570b3",
+                                "CA3" = "#1b9e77", 
+                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank()) + 
+  theme(axis.title.y = element_blank()) + 
+  geom_text_repel(data = top_labelled, 
+                          mapping = aes(label = gene), 
+                          size = 3,
+                          fontface = 'bold', 
+                          color = 'black',
+                          box.padding = unit(0.5, "lines"),
+                          point.padding = unit(0.5, "lines"))
+
+colored
+pdf(file="../figures/02_RNAseq_4by3/CA1CA3.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+
+
+
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+data <- na.omit(data)
+head(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "CA3", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "DG", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 3, wt = pvalue)
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  xlim(c(-10, 10)) +  
+  ylim(c(0, 100)) +  
+  scale_color_manual(values = c("CA3" = "#1b9e77",
+                                "DG" = "#d95f02", 
+                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank()) + 
+  theme(axis.title.y = element_blank()) + 
+  geom_text_repel(data = top_labelled, 
+                          mapping = aes(label = gene), 
+                          size = 3,
+                          fontface = 'bold', 
+                          color = 'black',
+                          box.padding = unit(0.5, "lines"),
+                          point.padding = unit(0.5, "lines"))
+
+colored
+#cvd_grid(colored)
+pdf(file="../figures/02_RNAseq_4by3/DGCA3.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+
 
 
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
@@ -304,8 +452,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
   theme_bw(base_size = 16) + # clean up theme
   theme(legend.position = "none") + # remove legend 
-  #xlim(c(-2.5, 2.5)) +  
-  #ylim(c(0, 10)) +  
+  xlim(c(-10, 10)) +  
+  ylim(c(0, 10)) +  
   scale_color_manual(values = c("consistent" = "#f4a582",
                                 "yoked_consistent" = "#bababa", 
                                 "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
@@ -321,7 +469,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
                           point.padding = unit(0.5, "lines"))
 
 colored
-cvd_grid(colored) # to view plot for color blind 
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02_RNAseq_4by3/consistentyoked.pdf", width=3, height=3)
+plot(colored)
+dev.off()
 
 
 ###
@@ -345,8 +496,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
   theme_bw(base_size = 16) + # clean up theme
   theme(legend.position = "none") + # remove legend 
-  #xlim(c(-2.5, 2.5)) +  
-  #ylim(c(0, 10)) +  
+  xlim(c(-10, 10)) +  
+  ylim(c(0, 10)) +  
   scale_color_manual(values = c("yoked_conflict" = "#404040",
                                 "yoked_consistent" = "#bababa", 
                                 "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
@@ -362,8 +513,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
                           point.padding = unit(0.5, "lines"))
 
 colored
-cvd_grid(colored) # to view plot for color blind 
-
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02_RNAseq_4by3/yokedyoked.pdf", width=3, height=3)
+plot(colored)
+dev.off()
 
 ####
 
@@ -386,8 +539,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
   theme_bw(base_size = 16) + # clean up theme
   theme(legend.position = "none") + # remove legend 
-  #xlim(c(-2.5, 2.5)) +  
-  #ylim(c(0, 10)) +  
+  xlim(c(-10, 10)) +  
+  ylim(c(0, 10)) +  
   scale_color_manual(values = c("conflict" = "#ca0020",
                                 "yoked_conflict" = "#404040", 
                                 "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
@@ -403,48 +556,11 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
                           point.padding = unit(0.5, "lines"))
 
 colored
-cvd_grid(colored) # to view plot for color blind 
- 
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02_RNAseq_4by3/conflictyoked.pdf", width=3, height=3)
+plot(colored)
+dev.off()
 
-### 
-res <- results(dds, contrast = c("APA2", "consistent", "conflict"), independentFiltering = F)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-data <- data.frame(gene = row.names(res),
-                   pvalue = -log10(res$padj), 
-                   lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "conflict", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "consistent", 
-                                    no = "none")))
-top_labelled <- top_n(data, n = 3, wt = pvalue)
-# Color corresponds to fold change directionality
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
-  theme_bw(base_size = 16) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  #xlim(c(-2.5, 2.5)) +  
-  #ylim(c(0, 10)) +  
-  scale_color_manual(values = c("conflict" = "#ca0020",
-                                "consistent" = "#f4a582", 
-                                "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
-           panel.grid.major=element_blank()) + 
-  theme(axis.title.x = element_blank())+ 
-  theme(axis.title.y = element_blank()) + 
-  geom_text_repel(data = top_labelled, 
-                          mapping = aes(label = gene), 
-                          size = 3,
-                          fontface = 'bold', 
-                          color = 'black',
-                          box.padding = unit(0.5, "lines"),
-                          point.padding = unit(0.5, "lines"))
-
-colored
-cvd_grid(colored) # to view plot for color blind 
 
 ```
 

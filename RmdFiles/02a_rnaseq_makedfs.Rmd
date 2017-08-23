@@ -25,7 +25,6 @@ library(ggplot2)
 ## Functions
 source("functions_RNAseq.R")
 
-
 ## set output file for figures 
 knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
 
@@ -112,6 +111,13 @@ colData %>% select(APA2,Punch)  %>%  summary()
 dim(countData)
 ```
 
+## Write the two files
+
+```{r writecsv}
+write.csv(colData, file = "../data/02a_colData.csv", row.names = F)
+write.csv(countData, file = "../data/02a_countData.csv", row.names = T)
+```
+
 
 ## Total Gene Counts Per Sample 
 this could say something about data before normalization
@@ -136,7 +142,4 @@ ggplot(rowsum, aes(x=millioncounts)) +
   scale_y_continuous(name = "Number of Samples")
 ```
 
-```{r writecsv}
-write.csv(colData, file = "../data/02a_colData.csv", row.names = F)
-write.csv(countData, file = "../data/02a_countData.csv", row.names = T)
-```
+

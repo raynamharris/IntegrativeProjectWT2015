@@ -38,12 +38,11 @@ The figures made from this script were compiled in Adobe.
 
     ## Warning: package 'ggrepel' was built under R version 3.3.2
 
-    library(colorblindr)
+    library(colorblindr) # simulates color-blind viewing 
 
     ## load functions 
     source("figureoptions.R")
     source("functions_RNAseq.R")
-    source("resvalsfunction.R")
 
     ## set output file for figures 
     knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq_4by3/')
@@ -77,7 +76,7 @@ Behavioral Groups: "yoked\_consistent", "yoked\_conflict", "consistent",
     ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
     ## colData names(8): RNAseqID Mouse ... APA APA2
 
-    dds <- dds[ rowSums(counts(dds)) > 1, ]  # DESeq2 1.3.6 Pre-filtering genes with 0 counts
+    dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
     dds # view number of genes afternormalization and the number of samples
 
     ## class: DESeqDataSet 
@@ -105,170 +104,39 @@ Behavioral Groups: "yoked\_consistent", "yoked\_conflict", "consistent",
 
     rld <- rlog(dds, blind=FALSE) ## log transformed data
 
+Number of differentially expressed genes per two-way contrast
+=============================================================
+
     #calculate significance of all two way comparisions
-    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) 
+    # see source "functions_RNAseq.R" 
+
+    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 1159
 
     ## [1] 1159
 
-    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) 
+    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 771
 
     ## [1] 771
 
-    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) 
+    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 2122
 
     ## [1] 2122
 
-    contrast4 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05)  # conflict yoked
+    contrast4 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05)  # conflict yoked # 15
 
     ## [1] 15
 
-    contrast5 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) #consistent yoked
+    contrast5 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) #consistent yoked # 84
 
     ## [1] 84
 
-    contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05)  # yoked
+    contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05)  # yoked # 12
 
     ## [1] 12
 
-    contrast7 <- resvals(contrastvector = c("APA2", "consistent", "conflict"), mypval = 0.05) # trained
+    contrast7 <- resvals(contrastvector = c("APA2", "consistent", "conflict"), mypval = 0.05) # trained # 0
 
     ## [1] 0
-
-    # gene lists
-    res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = F)
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
-
-    ## log2 fold change (MLE): APA2 conflict vs yoked_conflict 
-    ## Wald test p-value: APA2 conflict vs yoked_conflict 
-    ## DataFrame with 10 rows and 6 columns
-    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Insm1    21.08822      -4.558981 0.8230696 -5.538998 3.042074e-08
-    ## Kcnc2   145.09714      -2.520075 0.4924622 -5.117295 3.099479e-07
-    ## Neurod6 333.02885      -3.525915 0.6931363 -5.086901 3.639624e-07
-    ## Sv2b    142.82830      -3.731971 0.7369799 -5.063871 4.108283e-07
-    ## Stmn2   418.60097      -2.218191 0.4627514 -4.793482 1.639112e-06
-    ## Slc16a1  51.34226       1.926065 0.4236948  4.545877 5.470688e-06
-    ## Camk1g   13.57840      -3.396126 0.7682834 -4.420409 9.851449e-06
-    ## Khdrbs3 328.27759      -1.626203 0.3679544 -4.419579 9.889335e-06
-    ## Slc6a7   90.86015      -1.794156 0.4024943 -4.457594 8.288453e-06
-    ## Stox2   645.60944      -5.140065 1.1665864 -4.406073 1.052613e-05
-    ##                 padj
-    ##            <numeric>
-    ## Insm1   0.0005374433
-    ## Kcnc2   0.0018145257
-    ## Neurod6 0.0018145257
-    ## Sv2b    0.0018145257
-    ## Stmn2   0.0057916396
-    ## Slc16a1 0.0161084395
-    ## Camk1g  0.0185965122
-    ## Khdrbs3 0.0185965122
-    ## Slc6a7  0.0185965122
-    ## Stox2   0.0185965122
-
-    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
-
-    ## log2 fold change (MLE): APA2 consistent vs yoked_consistent 
-    ## Wald test p-value: APA2 consistent vs yoked consistent 
-    ## DataFrame with 10 rows and 6 columns
-    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Plk2   697.03923       2.352508 0.2999148  7.843919 4.366988e-15
-    ## Arc    436.24502       2.932892 0.4081472  7.185868 6.678147e-13
-    ## Frmd6  116.84596       3.294066 0.4749978  6.934908 4.064851e-12
-    ## Dnaja1 106.22420       1.151488 0.1680492  6.852091 7.277826e-12
-    ## Smad7   25.81154       3.476292 0.5075848  6.848691 7.452852e-12
-    ## Lmna    26.32554       2.384168 0.3565015  6.687681 2.267346e-11
-    ## Sgk1    27.18260       2.432382 0.3678629  6.612196 3.786597e-11
-    ## Junb   514.04985       2.401985 0.3775447  6.362122 1.989857e-10
-    ## Fbxo33  74.39061       2.984504 0.4886561  6.107576 1.011557e-09
-    ## Ubc    469.30786       1.141296 0.1871946  6.096844 1.081828e-09
-    ##                padj
-    ##           <numeric>
-    ## Plk2   7.715158e-11
-    ## Arc    5.899141e-09
-    ## Frmd6  2.393791e-08
-    ## Dnaja1 2.633391e-08
-    ## Smad7  2.633391e-08
-    ## Lmna   6.676200e-08
-    ## Sgk1   9.556829e-08
-    ## Junb   4.394351e-07
-    ## Fbxo33 1.911265e-06
-    ## Ubc    1.911265e-06
-
-    res <- results(dds, contrast =c("APA2", "yoked_consistent", "yoked_conflict"), independentFiltering = F)
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
-
-    ## log2 fold change (MLE): APA2 yoked_consistent vs yoked_conflict 
-    ## Wald test p-value: APA2 yoked_consistent vs yoked_conflict 
-    ## DataFrame with 10 rows and 6 columns
-    ##           baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Kcnc2    145.09714     -3.8170020 0.5808500 -6.571407 4.984192e-11
-    ## Gm2115   250.24766     -3.4698844 0.6316131 -5.493686 3.936297e-08
-    ## St8sia5   34.65231     -4.1709096 0.7707730 -5.411333 6.255716e-08
-    ## Cnr1     176.42633     -3.8490675 0.7741110 -4.972243 6.618279e-07
-    ## Dner      57.09091     -1.7593101 0.3740379 -4.703561 2.556629e-06
-    ## Spock1    79.66333     -3.0533707 0.6697536 -4.558946 5.141097e-06
-    ## Slc32a1   91.68713     -3.9723836 0.9097520 -4.366447 1.262841e-05
-    ## Cpe     3074.70125     -0.9845432 0.2352792 -4.184574 2.857010e-05
-    ## Me1       44.02835     -1.8032867 0.4263382 -4.229709 2.339937e-05
-    ## Pou3f1   219.85725     -2.1494860 0.5143322 -4.179178 2.925641e-05
-    ##                 padj
-    ##            <numeric>
-    ## Kcnc2   8.805571e-07
-    ## Gm2115  3.477128e-04
-    ## St8sia5 3.683991e-04
-    ## Cnr1    2.923128e-03
-    ## Dner    9.033594e-03
-    ## Spock1  1.513796e-02
-    ## Slc32a1 3.187231e-02
-    ## Cpe     4.307275e-02
-    ## Me1     4.307275e-02
-    ## Pou3f1  4.307275e-02
-
-    res <- results(dds, contrast = c("APA2", "consistent", "conflict"), independentFiltering = F)
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
-
-    ## log2 fold change (MLE): APA2 consistent vs conflict 
-    ## Wald test p-value: APA2 consistent vs conflict 
-    ## DataFrame with 10 rows and 6 columns
-    ##                 baseMean log2FoldChange     lfcSE        stat    pvalue
-    ##                <numeric>      <numeric> <numeric>   <numeric> <numeric>
-    ## 0610007P14Rik 21.5461759     0.05019271 0.3742306  0.13412240 0.8933058
-    ## 0610009B22Rik  6.4277426     0.76243785 0.6582895  1.15821053 0.2467781
-    ## 0610009L18Rik  3.9008693    -0.53613979 1.1080722 -0.48384914 0.6284929
-    ## 0610009O20Rik 48.6140661    -0.25676554 0.3790443 -0.67740248 0.4981506
-    ## 0610010F05Rik  8.1466102     0.27012199 0.3928997  0.68750873 0.4917622
-    ## 0610010K14Rik  1.9324187    -0.79827392 1.0021639 -0.79655024 0.4257123
-    ## 0610012G03Rik 61.5516314    -0.11916134 0.3437908 -0.34661003 0.7288843
-    ## 0610030E20Rik 39.9081366     0.10853833 0.4965014  0.21860629 0.8269568
-    ## 0610037L13Rik  7.6331581    -0.04250870 0.4686990 -0.09069511 0.9277349
-    ## 0610040J01Rik  0.9055227     0.92499512 1.2783405  0.72359054 0.4693172
-    ##                    padj
-    ##               <numeric>
-    ## 0610007P14Rik         1
-    ## 0610009B22Rik         1
-    ## 0610009L18Rik         1
-    ## 0610009O20Rik         1
-    ## 0610010F05Rik         1
-    ## 0610010K14Rik         1
-    ## 0610012G03Rik         1
-    ## 0610030E20Rik         1
-    ## 0610037L13Rik         1
-    ## 0610040J01Rik         1
-
-    # depends on the previous chunch
-    # saves pvalues in object for following chuncks
-    rldpadjs <- assay(rld)
-    rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
-    rldpadjs <- as.data.frame(rldpadjs)
-    rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
 
 Principle component analysis
 ----------------------------
@@ -488,7 +356,7 @@ Principle component analysis
 ![](../figures/02_RNAseq_4by3/pca-3.png)
 
     # pdf the same pca plots descripbed above of the above
-    pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
+    pdf(file="../figures/02_RNAseq_4by3/PCA12.pdf", width=4.5, height=3)
     PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
     plot(PCA12)
 
@@ -500,7 +368,7 @@ Principle component analysis
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/02_RNAseq/PCA42.pdf", width=4.5, height=3)
+    pdf(file="../figures/02_RNAseq_4by3/PCA42.pdf", width=4.5, height=3)
     PCA42 <- plotPCs(pcadata, 4, 2, aescolor = pcadata$APA, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA2)
     plot(PCA42)
 
@@ -514,6 +382,11 @@ Principle component analysis
 
 venn diagrams
 -------------
+
+    rldpadjs <- assay(rld)
+    rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
+    rldpadjs <- as.data.frame(rldpadjs)
+    rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
 
     venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) # CA1 DG
     venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) # CA1 CA3
@@ -696,8 +569,522 @@ heatmap
              clustering_method="average",
              breaks=myBreaks,
              clustering_distance_cols="correlation",
-             filename = "../figures/02_RNAseq/pheatmap.pdf"
+             filename = "../figures/02_RNAseq_4by3/pheatmap.pdf"
              )
+
+    # no just the heatmap
+    pheatmap(DEGes, show_colnames=F, show_rownames = F,
+             annotation_col=df, annotation_colors = ann_colors, 
+             annotation_row = NA, 
+             annotation_legend = FALSE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             treeheight_row = 0, treeheight_col = 50,
+             fontsize = 11, 
+             border_color = "grey60" ,
+             color = viridis(30),
+             #cellwidth = 7, 
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation" 
+             )
+
+![](../figures/02_RNAseq_4by3/heatmap-2.png)
+
+    pheatmap(DEGes, show_colnames=F, show_rownames = F,
+             annotation_col=df, annotation_colors = ann_colors, 
+             annotation_row = NA, 
+             annotation_legend = FALSE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             treeheight_row = 0, treeheight_col = 50,
+             fontsize = 11, 
+             border_color = "grey60" ,
+             color = viridis(30),
+             #cellwidth = 7, 
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation", 
+             filename = "../figures/02_RNAseq_4by3/pheatmap_minimal.pdf"
+             )
+
+Volcanos plots and and gene lists
+---------------------------------
+
+    # gene lists
+    res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MLE): Punch CA1 vs DG 
+    ## Wald test p-value: Punch CA1 vs DG 
+    ## DataFrame with 10 rows and 6 columns
+    ##           baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Mpped1    25.52651       6.910394 0.6107546 11.314519 1.112109e-29
+    ## Wfs1     186.06663       6.318247 0.5736616 11.013891 3.275438e-28
+    ## Prkcg    534.81768       3.003292 0.2872744 10.454438 1.398254e-25
+    ## Pou3f1   219.85725       5.968238 0.5726208 10.422670 1.953890e-25
+    ## Slc9a2    33.61930       7.435026 0.7231286 10.281749 8.516765e-25
+    ## Pde1a     25.49671       6.440581 0.6328524 10.177066 2.510157e-24
+    ## Map4      98.71267       2.388505 0.2357040 10.133497 3.923623e-24
+    ## St8sia5   34.65231       7.350142 0.7470324  9.839120 7.637584e-23
+    ## Tmem200a  51.06226       7.730489 0.7905094  9.779124 1.384033e-22
+    ## Gm2115   250.24766       6.763651 0.7085751  9.545425 1.355506e-21
+    ##                  padj
+    ##             <numeric>
+    ## Mpped1   1.964764e-25
+    ## Wfs1     2.893358e-24
+    ## Prkcg    8.234317e-22
+    ## Pou3f1   8.629842e-22
+    ## Slc9a2   3.009314e-21
+    ## Pde1a    7.391159e-21
+    ## Map4     9.902665e-21
+    ## St8sia5  1.686665e-19
+    ## Tmem200a 2.716858e-19
+    ## Gm2115   2.394772e-18
+
+    data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "CA1", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "DG", 
+                                        no = "none")))
+    top_labelled <- top_n(data, n = 3, wt = pvalue)
+
+    # Color corresponds to fold change directionality
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      xlim(c(-10, 10)) +  
+      ylim(c(0, 100)) +   
+      scale_color_manual(values = c("CA1" = "#7570b3",
+                                    "DG" = "#d95f02", 
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
+
+    colored
+
+![](../figures/02_RNAseq_4by3/volcanos-1.png)
+
+    #cvd_grid(colored) # to view plot for color blind 
+    pdf(file="../figures/02_RNAseq_4by3/CA1DG.pdf", width=3, height=3)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MLE): Punch CA1 vs CA3 
+    ## Wald test p-value: Punch CA1 vs CA3 
+    ## DataFrame with 10 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE       stat       pvalue
+    ##        <numeric>      <numeric> <numeric>  <numeric>    <numeric>
+    ## Itpka  712.20310       3.073453 0.2158630  14.237982 5.324215e-46
+    ## Doc2b  351.76381       7.136499 0.5198022  13.729259 6.782335e-43
+    ## Pou3f1 219.85725       6.506303 0.5913889  11.001733 3.748584e-28
+    ## Fibcd1 361.24751       7.658648 0.7344959  10.427080 1.865325e-25
+    ## Syn2   367.34401      -2.238529 0.2159165 -10.367572 3.482628e-25
+    ## C1ql3  288.38305       6.413302 0.6524966   9.828867 8.456470e-23
+    ## Wfs1   186.06663       5.369378 0.5608770   9.573182 1.036650e-21
+    ## Mpped1  25.52651       4.389502 0.4598871   9.544738 1.364518e-21
+    ## Bcr    343.00374       2.292545 0.2439557   9.397382 5.593776e-21
+    ## Ahi1   241.16807       1.769745 0.1925839   9.189475 3.947636e-20
+    ##                padj
+    ##           <numeric>
+    ## Itpka  9.406290e-42
+    ## Doc2b  5.991175e-39
+    ## Pou3f1 2.207541e-24
+    ## Fibcd1 8.238676e-22
+    ## Syn2   1.230552e-21
+    ## C1ql3  2.490008e-19
+    ## Wfs1   2.616355e-18
+    ## Mpped1 3.013367e-18
+    ## Bcr    1.098058e-17
+    ## Ahi1   6.974288e-17
+
+    data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    head(data)
+
+    ##            gene      pvalue        lfc
+    ## 1 0610007P14Rik 0.007204084  0.3087746
+    ## 2 0610009B22Rik 0.104655019 -1.2505139
+    ## 3 0610009L18Rik 0.383097221 -3.2706630
+    ## 4 0610009O20Rik 0.107206239 -0.5878760
+    ## 5 0610010F05Rik 0.066107763 -0.6331969
+    ## 6 0610010K14Rik 0.454929738  2.6407178
+
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "CA1", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "CA3", 
+                                        no = "none")))
+    top_labelled <- top_n(data, n = 3, wt = pvalue)
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      xlim(c(-10, 10)) +  
+      ylim(c(0, 100)) +  
+      scale_color_manual(values = c("CA1" = "#7570b3",
+                                    "CA3" = "#1b9e77", 
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank()) + 
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
+
+    colored
+
+![](../figures/02_RNAseq_4by3/volcanos-2.png)
+
+    pdf(file="../figures/02_RNAseq_4by3/CA1CA3.pdf", width=3, height=3)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MLE): Punch CA3 vs DG 
+    ## Wald test p-value: Punch CA3 vs DG 
+    ## DataFrame with 10 rows and 6 columns
+    ##           baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Fam163b  632.63230      -5.674235 0.3528797 -16.07980 3.535108e-58
+    ## Doc2b    351.76381      -6.985282 0.4696300 -14.87401 4.861017e-50
+    ## C1ql3    288.38305      -8.023868 0.5819242 -13.78851 2.988664e-43
+    ## Gnao1    164.33213       1.609036 0.1289476  12.47821 9.816440e-36
+    ## Pitpnm2  157.76399      -3.037954 0.2455791 -12.37057 3.771355e-35
+    ## Pnmal2   777.66865      -1.707431 0.1402372 -12.17530 4.208416e-34
+    ## Cpe     3074.70125       2.968743 0.2487199  11.93609 7.674487e-33
+    ## Me1       44.02835       4.393035 0.3744782  11.73108 8.832196e-32
+    ## Ahi1     241.16807      -1.793898 0.1544626 -11.61380 3.506656e-31
+    ## Pde1b    259.78724      -3.353212 0.2903870 -11.54739 7.609648e-31
+    ##                 padj
+    ##            <numeric>
+    ## Fam163b 6.245476e-54
+    ## Doc2b   4.293979e-46
+    ## C1ql3   1.760024e-39
+    ## Gnao1   4.335676e-32
+    ## Pitpnm2 1.332570e-31
+    ## Pnmal2  1.239168e-30
+    ## Cpe     1.936931e-29
+    ## Me1     1.950480e-28
+    ## Ahi1    6.883565e-28
+    ## Pde1b   1.344397e-27
+
+    data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    head(data)
+
+    ##            gene     pvalue        lfc
+    ## 1 0610007P14Rik 0.23382380 -0.4723008
+    ## 2 0610009B22Rik 0.08693629  0.5552003
+    ## 3 0610009L18Rik 0.01131993 -0.1970618
+    ## 4 0610009O20Rik 0.17560613 -0.4427569
+    ## 5 0610010F05Rik 0.27419757  0.5035075
+    ## 6 0610010K14Rik 0.47370797 -1.8559179
+
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "CA3", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "DG", 
+                                        no = "none")))
+    top_labelled <- top_n(data, n = 3, wt = pvalue)
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      xlim(c(-10, 10)) +  
+      ylim(c(0, 100)) +  
+      scale_color_manual(values = c("CA3" = "#1b9e77",
+                                    "DG" = "#d95f02", 
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank()) + 
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
+
+    colored
+
+![](../figures/02_RNAseq_4by3/volcanos-3.png)
+
+    #cvd_grid(colored)
+    pdf(file="../figures/02_RNAseq_4by3/DGCA3.pdf", width=3, height=3)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MLE): APA2 consistent vs yoked_consistent 
+    ## Wald test p-value: APA2 consistent vs yoked consistent 
+    ## DataFrame with 10 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Plk2   697.03923       2.352508 0.2999148  7.843919 4.366988e-15
+    ## Arc    436.24502       2.932892 0.4081472  7.185868 6.678147e-13
+    ## Frmd6  116.84596       3.294066 0.4749978  6.934908 4.064851e-12
+    ## Dnaja1 106.22420       1.151488 0.1680492  6.852091 7.277826e-12
+    ## Smad7   25.81154       3.476292 0.5075848  6.848691 7.452852e-12
+    ## Lmna    26.32554       2.384168 0.3565015  6.687681 2.267346e-11
+    ## Sgk1    27.18260       2.432382 0.3678629  6.612196 3.786597e-11
+    ## Junb   514.04985       2.401985 0.3775447  6.362122 1.989857e-10
+    ## Fbxo33  74.39061       2.984504 0.4886561  6.107576 1.011557e-09
+    ## Ubc    469.30786       1.141296 0.1871946  6.096844 1.081828e-09
+    ##                padj
+    ##           <numeric>
+    ## Plk2   7.715158e-11
+    ## Arc    5.899141e-09
+    ## Frmd6  2.393791e-08
+    ## Dnaja1 2.633391e-08
+    ## Smad7  2.633391e-08
+    ## Lmna   6.676200e-08
+    ## Sgk1   9.556829e-08
+    ## Junb   4.394351e-07
+    ## Fbxo33 1.911265e-06
+    ## Ubc    1.911265e-06
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "consistent", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "yoked_consistent", 
+                                        no = "none")))
+    top_labelled <- top_n(data, n = 3, wt = pvalue)
+    # Color corresponds to fold change directionality
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      xlim(c(-10, 10)) +  
+      ylim(c(0, 10)) +  
+      scale_color_manual(values = c("consistent" = "#f4a582",
+                                    "yoked_consistent" = "#bababa", 
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
+
+    colored
+
+    ## Warning: Removed 1 rows containing missing values (geom_text_repel).
+
+![](../figures/02_RNAseq_4by3/volcanos-4.png)
+
+    #cvd_grid(colored) # to view plot for color blind 
+    pdf(file="../figures/02_RNAseq_4by3/consistentyoked.pdf", width=3, height=3)
+    plot(colored)
+
+    ## Warning: Removed 1 rows containing missing values (geom_text_repel).
+
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    ###
+    res <- results(dds, contrast =c("APA2", "yoked_consistent", "yoked_conflict"), independentFiltering = F)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MLE): APA2 yoked_consistent vs yoked_conflict 
+    ## Wald test p-value: APA2 yoked_consistent vs yoked_conflict 
+    ## DataFrame with 10 rows and 6 columns
+    ##           baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Kcnc2    145.09714     -3.8170020 0.5808500 -6.571407 4.984192e-11
+    ## Gm2115   250.24766     -3.4698844 0.6316131 -5.493686 3.936297e-08
+    ## St8sia5   34.65231     -4.1709096 0.7707730 -5.411333 6.255716e-08
+    ## Cnr1     176.42633     -3.8490675 0.7741110 -4.972243 6.618279e-07
+    ## Dner      57.09091     -1.7593101 0.3740379 -4.703561 2.556629e-06
+    ## Spock1    79.66333     -3.0533707 0.6697536 -4.558946 5.141097e-06
+    ## Slc32a1   91.68713     -3.9723836 0.9097520 -4.366447 1.262841e-05
+    ## Cpe     3074.70125     -0.9845432 0.2352792 -4.184574 2.857010e-05
+    ## Me1       44.02835     -1.8032867 0.4263382 -4.229709 2.339937e-05
+    ## Pou3f1   219.85725     -2.1494860 0.5143322 -4.179178 2.925641e-05
+    ##                 padj
+    ##            <numeric>
+    ## Kcnc2   8.805571e-07
+    ## Gm2115  3.477128e-04
+    ## St8sia5 3.683991e-04
+    ## Cnr1    2.923128e-03
+    ## Dner    9.033594e-03
+    ## Spock1  1.513796e-02
+    ## Slc32a1 3.187231e-02
+    ## Cpe     4.307275e-02
+    ## Me1     4.307275e-02
+    ## Pou3f1  4.307275e-02
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "yoked_conflict", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "yoked_consistent", 
+                                        no = "none")))
+    top_labelled <- top_n(data, n = 3, wt = pvalue)
+    # Color corresponds to fold change directionality
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      xlim(c(-10, 10)) +  
+      ylim(c(0, 10)) +  
+      scale_color_manual(values = c("yoked_conflict" = "#404040",
+                                    "yoked_consistent" = "#bababa", 
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
+
+    colored
+
+![](../figures/02_RNAseq_4by3/volcanos-5.png)
+
+    #cvd_grid(colored) # to view plot for color blind 
+    pdf(file="../figures/02_RNAseq_4by3/yokedyoked.pdf", width=3, height=3)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    ####
+
+    res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = F)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MLE): APA2 conflict vs yoked_conflict 
+    ## Wald test p-value: APA2 conflict vs yoked_conflict 
+    ## DataFrame with 10 rows and 6 columns
+    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Insm1    21.08822      -4.558981 0.8230696 -5.538998 3.042074e-08
+    ## Kcnc2   145.09714      -2.520075 0.4924622 -5.117295 3.099479e-07
+    ## Neurod6 333.02885      -3.525915 0.6931363 -5.086901 3.639624e-07
+    ## Sv2b    142.82830      -3.731971 0.7369799 -5.063871 4.108283e-07
+    ## Stmn2   418.60097      -2.218191 0.4627514 -4.793482 1.639112e-06
+    ## Slc16a1  51.34226       1.926065 0.4236948  4.545877 5.470688e-06
+    ## Camk1g   13.57840      -3.396126 0.7682834 -4.420409 9.851449e-06
+    ## Khdrbs3 328.27759      -1.626203 0.3679544 -4.419579 9.889335e-06
+    ## Slc6a7   90.86015      -1.794156 0.4024943 -4.457594 8.288453e-06
+    ## Stox2   645.60944      -5.140065 1.1665864 -4.406073 1.052613e-05
+    ##                 padj
+    ##            <numeric>
+    ## Insm1   0.0005374433
+    ## Kcnc2   0.0018145257
+    ## Neurod6 0.0018145257
+    ## Sv2b    0.0018145257
+    ## Stmn2   0.0057916396
+    ## Slc16a1 0.0161084395
+    ## Camk1g  0.0185965122
+    ## Khdrbs3 0.0185965122
+    ## Slc6a7  0.0185965122
+    ## Stox2   0.0185965122
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "conflict", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "yoked_conflict", 
+                                        no = "none")))
+    top_labelled <- top_n(data, n = 3, wt = pvalue)
+    # Color corresponds to fold change directionality
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 16) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      xlim(c(-10, 10)) +  
+      ylim(c(0, 10)) +  
+      scale_color_manual(values = c("conflict" = "#ca0020",
+                                    "yoked_conflict" = "#404040", 
+                                    "none" = "#bdbdbd")) + theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      theme(axis.title.x = element_blank())+ 
+      theme(axis.title.y = element_blank()) + 
+      geom_text_repel(data = top_labelled, 
+                              mapping = aes(label = gene), 
+                              size = 3,
+                              fontface = 'bold', 
+                              color = 'black',
+                              box.padding = unit(0.5, "lines"),
+                              point.padding = unit(0.5, "lines"))
+
+    colored
+
+![](../figures/02_RNAseq_4by3/volcanos-6.png)
+
+    #cvd_grid(colored) # to view plot for color blind 
+    pdf(file="../figures/02_RNAseq_4by3/conflictyoked.pdf", width=3, height=3)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
 
     #write.csv(rldpadjs, file = "../data/02b_rldpadjs.csv", row.names = T)
     #write.csv(DEGes, file = "../data/02b_DEGes.csv", row.names = T)
