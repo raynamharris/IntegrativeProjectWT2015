@@ -34,7 +34,7 @@ knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq_subsets/')
 ## recreating previous figure
 Consistent and yoke consistent animals only
 
-```{r ConsistentOnly}
+```{r ConsistentYokedonly}
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData <- read.csv("../data/02a_colData.csv", header = T)
 
@@ -148,18 +148,136 @@ plot(colored)
 dev.off()
 ```
 
+## Conflict yoked only
+
+```{r ConflictYokedonly}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+
+colData <- colData %>% 
+  filter(APA2 %in% c("conflict", "yoked_conflict" ))  %>% 
+  droplevels()
+
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+colData %>% select(APA,Punch)  %>%  summary()
+colData %>% select(APA2,Punch)  %>%  summary()
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Punch + APA2 + Punch*APA2 )
+
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 17023 18   
+dds <- DESeq(dds)
+dds$Punch <- factor(dds$Punch, levels=c("DG", "CA3", "CA1"))
+dds$APA2 <- factor(dds$APA2, levels=c("yoked_conflict",  "conflict")) ## specify the factor levels
+
+rld <- rlog(dds, blind=FALSE)
+
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "CA1", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "DG", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 5, wt = pvalue)
+
+
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  xlim(c(-10, 10)) +  
+  ylim(c(0, 100)) +   
+  scale_color_manual(values = c("CA1" = "#7570b3",
+                                "DG" = "#d95f02", 
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
+                                                             panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank()) + 
+  theme(axis.title.y = element_blank()) + 
+  geom_text_repel(data = top_labelled, 
+                          mapping = aes(label = gene), 
+                          size = 3,
+                          fontface = 'bold', 
+                          color = 'black',
+                          box.padding = unit(0.5, "lines"),
+                          point.padding = unit(0.5, "lines"))
+
+colored
+
+pdf(file="../figures/02_RNAseq_subsets/ConflictDGCA1.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+
+
+
+res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "conflict", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "yoked_conflict", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 3, wt = pvalue)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  #xlim(c(-10, 10)) +  
+  #ylim(c(0, 10)) +  
+  scale_color_manual(values = c("conflict" = "#ca0020",
+                                "yoked_conflict" = "#404040", 
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank()) + 
+  geom_text_repel(data = top_labelled, 
+                          mapping = aes(label = gene), 
+                          size = 3,
+                          fontface = 'bold', 
+                          color = 'black',
+                          box.padding = unit(0.5, "lines"),
+                          point.padding = unit(0.5, "lines"))
+
+colored
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02_RNAseq_subsets/conflictyoked.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+```
+
+
 
 
 ## CA1 only differential gene expression
 This DESeq2 analysis of CA1 tissue only reveals that there are 0 differentially expression between the three active place avoidance treatment groups. 
 
-```{r CA1only}
+```{r CA1onlyAPA}
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData <- read.csv("../data/02a_colData.csv", header = T)
 colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
 
 colData <- colData %>% 
-  filter(Punch == "CA1") 
+  filter(Punch == "CA1")  %>%
+  droplevels()
 savecols <- as.character(colData$RNAseqID) 
 savecols <- as.vector(savecols) 
 countData <- countData %>% dplyr::select(one_of(savecols)) 
@@ -190,10 +308,80 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered)
 ```
 
+
+```{r CA1onlyAPA2}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
+
+colData <- colData %>% 
+  filter(Punch == "CA1")  %>%
+  droplevels()
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Punch + APA2 + Punch*APA2)
+
+dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1")) ## specify the factor levels
+dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "yoked_conflict", "consistent", "conflict")) ## specify the factor levels
+
+dds # view the DESeq object - note numnber of genes
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+dds <- DESeq(dds) # Differential expression analysis
+
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "consistent", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "yoked_consistent", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 3, wt = pvalue)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  xlim(c(-10, 10)) +  
+  ylim(c(0, 10)) +  
+  scale_color_manual(values = c("consistent" = "#f4a582",
+                                "yoked_consistent" = "#bababa", 
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank()) + 
+  geom_text_repel(data = top_labelled, 
+                          mapping = aes(label = gene), 
+                          size = 3,
+                          fontface = 'bold', 
+                          color = 'black',
+                          box.padding = unit(0.5, "lines"),
+                          point.padding = unit(0.5, "lines"))
+
+colored
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02_RNAseq_4by3/CA1consistentyoked.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+```
+
 ## CA3 only differential gene expression
 This DESeq2 analysis shows that in the CA3, only 3 genes are differentially expressed between conflict and consistently trained animals. These 3 genes are Opioid Receptor Delta 1 (Oprd1), Crooked Neck Pre- MRNA Splicing Factor 1, (Crnkl1), and Solute Carrier Family 9 Member A2 (Slc9a2).
 
-```{r CA3only}
+```{r CA3onlyAPA}
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData <- read.csv("../data/02a_colData.csv", header = T)
 colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
@@ -268,7 +456,7 @@ colored
 ## DG only
 Now, I focus on the DG, which is where the magic happens.
 
-```{r DGonly}
+```{r DGonlyAPA}
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData <- read.csv("../data/02a_colData.csv", header = T)
 colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
@@ -311,10 +499,178 @@ plotPCs(pcadata, 3, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pca
 ```
 
 
+
+
+```{r DGonlyAPA2}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+
+colData <- colData %>% 
+  filter(Punch == "DG")  %>%
+  filter(APA2 %in% c("consistent", "yoked_consistent"))  %>% 
+  droplevels()
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA2 )
+
+dds$APA2 <- factor(dds$APA2, levels=c( "yoked_consistent", "consistent")) ## specify the factor levels
+
+dds # view the DESeq object - note numnber of genes
+# 22485 7
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+# 16046 7 
+dds <- DESeq(dds) # Differential expression analysis
+
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "consistent", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "yoked_consistent", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 3, wt = pvalue)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  xlim(c(-10, 10)) +  
+  ylim(c(0, 15)) +  
+  scale_color_manual(values = c("consistent" = "#f4a582",
+                                "yoked_consistent" = "#bababa", 
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank()) + 
+  geom_text_repel(data = top_labelled, 
+                          mapping = aes(label = gene), 
+                          size = 3,
+                          fontface = 'bold', 
+                          color = 'black',
+                          box.padding = unit(0.5, "lines"),
+                          point.padding = unit(0.5, "lines"))
+
+colored
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02_RNAseq_4by3/DGconsistentyoked.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+
+
+
+
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+
+colData <- colData %>% 
+  filter(Punch == "DG")  %>%
+  filter(APA2 %in% c("conflict", "yoked_conflict"))  %>% 
+  droplevels()
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA2 )
+
+dds$APA2 <- factor(dds$APA2, levels=c( "yoked_conflict", "conflict")) ## specify the factor levels
+
+dds # view the DESeq object - note numnber of genes
+# 22485 7
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+# 16046 7 
+dds <- DESeq(dds) # Differential expression analysis
+
+res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "conflict", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "yoked_conflict", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 3, wt = pvalue)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  xlim(c(-10, 10)) +  
+  ylim(c(0, 10)) +  
+  scale_color_manual(values = c("yoked_conflict" = "#404040",
+                                "yoked_consistent" = "#bababa", 
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank()) + 
+  geom_text_repel(data = top_labelled, 
+                          mapping = aes(label = gene), 
+                          size = 3,
+                          fontface = 'bold', 
+                          color = 'black',
+                          box.padding = unit(0.5, "lines"),
+                          point.padding = unit(0.5, "lines"))
+
+colored
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02_RNAseq_4by3/DGconflictyoked.pdf", width=3, height=3)
+plot(colored)
+dev.off()
+```
+
+
+
+
 ###  DG Consistent versus Control
 This volcano plot shows the sricking pattern of upregulation of gene experssion in DG with consistent training.
 
 ```{r DGConsistentControl}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+colData$APA <- factor(colData$APA, levels=c("Control", "Consistent", "Conflict"))
+
+colData <- colData %>% 
+  filter(Punch == "DG")  %>%
+  droplevels()
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA )
+
+dds$APA <- factor(dds$APA, levels=c("Consistent", "Control")) ## specify the factor levels
+
+dds # view the DESeq object - note numnber of genes
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+dds <- DESeq(dds) # Differential expression analysis
+# 22485 16 
+
 res <- results(dds, contrast =c("APA", "Consistent", "Control"), independentFiltering = F)
 resOrdered <- res[order(res$padj),]
 head(resOrdered)
@@ -352,7 +708,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
                           point.padding = unit(0.5, "lines"))
 
 colored
-cvd_grid(colored) # to view plot for color blind 
+#cvd_grid(colored) # to view plot for color blind 
  
 
 pdf(file="../figures/02_RNAseq_subsets/DGConsistentControl.pdf", width=3, height=3)
@@ -414,7 +770,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
                           point.padding = unit(0.5, "lines"))
 
 colored
-cvd_grid(colored) # to view plot for color blind 
+#cvd_grid(colored) # to view plot for color blind 
 
 pdf(file="../figures/02_RNAseq_subsets/DGConflictControl.pdf", width=3, height=3)
 plot(colored)
@@ -620,7 +976,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
 
 colored
 
-cvd_grid(colored) # to view plot for color blind 
+#cvd_grid(colored) # to view plot for color blind 
 
 
 pdf(file="../figures/02_RNAseq_subsets/ControlDGCA1.pdf", width=3, height=3)
