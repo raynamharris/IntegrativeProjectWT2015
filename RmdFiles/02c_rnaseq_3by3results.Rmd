@@ -88,9 +88,6 @@ head(rldpadjs)
 ```
 
 
-
-
-
 ## Supplementray P-value distributions
 Here, the goal is the analyze the distribution of pvalues to see if they are randomly distributed or if that is a tendency towards and increase or decrease of low pvalues. There, I'm showing the pval and adjusted pvale (padj) for all for two-way comparision. 
 
@@ -166,83 +163,9 @@ grid.draw(prettyvenn)
 
 
 
-## Principle component analysis
-
-```{r pca}
-
-# create the dataframe using my function pcadataframe
-pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
-percentVar <- round(100 * attr(pcadata, "percentVar"))
-percentVar
-
-aov1 <- aov(PC1 ~ Punch, data=pcadata)
-summary(aov1) 
-TukeyHSD(aov1, which = "Punch") 
-
-aov2 <- aov(PC2 ~ Punch, data=pcadata)
-summary(aov2) 
-TukeyHSD(aov2, which = "Punch") 
-
-aov3 <- aov(PC3 ~ APA, data=pcadata)
-summary(aov3) 
-TukeyHSD(aov3, which = "APA")
-
-aov4 <- aov(PC4 ~ APA, data=pcadata)
-summary(aov4) 
-TukeyHSD(aov4, which = "APA") 
-
-lm4 <- lm(PC4~APA*Punch, data=pcadata)
-summary(lm4)
-anova(lm4) 
-
-lm124 <- lm(PC1+PC2+PC4~APA*Punch, data=pcadata)
-summary(lm124)
-anova(lm124)
-
-pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
-pcadata$APA <- factor(pcadata$APA, levels=c("Control", "Consistent", "Conflict"))
-
-plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
-
-plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
-
-plotPCs(pcadata, 4, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
 
 
-# pdf the same pca plots descripbed above of the above
-pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
-PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
-plot(PCA12)
-dev.off()
 
-pdf(file="../figures/02_RNAseq/PCA25.pdf", width=4.5, height=3)
-PCA25 <- plotPCs(pcadata, 4, 2, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
-plot(PCA25)
-dev.off()
-```
-
-
-## Total Gene Counts Per Sample
-
-```{r totalRNAseqcounts}
-## stats
-counts <- countData
-dim( counts )
-colSums( counts ) / 1e06  # in millions of reads
-table( rowSums( counts ) )[ 1:30 ] # Number of genes with low counts
-
-rowsum <- as.data.frame(colSums( counts ) / 1e06 )
-names(rowsum)[1] <- "millioncounts"
-rowsum$sample <- row.names(rowsum)
-
-ggplot(rowsum, aes(x=millioncounts)) + 
-  geom_histogram(binwidth = 1, colour = "black", fill = "darkgrey") +
-  theme_classic() +
-  scale_x_continuous(name = "Millions of Gene Counts per Sample",
-                     breaks = seq(0, 8, 1),
-                     limits=c(0, 8)) +
-  scale_y_continuous(name = "Number of Samples")
-```
 
 ## Heatmap
 

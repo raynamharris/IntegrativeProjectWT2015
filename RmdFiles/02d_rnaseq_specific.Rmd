@@ -675,3 +675,50 @@ pdf(file="../figures/02_RNAseq/ConsistentDGCA3.pdf", width=3, height=3)
 plot(colored)
 dev.off()
 ```
+
+
+```{r DGonlyAPA3}
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData <- read.csv("../data/02a_colData.csv", header = T)
+colData$APA3 <- factor(colData$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+
+colData <- colData %>% 
+  filter(Punch == "DG") 
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA3 )
+
+dds$APA3 <- factor(dds$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+
+dds <- dds[ rowSums(counts(dds)) > 1, ] 
+dds # dim: 16658 16  
+dds <- DESeq(dds)
+rld <- rlog(dds, blind=FALSE)
+
+contrast4 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), mypval = 0.05) #74
+contrast5 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Yoked_Conflict"), mypval = 0.05) #2
+contrast6 <- resvals(contrastvector = c("APA3", "Yoked_Conflict", "Yoked_NoConflict"), mypval = 0.05) #0
+contrast7 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Trained_NoConflict"), mypval = 0.05) #0 
+
+
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA3"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+percentVar
+
+aov1 <- aov(PC1 ~ APA3, data=pcadata)
+summary(aov1) 
+TukeyHSD(aov1, which = "APA3") 
+
+aov2 <- aov(PC2 ~ APA3, data=pcadata)
+summary(aov2) 
+TukeyHSD(aov2, which = "APA3") 
+
+pcadata$APA3 <- factor(pcadata$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+
+plotPCs(pcadata, 1, 2, aescolor = pcadata$APA3, colorname = "APA3", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA3)
+plotPCs(pcadata, 3, 4, aescolor = pcadata$APA3, colorname = "APA3", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA3)
+```

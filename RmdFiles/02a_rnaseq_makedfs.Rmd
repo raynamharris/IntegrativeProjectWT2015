@@ -107,6 +107,29 @@ dim(countData)
 ```
 
 
+## Total Gene Counts Per Sample 
+this could say something about data before normalization
+
+```{r totalRNAseqcounts}
+## stats
+counts <- countData
+dim( counts )
+colSums( counts ) / 1e06  # in millions of reads
+table( rowSums( counts ) )[ 1:30 ] # Number of genes with low counts
+
+rowsum <- as.data.frame(colSums( counts ) / 1e06 )
+names(rowsum)[1] <- "millioncounts"
+rowsum$sample <- row.names(rowsum)
+
+ggplot(rowsum, aes(x=millioncounts)) + 
+  geom_histogram(binwidth = 1, colour = "black", fill = "darkgrey") +
+  theme_classic() +
+  scale_x_continuous(name = "Millions of Gene Counts per Sample",
+                     breaks = seq(0, 8, 1),
+                     limits=c(0, 8)) +
+  scale_y_continuous(name = "Number of Samples")
+```
+
 ```{r writecsv}
 write.csv(colData, file = "../data/02a_colData.csv", row.names = F)
 write.csv(countData, file = "../data/02a_countData.csv", row.names = T)
