@@ -13,6 +13,7 @@ library(DESeq2) ## for gene expression analysis
 library(edgeR)  ## for basic read counts status
 library(magrittr) ## to use the weird pipe
 library(genefilter)  ## for PCA fuction
+library(ggplot2)
 
 ## Functions
 source("functions_RNAseq.R")
@@ -70,28 +71,32 @@ Traits$APA <- revalue(Traits$APA, c("Trained_Conflict" = "Conflict"))
 Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Consistent")) 
 Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Control")) 
 Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Control")) 
+
+Traits$APA2 <- Traits$APA3 
+Traits$APA2 <- revalue(Traits$APA2, c("Trained_Conflict" = "conflict")) 
+Traits$APA2 <- revalue(Traits$APA2, c("Trained_NoConflict" = "consistent")) 
+Traits$APA2 <- revalue(Traits$APA2, c("Yoked_Conflict" = "yoked_conflict")) 
+Traits$APA2 <- revalue(Traits$APA2, c("Yoked_NoConflict" = "yoked_consistent")) 
+
+# reorder 
+Traits <- Traits[c(1:5,7:9)]
 head(Traits)
 ```
 
-    ##              RNAseqID   Mouse   Conflict Punch Slice               APA3
-    ## 143A-CA3-1 143A-CA3-1 15-143A   Conflict   CA3     1   Trained_Conflict
-    ## 143A-DG-1   143A-DG-1 15-143A   Conflict    DG     1   Trained_Conflict
-    ## 143B-CA1-1 143B-CA1-1 15-143B   Conflict   CA1     1     Yoked_Conflict
-    ## 143B-DG-1   143B-DG-1 15-143B   Conflict    DG     1     Yoked_Conflict
-    ## 143C-CA1-1 143C-CA1-1 15-143C NoConflict   CA1     1 Trained_NoConflict
-    ## 143D-CA1-3 143D-CA1-3 15-143D NoConflict   CA1     3   Yoked_NoConflict
-    ##                ID        APA
-    ## 143A-CA3-1 15143A   Conflict
-    ## 143A-DG-1  15143A   Conflict
-    ## 143B-CA1-1 15143B    Control
-    ## 143B-DG-1  15143B    Control
-    ## 143C-CA1-1 15143C Consistent
-    ## 143D-CA1-3 15143D    Control
-
-``` r
-# reorder 
-Traits <- Traits[c(1:5,7,8,6)]
-```
+    ##              RNAseqID   Mouse   Conflict Punch Slice     ID        APA
+    ## 143A-CA3-1 143A-CA3-1 15-143A   Conflict   CA3     1 15143A   Conflict
+    ## 143A-DG-1   143A-DG-1 15-143A   Conflict    DG     1 15143A   Conflict
+    ## 143B-CA1-1 143B-CA1-1 15-143B   Conflict   CA1     1 15143B    Control
+    ## 143B-DG-1   143B-DG-1 15-143B   Conflict    DG     1 15143B    Control
+    ## 143C-CA1-1 143C-CA1-1 15-143C NoConflict   CA1     1 15143C Consistent
+    ## 143D-CA1-3 143D-CA1-3 15-143D NoConflict   CA1     3 15143D    Control
+    ##                        APA2
+    ## 143A-CA3-1         conflict
+    ## 143A-DG-1          conflict
+    ## 143B-CA1-1   yoked_conflict
+    ## 143B-DG-1    yoked_conflict
+    ## 143C-CA1-1       consistent
+    ## 143D-CA1-3 yoked_consistent
 
 Now, we are ready to calculate differential gene expression using the DESeq package. For simplicity, I will use the standard nameing of "countData" and "colData" for the gene counts and gene information, respectively.
 
@@ -119,20 +124,80 @@ colData %>% select(APA,Punch)  %>%  summary()
     ##  Control   :21   DG :16
 
 ``` r
-colData %>% select(APA3,Punch)  %>%  summary()
+colData %>% select(APA2,Punch)  %>%  summary()
 ```
 
-    ##                  APA3    Punch   
-    ##  Trained_Conflict  :14   CA1:15  
-    ##  Trained_NoConflict: 9   CA3:13  
-    ##  Yoked_Conflict    :12   DG :16  
-    ##  Yoked_NoConflict  : 9
+    ##                APA2    Punch   
+    ##  conflict        :14   CA1:15  
+    ##  consistent      : 9   CA3:13  
+    ##  yoked_conflict  :12   DG :16  
+    ##  yoked_consistent: 9
 
 ``` r
 dim(countData)
 ```
 
     ## [1] 22485    44
+
+Total Gene Counts Per Sample
+----------------------------
+
+this could say something about data before normalization
+
+``` r
+## stats
+counts <- countData
+dim( counts )
+```
+
+    ## [1] 22485    44
+
+``` r
+colSums( counts ) / 1e06  # in millions of reads
+```
+
+    ## 143A-CA3-1  143A-DG-1 143B-CA1-1  143B-DG-1 143C-CA1-1 143D-CA1-3 
+    ##   1.600535   2.662497   0.874614   1.019113   1.086358   0.540738 
+    ##  143D-DG-3 144A-CA1-2 144A-CA3-2  144A-DG-2 144B-CA1-1 144B-CA3-1 
+    ##   0.500935   1.504457   0.228021   1.575766   1.275137   0.506698 
+    ## 144C-CA1-2 144C-CA3-2  144C-DG-2 144D-CA3-2  144D-DG-2 145A-CA1-2 
+    ##   1.613785   0.647568   1.083336   1.209306   2.254320   2.375356 
+    ## 145A-CA3-2  145A-DG-2 145B-CA1-1  145B-DG-1 146A-CA1-2 146A-CA3-2 
+    ##   0.179967   0.690882   1.034066   0.720798   0.878270   1.511881 
+    ##  146A-DG-2 146B-CA1-2 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 
+    ##   0.591933   0.506014   1.056001   0.055549   0.662938   0.237419 
+    ## 146D-CA1-3 146D-CA3-3  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 
+    ##   0.194359   1.467877   0.043490   1.506436   3.020727   2.118624 
+    ## 147D-CA3-1  147D-DG-1 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 
+    ##   2.377445   5.618550   2.590815   1.353197   1.917857   0.185637 
+    ## 148B-CA3-4  148B-DG-4 
+    ##   1.724144   0.398258
+
+``` r
+table( rowSums( counts ) )[ 1:30 ] # Number of genes with low counts
+```
+
+    ## 
+    ##    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14 
+    ## 4392  419  329  252  212  196  152  143  124  103   93   78   90   97   79 
+    ##   15   16   17   18   19   20   21   22   23   24   25   26   27   28   29 
+    ##   60   71   83   67   65   61   70   55   56   62   56   50   44   37   40
+
+``` r
+rowsum <- as.data.frame(colSums( counts ) / 1e06 )
+names(rowsum)[1] <- "millioncounts"
+rowsum$sample <- row.names(rowsum)
+
+ggplot(rowsum, aes(x=millioncounts)) + 
+  geom_histogram(binwidth = 1, colour = "black", fill = "darkgrey") +
+  theme_classic() +
+  scale_x_continuous(name = "Millions of Gene Counts per Sample",
+                     breaks = seq(0, 8, 1),
+                     limits=c(0, 8)) +
+  scale_y_continuous(name = "Number of Samples")
+```
+
+![](../figures/02_RNAseq/totalRNAseqcounts-1.png)
 
 ``` r
 write.csv(colData, file = "../data/02a_colData.csv", row.names = F)

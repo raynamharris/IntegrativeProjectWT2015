@@ -20,6 +20,7 @@ library(DESeq2) ## for gene expression analysis
 library(edgeR)  ## for basic read counts status
 library(magrittr) ## to use the weird pipe
 library(genefilter)  ## for PCA fuction
+library(ggplot2)
 
 ## Functions
 source("functions_RNAseq.R")
@@ -77,11 +78,16 @@ Traits$APA <- revalue(Traits$APA, c("Trained_Conflict" = "Conflict"))
 Traits$APA <- revalue(Traits$APA, c("Trained_NoConflict" = "Consistent")) 
 Traits$APA <- revalue(Traits$APA, c("Yoked_Conflict" = "Control")) 
 Traits$APA <- revalue(Traits$APA, c("Yoked_NoConflict" = "Control")) 
-head(Traits)
+
+Traits$APA2 <- Traits$APA3 
+Traits$APA2 <- revalue(Traits$APA2, c("Trained_Conflict" = "conflict")) 
+Traits$APA2 <- revalue(Traits$APA2, c("Trained_NoConflict" = "consistent")) 
+Traits$APA2 <- revalue(Traits$APA2, c("Yoked_Conflict" = "yoked_conflict")) 
+Traits$APA2 <- revalue(Traits$APA2, c("Yoked_NoConflict" = "yoked_consistent")) 
 
 # reorder 
-Traits <- Traits[c(1:5,7,8,6)]
-
+Traits <- Traits[c(1:5,7:9)]
+head(Traits)
 ```
 
 Now, we are ready to calculate differential gene expression using the DESeq package. For simplicity, I will use the standard nameing of "countData" and "colData" for the gene counts and gene information, respectively.
@@ -102,7 +108,7 @@ colData[,cols] %<>% lapply(function(x) as.factor(as.character(x)))
 
 # summary data
 colData %>% select(APA,Punch)  %>%  summary()
-colData %>% select(APA3,Punch)  %>%  summary()
+colData %>% select(APA2,Punch)  %>%  summary()
 dim(countData)
 ```
 

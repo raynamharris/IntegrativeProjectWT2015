@@ -46,14 +46,14 @@ The figures made from this script were compiled in Adobe.
     source("resvalsfunction.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
+    knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq_4by3/')
 
 Design
 ------
 
 The major comparision here is Hippocampal subfield: "DG","CA3", "CA1"
-Behavioral Groups: "Yoked\_NoConflict", "Yoked\_Conflict",
-"Trained\_NoConflict", "Trained\_Conflict"
+Behavioral Groups: "yoked\_consistent", "yoked\_conflict", "consistent",
+"conflict"
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
@@ -61,10 +61,10 @@ Behavioral Groups: "Yoked\_NoConflict", "Yoked\_Conflict",
     ## create DESeq object using the factors Punch and APA
     dds <- DESeqDataSetFromMatrix(countData = countData,
                                   colData = colData,
-                                  design = ~ Punch + APA3 + Punch*APA3)
+                                  design = ~ Punch + APA2 + Punch*APA2)
 
     dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1")) ## specify the factor levels
-    dds$APA3 <- factor(dds$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict")) ## specify the factor levels
+    dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "yoked_conflict", "consistent", "conflict")) ## specify the factor levels
 
     dds # view the DESeq object - note numnber of genes
 
@@ -75,7 +75,7 @@ Behavioral Groups: "Yoked\_NoConflict", "Yoked\_Conflict",
     ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
-    ## colData names(8): RNAseqID Mouse ... APA APA3
+    ## colData names(8): RNAseqID Mouse ... APA APA2
 
     dds <- dds[ rowSums(counts(dds)) > 1, ]  # DESeq2 1.3.6 Pre-filtering genes with 0 counts
     dds # view number of genes afternormalization and the number of samples
@@ -87,7 +87,7 @@ Behavioral Groups: "Yoked\_NoConflict", "Yoked\_Conflict",
     ## rownames(17674): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
-    ## colData names(8): RNAseqID Mouse ... APA APA3
+    ## colData names(8): RNAseqID Mouse ... APA APA2
 
     dds <- DESeq(dds) # Differential expression analysis
 
@@ -118,52 +118,61 @@ Behavioral Groups: "Yoked\_NoConflict", "Yoked\_Conflict",
 
     ## [1] 2122
 
-    contrast4 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Yoked_NoConflict"), mypval = 0.05) 
+    contrast4 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05)  # conflict yoked
 
-    ## [1] 44
+    ## [1] 15
 
-    res <- results(dds, contrast =c("APA3", "Trained_Conflict", "Yoked_NoConflict"), independentFiltering = F)
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
-
-    ## log2 fold change (MLE): APA3 Trained_Conflict vs Yoked_NoConflict 
-    ## Wald test p-value: APA3 Trained Conflict vs Yoked NoConflict 
-    ## DataFrame with 10 rows and 6 columns
-    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Plk2   697.03923       1.755842 0.2654311  6.615057 3.714089e-11
-    ## Arc    436.24502       2.319203 0.3620524  6.405712 1.496688e-10
-    ## Smad7   25.81154       2.791659 0.4583514  6.090654 1.124505e-09
-    ## Rasd1  105.85587       2.753659 0.4659285  5.910047 3.420104e-09
-    ## Sgk1    27.18260       1.832578 0.3303984  5.546571 2.913259e-08
-    ## Tiparp  48.63238       2.547994 0.4573295  5.571463 2.526094e-08
-    ## Errfi1  75.94706       1.720348 0.3187191  5.397692 6.750354e-08
-    ## Zdbf2   20.03179       1.889145 0.3550314  5.321065 1.031616e-07
-    ## Frmd6  116.84596       2.209681 0.4233851  5.219081 1.798129e-07
-    ## Junb   514.04985       1.726998 0.3338080  5.173628 2.295917e-07
-    ##                padj
-    ##           <numeric>
-    ## Plk2   6.561681e-07
-    ## Arc    1.322100e-06
-    ## Smad7  6.622208e-06
-    ## Rasd1  1.510574e-05
-    ## Sgk1   8.578090e-05
-    ## Tiparp 8.578090e-05
-    ## Errfi1 1.703693e-04
-    ## Zdbf2  2.278195e-04
-    ## Frmd6  3.529728e-04
-    ## Junb   4.056196e-04
-
-    contrast5 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), mypval = 0.05) 
+    contrast5 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) #consistent yoked
 
     ## [1] 84
 
-    res <- results(dds, contrast =c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), independentFiltering = F)
+    contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05)  # yoked
+
+    ## [1] 12
+
+    contrast7 <- resvals(contrastvector = c("APA2", "consistent", "conflict"), mypval = 0.05) # trained
+
+    ## [1] 0
+
+    # gene lists
+    res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = F)
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
-    ## log2 fold change (MLE): APA3 Trained_NoConflict vs Yoked_NoConflict 
-    ## Wald test p-value: APA3 Trained NoConflict vs Yoked NoConflict 
+    ## log2 fold change (MLE): APA2 conflict vs yoked_conflict 
+    ## Wald test p-value: APA2 conflict vs yoked_conflict 
+    ## DataFrame with 10 rows and 6 columns
+    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Insm1    21.08822      -4.558981 0.8230696 -5.538998 3.042074e-08
+    ## Kcnc2   145.09714      -2.520075 0.4924622 -5.117295 3.099479e-07
+    ## Neurod6 333.02885      -3.525915 0.6931363 -5.086901 3.639624e-07
+    ## Sv2b    142.82830      -3.731971 0.7369799 -5.063871 4.108283e-07
+    ## Stmn2   418.60097      -2.218191 0.4627514 -4.793482 1.639112e-06
+    ## Slc16a1  51.34226       1.926065 0.4236948  4.545877 5.470688e-06
+    ## Camk1g   13.57840      -3.396126 0.7682834 -4.420409 9.851449e-06
+    ## Khdrbs3 328.27759      -1.626203 0.3679544 -4.419579 9.889335e-06
+    ## Slc6a7   90.86015      -1.794156 0.4024943 -4.457594 8.288453e-06
+    ## Stox2   645.60944      -5.140065 1.1665864 -4.406073 1.052613e-05
+    ##                 padj
+    ##            <numeric>
+    ## Insm1   0.0005374433
+    ## Kcnc2   0.0018145257
+    ## Neurod6 0.0018145257
+    ## Sv2b    0.0018145257
+    ## Stmn2   0.0057916396
+    ## Slc16a1 0.0161084395
+    ## Camk1g  0.0185965122
+    ## Khdrbs3 0.0185965122
+    ## Slc6a7  0.0185965122
+    ## Stox2   0.0185965122
+
+    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MLE): APA2 consistent vs yoked_consistent 
+    ## Wald test p-value: APA2 consistent vs yoked consistent 
     ## DataFrame with 10 rows and 6 columns
     ##         baseMean log2FoldChange     lfcSE      stat       pvalue
     ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
@@ -190,16 +199,12 @@ Behavioral Groups: "Yoked\_NoConflict", "Yoked\_Conflict",
     ## Fbxo33 1.911265e-06
     ## Ubc    1.911265e-06
 
-    contrast6 <- resvals(contrastvector = c("APA3", "Yoked_Conflict", "Yoked_NoConflict"), mypval = 0.05)  
-
-    ## [1] 12
-
-    res <- results(dds, contrast =c("APA3", "Yoked_NoConflict", "Yoked_Conflict"), independentFiltering = F)
+    res <- results(dds, contrast =c("APA2", "yoked_consistent", "yoked_conflict"), independentFiltering = F)
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
-    ## log2 fold change (MLE): APA3 Yoked_NoConflict vs Yoked_Conflict 
-    ## Wald test p-value: APA3 Yoked_NoConflict vs Yoked_Conflict 
+    ## log2 fold change (MLE): APA2 yoked_consistent vs yoked_conflict 
+    ## Wald test p-value: APA2 yoked_consistent vs yoked_conflict 
     ## DataFrame with 10 rows and 6 columns
     ##           baseMean log2FoldChange     lfcSE      stat       pvalue
     ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
@@ -226,16 +231,12 @@ Behavioral Groups: "Yoked\_NoConflict", "Yoked\_Conflict",
     ## Me1     4.307275e-02
     ## Pou3f1  4.307275e-02
 
-    contrast7 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Trained_Conflict"), mypval = 0.05) 
-
-    ## [1] 0
-
-    res <- results(dds, contrast = c("APA3", "Trained_NoConflict", "Trained_Conflict"), independentFiltering = F)
+    res <- results(dds, contrast = c("APA2", "consistent", "conflict"), independentFiltering = F)
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
-    ## log2 fold change (MLE): APA3 Trained_NoConflict vs Trained_Conflict 
-    ## Wald test p-value: APA3 Trained_NoConflict vs Trained_Conflict 
+    ## log2 fold change (MLE): APA2 consistent vs conflict 
+    ## Wald test p-value: APA2 consistent vs conflict 
     ## DataFrame with 10 rows and 6 columns
     ##                 baseMean log2FoldChange     lfcSE        stat    pvalue
     ##                <numeric>      <numeric> <numeric>   <numeric> <numeric>
@@ -273,7 +274,7 @@ Principle component analysis
 ----------------------------
 
     # create the dataframe using my function pcadataframe
-    pcadata <- pcadataframe(rld, intgroup=c("Punch","APA3"), returnData=TRUE)
+    pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
     percentVar <- round(100 * attr(pcadata, "percentVar"))
     percentVar
 
@@ -323,93 +324,79 @@ Principle component analysis
     ## CA1-DG   15.81186  14.18361  17.44011     0
     ## CA1-CA3  32.02763  30.31088  33.74438     0
 
-    aov3 <- aov(PC3 ~ APA3, data=pcadata)
+    aov3 <- aov(PC3 ~ APA2, data=pcadata)
     summary(aov3) 
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA3         3  231.4   77.13   1.854  0.153
+    ## APA2         3  231.4   77.13   1.854  0.153
     ## Residuals   40 1664.1   41.60
 
-    TukeyHSD(aov3, which = "APA3")
+    TukeyHSD(aov3, which = "APA2")
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC3 ~ APA3, data = pcadata)
+    ## Fit: aov(formula = PC3 ~ APA2, data = pcadata)
     ## 
-    ## $APA3
-    ##                                            diff        lwr      upr
-    ## Yoked_Conflict-Yoked_NoConflict      0.35729566  -7.266245 7.980836
-    ## Trained_NoConflict-Yoked_NoConflict -4.43405326 -12.583961 3.715854
-    ## Trained_Conflict-Yoked_NoConflict   -4.34540192 -11.731883 3.041079
-    ## Trained_NoConflict-Yoked_Conflict   -4.79134892 -12.414890 2.832192
-    ## Trained_Conflict-Yoked_Conflict     -4.70269759 -11.503983 2.098588
-    ## Trained_Conflict-Trained_NoConflict  0.08865134  -7.297830 7.475132
-    ##                                         p adj
-    ## Yoked_Conflict-Yoked_NoConflict     0.9992793
-    ## Trained_NoConflict-Yoked_NoConflict 0.4716167
-    ## Trained_Conflict-Yoked_NoConflict   0.4030198
-    ## Trained_NoConflict-Yoked_Conflict   0.3449927
-    ## Trained_Conflict-Yoked_Conflict     0.2642615
-    ## Trained_Conflict-Trained_NoConflict 0.9999878
+    ## $APA2
+    ##                                        diff        lwr      upr     p adj
+    ## yoked_conflict-yoked_consistent  0.35729566  -7.266245 7.980836 0.9992793
+    ## consistent-yoked_consistent     -4.43405326 -12.583961 3.715854 0.4716167
+    ## conflict-yoked_consistent       -4.34540192 -11.731883 3.041079 0.4030198
+    ## consistent-yoked_conflict       -4.79134892 -12.414890 2.832192 0.3449927
+    ## conflict-yoked_conflict         -4.70269759 -11.503983 2.098588 0.2642615
+    ## conflict-consistent              0.08865134  -7.297830 7.475132 0.9999878
 
-    aov4 <- aov(PC4 ~ APA3, data=pcadata)
+    aov4 <- aov(PC4 ~ APA2, data=pcadata)
     summary(aov4) 
 
     ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## APA3         3  495.0  165.01   12.01 9.57e-06 ***
+    ## APA2         3  495.0  165.01   12.01 9.57e-06 ***
     ## Residuals   40  549.5   13.74                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    TukeyHSD(aov4, which = "APA3") 
+    TukeyHSD(aov4, which = "APA2") 
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC4 ~ APA3, data = pcadata)
+    ## Fit: aov(formula = PC4 ~ APA2, data = pcadata)
     ## 
-    ## $APA3
-    ##                                          diff        lwr       upr
-    ## Yoked_Conflict-Yoked_NoConflict      5.070513  0.6895431  9.451482
-    ## Trained_NoConflict-Yoked_NoConflict  9.692828  5.0093745 14.376281
-    ## Trained_Conflict-Yoked_NoConflict    7.680378  3.4356380 11.925118
-    ## Trained_NoConflict-Yoked_Conflict    4.622315  0.2413459  9.003285
-    ## Trained_Conflict-Yoked_Conflict      2.609865 -1.2985838  6.518315
-    ## Trained_Conflict-Trained_NoConflict -2.012450 -6.2571898  2.232290
-    ##                                         p adj
-    ## Yoked_Conflict-Yoked_NoConflict     0.0177388
-    ## Trained_NoConflict-Yoked_NoConflict 0.0000119
-    ## Trained_Conflict-Yoked_NoConflict   0.0001090
-    ## Trained_NoConflict-Yoked_Conflict   0.0352172
-    ## Trained_Conflict-Yoked_Conflict     0.2931019
-    ## Trained_Conflict-Trained_NoConflict 0.5864683
+    ## $APA2
+    ##                                      diff        lwr       upr     p adj
+    ## yoked_conflict-yoked_consistent  5.070513  0.6895431  9.451482 0.0177388
+    ## consistent-yoked_consistent      9.692828  5.0093745 14.376281 0.0000119
+    ## conflict-yoked_consistent        7.680378  3.4356380 11.925118 0.0001090
+    ## consistent-yoked_conflict        4.622315  0.2413459  9.003285 0.0352172
+    ## conflict-yoked_conflict          2.609865 -1.2985838  6.518315 0.2931019
+    ## conflict-consistent             -2.012450 -6.2571898  2.232290 0.5864683
 
-    lm4 <- lm(PC4~APA3*Punch, data=pcadata)
+    lm4 <- lm(PC4~APA2*Punch, data=pcadata)
     summary(lm4)
 
     ## 
     ## Call:
-    ## lm(formula = PC4 ~ APA3 * Punch, data = pcadata)
+    ## lm(formula = PC4 ~ APA2 * Punch, data = pcadata)
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
     ## -8.5450 -1.4830 -0.2901  1.2838  7.6813 
     ## 
     ## Coefficients:
-    ##                                 Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)                       -8.319      1.872  -4.445 9.89e-05 ***
-    ## APA3Yoked_Conflict                 7.960      2.647   3.007   0.0051 ** 
-    ## APA3Trained_NoConflict            13.289      2.859   4.648 5.51e-05 ***
-    ## APA3Trained_Conflict              11.515      2.511   4.586 6.60e-05 ***
-    ## PunchCA3                           5.520      2.859   1.931   0.0624 .  
-    ## PunchCA1                           3.015      3.242   0.930   0.3593    
-    ## APA3Yoked_Conflict:PunchCA3       -6.809      4.043  -1.684   0.1019    
-    ## APA3Trained_NoConflict:PunchCA3   -4.316      4.456  -0.969   0.3399    
-    ## APA3Trained_Conflict:PunchCA3     -7.175      3.712  -1.933   0.0621 .  
-    ## APA3Yoked_Conflict:PunchCA1       -3.154      4.101  -0.769   0.4475    
-    ## APA3Trained_NoConflict:PunchCA1   -6.060      4.322  -1.402   0.1705    
-    ## APA3Trained_Conflict:PunchCA1     -5.583      4.101  -1.362   0.1828    
+    ##                             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)                   -8.319      1.872  -4.445 9.89e-05 ***
+    ## APA2yoked_conflict             7.960      2.647   3.007   0.0051 ** 
+    ## APA2consistent                13.289      2.859   4.648 5.51e-05 ***
+    ## APA2conflict                  11.515      2.511   4.586 6.60e-05 ***
+    ## PunchCA3                       5.520      2.859   1.931   0.0624 .  
+    ## PunchCA1                       3.015      3.242   0.930   0.3593    
+    ## APA2yoked_conflict:PunchCA3   -6.809      4.043  -1.684   0.1019    
+    ## APA2consistent:PunchCA3       -4.316      4.456  -0.969   0.3399    
+    ## APA2conflict:PunchCA3         -7.175      3.712  -1.933   0.0621 .  
+    ## APA2yoked_conflict:PunchCA1   -3.154      4.101  -0.769   0.4475    
+    ## APA2consistent:PunchCA1       -6.060      4.322  -1.402   0.1705    
+    ## APA2conflict:PunchCA1         -5.583      4.101  -1.362   0.1828    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -423,38 +410,38 @@ Principle component analysis
     ## 
     ## Response: PC4
     ##            Df Sum Sq Mean Sq F value    Pr(>F)    
-    ## APA3        3 495.03 165.010 11.7756 2.328e-05 ***
+    ## APA2        3 495.03 165.010 11.7756 2.328e-05 ***
     ## Punch       2  14.63   7.316  0.5221    0.5982    
-    ## APA3:Punch  6  86.49  14.416  1.0287    0.4249    
+    ## APA2:Punch  6  86.49  14.416  1.0287    0.4249    
     ## Residuals  32 448.41  14.013                      
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    lm124 <- lm(PC1+PC2+PC4~APA3*Punch, data=pcadata)
+    lm124 <- lm(PC1+PC2+PC4~APA2*Punch, data=pcadata)
     summary(lm124)
 
     ## 
     ## Call:
-    ## lm(formula = PC1 + PC2 + PC4 ~ APA3 * Punch, data = pcadata)
+    ## lm(formula = PC1 + PC2 + PC4 ~ APA2 * Punch, data = pcadata)
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
     ## -14.0706  -2.5664  -0.0396   2.2012  19.3616 
     ## 
     ## Coefficients:
-    ##                                 Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)                       14.554      3.533   4.119 0.000250 ***
-    ## APA3Yoked_Conflict                 1.777      4.997   0.356 0.724416    
-    ## APA3Trained_NoConflict            21.281      5.397   3.943 0.000411 ***
-    ## APA3Trained_Conflict              16.934      4.740   3.572 0.001145 ** 
-    ## PunchCA3                         -51.775      5.397  -9.593  6.2e-11 ***
-    ## PunchCA1                         -18.413      6.120  -3.009 0.005081 ** 
-    ## APA3Yoked_Conflict:PunchCA3        1.870      7.633   0.245 0.808019    
-    ## APA3Trained_NoConflict:PunchCA3   -9.688      8.411  -1.152 0.257923    
-    ## APA3Trained_Conflict:PunchCA3     -8.681      7.007  -1.239 0.224421    
-    ## APA3Yoked_Conflict:PunchCA1        3.025      7.741   0.391 0.698602    
-    ## APA3Trained_NoConflict:PunchCA1  -13.014      8.160  -1.595 0.120568    
-    ## APA3Trained_Conflict:PunchCA1    -11.735      7.741  -1.516 0.139342    
+    ##                             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)                   14.554      3.533   4.119 0.000250 ***
+    ## APA2yoked_conflict             1.777      4.997   0.356 0.724416    
+    ## APA2consistent                21.281      5.397   3.943 0.000411 ***
+    ## APA2conflict                  16.934      4.740   3.572 0.001145 ** 
+    ## PunchCA3                     -51.775      5.397  -9.593  6.2e-11 ***
+    ## PunchCA1                     -18.413      6.120  -3.009 0.005081 ** 
+    ## APA2yoked_conflict:PunchCA3    1.870      7.633   0.245 0.808019    
+    ## APA2consistent:PunchCA3       -9.688      8.411  -1.152 0.257923    
+    ## APA2conflict:PunchCA3         -8.681      7.007  -1.239 0.224421    
+    ## APA2yoked_conflict:PunchCA1    3.025      7.741   0.391 0.698602    
+    ## APA2consistent:PunchCA1      -13.014      8.160  -1.595 0.120568    
+    ## APA2conflict:PunchCA1        -11.735      7.741  -1.516 0.139342    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -468,36 +455,120 @@ Principle component analysis
     ## 
     ## Response: PC1 + PC2 + PC4
     ##            Df  Sum Sq Mean Sq  F value    Pr(>F)    
-    ## APA3        3  1123.7   374.6   7.5011 0.0006154 ***
+    ## APA2        3  1123.7   374.6   7.5011 0.0006154 ***
     ## Punch       2 22355.0 11177.5 223.8329 < 2.2e-16 ***
-    ## APA3:Punch  6   411.8    68.6   1.3744 0.2548174    
+    ## APA2:Punch  6   411.8    68.6   1.3744 0.2548174    
     ## Residuals  32  1598.0    49.9                       
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
-    pcadata$APA3 <- factor(pcadata$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+    pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "yoked_conflict", "consistent", "conflict"))
 
-    plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
 
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-
-![](../figures/02_RNAseq/pca_APA3-1.png)
-
-    plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
+    plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA2, shapename = " ",  colorvalues = colorvalPunch)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02_RNAseq/pca_APA3-2.png)
+![](../figures/02_RNAseq_4by3/pca-1.png)
 
-    plotPCs(pcadata, 4, 2, aescolor = pcadata$APA3, colorname = "APA3", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA3)
+    plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA2, shapename = "APA",  colorvalues = colorvalPunch)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02_RNAseq/pca_APA3-3.png)
+![](../figures/02_RNAseq_4by3/pca-2.png)
+
+    plotPCs(pcadata, 4, 2, aescolor = pcadata$APA2, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA2)
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
+![](../figures/02_RNAseq_4by3/pca-3.png)
+
+    # pdf the same pca plots descripbed above of the above
+    pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
+    PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+    plot(PCA12)
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    pdf(file="../figures/02_RNAseq/PCA42.pdf", width=4.5, height=3)
+    PCA42 <- plotPCs(pcadata, 4, 2, aescolor = pcadata$APA, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA2)
+    plot(PCA42)
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+venn diagrams
+-------------
+
+    venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) # CA1 DG
+    venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) # CA1 CA3
+    venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) # CA3 DG
+    venn4 <- row.names(rldpadjs[rldpadjs[4] <0.05 & !is.na(rldpadjs[4]),]) # conflict conflictyoked
+    venn5 <- row.names(rldpadjs[rldpadjs[5] <0.05 & !is.na(rldpadjs[5]),]) # consistent consistentyoked
+    venn6 <- row.names(rldpadjs[rldpadjs[6] <0.05 & !is.na(rldpadjs[6]),]) # yoked yoked
+
+    candidates <- list("conflict vs yoked" = venn4, "consistent vs yoked" = venn5, "yoked vs yoked" = venn6 )
+
+    prettyvenn <- venn.diagram(
+      scaled=T,
+      x = candidates, filename=NULL, 
+      col = "black",
+      fill = c( "white", "white", "white"),
+      alpha = 0.5,
+      cex = 1, fontfamily = "sans", #fontface = "bold",
+      cat.default.pos = "text",
+      #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+      cat.cex = 1, cat.fontfamily = "sans")
+    grid.draw(prettyvenn)
+
+![](../figures/02_RNAseq_4by3/venndiagram3-1.png)
+
+    candidates <- list("conflict vs yoked" = venn4, "CA3 vs DG" = venn3  ,"consistent vs yoked" = venn5, "CA1" = venn1 )
+
+    prettyvenn <- venn.diagram(
+      scaled=T,
+      x = candidates, filename=NULL, 
+      col = "black",
+      fill = c( "white", "white", "white", "white"),
+      alpha = 0.5,
+      cex = 1, fontfamily = "sans", #fontface = "bold",
+      cat.default.pos = "text",
+      #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+      cat.cex = 1, cat.fontfamily = "sans")
+    grid.draw(prettyvenn)
+
+![](../figures/02_RNAseq_4by3/venndiagram4-1.png)
+
+    candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
+
+    prettyvenn <- venn.diagram(
+      scaled=T,
+      x = candidates, filename=NULL, 
+      col = "black",
+      fill = c( "white", "white", "white"),
+      alpha = 0.5,
+      cex = 1, fontfamily = "sans", #fontface = "bold",
+      cat.default.pos = "text",
+      #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+      cat.cex = 1, cat.fontfamily = "sans")
+    grid.draw(prettyvenn)
+
+![](../figures/02_RNAseq_4by3/venndiagram3brainregions-1.png)
 
 heatmap
 -------
@@ -506,7 +577,7 @@ heatmap
     DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
     DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
     DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-    DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA3Trained_ConflictYoked_NoConflict, padjAPA3Trained_NoConflictYoked_NoConflict, padjAPA3Yoked_ConflictYoked_NoConflict)) 
+    DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA2conflictyoked_conflict, padjAPA2consistentyoked_consistent, padjAPA2yoked_conflictyoked_consistent)) 
 
 
 
@@ -584,11 +655,11 @@ heatmap
     ## 1700037H04Rik -0.3063140 -0.4094021 -0.18407194  0.21605402
 
     ## the heatmap annotation file
-    df <- as.data.frame(colData(dds)[,c("Punch","APA3")]) ## matrix to df
-
-
+    df <- as.data.frame(colData(dds)[,c("Punch","APA2")]) ## matrix to df
     rownames(df) <- names(countData)
-    ann_colors <- ann_colors3 #use 
+
+
+    ann_colors <- ann_colors4 # see color options 
 
     # make sure the data is a matrix
     DEGes <- as.matrix(DEGes) 
@@ -611,7 +682,7 @@ heatmap
              clustering_distance_cols="correlation" 
              )
 
-![](../figures/02_RNAseq/heatmap_APA3-1.png)
+![](../figures/02_RNAseq_4by3/heatmap-1.png)
 
     # for adobe
     pheatmap(DEGes, show_colnames=F, show_rownames = F,
@@ -625,7 +696,7 @@ heatmap
              clustering_method="average",
              breaks=myBreaks,
              clustering_distance_cols="correlation",
-             filename = "../figures/02_RNAseq/heatmap02b.pdf"
+             filename = "../figures/02_RNAseq/pheatmap.pdf"
              )
 
     #write.csv(rldpadjs, file = "../data/02b_rldpadjs.csv", row.names = T)

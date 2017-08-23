@@ -53,12 +53,15 @@ ann_colors3 = list(
             CA3 = (values=c("#1b9e77")), 
             DG = (values=c("#d95f02"))))
 
+ann_colors4 = list(
+  APA2 =  c('yoked_consistent' = (values=c("#bababa")),
+            'yoked_conflict' = (values=c("#404040")), 
+            'consistent' = (values=c("#f4a582")),
+            'conflict' = (values=c("#ca0020"))),
+  Punch = c(CA1 = (values=c("#7570b3")),
+            CA3 = (values=c("#1b9e77")), 
+            DG = (values=c("#d95f02"))))
 
-colorvalAPA3 <-  c( "#bababa","#404040", "#f4a582", "#ca0020")
-#bababa ## light grey - Yoked_NoConflict
-#404040 ## darkgrey - Yoked_Conflict
-#f4a582 ## pink - Trained_NoConflict
-#ca0020 ## red - Trained_Conflict 
 
 
 APAsession = list(

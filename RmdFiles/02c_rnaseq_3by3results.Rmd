@@ -103,11 +103,11 @@ ggplot(rldpadjs, aes(x = padjAPAConflictControl)) + geom_histogram(binwidth = 0.
 Now, we count the number of differnetially expressed genes (according to padj) and plot some venn diagrams.
 
 ```{r venndiagrams}
-venn1 <- row.names(rldpadjs[rldpadjs[1] <0.1 & !is.na(rldpadjs[1]),])
-venn2 <- row.names(rldpadjs[rldpadjs[2] <0.1 & !is.na(rldpadjs[2]),])
-venn3 <- row.names(rldpadjs[rldpadjs[3] <0.1 & !is.na(rldpadjs[3]),])
-venn4 <- row.names(rldpadjs[rldpadjs[4] <0.1 & !is.na(rldpadjs[4]),])
-venn5 <- row.names(rldpadjs[rldpadjs[5] <0.1 & !is.na(rldpadjs[5]),])
+venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),])
+venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),])
+venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),])
+venn4 <- row.names(rldpadjs[rldpadjs[4] <0.05 & !is.na(rldpadjs[4]),])
+venn5 <- row.names(rldpadjs[rldpadjs[5] <0.50 & !is.na(rldpadjs[5]),])
 ```
 
 ```{r venndiagram4}
@@ -163,8 +163,25 @@ grid.draw(prettyvenn)
 
 
 
+### PCA
+```{r pca}
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+percentVar
 
+aov1 <- aov(PC1 ~ APA, data=pcadata)
+summary(aov1) 
+TukeyHSD(aov1, which = "APA") 
 
+aov2 <- aov(PC2 ~ APA, data=pcadata)
+summary(aov2) 
+TukeyHSD(aov2, which = "APA") 
+
+pcadata$APA <- factor(pcadata$APA, levels=c("Control", "Consistent", "Conflict"))
+
+plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = "Punch", aesshape = pcadata$APA, shapename = "APA",  colorvalues = colorvalPunch)
+plotPCs(pcadata, 3, 4, aescolor = pcadata$APA, colorname = "APA", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA)
+```
 
 
 ## Heatmap

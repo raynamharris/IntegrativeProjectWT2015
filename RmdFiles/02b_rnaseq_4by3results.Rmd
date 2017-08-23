@@ -32,7 +32,7 @@ source("functions_RNAseq.R")
 source("resvalsfunction.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
+knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq_4by3/')
 ```
 
 
@@ -40,7 +40,7 @@ knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
 
 The major comparision here is 
 Hippocampal subfield: "DG","CA3", "CA1"
-Behavioral Groups: "Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"
+Behavioral Groups: "yoked_consistent", "yoked_conflict", "consistent", "conflict"
 
 
 ```{r data, message=F, warning=F}
@@ -49,14 +49,14 @@ countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, 
 ```
 
 
-```{r DESeq2_APA3}
+```{r DESeq2}
 ## create DESeq object using the factors Punch and APA
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
-                              design = ~ Punch + APA3 + Punch*APA3)
+                              design = ~ Punch + APA2 + Punch*APA2)
 
 dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1")) ## specify the factor levels
-dds$APA3 <- factor(dds$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict")) ## specify the factor levels
+dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "yoked_conflict", "consistent", "conflict")) ## specify the factor levels
 
 dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # DESeq2 1.3.6 Pre-filtering genes with 0 counts
@@ -66,36 +66,37 @@ rld <- rlog(dds, blind=FALSE) ## log transformed data
 ```
 
 
-```{r Twowaycontrasts_APA3}
+```{r Twowaycontrasts3}
 #calculate significance of all two way comparisions
 contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) 
 contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) 
 contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) 
 
-contrast4 <- resvals(contrastvector = c("APA3", "Trained_Conflict", "Yoked_NoConflict"), mypval = 0.05) 
-res <- results(dds, contrast =c("APA3", "Trained_Conflict", "Yoked_NoConflict"), independentFiltering = F)
+contrast4 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05)  # conflict yoked
+contrast5 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) #consistent yoked
+contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05)  # yoked
+contrast7 <- resvals(contrastvector = c("APA2", "consistent", "conflict"), mypval = 0.05) # trained
+
+# gene lists
+res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = F)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
-contrast5 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), mypval = 0.05) 
-res <- results(dds, contrast =c("APA3", "Trained_NoConflict", "Yoked_NoConflict"), independentFiltering = F)
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
-
-contrast6 <- resvals(contrastvector = c("APA3", "Yoked_Conflict", "Yoked_NoConflict"), mypval = 0.05)  
-res <- results(dds, contrast =c("APA3", "Yoked_NoConflict", "Yoked_Conflict"), independentFiltering = F)
+res <- results(dds, contrast =c("APA2", "yoked_consistent", "yoked_conflict"), independentFiltering = F)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
-contrast7 <- resvals(contrastvector = c("APA3", "Trained_NoConflict", "Trained_Conflict"), mypval = 0.05) 
-res <- results(dds, contrast = c("APA3", "Trained_NoConflict", "Trained_Conflict"), independentFiltering = F)
+res <- results(dds, contrast = c("APA2", "consistent", "conflict"), independentFiltering = F)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 ```
 
 
-```{r rldpadjs_APA3}
+```{r rldpadjs}
 # depends on the previous chunch
 # saves pvalues in object for following chuncks
 rldpadjs <- assay(rld)
@@ -107,10 +108,10 @@ rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
 
 ## Principle component analysis
 
-```{r pca_APA3}
+```{r pca}
 
 # create the dataframe using my function pcadataframe
-pcadata <- pcadataframe(rld, intgroup=c("Punch","APA3"), returnData=TRUE)
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 percentVar
 
@@ -122,43 +123,119 @@ aov2 <- aov(PC2 ~ Punch, data=pcadata)
 summary(aov2) 
 TukeyHSD(aov2, which = "Punch") 
 
-aov3 <- aov(PC3 ~ APA3, data=pcadata)
+aov3 <- aov(PC3 ~ APA2, data=pcadata)
 summary(aov3) 
-TukeyHSD(aov3, which = "APA3")
+TukeyHSD(aov3, which = "APA2")
 
-aov4 <- aov(PC4 ~ APA3, data=pcadata)
+aov4 <- aov(PC4 ~ APA2, data=pcadata)
 summary(aov4) 
-TukeyHSD(aov4, which = "APA3") 
+TukeyHSD(aov4, which = "APA2") 
 
-lm4 <- lm(PC4~APA3*Punch, data=pcadata)
+lm4 <- lm(PC4~APA2*Punch, data=pcadata)
 summary(lm4)
 anova(lm4) 
 
-lm124 <- lm(PC1+PC2+PC4~APA3*Punch, data=pcadata)
+lm124 <- lm(PC1+PC2+PC4~APA2*Punch, data=pcadata)
 summary(lm124)
 anova(lm124)
 
 pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
-pcadata$APA3 <- factor(pcadata$APA3, levels=c("Yoked_NoConflict", "Yoked_Conflict", "Trained_NoConflict", "Trained_Conflict"))
+pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "yoked_conflict", "consistent", "conflict"))
 
-plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
 
-plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$Punch, shapename = " ",  colorvalues = colorvalPunch)
+plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA2, shapename = " ",  colorvalues = colorvalPunch)
 
-plotPCs(pcadata, 4, 2, aescolor = pcadata$APA3, colorname = "APA3", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA3)
+plotPCs(pcadata, 2, 1, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA2, shapename = "APA",  colorvalues = colorvalPunch)
+
+plotPCs(pcadata, 4, 2, aescolor = pcadata$APA2, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA2)
+
+
+# pdf the same pca plots descripbed above of the above
+pdf(file="../figures/02_RNAseq/PCA12.pdf", width=4.5, height=3)
+PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
+plot(PCA12)
+dev.off()
+
+pdf(file="../figures/02_RNAseq/PCA42.pdf", width=4.5, height=3)
+PCA42 <- plotPCs(pcadata, 4, 2, aescolor = pcadata$APA, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA2)
+plot(PCA42)
+dev.off()
 
 
 ```
 
 
+## venn diagrams
+
+```{r venndiagrams}
+venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) # CA1 DG
+venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) # CA1 CA3
+venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) # CA3 DG
+venn4 <- row.names(rldpadjs[rldpadjs[4] <0.05 & !is.na(rldpadjs[4]),]) # conflict conflictyoked
+venn5 <- row.names(rldpadjs[rldpadjs[5] <0.05 & !is.na(rldpadjs[5]),]) # consistent consistentyoked
+venn6 <- row.names(rldpadjs[rldpadjs[6] <0.05 & !is.na(rldpadjs[6]),]) # yoked yoked
+
+```
+
+```{r venndiagram3}
+candidates <- list("conflict vs yoked" = venn4, "consistent vs yoked" = venn5, "yoked vs yoked" = venn6 )
+
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "white", "white", "white"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+grid.draw(prettyvenn)
+
+```
+
+```{r venndiagram4}
+candidates <- list("conflict vs yoked" = venn4, "CA3 vs DG" = venn3  ,"consistent vs yoked" = venn5, "CA1" = venn1 )
+
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "white", "white", "white", "white"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+grid.draw(prettyvenn)
+
+```
+
+
+```{r venndiagram3brainregions} 
+candidates <- list("DG vs CA1" = venn1, "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2)
+
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "white", "white", "white"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  #cat.dist = c(0.08, 0.08, 0.08), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+grid.draw(prettyvenn)
+```
+
 ## heatmap
 
-```{r heatmap_APA3}
+```{r heatmap}
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA3Trained_ConflictYoked_NoConflict, padjAPA3Trained_NoConflictYoked_NoConflict, padjAPA3Yoked_ConflictYoked_NoConflict)) 
+DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA2conflictyoked_conflict, padjAPA2consistentyoked_consistent, padjAPA2yoked_conflictyoked_consistent)) 
 
 
 
@@ -172,11 +249,11 @@ DEGes <- DEGes - rowMeans(DEGes)
 head(DEGes)
 
 ## the heatmap annotation file
-df <- as.data.frame(colData(dds)[,c("Punch","APA3")]) ## matrix to df
-
-
+df <- as.data.frame(colData(dds)[,c("Punch","APA2")]) ## matrix to df
 rownames(df) <- names(countData)
-ann_colors <- ann_colors3 #use 
+
+
+ann_colors <- ann_colors4 # see color options 
 
 # make sure the data is a matrix
 DEGes <- as.matrix(DEGes) 
@@ -211,7 +288,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
-         filename = "../figures/02_RNAseq/heatmap02b.pdf"
+         filename = "../figures/02_RNAseq/pheatmap.pdf"
          )
 ```
 
