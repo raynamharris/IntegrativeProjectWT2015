@@ -507,7 +507,7 @@ colData <- read.csv("../data/02a_colData.csv", header = T)
 
 colData <- colData %>% 
   filter(Punch == "DG")  %>%
-  filter(APA2 %in% c("consistent", "yoked_consistent"))  %>% 
+  #filter(APA2 %in% c("consistent", "yoked_consistent"))  %>% 
   droplevels()
 savecols <- as.character(colData$RNAseqID) 
 savecols <- as.vector(savecols) 
@@ -518,7 +518,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ APA2 )
 
-dds$APA2 <- factor(dds$APA2, levels=c( "yoked_consistent", "consistent")) ## specify the factor levels
+#dds$APA2 <- factor(dds$APA2, levels=c( "yoked_consistent", "consistent")) ## specify the factor levels
 
 dds # view the DESeq object - note numnber of genes
 # 22485 7
@@ -527,7 +527,7 @@ dds # view number of genes afternormalization and the number of samples
 # 16046 7 
 dds <- DESeq(dds) # Differential expression analysis
 
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+#res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
@@ -547,8 +547,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
   theme_bw(base_size = 16) + # clean up theme
   theme(legend.position = "none") + # remove legend 
-  xlim(c(-10, 10)) +  
-  ylim(c(0, 15)) +  
+  xlim(c(-2, 2)) +  
+  ylim(c(0, 10)) +  
   scale_color_manual(values = c("consistent" = "#f4a582",
                                 "yoked_consistent" = "#bababa", 
                                 "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
@@ -571,13 +571,75 @@ dev.off()
 
 
 
+colData <- colData %>% 
+  filter(Punch == "DG")  %>%
+  #filter(APA2 %in% c("consistent", "yoked_consistent"))  %>% 
+  droplevels()
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA2 )
+
+#dds$APA2 <- factor(dds$APA2, levels=c( "yoked_consistent", "consistent")) ## specify the factor levels
+
+dds # view the DESeq object - note numnber of genes
+# 22485 7
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+# 16046 7 
+dds <- DESeq(dds) # Differential expression analysis
+
+#res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "consistent", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "conflict", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 3, wt = pvalue)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1.75, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 16) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  xlim(c(-2, 2)) +  
+  ylim(c(0, 10)) +  
+  scale_color_manual(values = c("consistent" = "#f4a582",
+                                "conflict" = "#bababa", 
+                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  theme(axis.title.x = element_blank())+ 
+  theme(axis.title.y = element_blank()) + 
+  geom_text_repel(data = top_labelled, 
+                          mapping = aes(label = gene), 
+                          size = 3,
+                          fontface = 'bold', 
+                          color = 'black',
+                          box.padding = unit(0.5, "lines"),
+                          point.padding = unit(0.5, "lines"))
+
+colored
+
+
+
 
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData <- read.csv("../data/02a_colData.csv", header = T)
 
 colData <- colData %>% 
   filter(Punch == "DG")  %>%
-  filter(APA2 %in% c("conflict", "yoked_conflict"))  %>% 
+  #filter(APA2 %in% c("conflict", "yoked_conflict"))  %>% 
   droplevels()
 savecols <- as.character(colData$RNAseqID) 
 savecols <- as.vector(savecols) 
