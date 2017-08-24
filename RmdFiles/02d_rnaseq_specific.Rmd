@@ -373,7 +373,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
 
 colored
 #cvd_grid(colored) # to view plot for color blind 
-pdf(file="../figures/02_RNAseq_4by3/CA1consistentyoked.pdf", width=3, height=3)
+pdf(file="../figures/02_RNAseq_subsets/CA1consistentyoked.pdf", width=3, height=3)
 plot(colored)
 dev.off()
 ```
@@ -565,7 +565,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
 
 colored
 #cvd_grid(colored) # to view plot for color blind 
-pdf(file="../figures/02_RNAseq_4by3/DGconsistentyoked.pdf", width=3, height=3)
+pdf(file="../figures/02_RNAseq_subsets/DGconsistentyoked.pdf", width=3, height=3)
 plot(colored)
 dev.off()
 
@@ -696,7 +696,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
 
 colored
 #cvd_grid(colored) # to view plot for color blind 
-pdf(file="../figures/02_RNAseq_4by3/DGconflictyoked.pdf", width=3, height=3)
+pdf(file="../figures/02_RNAseq_subsets/DGconflictyoked.pdf", width=3, height=3)
 plot(colored)
 dev.off()
 ```
