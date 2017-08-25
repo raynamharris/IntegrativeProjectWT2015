@@ -17,3 +17,7 @@ The R markdown files to reproducible run the code are saved in the  RmdFiles sub
 
 <img src="./figures/02_RNAseq_YokedYoked/02_RNAseq_YokedYoked-01.png" width="1370" />
 
+
+## Behavior and Volcano Plot Summary
+
+<img src="./figures/00_schematics/behavrnaseq-01.png" width="1370" />
