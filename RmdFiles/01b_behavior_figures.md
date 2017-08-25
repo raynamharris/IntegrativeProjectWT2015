@@ -37,12 +37,17 @@ rotationdf <- read.csv("../data/01a_rotationdf.csv", header = T, row.names = 1)
 behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.names = 1)
 
 #set factor levels
-behavior$APA <- factor(behavior$APA, levels = c("control", "consistent", "conflict"))
-behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control", "consistent", "conflict"))
-behaviorsummaryNumAPA2$APA2 <- factor(behaviorsummaryNumAPA2$APA2, levels = c("yoked-consistent", "yoked-conflict" ,"consistent", "conflict"))
+behavior$APA <- factor(behavior$APA, levels = c("control", "conflict", "consistent"))
+behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control",  "conflict","consistent"))
+behaviorsummaryNumAPA2$APA2 <- factor(behaviorsummaryNumAPA2$APA2, levels = c( "yoked-conflict", "yoked-consistent" , "conflict","consistent"))
 scoresdf$APA <- NULL
-scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("yoked-consistent", "yoked-conflict" ,"consistent", "conflict"))
+scoresdf$APA2 <- factor(scoresdf$APA2, levels = c( "yoked-conflict" ,"yoked-consistent","conflict", "consistent"))
+
+levels(behaviorsummaryNumAPA2$APA2)
 ```
+
+    ## [1] "yoked-conflict"   "yoked-consistent" "conflict"        
+    ## [4] "consistent"
 
 Figure 1B: Standard vizualization of mean avoidance beavior
 -----------------------------------------------------------
@@ -51,28 +56,29 @@ First, I visualze the group mean and standard error for the time it takes before
 
 ``` r
 # plotting mean and se for time to total number of entrances
-numentrance1 <- ggplot(behaviorsummaryNum, aes(x=, TrainSessionComboNum, y=m, color=APA)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA), width=.1) +
-    geom_point(size = 2) +
+numentrance1 <- ggplot(behaviorsummaryNumAPA2, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+    geom_point(size = 1) +
    geom_line() +
-    scale_y_continuous(name="Number of Entrances") +
+    scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
     scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
                                 "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
-  theme_cowplot(font_size = 14, line_size = 0.5) +
-  background_grid(major = "none", minor = "none") +
-  scale_color_manual(values = colorvalAPA) + 
-  theme(legend.position=c(0.8, 0.8))  + 
-  theme(legend.title=element_blank())
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  background_grid(major = "y", minor = "y") +
+  scale_color_manual(values = colorvalAPA2) + 
+  #theme(legend.position=c(0.7, 0.8))  +
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none")
 numentrance1
 ```
 
 ![](../figures/01_behavior/numentrance-1.png)
 
 ``` r
-pdf(file="../figures/01_behavior/numentrance1.pdf", width=6, height=3)
+pdf(file="../figures/01_behavior/numentrance1.pdf", width=3.5, height=1.75)
 plot(numentrance1)
 dev.off()
 ```
@@ -81,28 +87,32 @@ dev.off()
     ##                 2
 
 ``` r
-numentrance2 <- ggplot(behaviorsummaryNumAPA2, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+# plotting mean and se for time to total number of entrances
+numentrance2 <- behaviorsummaryNumAPA2 %>%
+  filter(APA2 %in% c("consistent", "yoked-consistent")) %>%
+  ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 2) +
+    geom_point(size = 1) +
    geom_line() +
-    scale_y_continuous(name="Number of Entrances") +
+    scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
     scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
                                 "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
-  theme_cowplot(font_size = 14, line_size = 0.5) +
-  background_grid(major = "none", minor = "none") +
-  scale_color_manual(values = colorvalAPA2) + 
-  theme(legend.position=c(0.8, 0.8))  + 
-  theme(legend.title=element_blank())
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  background_grid(major = "y", minor = "y") +
+  scale_color_manual(values = colorvalAPA5) + 
+  #theme(legend.position=c(0.8, 0.8))  + 
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none")
 numentrance2
 ```
 
 ![](../figures/01_behavior/numentrance-2.png)
 
 ``` r
-pdf(file="../figures/01_behavior/numentrance2.pdf", width=6, height=3)
+pdf(file="../figures/01_behavior/numentrance2.pdf", width=3.5, height=1.75)
 plot(numentrance2)
 dev.off()
 ```
@@ -333,19 +343,19 @@ TukeyHSD(aov1, which = "APA2") # p<< 0.001 for both control comparisions
     ## 
     ## $APA2
     ##                                        diff        lwr        upr
-    ## yoked-conflict-yoked-consistent  -2.8209039  -7.982828   2.341020
-    ## consistent-yoked-consistent     -21.0488034 -26.360379 -15.737228
-    ## conflict-yoked-consistent       -20.8378476 -25.999771 -15.675924
-    ## consistent-yoked-conflict       -18.2278994 -23.389823 -13.065976
+    ## yoked-consistent-yoked-conflict   2.8209039  -2.341020   7.982828
     ## conflict-yoked-conflict         -18.0169437 -23.024745 -13.009142
-    ## conflict-consistent               0.2109558  -4.950968   5.372879
+    ## consistent-yoked-conflict       -18.2278994 -23.389823 -13.065976
+    ## conflict-yoked-consistent       -20.8378476 -25.999771 -15.675924
+    ## consistent-yoked-consistent     -21.0488034 -26.360379 -15.737228
+    ## consistent-conflict              -0.2109558  -5.372879   4.950968
     ##                                     p adj
-    ## yoked-conflict-yoked-consistent 0.4582117
-    ## consistent-yoked-consistent     0.0000000
-    ## conflict-yoked-consistent       0.0000000
-    ## consistent-yoked-conflict       0.0000000
+    ## yoked-consistent-yoked-conflict 0.4582117
     ## conflict-yoked-conflict         0.0000000
-    ## conflict-consistent             0.9994975
+    ## consistent-yoked-conflict       0.0000000
+    ## conflict-yoked-consistent       0.0000000
+    ## consistent-yoked-consistent     0.0000000
+    ## consistent-conflict             0.9994975
 
 ``` r
 aov2 <- aov(PC2 ~ APA2, data=scoresdf)
@@ -368,13 +378,13 @@ TukeyHSD(aov2, which = "APA2") # p > 0.05
     ## Fit: aov(formula = PC2 ~ APA2, data = scoresdf)
     ## 
     ## $APA2
-    ##                                       diff        lwr        upr     p adj
-    ## yoked-conflict-yoked-consistent  4.4155199  -1.244736 10.0757760 0.1695436
-    ## consistent-yoked-consistent     -1.0965242  -6.920880  4.7278312 0.9556089
-    ## conflict-yoked-consistent        3.7560908  -1.904165  9.4163469 0.2911558
-    ## consistent-yoked-conflict       -5.5120442 -11.172300  0.1482119 0.0585081
-    ## conflict-yoked-conflict         -0.6594291  -6.150684  4.8318258 0.9877336
-    ## conflict-consistent              4.8526151  -0.807641 10.5128711 0.1134571
+    ##                                       diff        lwr       upr     p adj
+    ## yoked-consistent-yoked-conflict -4.4155199 -10.075776 1.2447361 0.1695436
+    ## conflict-yoked-conflict         -0.6594291  -6.150684 4.8318258 0.9877336
+    ## consistent-yoked-conflict       -5.5120442 -11.172300 0.1482119 0.0585081
+    ## conflict-yoked-consistent        3.7560908  -1.904165 9.4163469 0.2911558
+    ## consistent-yoked-consistent     -1.0965242  -6.920880 4.7278312 0.9556089
+    ## consistent-conflict             -4.8526151 -10.512871 0.8076410 0.1134571
 
 ``` r
 fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 3), axes = c(1, 2))
@@ -490,11 +500,11 @@ summary(lm1)
     ## -10.180  -2.252  -0.098   2.518   7.026 
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)          11.215      1.381   8.119 4.60e-09 ***
-    ## APA2yoked-conflict   -2.821      1.898  -1.486    0.148    
-    ## APA2consistent      -21.049      1.953 -10.775 7.82e-12 ***
-    ## APA2conflict        -20.838      1.898 -10.977 5.00e-12 ***
+    ##                      Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)             8.394      1.302   6.446 4.04e-07 ***
+    ## APA2yoked-consistent    2.821      1.898   1.486    0.148    
+    ## APA2conflict          -18.017      1.842  -9.783 7.61e-11 ***
+    ## APA2consistent        -18.228      1.898  -9.602 1.17e-10 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -516,11 +526,11 @@ summary(lm16)
     ## -9.6653 -3.1977 -0.1108  4.0493  9.9851 
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)          12.671      1.825   6.942 1.04e-07 ***
-    ## APA2yoked-conflict   -5.905      2.508  -2.354   0.0253 *  
-    ## APA2consistent      -24.834      2.581  -9.621 1.12e-10 ***
-    ## APA2conflict        -19.887      2.508  -7.928 7.55e-09 ***
+    ##                      Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)             6.766      1.721   3.932  0.00046 ***
+    ## APA2yoked-consistent    5.905      2.508   2.354  0.02533 *  
+    ## APA2conflict          -13.983      2.434  -5.746 2.84e-06 ***
+    ## APA2consistent        -18.929      2.508  -7.546 2.06e-08 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -542,11 +552,11 @@ summary(lm136)
     ## -12.156  -3.382  -1.010   4.361  13.919 
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)          13.052      2.262   5.769 2.66e-06 ***
-    ## APA2yoked-conflict   -7.236      3.109  -2.327   0.0269 *  
-    ## APA2consistent      -27.352      3.199  -8.549 1.54e-09 ***
-    ## APA2conflict        -17.758      3.109  -5.712 3.13e-06 ***
+    ##                      Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)             5.816      2.133   2.727  0.01058 *  
+    ## APA2yoked-consistent    7.236      3.109   2.327  0.02689 *  
+    ## APA2conflict          -10.522      3.016  -3.489  0.00152 ** 
+    ## APA2consistent        -20.116      3.109  -6.470 3.78e-07 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
