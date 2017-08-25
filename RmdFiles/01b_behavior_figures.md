@@ -120,6 +120,73 @@ dev.off()
     ## quartz_off_screen 
     ##                 2
 
+``` r
+numentrance3 <- behaviorsummaryNumAPA2 %>%
+  filter(APA2 %in% c("consistent", "conflict")) %>%
+  ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+    geom_point(size = 1) +
+   geom_line() +
+    scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
+    scale_x_continuous(name = NULL, 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
+                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  background_grid(major = "y", minor = "y") +
+  scale_color_manual(values = colorvalAPA6) + 
+  #theme(legend.position=c(0.8, 0.8))  + 
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none")
+numentrance3
+```
+
+![](../figures/01_behavior/numentrance-3.png)
+
+``` r
+pdf(file="../figures/01_behavior/numentrance3.pdf", width=3.5, height=1.75)
+plot(numentrance3)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+numentrance4 <- behaviorsummaryNumAPA2 %>%
+  filter(APA2 %in% c("yoked-consistent", "yoked-conflict")) %>%
+  ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+    geom_point(size = 1) +
+   geom_line() +
+    scale_y_continuous(name="Number of Entrances\nper 10 min training session",
+                       limits=c(0, 35)) +
+    scale_x_continuous(name = NULL, 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
+                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  background_grid(major = "y", minor = "y") +
+  scale_color_manual(values = colorvalAPA7) + 
+  #theme(legend.position=c(0.8, 0.8))  + 
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none")
+numentrance4
+```
+
+![](../figures/01_behavior/numentrance-4.png)
+
+``` r
+pdf(file="../figures/01_behavior/numentrance4.pdf", width=3.5, height=1.75)
+plot(numentrance4)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
 ### Supplemnentary time series plot
 
 Here I visualze the individual data points for each annimal then use a linar model to fit a 95% confidence internal for the time it take a mouse to enter the "schock zone" or equivilent .
@@ -131,7 +198,7 @@ numentrance3 <- onebehavior(data=behavior,
                   yaxislabel="Number of Entrances",
                   colorcode="APA")
 
-numentrance2
+numentrance3
 ```
 
 ![](../figures/01_behavior/numentrance3-1.png)

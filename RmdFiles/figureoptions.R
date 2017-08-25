@@ -29,6 +29,15 @@ colorvalAPA5<-  c( "#404040","#ca0020")
 #404040 ## darkgrey - yoked-consistent
 #ca0020 ## red - consistent 
 
+colorvalAPA6<-  c( "#f4a582","#ca0020")
+#f4a582 ## pink - conflict
+#ca0020 ## red - consistent 
+
+colorvalAPA7<-  c( "#bababa","#404040")
+#bababa ## light grey - yoked-conflict
+#404040 ## darkgrey - yoked-consistent
+
+
 DGConflictControl <- c("#bababa","#f4a582")
 DGConsistentControl <- c("#bababa","#ca0020")
 DGConflictConsistent <- c("#f4a582","#ca0020")
@@ -37,6 +46,15 @@ DGConflictConsistent <- c("#f4a582","#ca0020")
 volcano1 <-  c("consistent" = "#ca0020",
            "yoked_consistent" = "#404040", 
            "none" = "#d9d9d9")
+
+volcano2 <-  c("consistent" = "#ca0020",
+               "conflict" = "#f4a582", 
+               "none" = "#d9d9d9")
+
+volcano3 <-  c("yoked_consistent" = "#404040",
+               "yoked_conflict" = "#bababa", 
+               "none" = "#d9d9d9")
+
 
 
 
@@ -84,6 +102,23 @@ ann_colors5 = list(
   Punch = c(CA1 = (values=c("#7570b3")),
             CA3 = (values=c("#1b9e77")), 
             DG = (values=c("#d95f02"))))
+
+ann_colors6 = list(
+  APA2 =  c('conflict' = (values=c("#f4a582")), 
+            'consistent' = (values=c("#ca0020"))),
+  Punch = c(CA1 = (values=c("#7570b3")),
+            CA3 = (values=c("#1b9e77")), 
+            DG = (values=c("#d95f02"))))
+
+ann_colors7 = list(
+  APA2 =  c('yoked_consistent' = (values=c("#404040")), 
+            'yoked_conflict' = (values=c("#bababa"))),
+  Punch = c(CA1 = (values=c("#7570b3")),
+            CA3 = (values=c("#1b9e77")), 
+            DG = (values=c("#d95f02"))))
+
+
+
 
 
 
