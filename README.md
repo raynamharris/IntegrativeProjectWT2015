@@ -1,17 +1,20 @@
 This repo contains the experiment that I like to call "Integrative Wild Type 2015" because it reflect that behavior, electrophysiology, and RNAseq data were collected from WT mice in 2015 and analyzed in an integrative fashion. The title of the paper is: 
 
+## Organization
 
-## Workflow
+The R markdown files to reproducible run the code are saved in the  RmdFiles subdirectory. Rather than have a single Rmd file for the entire project, the workflow is broken down into pieces. The workflows to recreated the figures are specified by the figure name. All the files are ordered from 00 to 04 to indicate the order of execution.
 
-The R markdown files to reproducible run the code are saved in the  RmdFiles subdirectory. Rather than have a single Rmd file for the entire project, the workflow is broken down into pieces. The workflows to recreated the figures are specified by the figure name. 
+##  Figure 1: Effect of consistent training on behavior and subfield-specific hippocampal gene expression
 
-Click "summary" to view a markdown file with documention and figure. 
-Click "Rmd file" to view the bioinformatic workflow.
+<img src="../figures/02_RNAseq_ConsistentConflict/02_RNAseq_ConsistentConflict-01.png" width="1370" />
 
-- Overview - summer the experimental paradigm ([summary](./RmdFiles/01_schematics.md), made with Adobe Illustrator)
-- Behavior - analysis of the leanring and memory behavioral data ([analysis](./RmdFiles/01a_beahvior_create_dfs.md), [figures](./RmdFiles/01b_behavior_figures.md)
-- Gene expression - anlaysis of all hippocampal transcriptomic data ([analysis](./RmdFiles/02a_rnaseq_makedfs.md), [figures](./RmdFiles/02b_rnaseq_makefigures.md))
-- Gene expression - anlaysis of DG, CA1, and CA3 separately ([analysis & figures](./RmdFiles/02c_brainregionspecific.md)
+##  Figure 2: Differences between consistently training and conflict trained animals in  behavior and subfield-specific hippocampal gene expression
+
+<img src="../figures/02_RNAseq_ConsistentConflict/02_RNAseq_ConsistentConflict-01.png" width="1370" />
+
+##  Figure 3: Differences between the two yoked control groups
+
+<img src="../figures/02_RNAseq_ConsistentYoked/02_RNAseq_ConsistentYoked-01.png" width="1370" />
 
 ## Working Abstract
 
