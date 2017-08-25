@@ -112,7 +112,7 @@ pdf(file="../figures/02_RNAseq_YokedYoked/PCA12.pdf", width=2.5, height=2.25)
 plot(PCA12)
 dev.off()
 
-pdf(file="../figures/02_RNAseq_YokedYoked/PCA62.pdf", width=2.5, height=2.25)
+pdf(file="../figures/02_RNAseq_YokedYoked/PCA42.pdf", width=2.5, height=2.25)
 plot(PCA42)
 dev.off()
 

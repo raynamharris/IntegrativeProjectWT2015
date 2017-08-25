@@ -196,7 +196,7 @@ Principle component analysis
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/02_RNAseq_YokedYoked/PCA62.pdf", width=2.5, height=2.25)
+    pdf(file="../figures/02_RNAseq_YokedYoked/PCA42.pdf", width=2.5, height=2.25)
     plot(PCA42)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
