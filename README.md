@@ -6,7 +6,8 @@ The R markdown files to reproducible run the code are saved in the  RmdFiles sub
 
 ##  Figure 1: Effect of consistent training on behavior and subfield-specific hippocampal gene expression
 
-<img src="./figures/02_RNAseq_ConsistentConflict/02_RNAseq_ConsistentConflict-01.png" width="1370" />
+<img src="./figures/02_RNAseq_ConsistentYoked/02_RNAseq_ConsistentYoked-01.png" width="1370" />
+
 
 ##  Figure 2: Differences between consistently training and conflict trained animals in  behavior and subfield-specific hippocampal gene expression
 
@@ -14,7 +15,7 @@ The R markdown files to reproducible run the code are saved in the  RmdFiles sub
 
 ##  Figure 3: Differences between the two yoked control groups
 
-<img src="./figures/02_RNAseq_ConsistentYoked/02_RNAseq_ConsistentYoked-01.png" width="1370" />
+<img src="./figures/02_RNAseq_YokedYoked/02_RNAseq_YokedYoked-01.png" width="1370" />
 
 ## Working Abstract
 
