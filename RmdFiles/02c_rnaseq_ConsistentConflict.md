@@ -201,7 +201,7 @@ Principle component analysis
 ![](../figures/02_RNAseq_ConsistentConflict/pca-2.png)
 
     # pdf the same pca plots descripbed above of the above
-    pdf(file="../figures/02_RNAseq_ConsistentConflict/PCA12.pdf", width=3, height=2.5)
+    pdf(file="../figures/02_RNAseq_ConsistentConflict/PCA12.pdf", width=2.5, height=2.25)
     plot(PCA12)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
@@ -212,7 +212,7 @@ Principle component analysis
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/02_RNAseq_ConsistentConflict/PCA62.pdf", width=3, height=2.5)
+    pdf(file="../figures/02_RNAseq_ConsistentConflict/PCA62.pdf", width=2.5, height=2.25)
     plot(PCA62)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
@@ -668,10 +668,10 @@ Volcanos plots and and gene lists
       theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       scale_x_continuous(name="log2 (consistent/conflict)",
-                         limits=c(-2, 2)) +
+                         limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 3)) +
-      draw_image(imgHippo, scale = 1, x=-2, y=2)
+                        limits= c(0, 15)) +
+      draw_image(imgHippo, scale = 9, x=-6.5, y=13)
     colored
 
 ![](../figures/02_RNAseq_ConsistentConflict/volcanos-4.png)
@@ -786,10 +786,10 @@ Volcanos plots and and gene lists
       theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       scale_x_continuous(name="log2 (consistent/conflict)",
-                         limits=c(-2, 2)) +
+                         limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 3)) +
-      draw_image(imgCA1, scale = 1, x=-2, y=2)
+                        limits= c(0, 15)) +
+      draw_image(imgCA1, scale = 9, x=-6, y=12.75)
     colored
 
 ![](../figures/02_RNAseq_ConsistentConflict/CA1-1.png)
@@ -904,10 +904,10 @@ Volcanos plots and and gene lists
       theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       scale_x_continuous(name="log2 (consistent/conflict)",
-                         limits=c(-2, 2)) +
+                         limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 3)) +
-      draw_image(imgDG, scale = 1, x=-2, y=2)
+                        limits= c(0, 15)) +
+      draw_image(imgDG, scale = 9, x=-6, y=12.75)
     colored
 
 ![](../figures/02_RNAseq_ConsistentConflict/DG-1.png)
@@ -1022,10 +1022,10 @@ Volcanos plots and and gene lists
       theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       scale_x_continuous(name="log2 (consistent/conflict)",
-                         limits=c(-2, 2)) +
+                         limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 3)) +
-      draw_image(imgCA3, scale = 1, x=-2, y=2)
+                        limits= c(0, 15)) +
+      draw_image(imgCA3, scale = 9, x=-6.5, y=13)
     colored
 
 ![](../figures/02_RNAseq_ConsistentConflict/CA3-1.png)

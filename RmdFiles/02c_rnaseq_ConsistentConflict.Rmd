@@ -381,10 +381,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/conflict)",
-                     limits=c(-2, 2)) +
+                     limits=c(-10, 10)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 3)) +
-  draw_image(imgHippo, scale = 1, x=-2, y=2)
+                    limits= c(0, 15)) +
+  draw_image(imgHippo, scale = 9, x=-6.5, y=13)
 colored
 
 
@@ -448,10 +448,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/conflict)",
-                     limits=c(-2, 2)) +
+                     limits=c(-10, 10)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 3)) +
-  draw_image(imgCA1, scale = 1, x=-2, y=2)
+                    limits= c(0, 15)) +
+  draw_image(imgCA1, scale = 9, x=-6, y=12.75)
 colored
 
 #cvd_grid(colored) # to view plot for color blind 
@@ -514,10 +514,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/conflict)",
-                     limits=c(-2, 2)) +
+                     limits=c(-10, 10)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 3)) +
-  draw_image(imgDG, scale = 1, x=-2, y=2)
+                    limits= c(0, 15)) +
+  draw_image(imgDG, scale = 9, x=-6, y=12.75)
 colored
 
 
@@ -580,10 +580,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/conflict)",
-                     limits=c(-2, 2)) +
+                     limits=c(-10, 10)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 3)) +
-  draw_image(imgCA3, scale = 1, x=-2, y=2)
+                    limits= c(0, 15)) +
+  draw_image(imgCA3, scale = 9, x=-6.5, y=13)
 colored
 
 

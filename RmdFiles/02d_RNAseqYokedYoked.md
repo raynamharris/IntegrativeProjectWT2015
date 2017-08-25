@@ -382,6 +382,26 @@ Volcanos plots and and gene lists
     imgCA1 <- magick::image_read("../figures/00_schematics/CA1.png")
     imgHippo <- magick::image_read("../figures/00_schematics/HippoSeq.png")
 
+    imgDG 
+
+    ##   format width height colorspace filesize
+    ## 1    PNG   226    188       sRGB     6381
+
+    imgCA3 
+
+    ##   format width height colorspace filesize
+    ## 1    PNG   227    185       sRGB     6623
+
+    imgCA1 
+
+    ##   format width height colorspace filesize
+    ## 1    PNG   226    186       sRGB     6578
+
+    imgHippo 
+
+    ##   format width height colorspace filesize
+    ## 1    PNG   306    213       sRGB     9761
+
     # gene lists
     res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
     resOrdered <- res[order(res$padj),]
@@ -652,10 +672,10 @@ Volcanos plots and and gene lists
       theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       scale_x_continuous(name="log2 (yoked_consistent/yoked_conflict)",
-                         limits=c(-2, 2)) +
+                         limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 3)) +
-      draw_image(imgHippo, scale = 1, x=-2, y=2.25)
+                        limits= c(0, 15)) +
+      draw_image(imgHippo, scale = 9, x=-6.5, y=13)
     colored
 
 ![](../figures/02_RNAseq_YokedYoked/volcanos-4.png)
@@ -770,10 +790,10 @@ Volcanos plots and and gene lists
       theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       scale_x_continuous(name="log2 (yoked_consistent/yoked_conflict)",
-                         limits=c(-2, 2)) +
+                         limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 3)) +
-      draw_image(imgCA1, scale = 1, x=-2, y=2.25)
+                        limits= c(0, 15)) +
+      draw_image(imgCA1, scale = 9, x=-6, y=12.75)
     colored
 
 ![](../figures/02_RNAseq_YokedYoked/CA1-1.png)
@@ -888,10 +908,10 @@ Volcanos plots and and gene lists
       theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       scale_x_continuous(name="log2 (yoked_consistent/yoked_conflict)",
-                         limits=c(-2, 2)) +
+                         limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 3)) +
-      draw_image(imgDG, scale = 1, x=-2, y=2.25)
+                        limits= c(0, 15)) +
+      draw_image(imgDG, scale = 9, x=-6, y=12.75)
     colored
 
 ![](../figures/02_RNAseq_YokedYoked/DG-1.png)
@@ -1006,10 +1026,10 @@ Volcanos plots and and gene lists
       theme(panel.grid.minor=element_blank(),
                panel.grid.major=element_blank()) + 
       scale_x_continuous(name="log2 (yoked_consistent/yoked_conflict)",
-                         limits=c(-2, 2)) +
+                         limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 3)) +
-      draw_image(imgCA3, scale = 1, x=-2, y=2.25)
+                        limits= c(0, 15)) +
+      draw_image(imgCA3, scale = 9, x=-6.5, y=13)
     colored
 
 ![](../figures/02_RNAseq_YokedYoked/CA3-1.png)
