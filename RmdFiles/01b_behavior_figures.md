@@ -193,19 +193,19 @@ Here I visualze the individual data points for each annimal then use a linar mod
 
 ``` r
 # plotting all data points and linear model smoothing for number of entrances
-numentrance3 <- onebehavior(data=behavior, 
+numentrance4 <- onebehavior(data=behavior, 
                             xcol="TrainSessionComboNum", ycol="NumEntrances",
                   yaxislabel="Number of Entrances",
                   colorcode="APA")
 
-numentrance3
+numentrance4
 ```
 
 ![](../figures/01_behavior/numentrance3-1.png)
 
 ``` r
-pdf(file="../figures/01_behavior/numentrance3.pdf", width=6, height=3)
-plot(numentrance3)
+pdf(file="../figures/01_behavior/numentrance4.pdf", width=6, height=3)
+plot(numentrance4)
 dev.off()
 ```
 
