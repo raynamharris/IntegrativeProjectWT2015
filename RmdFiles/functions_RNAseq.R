@@ -67,7 +67,7 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, aesshape, shapename, co
           axis.title.x = element_text(size=9),
           axis.title.y = element_text(size=9),
           legend.title = element_text(size=9),
-          legend.text = element_text(size=9)) + 
-    #theme(legend.title=element_blank())
+          legend.text = element_text(size=9)) +
+    #theme(legend.title=element_blank()) 
     theme(legend.position="none")
 }

@@ -58,7 +58,7 @@ First, I visualze the group mean and standard error for the time it takes before
 # plotting mean and se for time to total number of entrances
 numentrance1 <- ggplot(behaviorsummaryNumAPA2, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 1) +
+    geom_point(size = 2) +
    geom_line() +
     scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
     scale_x_continuous(name = NULL, 
@@ -92,14 +92,14 @@ numentrance2 <- behaviorsummaryNumAPA2 %>%
   filter(APA2 %in% c("consistent", "yoked-consistent")) %>%
   ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 1) +
+    geom_point(size = 2) +
    geom_line() +
     scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
     scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
+                                "4" = "T3", "5" = "Retest", "6" = "T4",
+                                "7" = "T5", "8" = "T6", "9"= "Reten.")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA5) + 
@@ -125,7 +125,7 @@ numentrance3 <- behaviorsummaryNumAPA2 %>%
   filter(APA2 %in% c("consistent", "conflict")) %>%
   ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 1) +
+    geom_point(size = 2) +
    geom_line() +
     scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
     scale_x_continuous(name = NULL, 
@@ -158,7 +158,7 @@ numentrance4 <- behaviorsummaryNumAPA2 %>%
   filter(APA2 %in% c("yoked-consistent", "yoked-conflict")) %>%
   ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 1) +
+    geom_point(size = 2) +
    geom_line() +
     scale_y_continuous(name="Number of Entrances\nper 10 min training session",
                        limits=c(0, 35)) +

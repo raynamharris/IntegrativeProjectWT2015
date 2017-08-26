@@ -24,14 +24,14 @@ The figures made from this script were compiled in Adobe.
     ## set output file for figures 
     knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq_ConsistentYoked/')
 
-    colData <- read.csv("../data/02a_colData.csv", header = T)
-    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-
 Design
 ------
 
 The major comparision here is Hippocampal subfield: "DG","CA3", "CA1"
 Behavioral Groups: "yoked\_consistent", "consistent"
+
+    colData <- read.csv("../data/02a_colData.csv", header = T)
+    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
     colData <- colData %>% 
       filter(APA2 %in% c("consistent", "yoked_consistent" ))  %>% 
@@ -256,7 +256,7 @@ Principle component analysis
 
 ![](../figures/02_RNAseq_ConsistentYoked/pca-1.png)
 
-    PCA32 <- plotPCs(pcadata, 3, 4, aescolor = pcadata$APA2, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA5)
+    PCA32 <- plotPCs(pcadata, 3, 2, aescolor = pcadata$APA2, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA5)
     PCA32
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
@@ -478,6 +478,12 @@ heatmap
 
 Volcanos plots and and gene lists
 ---------------------------------
+
+    imgDG <- magick::image_read("../figures/00_schematics/DG.png")
+    imgCA3 <- magick::image_read("../figures/00_schematics/CA3.png")
+    imgCA1 <- magick::image_read("../figures/00_schematics/CA1.png")
+    imgHippo <- magick::image_read("../figures/00_schematics/HippoSeq.png")
+
 
     # gene lists
     res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
@@ -742,7 +748,7 @@ Volcanos plots and and gene lists
     top_labelled <- top_n(data, n = 3, wt = pvalue)
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 0.5, alpha = 0.8, na.rm = T) + # add gene points
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
       theme_bw(base_size = 8) + # clean up theme
       theme(legend.position = "none") + # remove legend 
       scale_color_manual(values = volcano1) + 
@@ -752,7 +758,7 @@ Volcanos plots and and gene lists
                          limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
                         limits= c(0, 15)) +
-      draw_image(imgHippo, scale = 9, x=-6.5, y=13)
+      draw_image(imgHippo, scale = 10, x=-6.5, y=13)
 
     colored
 
@@ -861,7 +867,7 @@ Volcanos plots and and gene lists
     top_labelled <- top_n(data, n = 3, wt = pvalue)
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 0.5, alpha = 0.8, na.rm = T) + # add gene points
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
       theme_bw(base_size = 8) + # clean up theme
       theme(legend.position = "none") + # remove legend 
       scale_color_manual(values = volcano1) + 
@@ -871,7 +877,7 @@ Volcanos plots and and gene lists
                          limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
                         limits= c(0, 15))  +  
-      draw_image(imgCA1, scale = 9, x=-6, y=12.75)
+      draw_image(imgCA1, scale = 10, x=-6, y=12.75)
 
     colored
 
@@ -980,7 +986,7 @@ Volcanos plots and and gene lists
     top_labelled <- top_n(data, n = 3, wt = pvalue)
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 0.5, alpha = 0.8, na.rm = T) + # add gene points
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
       theme_bw(base_size = 8) + # clean up theme
       theme(legend.position = "none") + # remove legend 
       scale_color_manual(values = volcano1) + 
@@ -990,7 +996,7 @@ Volcanos plots and and gene lists
                          limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
                         limits= c(0, 15)) +
-      draw_image(imgDG, scale = 9, x=-6, y=12.75)
+      draw_image(imgDG, scale = 10, x=-6, y=13)
 
     colored
 
@@ -1101,7 +1107,7 @@ Volcanos plots and and gene lists
     top_labelled <- top_n(data, n = 3, wt = pvalue)
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 0.5, alpha = 0.8, na.rm = T) + # add gene points
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
       theme_bw(base_size = 8) + # clean up theme
       theme(legend.position = "none") + # remove legend 
       scale_color_manual(values = volcano1) + 
@@ -1111,7 +1117,7 @@ Volcanos plots and and gene lists
                          limits=c(-10, 10)) +
       scale_y_continuous(name="-log10 (adjusted p-value",
                         limits= c(0, 15)) +
-      draw_image(imgCA3, scale = 9, x=-6.5, y=13)
+      draw_image(imgCA3, scale = 10, x=-6.5, y=13)
 
     colored
 
