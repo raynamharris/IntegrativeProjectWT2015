@@ -431,7 +431,6 @@ resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
 summary(res)
-
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA2"))
 
@@ -458,7 +457,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
                      limits=c(-2, 2)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
                     limits= c(0, 5))  + 
-  draw_image(imgDG, scale = 1.8, x=-1.7, y=4)
+  draw_image(imgDG, scale = 2, x=-1.6, y=4)
 colored
 
 pdf(file="../figures/02_RNAseq_ConsistentConflict/DGconsistentconflict.pdf", width=1.5, height=1.75)
@@ -565,7 +564,6 @@ dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 
-
 res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
@@ -598,7 +596,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
                      limits=c(-2, 2)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
                     limits= c(0, 5))  +  
-  draw_image(imgCA1, scale = 1.8, x=-1.7, y=3.9)
+  draw_image(imgCA1, scale = 2, x=-1.6, y=3.9)
 colored
 
 #cvd_grid(colored) # to view plot for color blind 
