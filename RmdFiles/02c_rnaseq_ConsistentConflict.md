@@ -124,24 +124,10 @@ Principle component analysis
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-
-![](../figures/02_RNAseq_ConsistentConflict/pca-1.png)
-
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-
-![](../figures/02_RNAseq_ConsistentConflict/pca-2.png)
-
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+![](../figures/02_RNAseq_ConsistentConflict/pca-1.png)![](../figures/02_RNAseq_ConsistentConflict/pca-2.png)
 
     ## quartz_off_screen 
     ##                 2
-
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
     ## quartz_off_screen 
     ##                 2
