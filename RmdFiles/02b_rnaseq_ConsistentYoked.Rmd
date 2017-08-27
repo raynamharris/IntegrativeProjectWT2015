@@ -304,7 +304,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (CA1/DG)",
                      limits=c(-10, 10)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
+  scale_y_continuous(name="-log10 (adjusted p-value)",
                     limits= c(0, 70)) 
 colored
 #cvd_grid(colored) # to view plot for color blind 
@@ -335,7 +335,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (CA1/CA3)",
                      limits=c(-10, 10)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
+  scale_y_continuous(name="-log10 (adjusted p-value)",
                     limits= c(0, 70)) 
 colored
 pdf(file="../figures/02_RNAseq_ConsistentYoked/AllCA1CA3.pdf", width=1.5, height=1.75)
@@ -367,7 +367,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (CA3/DG)",
                      limits=c(-10, 10)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
+  scale_y_continuous(name="-log10 (adjusted p-value)",
                     limits= c(0, 70)) 
 
 colored
@@ -403,7 +403,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-10, 10)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
+  scale_y_continuous(name="-log10 (adjusted p-value)",
                     limits= c(0, 15)) +
   draw_image(imgHippo, scale = 10, x=-6.5, y=13)
 
@@ -476,7 +476,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
+  scale_y_continuous(name="-log10 (adjusted p-value)",
                     limits= c(0, 12.5)) +
   draw_image(imgDG, scale = 5, x=-3, y=10.75)
 
@@ -546,7 +546,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
+  scale_y_continuous(name="-log10 (adjusted p-value)",
                     limits= c(0, 12.5)) +
   draw_image(imgCA3, scale = 5, x=-3, y=10.75)
 
@@ -612,7 +612,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
+  scale_y_continuous(name="-log10 (adjusted p-value)",
                     limits= c(0, 12.5))  +  
   draw_image(imgCA1, scale = 5, x=-3, y=10.5)
 
