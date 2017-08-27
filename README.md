@@ -7,5 +7,5 @@ This repo contains the experiment that I like to call "Integrative Wild Type 201
 
 ## Figure 2: Differences between consistently training and conflict trained and yoked animals in  behavior and subfield-specific hippocampal gene expression
 
-<img src="./figures/02_RNAseq_ConsistentConflict/02_RNAseq_Conflict-01.png" width="1060" />
+<img src="./figures/02_RNAseq_ConsistentConflict/02_RNAseq_Conflict-01.png" width="1360" />
 
