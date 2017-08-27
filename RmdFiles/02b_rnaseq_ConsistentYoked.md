@@ -203,6 +203,8 @@ DG only
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
+![](../figures/02_RNAseq_ConsistentYoked/DG-1.png)
+
     ## log2 fold change (MAP): APA2 consistent vs yoked_consistent 
     ## Wald test p-value: APA2 consistent vs yoked_consistent 
     ## DataFrame with 10 rows and 6 columns
@@ -231,7 +233,7 @@ DG only
     ## Homer1 5.101453e-08
     ## Ranbp2 6.108869e-08
 
-![](../figures/02_RNAseq_ConsistentYoked/DG-1.png)
+![](../figures/02_RNAseq_ConsistentYoked/DG-2.png)
 
     ## quartz_off_screen 
     ##                 2
@@ -292,7 +294,7 @@ CA3 only
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-![](../figures/02_RNAseq_ConsistentYoked/CA3-1.png)
+![](../figures/02_RNAseq_ConsistentYoked/CA3-1.png)![](../figures/02_RNAseq_ConsistentYoked/CA3-2.png)
 
     ## quartz_off_screen 
     ##                 2
@@ -352,7 +354,7 @@ CA1 only
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-![](../figures/02_RNAseq_ConsistentYoked/CA1-1.png)
+![](../figures/02_RNAseq_ConsistentYoked/CA1-1.png)![](../figures/02_RNAseq_ConsistentYoked/CA1-2.png)
 
     ## quartz_off_screen 
     ##                 2

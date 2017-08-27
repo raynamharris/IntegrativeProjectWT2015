@@ -75,7 +75,7 @@ rld <- rlog(dds, blind=FALSE) ## log transformed data
 
 ## Principle component analysis
 
-```{r pca, echo=F, warning=F}
+```{r pca, echo=F, message=F}
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -269,7 +269,7 @@ data <- data %>%
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                     yes = "DG", 
                                     no = "none")))
-top_labelled <- top_n(data, n = 3, wt = pvalue)
+top_labelled <- top_n(data, n = 5, wt = lfc)
 
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
@@ -302,7 +302,7 @@ data <- data %>%
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                     yes = "CA3", 
                                     no = "none")))
-top_labelled <- top_n(data, n = 3, wt = pvalue)
+top_labelled <- top_n(data, n = 5, wt = lfc)
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
@@ -334,7 +334,7 @@ data <- data %>%
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                     yes = "DG", 
                                     no = "none")))
-top_labelled <- top_n(data, n = 3, wt = pvalue)
+top_labelled <- top_n(data, n = 5, wt = lfc)
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
@@ -370,7 +370,7 @@ data <- data %>%
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                     yes = "conflict", 
                                     no = "none")))
-top_labelled <- top_n(data, n = 3, wt = pvalue)
+top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
@@ -445,7 +445,7 @@ data <- data %>%
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                     yes = "conflict", 
                                     no = "none")))
-top_labelled <- top_n(data, n = 3, wt = pvalue)
+top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
@@ -515,7 +515,7 @@ data <- data %>%
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                     yes = "conflict", 
                                     no = "none")))
-top_labelled <- top_n(data, n = 3, wt = pvalue)
+top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
@@ -527,8 +527,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_x_continuous(name="log2 (consistent/conflict)",
                      limits=c(-2, 2)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
-                    limits= c(0, 5))  +  
-  draw_image(imgCA3, scale = 2, x= -1.6, y=4)
+                    limits= c(0, 5))  + 
+  draw_image(imgCA3, scale = 2, x= -1.6, y=4) 
 colored
 
 pdf(file="../figures/02_RNAseq_ConsistentConflict/CA3consistentconflict.pdf", width=1.5, height=1.75)
@@ -585,7 +585,7 @@ data <- data %>%
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                     yes = "conflict", 
                                     no = "none")))
-top_labelled <- top_n(data, n = 3, wt = pvalue)
+top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
