@@ -1,5 +1,6 @@
 figures/*/*pdf
 RmdFiles/VennDiagram*log
 figures/*/*ai
-
-RmdFiles/02d_GO_MWU/*
+/RmdFiles/02e_GO_MWU/*tab
+/RmdFiles/02e_GO_MWU/*pdf
+/RmdFiles/02e_GO_MWU/*obo

@@ -271,7 +271,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 ## Volcanos plots and and gene lists
 
 
-```{r volcanos, echo=F, include=F}
+```{r volcanosbyregion, echo=F, include=F}
 
 imgDG <- magick::image_read("../figures/00_schematics/DG.png")
 imgCA3 <- magick::image_read("../figures/00_schematics/CA3.png")
@@ -375,9 +375,11 @@ colored
 pdf(file="../figures/02_RNAseq_ConsistentYoked/AllDGCA3.pdf", width=1.5, height=1.75)
 plot(colored)
 dev.off()
+```
 
 
 
+```{r ALLtraining}
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
@@ -409,12 +411,18 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
 
 colored
 
-
-#cvd_grid(colored) # to view plot for color blind 
 pdf(file="../figures/02_RNAseq_ConsistentYoked/Allconsistentyoked.pdf", width=1.5, height=1.75)
 plot(colored)
 dev.off()
 
+## setup for GO
+table(res$padj<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/Allconsistentyoked.csv", row.names = F)
 ```
 
 
@@ -490,6 +498,17 @@ plot(colored)
 dev.off()
 
 
+## GO Setup
+
+table(res$padj<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/DGconsistentyoked.csv", row.names = F)
+
+
 ```
 
 ## CA3 only
@@ -561,6 +580,17 @@ pdf(file="../figures/02_RNAseq_ConsistentYoked/CA3consistentyoked.pdf", width=1.
 plot(colored)
 dev.off()
 
+
+## GO setup
+table(res$padj<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/CA3consistentyoked.csv", row.names = F)
+
+
 ```
 
 
@@ -626,6 +656,16 @@ colored
 pdf(file="../figures/02_RNAseq_ConsistentYoked/CA1consistentyoked.pdf", width=1.5, height=1.75)
 plot(colored)
 dev.off()
+
+## GO setup
+table(res$padj<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
+
 
 ```
 
