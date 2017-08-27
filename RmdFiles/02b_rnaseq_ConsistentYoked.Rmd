@@ -475,10 +475,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
-                     limits=c(-10, 10)) +
+                     limits=c(-5, 5)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 15)) +
-  draw_image(imgDG, scale = 10, x=-6, y=13)
+                    limits= c(0, 12.5)) +
+  draw_image(imgDG, scale = 5, x=-3, y=10.75)
 
 colored
 
@@ -545,10 +545,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
-                     limits=c(-10, 10)) +
+                     limits=c(-5, 5)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 15)) +
-  draw_image(imgCA3, scale = 10, x=-6.5, y=13)
+                    limits= c(0, 12.5)) +
+  draw_image(imgCA3, scale = 5, x=-3, y=10.75)
 
 colored
 
@@ -571,7 +571,6 @@ colData <- colData %>%
   filter(APA2 %in% c("consistent", "yoked_consistent" ))  %>%
   filter(Punch %in% c( "CA1")) %>%
   droplevels()
-
 savecols <- as.character(colData$RNAseqID) 
 savecols <- as.vector(savecols) 
 countData <- countData %>% dplyr::select(one_of(savecols)) 
@@ -581,13 +580,10 @@ colData %>% select(APA2,Punch)  %>%  summary()
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ APA2 )
-
 dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "consistent")) ## specify the factor levels
-
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
-
 
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
@@ -615,10 +611,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
-                     limits=c(-10, 10)) +
+                     limits=c(-5, 5)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 15))  +  
-  draw_image(imgCA1, scale = 10, x=-6, y=12.75)
+                    limits= c(0, 12.5))  +  
+  draw_image(imgCA1, scale = 5, x=-3, y=10.5)
 
 colored
 
