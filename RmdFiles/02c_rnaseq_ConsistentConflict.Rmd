@@ -463,6 +463,16 @@ pdf(file="../figures/02_RNAseq_ConsistentConflict/DGconsistentconflict.pdf", wid
 plot(colored)
 dev.off()
 
+
+## GO Setup
+table(res$padj<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
+
 ```
 
 ## CA3
@@ -532,6 +542,16 @@ pdf(file="../figures/02_RNAseq_ConsistentConflict/CA3consistentconflict.pdf", wi
 plot(colored)
 dev.off()
 
+## GO setup
+table(res$padj<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/CA3conflictconsistent.csv", row.names = F)
+
+
 ```
 
 
@@ -600,5 +620,14 @@ colored
 pdf(file="../figures/02_RNAseq_ConsistentConflict/CA1consistentconflict.pdf", width=1.5, height=1.75)
 plot(colored)
 dev.off()
+
+table(res$padj<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/CA1conflictconsistent.csv", row.names = F)
+
 
 ```

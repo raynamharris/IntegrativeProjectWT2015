@@ -59,12 +59,6 @@ DG consistent vs. yoked
       colors=c("black","red","black","red") 
     )
 
-    ## Warning in plot.formula(c(1:top) ~ c(1:top), type = "n", axes = F, xlab =
-    ## "", : the formula 'c(1:top) ~ c(1:top)' is treated as 'c(1:top) ~ 1'
-
-    ## Warning in plot.formula(c(1:top) ~ c(1:top), type = "n", axes = F, xlab =
-    ## "", : the formula 'c(1:top) ~ c(1:top)' is treated as 'c(1:top) ~ 1'
-
 ![](../../figures/02e_RNAseq_GO/DGconsistentyoked-1.png)
 
     ## GO terms dispayed:  7 
@@ -96,12 +90,6 @@ CA3 consistent yoked
         treeHeight=0.5, 
       colors=c("black","red","black","red") 
     )
-
-    ## Warning in plot.formula(c(1:top) ~ c(1:top), type = "n", axes = F, xlab =
-    ## "", : the formula 'c(1:top) ~ c(1:top)' is treated as 'c(1:top) ~ 1'
-
-    ## Warning in plot.formula(c(1:top) ~ c(1:top), type = "n", axes = F, xlab =
-    ## "", : the formula 'c(1:top) ~ c(1:top)' is treated as 'c(1:top) ~ 1'
 
 ![](../../figures/02e_RNAseq_GO/CA3consistentyoked-1.png)
 
@@ -135,13 +123,104 @@ CA1 consistent yoked
       colors=c("black","red","black","red") 
     )
 
-    ## Warning in plot.formula(c(1:top) ~ c(1:top), type = "n", axes = F, xlab =
-    ## "", : the formula 'c(1:top) ~ c(1:top)' is treated as 'c(1:top) ~ 1'
-
-    ## Warning in plot.formula(c(1:top) ~ c(1:top), type = "n", axes = F, xlab =
-    ## "", : the formula 'c(1:top) ~ c(1:top)' is treated as 'c(1:top) ~ 1'
-
 ![](../../figures/02e_RNAseq_GO/CA1consistentyoked-1.png)
 
     ## GO terms dispayed:  21 
     ## "Good genes" accounted for:  333 out of 819 ( 41% )
+
+DG conflict vs consistent
+-------------------------
+
+    # input files
+    input="DGconflictconsistent.csv" 
+    goAnnotations="goAnnotations.tab" 
+    goDatabase="go.obo" 
+    goDivision="MF" # either MF, or BP, or CC
+
+    # Calculating stats
+    #gomwuStats(input, goDatabase, goAnnotations, goDivision,
+    #  perlPath="perl", 
+    #   largest=0.1,  
+    #   smallest=5,   
+    #   clusterCutHeight=0.25) 
+
+    # Data viz
+    gomwuPlot(input,goAnnotations,goDivision,
+        absValue=-log(0.05,10),  
+        level1=0.10, 
+        level2=0.05, 
+        level3=0.01, 
+        txtsize=2,    
+        treeHeight=0.5, 
+      colors=c("red","salmon","red","salmon")
+    )
+
+![](../../figures/02e_RNAseq_GO/DGconflictconsistent-1.png)
+
+    ## GO terms dispayed:  5 
+    ## "Good genes" accounted for:  17 out of 133 ( 13% )
+
+CA3 conflict consistent
+-----------------------
+
+    input="CA3conflictconsistent.csv" 
+    goAnnotations="goAnnotations.tab" 
+    goDatabase="go.obo" 
+    goDivision="MF" # either MF, or BP, or CC
+
+    # Calculating stats
+    #gomwuStats(input, goDatabase, goAnnotations, goDivision,
+    # perlPath="perl", 
+    # largest=0.1,  
+    # smallest=5,   
+    # clusterCutHeight=0.25)  
+
+
+    # Data viz
+    gomwuPlot(input,goAnnotations,goDivision,
+        absValue=-log(0.05,10),  
+        level1=0.01, 
+        level2=0.005, 
+        level3=0.001, 
+        txtsize=2,    
+        treeHeight=0.5, 
+      colors=c("red","salmon","red","salmon")
+    )
+
+![](../../figures/02e_RNAseq_GO/CA3conflictconsistent-1.png)
+
+    ## GO terms dispayed:  6 
+    ## "Good genes" accounted for:  30 out of 137 ( 22% )
+
+CA1 consistent yoked
+--------------------
+
+    # input files
+    input="CA1conflictconsistent.csv" 
+    goAnnotations="goAnnotations.tab" 
+    goDatabase="go.obo" 
+    goDivision="MF" # either MF, or BP, or CC
+
+
+    # Calculating stats
+    #gomwuStats(input, goDatabase, goAnnotations, goDivision,
+    #  perlPath="perl", 
+    #   largest=0.1,  
+    #   smallest=5,   
+    #   clusterCutHeight=0.25) 
+
+    # Data viz
+    gomwuPlot(input,goAnnotations,goDivision,
+        absValue=-log(0.05,10),  
+        level1=0.00001, 
+        level2=0.000001, 
+        level3=0.0000001, 
+        txtsize=2,    
+        treeHeight=0.5, 
+      colors=c("red","lightsalmon","red","lightsalmon")
+    )
+
+![](../../figures/02e_RNAseq_GO/CA1conflictconsistent-1.png)
+
+    ## GO terms dispayed:  18 
+    ## "Good genes" accounted for:  276 out of 737 ( 37% )

@@ -23,7 +23,7 @@ knitr::opts_chunk$set(fig.path = '../../figures/02e_RNAseq_GO/')
 
 ## DG consistent vs. yoked
 
-```{r DGconsistentyoked}
+```{r DGconsistentyoked, warning=F, message=F}
 # input files
 input="DGconsistentyoked.csv" 
 goAnnotations="goAnnotations.tab" 
@@ -52,7 +52,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 
 ## CA3 consistent yoked
 
-```{r CA3consistentyoked}
+```{r CA3consistentyoked, warning=F, message=F}
 # input files
 input="CA3consistentyoked.csv" 
 goAnnotations="goAnnotations.tab" 
@@ -82,7 +82,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 
 ## CA1 consistent yoked
 
-```{r CA1consistentyoked}
+```{r CA1consistentyoked, warning=F, message=F}
 # input files
 input="CA1consistentyoked.csv" 
 goAnnotations="goAnnotations.tab" 
@@ -105,5 +105,96 @@ gomwuPlot(input,goAnnotations,goDivision,
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("black","red","black","red") 
+)
+```
+
+
+
+
+## DG conflict vs consistent 
+
+```{r DGconflictconsistent, warning=F}
+# input files
+input="DGconflictconsistent.csv" 
+goAnnotations="goAnnotations.tab" 
+goDatabase="go.obo" 
+goDivision="MF" # either MF, or BP, or CC
+
+# Calculating stats
+#gomwuStats(input, goDatabase, goAnnotations, goDivision,
+#  perlPath="perl", 
+#	largest=0.1,  
+#	smallest=5,   
+#	clusterCutHeight=0.25) 
+
+# Data viz
+gomwuPlot(input,goAnnotations,goDivision,
+	absValue=-log(0.05,10),  
+	level1=0.10, 
+	level2=0.05, 
+	level3=0.01, 
+	txtsize=2,    
+	treeHeight=0.5, 
+  colors=c("red","salmon","red","salmon")
+)
+```
+
+
+## CA3 conflict consistent 
+
+```{r CA3conflictconsistent, warning=F}
+input="CA3conflictconsistent.csv" 
+goAnnotations="goAnnotations.tab" 
+goDatabase="go.obo" 
+goDivision="MF" # either MF, or BP, or CC
+
+# Calculating stats
+#gomwuStats(input, goDatabase, goAnnotations, goDivision,
+# perlPath="perl", 
+# largest=0.1,  
+# smallest=5,   
+# clusterCutHeight=0.25)  
+
+
+# Data viz
+gomwuPlot(input,goAnnotations,goDivision,
+	absValue=-log(0.05,10),  
+	level1=0.01, 
+	level2=0.005, 
+	level3=0.001, 
+	txtsize=2,    
+	treeHeight=0.5, 
+  colors=c("red","salmon","red","salmon")
+)
+```
+
+
+
+## CA1 consistent yoked
+
+```{r CA1conflictconsistent, warning=F}
+# input files
+input="CA1conflictconsistent.csv" 
+goAnnotations="goAnnotations.tab" 
+goDatabase="go.obo" 
+goDivision="MF" # either MF, or BP, or CC
+
+
+# Calculating stats
+#gomwuStats(input, goDatabase, goAnnotations, goDivision,
+#  perlPath="perl", 
+#	largest=0.1,  
+#	smallest=5,   
+#	clusterCutHeight=0.25) 
+
+# Data viz
+gomwuPlot(input,goAnnotations,goDivision,
+	absValue=-log(0.05,10),  
+	level1=0.00001, 
+	level2=0.000001, 
+	level3=0.0000001, 
+	txtsize=2,    
+	treeHeight=0.5, 
+  colors=c("red","lightsalmon","red","lightsalmon")
 )
 ```
