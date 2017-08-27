@@ -63,7 +63,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               design = ~ Punch + APA2 + Punch*APA2)
 
 dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1")) ## specify the factor levels
-dds$APA2 <- factor(dds$APA2, levels=c("conflict", "consistent")) ## specify the factor levels
+dds$APA2 <- factor(dds$APA2, levels=c("consistent", "conflict")) ## specify the factor levels
 
 dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
@@ -356,7 +356,7 @@ dev.off()
 
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = T, alpha = 0.05)
+res <- results(dds, contrast =c("APA2",  "conflict", "consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
@@ -366,9 +366,9 @@ data <- data.frame(gene = row.names(res),
 data <- na.omit(data)
 data <- data %>%
   mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "consistent", 
+                        yes = "conflict", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "conflict", 
+                                    yes = "consistent", 
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
@@ -379,7 +379,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano2) + 
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/conflict)",
+  scale_x_continuous(name="log2 (conflict/consistent)",
                      limits=c(-10, 10)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
                     limits= c(0, 15)) +
@@ -418,7 +418,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ APA2 )
 
-dds$APA2 <- factor(dds$APA2, levels=c("conflict", "consistent")) ## specify the factor levels
+dds$APA2 <- factor(dds$APA2, levels=c("consistent", "conflict")) ## specify the factor levels
 
 dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
@@ -426,7 +426,7 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = T, alpha = 0.05)
+res <- results(dds, contrast =c("APA2",  "conflict", "consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
@@ -440,9 +440,9 @@ data <- data.frame(gene = row.names(res),
 data <- na.omit(data)
 data <- data %>%
   mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "consistent", 
+                        yes = "conflict", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "conflict", 
+                                    yes = "consistent", 
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
@@ -453,11 +453,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano2) + 
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/conflict)",
-                     limits=c(-2, 2)) +
+  scale_x_continuous(name="log2 (conflict/consistent)",
+                     limits=c(-4, 4)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
-                    limits= c(0, 5))  + 
-  draw_image(imgDG, scale = 2, x=-1.6, y=4)
+                    limits= c(0, 5)) 
 colored
 
 pdf(file="../figures/02_RNAseq_ConsistentConflict/DGconsistentconflict.pdf", width=1.5, height=1.75)
@@ -487,7 +486,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ APA2 )
 
-dds$APA2 <- factor(dds$APA2, levels=c("conflict", "consistent")) ## specify the factor levels
+dds$APA2 <- factor(dds$APA2, levels=c("consistent", "conflict")) ## specify the factor levels
 
 dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
@@ -495,7 +494,7 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = T, alpha = 0.05)
+res <- results(dds, contrast =c("APA2",  "conflict", "consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
@@ -510,9 +509,9 @@ data <- data.frame(gene = row.names(res),
 data <- na.omit(data)
 data <- data %>%
   mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "consistent", 
+                        yes = "conflict", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "conflict", 
+                                    yes = "consistent", 
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
@@ -523,11 +522,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano2) + 
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/conflict)",
-                     limits=c(-2, 2)) +
+  scale_x_continuous(name="log2 (conflict/consistent)",
+                     limits=c(-4, 4)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
-                    limits= c(0, 5))  + 
-  draw_image(imgCA3, scale = 2, x= -1.6, y=4) 
+                    limits= c(0, 5))  
 colored
 
 pdf(file="../figures/02_RNAseq_ConsistentConflict/CA3consistentconflict.pdf", width=1.5, height=1.75)
@@ -558,13 +556,13 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ APA2 )
 
-dds$APA2 <- factor(dds$APA2, levels=c("conflict", "consistent")) ## specify the factor levels
+dds$APA2 <- factor(dds$APA2, levels=c("consistent", "conflict")) ## specify the factor levels
 
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 
-res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = T, alpha = 0.05)
+res <- results(dds, contrast =c("APA2",  "conflict", "consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
@@ -579,9 +577,9 @@ data <- data.frame(gene = row.names(res),
 data <- na.omit(data)
 data <- data %>%
   mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "consistent", 
+                        yes = "conflict", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "conflict", 
+                                    yes = "consistent", 
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
@@ -592,11 +590,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano2) + 
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/conflict)",
-                     limits=c(-2, 2)) +
+  scale_x_continuous(name="log2 (conflict/consistent)",
+                     limits=c(-4, 4)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
-                    limits= c(0, 5))  +  
-  draw_image(imgCA1, scale = 2, x=-1.6, y=3.9)
+                    limits= c(0, 5))  
 colored
 
 #cvd_grid(colored) # to view plot for color blind 

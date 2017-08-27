@@ -375,7 +375,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano3) + 
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (yoked consistent/yoked conflict)",
+  scale_x_continuous(name="log2 (yoked conflict/yoked consistent)",
                      limits=c(-10, 10)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
                     limits= c(0, 15)) +
@@ -451,11 +451,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano3) + 
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (yoked conflict/ \n yoked conflict)",
+  scale_x_continuous(name="log2 (yoked to conflict/ \n yoked to consistent)",
                      limits=c(-4, 4)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 6)) +
-  draw_image(imgDG, scale = 4, x=-2.3, y=4.6)
+                    limits= c(0, 5)) 
 colored
 
 
@@ -523,11 +522,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano3) + 
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (yoked conflict/ \n yoked consistent)",
+  scale_x_continuous(name="log2 (yoked to conflict/ \n yoked to consistent)",
                      limits=c(-4, 4)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 6)) +
-  draw_image(imgCA3, scale = 4, x=-2.3, y=4.6)
+                    limits= c(0, 5)) 
 colored
 
 pdf(file="../figures/02_RNAseq_YokedYoked/CA3yoked_consistentyoked_conflict.pdf", width=1.5, height=1.75)
@@ -593,11 +591,10 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano3) + 
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (yoked consistent/ \n yoked conflict)",
+  scale_x_continuous(name="log2 (yoked to conflict/ \n yoked to consistent)",
                      limits=c(-4, 4)) +
   scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 6)) +
-  draw_image(imgCA1, scale = 4, x=-2.3, y=4.6)
+                    limits= c(0, 5)) 
 colored
 
 #cvd_grid(colored) # to view plot for color blind 
