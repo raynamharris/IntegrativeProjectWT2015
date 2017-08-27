@@ -40,7 +40,7 @@ Hippocampal subfield: "DG","CA3", "CA1"
 Behavioral Groups: "yoked_consistent", "consistent"
 
 
-```{r data, message=F, warning=F}
+```{r data, message=F, warning=F, echo=FALSE}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -55,7 +55,9 @@ countData <- countData %>% dplyr::select(one_of(savecols))
 colData %>% select(APA2,Punch)  %>%  summary()
 ```
 
-```{r DESeq2}
+## Overall differential Gene Expression analysis
+
+```{r DESeq2, echo = F}
 ## create DESeq object using the factors Punch and APA
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
@@ -75,7 +77,7 @@ rld <- rlog(dds, blind=FALSE) ## log transformed data
 
 ## Principle component analysis
 
-```{r pca}
+```{r pca, echo = F, message=F, warning=F}
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -95,22 +97,12 @@ summary(aov3)
 aov4 <- aov(PC4 ~ APA2, data=pcadata)
 summary(aov4) 
 
-lm4 <- lm(PC4~APA2*Punch, data=pcadata)
-summary(lm4)
-anova(lm4) 
-
-lm124 <- lm(PC1+PC2+PC4~APA2*Punch, data=pcadata)
-summary(lm124)
-anova(lm124)
 
 pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent"))
 
 PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
 PCA12
-
-PCA32 <- plotPCs(pcadata, 3, 2, aescolor = pcadata$APA2, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA5)
-PCA32
 
 PCA42 <- plotPCs(pcadata, 4, 2, aescolor = pcadata$APA2, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA5)
 PCA42
@@ -129,14 +121,13 @@ dev.off()
 
 # Number of differentially expressed genes per two-way contrast
 
-
 ```{r Twowaycontrasts3}
 #calculate significance of all two way comparisions
 # see source "functions_RNAseq.R" 
 
 contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 1087
 contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 738
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 21964
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 1964
 
 contrast5 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 90
 ```
@@ -182,7 +173,7 @@ grid.draw(prettyvenn)
 
 ## heatmap
 
-```{r heatmap}
+```{r heatmap, echo=F}
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3,  contrast5)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
@@ -280,7 +271,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 ## Volcanos plots and and gene lists
 
 
-```{r volcanos}
+```{r volcanos, echo=F, include=F}
 
 imgDG <- magick::image_read("../figures/00_schematics/DG.png")
 imgCA3 <- magick::image_read("../figures/00_schematics/CA3.png")
@@ -428,76 +419,9 @@ dev.off()
 
 
 
-```{r CA1, message=F, warning=F}
-colData <- read.csv("../data/02a_colData.csv", header = T)
-countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+## DG only
 
-colData <- colData %>% 
-  filter(APA2 %in% c("consistent", "yoked_consistent" ))  %>%
-  filter(Punch %in% c( "CA1")) %>%
-  droplevels()
-
-savecols <- as.character(colData$RNAseqID) 
-savecols <- as.vector(savecols) 
-countData <- countData %>% dplyr::select(one_of(savecols)) 
-
-colData %>% select(APA2,Punch)  %>%  summary()
-
-dds <- DESeqDataSetFromMatrix(countData = countData,
-                              colData = colData,
-                              design = ~ APA2 )
-
-dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "consistent")) ## specify the factor levels
-
-dds # view the DESeq object - note numnber of genes
-dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-dds # view number of genes afternormalization and the number of samples
-dds <- DESeq(dds) # Differential expression analysis
-
-
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-summary(res)
-
-data <- data.frame(gene = row.names(res),
-                   pvalue = -log10(res$padj), 
-                   lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "consistent", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "yoked_consistent", 
-                                    no = "none")))
-top_labelled <- top_n(data, n = 3, wt = pvalue)
-# Color corresponds to fold change directionality
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
-  theme_bw(base_size = 8) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = volcano1) + 
-  theme(panel.grid.minor=element_blank(),
-           panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/yoked)",
-                     limits=c(-10, 10)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 15))  +  
-  draw_image(imgCA1, scale = 10, x=-6, y=12.75)
-
-colored
-
-#cvd_grid(colored) # to view plot for color blind 
-pdf(file="../figures/02_RNAseq_ConsistentYoked/CA1consistentyoked.pdf", width=1.5, height=1.75)
-plot(colored)
-dev.off()
-
-```
-
-
-
-```{r DG, message=F, warning=F}
+```{r DG, message=F, warning=F, echo=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -568,8 +492,9 @@ dev.off()
 
 ```
 
+## CA3 only
 
-```{r CA3, message=F, warning=F}
+```{r CA3, message=F, warning=F, echo=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -637,12 +562,73 @@ dev.off()
 
 ```
 
-```{r writecsv}
-#write.csv(rldpadjs, file = "../data/02b_rldpadjs.csv", row.names = T)
-#write.csv(DEGes, file = "../data/02b_DEGes.csv", row.names = T)
-#write.csv(df, file = "../data/02b_df.csv", row.names = F)
-#write.csv(pcadata, file = "../data/02b_pcadata.csv", row.names = F)
-#write.table(percentVar, file = "../data/02b_percentVar.txt")
-```
 
+## CA1 only
+
+```{r CA1, message=F, warning=F, echo=F}
+colData <- read.csv("../data/02a_colData.csv", header = T)
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+
+colData <- colData %>% 
+  filter(APA2 %in% c("consistent", "yoked_consistent" ))  %>%
+  filter(Punch %in% c( "CA1")) %>%
+  droplevels()
+
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+colData %>% select(APA2,Punch)  %>%  summary()
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA2 )
+
+dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "consistent")) ## specify the factor levels
+
+dds # view the DESeq object - note numnber of genes
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+dds <- DESeq(dds) # Differential expression analysis
+
+
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+summary(res)
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "consistent", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "yoked_consistent", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 3, wt = pvalue)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 8) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  scale_color_manual(values = volcano1) + 
+  theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  scale_x_continuous(name="log2 (consistent/yoked)",
+                     limits=c(-10, 10)) +
+  scale_y_continuous(name="-log10 (adjusted p-value",
+                    limits= c(0, 15))  +  
+  draw_image(imgCA1, scale = 10, x=-6, y=12.75)
+
+colored
+
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02_RNAseq_ConsistentYoked/CA1consistentyoked.pdf", width=1.5, height=1.75)
+plot(colored)
+dev.off()
+
+```
 
