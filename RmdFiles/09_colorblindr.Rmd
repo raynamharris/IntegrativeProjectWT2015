@@ -45,32 +45,29 @@ plot_grid(p, p2, p3, p4, q, q2, q3, q4, r, r2, r3, r4, nrow=3)
 ```
 
 
-
 ## Figure 1
 
 ```{r fig1}
-
-fig1 <- magick::image_read("../figures/02_RNAseq_ConsistentConflict/02_RNAseq_Conflict-01.png")
+fig1 <- magick::image_read("../figures/02_RNAseq_ConsistentYoked/02_RNAseq_ConsistentYoked-01.png")
 fig1
 r <- ggdraw() + draw_image(fig1) # turn png into ggplot object
 r2 <- edit_colors(r, tritan, sev = 1.0)
 r4 <- edit_colors(r, protan, sev = 1.0)
 plot_grid(r2, r4, nrow=2)
-
 ```
 
 ## Figure 2
 
 ```{r fig2}
-
-fig2 <- magick::image_read("../figures/02_RNAseq_ConsistentYoked/02_RNAseq_ConsistentYoked-01.png")
+fig2 <- magick::image_read("../figures/02_RNAseq_ConsistentConflict/02_RNAseq_Conflict-01.png")
 fig2
 r <- ggdraw() + draw_image(fig2) # turn png into ggplot object
 r2 <- edit_colors(r, tritan, sev = 1.0)
 r4 <- edit_colors(r, protan, sev = 1.0)
-plot_grid(r2, r4, nrow=2)
-
+plot_grid(r2, r4, nrow=1)
 ```
+
+
 
 ## Supplementray behavior
 

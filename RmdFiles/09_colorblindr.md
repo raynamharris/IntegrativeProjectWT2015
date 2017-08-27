@@ -51,11 +51,11 @@
 Figure 1
 --------
 
-    fig1 <- magick::image_read("../figures/02_RNAseq_ConsistentConflict/02_RNAseq_Conflict-01.png")
+    fig1 <- magick::image_read("../figures/02_RNAseq_ConsistentYoked/02_RNAseq_ConsistentYoked-01.png")
     fig1
 
     ##   format width height colorspace filesize
-    ## 1    PNG  1252   1987       sRGB   237491
+    ## 1    PNG  2072   1389       sRGB   247148
 
     r <- ggdraw() + draw_image(fig1) # turn png into ggplot object
     r2 <- edit_colors(r, tritan, sev = 1.0)
@@ -67,16 +67,16 @@ Figure 1
 Figure 2
 --------
 
-    fig2 <- magick::image_read("../figures/02_RNAseq_ConsistentYoked/02_RNAseq_ConsistentYoked-01.png")
+    fig2 <- magick::image_read("../figures/02_RNAseq_ConsistentConflict/02_RNAseq_Conflict-01.png")
     fig2
 
     ##   format width height colorspace filesize
-    ## 1    PNG  2072   1389       sRGB   247148
+    ## 1    PNG  1252   1987       sRGB   237491
 
     r <- ggdraw() + draw_image(fig2) # turn png into ggplot object
     r2 <- edit_colors(r, tritan, sev = 1.0)
     r4 <- edit_colors(r, protan, sev = 1.0)
-    plot_grid(r2, r4, nrow=2)
+    plot_grid(r2, r4, nrow=1)
 
 ![](../figures/09_colorblindr/fig2-1.png)
 
