@@ -63,9 +63,9 @@ numentrance1 <- ggplot(behaviorsummaryNumAPA2, aes(x=, TrainSessionComboNum, y=m
     scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
     scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
+                       labels=c("1" = "Habituation ", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA2) + 
@@ -97,9 +97,9 @@ numentrance2 <- behaviorsummaryNumAPA2 %>%
     scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
     scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
+                       labels=c("1" = "Habituation  ", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4",
-                                "7" = "T5", "8" = "T6", "9"= "Reten.")) +
+                                "7" = "T5", "8" = "T6", "9"= "Retention")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA5) + 
@@ -130,9 +130,9 @@ numentrance3 <- behaviorsummaryNumAPA2 %>%
     scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
     scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
+                       labels=c("1" = "Habituation ", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA6) + 
@@ -164,9 +164,9 @@ numentrance4 <- behaviorsummaryNumAPA2 %>%
                        limits=c(0, 35)) +
     scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
+                       labels=c("1" = "Habituation ", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA7) + 

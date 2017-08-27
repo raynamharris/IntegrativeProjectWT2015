@@ -41,7 +41,7 @@ Hippocampal subfield: "DG","CA3", "CA1"
 Behavioral Groups: "conflict", "consistent"
 
 
-```{r data, message=F, warning=F}
+```{r data, message=F, warning=F, echo=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -56,7 +56,7 @@ countData <- countData %>% dplyr::select(one_of(savecols))
 colData %>% select(APA2,Punch)  %>%  summary()
 ```
 
-```{r DESeq2}
+```{r DESeq2, echo=F}
 ## create DESeq object using the factors Punch and APA
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
@@ -75,7 +75,7 @@ rld <- rlog(dds, blind=FALSE) ## log transformed data
 
 ## Principle component analysis
 
-```{r pca}
+```{r pca, echo=F, warning=F}
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -141,7 +141,7 @@ contrast4 <- resvals(contrastvector = c("APA2", "consistent", "conflict"), mypva
 
 ## venn diagrams
 
-```{r venndiagrams}
+```{r venndiagrams, echo=F}
 rldpadjs <- assay(rld)
 rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3)
 rldpadjs <- as.data.frame(rldpadjs)
@@ -155,7 +155,7 @@ venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) # CA3 DG
 
 ## heatmap
 
-```{r heatmap}
+```{r heatmap, echo=F}
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
@@ -169,7 +169,6 @@ drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
 DEGes <- as.matrix(DEGes)
 DEGes <- DEGes - rowMeans(DEGes)
-head(DEGes)
 
 ## the heatmap annotation file
 df <- as.data.frame(colData(dds)[,c("Punch","APA2")]) ## matrix to df
@@ -251,7 +250,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 ## Volcanos plots and and gene lists
 
 
-```{r volcanos}
+```{r volcanos, include=F}
 
 imgDG <- magick::image_read("../figures/00_schematics/DG.png")
 imgCA3 <- magick::image_read("../figures/00_schematics/CA3.png")
@@ -259,7 +258,7 @@ imgCA1 <- magick::image_read("../figures/00_schematics/CA1.png")
 imgHippo <- magick::image_read("../figures/00_schematics/HippoSeq.png")
 
 # gene lists
-res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
@@ -291,7 +290,7 @@ pdf(file="../figures/02_RNAseq_ConsistentConflict/AllCA1DG.pdf", width=1.5, heig
 plot(colored)
 dev.off()
 
-res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
@@ -323,7 +322,7 @@ dev.off()
 
 
 
-res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
@@ -357,7 +356,7 @@ dev.off()
 
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = F)
+res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
@@ -374,7 +373,7 @@ data <- data %>%
 top_labelled <- top_n(data, n = 3, wt = pvalue)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 0.5, alpha = 0.8, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = volcano2) + 
@@ -397,73 +396,10 @@ dev.off()
 
 
 
-```{r CA1, message=F, warning=F}
-colData <- read.csv("../data/02a_colData.csv", header = T)
-countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-
-colData <- colData %>% 
-  filter(APA2 %in% c("consistent", "conflict" ))  %>%
-  filter(Punch %in% c( "CA1")) %>%
-  droplevels()
-
-savecols <- as.character(colData$RNAseqID) 
-savecols <- as.vector(savecols) 
-countData <- countData %>% dplyr::select(one_of(savecols)) 
-
-colData %>% select(APA2,Punch)  %>%  summary()
-
-dds <- DESeqDataSetFromMatrix(countData = countData,
-                              colData = colData,
-                              design = ~ APA2 )
-
-dds$APA2 <- factor(dds$APA2, levels=c("conflict", "consistent")) ## specify the factor levels
-
-dds # view the DESeq object - note numnber of genes
-dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-dds # view number of genes afternormalization and the number of samples
-dds <- DESeq(dds) # Differential expression analysis
+## DG
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = F)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-data <- data.frame(gene = row.names(res),
-                   pvalue = -log10(res$padj), 
-                   lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "consistent", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "conflict", 
-                                    no = "none")))
-top_labelled <- top_n(data, n = 3, wt = pvalue)
-# Color corresponds to fold change directionality
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 0.5, alpha = 0.8, na.rm = T) + # add gene points
-  theme_bw(base_size = 8) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = volcano2) + 
-  theme(panel.grid.minor=element_blank(),
-           panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/conflict)",
-                     limits=c(-10, 10)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 15)) +
-  draw_image(imgCA1, scale = 9, x=-6, y=12.75)
-colored
-
-#cvd_grid(colored) # to view plot for color blind 
-pdf(file="../figures/02_RNAseq_ConsistentConflict/CA1consistentconflict.pdf", width=1.5, height=1.75)
-plot(colored)
-dev.off()
-
-```
-
-
-
-```{r DG, message=F, warning=F}
+```{r DG, message=F, warning=F, echo=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -490,9 +426,11 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = F)
+res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
+
+summary(res)
 
 data <- data.frame(gene = row.names(res),
                    pvalue = -log10(res$padj), 
@@ -507,17 +445,18 @@ data <- data %>%
 top_labelled <- top_n(data, n = 3, wt = pvalue)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 0.5, alpha = 0.8, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = volcano2) + 
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/conflict)",
-                     limits=c(-10, 10)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 15)) +
-  draw_image(imgDG, scale = 9, x=-6, y=12.75)
+                     limits=c(-5, 5)) +
+  scale_y_continuous(name="-log10 (adjusted p-value)",
+                    limits= c(0, 12.5)) +
+  draw_image(imgDG, scale = 5, x=-3, y=10.75)
+
 colored
 
 
@@ -529,7 +468,7 @@ dev.off()
 ```
 
 
-```{r CA3, message=F, warning=F}
+```{r CA3, message=F, warning=F, echo=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -556,9 +495,11 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = F)
+res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
+
+summary(res)
 
 data <- data.frame(gene = row.names(res),
                    pvalue = -log10(res$padj), 
@@ -573,17 +514,18 @@ data <- data %>%
 top_labelled <- top_n(data, n = 3, wt = pvalue)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 0.5, alpha = 0.8, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = volcano2) + 
   theme(panel.grid.minor=element_blank(),
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/conflict)",
-                     limits=c(-10, 10)) +
-  scale_y_continuous(name="-log10 (adjusted p-value",
-                    limits= c(0, 15)) +
-  draw_image(imgCA3, scale = 9, x=-6.5, y=13)
+                     limits=c(-5, 5)) +
+  scale_y_continuous(name="-log10 (adjusted p-value)",
+                    limits= c(0, 12.5)) +
+  draw_image(imgCA3, scale = 5, x=-3, y=10.75)
+
 colored
 
 
@@ -594,12 +536,71 @@ dev.off()
 
 ```
 
-```{r writecsv}
-#write.csv(rldpadjs, file = "../data/02b_rldpadjs.csv", row.names = T)
-#write.csv(DEGes, file = "../data/02b_DEGes.csv", row.names = T)
-#write.csv(df, file = "../data/02b_df.csv", row.names = F)
-#write.csv(pcadata, file = "../data/02b_pcadata.csv", row.names = F)
-#write.table(percentVar, file = "../data/02b_percentVar.txt")
+
+## CA1
+
+```{r CA1, message=F, warning=F, echo=F}
+colData <- read.csv("../data/02a_colData.csv", header = T)
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+
+colData <- colData %>% 
+  filter(APA2 %in% c("consistent", "conflict" ))  %>%
+  filter(Punch %in% c( "CA1")) %>%
+  droplevels()
+
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+colData %>% select(APA2,Punch)  %>%  summary()
+
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA2 )
+
+dds$APA2 <- factor(dds$APA2, levels=c("conflict", "consistent")) ## specify the factor levels
+
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+dds <- DESeq(dds) # Differential expression analysis
+
+
+res <- results(dds, contrast =c("APA2", "consistent", "conflict"), independentFiltering = T, alpha = 0.05)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+summary(res)
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "consistent", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "conflict", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 3, wt = pvalue)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+  theme_bw(base_size = 8) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  scale_color_manual(values = volcano2) + 
+  theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  scale_x_continuous(name="log2 (consistent/conflict)",
+                     limits=c(-5, 5)) +
+  scale_y_continuous(name="-log10 (adjusted p-value)",
+                    limits= c(0, 12.5))  +  
+  draw_image(imgCA1, scale = 5, x=-3, y=10.5)
+
+colored
+
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02_RNAseq_ConsistentConflict/CA1consistentconflict.pdf", width=1.5, height=1.75)
+plot(colored)
+dev.off()
+
 ```
-
-
