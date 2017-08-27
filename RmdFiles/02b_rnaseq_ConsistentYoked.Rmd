@@ -480,9 +480,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
-                    limits= c(0, 12.5)) +
-  draw_image(imgDG, scale = 5, x=-3, y=10.75)
-
+                    limits= c(0, 12.5)) 
 colored
 
 
@@ -554,9 +552,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
-                    limits= c(0, 12.5)) +
-  draw_image(imgCA3, scale = 5, x=-3, y=10.75)
-
+                    limits= c(0, 12.5)) 
 colored
 
 
@@ -623,9 +619,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
-                    limits= c(0, 12.5))  +  
-  draw_image(imgCA1, scale = 5, x=-3, y=10.5)
-
+                    limits= c(0, 12.5)) 
 colored
 
 #cvd_grid(colored) # to view plot for color blind 
