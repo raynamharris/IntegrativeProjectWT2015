@@ -486,7 +486,7 @@ Volcanos plots and and gene lists
 
 
     # gene lists
-    res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+    res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.05)
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
@@ -507,16 +507,16 @@ Volcanos plots and and gene lists
     ## Gm2115   256.59069       6.773725 0.6322416  10.71382 8.766372e-27
     ##                  padj
     ##             <numeric>
-    ## Pou3f1   4.687495e-53
-    ## Prkcg    9.878589e-42
-    ## Khdrbs3  6.841318e-41
-    ## Tmem200a 1.135217e-34
-    ## Fibcd1   1.011431e-32
-    ## Wfs1     3.835179e-31
-    ## Dkk3     6.819027e-30
-    ## Mpped1   7.929027e-25
-    ## Lefty1   2.891597e-24
-    ## Gm2115   1.490546e-23
+    ## Pou3f1   2.959493e-53
+    ## Prkcg    6.236938e-42
+    ## Khdrbs3  4.319329e-41
+    ## Tmem200a 7.167294e-35
+    ## Fibcd1   6.385761e-33
+    ## Wfs1     2.421375e-31
+    ## Dkk3     4.305255e-30
+    ## Mpped1   5.006064e-25
+    ## Lefty1   1.825636e-24
+    ## Gm2115   9.410700e-24
 
     data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
     data <- na.omit(data)
@@ -553,7 +553,7 @@ Volcanos plots and and gene lists
     ## quartz_off_screen 
     ##                 2
 
-    res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+    res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = T, alpha = 0.05)
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
@@ -574,28 +574,28 @@ Volcanos plots and and gene lists
     ## Sertm1  81.35642       4.295019 0.4070530  10.55150 4.999351e-26
     ##                padj
     ##           <numeric>
-    ## Fibcd1 2.072860e-62
-    ## Pou3f1 3.055361e-55
-    ## Itpka  4.872363e-34
-    ## Doc2b  1.289793e-32
-    ## Lct    2.107817e-30
-    ## Nptxr  1.599613e-28
-    ## C1ql3  3.116286e-23
-    ## Wfs1   3.116286e-23
-    ## Syn2   8.135989e-23
-    ## Sertm1 8.500396e-23
+    ## Fibcd1 1.228380e-62
+    ## Pou3f1 1.810611e-55
+    ## Itpka  2.887368e-34
+    ## Doc2b  7.643328e-33
+    ## Lct    1.249095e-30
+    ## Nptxr  9.479329e-29
+    ## C1ql3  1.846715e-23
+    ## Wfs1   1.846715e-23
+    ## Syn2   4.821398e-23
+    ## Sertm1 5.037346e-23
 
     data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
     data <- na.omit(data)
     head(data)
 
-    ##            gene     pvalue        lfc
-    ## 1 0610007P14Rik 0.01835863  0.2855565
-    ## 2 0610009B22Rik 0.06467891 -1.1315125
-    ## 3 0610009L18Rik 0.38858637 -3.2982940
-    ## 4 0610009O20Rik 0.14828447 -0.5500017
-    ## 5 0610010F05Rik 0.06452742 -0.6724929
-    ## 6 0610010K14Rik 0.33663317  2.5741682
+    ##            gene     pvalue         lfc
+    ## 1 0610007P14Rik 0.08533648  0.28555648
+    ## 4 0610009O20Rik 0.28023887 -0.55000166
+    ## 5 0610010F05Rik 0.17471818 -0.67249288
+    ## 7 0610012G03Rik 0.68308121 -0.74181411
+    ## 8 0610030E20Rik 0.12804432  0.49560387
+    ## 9 0610037L13Rik 0.01105453  0.08293257
 
     data <- data %>%
       mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
@@ -627,7 +627,7 @@ Volcanos plots and and gene lists
     ## quartz_off_screen 
     ##                 2
 
-    res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+    res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T, alpha = 0.05)
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
@@ -648,28 +648,28 @@ Volcanos plots and and gene lists
     ## Kcnc2    156.18038       6.232500 0.4721352  13.20067 8.695989e-40
     ##                  padj
     ##             <numeric>
-    ## Lynx1    1.920782e-56
-    ## C1ql3    4.827839e-46
-    ## Lct      4.798530e-45
-    ## Khdrbs3  1.128701e-42
-    ## Fam163b  4.634804e-42
-    ## Doc2b    1.896582e-39
-    ## Marcksl1 2.753694e-39
-    ## Dkk3     5.115234e-38
-    ## Sulf2    4.560702e-37
-    ## Kcnc2    1.478579e-36
+    ## Lynx1    1.436153e-56
+    ## C1ql3    3.609735e-46
+    ## Lct      3.587820e-45
+    ## Khdrbs3  8.439204e-43
+    ## Fam163b  3.465404e-42
+    ## Doc2b    1.418058e-39
+    ## Marcksl1 2.058914e-39
+    ## Dkk3     3.824617e-38
+    ## Sulf2    3.409999e-37
+    ## Kcnc2    1.105521e-36
 
     data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
     data <- na.omit(data)
     head(data)
 
-    ##            gene      pvalue        lfc
-    ## 1 0610007P14Rik 0.178792202 -0.4571332
-    ## 2 0610009B22Rik 0.076022067  0.6572633
-    ## 3 0610009L18Rik 0.008232483 -0.1600789
-    ## 4 0610009O20Rik 0.243857526 -0.4028608
-    ## 5 0610010F05Rik 0.159391664  0.5043148
-    ## 6 0610010K14Rik 0.302477970 -1.7593951
+    ##            gene     pvalue        lfc
+    ## 1 0610007P14Rik 0.27811168 -0.4571332
+    ## 2 0610009B22Rik 0.15907272  0.6572633
+    ## 3 0610009L18Rik 0.02336597 -0.1600789
+    ## 4 0610009O20Rik 0.34883266 -0.4028608
+    ## 5 0610010F05Rik 0.25733557  0.5043148
+    ## 7 0610012G03Rik 0.85775738  0.5506270
 
     data <- data %>%
       mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
@@ -703,7 +703,7 @@ Volcanos plots and and gene lists
     ## quartz_off_screen 
     ##                 2
 
-    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
@@ -724,16 +724,16 @@ Volcanos plots and and gene lists
     ## Tiparp  51.60331       3.024005 0.4606953  6.564003 5.238216e-11
     ##                padj
     ##           <numeric>
-    ## Smad7  2.967816e-13
-    ## Frmd6  4.402069e-12
-    ## Fosl2  1.350743e-11
-    ## Rgs4   2.327677e-11
-    ## Rgs2   2.077507e-10
-    ## Plk2   5.645765e-09
-    ## Sgk1   1.026412e-08
-    ## Fbxo33 3.392134e-08
-    ## Homer1 7.785198e-08
-    ## Tiparp 8.906539e-08
+    ## Smad7  1.988958e-13
+    ## Frmd6  2.950160e-12
+    ## Fosl2  9.052352e-12
+    ## Rgs4   1.559953e-11
+    ## Rgs2   1.392295e-10
+    ## Plk2   3.783656e-09
+    ## Sgk1   6.878768e-09
+    ## Fbxo33 2.273326e-08
+    ## Homer1 5.217452e-08
+    ## Tiparp 5.968947e-08
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -822,7 +822,7 @@ Volcanos plots and and gene lists
     dds <- DESeq(dds) # Differential expression analysis
 
 
-    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
@@ -843,16 +843,29 @@ Volcanos plots and and gene lists
     ## Plxna4  478.83565       1.348057 0.2613733  5.157590 2.501486e-07
     ##                 padj
     ##            <numeric>
-    ## Gm6768  1.012917e-07
-    ## Hspa1a  1.012917e-07
-    ## Hspa1b  1.426871e-05
-    ## Inhbb   8.124254e-05
-    ## Adamts1 1.096279e-04
-    ## Srprb   1.896421e-04
-    ## Gad2    2.420055e-04
-    ## Grin2b  2.420055e-04
-    ## Prps2   3.464059e-04
-    ## Plxna4  3.843533e-04
+    ## Gm6768  6.201441e-08
+    ## Hspa1a  6.201441e-08
+    ## Hspa1b  8.735809e-06
+    ## Inhbb   4.973958e-05
+    ## Adamts1 6.711809e-05
+    ## Srprb   1.161056e-04
+    ## Gad2    1.481644e-04
+    ## Grin2b  1.481644e-04
+    ## Prps2   2.120820e-04
+    ## Plxna4  2.353148e-04
+
+    summary(res)
+
+    ## 
+    ## out of 15390 with nonzero total read count
+    ## adjusted p-value < 0.05
+    ## LFC > 0 (up)     : 120, 0.78% 
+    ## LFC < 0 (down)   : 46, 0.3% 
+    ## outliers [1]     : 25, 0.16% 
+    ## low counts [2]   : 5958, 39% 
+    ## (mean count < 6)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -941,7 +954,22 @@ Volcanos plots and and gene lists
     dds <- DESeq(dds) # Differential expression analysis
 
 
-    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+
+    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
+
+    summary(res)
+
+    ## 
+    ## out of 16046 with nonzero total read count
+    ## adjusted p-value < 0.05
+    ## LFC > 0 (up)     : 80, 0.5% 
+    ## LFC < 0 (down)   : 0, 0% 
+    ## outliers [1]     : 63, 0.39% 
+    ## low counts [2]   : 4950, 31% 
+    ## (mean count < 3)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
@@ -962,16 +990,16 @@ Volcanos plots and and gene lists
     ## Ranbp2 669.89801       1.702832 0.2597470  6.555733 5.536906e-11
     ##                padj
     ##           <numeric>
-    ## Fosl2  1.272713e-12
-    ## Frmd6  3.490708e-12
-    ## Smad7  1.606445e-10
-    ## Egr4   3.592389e-10
-    ## Rgs2   2.183078e-08
-    ## Rasd1  2.519799e-08
-    ## Arc    4.861823e-08
-    ## Fbxo33 5.760632e-08
-    ## Homer1 7.390240e-08
-    ## Ranbp2 8.849637e-08
+    ## Fosl2  8.785489e-13
+    ## Frmd6  2.409622e-12
+    ## Smad7  1.108923e-10
+    ## Egr4   2.479812e-10
+    ## Rgs2   1.506970e-08
+    ## Rasd1  1.739407e-08
+    ## Arc    3.356097e-08
+    ## Fbxo33 3.976541e-08
+    ## Homer1 5.101453e-08
+    ## Ranbp2 6.108869e-08
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -1062,7 +1090,7 @@ Volcanos plots and and gene lists
     dds <- DESeq(dds) # Differential expression analysis
 
 
-    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
@@ -1093,6 +1121,19 @@ Volcanos plots and and gene lists
     ## Gpr37l1 0.041161572
     ## Tjp2    0.071826545
     ## Gm20517 0.111760956
+
+    summary(res)
+
+    ## 
+    ## out of 15425 with nonzero total read count
+    ## adjusted p-value < 0.05
+    ## LFC > 0 (up)     : 8, 0.052% 
+    ## LFC < 0 (down)   : 0, 0% 
+    ## outliers [1]     : 6, 0.039% 
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 

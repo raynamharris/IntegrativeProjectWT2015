@@ -289,7 +289,7 @@ imgHippo <- magick::image_read("../figures/00_schematics/HippoSeq.png")
 
 
 # gene lists
-res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = F)
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
@@ -321,7 +321,7 @@ pdf(file="../figures/02_RNAseq_ConsistentYoked/AllCA1DG.pdf", width=1.5, height=
 plot(colored)
 dev.off()
 
-res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = F)
+res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
@@ -353,7 +353,7 @@ dev.off()
 
 
 
-res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = F)
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
@@ -387,7 +387,7 @@ dev.off()
 
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
@@ -455,9 +455,11 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
+
+summary(res)
 
 data <- data.frame(gene = row.names(res),
                    pvalue = -log10(res$padj), 
@@ -522,7 +524,11 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
+
+summary(res)
+
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
@@ -559,6 +565,7 @@ pdf(file="../figures/02_RNAseq_ConsistentYoked/DGconsistentyoked.pdf", width=1.5
 plot(colored)
 dev.off()
 
+
 ```
 
 
@@ -589,9 +596,11 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = F)
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
+
+summary(res)
 
 data <- data.frame(gene = row.names(res),
                    pvalue = -log10(res$padj), 
