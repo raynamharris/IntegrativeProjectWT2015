@@ -1,3 +1,6 @@
+Setup
+-----
+
     #devtools::install_github("wilkelab/cowplot")
     #install.packages("colorspace", repos = "http://R-Forge.R-project.org")
     #devtools::install_github("clauswilke/colorblindr")
@@ -5,26 +8,14 @@
 
     library(ggplot2)
     library(colorblindr)
-
-    ## Loading required package: colorspace
-
     library(cowplot)
-
-    ## 
-    ## Attaching package: 'cowplot'
-
-    ## The following object is masked from 'package:ggplot2':
-    ## 
-    ##     ggsave
-
     library(magick)
-
-    ## Linking to ImageMagick 6.9.6.6
-    ## Enabled features: cairo, fontconfig, freetype, pango, rsvg, webp
-    ## Disabled features: fftw, ghostscript, lcms, x11
 
     ## set output file for figures 
     knitr::opts_chunk$set(fig.path = '../figures/09_colorblindr/')
+
+Hippocampus Color scheme
+------------------------
 
     imgDG <- magick::image_read("../figures/00_schematics/DG.png")
     imgCA3 <- magick::image_read("../figures/00_schematics/CA3.png")
@@ -80,7 +71,7 @@ Figure 2
 
 ![](../figures/09_colorblindr/fig2-1.png)
 
-Supplementray behavior
+Supplementary behavior
 ----------------------
 
     behavior <- magick::image_read("../figures/01_behavior/01_avoidancebehvaior-01.png")

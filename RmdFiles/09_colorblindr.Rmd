@@ -5,7 +5,8 @@ date: "8/26/17"
 output: md_document
 ---
 
-```{r setup}
+## Setup 
+```{r setup, message=F, warning=F}
 #devtools::install_github("wilkelab/cowplot")
 #install.packages("colorspace", repos = "http://R-Forge.R-project.org")
 #devtools::install_github("clauswilke/colorblindr")
@@ -20,6 +21,7 @@ library(magick)
 knitr::opts_chunk$set(fig.path = '../figures/09_colorblindr/')
 ```
 
+## Hippocampus Color scheme
 
 ```{r colorfulhippocampi}
 
@@ -67,9 +69,7 @@ r4 <- edit_colors(r, protan, sev = 1.0)
 plot_grid(r2, r4, nrow=1)
 ```
 
-
-
-## Supplementray behavior
+## Supplementary behavior
 
 ```{r behavior}
 
