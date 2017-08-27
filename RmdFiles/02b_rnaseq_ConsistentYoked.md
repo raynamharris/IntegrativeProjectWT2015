@@ -152,18 +152,6 @@ Number of differentially expressed genes per two-way contrast
 venn diagrams
 -------------
 
-    rldpadjs <- assay(rld)
-    rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast5)
-    rldpadjs <- as.data.frame(rldpadjs)
-    rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
-
-    venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) # CA1 DG
-    venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) # CA1 CA3
-    venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) # CA3 DG
-
-    # note, column 4 has venn 5. special for this subset
-    venn5 <- row.names(rldpadjs[rldpadjs[4] <0.05 & !is.na(rldpadjs[4]),]) # consistent consistentyoked
-
     candidates <- list("consistent vs yoked" = venn5 , "DG vs CA3" = venn3,  "CA3 vs CA1" = venn2, "DG vs CA1" = venn1 )
 
     prettyvenn <- venn.diagram(
@@ -183,35 +171,6 @@ venn diagrams
 heatmap
 -------
 
-    ##                143C-CA1-1  143D-CA1-3  143D-DG-3 144C-CA1-2  144C-CA3-2
-    ## 1110002E22Rik -0.74518423 -0.61100329  1.5386392 -0.6411958 -0.33412296
-    ## 1190002N15Rik  1.37752575  0.85306011  0.3817878  0.3714492 -1.12666835
-    ## 1700017B05Rik -0.62540958  0.09320754 -1.3456040 -0.4252158  1.34925547
-    ## 1700025G04Rik -0.19354412 -0.96990972  0.2320331 -0.1647198 -0.06312660
-    ## 1700028J19Rik  0.02222171 -0.24399628 -0.2448069 -0.1793455  0.68136451
-    ## 1700037H04Rik  0.10832407  0.41504853 -0.7235158  0.3151519  0.02954272
-    ##                 144C-DG-2 144D-CA3-2  144D-DG-2  146C-CA1-4   146C-DG-4
-    ## 1110002E22Rik  1.66565782 -1.2560444  1.1501353  0.88462833 -0.69785242
-    ## 1190002N15Rik  1.84842924 -1.0254928 -0.3177308  1.33459313  1.29999379
-    ## 1700017B05Rik  0.13200107  0.9921177 -0.2036102  0.27110427 -0.25732247
-    ## 1700025G04Rik  0.52590300  0.0434052  0.6652755 -0.99968169  0.54386230
-    ## 1700028J19Rik  0.02000603  0.4602349 -0.3173602 -0.01181409 -0.14931935
-    ## 1700037H04Rik -0.22162245  0.2779807 -0.4523735  0.37766028 -0.04047413
-    ##                146D-CA1-3 146D-CA3-3  146D-DG-3 147C-CA1-3 147C-CA3-3
-    ## 1110002E22Rik -0.58203005 -1.3640591 -0.1575342 -0.2300081 -0.6873135
-    ## 1190002N15Rik -0.20217899 -2.2241148 -1.3392975  0.9936629 -1.0502175
-    ## 1700017B05Rik -1.66780061  1.8894958 -0.8836701 -0.7372431  0.8092402
-    ## 1700025G04Rik -1.05652528 -0.1782451  0.6757735 -0.6070796  0.2195147
-    ## 1700028J19Rik -0.08714385  0.2536426  0.1557811 -0.1698463  0.1083446
-    ## 1700037H04Rik  0.15523921  0.1701561 -0.2589634  0.2439784  0.4809515
-    ##                147C-DG-3 147D-CA3-1  147D-DG-1
-    ## 1110002E22Rik  2.1492315 -1.5170802  1.4351361
-    ## 1190002N15Rik  1.1656583 -1.9288104 -0.4116490
-    ## 1700017B05Rik -0.2219679  0.6305906  0.2008310
-    ## 1700025G04Rik  0.6324723  0.5015025  0.1930897
-    ## 1700028J19Rik -0.1283314  0.1660527 -0.3356843
-    ## 1700037H04Rik -0.7336916  0.3978487 -0.5412411
-
 ![](../figures/02_RNAseq_ConsistentYoked/heatmap-1.png)![](../figures/02_RNAseq_ConsistentYoked/heatmap-2.png)
 
 Volcanos plots and and gene lists
@@ -223,15 +182,6 @@ DG only
     ##                APA2   Punch 
     ##  consistent      :3   DG:7  
     ##  yoked_consistent:4
-
-    ## class: DESeqDataSet 
-    ## dim: 22485 7 
-    ## metadata(1): version
-    ## assays(1): counts
-    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
-    ## rowData names(0):
-    ## colnames(7): 143D-DG-3 144C-DG-2 ... 147C-DG-3 147D-DG-1
-    ## colData names(8): RNAseqID Mouse ... APA APA2
 
     ## class: DESeqDataSet 
     ## dim: 16046 7 
@@ -294,16 +244,6 @@ CA3 only
     ##  yoked_consistent:3
 
     ## class: DESeqDataSet 
-    ## dim: 22485 5 
-    ## metadata(1): version
-    ## assays(1): counts
-    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
-    ## rowData names(0):
-    ## colnames(5): 144C-CA3-2 144D-CA3-2 146D-CA3-3 147C-CA3-3
-    ##   147D-CA3-1
-    ## colData names(8): RNAseqID Mouse ... APA APA2
-
-    ## class: DESeqDataSet 
     ## dim: 15425 5 
     ## metadata(1): version
     ## assays(1): counts
@@ -363,15 +303,6 @@ CA1 only
     ##                APA2   Punch  
     ##  consistent      :4   CA1:6  
     ##  yoked_consistent:2
-
-    ## class: DESeqDataSet 
-    ## dim: 22485 6 
-    ## metadata(1): version
-    ## assays(1): counts
-    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
-    ## rowData names(0):
-    ## colnames(6): 143C-CA1-1 143D-CA1-3 ... 146D-CA1-3 147C-CA1-3
-    ## colData names(8): RNAseqID Mouse ... APA APA2
 
     ## class: DESeqDataSet 
     ## dim: 15390 6 

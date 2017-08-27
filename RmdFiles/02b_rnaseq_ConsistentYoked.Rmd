@@ -135,7 +135,7 @@ contrast5 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"
 
 ## venn diagrams
 
-```{r venndiagrams}
+```{r venndiagrams, echo=F}
 rldpadjs <- assay(rld)
 rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast5)
 rldpadjs <- as.data.frame(rldpadjs)
@@ -189,7 +189,7 @@ drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
 DEGes <- as.matrix(DEGes)
 DEGes <- DEGes - rowMeans(DEGes)
-head(DEGes)
+
 
 ## the heatmap annotation file
 df <- as.data.frame(colData(dds)[,c("Punch","APA2")]) ## matrix to df
@@ -442,7 +442,6 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
 
 dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "consistent")) ## specify the factor levels
 
-dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
@@ -515,7 +514,6 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
 
 dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "consistent")) ## specify the factor levels
 
-dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
@@ -586,7 +584,6 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
 
 dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "consistent")) ## specify the factor levels
 
-dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
