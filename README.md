@@ -5,15 +5,7 @@ This repo contains the experiment that I like to call "Integrative Wild Type 201
 <img src="./figures/02_RNAseq_ConsistentYoked/02_RNAseq_ConsistentYoked-01.png" width="1370" />
 
 
-## Figure 2: Differences between consistently training and conflict trained animals in  behavior and subfield-specific hippocampal gene expression
+## Figure 2: Differences between consistently training and conflict trained and yoked animals in  behavior and subfield-specific hippocampal gene expression
 
-<img src="./figures/02_RNAseq_ConsistentConflict/02_RNAseq_ConsistentConflict-01.png" width="1370" />
+<img src="./figures/02_RNAseq_ConsistentConflict/02_RNAseq_Conflict-01.png" width="1370" />
 
-## Figure 3: Differences between the two yoked control groups
-
-<img src="./figures/02_RNAseq_YokedYoked/02_RNAseq_YokedYoked-01.png" width="1370" />
-
-
-## Summary Figure: Behavior and Volcano Plot Summary
-
-<img src="./figures/00_schematics/behavrnaseq-01.png" width="1370" />
