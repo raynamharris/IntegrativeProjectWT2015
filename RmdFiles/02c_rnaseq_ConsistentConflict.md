@@ -243,10 +243,13 @@ DG
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-![](../figures/02_RNAseq_ConsistentConflict/DG-1.png)
+![](../figures/02_RNAseq_ConsistentConflict/DG-1.png)![](../figures/02_RNAseq_ConsistentConflict/DG-2.png)
 
     ## quartz_off_screen 
     ##                 2
+
+CA3
+---
 
     ##          APA2   Punch  
     ##  conflict  :5   CA3:7  
@@ -309,7 +312,7 @@ DG
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-![](../figures/02_RNAseq_ConsistentConflict/CA3-1.png)
+![](../figures/02_RNAseq_ConsistentConflict/CA3-1.png)![](../figures/02_RNAseq_ConsistentConflict/CA3-2.png)
 
     ## quartz_off_screen 
     ##                 2
@@ -369,7 +372,7 @@ CA1
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-![](../figures/02_RNAseq_ConsistentConflict/CA1-1.png)
+![](../figures/02_RNAseq_ConsistentConflict/CA1-1.png)![](../figures/02_RNAseq_ConsistentConflict/CA1-2.png)
 
     ## quartz_off_screen 
     ##                 2
