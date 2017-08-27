@@ -125,9 +125,9 @@ dev.off()
 #calculate significance of all two way comparisions
 # see source "functions_RNAseq.R" 
 
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 872
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 685
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 921
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 797
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 458
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 1436
 
 contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 6
 ```
@@ -151,7 +151,7 @@ venn4 <- row.names(rldpadjs[rldpadjs[4] <0.05 & !is.na(rldpadjs[4]),])
 
 ## heatmap
 
-```{r heatmap}
+```{r heatmap, echo=F}
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
@@ -165,7 +165,6 @@ drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
 DEGes <- as.matrix(DEGes)
 DEGes <- DEGes - rowMeans(DEGes)
-head(DEGes)
 
 ## the heatmap annotation file
 df <- as.data.frame(colData(dds)[,c("Punch","APA2")]) ## matrix to df
@@ -397,7 +396,7 @@ dev.off()
 ## DG
 
 
-```{r DG, message=F, warning=F}
+```{r DG, message=F, warning=F, echo=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -427,6 +426,11 @@ dds <- DESeq(dds) # Differential expression analysis
 res <- results(dds, contrast =c("APA2",  "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
+
+summary(res)
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("APA2"))
+
 
 data <- data.frame(gene = row.names(res),
                    pvalue = -log10(res$padj), 
@@ -465,7 +469,7 @@ dev.off()
 ## CA3
 
 
-```{r CA3, message=F, warning=F}
+```{r CA3, message=F, warning=F, echo=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -534,7 +538,7 @@ dev.off()
 
 ## CA1
 
-```{r CA1, message=F, warning=F}
+```{r CA1, message=F, warning=F, echo=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 

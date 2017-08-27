@@ -160,15 +160,15 @@ Number of differentially expressed genes per two-way contrast
     #calculate significance of all two way comparisions
     # see source "functions_RNAseq.R" 
 
-    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 872
+    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 797
 
     ## [1] 797
 
-    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 685
+    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 458
 
     ## [1] 458
 
-    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 921
+    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 1436
 
     ## [1] 1436
 
@@ -192,134 +192,7 @@ venn diagrams
 heatmap
 -------
 
-    DEGes <- assay(rld)
-    DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4)
-    DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
-    DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-    DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA2yoked_conflictyoked_consistent)) 
-
-    # create new col with min padj
-    DEGes <- DEGes %>% filter(padjmin < 0.05)
-    rownames(DEGes) <- DEGes$rownames
-    drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
-    DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
-    DEGes <- as.matrix(DEGes)
-    DEGes <- DEGes - rowMeans(DEGes)
-    head(DEGes)
-
-    ##               143B-CA1-1  143B-DG-1 143D-CA1-3  143D-DG-3  144B-CA1-1
-    ## 1110002E22Rik  0.3930960  2.0145763 -0.5206126  1.7021653 -0.94139263
-    ## 1190002N15Rik  1.2540959 -0.4945681  1.1862515  0.7384476  1.40666449
-    ## 1700025G04Rik -0.2555176  0.1123933 -0.7695032  0.4458702 -0.93423903
-    ## 1810041L15Rik -1.8583786  0.9270913 -1.4964453  1.0897491 -1.08496934
-    ## 2010300C02Rik  0.3861176  0.6108626  0.4170768  0.7354277  0.61153395
-    ## 2900026A02Rik  0.1123703 -0.6715581  0.3470695 -0.8625633  0.04654965
-    ##               144B-CA3-1 144D-CA3-2   144D-DG-2 145B-CA1-1  145B-DG-1
-    ## 1110002E22Rik -0.9255789 -1.1942669  1.29345640 -1.1570308  1.9357949
-    ## 1190002N15Rik -0.9499954 -0.6580894  0.03776601  0.9653497  0.3346911
-    ## 1700025G04Rik -0.2214469  0.2508072  0.85529296 -0.2491054  0.6017027
-    ## 1810041L15Rik -0.2346143  0.1136095  1.43332512 -1.1159696  1.5957033
-    ## 2010300C02Rik -1.8412168 -1.5184064  0.72426932  0.6941986  0.8604288
-    ## 2900026A02Rik  0.3728001  0.5555593 -0.84596539  0.3739483 -0.6090288
-    ##               146B-CA1-2 146B-CA3-2  146B-DG-2 146D-CA1-3  146D-CA3-3
-    ## 1110002E22Rik  1.2356627 -1.1863140  0.6380774 -0.5734923 -1.28919719
-    ## 1190002N15Rik  1.7569211 -0.5610537  1.5031966  0.1485850 -1.85811830
-    ## 1700025G04Rik -0.2762981  0.1935342  0.2908768 -0.8990975  0.02682864
-    ## 1810041L15Rik -1.0047602  0.2916771 -0.7756991  0.2069358  0.58973682
-    ## 2010300C02Rik  0.6009774 -1.3350245  0.2719481  0.7978078 -0.66730771
-    ## 2900026A02Rik  1.0941508  0.3708552 -0.2217586 -0.1131428  0.93530261
-    ##                 146D-DG-3 147D-CA3-1   147D-DG-1  148B-CA1-4  148B-CA3-4
-    ## 1110002E22Rik -0.06404503 -1.4159614  1.58636930 -0.47853835 -1.33285592
-    ## 1190002N15Rik -1.23209001 -1.5393394 -0.03611157  0.11661914 -0.97985735
-    ## 1700025G04Rik  0.97428649  0.7029053  0.40830850 -1.29535894  0.01918726
-    ## 1810041L15Rik  0.54148484  0.5463729  1.36112527 -1.27752664 -0.13098054
-    ## 2010300C02Rik  0.44256920 -1.9330831  1.00547925 -0.09845913 -1.41886434
-    ## 2900026A02Rik -1.12261284  0.4921232 -1.02216813  0.45952730  0.47415588
-    ##                 148B-DG-4
-    ## 1110002E22Rik  0.28008752
-    ## 1190002N15Rik -1.13936480
-    ## 1700025G04Rik  0.01857337
-    ## 1810041L15Rik  0.28253241
-    ## 2010300C02Rik  0.65366467
-    ## 2900026A02Rik -0.16561402
-
-    ## the heatmap annotation file
-    df <- as.data.frame(colData(dds)[,c("Punch","APA2")]) ## matrix to df
-    rownames(df) <- names(countData)
-
-    ann_colors <- ann_colors7 # see color options 
-
-    # make sure the data is a matrix
-    DEGes <- as.matrix(DEGes) 
-
-    # set color breaks
-    paletteLength <- 30
-    myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
-                  seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
-
-    pheatmap(DEGes, show_colnames=T, show_rownames = F,
-             annotation_col=df, annotation_colors = ann_colors,
-             treeheight_row = 0, treeheight_col = 25,
-             fontsize = 11, 
-             #width=4.5, height=3,
-             border_color = "grey60" ,
-             color = viridis(30),
-             cellwidth = 8, 
-             clustering_method="average",
-             breaks=myBreaks,
-             clustering_distance_cols="correlation" 
-             )
-
-![](../figures/02_RNAseq_YokedYoked/heatmap-1.png)
-
-    # for adobe
-    pheatmap(DEGes, show_colnames=F, show_rownames = F,
-             annotation_col=df, annotation_colors = ann_colors,
-             treeheight_row = 0, treeheight_col = 50,
-             fontsize = 10, 
-             #width=4.5, height=3,
-             border_color = "grey60" ,
-             color = viridis(30),
-             cellwidth = 8, 
-             clustering_method="average",
-             breaks=myBreaks,
-             clustering_distance_cols="correlation",
-             filename = "../figures/02_RNAseq_YokedYoked/pheatmap.pdf"
-             )
-
-    # no legends just the heatmap
-    pheatmap(DEGes, show_colnames=F, show_rownames = F,
-             annotation_col=df, annotation_colors = ann_colors, 
-             annotation_row = NA, 
-             annotation_legend = FALSE,
-             annotation_names_row = FALSE, annotation_names_col = FALSE,
-             treeheight_row = 0, treeheight_col = 50,
-             fontsize = 11, 
-             border_color = "grey60" ,
-             color = viridis(30),
-             #cellwidth = 7, 
-             clustering_method="average",
-             breaks=myBreaks,
-             clustering_distance_cols="correlation" 
-             )
-
-![](../figures/02_RNAseq_YokedYoked/heatmap-2.png)
-
-    pheatmap(DEGes, show_colnames=F, show_rownames = F,
-             annotation_col=df, annotation_colors = ann_colors, 
-             annotation_row = NA, 
-             annotation_legend = FALSE,
-             annotation_names_row = FALSE, annotation_names_col = FALSE,
-             treeheight_row = 0, treeheight_col = 50,
-             fontsize = 11, 
-             border_color = "grey60" ,
-             color = viridis(30),
-             #cellwidth = 7, 
-             clustering_method="average",
-             breaks=myBreaks,
-             clustering_distance_cols="correlation", 
-             filename = "../figures/02_RNAseq_YokedYoked/pheatmap_minimal.pdf"
-             )
+![](../figures/02_RNAseq_YokedYoked/heatmap-1.png)![](../figures/02_RNAseq_YokedYoked/heatmap-2.png)
 
 Volcanos plots and and gene lists
 ---------------------------------
@@ -327,31 +200,9 @@ Volcanos plots and and gene lists
 DG
 --
 
-    colData <- read.csv("../data/02a_colData.csv", header = T)
-    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-
-    colData <- colData %>% 
-      filter(APA2 %in% c("yoked_consistent", "yoked_conflict" ))  %>%
-      filter(Punch %in% c( "DG")) %>%
-      droplevels()
-
-    savecols <- as.character(colData$RNAseqID) 
-    savecols <- as.vector(savecols) 
-    countData <- countData %>% dplyr::select(one_of(savecols)) 
-
-    colData %>% select(APA2,Punch)  %>%  summary()
-
     ##                APA2   Punch 
     ##  yoked_conflict  :4   DG:8  
     ##  yoked_consistent:4
-
-    dds <- DESeqDataSetFromMatrix(countData = countData,
-                                  colData = colData,
-                                  design = ~ APA2 )
-
-    dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "yoked_conflict")) ## specify the factor levels
-
-    dds # view the DESeq object - note numnber of genes
 
     ## class: DESeqDataSet 
     ## dim: 22485 8 
@@ -362,9 +213,6 @@ DG
     ## colnames(8): 143B-DG-1 143D-DG-3 ... 147D-DG-1 148B-DG-4
     ## colData names(8): RNAseqID Mouse ... APA APA2
 
-    dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-    dds # view number of genes afternormalization and the number of samples
-
     ## class: DESeqDataSet 
     ## dim: 15735 8 
     ## metadata(1): version
@@ -373,13 +221,6 @@ DG
     ## rowData names(0):
     ## colnames(8): 143B-DG-1 143D-DG-3 ... 147D-DG-1 148B-DG-4
     ## colData names(8): RNAseqID Mouse ... APA APA2
-
-    dds <- DESeq(dds) # Differential expression analysis
-
-
-    res <- results(dds, contrast =c("APA2",  "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
 
     ## log2 fold change (MAP): APA2 yoked_conflict vs yoked_consistent 
     ## Wald test p-value: APA2 yoked_conflict vs yoked_consistent 
@@ -409,38 +250,18 @@ DG
     ## 0610010K14Rik 0.9999627
     ## 0610012G03Rik 0.9999627
 
-    data <- data.frame(gene = row.names(res),
-                       pvalue = -log10(res$padj), 
-                       lfc = res$log2FoldChange)
-    data <- na.omit(data)
-    data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                            yes = "yoked_conflict", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                        yes = "yoked_consistent", 
-                                        no = "none")))
-    top_labelled <- top_n(data, n = 5, wt = lfc)
-    # Color corresponds to fold change directionality
-    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
-      theme_bw(base_size = 8) + # clean up theme
-      theme(legend.position = "none") + # remove legend 
-      scale_color_manual(values = volcano3) + 
-      theme(panel.grid.minor=element_blank(),
-               panel.grid.major=element_blank()) + 
-      scale_x_continuous(name="log2 (yoked conflict/ \n yoked conflict)",
-                         limits=c(-4, 4)) +
-      scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 6)) +
-      draw_image(imgDG, scale = 4, x=-2.3, y=4.6)
-    colored
+    ## 
+    ## out of 15735 with nonzero total read count
+    ## adjusted p-value < 0.05
+    ## LFC > 0 (up)     : 1, 0.0064% 
+    ## LFC < 0 (down)   : 0, 0% 
+    ## outliers [1]     : 71, 0.45% 
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
 
-![](../figures/02_RNAseq_YokedYoked/DG-1.png)
-
-    #cvd_grid(colored) # to view plot for color blind 
-    pdf(file="../figures/02_RNAseq_YokedYoked/DGyoked_consistentyoked_conflict.pdf", width=1.5, height=1.75)
-    plot(colored)
-    dev.off()
+![](../figures/02_RNAseq_YokedYoked/DG-1.png)![](../figures/02_RNAseq_YokedYoked/DG-2.png)
 
     ## quartz_off_screen 
     ##                 2
@@ -448,31 +269,9 @@ DG
 CA3
 ---
 
-    colData <- read.csv("../data/02a_colData.csv", header = T)
-    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-
-    colData <- colData %>% 
-      filter(APA2 %in% c("yoked_consistent", "yoked_conflict" ))  %>%
-      filter(Punch %in% c( "CA3")) %>%
-      droplevels()
-
-    savecols <- as.character(colData$RNAseqID) 
-    savecols <- as.vector(savecols) 
-    countData <- countData %>% dplyr::select(one_of(savecols)) 
-
-    colData %>% select(APA2,Punch)  %>%  summary()
-
     ##                APA2   Punch  
     ##  yoked_conflict  :3   CA3:6  
     ##  yoked_consistent:3
-
-    dds <- DESeqDataSetFromMatrix(countData = countData,
-                                  colData = colData,
-                                  design = ~ APA2 )
-
-    dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "yoked_conflict")) ## specify the factor levels
-
-    dds # view the DESeq object - note numnber of genes
 
     ## class: DESeqDataSet 
     ## dim: 22485 6 
@@ -483,9 +282,6 @@ CA3
     ## colnames(6): 144B-CA3-1 144D-CA3-2 ... 147D-CA3-1 148B-CA3-4
     ## colData names(8): RNAseqID Mouse ... APA APA2
 
-    dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-    dds # view number of genes afternormalization and the number of samples
-
     ## class: DESeqDataSet 
     ## dim: 15497 6 
     ## metadata(1): version
@@ -494,13 +290,6 @@ CA3
     ## rowData names(0):
     ## colnames(6): 144B-CA3-1 144D-CA3-2 ... 147D-CA3-1 148B-CA3-4
     ## colData names(8): RNAseqID Mouse ... APA APA2
-
-    dds <- DESeq(dds) # Differential expression analysis
-
-
-    res <- results(dds, contrast =c("APA2",  "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
 
     ## log2 fold change (MAP): APA2 yoked_conflict vs yoked_consistent 
     ## Wald test p-value: APA2 yoked_conflict vs yoked_consistent 
@@ -530,8 +319,6 @@ CA3
     ## mt-Nd4  0.57697965
     ## Efhd2   0.59201042
 
-    summary(res)
-
     ## 
     ## out of 15497 with nonzero total read count
     ## adjusted p-value < 0.05
@@ -543,42 +330,7 @@ CA3
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-    topGene <- rownames(res)[which.min(res$padj)]
-    plotCounts(dds, gene = topGene, intgroup=c("APA2"))
-
-![](../figures/02_RNAseq_YokedYoked/CA3-1.png)
-
-    data <- data.frame(gene = row.names(res),
-                       pvalue = -log10(res$padj), 
-                       lfc = res$log2FoldChange)
-    data <- na.omit(data)
-    data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                            yes = "yoked_conflict", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                        yes = "yoked_consistent", 
-                                        no = "none")))
-    top_labelled <- top_n(data, n = 5, wt = lfc)
-    # Color corresponds to fold change directionality
-    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
-      theme_bw(base_size = 8) + # clean up theme
-      theme(legend.position = "none") + # remove legend 
-      scale_color_manual(values = volcano3) + 
-      theme(panel.grid.minor=element_blank(),
-               panel.grid.major=element_blank()) + 
-      scale_x_continuous(name="log2 (yoked conflict/ \n yoked consistent)",
-                         limits=c(-4, 4)) +
-      scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 6)) +
-      draw_image(imgCA3, scale = 4, x=-2.3, y=4.6)
-    colored
-
-![](../figures/02_RNAseq_YokedYoked/CA3-2.png)
-
-    pdf(file="../figures/02_RNAseq_YokedYoked/CA3yoked_consistentyoked_conflict.pdf", width=1.5, height=1.75)
-    plot(colored)
-    dev.off()
+![](../figures/02_RNAseq_YokedYoked/CA3-1.png)![](../figures/02_RNAseq_YokedYoked/CA3-2.png)
 
     ## quartz_off_screen 
     ##                 2
@@ -586,31 +338,9 @@ CA3
 CA1
 ---
 
-    colData <- read.csv("../data/02a_colData.csv", header = T)
-    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-
-    colData <- colData %>% 
-      filter(APA2 %in% c("yoked_consistent", "yoked_conflict" ))  %>%
-      filter(Punch %in% c( "CA1")) %>%
-      droplevels()
-
-    savecols <- as.character(colData$RNAseqID) 
-    savecols <- as.vector(savecols) 
-    countData <- countData %>% dplyr::select(one_of(savecols)) 
-
-    colData %>% select(APA2,Punch)  %>%  summary()
-
     ##                APA2   Punch  
     ##  yoked_conflict  :5   CA1:7  
     ##  yoked_consistent:2
-
-    dds <- DESeqDataSetFromMatrix(countData = countData,
-                                  colData = colData,
-                                  design = ~ APA2 )
-
-    dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "yoked_conflict")) ## specify the factor levels
-
-    dds # view the DESeq object - note numnber of genes
 
     ## class: DESeqDataSet 
     ## dim: 22485 7 
@@ -621,9 +351,6 @@ CA1
     ## colnames(7): 143B-CA1-1 143D-CA1-3 ... 146D-CA1-3 148B-CA1-4
     ## colData names(8): RNAseqID Mouse ... APA APA2
 
-    dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-    dds # view number of genes afternormalization and the number of samples
-
     ## class: DESeqDataSet 
     ## dim: 14667 7 
     ## metadata(1): version
@@ -632,13 +359,6 @@ CA1
     ## rowData names(0):
     ## colnames(7): 143B-CA1-1 143D-CA1-3 ... 146D-CA1-3 148B-CA1-4
     ## colData names(8): RNAseqID Mouse ... APA APA2
-
-    dds <- DESeq(dds) # Differential expression analysis
-
-
-    res <- results(dds, contrast =c("APA2",  "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
 
     ## log2 fold change (MAP): APA2 yoked_conflict vs yoked_consistent 
     ## Wald test p-value: APA2 yoked_conflict vs yoked_consistent 
@@ -668,8 +388,6 @@ CA1
     ## Ercc6   2.937010e-02
     ## Pnpla3  2.937010e-02
 
-    summary(res)
-
     ## 
     ## out of 14667 with nonzero total read count
     ## adjusted p-value < 0.05
@@ -681,43 +399,7 @@ CA1
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-    topGene <- rownames(res)[which.min(res$padj)]
-    plotCounts(dds, gene = topGene, intgroup=c("APA2"))
-
-![](../figures/02_RNAseq_YokedYoked/CA1-1.png)
-
-    data <- data.frame(gene = row.names(res),
-                       pvalue = -log10(res$padj), 
-                       lfc = res$log2FoldChange)
-    data <- na.omit(data)
-    data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                            yes = "yoked_conflict", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                        yes = "yoked_consistent", 
-                                        no = "none")))
-    top_labelled <- top_n(data, n = 5, wt = lfc)
-    # Color corresponds to fold change directionality
-    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
-      theme_bw(base_size = 8) + # clean up theme
-      theme(legend.position = "none") + # remove legend 
-      scale_color_manual(values = volcano3) + 
-      theme(panel.grid.minor=element_blank(),
-               panel.grid.major=element_blank()) + 
-      scale_x_continuous(name="log2 (yoked consistent/ \n yoked conflict)",
-                         limits=c(-4, 4)) +
-      scale_y_continuous(name="-log10 (adjusted p-value",
-                        limits= c(0, 6)) +
-      draw_image(imgCA1, scale = 4, x=-2.3, y=4.6)
-    colored
-
-![](../figures/02_RNAseq_YokedYoked/CA1-2.png)
-
-    #cvd_grid(colored) # to view plot for color blind 
-    pdf(file="../figures/02_RNAseq_YokedYoked/CA1yoked_consistentyoked_conflict.pdf", width=1.5, height=1.75)
-    plot(colored)
-    dev.off()
+![](../figures/02_RNAseq_YokedYoked/CA1-1.png)![](../figures/02_RNAseq_YokedYoked/CA1-2.png)
 
     ## quartz_off_screen 
     ##                 2
