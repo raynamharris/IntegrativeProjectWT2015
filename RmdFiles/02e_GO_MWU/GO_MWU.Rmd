@@ -43,7 +43,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 	level1=0.01, 
 	level2=0.001, 
 	level3=0.00001, 
-	txtsize=1,    
+	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
@@ -72,7 +72,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 	level1=0.01, 
 	level2=0.001, 
 	level3=0.00001, 
-	txtsize=1,    
+	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
@@ -102,7 +102,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 	level1=0.01, 
 	level2=0.001, 
 	level3=0.00001, 
-	txtsize=1,    
+	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
@@ -133,7 +133,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 	level1=0.1, 
 	level2=0.001, 
 	level3=0.00001, 
-	txtsize=1,    
+	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("red","salmon","red","salmon")
 )
@@ -162,7 +162,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 	level1=0.01, 
 	level2=0.001, 
 	level3=0.00001, 
-	txtsize=1,    
+	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("red","salmon","red","salmon")
 )
@@ -193,7 +193,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 	level1=0.00001, 
 	level2=0.000001, 
 	level3=0.0000001,  
-	txtsize=1,    
+	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("red","lightsalmon","red","lightsalmon")
 )
@@ -224,7 +224,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 	level1=0.1, 
 	level2=0.001, 
 	level3=0.00001,  
-	txtsize=1,    
+	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
 )
@@ -253,7 +253,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 	level1=0.1, 
 	level2=0.001, 
 	level3=0.00001,  
-	txtsize=1,    
+	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
 )
@@ -283,7 +283,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 	level1=0.1, 
 	level2=0.001, 
 	level3=0.00001, 
-	txtsize=1,    
+	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
 )
