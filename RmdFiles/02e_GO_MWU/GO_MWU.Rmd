@@ -368,10 +368,26 @@ write.csv(results, file = "GO_CA1yokedyoked.csv", row.names = TRUE)
 
 
 
-## Bash comands to combine files
+##  GO summary
 
+Bash comands to combine files
 
-`head -1 GO_DGyokedyoked.csv > GO_analysis.csv  #create new analysis by copying the header of a single file`
-`cat GO_*.csv | grep -v 'pval' >> GO_analysis.csv # send the contents of each file through grep to remove the header and into the analysis file`
+~~~
+head -1 GO_DGyokedyoked.csv > GO_analysis.csv  #create new analysis by copying the header of a single file`
+cat GO_*.csv | grep -v 'pval' >> GO_analysis.csv # send the contents of each file through grep to remove the header and into the analysis file`
+~~~
 
-
+This will print the number of times a GO term appeared in any of the 9 two-way comparaisons. 
+```{r G0summary}
+library(reshape2)
+GOterms <- read.csv('GO_analysis.csv', colClasses=c("NULL", NA, "NULL",NA, "NULL",NA, NA))
+GOterms$GOterm <- as.character(GOterms$GOterm)
+GOterms$group <- as.factor(paste(GOterms$Punch,GOterms$color,sep="_"))
+GOterms$Punch <- NULL  
+GOterms$color <- NULL
+GOtermsWide <- dcast(GOterms, GOterm ~ group , value.var = "pval")
+GOtermsWide$rowsums <- rowSums(GOtermsWide[, -1])
+GOtermsWide <- GOtermsWide[c(1,13,2:12)]
+GOtermsWide <- GOtermsWide[order(-GOtermsWide$rowsums),] 
+GOtermsWide[c(1,2)]
+```
