@@ -40,9 +40,9 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.01, 
-	level2=0.001, 
-	level3=0.00001, 
+	level1=0.05, 
+	level2=0.025, 
+	level3=0.01, 
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
@@ -69,9 +69,9 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.01, 
-	level2=0.001, 
-	level3=0.00001, 
+	level1=0.075, 
+	level2=0.05, 
+	level3=0.01, 
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
@@ -99,9 +99,9 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.01, 
+	level1=0.005, 
 	level2=0.001, 
-	level3=0.00001, 
+	level3=0.0005, 
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
@@ -131,8 +131,8 @@ goDivision="MF" # either MF, or BP, or CC
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.1, 
-	level2=0.001, 
-	level3=0.00001, 
+	level2=0.075, 
+	level3=0.05, 
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("red","salmon","red","salmon")
@@ -159,9 +159,9 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.01, 
-	level2=0.001, 
-	level3=0.00001, 
+	level1=0.03, 
+	level2=0.01, 
+	level3=0.001, 
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("red","salmon","red","salmon")
@@ -190,9 +190,9 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.00001, 
-	level2=0.000001, 
-	level3=0.0000001,  
+	level1=0.0000001, 
+	level2=0.00000001, 
+	level3=0.000000001,  
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("red","lightsalmon","red","lightsalmon")
@@ -222,8 +222,8 @@ goDivision="MF" # either MF, or BP, or CC
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.1, 
-	level2=0.001, 
-	level3=0.00001,  
+	level2=0.05, 
+	level3=0.01,  
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
@@ -251,8 +251,8 @@ goDivision="MF" # either MF, or BP, or CC
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.1, 
-	level2=0.001, 
-	level3=0.00001,  
+	level2=0.05, 
+	level3=0.001,  
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
@@ -280,11 +280,15 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.1, 
-	level2=0.001, 
-	level3=0.00001, 
+	level1=0.01, 
+	level2=0.05, 
+	level3=0.001, 
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
 )
 ```
+
+
+
+

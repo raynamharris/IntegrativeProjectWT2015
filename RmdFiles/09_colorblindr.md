@@ -116,7 +116,6 @@ Supplementary behavior
     n3 <- ggdraw() + draw_image(numentrance3) # turn png into ggplot object
     n4 <- ggdraw() + draw_image(numentrance4) # turn png into ggplot object
 
-
     plot_grid(n2, p1, q1, r1, nrow=2) #consistent
 
 ![](../figures/09_colorblindr/GO-1.png)
@@ -140,3 +139,8 @@ Supplementary behavior
     plot_grid(r, r1, r2, r3, nrow=2) #CA1
 
 ![](../figures/09_colorblindr/GO-6.png)
+
+    a <- plot_grid(r, r1, r2, r3, nrow=2) #CA1
+    a
+
+![](../figures/09_colorblindr/GO-7.png)

@@ -114,7 +114,6 @@ n2 <- ggdraw() + draw_image(numentrance2) # turn png into ggplot object
 n3 <- ggdraw() + draw_image(numentrance3) # turn png into ggplot object
 n4 <- ggdraw() + draw_image(numentrance4) # turn png into ggplot object
 
-
 plot_grid(n2, p1, q1, r1, nrow=2) #consistent
 plot_grid(n3, p2, q2, r2, nrow=2) #conflcit
 plot_grid(n4, p3, q3, r3, nrow=2) #yoked
@@ -122,5 +121,6 @@ plot_grid(n4, p3, q3, r3, nrow=2) #yoked
 plot_grid(p, p1, p2, p3, nrow=2) #DG
 plot_grid(q, q1, q2, q3, nrow=2) #CA3
 plot_grid(r, r1, r2, r3, nrow=2) #CA1
-
+a <- plot_grid(r, r1, r2, r3, nrow=2) #CA1
+a
 ```
