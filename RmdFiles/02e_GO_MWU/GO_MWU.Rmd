@@ -13,8 +13,10 @@ If the measure is binary (0 or 1) the script will perform a typical "GO enrichme
 NOTES: This program drains memory and creates some very large intermediate files, especially for the biological process catagory. First, I run the stats from the command line to make sure its working. Once I've generated the temp files, I comment out then stats portions and recreate the plots by kniting the rmd file. 
 
 ```{r setup}
-library(ape)
+library(ape) # For GO analysis
 source("gomwu.functions.R")
+
+library(reshape2) # for splitting column
 
 # set output file for figures 
 knitr::opts_chunk$set(fig.path = '../../figures/02e_RNAseq_GO/')
@@ -39,8 +41,7 @@ goDivision="MF" # either MF, or BP, or CC
 
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
-  absValue=-log(0.05,10), 
-	#absValue=1,
+  absValue=1,
 	level1=0.05, 
 	level2=0.025, 
 	level3=0.01, 
@@ -48,7 +49,13 @@ results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
-results
+
+results$rownames <- row.names(results)
+y <- colsplit(results$rownames," ",c("goodgenes","GOterm"))
+results <- cbind(results, y)
+results$rownames <- NULL
+results$Punch <- "DG"
+
 write.csv(results, file = "GO_DGconsistentyoked.csv", row.names = T)
 ```
 
@@ -71,7 +78,7 @@ goDivision="MF" # either MF, or BP, or CC
 
 # Data viz
 results <- gomwuPlot(input,goAnnotations,goDivision,
-	absValue=-log(0.05,10),  
+	absValue=1, 
 	level1=0.075, 
 	level2=0.05, 
 	level3=0.01, 
@@ -79,16 +86,21 @@ results <- gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
-results
-read.csv("GO_CA3conflictconsistent.csv", sep="\t", row.names = TRUE)
 
+results$rownames <- row.names(results)
+y <- colsplit(results$rownames," ",c("goodgenes","GOterm"))
+results <- cbind(results, y)
+results$rownames <- NULL
+results$Punch <- "CA3"
+
+write.csv(results, file = "GO_CA3conflictconsistent.csv", row.names = TRUE)
 ```
 
 
 
 ## CA1 consistent yoked
 
-```{r CA1consistentyoked, warning=F, message=F, echo=F, eval=F}
+```{r CA1consistentyoked, warning=F, message=F, echo=F}
 # input files
 input="CA1consistentyoked.csv" 
 goAnnotations="goAnnotations.tab" 
@@ -104,7 +116,7 @@ goDivision="MF" # either MF, or BP, or CC
 
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
-	absValue=-log(0.05,10),  
+	absValue=1, 
 	level1=0.005, 
 	level2=0.001, 
 	level3=0.0005, 
@@ -112,8 +124,14 @@ results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
-results
-read.csv("GO_CA1conflictconsistent.csv", sep="\t", row.names = TRUE)
+
+results$rownames <- row.names(results)
+y <- colsplit(results$rownames," ",c("goodgenes","GOterm"))
+results <- cbind(results, y)
+results$rownames <- NULL
+results$Punch <- "CA1"
+
+write.csv(results, file = "GO_CA1conflictconsistent.csv", row.names = TRUE)
 
 ```
 
@@ -138,7 +156,7 @@ goDivision="MF" # either MF, or BP, or CC
 
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
-	absValue=-log(0.05,10),  
+	absValue=1, 
 	level1=0.1, 
 	level2=0.075, 
 	level3=0.05, 
@@ -147,7 +165,12 @@ results <- results <- gomwuPlot(input,goAnnotations,goDivision,
   colors=c("red","salmon","red","salmon")
 )
 
-results
+results$rownames <- row.names(results)
+y <- colsplit(results$rownames," ",c("goodgenes","GOterm"))
+results <- cbind(results, y)
+results$rownames <- NULL
+results$Punch <- "DG"
+
 write.csv(results, file = "GO_DGconflictconsistent.csv", row.names = TRUE)
 ```
 
@@ -170,7 +193,7 @@ goDivision="MF" # either MF, or BP, or CC
 
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
-	absValue=-log(0.05,10),  
+	absValue=1, 
 	level1=0.03, 
 	level2=0.01, 
 	level3=0.001, 
@@ -179,7 +202,12 @@ results <- results <- gomwuPlot(input,goAnnotations,goDivision,
   colors=c("red","salmon","red","salmon")
 )
 
-results
+results$rownames <- row.names(results)
+y <- colsplit(results$rownames," ",c("goodgenes","GOterm"))
+results <- cbind(results, y)
+results$rownames <- NULL
+results$Punch <- "CA3"
+
 write.csv(results, file = "GO_CA3conflictconsistent.csv", row.names = TRUE)
 ```
 
@@ -204,7 +232,7 @@ goDivision="MF" # either MF, or BP, or CC
 
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
-	absValue=-log(0.05,10),  
+	absValue=1, 
 	level1=0.0000001, 
 	level2=0.00000001, 
 	level3=0.000000001,  
@@ -213,7 +241,12 @@ results <- results <- gomwuPlot(input,goAnnotations,goDivision,
   colors=c("red","lightsalmon","red","lightsalmon")
 )
 
-results
+results$rownames <- row.names(results)
+y <- colsplit(results$rownames," ",c("goodgenes","GOterm"))
+results <- cbind(results, y)
+results$rownames <- NULL
+results$Punch <- "CA1"
+
 write.csv(results, file = "GO_CA1conflictconsistent.csv", row.names = TRUE)
 ```
 
@@ -238,7 +271,7 @@ goDivision="MF" # either MF, or BP, or CC
 
 # Data viz
 results <- gomwuPlot(input,goAnnotations,goDivision,
-	absValue=-log(0.05,10),  
+	absValue=1, 
 	level1=0.1, 
 	level2=0.05, 
 	level3=0.01,  
@@ -247,7 +280,12 @@ results <- gomwuPlot(input,goAnnotations,goDivision,
   colors=c("grey20","grey60","grey20","grey60")
 )
 
-results
+results$rownames <- row.names(results)
+y <- colsplit(results$rownames," ",c("goodgenes","GOterm"))
+results <- cbind(results, y)
+results$rownames <- NULL
+results$Punch <- "DG"
+
 write.csv(results, file = "GO_DGyokedyoked.csv", row.names = TRUE)
 ```
 
@@ -270,7 +308,7 @@ goDivision="MF" # either MF, or BP, or CC
 
 # Data viz
 results <- gomwuPlot(input,goAnnotations,goDivision,
-	absValue=-log(0.05,10),  
+	absValue=1, 
 	level1=0.1, 
 	level2=0.05, 
 	level3=0.001,  
@@ -279,7 +317,11 @@ results <- gomwuPlot(input,goAnnotations,goDivision,
   colors=c("grey20","grey60","grey20","grey60")
 )
 
-results
+results$rownames <- row.names(results)
+y <- colsplit(results$rownames," ",c("goodgenes","GOterm"))
+results <- cbind(results, y)
+results$rownames <- NULL
+results$Punch <- "CA3"
 write.csv(results, file = "GO_CA3yokedyoked.csv", row.names = TRUE)
 
 ```
@@ -304,7 +346,7 @@ goDivision="MF" # either MF, or BP, or CC
 
 # Data viz
 results <- gomwuPlot(input,goAnnotations,goDivision,
-	absValue=-log(0.05,10),  
+	absValue=1, 
 	level1=0.01, 
 	level2=0.05, 
 	level3=0.001, 
@@ -313,11 +355,23 @@ results <- gomwuPlot(input,goAnnotations,goDivision,
   colors=c("grey20","grey60","grey20","grey60")
 )
 
-results
+
+results$rownames <- row.names(results)
+y <- colsplit(results$rownames," ",c("goodgenes","GOterm"))
+results <- cbind(results, y)
+results$rownames <- NULL
+results$Punch <- "CA1"
+
 write.csv(results, file = "GO_CA1yokedyoked.csv", row.names = TRUE)
 
 ```
 
 
+
+## Bash comands to combine files
+
+
+`head -1 GO_DGyokedyoked.csv > GO_analysis.csv  #create new analysis by copying the header of a single file`
+`cat GO_*.csv | grep -v 'pval' >> GO_analysis.csv # send the contents of each file through grep to remove the header and into the analysis file`
 
 

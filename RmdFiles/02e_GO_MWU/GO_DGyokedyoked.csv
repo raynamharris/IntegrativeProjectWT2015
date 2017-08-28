@@ -1,4 +1,4 @@
-"","pval","direction","color"
-"0/66 exonuclease activity",0.0732609732180479,0,"grey20"
-"1/61 hydrogen ion transmembrane transporter activity",0.0387096173068017,1,"grey60"
-"4/559 oxidoreductase activity",0.0387096173068017,1,"grey60"
+"","pval","direction","color","goodgenes","GOterm","Punch"
+"2/66 exonuclease activity",0.0732609732180479,0,"grey20","2/66","exonuclease activity","DG"
+"4/61 hydrogen ion transmembrane transporter activity",0.0387096173068017,1,"grey60","4/61","hydrogen ion transmembrane transporter activity","DG"
+"16/559 oxidoreductase activity",0.0387096173068017,1,"grey60","16/559","oxidoreductase activity","DG"
