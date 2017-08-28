@@ -1,5 +1,7 @@
-Summary from Mikhail V. Matz <https://github.com/z0on/GO_MWU>
--------------------------------------------------------------
+Summary
+-------
+
+#### From Mikhail V. Matz <https://github.com/z0on/GO_MWU>
 
 GO\_MWU uses continuous measure of significance (such as fold-change or
 -log(p-value) ) to identify GO categories that are significantly
