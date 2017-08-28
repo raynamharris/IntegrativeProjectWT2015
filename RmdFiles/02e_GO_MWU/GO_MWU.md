@@ -59,6 +59,11 @@ CA1 consistent yoked
 DG conflict vs consistent
 -------------------------
 
+![](../../figures/02e_RNAseq_GO/DGconflictconsistent-1.png)
+
+    ## GO terms dispayed:  5 
+    ## "Good genes" accounted for:  17 out of 133 ( 13% )
+
 CA3 conflict consistent
 -----------------------
 
@@ -70,15 +75,25 @@ CA3 conflict consistent
 CA1 consistent yoked
 --------------------
 
+![](../../figures/02e_RNAseq_GO/CA1conflictconsistent-1.png)
+
+    ## GO terms dispayed:  18 
+    ## "Good genes" accounted for:  276 out of 737 ( 37% )
+
 DG yoked vs. yoked
 ------------------
+
+![](../../figures/02e_RNAseq_GO/DGyokedyoked-1.png)
+
+    ## GO terms dispayed:  3 
+    ## "Good genes" accounted for:  5 out of 84 ( 6% )
 
 CA3 yoked vs. yoked
 -------------------
 
 ![](../../figures/02e_RNAseq_GO/CA3yokedyoked-1.png)
 
-    ## GO terms dispayed:  2 
+    ## GO terms dispayed:  3 
     ## "Good genes" accounted for:  14 out of 229 ( 6% )
 
 CA1 yoked vs. yoked
@@ -86,5 +101,5 @@ CA1 yoked vs. yoked
 
 ![](../../figures/02e_RNAseq_GO/CA1yokedyoked-1.png)
 
-    ## GO terms dispayed:  10 
-    ## "Good genes" accounted for:  123 out of 429 ( 29% )
+    ## GO terms dispayed:  26 
+    ## "Good genes" accounted for:  144 out of 429 ( 34% )

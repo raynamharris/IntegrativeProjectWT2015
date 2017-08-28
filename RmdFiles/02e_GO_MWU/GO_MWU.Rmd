@@ -41,9 +41,9 @@ goDivision="MF" # either MF, or BP, or CC
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.01, 
-	level2=0.0001, 
-	level3=0.000001, 
-	txtsize=2,    
+	level2=0.001, 
+	level3=0.00001, 
+	txtsize=1,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
@@ -70,9 +70,9 @@ goDivision="MF" # either MF, or BP, or CC
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.01, 
-	level2=0.0001, 
-	level3=0.000001, 
-	txtsize=2,    
+	level2=0.001, 
+	level3=0.00001, 
+	txtsize=1,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
@@ -100,9 +100,9 @@ goDivision="MF" # either MF, or BP, or CC
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.01, 
-	level2=0.0001, 
-	level3=0.000001, 
-	txtsize=2,    
+	level2=0.001, 
+	level3=0.00001, 
+	txtsize=1,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
@@ -113,7 +113,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 
 ## DG conflict vs consistent 
 
-```{r DGconflictconsistent, warning=F, message=F, echo=F, eval=F}
+```{r DGconflictconsistent, warning=F, message=F, echo=F}
 # input files
 input="DGconflictconsistent.csv" 
 goAnnotations="goAnnotations.tab" 
@@ -130,10 +130,10 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.01, 
-	level2=0.0001, 
-	level3=0.000001, 
-	txtsize=2,    
+	level1=0.1, 
+	level2=0.001, 
+	level3=0.00001, 
+	txtsize=1,    
 	treeHeight=0.5, 
   colors=c("red","salmon","red","salmon")
 )
@@ -160,9 +160,9 @@ goDivision="MF" # either MF, or BP, or CC
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.01, 
-	level2=0.0001, 
-	level3=0.000001, 
-	txtsize=2,    
+	level2=0.001, 
+	level3=0.00001, 
+	txtsize=1,    
 	treeHeight=0.5, 
   colors=c("red","salmon","red","salmon")
 )
@@ -172,7 +172,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 
 ## CA1 consistent yoked
 
-```{r CA1conflictconsistent, warning=F, message=F, echo=F, eval=F}
+```{r CA1conflictconsistent, warning=F, message=F, echo=F}
 # input files
 input="CA1conflictconsistent.csv" 
 goAnnotations="goAnnotations.tab" 
@@ -190,10 +190,10 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.01, 
-	level2=0.0001, 
-	level3=0.000001,  
-	txtsize=2,    
+	level1=0.00001, 
+	level2=0.000001, 
+	level3=0.0000001,  
+	txtsize=1,    
 	treeHeight=0.5, 
   colors=c("red","lightsalmon","red","lightsalmon")
 )
@@ -204,7 +204,7 @@ gomwuPlot(input,goAnnotations,goDivision,
 
 ## DG yoked vs. yoked
 
-```{r DGyokedyoked, warning=F, message=F, echo=F, eval=F}
+```{r DGyokedyoked, warning=F, message=F, echo=F}
 # input files
 input="DGyokedyoked.csv" 
 goAnnotations="goAnnotations.tab" 
@@ -221,10 +221,10 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.01, 
-	level2=0.0001, 
-	level3=0.000001,  
-	txtsize=2,    
+	level1=0.1, 
+	level2=0.001, 
+	level3=0.00001,  
+	txtsize=1,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
 )
@@ -250,10 +250,10 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.01, 
-	level2=0.0001, 
-	level3=0.000001,  
-	txtsize=2,    
+	level1=0.1, 
+	level2=0.001, 
+	level3=0.00001,  
+	txtsize=1,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
 )
@@ -280,10 +280,10 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
-	level1=0.01, 
-	level2=0.0001, 
-	level3=0.000001, 
-	txtsize=2,    
+	level1=0.1, 
+	level2=0.001, 
+	level3=0.00001, 
+	txtsize=1,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
 )
