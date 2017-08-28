@@ -76,10 +76,10 @@ plot_grid(r2, r4, nrow=1)
 behavior <- magick::image_read("../figures/01_behavior/01_avoidancebehvaior-01.png")
 behavior
 
-r <- ggdraw() + draw_image(behavior) # turn png into ggplot object
-r2 <- edit_colors(r, tritan, sev = 1.0)
-r4 <- edit_colors(r, protan, sev = 1.0)
-plot_grid(r2, r4, nrow=2)
+b <- ggdraw() + draw_image(behavior) # turn png into ggplot object
+b2 <- edit_colors(b, tritan, sev = 1.0)
+b4 <- edit_colors(b, protan, sev = 1.0)
+plot_grid(b2, b4, nrow=2)
 ```
 
 ```{r GO}
@@ -121,6 +121,5 @@ plot_grid(n4, p3, q3, r3, nrow=2) #yoked
 plot_grid(p, p1, p2, p3, nrow=2) #DG
 plot_grid(q, q1, q2, q3, nrow=2) #CA3
 plot_grid(r, r1, r2, r3, nrow=2) #CA1
-a <- plot_grid(r, r1, r2, r3, nrow=2) #CA1
-a
+
 ```
