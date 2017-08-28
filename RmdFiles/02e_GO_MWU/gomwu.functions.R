@@ -1,12 +1,16 @@
 clusteringGOs=function(gen2go,div,cutHeight) {
 	inname=paste("dissim0_",div,"_",gen2go,sep="")
-	diss=read.table(inname,sep="\t",header=T,check.names=F)
-	row.names(diss)=names(diss)
-	hc=hclust(as.dist(diss),method="complete")
-	cc=cutree(hc,h=cutHeight)
 	outname=paste("cl_",inname,sep="")
-	write.csv(cc,file=outname,quote=F)
+	if (!file.exists(outname)) {
+		diss=read.table(inname,sep="\t",header=T,check.names=F)
+		row.names(diss)=names(diss)
+		hc=hclust(as.dist(diss),method="complete")
+		cc=cutree(hc,h=cutHeight)
+		write.csv(cc,file=outname,quote=F)
+	}
 }
+
+
 
 #---------------
 gomwuStats=function(input,goDatabase,goAnnotations, goDivision, Module=FALSE, Alternative="t", adjust.multcomp="BH", clusterCutHeight=0.25,largest=0.1,smallest=5,perlPath="perl", shuffle.reps=10){
@@ -237,7 +241,7 @@ gomwuPlot=function(inFile,goAnnotations,goDivision,level1=0.1,level2=0.05,level3
 		ypos=top-step*ii
 		ii=ii+1
 		if (goods$pval[i]> -log(level3,10)) { 
-			text(left,ypos,labs[i],font=2,cex=0.8*txtsize,col=goods$color[i],adj=c(0,0),family=font.family) 
+			text(left,ypos,labs[i],font=2,cex=1*txtsize,col=goods$color[i],adj=c(0,0),family=font.family) 
 		} else {
 			if (goods$pval[i]>-log(level2,10)) { 
 				text(left,ypos,labs[i],font=1,cex=0.8* txtsize,col=goods$color[i],adj=c(0,0),family=font.family)
@@ -254,19 +258,19 @@ gomwuPlot=function(inFile,goAnnotations,goDivision,level1=0.1,level2=0.05,level3
     par(mar = c(3,1,1,0))
 	
 	plot(c(1:top)~c(1:top),type="n",axes=F,xlab="",ylab="")
-	text(left,top-step*2,paste("p < ",level3,sep=""),font=2,cex=0.8* txtsize,adj=c(0,0),family=font.family)
+	text(left,top-step*2,paste("p < ",level3,sep=""),font=2,cex=1* txtsize,adj=c(0,0),family=font.family)
 	text(left,top-step*3,paste("p < ",level2,sep=""),font=1,cex=0.8* txtsize,adj=c(0,0),family=font.family)
 	text(left,top-step*4,paste("p < ",10^(-cutoff),sep=""),font=3,col="grey50",cex=0.8* txtsize,adj=c(0,0),family=font.family)
 	
 	cat(paste("GO terms dispayed: ",length(goods.names)),"\n")
 	cat(paste("\"Good genes\" accounted for:  ", ngenes," out of ",totSum, " ( ",round(100*ngenes/totSum,0), "% )","\n",sep=""))
 	par(old.par)	
-
+	goods$pval=10^(-1*goods$pval)
+	return(goods)
 }
 
 #------------------
 # returns non-overlapping GO categories based on dissimilarity table
-
 indepGO=function(dissim.table,min.similarity=1) {
 	tt=read.table(dissim.table,sep="\t", header=TRUE)
 	tt=as.matrix(tt)
@@ -289,5 +293,5 @@ indepGO=function(dissim.table,min.similarity=1) {
 	goods=colnames(tt)
 	goods=gsub("GO\\.","GO:",goods)
 	goods=gsub("\\.GO",";GO",goods)
-	return(goods)
 }
+
