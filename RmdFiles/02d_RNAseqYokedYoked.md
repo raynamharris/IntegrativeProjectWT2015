@@ -266,6 +266,10 @@ DG
     ## quartz_off_screen 
     ##                 2
 
+    ## 
+    ## FALSE  TRUE 
+    ## 15663     1
+
 CA3
 ---
 
@@ -335,6 +339,10 @@ CA3
     ## quartz_off_screen 
     ##                 2
 
+    ## 
+    ## FALSE  TRUE 
+    ## 15446     2
+
 CA1
 ---
 
@@ -403,3 +411,7 @@ CA1
 
     ## quartz_off_screen 
     ##                 2
+
+    ## 
+    ## FALSE  TRUE 
+    ## 10940    17

@@ -35,30 +35,6 @@ and recreate the plots by kniting the rmd file.
 DG consistent vs. yoked
 -----------------------
 
-    # input files
-    input="DGconsistentyoked.csv" 
-    goAnnotations="goAnnotations.tab" 
-    goDatabase="go.obo" 
-    goDivision="MF" # either MF, or BP, or CC
-
-    # Calculating stats
-    #gomwuStats(input, goDatabase, goAnnotations, goDivision,
-    #  perlPath="perl", 
-    #   largest=0.1,  
-    #   smallest=5,   
-    #   clusterCutHeight=0.25)  
-
-    # Data viz
-    gomwuPlot(input,goAnnotations,goDivision,
-        absValue=-log(0.05,10),  
-        level1=0.01, 
-        level2=0.05, 
-        level3=0.001, 
-        txtsize=2,    
-        treeHeight=0.5, 
-      colors=c("black","red","black","red") 
-    )
-
 ![](../../figures/02e_RNAseq_GO/DGconsistentyoked-1.png)
 
     ## GO terms dispayed:  7 
@@ -66,30 +42,6 @@ DG consistent vs. yoked
 
 CA3 consistent yoked
 --------------------
-
-    # input files
-    input="CA3consistentyoked.csv" 
-    goAnnotations="goAnnotations.tab" 
-    goDatabase="go.obo" 
-    goDivision="MF" # either MF, or BP, or CC
-
-    # Calculating stats
-    #gomwuStats(input, goDatabase, goAnnotations, goDivision,
-    #  perlPath="perl", 
-    #   largest=0.1,  
-    #   smallest=5,   
-    #   clusterCutHeight=0.25)  
-
-    # Data viz
-    gomwuPlot(input,goAnnotations,goDivision,
-        absValue=-log(0.05,10),  
-        level1=0.01, 
-        level2=0.05, 
-        level3=0.001, 
-        txtsize=2,    
-        treeHeight=0.5, 
-      colors=c("black","red","black","red") 
-    )
 
 ![](../../figures/02e_RNAseq_GO/CA3consistentyoked-1.png)
 
@@ -99,30 +51,6 @@ CA3 consistent yoked
 CA1 consistent yoked
 --------------------
 
-    # input files
-    input="CA1consistentyoked.csv" 
-    goAnnotations="goAnnotations.tab" 
-    goDatabase="go.obo" 
-    goDivision="MF" # either MF, or BP, or CC
-
-    # Calculating stats
-    #gomwuStats(input, goDatabase, goAnnotations, goDivision,
-    #  perlPath="perl", 
-    #   largest=0.1,  
-    #   smallest=5,   
-    #   clusterCutHeight=0.25)  
-
-    # Data viz
-    gomwuPlot(input,goAnnotations,goDivision,
-        absValue=-log(0.05,10),  
-        level1=0.01, 
-        level2=0.05, 
-        level3=0.001, 
-        txtsize=2,    
-        treeHeight=0.5, 
-      colors=c("black","red","black","red") 
-    )
-
 ![](../../figures/02e_RNAseq_GO/CA1consistentyoked-1.png)
 
     ## GO terms dispayed:  21 
@@ -130,30 +58,6 @@ CA1 consistent yoked
 
 DG conflict vs consistent
 -------------------------
-
-    # input files
-    input="DGconflictconsistent.csv" 
-    goAnnotations="goAnnotations.tab" 
-    goDatabase="go.obo" 
-    goDivision="MF" # either MF, or BP, or CC
-
-    # Calculating stats
-    #gomwuStats(input, goDatabase, goAnnotations, goDivision,
-    #  perlPath="perl", 
-    #   largest=0.1,  
-    #   smallest=5,   
-    #   clusterCutHeight=0.25) 
-
-    # Data viz
-    gomwuPlot(input,goAnnotations,goDivision,
-        absValue=-log(0.05,10),  
-        level1=0.10, 
-        level2=0.05, 
-        level3=0.01, 
-        txtsize=2,    
-        treeHeight=0.5, 
-      colors=c("red","salmon","red","salmon")
-    )
 
 ![](../../figures/02e_RNAseq_GO/DGconflictconsistent-1.png)
 
@@ -163,30 +67,6 @@ DG conflict vs consistent
 CA3 conflict consistent
 -----------------------
 
-    input="CA3conflictconsistent.csv" 
-    goAnnotations="goAnnotations.tab" 
-    goDatabase="go.obo" 
-    goDivision="MF" # either MF, or BP, or CC
-
-    # Calculating stats
-    #gomwuStats(input, goDatabase, goAnnotations, goDivision,
-    # perlPath="perl", 
-    # largest=0.1,  
-    # smallest=5,   
-    # clusterCutHeight=0.25)  
-
-
-    # Data viz
-    gomwuPlot(input,goAnnotations,goDivision,
-        absValue=-log(0.05,10),  
-        level1=0.01, 
-        level2=0.005, 
-        level3=0.001, 
-        txtsize=2,    
-        treeHeight=0.5, 
-      colors=c("red","salmon","red","salmon")
-    )
-
 ![](../../figures/02e_RNAseq_GO/CA3conflictconsistent-1.png)
 
     ## GO terms dispayed:  6 
@@ -195,32 +75,26 @@ CA3 conflict consistent
 CA1 consistent yoked
 --------------------
 
-    # input files
-    input="CA1conflictconsistent.csv" 
-    goAnnotations="goAnnotations.tab" 
-    goDatabase="go.obo" 
-    goDivision="MF" # either MF, or BP, or CC
+DG yoked vs. yoked
+------------------
 
+![](../../figures/02e_RNAseq_GO/DGyokedyoked-1.png)
 
-    # Calculating stats
-    #gomwuStats(input, goDatabase, goAnnotations, goDivision,
-    #  perlPath="perl", 
-    #   largest=0.1,  
-    #   smallest=5,   
-    #   clusterCutHeight=0.25) 
+    ## GO terms dispayed:  3 
+    ## "Good genes" accounted for:  5 out of 84 ( 6% )
 
-    # Data viz
-    gomwuPlot(input,goAnnotations,goDivision,
-        absValue=-log(0.05,10),  
-        level1=0.00001, 
-        level2=0.000001, 
-        level3=0.0000001, 
-        txtsize=2,    
-        treeHeight=0.5, 
-      colors=c("red","lightsalmon","red","lightsalmon")
-    )
+CA3 yoked vs. yoked
+-------------------
 
-![](../../figures/02e_RNAseq_GO/CA1conflictconsistent-1.png)
+![](../../figures/02e_RNAseq_GO/CA3yokedyoked-1.png)
 
-    ## GO terms dispayed:  18 
-    ## "Good genes" accounted for:  276 out of 737 ( 37% )
+    ## GO terms dispayed:  3 
+    ## "Good genes" accounted for:  14 out of 229 ( 6% )
+
+CA1 yoked vs. yoked
+-------------------
+
+![](../../figures/02e_RNAseq_GO/CA1yokedyoked-1.png)
+
+    ## GO terms dispayed:  10 
+    ## "Good genes" accounted for:  123 out of 429 ( 29% )

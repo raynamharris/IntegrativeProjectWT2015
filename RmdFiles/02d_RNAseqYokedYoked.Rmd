@@ -463,6 +463,16 @@ pdf(file="../figures/02_RNAseq_YokedYoked/DGyoked_consistentyoked_conflict.pdf",
 plot(colored)
 dev.off()
 
+## GO Setup
+table(res$padj<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/DGyokedyoked.csv", row.names = F)
+
+
 ```
 
 ## CA3
@@ -531,6 +541,16 @@ colored
 pdf(file="../figures/02_RNAseq_YokedYoked/CA3yoked_consistentyoked_conflict.pdf", width=1.5, height=1.75)
 plot(colored)
 dev.off()
+
+## GO setup
+table(res$padj<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/CAyokedyoked.csv", row.names = F)
+
 
 ```
 
@@ -601,5 +621,14 @@ colored
 pdf(file="../figures/02_RNAseq_YokedYoked/CA1yoked_consistentyoked_conflict.pdf", width=1.5, height=1.75)
 plot(colored)
 dev.off()
+
+table(res$padj<0.05)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP <- as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/CA1yokedyoked.csv", row.names = F)
+
 
 ```
