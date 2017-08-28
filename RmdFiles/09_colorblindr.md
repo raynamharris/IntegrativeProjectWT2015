@@ -46,10 +46,10 @@ Figure 1
     ##   format width height colorspace filesize
     ## 1    PNG  2072   1389       sRGB   247148
 
-    r <- ggdraw() + draw_image(fig1) # turn png into ggplot object
-    r2 <- edit_colors(r, tritan, sev = 1.0)
-    r4 <- edit_colors(r, protan, sev = 1.0)
-    plot_grid(r2, r4, nrow=2)
+    f <- ggdraw() + draw_image(fig1) # turn png into ggplot object
+    f2 <- edit_colors(f, tritan, sev = 1.0)
+    f4 <- edit_colors(f, protan, sev = 1.0)
+    plot_grid(f2, f4, nrow=2)
 
 ![](../figures/09_colorblindr/fig1-1.png)
 
@@ -62,10 +62,10 @@ Figure 2
     ##   format width height colorspace filesize
     ## 1    PNG  1252   1987       sRGB   237491
 
-    r <- ggdraw() + draw_image(fig2) # turn png into ggplot object
-    r2 <- edit_colors(r, tritan, sev = 1.0)
-    r4 <- edit_colors(r, protan, sev = 1.0)
-    plot_grid(r2, r4, nrow=1)
+    f <- ggdraw() + draw_image(fig2) # turn png into ggplot object
+    f2 <- edit_colors(f, tritan, sev = 1.0)
+    f4 <- edit_colors(f, protan, sev = 1.0)
+    plot_grid(f2, f4, nrow=1)
 
 ![](../figures/09_colorblindr/fig2-1.png)
 
