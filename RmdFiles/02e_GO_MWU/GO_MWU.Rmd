@@ -76,6 +76,10 @@ gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
+
+MF_CA1conflictconsistent <- read.csv("MF_CA1conflictconsistent.csv", sep="\t", header = T)
+MF_CA3conflictconsistent <- read.csv("MF_CA3conflictconsistent.csv", sep="\t", header = T)
+
 ```
 
 
