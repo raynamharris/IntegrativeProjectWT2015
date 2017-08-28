@@ -8,7 +8,7 @@ output: md_document
 ## Summary from Mikhail V. Matz https://github.com/z0on/GO_MWU
 GO_MWU uses continuous measure of significance (such as fold-change or -log(p-value) ) to identify GO categories that are significantly enriches with either up- or down-regulated genes. The advantage - no need to impose arbitrary significance cutoff.
 
-If the measure is binary (0 or 1) the script will perform a typical "GO enrichment" analysis based Fisher's exact test: it will show GO categories over-represented among the genes that have 1 as their measure. On the plot, different fonts are used to indicate significance and color indicates enrichment with either up (red) or down (blue) regulated genes. No colors are shown for binary measure analysis.The tree on the plot is hierarchical clustering of GO categories based on shared genes. Categories with no branch length between them are subsets of each other. The fraction next to GO category name indicates the fracton of "good" genes in it; "good" genes being the ones exceeding the arbitrary absValue cutoff (option in gomwuPlot). For Fisher's based test, specify absValue=0.5. This value does not affect statistics and is used for plotting only.
+If the measure is binary (0 or 1) the script will perform a typical "GO enrichment" analysis based Fisher's exact test: it will show GO categories over-represented among the genes that have 1 as their measure. On the plot, different fonts are used to indicate significance and color indicates enrichment with either up (red) or down (blue) regulated genes. No colors are shown for binary measure analysis.The tree on the plot is hierarchical clustering of GO categories based on shared genes. Categories with no branch length between them are subsets of each other. The fraction next to GO category name indicates the fracton of "good" genes in it; "good" genes being the ones exceeding the arbitrary absValue cutoff (option in results <- gomwuPlot). For Fisher's based test, specify absValue=0.5. This value does not affect statistics and is used for plotting only.
 
 NOTES: This program drains memory and creates some very large intermediate files, especially for the biological process catagory. First, I run the stats from the command line to make sure its working. Once I've generated the temp files, I comment out then stats portions and recreate the plots by kniting the rmd file. 
 
@@ -38,8 +38,9 @@ goDivision="MF" # either MF, or BP, or CC
 #	clusterCutHeight=0.25)  
 
 # Data viz
-gomwuPlot(input,goAnnotations,goDivision,
-	absValue=-log(0.05,10),  
+results <- results <- gomwuPlot(input,goAnnotations,goDivision,
+  absValue=-log(0.05,10), 
+	#absValue=1,
 	level1=0.05, 
 	level2=0.025, 
 	level3=0.01, 
@@ -47,12 +48,14 @@ gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
+results
+write.csv(results, file = "GO_DGconsistentyoked.csv", row.names = T)
 ```
 
 
 ## CA3 consistent yoked
 
-```{r CA3consistentyoked, warning=F, message=F, echo=F}
+```{r CA3consistentyoked, warning=F, message=F, echo=F, eval=F}
 # input files
 input="CA3consistentyoked.csv" 
 goAnnotations="goAnnotations.tab" 
@@ -67,7 +70,7 @@ goDivision="MF" # either MF, or BP, or CC
 #	clusterCutHeight=0.25)  
 
 # Data viz
-gomwuPlot(input,goAnnotations,goDivision,
+results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.075, 
 	level2=0.05, 
@@ -76,9 +79,8 @@ gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
-
-MF_CA1conflictconsistent <- read.csv("MF_CA1conflictconsistent.csv", sep="\t", header = T)
-MF_CA3conflictconsistent <- read.csv("MF_CA3conflictconsistent.csv", sep="\t", header = T)
+results
+read.csv("GO_CA3conflictconsistent.csv", sep="\t", row.names = TRUE)
 
 ```
 
@@ -86,7 +88,7 @@ MF_CA3conflictconsistent <- read.csv("MF_CA3conflictconsistent.csv", sep="\t", h
 
 ## CA1 consistent yoked
 
-```{r CA1consistentyoked, warning=F, message=F, echo=F}
+```{r CA1consistentyoked, warning=F, message=F, echo=F, eval=F}
 # input files
 input="CA1consistentyoked.csv" 
 goAnnotations="goAnnotations.tab" 
@@ -101,7 +103,7 @@ goDivision="MF" # either MF, or BP, or CC
 #	clusterCutHeight=0.25)  
 
 # Data viz
-gomwuPlot(input,goAnnotations,goDivision,
+results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.005, 
 	level2=0.001, 
@@ -110,6 +112,9 @@ gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
 )
+results
+read.csv("GO_CA1conflictconsistent.csv", sep="\t", row.names = TRUE)
+
 ```
 
 
@@ -132,7 +137,7 @@ goDivision="MF" # either MF, or BP, or CC
 #	clusterCutHeight=0.25) 
 
 # Data viz
-gomwuPlot(input,goAnnotations,goDivision,
+results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.1, 
 	level2=0.075, 
@@ -141,6 +146,9 @@ gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("red","salmon","red","salmon")
 )
+
+results
+write.csv(results, file = "GO_DGconflictconsistent.csv", row.names = TRUE)
 ```
 
 
@@ -161,7 +169,7 @@ goDivision="MF" # either MF, or BP, or CC
 
 
 # Data viz
-gomwuPlot(input,goAnnotations,goDivision,
+results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.03, 
 	level2=0.01, 
@@ -170,6 +178,9 @@ gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("red","salmon","red","salmon")
 )
+
+results
+write.csv(results, file = "GO_CA3conflictconsistent.csv", row.names = TRUE)
 ```
 
 
@@ -192,7 +203,7 @@ goDivision="MF" # either MF, or BP, or CC
 #	clusterCutHeight=0.25) 
 
 # Data viz
-gomwuPlot(input,goAnnotations,goDivision,
+results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.0000001, 
 	level2=0.00000001, 
@@ -201,6 +212,9 @@ gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("red","lightsalmon","red","lightsalmon")
 )
+
+results
+write.csv(results, file = "GO_CA1conflictconsistent.csv", row.names = TRUE)
 ```
 
 
@@ -223,7 +237,7 @@ goDivision="MF" # either MF, or BP, or CC
 #	clusterCutHeight=0.25) 
 
 # Data viz
-gomwuPlot(input,goAnnotations,goDivision,
+results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.1, 
 	level2=0.05, 
@@ -232,6 +246,9 @@ gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
 )
+
+results
+write.csv(results, file = "GO_DGyokedyoked.csv", row.names = TRUE)
 ```
 
 
@@ -252,7 +269,7 @@ goDivision="MF" # either MF, or BP, or CC
 #	clusterCutHeight=0.25) 
 
 # Data viz
-gomwuPlot(input,goAnnotations,goDivision,
+results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.1, 
 	level2=0.05, 
@@ -261,6 +278,10 @@ gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
 )
+
+results
+write.csv(results, file = "GO_CA3yokedyoked.csv", row.names = TRUE)
+
 ```
 
 
@@ -282,7 +303,7 @@ goDivision="MF" # either MF, or BP, or CC
 #	clusterCutHeight=0.25) 
 
 # Data viz
-gomwuPlot(input,goAnnotations,goDivision,
+results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=-log(0.05,10),  
 	level1=0.01, 
 	level2=0.05, 
@@ -291,6 +312,10 @@ gomwuPlot(input,goAnnotations,goDivision,
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
 )
+
+results
+write.csv(results, file = "GO_CA1yokedyoked.csv", row.names = TRUE)
+
 ```
 
 
