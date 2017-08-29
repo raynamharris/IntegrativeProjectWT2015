@@ -2,7 +2,7 @@
 # Install and Load WGCNA package
 # https://labs.genetics.ucla.edu/horvath/CoexpressionNetwork/Rpackages/WGCNA/faq.html
 #source("https://bioconductor.org/biocLite.R")
-#biocLite("WGCNA")
+#biocLite("DESeq2")
 #install.packages("flashClust")
 library(WGCNA)
 library(flashClust)
@@ -47,26 +47,26 @@ summary(datExpr0)
 ## remove rows with rowsum > some value
 datExpr0 <- datExpr0[rowMeans(datExpr0[, -1])>1, ]
 str(datExpr0)
-summary(datExpr0)
+#summary(datExpr0)
 
 
 ## transpose data
 datExpr0 <- t(datExpr0)
 datExpr0 <- as.data.frame(datExpr0)
-rownames(datExpr0)
+#rownames(datExpr0)
 
 
 # test that all samples good to go
 gsg=goodSamplesGenes(datExpr0, verbose = 1)
 gsg$allOK #If the last statement returns TRUE, all genes have passed the cuts
-head(gsg)
+#head(gsg)
 
 #-----Make a trait data frame from just sample info without beahvior
 datTraits <- colData
 head(datTraits)
 str(datTraits)
 
-datTraits$Mouse <- as.numeric(factor(datTraits$Mouse))
+datTraits$Mouse <- as.integer(factor(datTraits$Mouse))
 datTraits$RNAseqID <- as.integer(factor(datTraits$RNAseqID))
 datTraits$APA2 <- as.integer(factor(datTraits$APA2))
 datTraits$Punch <- as.integer(factor(datTraits$Punch))
@@ -74,7 +74,7 @@ datTraits$Punch <- as.integer(factor(datTraits$Punch))
 datTraits$Mouse <- as.numeric(factor(datTraits$Mouse))
 datTraits$RNAseqID <- as.numeric(factor(datTraits$RNAseqID))
 datTraits$APA2 <- as.numeric(factor(datTraits$APA2))
-datTraits$Punch <- as.integer(factor(datTraits$Punch))
+datTraits$Punch <- as.numeric(factor(datTraits$Punch))
 str(datTraits)
 
 
@@ -105,9 +105,9 @@ plotDendroAndColors(sampleTree,groupLabels=names(datColors),
 
 
 # Plot a line to show the cut
-abline(h = 0.7, col = "red");
+abline(h = 0.45, col = "red");
 # Determine cluster under the line
-clust = cutreeStatic(sampleTree, cutHeight = 0.7, minSize = 10)
+clust = cutreeStatic(sampleTree, cutHeight = 0.45, minSize = 10)
 table(clust)
 keepSamples = (clust==1)
 datExpr = datExpr0[keepSamples, ]
