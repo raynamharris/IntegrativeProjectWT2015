@@ -392,5 +392,6 @@ GOtermsWide <- dcast(GOterms, GOterm ~ group , value.var = "pval")
 GOtermsWide$rowsums <- rowSums(GOtermsWide[, -1])
 GOtermsWide <- GOtermsWide[c(1,13,2:12)]
 GOtermsWide <- GOtermsWide[order(-GOtermsWide$rowsums),] 
+rownames(GOtermsWide) <- c() #omit rownames
 GOtermsWide[c(1,2)]
 ```

@@ -127,85 +127,86 @@ two-way comparaisons.
     GOtermsWide$rowsums <- rowSums(GOtermsWide[, -1])
     GOtermsWide <- GOtermsWide[c(1,13,2:12)]
     GOtermsWide <- GOtermsWide[order(-GOtermsWide$rowsums),] 
+    rownames(GOtermsWide) <- c() #omit rownames
     GOtermsWide[c(1,2)]
 
     ##                                                                                 GOterm
-    ## 13                                     hydrogen ion transmembrane transporter activity
-    ## 21                                                                 poly(A) RNA binding
-    ## 30                                                          signal transducer activity
-    ## 31                                                  structural constituent of ribosome
-    ## 3                                                       cell adhesion molecule binding
-    ## 8                                                                core promoter binding
-    ## 17                                                             oxidoreductase activity
-    ## 19 oxidoreductase activity, acting on NAD(P)H, quinone or similar compound as acceptor
-    ## 23                                                                   receptor activity
-    ## 24                                              regulatory region nucleic acid binding
-    ## 38                                                            unfolded protein binding
-    ## 1                                                                        amide binding
-    ## 2                                            cation transmembrane transporter activity
-    ## 4                                                                     channel activity
-    ## 5                                                                    chaperone binding
-    ## 6                                                                    chromatin binding
-    ## 7                                                                     collagen binding
-    ## 9                                          core promoter sequence-specific DNA binding
-    ## 10                                                                exonuclease activity
-    ## 11                                                         glutamate receptor activity
-    ## 12                                                          heat shock protein binding
-    ## 14                                     mitogen-activated protein kinase kinase binding
-    ## 15                                               nuclear localization sequence binding
-    ## 16                                              nucleoside diphosphate kinase activity
-    ## 18                                          oxidoreductase activity, acting on NAD(P)H
-    ## 20                                                                 phosphatase binding
-    ## 22                                                             protein complex binding
-    ## 25                                                       RNA-dependent ATPase activity
-    ## 26                                                                        rRNA binding
-    ## 27                                                       sequence-specific DNA binding
-    ## 28                         sequence-specific DNA binding transcription factor activity
-    ## 29                                                             signal sequence binding
-    ## 32                                                        structural molecule activity
-    ## 33                                   translation factor activity, nucleic acid binding
-    ## 34                                              translation initiation factor activity
-    ## 35                                      transmembrane receptor protein kinase activity
-    ## 36                                                  transmembrane transporter activity
-    ## 37                                                                transporter activity
+    ## 1                                      hydrogen ion transmembrane transporter activity
+    ## 2                                                                  poly(A) RNA binding
+    ## 3                                                           signal transducer activity
+    ## 4                                                   structural constituent of ribosome
+    ## 5                                                       cell adhesion molecule binding
+    ## 6                                                                core promoter binding
+    ## 7                                                              oxidoreductase activity
+    ## 8  oxidoreductase activity, acting on NAD(P)H, quinone or similar compound as acceptor
+    ## 9                                                                    receptor activity
+    ## 10                                              regulatory region nucleic acid binding
+    ## 11                                                            unfolded protein binding
+    ## 12                                                                       amide binding
+    ## 13                                           cation transmembrane transporter activity
+    ## 14                                                                    channel activity
+    ## 15                                                                   chaperone binding
+    ## 16                                                                   chromatin binding
+    ## 17                                                                    collagen binding
+    ## 18                                         core promoter sequence-specific DNA binding
+    ## 19                                                                exonuclease activity
+    ## 20                                                         glutamate receptor activity
+    ## 21                                                          heat shock protein binding
+    ## 22                                     mitogen-activated protein kinase kinase binding
+    ## 23                                               nuclear localization sequence binding
+    ## 24                                              nucleoside diphosphate kinase activity
+    ## 25                                          oxidoreductase activity, acting on NAD(P)H
+    ## 26                                                                 phosphatase binding
+    ## 27                                                             protein complex binding
+    ## 28                                                       RNA-dependent ATPase activity
+    ## 29                                                                        rRNA binding
+    ## 30                                                       sequence-specific DNA binding
+    ## 31                         sequence-specific DNA binding transcription factor activity
+    ## 32                                                             signal sequence binding
+    ## 33                                                        structural molecule activity
+    ## 34                                   translation factor activity, nucleic acid binding
+    ## 35                                              translation initiation factor activity
+    ## 36                                      transmembrane receptor protein kinase activity
+    ## 37                                                  transmembrane transporter activity
+    ## 38                                                                transporter activity
     ## 39                                                                 Wnt-protein binding
     ##    rowsums
-    ## 13       4
-    ## 21       4
-    ## 30       3
-    ## 31       3
-    ## 3        2
+    ## 1        4
+    ## 2        4
+    ## 3        3
+    ## 4        3
+    ## 5        2
+    ## 6        2
+    ## 7        2
     ## 8        2
-    ## 17       2
-    ## 19       2
-    ## 23       2
-    ## 24       2
-    ## 38       2
-    ## 1        1
-    ## 2        1
-    ## 4        1
-    ## 5        1
-    ## 6        1
-    ## 7        1
-    ## 9        1
-    ## 10       1
-    ## 11       1
+    ## 9        2
+    ## 10       2
+    ## 11       2
     ## 12       1
+    ## 13       1
     ## 14       1
     ## 15       1
     ## 16       1
+    ## 17       1
     ## 18       1
+    ## 19       1
     ## 20       1
+    ## 21       1
     ## 22       1
+    ## 23       1
+    ## 24       1
     ## 25       1
     ## 26       1
     ## 27       1
     ## 28       1
     ## 29       1
+    ## 30       1
+    ## 31       1
     ## 32       1
     ## 33       1
     ## 34       1
     ## 35       1
     ## 36       1
     ## 37       1
+    ## 38       1
     ## 39       1
