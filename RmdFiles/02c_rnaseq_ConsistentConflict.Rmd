@@ -54,6 +54,12 @@ savecols <- as.vector(savecols)
 countData <- countData %>% dplyr::select(one_of(savecols)) 
 
 colData %>% select(APA2,Punch)  %>%  summary()
+
+totalCounts=colSums(countData)
+totalCounts
+min(totalCounts) #179967
+max(totalCounts) #3020727
+mean(totalCounts) #1375592
 ```
 
 ```{r DESeq2, echo=F}
@@ -70,6 +76,7 @@ dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
+
 ```
 
 

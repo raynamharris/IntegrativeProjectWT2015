@@ -404,3 +404,15 @@ summary(lm136)
 
 ```
 
+## getting file name for a time spent heatmap
+
+```{r forandre}
+y <- behavior %>%
+  distinct(ID, APA2)
+x <- read.csv("~/Github/BehavEphyRNAseq/data/behavior/APA_2013-2016.csv", header = T)
+x <- x %>%
+  distinct(ID, filename)
+
+z <- inner_join(x,y)
+write.csv(z, "filnames.csv", row.names = F)
+```

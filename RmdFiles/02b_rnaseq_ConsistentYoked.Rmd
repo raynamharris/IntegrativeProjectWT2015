@@ -71,6 +71,10 @@ dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
+vsd <- varianceStabilizingTransformation(dds, blind=F) ## variance stabilized
+head(vsd)
+
+colnames(vsd)=colData$RNAseqID
 ```
 
 
