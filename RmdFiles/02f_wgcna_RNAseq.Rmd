@@ -1,3 +1,11 @@
+---
+title: "WGCNA"
+author: "Rayna M Harris"
+date: "8/30/2017"
+output: html_document
+---
+
+```{r setup}
 # WGCNA ----
 # Install and Load WGCNA package
 # https://labs.genetics.ucla.edu/horvath/CoexpressionNetwork/Rpackages/WGCNA/faq.html
@@ -12,8 +20,10 @@ library(DESeq2) ## for gene expression analysis
 
 
 options(stringsAsFactors=FALSE)
-enableWGCNAThreads()
+allowWGCNAThreads()
+```     
 
+```{r data}
 ########################################################    
 #        Prep Variance Stabilized Data
 ########################################################    
@@ -22,12 +32,27 @@ countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, 
 colData <- read.csv("../data/02a_colData.csv", header = T)
 colData <- colData[c(1,2,4,8)]
 
+
+
+colData <- colData %>% 
+  filter(Punch %in% c("CA1","CA3" ))  %>% 
+  droplevels()
+
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+
+```     
+
+```{r DESeq2}
+
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
-                              design = ~ Punch + APA2 + Punch*APA2)
+                              design = ~ APA2 + Punch + APA2*Punch )
 
 dds # view the DESeq object - note numnber of genes
-dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 10 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 
@@ -46,19 +71,23 @@ gsg$allOK #If the last statement returns TRUE, all genes have passed the cuts
 
 #-----Make a trait data frame from just sample info without beahvior
 datTraits <- colData
+datTraits$Mouse <- NULL
 
-datTraits$Mouse <- as.integer(factor(datTraits$Mouse))
+#datTraits$Mouse <- as.integer(factor(datTraits$Mouse))
 datTraits$RNAseqID <- as.integer(factor(datTraits$RNAseqID))
 datTraits$APA2 <- as.integer(factor(datTraits$APA2))
 datTraits$Punch <- as.integer(factor(datTraits$Punch))
 
-datTraits$Mouse <- as.numeric(factor(datTraits$Mouse))
+#datTraits$Mouse <- as.numeric(factor(datTraits$Mouse))
 datTraits$RNAseqID <- as.numeric(factor(datTraits$RNAseqID))
 datTraits$APA2 <- as.numeric(factor(datTraits$APA2))
 datTraits$Punch <- as.numeric(factor(datTraits$Punch))
 
 str(datTraits)
 
+```     
+
+```{r beforeoutliers}
 
 #######   #################    ################   #######    
 #                 Call sample outliers
@@ -87,13 +116,17 @@ datColors=data.frame(outlier=outlierColor,traitColors)
 #      Plot the sample dendrogram
 #######   #################    ################   ####### 
 
+plotDendroAndColors(sampleTree,groupLabels=names(datColors),
+                    colors=datColors,main="Sample dendrogram and trait heatmap")
+
+
 pdf(file="../figures/02f_RNAseq_WGCNA/SampleDendro.pdf", width=6, height=6)
 plotDendroAndColors(sampleTree,groupLabels=names(datColors),
                     colors=datColors,main="Sample dendrogram and trait heatmap")
 dev.off()
+```     
 
-
-# Plot a line to show the cut
+```{r afteroutliers}
 
 # Determine cluster under the line
 clust = cutreeStatic(sampleTree, cutHeight = 0.45, minSize = 10)
@@ -121,7 +154,19 @@ dim(datTraits)
 powers= c(seq(1,10,by=1), seq(from =12, to=20, by=2)) #choosing a set of soft-thresholding powers
 sft = pickSoftThreshold(datExpr0, powerVector=powers, verbose =5,networkType="signed") #call network topology analysis function
 
-pdf(file="../figures/02f_RNAseq_WGCNA/softthresholdo.pdf", width=6, height=5)
+
+
+par(mfrow= c(1,2))
+cex1=0.9
+plot(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2], xlab= "Soft Threshold (power)", ylab="Scale Free Topology Model Fit, signed", type= "n", main= paste("Scale independence"))
+text(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2], labels=powers, cex=cex1, col="red")
+abline(h=0.90, col="red")
+plot(sft$fitIndices[,1], sft$fitIndices[,5], xlab= "Soft Threshold (power)", ylab="Mean Connectivity", type="n", main = paste("Mean connectivity"))
+text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1, col="red")
+
+
+
+pdf(file="../figures/02f_RNAseq_WGCNA/softthreshold.pdf", width=6, height=5)
 par(mfrow= c(1,2))
 cex1=0.9
 plot(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2], xlab= "Soft Threshold (power)", ylab="Scale Free Topology Model Fit, signed", type= "n", main= paste("Scale independence"))
@@ -131,16 +176,19 @@ plot(sft$fitIndices[,1], sft$fitIndices[,5], xlab= "Soft Threshold (power)", yla
 text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1, col="red")
 dev.off()
 
-softPower=16
 
+#softPower=10
 
+```
+
+```{r constructnetwork}
 
 #######   #################    ################   #######    
 #                    Construct network
 #######   #################    ################   #######     
 
 
-adjacency=adjacency(datExpr0, power=softPower, type="signed" )  #add  if adjusting 
+adjacency=adjacency(datExpr0, type="signed" )  #add  if adjusting 
 TOM= TOMsimilarity(adjacency, TOMType="signed")
 dissTOM= 1-TOM
 geneTree= flashClust(as.dist(dissTOM), method="average")
@@ -169,7 +217,7 @@ MEDiss= 1-cor(MEs, use = 'pairwise.complete.obs')
 METree= flashClust(as.dist(MEDiss), method= "average")
 
 plot(METree, main= "Clustering of module eigengenes", xlab= "", sub= "")
-MEDissThres= 0.0006
+MEDissThres= 0.01
 abline(h=MEDissThres, col="red")
 merge= mergeCloseModules(datExpr0, dynamicColors, cutHeight= MEDissThres, verbose =3)
 mergedColors= merge$colors
@@ -181,6 +229,10 @@ moduleColors= mergedColors
 colorOrder= c("grey", standardColors(50))
 moduleLabels= match(moduleColors, colorOrder)-1
 MEs=mergedMEs
+
+```
+
+```{r traitsmodules}
 
 #######   #################    ################   #######    
 #                Relate modules to traits
@@ -209,7 +261,7 @@ moduleTraitPvalue = corPvalueStudent(moduleTraitCor, nSamples);
 textMatrix = paste(signif(moduleTraitCor, 2), "\n(",
                    signif(moduleTraitPvalue, 1), ")", sep = "");
 dim(textMatrix) = dim(moduleTraitCor)
-dev.off()
+
 # Display the correlation values within a heatmap plot
 labeledHeatmap(Matrix = moduleTraitCor,
                xLabels = names(datTraits),
@@ -224,10 +276,12 @@ labeledHeatmap(Matrix = moduleTraitCor,
                main = paste("Module-trait relationships"))
 ######--------------------end--------------------#######
 
+```
 
+```{r heatmap}
 
 #---------------------Eigengene heatmap
-which.module="blue" #replace with module of interest
+which.module="yellow" #replace with module of interest
 datME=MEs
 datExpr=datt
 #quartz()
@@ -240,66 +294,4 @@ par(mar=c(5, 4.2, 0, 0.7))
 barplot(ME, col=which.module, main="", names.arg=(datTraits$genoAPA), cex.names=0.5, cex.main=2,
         ylab="eigengene expression",xlab="sample")
 
-## saved as 4-<color>-alldata 
-
-
-
-# Define variable weight containing the weight column of datTrait
-newdatTraits <- datTraits 
-newdatTraits$names <- rownames(datTraits)
-newdatTraits$names <- NULL
-
-punch = as.data.frame(newdatTraits$Punch);
-names(punch) = "punch"
-# names (colors) of the modules
-modNames = substring(names(MEs), 3)
-
-geneModuleMembership = as.data.frame(cor(datExpr, MEs));
-MMPvalue = as.data.frame(corPvalueStudent(as.matrix(geneModuleMembership), nSamples));
-
-names(geneModuleMembership) = paste("MM", modNames, sep="");
-names(MMPvalue) = paste("p.MM", modNames, sep="");
-
-geneTraitSignificance = as.data.frame(cor(datExpr, punch, use = "p"));
-GSPvalue = as.data.frame(corPvalueStudent(as.matrix(geneTraitSignificance), nSamples));
-
-names(geneTraitSignificance) = paste("GS.", names(punch), sep="");
-names(GSPvalue) = paste("p.GS.", names(punch), sep="");
-
-
-
-#### output "gene" list ----
-## see https://github.com/ClaireMGreen/TDP-43_Code/blob/afb43cddb8ec1a940fbcfa106a1cc3cf77568b7e/WGCNA2.R
-
-#find out what the IDs are of the genes that are contained within a module. 
-
-blue <- as.data.frame(colnames(datExpr0)[moduleColors=='blue'])
-blue$module <- "blue"
-colnames(blue)[1] <- "trainscript_length"
-red <- as.data.frame(colnames(datExpr0)[moduleColors=='red'])
-red$module <- "red"
-colnames(red)[1] <- "trainscript_length"
-green <- as.data.frame(colnames(datExpr0)[moduleColors=='green'])
-green$module <- "green"
-colnames(green)[1] <- "trainscript_length"
-yellow <- as.data.frame(colnames(datExpr0)[moduleColors=='yellow'])
-yellow$module <- "yellow"
-colnames(yellow)[1] <- "trainscript_length"
-brown <- as.data.frame(colnames(datExpr0)[moduleColors=='brown'])
-brown$module <- "brown"
-colnames(brown)[1] <- "trainscript_length"
-turquoise <- as.data.frame(colnames(datExpr0)[moduleColors=='turquoise'])
-turquoise$module <- "turquoise"
-colnames(turquoise)[1] <- "trainscript_length"
-black <- as.data.frame(colnames(datExpr0)[moduleColors=='black'])
-black$module <- "black"
-colnames(black)[1] <- "trainscript_length"
-magenta <- as.data.frame(colnames(datExpr0)[moduleColors=='magenta'])
-magenta$module <- "magenta"
-colnames(magenta)[1] <- "trainscript_length"
-pink <- as.data.frame(colnames(datExpr0)[moduleColors=='pink'])
-pink$module <- "pink"
-colnames(pink)[1] <- "trainscript_length"
-purple <- as.data.frame(colnames(datExpr0)[moduleColors=='purple'])
-purple$module <- "purple"
-colnames(purple)[1] <- "trainscript_length"
+```
