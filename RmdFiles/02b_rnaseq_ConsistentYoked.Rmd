@@ -184,8 +184,6 @@ DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
 DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA2consistentyoked_consistent)) 
 
-
-
 # create new col with min padj
 DEGes <- DEGes %>% filter(padjmin < 0.05)
 rownames(DEGes) <- DEGes$rownames
@@ -194,9 +192,8 @@ DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
 DEGes <- as.matrix(DEGes)
 DEGes <- DEGes - rowMeans(DEGes)
 
-
 ## the heatmap annotation file
-df <- as.data.frame(colData(dds)[,c("Punch","APA2")]) ## matrix to df
+df <- as.data.frame(colData(dds)[,c("APA2","Punch")]) ## matrix to df
 rownames(df) <- names(countData)
 
 

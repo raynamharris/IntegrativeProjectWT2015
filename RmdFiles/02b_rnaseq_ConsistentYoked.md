@@ -68,6 +68,16 @@ Overall differential Gene Expression analysis
 
     ## fitting model and testing
 
+    ## class: DESeqTransform 
+    ## dim: 6 18 
+    ## metadata(1): version
+    ## assays(1): ''
+    ## rownames(6): 0610007P14Rik 0610009B22Rik ... 0610010F05Rik
+    ##   0610010K14Rik
+    ## rowData names(37): baseMean baseVar ... deviance maxCooks
+    ## colnames(18): 143C-CA1-1 143D-CA1-3 ... 147D-CA3-1 147D-DG-1
+    ## colData names(9): RNAseqID Mouse ... APA2 sizeFactor
+
 Principle component analysis
 ----------------------------
 
@@ -176,6 +186,88 @@ heatmap
 Volcanos plots and and gene lists
 ---------------------------------
 
+    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MLE): APA2 consistent vs yoked_consistent 
+    ## Wald test p-value: APA2 consistent vs yoked consistent 
+    ## DataFrame with 10 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Smad7   31.62837       3.464195 0.4070930  8.509592 1.745466e-17
+    ## Frmd6  151.88839       3.318502 0.4093255  8.107246 5.177991e-16
+    ## Fosl2  360.52001       2.622232 0.3311076  7.919575 2.383243e-15
+    ## Rgs4   162.75837       1.770968 0.2265978  7.815468 5.475920e-15
+    ## Rgs2    54.56923       2.716807 0.3619649  7.505719 6.109236e-14
+    ## Plk2   775.83613       2.391061 0.3398796  7.035024 1.992271e-12
+    ## Sgk1    32.48376       2.440007 0.3521227  6.929421 4.225658e-12
+    ## Fbxo33  97.30130       2.994555 0.4443692  6.738890 1.596017e-11
+    ## Homer1  57.03021       3.034069 0.4597307  6.599666 4.120848e-11
+    ## Tiparp  51.60331       3.024005 0.4606953  6.564003 5.238216e-11
+    ##                padj
+    ##           <numeric>
+    ## Smad7  1.988958e-13
+    ## Frmd6  2.950160e-12
+    ## Fosl2  9.052352e-12
+    ## Rgs4   1.559953e-11
+    ## Rgs2   1.392295e-10
+    ## Plk2   3.783656e-09
+    ## Sgk1   6.878768e-09
+    ## Fbxo33 2.273326e-08
+    ## Homer1 5.217452e-08
+    ## Tiparp 5.968947e-08
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                            yes = "consistent", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                        yes = "yoked_consistent", 
+                                        no = "none")))
+    top_labelled <- top_n(data, n = 5, wt = lfc)
+    # Color corresponds to fold change directionality
+    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+      theme_bw(base_size = 8) + # clean up theme
+      theme(legend.position = "none") + # remove legend 
+      scale_color_manual(values = volcano1) + 
+      theme(panel.grid.minor=element_blank(),
+               panel.grid.major=element_blank()) + 
+      scale_x_continuous(name="log2 (consistent/yoked)",
+                         limits=c(-10, 10)) +
+      scale_y_continuous(name="-log10 (adjusted p-value)",
+                        limits= c(0, 15)) +
+      draw_image(imgHippo, scale = 10, x=-6.5, y=13)
+
+    colored
+
+![](../figures/02_RNAseq_ConsistentYoked/ALLtraining-1.png)
+
+    pdf(file="../figures/02_RNAseq_ConsistentYoked/Allconsistentyoked.pdf", width=1.5, height=1.75)
+    plot(colored)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    ## setup for GO
+    table(res$padj<0.05)
+
+    ## 
+    ## FALSE  TRUE 
+    ## 11296    99
+
+    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+    logs$logP <- as.numeric(as.character(logs$logP))
+    sign <- rep(1,nrow(logs))
+    sign[res$log2FoldChange<0]=-1  
+    logs$logP <- logs$logP*sign
+    write.csv(logs, file = "./02e_GO_MWU/Allconsistentyoked.csv", row.names = F)
+
 DG only
 -------
 
@@ -238,6 +330,10 @@ DG only
     ## quartz_off_screen 
     ##                 2
 
+    ## 
+    ## FALSE  TRUE 
+    ## 10953    80
+
 CA3 only
 --------
 
@@ -299,6 +395,10 @@ CA3 only
     ## quartz_off_screen 
     ##                 2
 
+    ## 
+    ## FALSE  TRUE 
+    ## 15411     8
+
 CA1 only
 --------
 
@@ -358,3 +458,7 @@ CA1 only
 
     ## quartz_off_screen 
     ##                 2
+
+    ## 
+    ## FALSE  TRUE 
+    ##  9241   166

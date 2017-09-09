@@ -178,7 +178,7 @@ DEGes <- as.matrix(DEGes)
 DEGes <- DEGes - rowMeans(DEGes)
 
 ## the heatmap annotation file
-df <- as.data.frame(colData(dds)[,c("Punch","APA2")]) ## matrix to df
+df <- as.data.frame(colData(dds)[,c("APA2", "Punch")]) ## matrix to df
 rownames(df) <- names(countData)
 
 

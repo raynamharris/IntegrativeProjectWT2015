@@ -17,10 +17,14 @@ library(flashClust)
 library(magrittr) ## to use the weird pipe
 library(dplyr)
 library(DESeq2) ## for gene expression analysis
-
+library(viridis)
 
 options(stringsAsFactors=FALSE)
 allowWGCNAThreads()
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/02f_RNAseq_WGCNA')
+
 ```     
 
 ```{r data}
@@ -35,7 +39,7 @@ colData <- colData[c(1,2,4,8)]
 
 
 colData <- colData %>% 
-  filter(Punch %in% c("CA1","CA3" ))  %>% 
+  filter(Punch %in% c("DG" ))  %>% 
   droplevels()
 
 savecols <- as.character(colData$RNAseqID) 
@@ -49,7 +53,7 @@ countData <- countData %>% dplyr::select(one_of(savecols))
 
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
-                              design = ~ APA2 + Punch + APA2*Punch )
+                              design = ~ APA2 )
 
 dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 10 counts
@@ -83,6 +87,7 @@ datTraits$RNAseqID <- as.numeric(factor(datTraits$RNAseqID))
 datTraits$APA2 <- as.numeric(factor(datTraits$APA2))
 datTraits$Punch <- as.numeric(factor(datTraits$Punch))
 
+datTraits$Punch <- NULL
 str(datTraits)
 
 ```     
@@ -201,7 +206,7 @@ dev.off()
 #                    Make modules
 #######   #################    ################   ####### 
 
-minModuleSize=100
+minModuleSize=200
 dynamicMods= cutreeDynamic(dendro= geneTree, distM= dissTOM, deepSplit=2, pamRespectsDendro= FALSE, minClusterSize= minModuleSize)
 table(dynamicMods)
 dynamicColors= labels2colors(dynamicMods)
