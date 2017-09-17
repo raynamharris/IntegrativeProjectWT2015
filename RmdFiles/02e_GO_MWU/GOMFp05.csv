@@ -1,0 +1,37 @@
+,pval,direction,color,goodgenes,GOterm,Punch,
+3/60 hydrogen ion transmembrane transporter activity,0.006532861,1,lightsalmon,Mar-60,hydrogen ion transmembrane transporter activity,CA3,CA3conflictconsistent
+44/714 signal transducer activity,2.49E-05,0,red,44/714,signal transducer activity,CA3,CA3conflictconsistent
+33/592 receptor activity,2.49E-05,0,red,33/592,receptor activity,CA3,CA3conflictconsistent
+17/215 cell adhesion molecule binding,0.00218727,0,red,17/215,cell adhesion molecule binding,CA3,CA3conflictconsistent
+"3/71 translation factor activity, nucleic acid binding",0.006532861,1,lightsalmon,Mar-71,"translation factor activity, nucleic acid binding",CA3,CA3conflictconsistent
+36/788 poly(A) RNA binding,0.006532861,1,lightsalmon,36/788,poly(A) RNA binding,CA3,CA3conflictconsistent
+,,,,,,,
+,,,,,,,
+4/86 structural constituent of ribosome,8.85E-14,0,grey20,Apr-86,structural constituent of ribosome,CA3,CA3yokedyoked
+27/302 structural molecule activity,6.36E-09,0,grey20,27/302,structural molecule activity,CA3,CA3yokedyoked
+,,,,,,,
+2/35 oxidoreductase activity,0.013422298,1,lightsalmon,Feb-35,oxidoreductase activity,DG,Dgconflictconsistent
+3/62 hydrogen ion transmembrane transporter activity,0.021385756,1,lightsalmon,Mar-62,hydrogen ion transmembrane transporter activity,DG,Dgconflictconsistent
+8/132 core promoter binding,0.059279121,0,red,8/132,core promoter binding,DG,Dgconflictconsistent
+30/794 poly(A) RNA binding,0.013422298,0,red,30/794,poly(A) RNA binding,DG,Dgconflictconsistent
+9/62 unfolded protein binding,0.013422298,0,red,Sep-62,unfolded protein binding,DG,Dgconflictconsistent
+,,,,,,,
+2/34 signal sequence binding,0.008264423,1,red,Feb-34,signal sequence binding,DG,Dgconsistentyoked
+2/21 nuclear localization sequence binding,0.008227883,1,red,21-Feb,nuclear localization sequence binding,DG,Dgconsistentyoked
+10/97 heat shock protein binding,0.008264423,1,red,Oct-97,heat shock protein binding,DG,Dgconsistentyoked
+38/795 poly(A) RNA binding,0.008264423,1,red,38/795,poly(A) RNA binding,DG,Dgconsistentyoked
+12/161 phosphatase binding,0.008264423,1,red,12/161,phosphatase binding,DG,Dgconsistentyoked
+10/91 core promoter sequence-specific DNA binding,0.008264423,1,red,Oct-91,core promoter sequence-specific DNA binding,DG,Dgconsistentyoked
+13/133 core promoter binding,0.006771591,1,red,13/133,core promoter binding,DG,Dgconsistentyoked
+,,,,,,,
+61/87 structural constituent of ribosome,1.00E-15,1,lightsalmon,61/87,structural constituent of ribosome,CA1,CA1conflictconsistent
+24/55 rRNA binding,2.30E-08,1,lightsalmon,24/55,rRNA binding,CA1,CA1conflictconsistent
+87/742 signal transducer activity,7.22E-08,0,red,87/742,signal transducer activity,CA1,CA1conflictconsistent
+72/441 chromatin binding,6.58E-09,0,red,72/441,chromatin binding,CA1,CA1conflictconsistent
+80/723 sequence-specific DNA binding transcription factor activity,1.01E-11,0,red,80/723,sequence-specific DNA binding transcription factor activity,CA1,CA1conflictconsistent
+83/660 sequence-specific DNA binding,2.55E-10,0,red,83/660,sequence-specific DNA binding,CA1,CA1conflictconsistent
+71/514 regulatory region nucleic acid binding,1.93E-08,0,red,71/514,regulatory region nucleic acid binding,CA1,CA1conflictconsistent
+31/64 hydrogen ion transmembrane transporter activity,1.01E-11,1,lightsalmon,31/64,hydrogen ion transmembrane transporter activity,CA1,CA1conflictconsistent
+18/36 oxidoreductase activity,1.02E-11,1,lightsalmon,18/36,oxidoreductase activity,CA1,CA1conflictconsistent
+111/577 oxidoreductase activity,5.11E-11,1,lightsalmon,111/577,oxidoreductase activity,CA1,CA1conflictconsistent
+"23/62 oxidoreductase activity, acting on NAD(P)H",3.13E-10,1,lightsalmon,23/62,"oxidoreductase activity, acting on NAD(P)H",CA1,CA1conflictconsistent

@@ -296,7 +296,7 @@ top_labelled <- top_n(data, n = 5, wt = lfc)
 
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = c("CA1" = "#7570b3",
@@ -327,7 +327,7 @@ data <- data %>%
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = c("CA1" = "#7570b3",
@@ -359,7 +359,7 @@ data <- data %>%
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = c("CA3" = "#1b9e77",
@@ -398,7 +398,7 @@ data <- data %>%
 top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = volcano1) + 
@@ -480,7 +480,7 @@ data <- data %>%
 top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = volcano1) + 
@@ -489,7 +489,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
-                    limits= c(0, 12.5)) 
+                    limits= c(0, 12.5)) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )
 colored
 
 
@@ -563,7 +564,7 @@ data <- data %>%
 top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = volcano1) + 
@@ -572,7 +573,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
-                    limits= c(0, 12.5)) 
+                    limits= c(0, 12.5)) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )
 colored
 
 
@@ -641,7 +643,7 @@ data <- data %>%
 top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = volcano1) + 
@@ -650,7 +652,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
   scale_y_continuous(name="-log10 (adjusted p-value)",
-                    limits= c(0, 12.5)) 
+                    limits= c(0, 12.5)) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )
 colored
 
 #cvd_grid(colored) # to view plot for color blind 

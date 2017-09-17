@@ -45,9 +45,9 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
   absValue=1,
-	level1=0.05, 
-	level2=0.025, 
-	level3=0.01, 
+	level1=0.01, 
+	level2=0.01, 
+	level3=0.000000000000000000000000001, 
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
@@ -65,7 +65,7 @@ write.csv(results, file = "GO_DGconsistentyoked.csv", row.names = T)
 
 ## CA3 consistent yoked
 
-```{r CA3consistentyoked, warning=F, message=F, echo=F, eval=F}
+```{r CA3consistentyoked, warning=F, message=F, echo=F}
 # input files
 input="CA3consistentyoked.csv" 
 goAnnotations="goAnnotations.tab" 
@@ -82,9 +82,9 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
-	level1=0.075, 
-	level2=0.05, 
-	level3=0.01, 
+	level1=0.01, 
+	level2=0.01, 
+	level3=0.0000000000000000000001, 
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
@@ -96,7 +96,7 @@ results <- cbind(results, y)
 results$rownames <- NULL
 results$Punch <- "CA3"
 
-write.csv(results, file = "GO_CA3conflictconsistent.csv", row.names = TRUE)
+write.csv(results, file = "GO_CA3consistentyoked.csv", row.names = TRUE)
 ```
 
 
@@ -120,9 +120,9 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
-	level1=0.005, 
-	level2=0.001, 
-	level3=0.0005, 
+	level1=0.01, 
+	level2=0.01, 
+	level3=0.00000000000000000000000001, 
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","red","grey20","red") 
@@ -134,7 +134,7 @@ results <- cbind(results, y)
 results$rownames <- NULL
 results$Punch <- "CA1"
 
-write.csv(results, file = "GO_CA1conflictconsistent.csv", row.names = TRUE)
+write.csv(results, file = "GO_CA1consistentyoked.csv", row.names = TRUE)
 
 ```
 
@@ -161,11 +161,11 @@ goDivision="MF" # either MF, or BP, or CC
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
 	level1=0.1, 
-	level2=0.075, 
-	level3=0.05, 
+	level2=0.01, 
+	level3=0.01, 
 	txtsize=2,    
 	treeHeight=0.5, 
-  colors=c("red","salmon","red","salmon")
+  colors=c("red","lightsalmon","red","lightsalmon")
 )
 
 results$rownames <- row.names(results)
@@ -197,12 +197,12 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
-	level1=0.03, 
+	level1=0.01, 
 	level2=0.01, 
-	level3=0.001, 
+	level3=0.0000000000000000000000001, 
 	txtsize=2,    
 	treeHeight=0.5, 
-  colors=c("red","salmon","red","salmon")
+  colors=c("red","lightsalmon","red","lightsalmon")
 )
 
 results$rownames <- row.names(results)
@@ -237,8 +237,8 @@ goDivision="MF" # either MF, or BP, or CC
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
 	level1=0.0000001, 
-	level2=0.00000001, 
-	level3=0.000000001,  
+	level2=0.0000001, 
+	level3=0.0000000000000000000000000000000000001,  
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("red","lightsalmon","red","lightsalmon")
@@ -276,7 +276,7 @@ goDivision="MF" # either MF, or BP, or CC
 results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
 	level1=0.1, 
-	level2=0.05, 
+	level2=0.01, 
 	level3=0.01,  
 	txtsize=2,    
 	treeHeight=0.5, 
@@ -312,9 +312,9 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
-	level1=0.1, 
-	level2=0.05, 
-	level3=0.001,  
+	level1=0.01, 
+	level2=0.01, 
+	level3=0.00000000000001,  
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")
@@ -351,8 +351,8 @@ goDivision="MF" # either MF, or BP, or CC
 results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
 	level1=0.01, 
-	level2=0.05, 
-	level3=0.001, 
+	level2=0.01, 
+	level3=0.00000000000000000000000000000000000001, 
 	txtsize=2,    
 	treeHeight=0.5, 
   colors=c("grey20","grey60","grey20","grey60")

@@ -231,7 +231,7 @@ Volcanos plots and and gene lists
     top_labelled <- top_n(data, n = 5, wt = lfc)
     # Color corresponds to fold change directionality
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.8, na.rm = T) + # add gene points
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_bw(base_size = 8) + # clean up theme
       theme(legend.position = "none") + # remove legend 
       scale_color_manual(values = volcano1) + 
