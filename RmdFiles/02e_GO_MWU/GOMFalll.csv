@@ -1,0 +1,70 @@
+,pval,color,goodgenes,GOterm,Punch,
+3/60 hydrogen ion transmembrane transporter activity,0.006532861,conflict,Mar-60,hydrogen ion transmembrane transporter activity,CA3,CA3conflictconsistent
+44/714 signal transducer activity,2.49E-05,consistent,44/714,signal transducer activity,CA3,CA3conflictconsistent
+33/592 receptor activity,2.49E-05,consistent,33/592,receptor activity,CA3,CA3conflictconsistent
+17/215 cell adhesion molecule binding,0.00218727,consistent,17/215,cell adhesion molecule binding,CA3,CA3conflictconsistent
+"3/71 translation factor activity, nucleic acid binding",0.006532861,conflict,Mar-71,"translation factor activity, nucleic acid binding",CA3,CA3conflictconsistent
+36/788 poly(A) RNA binding,0.006532861,conflict,36/788,poly(A) RNA binding,CA3,CA3conflictconsistent
+,,,,,,
+,,,,,,
+4/86 structural constituent of ribosome,8.85E-14,yoked to consistent,Apr-86,structural constituent of ribosome,CA3,CA3yokedyoked
+27/302 structural molecule activity,6.36E-09,yoked to consistent,27/302,structural molecule activity,CA3,CA3yokedyoked
+,,,,,,
+40/572 oxidoreductase activity,0.000379948,consistent,40/572,oxidoreductase activity,CA3,CA3consistentyoked
+13/67 integrin binding,0.00052522,consistent,13/67,integrin binding,CA3,CA3consistentyoked
+25/217 cell adhesion molecule binding,0.00030835,consistent,25/217,cell adhesion molecule binding,CA3,CA3consistentyoked
+9/41 collagen binding,0.000666137,consistent,Sep-41,collagen binding,CA3,CA3consistentyoked
+8/43 extracellular matrix binding,0.003060765,consistent,Aug-43,extracellular matrix binding,CA3,CA3consistentyoked
+,,,,,,
+13/133 core promoter binding,0.006771591,consistent,13/133,core promoter binding,DG,Dgconsistentyoked
+10/91 core promoter sequence-specific DNA binding,0.008264423,consistent,Oct-91,core promoter sequence-specific DNA binding,DG,Dgconsistentyoked
+10/97 heat shock protein binding,0.008264423,consistent,Oct-97,heat shock protein binding,DG,Dgconsistentyoked
+2/21 nuclear localization sequence binding,0.008227883,consistent,21-Feb,nuclear localization sequence binding,DG,Dgconsistentyoked
+12/161 phosphatase binding,0.008264423,consistent,12/161,phosphatase binding,DG,Dgconsistentyoked
+38/795 poly(A) RNA binding,0.008264423,consistent,38/795,poly(A) RNA binding,DG,Dgconsistentyoked
+2/34 signal sequence binding,0.008264423,consistent,Feb-34,signal sequence binding,DG,Dgconsistentyoked
+,,,,,,
+61/87 structural constituent of ribosome,1.00E-15,conflict,61/87,structural constituent of ribosome,CA1,CA1conflictconsistent
+24/55 rRNA binding,2.30E-08,conflict,24/55,rRNA binding,CA1,CA1conflictconsistent
+87/742 signal transducer activity,7.22E-08,consistent,87/742,signal transducer activity,CA1,CA1conflictconsistent
+72/441 chromatin binding,6.58E-09,consistent,72/441,chromatin binding,CA1,CA1conflictconsistent
+80/723 sequence-specific DNA binding transcription factor activity,1.01E-11,consistent,80/723,sequence-specific DNA binding transcription factor activity,CA1,CA1conflictconsistent
+83/660 sequence-specific DNA binding,2.55E-10,consistent,83/660,sequence-specific DNA binding,CA1,CA1conflictconsistent
+71/514 regulatory region nucleic acid binding,1.93E-08,consistent,71/514,regulatory region nucleic acid binding,CA1,CA1conflictconsistent
+31/64 hydrogen ion transmembrane transporter activity,1.01E-11,conflict,31/64,hydrogen ion transmembrane transporter activity,CA1,CA1conflictconsistent
+18/36 oxidoreductase activity,1.02E-11,conflict,18/36,oxidoreductase activity,CA1,CA1conflictconsistent
+111/577 oxidoreductase activity,5.11E-11,conflict,111/577,oxidoreductase activity,CA1,CA1conflictconsistent
+"23/62 oxidoreductase activity, acting on NAD(P)H",3.13E-10,conflict,23/62,"oxidoreductase activity, acting on NAD(P)H",CA1,CA1conflictconsistent
+,,,,,,
+4/84 structural constituent of ribosome,0.008791357,yoked to consistent,Apr-84,structural constituent of ribosome,CA1,CA1yokedyoked
+82/784 poly(A) RNA binding,0.003197433,yoked to consistent,82/784,poly(A) RNA binding,CA1,CA1yokedyoked
+63/384 cation transmembrane transporter activity,0.006186578,grey60,63/384,cation transmembrane transporter activity,CA1,CA1yokedyoked
+92/651 transmembrane transporter activity,0.000704453,grey60,92/651,transmembrane transporter activity,CA1,CA1yokedyoked
+106/794 transporter activity,0.001968613,grey60,106/794,transporter activity,CA1,CA1yokedyoked
+35/273 channel activity,0.006218022,grey60,35/273,channel activity,CA1,CA1yokedyoked
+5/23 Wnt-protein binding,0.008791357,grey60,23-May,Wnt-protein binding,CA1,CA1yokedyoked
+58/553 receptor activity,0.000704453,grey60,58/553,receptor activity,CA1,CA1yokedyoked
+70/675 signal transducer activity,0.006186578,grey60,70/675,signal transducer activity,CA1,CA1yokedyoked
+5/23 glutamate receptor activity,0.004043833,grey60,23-May,glutamate receptor activity,CA1,CA1yokedyoked
+,,,,,,
+38/190 cation channel activity,0.009280188,consistent,38/190,cation channel activity,CA1,CA1consistent yoked
+86/410 cation transmembrane transporter activity,0.007595628,consistent,86/410,cation transmembrane transporter activity,CA1,CA1consistent yoked
+60/288 channel activity,0.004568905,consistent,60/288,channel activity,CA1,CA1consistent yoked
+10/25 delayed rectifier potassium channel activity,0.001632672,consistent,25-Oct,delayed rectifier potassium channel activity,CA1,CA1consistent yoked
+18/119 divalent inorganic cation transmembrane transporter activity,0.009280188,consistent,18/119,divalent inorganic cation transmembrane transporter activity,CA1,CA1consistent yoked
+11/24 glutamate receptor activity,0.000155216,consistent,24-Nov,glutamate receptor activity,CA1,CA1consistent yoked
+76/340 inorganic cation transmembrane transporter activity,0.008185216,consistent,76/340,inorganic cation transmembrane transporter activity,CA1,CA1consistent yoked
+8/20 ionotropic glutamate receptor activity,0.001857718,consistent,20-Aug,ionotropic glutamate receptor activity,CA1,CA1consistent yoked
+80/559 oxidoreductase activity,0.007595628,yoked to consistent,80/559,oxidoreductase activity,CA1,CA1consistent yoked
+"6/36 oxidoreductase activity, acting on NAD(P)H, quinone or similar compound as acceptor",0.008169744,yoked to consistent,Jun-36,"oxidoreductase activity, acting on NAD(P)H, quinone or similar compound as acceptor",CA1,CA1consistent yoked
+132/793 poly(A) RNA binding,0.000155216,yoked to consistent,132/793,poly(A) RNA binding,CA1,CA1consistent yoked
+39/112 potassium ion transmembrane transporter activity,0.000536159,consistent,39/112,potassium ion transmembrane transporter activity,CA1,CA1consistent yoked
+99/588 receptor activity,0.000155216,consistent,99/588,receptor activity,CA1,CA1consistent yoked
+14/55 rRNA binding,0.008482296,yoked to consistent,14/55,rRNA binding,CA1,CA1consistent yoked
+108/699 sequence-specific DNA binding transcription factor activity,0.004232617,consistent,108/699,sequence-specific DNA binding transcription factor activity,CA1,CA1consistent yoked
+120/712 signal transducer activity,0.000155216,consistent,120/712,signal transducer activity,CA1,CA1consistent yoked
+17/87 structural constituent of ribosome,3.79E-07,yoked to consistent,17/87,structural constituent of ribosome,CA1,CA1consistent yoked
+138/682 transmembrane transporter activity,0.000306759,consistent,138/682,transmembrane transporter activity,CA1,CA1consistent yoked
+154/827 transporter activity,0.000536159,consistent,154/827,transporter activity,CA1,CA1consistent yoked
+35/133 voltage-gated ion channel activity,0.008482296,consistent,35/133,voltage-gated ion channel activity,CA1,CA1consistent yoked
+23/60 voltage-gated potassium channel activity,0.003450623,consistent,23/60,voltage-gated potassium channel activity,CA1,CA1consistent yoked

@@ -1,0 +1,251 @@
+---
+title: "02g_RNAseqDG"
+author: "Rayna M Harris"
+date: "8/22/17"
+output: md_document
+---
+
+```{r setup, message=F}
+library(ggplot2) ## for awesome plots!
+library(cowplot) ## for some easy to use themes
+library(dplyr) ## for filtering and selecting rows
+library(car) ## stats
+library(VennDiagram) ## venn diagrams
+library(pheatmap) ## awesome heatmaps
+library(viridis) # for awesome color pallette
+library(reshape2) ## for melting dataframe
+library(DESeq2) ## for gene expression analysis
+library(edgeR)  ## for basic read counts status
+library(magrittr) ## to use the weird pipe
+library(genefilter)  ## for PCA fuction
+
+## load functions 
+source("figureoptions.R")
+source("functions_RNAseq.R")
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/02g_RNAseqDG/')
+```
+
+## Experimental Design
+
+Given the large variance due to hippocampal subfield, I will subset the data by subfield to look for variation between behavioral treatment groups. This script focuses on DG.
+
+```{r data, message=F, warning=F, echo=FALSE}
+colData <- read.csv("../data/02a_colData.csv", header = T)
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+
+colData <- colData %>% 
+  filter(Punch %in% c("DG"))  %>% 
+  droplevels()
+
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+colData %>% select(APA2,Punch)  %>%  summary()
+```
+
+## Overall differential Gene Expression analysis
+
+```{r DESeq2, echo = F}
+## create DESeq object using the factors Punch and APA
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA2)
+
+dds # view the DESeq object - note numnber of genes
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+dds <- DESeq(dds) # Differential expression analysis
+rld <- rlog(dds, blind=FALSE) ## log transformed data
+vsd <- varianceStabilizingTransformation(dds, blind=F) ## variance stabilized
+colnames(vsd) = colData$RNAseqID 
+head(vsd)
+```
+
+## Principle component analysis
+
+```{r pca, echo = F, message=F, warning=F}
+# create the dataframe using my function pcadataframe
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+percentVar
+
+aov1 <- aov(PC1 ~ APA2, data=pcadata)
+summary(aov1) 
+TukeyHSD(aov1, which = "APA2") 
+
+aov2 <- aov(PC2 ~ APA2, data=pcadata)
+summary(aov2) 
+TukeyHSD(aov2, which = "APA2") 
+
+aov3 <- aov(PC3 ~ APA2, data=pcadata)
+summary(aov3) 
+
+aov4 <- aov(PC4 ~ APA2, data=pcadata)
+summary(aov4) 
+```
+
+# Number of differentially expressed genes per two-way contrast
+
+```{r Twowaycontrasts3}
+#calculate significance of all two way comparisions
+# see source "functions_RNAseq.R" 
+contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 74
+contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05) # 2
+contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.05) # 0
+contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 2
+```
+
+## venn diagrams
+
+```{r venndiagrams, echo=F}
+rldpadjs <- assay(rld)
+rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast4)
+rldpadjs <- as.data.frame(rldpadjs)
+rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
+
+venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) 
+venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) 
+venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) 
+
+candidates <- list("consistent vs yoked" = venn1 , "conflict vs yoked" = venn2,  "yoked vs yoked" = venn3)
+
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates, filename=NULL, 
+  col = "black",
+  fill = c( "white", "white", "white"),
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  cat.dist = c(0.03, 0.03, 0.02), cat.pos = 1,
+  cat.cex = 1, cat.fontfamily = "sans")
+grid.draw(prettyvenn)
+```
+
+## Volcano plots
+
+```{r volcanos, message=F, warning=F, echo=F}
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
+summary(res)
+
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("APA2"))
+
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "consistent", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "yoked_consistent", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 5, wt = lfc)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  theme_bw(base_size = 8) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  scale_color_manual(values = volcano1) + 
+  theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  scale_x_continuous(name="log2 (consistent/yoked)",
+                     limits=c(-4, 4)) +
+  scale_y_log10(name="-log10 (adjusted p-value)") +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )
+colored
+
+pdf(file="../figures/02g_RNAseqDG/consistent.pdf", width=1.5, height=1.75)
+plot(colored)
+dev.off()
+
+###############
+
+res <- results(dds, contrast =c("APA2",  "conflict", "consistent"), independentFiltering = T, alpha = 0.05)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+summary(res)
+
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("APA2"))
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "conflict", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "consistent", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 5, wt = lfc)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  theme_bw(base_size = 8) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  scale_color_manual(values = volcano2) + 
+  theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  scale_x_continuous(name="log2 (conflict/consistent)",
+                     limits=c(-4, 4)) +
+  scale_y_log10(name="-log10 (adjusted p-value)")  +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
+colored
+
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02g_RNAseqDG/confict.pdf", width=1.5, height=1.75)
+plot(colored)
+dev.off()
+
+###########
+
+res <- results(dds, contrast =c("APA2",  "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+summary(res)
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("APA2"))
+
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "yoked_conflict", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "yoked_consistent", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 5, wt = lfc)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1, alpha = 1, na.rm = T) + # add gene points
+  theme_bw(base_size = 8) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  scale_color_manual(values = volcano3) + 
+  theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  scale_x_continuous(name="log2 (yoked to conflict/ \n yoked to consistent)",
+                     limits=c(-4, 4)) +
+  scale_y_log10(name="-log10 (adjusted p-value)") +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
+colored
+
+
+#cvd_grid(colored) # to view plot for color blind 
+pdf(file="../figures/02g_RNAseqDG/yoked.pdf", width=1.5, height=1.75)
+plot(colored)
+dev.off()
+```

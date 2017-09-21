@@ -155,7 +155,3 @@ APAsession2 = list(
 imgDG <- magick::image_read("../figures/00_schematics/DG.png")
 imgCA3 <- magick::image_read("../figures/00_schematics/CA3.png")
 imgCA1 <- magick::image_read("../figures/00_schematics/CA1.png")
-imgHippo <- magick::image_read("../figures/00_schematics/HippoSeq.png")
-
-
-
