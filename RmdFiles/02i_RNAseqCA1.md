@@ -218,7 +218,7 @@ Volcano plots
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-![](../figures/02i_RNAseqCA1/volcanos-4.png)![](../figures/02i_RNAseqCA1/volcanos-5.png)![](../figures/02i_RNAseqCA1/volcanos-6.png)
+![](../figures/02i_RNAseqCA1/volcanos-4.png)![](../figures/02i_RNAseqCA1/volcanos-5.png)
 
     ## quartz_off_screen 
     ##                 2
@@ -262,27 +262,54 @@ Volcano plots
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-![](../figures/02i_RNAseqCA1/volcanos-7.png)![](../figures/02i_RNAseqCA1/volcanos-8.png)
+![](../figures/02i_RNAseqCA1/volcanos-6.png)![](../figures/02i_RNAseqCA1/volcanos-7.png)
 
     ## quartz_off_screen 
     ##                 2
 
-![](../figures/02i_RNAseqCA1/volcanos-9.png)
-
-    ## [1] -0.7719709
-
-    ## [1] 4.516586
+    ## log2 fold change (MAP): APA2 conflict vs yoked_conflict 
+    ## Wald test p-value: APA2 conflict vs yoked_conflict 
+    ## DataFrame with 10 rows and 6 columns
+    ##            baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##           <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Gm20390   47.852413      2.0596134 0.4085225  5.041615 4.616188e-07
+    ## Tdp2      20.648084      1.3482906 0.2911227  4.631348 3.632928e-06
+    ## Irak1bp1  18.846951      1.0930667 0.2664169  4.102843 4.081050e-05
+    ## Itga10     9.836368     -1.5553823 0.3860040 -4.029446 5.590855e-05
+    ## Notch2    36.698870     -1.1018922 0.2836778 -3.884309 1.026213e-04
+    ## Otulin    14.218996      1.2572463 0.3262154  3.854038 1.161858e-04
+    ## Golt1b    56.322500     -0.7686995 0.2028763 -3.789007 1.512508e-04
+    ## Kdm6b    277.863545     -0.6077865 0.1718155 -3.537436 4.040324e-04
+    ## Ppp1r10   41.725387     -0.7314064 0.2071264 -3.531208 4.136664e-04
+    ## B3galnt1  38.932246      0.9033947 0.2622179  3.445206 5.706244e-04
+    ##                 padj
+    ##            <numeric>
+    ## Gm20390  0.007498073
+    ## Tdp2     0.029504822
+    ## Irak1bp1 0.220961627
+    ## Itga10   0.227030659
+    ## Notch2   0.314534269
+    ## Otulin   0.314534269
+    ## Golt1b   0.350966571
+    ## Kdm6b    0.746575908
+    ## Ppp1r10  0.746575908
+    ## B3galnt1 0.926865198
 
     ## 
     ## out of 16467 with nonzero total read count
     ## adjusted p-value < 0.05
-    ## LFC > 0 (up)     : 67, 0.41% 
-    ## LFC < 0 (down)   : 42, 0.26% 
+    ## LFC > 0 (up)     : 2, 0.012% 
+    ## LFC < 0 (down)   : 0, 0% 
     ## outliers [1]     : 224, 1.4% 
-    ## low counts [2]   : 9049, 55% 
-    ## (mean count < 14)
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
+
+![](../figures/02i_RNAseqCA1/volcanos-8.png)![](../figures/02i_RNAseqCA1/volcanos-9.png)
+
+    ## quartz_off_screen 
+    ##                 2
 
 Principle component analysis
 ----------------------------

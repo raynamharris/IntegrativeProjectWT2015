@@ -225,7 +225,8 @@ Volcanos plots and and gene lists
                panel.grid.major=element_blank()) + 
       scale_x_continuous(name="log2 (consistent/yoked)",
                          limits=c(-10, 10)) +
-      scale_y_log10(name="-log10 (adjusted p-value)") +
+      scale_y_log10(limits=c(0.00001, 100)) +
+      labs( y = NULL) +
       geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
     colored
 
@@ -237,21 +238,6 @@ Volcanos plots and and gene lists
 
     ## quartz_off_screen 
     ##                 2
-
-    colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-      theme_bw(base_size = 8) + # clean up theme
-      theme(legend.position = "none") + # remove legend 
-      scale_color_manual(values = volcano1) + 
-      theme(panel.grid.minor=element_blank(),
-               panel.grid.major=element_blank()) + 
-      scale_x_continuous(name="log2 (consistent/yoked)",
-                         limits=c(-10, 10)) +
-      scale_y_log10(name="-log10 (adjusted p-value)") +
-      geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
-    colored
-
-![](../figures/02b_RNAseqConsistent/ALLtraining-2.png)
 
     ## setup for GO
     table(res$padj<0.05)

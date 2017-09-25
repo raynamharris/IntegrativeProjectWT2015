@@ -109,11 +109,11 @@ PCA42 <- plotPCs(pcadata, 4, 2, aescolor = pcadata$APA2, colorname = "APA2", aes
 PCA42
 
 # pdf the same pca plots descripbed above of the above
-pdf(file="../figures/02b_RNAseqConsistent/PCA12.pdf", width=3, height=2.5)
+pdf(file="../figures/02b_RNAseqConsistent/PCA12.pdf", width=1.75, height=2.25)
 plot(PCA12)
 dev.off()
 
-pdf(file="../figures/02b_RNAseqConsistent/PCA42.pdf", width=3, height=2.5)
+pdf(file="../figures/02b_RNAseqConsistent/PCA42.pdf", width=1.75, height=2.25)
 plot(PCA42)
 dev.off()
 
@@ -267,6 +267,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 ```{r volcanosbyregion, echo=F, include=F}
 # gene lists
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.05)
+summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
@@ -290,16 +291,17 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (CA1/DG)",
                      limits=c(-10, 10)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)  
-
+  scale_y_log10(limits=c(0.00001, 100)) +
+  labs( y = NULL) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)   
 colored
-#cvd_grid(colored) # to view plot for color blind 
-pdf(file="../figures/02b_RNAseqConsistent/AllCA1DG.pdf", width=1.5, height=1.75)
+
+pdf(file="../figures/02b_RNAseqConsistent/AllCA1DG.pdf", width=1.25, height=1.75)
 plot(colored)
 dev.off()
 
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = T, alpha = 0.05)
+summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
@@ -322,17 +324,19 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (CA1/CA3)",
                      limits=c(-10, 10)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
+  scale_y_log10(limits=c(0.00001, 100)) +
+  labs( y = NULL) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
 
 colored
-pdf(file="../figures/02b_RNAseqConsistent/AllCA1CA3.pdf", width=1.5, height=1.75)
+pdf(file="../figures/02b_RNAseqConsistent/AllCA1CA3.pdf", width=1.25, height=1.75)
 plot(colored)
 dev.off()
 
 
 
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T, alpha = 0.05)
+summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
@@ -345,6 +349,7 @@ data <- data %>%
                                     yes = "DG", 
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
+
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
@@ -355,14 +360,16 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (CA3/DG)",
                      limits=c(-10, 10)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
+  scale_y_log10(limits=c(0.00001, 100)) +
+  labs( y = NULL) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
-
 colored
-#cvd_grid(colored)
-pdf(file="../figures/02b_RNAseqConsistent/AllDGCA3.pdf", width=1.5, height=1.75)
+
+pdf(file="../figures/02b_RNAseqConsistent/AllDGCA3.pdf", width=1.25, height=1.75)
 plot(colored)
 dev.off()
+
+
 ```
 
 
@@ -393,7 +400,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-10, 10)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
+  scale_y_log10(limits=c(0.00001, 100)) +
+  labs( y = NULL) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
 colored
 
@@ -401,19 +409,6 @@ pdf(file="../figures/02b_RNAseqConsistent/Allconsistentyoked.pdf", width=1.5, he
 plot(colored)
 dev.off()
 
-
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  theme_bw(base_size = 8) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = volcano1) + 
-  theme(panel.grid.minor=element_blank(),
-           panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/yoked)",
-                     limits=c(-10, 10)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
-colored
 
 ## setup for GO
 table(res$padj<0.05)
@@ -487,7 +482,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
+  scale_y_log10(limits=c(0.00001, 100)) +
+  labs( y = NULL) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
 colored
 
@@ -570,7 +566,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
+  scale_y_log10(limits=c(0.00001, 100)) +
+  labs( y = NULL) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )
 colored
 
@@ -648,7 +645,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-5, 5)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
+  scale_y_log10(limits=c(0.00001, 100)) +
+  labs( y = NULL) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
 colored
 

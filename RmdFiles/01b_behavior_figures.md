@@ -15,11 +15,9 @@ library(reshape2) ## for melting dataframe
 library(tidyr) ## for respahing data
 library(plyr)
 
-
 ## load user-written functions 
 source("functions_behavior.R")
 source("figureoptions.R")
-
 
 ## set output file for figures 
 knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
@@ -60,12 +58,12 @@ numentrance1 <- ggplot(behaviorsummaryNumAPA2, aes(x=, TrainSessionComboNum, y=m
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 2) +
    geom_line() +
-    scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
+    scale_y_continuous(name="Number of Entrances") +
     scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Habituation ", "2" = "T1", "3" = "T2", 
+                       labels=c("1" = "Hab. ", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
+                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA2) + 
@@ -78,7 +76,7 @@ numentrance1
 ![](../figures/01_behavior/numentrance-1.png)
 
 ``` r
-pdf(file="../figures/01_behavior/numentrance1.pdf", width=3.5, height=1.75)
+pdf(file="../figures/01_behavior/numentrance1.pdf",width=3.25, height=2.25)
 plot(numentrance1)
 dev.off()
 ```
@@ -94,12 +92,12 @@ numentrance2 <- behaviorsummaryNumAPA2 %>%
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 2) +
    geom_line() +
-    scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
+    scale_y_continuous(name="Number of Entrances") +
     scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Habituation  ", "2" = "T1", "3" = "T2", 
+                       labels=c("1" = "Hab.  ", "2" = "T1", "3" = "T2", 
                                 "4" = "T3", "5" = "Retest", "6" = "T4",
-                                "7" = "T5", "8" = "T6", "9"= "Retention")) +
+                                "7" = "T5", "8" = "T6", "9"= "Reten.")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA5) + 
@@ -112,7 +110,7 @@ numentrance2
 ![](../figures/01_behavior/numentrance-2.png)
 
 ``` r
-pdf(file="../figures/01_behavior/numentrance2.pdf", width=3.5, height=1.75)
+pdf(file="../figures/01_behavior/numentrance2.pdf",width=3.25, height=2.25)
 plot(numentrance2)
 dev.off()
 ```
@@ -130,9 +128,9 @@ numentrance3 <- behaviorsummaryNumAPA2 %>%
     scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
     scale_x_continuous(name = NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Habituation ", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
+                       labels=c("1" = "Habituation  ", "2" = "T1", "3" = "T2", 
+                                "4" = "T3", "5" = "Retest", "6" = "T4/C1 ",
+                                "7" = "T5/C2 ", "8" = "T6/C3  ", "9"= "Retention")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA6) + 
@@ -630,3 +628,25 @@ summary(lm136)
     ## Residual standard error: 6.399 on 30 degrees of freedom
     ## Multiple R-squared:  0.7404, Adjusted R-squared:  0.7144 
     ## F-statistic: 28.52 on 3 and 30 DF,  p-value: 6.395e-09
+
+getting file name for a time spent heatmap
+------------------------------------------
+
+``` r
+y <- behavior %>%
+  distinct(ID, APA2)
+x <- read.csv("~/Github/BehavEphyRNAseq/data/behavior/APA_2013-2016.csv", header = T)
+x <- x %>%
+  distinct(ID, filename)
+
+z <- inner_join(x,y)
+```
+
+    ## Joining, by = "ID"
+
+    ## Warning in inner_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
+    ## factors with different levels, coercing to character vector
+
+``` r
+write.csv(z, "filnames.csv", row.names = F)
+```

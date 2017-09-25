@@ -137,16 +137,20 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano1) + 
   theme(panel.grid.minor=element_blank(),
         panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/yoked)",
-                     limits=c(-4, 4)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
+  scale_x_continuous(limits=c(-4, 4)) +
+  scale_y_log10(limits=c(0.00001, 10)) +
+  labs( y = NULL, x=NULL) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )
 colored
 
-pdf(file="../figures/02i_RNAseqCA1/consistent.pdf", width=1.5, height=1.75)
+pdf(file="../figures/02i_RNAseqCA1/consistent.pdf", width=1.25, height=1.75)
 plot(colored)
 dev.off()
 
+
+
+
+# Color corresponds to fold change directionality
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
@@ -156,11 +160,12 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
         panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-4, 4)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
+  scale_y_log10(limits=c(0.00001, 100)) +
+  labs( y = NULL) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )
 colored
 
-pdf(file="../figures/02i_RNAseqCA1/consistent.pdf", width=1.5, height=1.75)
+pdf(file="../figures/02i_RNAseqCA1/consistent2.pdf", width=1.5, height=1.75)
 plot(colored)
 dev.off()
 
@@ -169,7 +174,6 @@ dev.off()
 res <- results(dds, contrast =c("APA2",  "conflict", "consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
-
 summary(res)
 
 topGene <- rownames(res)[which.min(res$padj)]
@@ -195,27 +199,14 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano2) + 
   theme(panel.grid.minor=element_blank(),
         panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (conflict/consistent)",
-                     limits=c(-4, 4)) +
-  scale_y_log10(name="-log10 (adjusted p-value)")  +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
-colored
-
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  theme_bw(base_size = 8) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = volcano2) + 
-  theme(panel.grid.minor=element_blank(),
-        panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (conflict/consistent)",
-                     limits=c(-4, 4)) +
-  scale_y_log10(name="-log10 (adjusted p-value)")  +
+  scale_x_continuous(limits=c(-4, 4)) +
+  scale_y_log10(limits=c(0.00001, 10)) +
+  labs( y = NULL, x=NULL) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
 colored
 
 #cvd_grid(colored) # to view plot for color blind 
-pdf(file="../figures/02i_RNAseqCA1/confict.pdf", width=1.5, height=1.75)
+pdf(file="../figures/02i_RNAseqCA1/confict.pdf", width=1.25, height=1.75)
 plot(colored)
 dev.off()
 
@@ -249,44 +240,61 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_color_manual(values = volcano3) + 
   theme(panel.grid.minor=element_blank(),
         panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (yoked to conflict/ \n yoked to consistent)",
+  scale_x_continuous(limits=c(-4, 4)) +
+  scale_y_log10(limits=c(0.00001, 10)) +
+  labs( y = NULL, x=NULL) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
+colored
+
+pdf(file="../figures/02i_RNAseqCA1/yoked.pdf", width=1.25, height=1.75)
+plot(colored)
+dev.off()
+
+
+
+######
+
+res <- results(dds, contrast =c("APA2",  "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.05)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+summary(res)
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("APA2"))
+
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "conflict", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "yoked_conflict", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 5, wt = lfc)
+# Color corresponds to fold change directionality
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1, alpha = 1, na.rm = T) + # add gene points
+  theme_bw(base_size = 8) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  scale_color_manual(values = volcano4) + 
+  theme(panel.grid.minor=element_blank(),
+        panel.grid.major=element_blank()) + 
+  scale_x_continuous(name="log2 (conflict/yoked)",
                      limits=c(-4, 4)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
+  scale_y_log10(limits=c(0.00001, 10)) +
+  labs( y = NULL) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
 colored
 
 
 #cvd_grid(colored) # to view plot for color blind 
-pdf(file="../figures/02i_RNAseqCA1/yoked.pdf", width=1.5, height=1.75)
+pdf(file="../figures/02i_RNAseqCA1/conflictyoked.pdf", width=1.25, height=1.75)
 plot(colored)
 dev.off()
 
 
-### now with log scale
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 1, na.rm = T) + # add gene points
-  theme_bw(base_size = 8) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = volcano3) + 
-  theme(panel.grid.minor=element_blank(),
-        panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (yoked to conflict/ \n yoked to consistent)",
-                     limits=c(-4, 4)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2)
-colored
-####
-
-# for log 10 scale
-log10value <- -log10(data$pvalue)
-min(log10value)
-max(log10value)
-
-
-#######
-
-res <- results(dds, contrast =c("APA2", "conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
-summary(res)
 ```
 
 

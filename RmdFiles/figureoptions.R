@@ -3,7 +3,6 @@ colorvalPunch <- c("#d95f02","#1b9e77", "#7570b3")
 ## CA3 "#1b9e77"
 ## CA1 "#7570b3")
 
-
 colorvalAPA <- c("#404040", "#f4a582", "#ca0020")
 #404040 ## darkgrey - yoked
 #f4a582 ## pink - conflict
@@ -48,12 +47,17 @@ volcano1 <-  c("consistent" = "#ca0020",
            "none" = "#d9d9d9")
 
 volcano2 <-  c("consistent" = "#ca0020",
-               "conflict" = "#f4a582", 
+                
                "none" = "#d9d9d9")
 
 volcano3 <-  c("yoked_consistent" = "#404040",
                "yoked_conflict" = "#bababa", 
                "none" = "#d9d9d9")
+
+volcano4 <-  c("conflict" = "#f4a582",
+               "yoked_conflict" = "#bababa", 
+               "none" = "#d9d9d9")
+
 
 
 

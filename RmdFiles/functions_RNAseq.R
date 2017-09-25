@@ -63,11 +63,13 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, aesshape, shapename, co
     #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=1) + 
     scale_colour_manual(name=colorname, values=c(colorvalues))+
     scale_shape_discrete(name=shapename) +
-    theme(axis.text = element_text(size=9),
-          axis.title.x = element_text(size=9),
-          axis.title.y = element_text(size=9),
-          legend.title = element_text(size=9),
-          legend.text = element_text(size=9)) +
+    theme(axis.text = element_text(size=8),
+          axis.title.x = element_text(size=8),
+          axis.title.y = element_text(size=8),
+          legend.title = element_text(size=8),
+          legend.text = element_text(size=8)) +
     #theme(legend.title=element_blank()) 
+    background_grid(major = "y", minor = "y") +
     theme(legend.position="none")
 }
+

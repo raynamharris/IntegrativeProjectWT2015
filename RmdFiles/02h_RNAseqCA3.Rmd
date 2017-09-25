@@ -132,7 +132,8 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
         panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (consistent/yoked)",
                      limits=c(-4, 4)) +
-  scale_y_log10(name="-log10 (adjusted p-value)") +
+  scale_y_log10(limits=c(0.00001, 100)) +
+  labs( y = NULL) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )
 colored
 
