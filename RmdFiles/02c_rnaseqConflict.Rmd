@@ -46,7 +46,7 @@ colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
 colData <- colData %>% 
-  filter(APA2 %in% c("consistent", "conflict" ))  %>% 
+  filter(APA2 %in% c("conflict", "yoked_conflict" ))  %>% 
   droplevels()
 
 savecols <- as.character(colData$RNAseqID) 
@@ -55,21 +55,17 @@ countData <- countData %>% dplyr::select(one_of(savecols))
 
 colData %>% select(APA2,Punch)  %>%  summary()
 
-totalCounts=colSums(countData)
-totalCounts
-min(totalCounts) #179967
-max(totalCounts) #3020727
-mean(totalCounts) #1375592
-```
 
-```{r DESeq2, echo=F}
+totalCounts=colSums(countData)
+
+
 ## create DESeq object using the factors Punch and APA
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ Punch + APA2 + Punch*APA2)
 
 dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1")) ## specify the factor levels
-dds$APA2 <- factor(dds$APA2, levels=c("consistent", "conflict")) ## specify the factor levels
+dds$APA2 <- factor(dds$APA2, levels=c("conflict", "yoked_conflict" )) ## specify the factor levels
 
 dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
@@ -77,8 +73,70 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
 
-```
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 2685
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 1411
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 3902
 
+contrast4 <- resvals(contrastvector = c("APA2", "consistent", "conflict"), mypval = 0.05) # 0
+
+DEGes <- assay(rld)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3)
+DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
+DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG)) 
+
+# create new col with min padj
+DEGes <- DEGes %>% filter(padjmin < 0.05)
+rownames(DEGes) <- DEGes$rownames
+drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
+DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
+DEGes <- as.matrix(DEGes)
+DEGes <- DEGes - rowMeans(DEGes)
+
+## the heatmap annotation file
+df <- as.data.frame(colData(dds)[,c("APA2", "Punch")]) ## matrix to df
+rownames(df) <- names(countData)
+
+
+ann_colors <- ann_colors6 # see color options 
+
+# make sure the data is a matrix
+DEGes <- as.matrix(DEGes) 
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+
+pheatmap(DEGes, show_colnames=T, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 8, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+
+# for adobe
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 10, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 8, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/02c_RNAseqConflict/pheatmap.pdf"
+         )
+
+```
 
 ## Principle component analysis
 
@@ -108,13 +166,11 @@ summary(aov5)
 aov6 <- aov(PC6 ~ APA2, data=pcadata)
 summary(aov6) 
 
-
 pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("conflict", "consistent"))
 
 PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", aesshape = pcadata$APA, shapename = " ",  colorvalues = colorvalPunch)
 PCA12
-
 
 PCA62 <- plotPCs(pcadata, 6, 2, aescolor = pcadata$APA2, colorname = "APA2", aesshape = pcadata$Punch, shapename = "Punch",  colorvalues = colorvalAPA6)
 PCA62
@@ -634,5 +690,103 @@ sign[res$log2FoldChange<0]=-1
 logs$logP <- logs$logP*sign
 write.csv(logs, file = "./02e_GO_MWU/CA1conflictconsistent.csv", row.names = F)
 
+
+```
+
+
+
+
+```{r data2forheatmap, message=F, warning=F, echo=F}
+colData <- read.csv("../data/02a_colData.csv", header = T)
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+
+colData %>% select(APA2,Punch)  %>%  summary()
+
+totalCounts=colSums(countData)
+
+
+## create DESeq object using the factors Punch and APA
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Punch + APA2 + Punch*APA2)
+
+dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1")) ## specify the factor levels
+dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent" ,"yoked_conflict", "consistent", "conflict")) 
+## specify the factor levels
+
+dds # view the DESeq object - note numnber of genes
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+dds <- DESeq(dds) # Differential expression analysis
+rld <- rlog(dds, blind=FALSE) ## log transformed data
+
+
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 1159
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 2122
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 2122
+contrast4 <- resvals(contrastvector = c("APA2", "consistent", "conflict"), mypval = 0.05) # 0
+contrast5 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 84
+contrast6 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05) # 15
+contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 12
+
+
+DEGes <- assay(rld)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast5, contrast6, contrast7)
+DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
+DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA2yoked_conflictyoked_consistent, padjAPA2conflictyoked_conflict, padjAPA2consistentyoked_consistent)) 
+head(DEGes)
+
+# create new col with min padj
+DEGes <- DEGes %>% filter(padjmin < 0.05)
+rownames(DEGes) <- DEGes$rownames
+drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
+DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
+DEGes <- as.matrix(DEGes)
+DEGes <- DEGes - rowMeans(DEGes)
+
+## the heatmap annotation file
+df <- as.data.frame(colData(dds)[,c( "Punch", "APA2",)]) ## matrix to df
+rownames(df) <- names(countData)
+
+
+ann_colors <- ann_colors4 #see figure options to change colors
+
+# make sure the data is a matrix
+DEGes <- as.matrix(DEGes) 
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+
+pheatmap(DEGes, show_colnames=T, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 11, 
+         #width=4.5, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 8, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+
+# for adobe
+pheatmap(DEGes, show_colnames=F, show_rownames = F,
+         annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 15,
+         fontsize = 4, 
+         width=4, height=2,
+         border_color = "grey60" ,
+         color = viridis(30),
+         cellwidth = 5, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         annotation_legend = FALSE, 
+         filename = "../figures/02c_RNAseqConflict/pheatmapAll.pdf"
+         )
 
 ```

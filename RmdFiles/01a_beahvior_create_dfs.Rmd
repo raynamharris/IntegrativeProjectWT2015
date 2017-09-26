@@ -43,16 +43,19 @@ retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  dropleve
 ```
 
 ```{r behaviorsummary}
-behaviorsummaryNum <- summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+behaviorsummaryNum <- dplyr::summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
 behaviorsummaryNum
 
-behaviorsummaryNumAPA2 <- summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
-behaviorsummaryNumAPA2
+behaviorsummaryNumAPA2 <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+#behaviorsummaryNumAPA2
+
+timecw <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(pTimeCW), se = sd(pTimeCW)/sqrt(length(pTimeCW)))
+#timecw
+
+speedsummary <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Speed1), se = sd(Speed1)/sqrt(length(Speed1)))
+#speedsummary
+
 ```
-
-
-
-
 
 
 ```{r PCA}
@@ -65,13 +68,14 @@ scores <- pc$x
 scoresdf <- makepcadf(behavior) #create the df of pcas
 rotationdf <- mkrotationdf(behavior) #loadings for specific factors
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
-
 ```
 
 ```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
 write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
 write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
+write.csv(timecw, file = "../data/01a_timecw.csv", row.names = FALSE)
+write.csv(speedsummary, file = "../data/01a_speedsummary.csv", row.names = FALSE)
 write.csv(behaviorsummaryNumAPA2, file = "../data/01a_behaviorsummaryNumAPA2.csv", row.names = FALSE)
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
 write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)

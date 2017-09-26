@@ -8,11 +8,12 @@ colorvalAPA <- c("#404040", "#f4a582", "#ca0020")
 #f4a582 ## pink - conflict
 #ca0020 ## red - consistent 
 
-colorvalAPA2 <-  c( "#bababa","#404040", "#f4a582", "#ca0020")
-#bababa ## light grey - yoked-conflict
+colorvalAPA2 <-  c( "#404040", "#bababa",  "#ca0020", "#f4a582")
+
 #404040 ## darkgrey - yoked-consistent
-#f4a582 ## pink - conflict
+#bababa ## light grey - yoked-conflict
 #ca0020 ## red - consistent 
+#f4a582 ## pink - conflict
 
 colorvalAPA3 <-  c( "#bababa","#404040", "#f4a582", "#ca0020")
 #bababa ## light grey - Yoked_Conflict
@@ -92,13 +93,13 @@ ann_colors3 = list(
             DG = (values=c("#d95f02"))))
 
 ann_colors4 = list(
+  Punch = c(CA1 = (values=c("#7570b3")),
+            CA3 = (values=c("#1b9e77")), 
+            DG = (values=c("#d95f02"))),
   APA2 =  c('yoked_conflict' = (values=c("#bababa")),
             'yoked_consistent' = (values=c("#404040")), 
             'conflict' = (values=c("#f4a582")),
-            'consistent' = (values=c("#ca0020"))),
-  Punch = c(CA1 = (values=c("#7570b3")),
-            CA3 = (values=c("#1b9e77")), 
-            DG = (values=c("#d95f02"))))
+            'consistent' = (values=c("#ca0020"))))
 
 ann_colors5 = list(
   APA2 =  c('yoked_consistent' = (values=c("#404040")), 

@@ -1,11 +1,6 @@
 ``` r
 ## load libraries 
 library(tidyr) ## for respahing data
-```
-
-    ## Warning: package 'tidyr' was built under R version 3.3.2
-
-``` r
 library(plyr) ## for renmaing factors
 library(dplyr) ## for filtering and selecting rows
 library(reshape2) ## for melting dataframe
@@ -162,7 +157,7 @@ retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  dropleve
 ```
 
 ``` r
-behaviorsummaryNum <- summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+behaviorsummaryNum <- dplyr::summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
 behaviorsummaryNum
 ```
 
@@ -184,26 +179,15 @@ behaviorsummaryNum
     ## # ... with 17 more rows
 
 ``` r
-behaviorsummaryNumAPA2 <- summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
-behaviorsummaryNumAPA2
-```
+behaviorsummaryNumAPA2 <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+#behaviorsummaryNumAPA2
 
-    ## Source: local data frame [36 x 4]
-    ## Groups: APA2 [?]
-    ## 
-    ##                APA2 TrainSessionComboNum        m       se
-    ##              <fctr>                <int>    <dbl>    <dbl>
-    ## 1  yoked-consistent                    1 31.37500 2.321772
-    ## 2  yoked-consistent                    2 21.37500 2.017225
-    ## 3  yoked-consistent                    3 15.37500 1.400733
-    ## 4  yoked-consistent                    4 14.50000 2.008909
-    ## 5  yoked-consistent                    5 16.87500 0.875000
-    ## 6  yoked-consistent                    6 15.00000 1.558387
-    ## 7  yoked-consistent                    7 13.87500 1.456972
-    ## 8  yoked-consistent                    8 14.87500 1.663017
-    ## 9  yoked-consistent                    9 17.00000 1.500000
-    ## 10   yoked-conflict                    1 32.33333 1.154701
-    ## # ... with 26 more rows
+timecw <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(pTimeCW), se = sd(pTimeCW)/sqrt(length(pTimeCW)))
+#timecw
+
+speedsummary <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Speed1), se = sd(Speed1)/sqrt(length(Speed1)))
+#speedsummary
+```
 
 ``` r
 longdata <- makelongdata(behavior)
@@ -261,6 +245,8 @@ behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
 write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
 write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
+write.csv(timecw, file = "../data/01a_timecw.csv", row.names = FALSE)
+write.csv(speedsummary, file = "../data/01a_speedsummary.csv", row.names = FALSE)
 write.csv(behaviorsummaryNumAPA2, file = "../data/01a_behaviorsummaryNumAPA2.csv", row.names = FALSE)
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
 write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
