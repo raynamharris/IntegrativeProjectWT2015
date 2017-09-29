@@ -266,11 +266,14 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 
 ```{r volcanosbyregion, echo=F, include=F}
 # gene lists
-res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.05)
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.05, cooksCutoff = F)
 summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
-data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+data <- data.frame(gene = row.names(res), pvalue = (res$padj ), lfc = res$log2FoldChange, mean = res$baseMean)
+
+head(data[data$mean == NA,])
+
 data <- na.omit(data)
 data <- data %>%
   mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
