@@ -78,33 +78,6 @@ summary(aov4)
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 pcadata$wrap <- "Principle Compent Analysis"
 
-
-plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-  ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-    geom_point(size=2) +
-    xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-    ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    theme_classic() +
-    stat_ellipse(level = 0.95, (aes(color=aescolor)),size=1) + 
-    scale_colour_manual(name=colorname, values=c(colorvalues))+
-    theme(axis.text = element_text(size=8),
-          axis.title.x = element_text(size=8),
-          axis.title.y = element_text(size=8),
-          legend.title = element_text(size=8),
-          legend.text = element_text(size=8)) +
-    #theme(legend.title=element_blank()) 
-    background_grid(major = "y", minor = "y") +
-      theme_cowplot(font_size = 8, line_size = 0.25) +
-    theme(legend.position="none")
-}
-
-PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
-PCA12
-
-pdf(file="DGpca12.pdf", width=2, height=2)
-plot(PCA12)
-dev.off()
- 
 #calculate significance of all two way comparisions
 # see source "functions_RNAseq.R" 
 contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 74
@@ -113,7 +86,7 @@ contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypva
 contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 2
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05, cooksCutoff = F)
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
 summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
@@ -134,35 +107,42 @@ data <- data %>%
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 
-# Color corresponds to fold change directionality
 DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  theme_bw(base_size = 2) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = volcano1) + 
+  scale_color_manual(values = volcano1)  + 
+  scale_x_continuous(name="log2(consistent/yoked)") +
+  scale_y_continuous(name=NULL) +
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )+ 
   theme(panel.grid.minor=element_blank(),
-           panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/yoked)",
-                     limits=c(-4, 4)) +
-  #scale_y_log10(limits=c(0.00001, 100)) +
-  labs( y = NULL) +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )
+        legend.position = "none", # remove legend 
+        panel.grid.major=element_blank())
 DGvolcano
 
-
-pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
+pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.25, height=2)
 plot(DGvolcano)
 dev.off()
 
-DGpcavolcano < - plot_grid(PCA12, DGvolcano)
+plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
+  ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
+    geom_point(size=2) +
+    xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
+    ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
+    stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
+    scale_colour_manual(name=colorname, values=c(colorvalues))+ 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="none")
+}
 
 
-pdf(file="../figures/02c_rnaseqSubfield/DGpcavolcano", width=4, height=2)
-plot_grid(DGpcavolcano)
+PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
+PCA12
+
+pdf(file="../figures/02c_rnaseqSubfield/DGpca12.pdf", width=1.75, height=2)
+plot(PCA12)
 dev.off()
 
 ```
-
 
 ## venn diagrams
 
@@ -191,10 +171,7 @@ prettyvenn <- venn.diagram(
 grid.draw(prettyvenn)
 ```
 
-
-
 ## CA3
-
 
 ```{r CA3, message=F, warning=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
@@ -203,13 +180,10 @@ countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, 
 colData <- colData %>% 
   filter(Punch %in% c("CA3"))  %>% 
   droplevels()
-
 savecols <- as.character(colData$RNAseqID) 
 savecols <- as.vector(savecols) 
 countData <- countData %>% dplyr::select(one_of(savecols)) 
-
 colData %>% select(APA2,Punch)  %>%  summary()
-
 
 ## create DESeq object using the factors Punch and APA
 dds <- DESeqDataSetFromMatrix(countData = countData,
@@ -222,12 +196,10 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
 
-
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 percentVar
-
 
 TukeyHSD((aov(PC1 ~ APA2, data=pcadata)), which = "APA2") 
 TukeyHSD((aov(PC2 ~ APA2, data=pcadata)), which = "APA2") 
@@ -240,31 +212,21 @@ summary(aov(PC6 ~ APA2, data=pcadata))
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 pcadata$wrap <- "Principle Compent Analysis"
 
-
-
 plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
   ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-    geom_point(size=8) +
+    geom_point(size=2) +
     xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
     ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    theme_classic() +
-    #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=1) + 
-    scale_colour_manual(name=colorname, values=c(colorvalues))+
-    theme(axis.text = element_text(size=8),
-          axis.title.x = element_text(size=8),
-          axis.title.y = element_text(size=8),
-          legend.title = element_text(size=8),
-          legend.text = element_text(size=8)) +
-    #theme(legend.title=element_blank()) 
-    background_grid(major = "y", minor = "y") +
-      theme_cowplot(font_size = 8, line_size = 0.25) +
+    stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
+    scale_colour_manual(name=colorname, values=c(colorvalues))+ 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none")
 }
 
 PCA14 <- plotPCs(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
 PCA14
 
-pdf(file="CA3pca14.pdf", width=2, height=2)
+pdf(file="../figures/02c_rnaseqSubfield/CA3pca14.pdf", width=1.75, height=2)
 plot(PCA14)
 dev.off()
  
@@ -312,19 +274,13 @@ grid.draw(prettyvenn)
 ```{r CA1, message=F, warning=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-
 colData <- colData %>% 
   filter(Punch %in% c("CA1"))  %>% 
   droplevels()
-
 savecols <- as.character(colData$RNAseqID) 
 savecols <- as.vector(savecols) 
 countData <- countData %>% dplyr::select(one_of(savecols)) 
-
 colData %>% select(APA2,Punch)  %>%  summary()
-
-
-## create DESeq object using the factors Punch and APA
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ APA2)
@@ -336,21 +292,16 @@ dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
 
 
-# create the dataframe using my function pcadataframe
+# PCA analysis
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 percentVar
-
-
 summary(aov(PC1 ~ APA2, data=pcadata)) 
 TukeyHSD((aov(PC1 ~ APA2, data=pcadata)), which = "APA2") 
-
 summary(aov(PC2 ~ APA2, data=pcadata)) 
 TukeyHSD((aov(PC2 ~ APA2, data=pcadata)) , which = "APA2") 
-
 summary(aov(PC3 ~ APA2, data=pcadata))
 summary(aov(PC4 ~ APA2, data=pcadata))
-
 
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 pcadata$wrap <- "Principle Compent Analysis"
@@ -361,40 +312,29 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     geom_point(size=2) +
     xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
     ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    theme_classic() +
-    stat_ellipse(level = 0.95, (aes(color=aescolor)),size=1) + 
-    scale_colour_manual(name=colorname, values=c(colorvalues))+
-    theme(axis.text = element_text(size=8),
-          axis.title.x = element_text(size=8),
-          axis.title.y = element_text(size=8),
-          legend.title = element_text(size=8),
-          legend.text = element_text(size=8)) +
-    #theme(legend.title=element_blank()) 
-    background_grid(major = "y", minor = "y") +
-      theme_cowplot(font_size = 8, line_size = 0.25) +
+    stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
+    scale_colour_manual(name=colorname, values=c(colorvalues))+ 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none")
 }
 
 PCA14 <- plotPCs(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
 PCA14
 
-pdf(file="CA1pca14.pdf", width=2, height=2)
+pdf(file="../figures/02c_rnaseqSubfield/CA1pca14.pdf", width=1.75, height=2)
 plot(PCA14)
 dev.off()
  
-#calculate significance of all two way comparisions
-# see source "functions_RNAseq.R" 
+# calculate significance of all two way comparisions
 contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 102
 contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05) # 2
 contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.05) # 0
 contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 95
 
-
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05, cooksCutoff = F)
 summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
-
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("APA2"))
 
@@ -414,29 +354,21 @@ top_labelled <- top_n(data, n = 5, wt = lfc)
 # Color corresponds to fold change directionality
 CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  theme_bw(base_size = 2) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = volcano1) + 
+  scale_color_manual(values = volcano1)  + 
+  scale_x_continuous(name="log2 (consistent/yoked)") +
+  scale_y_continuous(name=NULL) +
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
   theme(panel.grid.minor=element_blank(),
-           panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/yoked)",
-                     limits=c(-4, 4)) +
-  #scale_y_log10(limits=c(0.00001, 100)) +
-  labs( y = NULL) +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )
+        legend.position = "none", # remove legend 
+        panel.grid.major=element_blank())
 CA1volcano
 
 
-pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf", width=1.5, height=2)
+pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf", width=1.25, height=2)
 plot(CA1volcano)
 dev.off()
 
-CA1pcavolcano <- plot_grid(PCA12, CA1volcano)
-CA1pcavolcano
-
-pdf(file="../figures/02c_rnaseqSubfield/CA1consistent.pdf", width=4, height=2)
-plot_grid(PCA14, CA1pcavolcano)
-dev.off()
 
 ```
 

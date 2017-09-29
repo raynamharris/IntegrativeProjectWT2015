@@ -38,6 +38,13 @@ colorvalAPA7<-  c( "#bababa","#404040")
 #404040 ## darkgrey - yoked-consistent
 
 
+colorvalAPA00 <-  c( "#404040","#ca0020", "#bababa", "#f4a582")
+#bababa ## light grey - Yoked_Conflict
+#404040 ## darkgrey - Yoked_NoConflict
+#f4a582 ## pink - Trained_Conflict
+#ca0020 ## red - Trained_NoConflict 
+
+
 DGConflictControl <- c("#bababa","#f4a582")
 DGConsistentControl <- c("#bababa","#ca0020")
 DGConflictConsistent <- c("#f4a582","#ca0020")
