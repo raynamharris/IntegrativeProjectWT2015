@@ -26,6 +26,8 @@ knitr::opts_chunk$set(fig.path = '../figures/03_ephys/')
 
 ```{r data,  message=F}
 ## read summarized ephys data and relevel factors
+colData <- read.csv("../data/02a_colData.csv", header = T) # for better group names
+
 ephys <- read.csv("../data/03_ephys.csv", header = T)
 ephys$Group <- factor(ephys$Group, levels = c("control", "consistent", "conflict"))
 ephyslong <- melt(ephys)
@@ -36,104 +38,115 @@ ephys2long <- read.csv("../data/03_ephys3.csv", header = T)
 
 ephys2$APA <- factor(ephys2$APA, levels = c("control", "consistent", "conflict"))
 ephys2long$APA <- factor(ephys2long$APA, levels = c("control", "consistent", "conflict"))
+ephys2long$APA2 <- factor(ephys2long$APA2, levels = c("control-consistent", "consistent",  "control-conflict","conflict"))
 
+ephys3 <- left_join(ephys, colData, by = "Mouse")
+ephys3 <- na.omit(ephys3)
+
+ephys3$APA2 <- factor(ephys3$APA2, levels = c("yoked_consistent", "consistent",  "yoked_conflict", "conflict"))
+levels(ephys3$APA2) <- c("yoked-consistent", "consistent",  "yoked-conflict", "conflict")
+
+ephys3$one <- "Pre-Potentiation"
+ephys3$two <- "Early Potentiation"
+ephys3$three <- "Late Potentiation"
+ephys3$four <- "Max fEPSP"
 ```
 
 
 ## the data
 ```{r dataviz}
 
-ephyslong %>%
-  ggplot(aes(x=Group, y=value, color=Group)) +  
-  geom_boxplot() + 
-  facet_wrap(~ variable, scales = "free") +
-  theme(legend.position="none") +
-  scale_color_manual(values = colorvalAPA)
-
-one <- ephys %>%
-  ggplot(aes(x=Group, y=PTP_3_10, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none") +
-  scale_color_manual(values = colorvalAPA) + 
-  scale_y_continuous(name="Pre-Potentiation",
+one <- ephys3 %>%
+  ggplot(aes(x=APA2, y=PTP_3_10, fill=APA2)) +  
+  geom_violin() + 
+  scale_fill_manual(values = colorvalAPA00) + 
+  scale_y_continuous(name=NULL,
                      limits = c(100, 300)) + 
-  theme(axis.title.x = element_blank(), axis.text.x = element_blank())
-  
-
-two <- ephys %>%
-  ggplot(aes(x=Group, y=EarlyPotentiation_11_20, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none") +
-  scale_color_manual(values = colorvalAPA) + 
-  scale_y_continuous(name="Early Potentiation",
-                     limits = c(100, 300)) + 
-  theme(axis.title.x = element_blank(), axis.text.x = element_blank())
-
-three <- ephys %>%
-  ggplot(aes(x=Group, y=LatePotentiation_26_end, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none") +
-  scale_color_manual(values = colorvalAPA) + 
-  scale_y_continuous(name="Late Potentiation",
-                     limits = c(100, 300)) + 
-  theme(axis.title.x = element_blank(), axis.text.x = element_blank())
-
-four <- ephys %>%
-  ggplot(aes(x=Group, y=MaxfEPSP, color=Group)) +  
-  geom_boxplot() + theme(legend.position="none") +
-  scale_color_manual(values = colorvalAPA) + 
-  scale_y_continuous(name="Max fEPSP") 
-
+  theme_cowplot(font_size = 8, line_size = 0.25)   + 
+  theme(axis.title.x = element_blank(), 
+        axis.text.x = element_blank(),
+        legend.position="none") +
+  facet_wrap(~one)
 one
+leveneTest(PTP_3_10~APA2, data=ephys3)
+summary(aov(ephys3$PTP_3_10 ~ ephys3$APA2))
+TukeyHSD(aov(ephys3$PTP_3_10 ~ ephys3$APA2))
+  
+two <- ephys3 %>%
+  ggplot(aes(x=APA2, y=EarlyPotentiation_11_20, fill=APA2)) +  
+  geom_violin() + 
+  scale_fill_manual(values = colorvalAPA00) + 
+  scale_y_continuous(name=NULL,
+                     limits = c(100, 300)) + 
+  theme_cowplot(font_size = 8, line_size = 0.25)   + 
+  theme(axis.title.x = element_blank(), 
+        axis.text.x = element_blank(),
+        legend.position="none") +
+  facet_wrap(~two)
 two
-three
-four
+leveneTest(EarlyPotentiation_11_20~APA2, data=ephys3)
+summary(aov(ephys3$EarlyPotentiation_11_20 ~ ephys3$APA2))
+TukeyHSD(aov(ephys3$EarlyPotentiation_11_20 ~ ephys3$APA2))
 
-pdf(file="../figures/03_ephys/1pre.pdf", width=2, height=4)
+
+three <- ephys3 %>%
+  ggplot(aes(x=APA2, y=LatePotentiation_26_end, fill=APA2)) +  
+  geom_violin() + 
+  scale_fill_manual(values = colorvalAPA00) + 
+  scale_y_continuous(name=NULL,
+                     limits = c(100, 300)) + 
+  theme_cowplot(font_size = 8, line_size = 0.25)   + 
+  theme(axis.title.x = element_blank(), 
+        axis.text.x = element_blank(),
+        legend.position="none") +
+  facet_wrap(~three)
+three
+leveneTest(LatePotentiation_26_end~APA2, data=ephys3)
+summary(aov(ephys3$LatePotentiation_26_end ~ ephys3$APA2))
+TukeyHSD(aov(ephys3$LatePotentiation_26_end ~ ephys3$APA2))
+
+four <- ephys3 %>%
+  ggplot(aes(x=APA2, y=MaxfEPSP, fill=APA2)) +  
+  geom_violin() +
+  scale_fill_manual(values = colorvalAPA00) + 
+  scale_y_continuous(name= NULL) +
+  theme_cowplot(font_size = 8, line_size = 0.25)   + 
+  theme(axis.title.x = element_blank(), 
+        axis.text.x = element_blank(),
+        legend.position="none") +
+  facet_wrap(~four)
+four
+leveneTest(MaxfEPSP~APA2, data=ephys3)
+summary(aov(ephys3$MaxfEPSP ~ ephys3$APA2))
+TukeyHSD(aov(ephys3$MaxfEPSP ~ ephys3$APA2))
+
+ 
+pdf(file="../figures/03_ephys/1pre.pdf", width=1.75, height=2)
 plot(one)
 dev.off()
 
-pdf(file="../figures/03_ephys/2early.pdf", width=2, height=4)
+pdf(file="../figures/03_ephys/2early.pdf", width=1.75, height=2)
 plot(two)
 dev.off()
 
-pdf(file="../figures/03_ephys/3late.pdf", width=2, height=4)
+pdf(file="../figures/03_ephys/3late.pdf", width=1.75, height=2)
 plot(three)
+dev.off()
+
+pdf(file="../figures/03_ephys/4max.pdf", width=1.75, height=2)
+plot(four)
 dev.off()
 
 
 ```
 
 
-## stats
-```{r statistics}
-summary(ephys)
-# Levene's Test
-# is variance signficant? NO? ==> use anova
-leveneTest(PTP_3_10~Group, data=ephys)
-# group  2   2.728 0.09088 .  ==> not significant
-leveneTest(EarlyPotentiation_11_20~Group, data=ephys)
-## group  2  1.7926 0.1936  ==>  not significant
-leveneTest(LatePotentiation_26_end~Group, data=ephys)
-## group  2  0.3244 0.7269  ==> not significant
-leveneTest(MaxfEPSP~Group, data=ephys)
-## group  2  0.2189 0.8054  ==> not significant
 
 ##  one way anova 
-myanova <- aov(ephys$PTP_3_10 ~ ephys$Group)
-summary(myanova)
-TukeyHSD(myanova)
 
-myanova <- aov(ephys$EarlyPotentiation_11_20 ~ ephys$Group)
-summary(myanova)
-TukeyHSD(myanova)
 
-myanova <- aov(ephys$LatePotentiation_26_end ~ ephys$Group)
-summary(myanova)
-TukeyHSD(myanova)
 
-myanova <- aov(ephys$MaxfEPSP ~ ephys$Group)
-summary(myanova)
-TukeyHSD(myanova)
 
-```
 
 ```{r plots}
 ephys2long %>% 

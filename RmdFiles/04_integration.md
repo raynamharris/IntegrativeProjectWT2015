@@ -6,6 +6,14 @@ library(plyr)
 library(dplyr)
 library(reshape2)
 library(superheat)
+library("Hmisc")
+library("corrplot")
+library("PerformanceAnalytics")
+library(viridis)
+library(cowplot)
+library(pheatmap)
+
+source("figureoptions.R")
 
 knitr::opts_chunk$set(fig.path = '../figures/04_integration/')
 ```
@@ -16,9 +24,28 @@ Import Data
 ``` r
 behaviorpca <- read.csv("../data/01a_scoresdf.csv", header = T)
 behavior <- read.csv("../data/01a_behavior.csv", header = T)
-ephys <- read.csv("../data/03_ephys.csv", header = T)
+
+
 pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
 rossetta <- read.csv("../data/00_rossettastone.csv", header = F)
+
+colData <- read.csv("../data/02a_colData.csv", header = T) # for better group names
+
+ephys <- read.csv("../data/03_ephys.csv", header = T)
+ephys3 <- left_join(ephys, colData, by = "Mouse")
+```
+
+    ## Warning in left_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
+    ## factors with different levels, coercing to character vector
+
+``` r
+ephys3 <- na.omit(ephys3)
+ephys3$APA2 <- factor(ephys3$APA2, levels = c("yoked_consistent", "consistent",  "yoked_conflict", "conflict"))
+levels(ephys3$APA2) <- c("yoked-consistent", "consistent",  "yoked-conflict", "conflict")
+names(ephys3)[3] <- "Pre-Potentiation"
+names(ephys3)[4] <- "Early_Potentiation"
+names(ephys3)[5] <- "Late_Potentiation"
+names(ephys3)[6] <- "Max_fEPSP"
 ```
 
 ``` r
@@ -35,16 +62,37 @@ rossetta$R2filename <- gsub("R1", "R2", rossetta$R2filename)
 #rossetta$Mouse <- gsub("15-101", "15-100", rossetta$Mouse)
 #write.csv(rossetta, "../../DissociationTest/data/00_metadata.csv")
 
-colData <- read.csv("../data/IntegrativeWT2015ColData.csv", header = T)
 colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_CA1" = "142C-CA1-S")) 
-colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_DG" = "142C-DG-S")) 
-colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_CA1" = "143C-CA1-S")) 
-colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_DG" = "143C-DG-S"))
+```
 
+    ## The following `from` values were not present in `x`: 142C_CA1
+
+``` r
+colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_DG" = "142C-DG-S")) 
+```
+
+    ## The following `from` values were not present in `x`: 142C_DG
+
+``` r
+colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_CA1" = "143C-CA1-S")) 
+```
+
+    ## The following `from` values were not present in `x`: 143C_CA1
+
+``` r
+colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_DG" = "143C-DG-S"))
+```
+
+    ## The following `from` values were not present in `x`: 143C_DG
+
+``` r
 metadata <- full_join(colData, rossetta)
 ```
 
-    ## Joining, by = c("RNAseqID", "Region")
+    ## Joining, by = c("RNAseqID", "ID")
+
+    ## Warning in full_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
+    ## factors with different levels, coercing to character vector
 
     ## Warning in full_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
     ## factors with different levels, coercing to character vector
@@ -62,34 +110,31 @@ metadata$process2 <- "IntegrativeWT2015ColData.csv"
 str(metadata)
 ```
 
-    ## 'data.frame':    54 obs. of  22 variables:
-    ##  $ samplename  : chr  "142C-CA1-S" "142C-DG-S" "143A-CA3-1" "143A-DG-1" ...
-    ##  $ Mouse       : Factor w/ 21 levels "15-142C","15-143A",..: 1 1 2 2 3 3 4 4 4 5 ...
-    ##  $ year        : int  2015 2015 2015 2015 2015 2015 2015 2015 2015 2015 ...
-    ##  $ Genotype    : Factor w/ 1 level "WT": 1 1 1 1 1 1 1 1 1 1 ...
-    ##  $ Region      : Factor w/ 3 levels "CA1","CA3","DG": 1 3 2 3 1 3 1 3 1 1 ...
-    ##  $ sourcename  : Factor w/ 2 levels "JA16268","JA16444": 1 1 2 2 2 2 1 1 2 2 ...
-    ##  $ Group       : Factor w/ 4 levels "conflict","consistent",..: 2 2 1 1 3 3 2 2 2 3 ...
-    ##  $ APA         : Factor w/ 2 levels "Trained","Yoked": 1 1 1 1 2 2 1 1 1 2 ...
-    ##  $ Conflict    : Factor w/ 2 levels "Conflict","NoConflict": 2 2 1 1 1 1 2 2 2 2 ...
-    ##  $ APA_Conflict: Factor w/ 5 levels "NA_NA","Trained_Conflict",..: 3 3 2 2 4 4 3 3 3 5 ...
-    ##  $ Treatment   : Factor w/ 5 levels "conflict","homecage",..: 4 4 1 1 3 3 4 4 4 5 ...
-    ##  $ organism    : Factor w/ 21 levels "15-142C","15-143A",..: 1 1 2 2 3 3 4 4 4 5 ...
-    ##  $ ID          : Factor w/ 21 levels "15142C","15143A",..: 1 1 2 2 3 3 4 4 4 5 ...
-    ##  $ R1filename  : Factor w/ 54 levels "142C_CA1_S_S19_L003_R1_001.fastq.gz",..: 1 2 3 4 5 6 8 9 7 10 ...
-    ##  $ R2filename  : chr  "142C_CA1_S_S19_L003_R2_001.fastq.gz" "142C_DG_S_S21_L003_R2_001.fastq.gz" "143A_CA3_1_S35_L002_R2_001.fastq.gz" "143A_DG_1_S36_L002_R2_001.fastq.gz" ...
-    ##  $ title       : Factor w/ 53 levels "15142C CA1 consistent",..: 1 2 3 4 5 6 7 8 7 9 ...
-    ##  $ char1       : chr  "Mus musculus" "Mus musculus" "Mus musculus" "Mus musculus" ...
-    ##  $ char2       : chr  "C57BL/6" "C57BL/6" "C57BL/6" "C57BL/6" ...
-    ##  $ mol         : chr  "RNA" "RNA" "RNA" "RNA" ...
-    ##  $ des         : chr  " " " " " " " " ...
-    ##  $ processes   : Factor w/ 54 levels "142C-CA1-S /abundance.txt",..: 1 2 3 4 5 6 8 9 7 10 ...
-    ##  $ process2    : chr  "IntegrativeWT2015ColData.csv" "IntegrativeWT2015ColData.csv" "IntegrativeWT2015ColData.csv" "IntegrativeWT2015ColData.csv" ...
+    ## 'data.frame':    54 obs. of  19 variables:
+    ##  $ samplename: chr  "143A-CA3-1" "143A-DG-1" "143B-CA1-1" "143B-DG-1" ...
+    ##  $ Mouse     : Factor w/ 18 levels "15-143A","15-143B",..: 1 1 2 2 3 4 4 5 5 5 ...
+    ##  $ Conflict  : Factor w/ 2 levels "Conflict","NoConflict": 1 1 1 1 2 2 2 1 1 1 ...
+    ##  $ Punch     : Factor w/ 3 levels "CA1","CA3","DG": 2 3 1 3 1 1 3 1 2 3 ...
+    ##  $ Slice     : int  1 1 1 1 1 3 3 2 2 2 ...
+    ##  $ sourcename: chr  "15143A" "15143A" "15143B" "15143B" ...
+    ##  $ APA       : Factor w/ 3 levels "Conflict","Consistent",..: 1 1 3 3 2 3 3 1 1 1 ...
+    ##  $ APA2      : Factor w/ 4 levels "conflict","consistent",..: 1 1 3 3 2 4 4 1 1 1 ...
+    ##  $ organism  : Factor w/ 21 levels "15-142C","15-143A",..: 2 2 3 3 4 5 5 6 6 6 ...
+    ##  $ Region    : Factor w/ 3 levels "CA1","CA3","DG": 2 3 1 3 1 1 3 1 2 3 ...
+    ##  $ R1filename: Factor w/ 54 levels "142C_CA1_S_S19_L003_R1_001.fastq.gz",..: 3 4 5 6 7 10 11 12 13 14 ...
+    ##  $ R2filename: chr  "143A_CA3_1_S35_L002_R2_001.fastq.gz" "143A_DG_1_S36_L002_R2_001.fastq.gz" "143B_CA1_1_S37_L002_R2_001.fastq.gz" "143B_DG_1_S38_L002_R2_001.fastq.gz" ...
+    ##  $ title     : Factor w/ 53 levels "15142C CA1 ",..: 3 4 5 6 7 9 10 11 12 13 ...
+    ##  $ char1     : chr  "Mus musculus" "Mus musculus" "Mus musculus" "Mus musculus" ...
+    ##  $ char2     : chr  "C57BL/6" "C57BL/6" "C57BL/6" "C57BL/6" ...
+    ##  $ mol       : chr  "RNA" "RNA" "RNA" "RNA" ...
+    ##  $ des       : chr  " " " " " " " " ...
+    ##  $ processes : Factor w/ 54 levels "142C-CA1-S /abundance.txt",..: 3 4 5 6 7 10 11 12 13 14 ...
+    ##  $ process2  : chr  "IntegrativeWT2015ColData.csv" "IntegrativeWT2015ColData.csv" "IntegrativeWT2015ColData.csv" "IntegrativeWT2015ColData.csv" ...
 
 ``` r
-metadata <- select(metadata, samplename, title, sourcename, organism, char1, char2, mol, des, Group, processes, R1filename, R2filename, process2)
+metadata <- select(metadata, samplename, title, sourcename, organism, char1, char2, mol, des, processes, R1filename, R2filename, process2)
 
-write.csv(metadata, "../data/00_metadata.csv")
+#write.csv(metadata, "../data/00_metadata.csv")
 ```
 
 Wrangle Data
@@ -97,7 +142,6 @@ Wrangle Data
 
 ``` r
 # clearnup the rosetts data and filter extraneous samples
-rossetta <- read.csv("../data/00_rossettastone.csv", header = F)
 names(rossetta)[1] <- "Mouse"
 names(rossetta)[2] <- "ID"
 names(rossetta)[3] <- "Region"
@@ -108,13 +152,13 @@ rossetta <- rossetta %>% dplyr::filter(Mouse != "15-100", Mouse != "15-101", Mou
 head(rossetta) # dictionary of names
 ```
 
-    ##     Mouse     ID Region   RNAseqID
-    ## 1 15-142C 15142C    CA1 142C-CA1-S
-    ## 2 15-142C 15142C     DG  142C-DG-S
-    ## 3 15-143A 15143A    CA3 143A-CA3-1
-    ## 4 15-143A 15143A     DG  143A-DG-1
-    ## 5 15-143B 15143B    CA1 143B-CA1-1
-    ## 6 15-143B 15143B     DG  143B-DG-1
+    ##     Mouse     ID Region   RNAseqID                          R2filename
+    ## 1 15-142C 15142C    CA1 142C-CA1-S 142C_CA1_S_S19_L003_R2_001.fastq.gz
+    ## 2 15-142C 15142C     DG  142C-DG-S  142C_DG_S_S21_L003_R2_001.fastq.gz
+    ## 3 15-143A 15143A    CA3 143A-CA3-1 143A_CA3_1_S35_L002_R2_001.fastq.gz
+    ## 4 15-143A 15143A     DG  143A-DG-1  143A_DG_1_S36_L002_R2_001.fastq.gz
+    ## 5 15-143B 15143B    CA1 143B-CA1-1 143B_CA1_1_S37_L002_R2_001.fastq.gz
+    ## 6 15-143B 15143B     DG  143B-DG-1  143B_DG_1_S38_L002_R2_001.fastq.gz
 
 ``` r
 ## slim behavior ephy to top 5 pcs and rename the columsn
@@ -144,8 +188,9 @@ pcadatabyregion <- left_join(pcadata, rossetta)
 pcadatabyregion <- melt(pcadatabyregion, id = c(10:14))
 pcadatabyregion$RegionPC <- as.factor(paste(pcadatabyregion$Region, pcadatabyregion$variable, sep="_"))
 pcadatabyregion <- dcast(pcadatabyregion, Mouse + ID ~ RegionPC)
+```
 
-
+``` r
 alldata <- left_join(behaviorpca, pcadatabyregion)
 ```
 
@@ -155,10 +200,25 @@ alldata <- left_join(behaviorpca, pcadatabyregion)
     ## factors with different levels, coercing to character vector
 
 ``` r
-sh2 <- superheat(X = alldata[,-c(6:8,15:17,24:26,33:35)],
+alldata <- left_join(alldata, ephys3, by="ID")
+```
+
+    ## Warning in left_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
+    ## factor and character vector, coercing into character vector
+
+``` r
+#alldata <- na.omit(alldata)
+
+alldataslim <- alldata[,-c(6:8,18,28,38:40,45:50)]
+alldataslim <- sapply( alldataslim, as.numeric )
+alldataslimmer <- alldataslim[,-c(10:14,19:23,26:32)]
+```
+
+``` r
+sh2 <- superheat(X = alldataslimmer,
                 #yr = behaviorpca[,10],
                 #yr.axis.name = "PC10",
-                membership.rows = alldata$APA,
+                membership.rows = alldata$APA2.x,
                 pretty.order.cols = TRUE,
                 col.dendrogram = TRUE,
                 bottom.label.size = 0.3,
@@ -167,4 +227,147 @@ sh2 <- superheat(X = alldata[,-c(6:8,15:17,24:26,33:35)],
                 scale = TRUE)
 ```
 
-![](../figures/04_integration/superheatmap-1.png)
+![](../figures/04_integration/superheat-1.png)
+
+``` r
+cormat <- rcorr(as.matrix(alldataslimmer))
+res2 <- rcorr(as.matrix(alldataslimmer))
+
+
+corrplot(res2$r, type = "lower", order = "hclust", 
+        tl.col = "black", tl.srt = 45)
+```
+
+![](../figures/04_integration/correlations-1.png)
+
+``` r
+corrplot(res2$r, type="lower", order="hclust",  tl.col = "black", 
+        p.mat = res2$P, sig.level = 0.05, insig = "blank")
+```
+
+![](../figures/04_integration/correlations-2.png)
+
+``` r
+paletteLength <- 30
+myBreaks <- c(seq(min(cormat$r), 0, length.out=ceiling(paletteLength/2) + 1),
+              seq(max(cormat$r)/paletteLength, max(cormat$r), length.out=floor(paletteLength/2)))
+pheatmap(cormat$r, show_colnames=T, show_rownames = T,
+         #annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         fontsize = 8, 
+         width=4, height=3.5,
+         border_color = "grey60" ,
+         color = viridis(30),
+         #cellwidth = 10, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" 
+         )
+```
+
+![](../figures/04_integration/correlations-3.png)
+
+``` r
+alldata$APA2.x <- factor(alldata$APA2.x, levels = c("yoked-consistent", "consistent",  "yoked-conflict", "conflict"))
+
+
+scatter <- ggplot(alldata, aes(Behavior_PC1, as.numeric(DG_PC2), color=APA2.x)) + 
+  geom_point(size = 2, alpha = 0.5) +
+  scale_color_manual(values = colorvalAPA00) +
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="none") +
+    scale_x_continuous(name="Behavior PC1") +
+     scale_y_continuous(name="DG PC2")  
+scatter
+```
+
+![](../figures/04_integration/correlations-4.png)
+
+``` r
+pdf(file="../figures/04_integration/scatter1.pdf", width=1.5, height=1.5)
+plot(scatter)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+scatter <- ggplot(alldata, aes(Behavior_PC1, as.numeric(CA1_PC3), color=APA2.x)) + 
+  geom_point(size = 2, alpha = 0.5) +
+  scale_color_manual(values = colorvalAPA00)+
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="none") +
+    scale_x_continuous(name="Behavior PC1") +
+     scale_y_continuous(name="CA1 PC3")  
+scatter
+```
+
+![](../figures/04_integration/correlations-5.png)
+
+``` r
+pdf(file="../figures/04_integration/scatter2.pdf", width=1.5, height=1.5)
+plot(scatter)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+scatter <- ggplot(alldata, aes(x = Late_Potentiation, as.numeric(CA1_PC1), color=APA2.x)) + 
+  geom_point(size = 2, alpha = 0.5) +
+  scale_color_manual(values = colorvalAPA00) +
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="none") +
+    scale_x_continuous(name="Late Potentiation",
+                       limits = c(75,225)) +
+     scale_y_continuous(name="CA1 PC1")  
+scatter
+```
+
+![](../figures/04_integration/correlations-6.png)
+
+``` r
+pdf(file="../figures/04_integration/scatter3.pdf", width=1.5, height=1.5)
+plot(scatter)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+scatter <- ggplot(alldata, aes(as.numeric(DG_PC2), as.numeric(CA1_PC3), color=APA2.x)) + 
+  geom_point(size = 2, alpha = 0.5) +
+  scale_color_manual(values = colorvalAPA00) +
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="none") +
+    scale_x_continuous(name="DG PC2") +
+     scale_y_continuous(name="CA1 PC3")  
+scatter
+```
+
+![](../figures/04_integration/correlations-7.png)
+
+``` r
+pdf(file="../figures/04_integration/scatter4.pdf", width=1.5, height=1.5)
+plot(scatter)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+scatter <- ggplot(alldata, aes(Behavior_PC3, as.numeric(CA1_PC3), color=APA2.x)) + 
+  geom_point(size = 2, alpha = 0.5) +
+  scale_color_manual(values = colorvalAPA00)+
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="none") +
+    scale_x_continuous(name="Behavior PC1") +
+     scale_y_continuous(name="CA1 PC3")  
+scatter
+```
+
+![](../figures/04_integration/correlations-8.png)
