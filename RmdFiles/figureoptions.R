@@ -66,7 +66,11 @@ volcano4 <-  c("conflict" = "#f4a582",
                "yoked_conflict" = "#bababa", 
                "none" = "#d9d9d9")
 
+volcano5 <-  c("yes" = "red",
+               "no" = "black", 
+               "none" = "#d9d9d9")
 
+colorvalavoidance <- c("black","red")
 
 
 
@@ -125,6 +129,13 @@ ann_colors6 = list(
 ann_colors7 = list(
   APA2 =  c('yoked_consistent' = (values=c("#404040")), 
             'yoked_conflict' = (values=c("#bababa"))),
+  Punch = c(CA1 = (values=c("#7570b3")),
+            CA3 = (values=c("#1b9e77")), 
+            DG = (values=c("#d95f02"))))
+
+ann_colors8 = list(
+  avoidance =  c('yes' = (values=c("red")), 
+            'no' = (values=c("black"))),
   Punch = c(CA1 = (values=c("#7570b3")),
             CA3 = (values=c("#1b9e77")), 
             DG = (values=c("#d95f02"))))

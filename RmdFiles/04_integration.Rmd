@@ -180,39 +180,46 @@ pheatmap(cormat$r, show_colnames=T, show_rownames = T,
          clustering_distance_cols="correlation" 
          )
 
+pheatmap(cormat$r, show_colnames=F, show_rownames = T,
+         #annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 8, 
+         width=3, height=2.5,
+         border_color = "grey60" ,
+         color = viridis(30),
+         #cellwidth = 10, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/04_integration/correlation.pdf"
+         )
+
 
 alldata$APA2.x <- factor(alldata$APA2.x, levels = c("yoked-consistent", "consistent",  "yoked-conflict", "conflict"))
 
+alldata$avoidance <-  ifelse(grepl("Control", alldata$APA), "no", "yes")
 
-scatter <- ggplot(alldata, aes(Behavior_PC1, as.numeric(DG_PC2), color=APA2.x)) + 
-  geom_point(size = 2, alpha = 0.5) +
-  scale_color_manual(values = colorvalAPA00) +
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") +
-    scale_x_continuous(name="Behavior PC1") +
-     scale_y_continuous(name="DG PC2")  
-scatter
 
-pdf(file="../figures/04_integration/scatter1.pdf", width=1.5, height=1.5)
-plot(scatter)
-dev.off()
 
-scatter <- ggplot(alldata, aes(Behavior_PC1, as.numeric(CA1_PC3), color=APA2.x)) + 
-  geom_point(size = 2, alpha = 0.5) +
-  scale_color_manual(values = colorvalAPA00)+
+scatter <- ggplot(alldata, aes(Behavior_PC1, as.numeric(CA1_PC3), color=avoidance)) + 
+  geom_point(size = 2) +
+  scale_color_manual(values = colorvalavoidance) +
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
     scale_x_continuous(name="Behavior PC1") +
      scale_y_continuous(name="CA1 PC3")  
 scatter
 
-pdf(file="../figures/04_integration/scatter2.pdf", width=1.5, height=1.5)
+
+pdf(file="../figures/02d_rnaseqavoidance/scatter1.pdf", width=1.5, height=1.5)
 plot(scatter)
 dev.off()
 
-scatter <- ggplot(alldata, aes(x = Late_Potentiation, as.numeric(CA1_PC1), color=APA2.x)) + 
+
+
+scatter <- ggplot(alldata, aes(x = Late_Potentiation, as.numeric(CA1_PC1), color=avoidance)) + 
   geom_point(size = 2, alpha = 0.5) +
-  scale_color_manual(values = colorvalAPA00) +
+  scale_color_manual(values = colorvalavoidance) +
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
     scale_x_continuous(name="Late Potentiation",
@@ -220,34 +227,20 @@ scatter <- ggplot(alldata, aes(x = Late_Potentiation, as.numeric(CA1_PC1), color
      scale_y_continuous(name="CA1 PC1")  
 scatter
 
-pdf(file="../figures/04_integration/scatter3.pdf", width=1.5, height=1.5)
+pdf(file="../figures/02d_rnaseqavoidance/scatter3.pdf", width=1.5, height=1.5)
 plot(scatter)
 dev.off()
 
-scatter <- ggplot(alldata, aes(as.numeric(DG_PC2), as.numeric(CA1_PC3), color=APA2.x)) + 
+scatter <- ggplot(alldata, aes(as.numeric(DG_PC2), as.numeric(CA1_PC3), color=avoidance)) + 
   geom_point(size = 2, alpha = 0.5) +
-  scale_color_manual(values = colorvalAPA00) +
+  scale_color_manual(values = colorvalavoidance) +
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
     scale_x_continuous(name="DG PC2") +
      scale_y_continuous(name="CA1 PC3")  
 scatter
 
-pdf(file="../figures/04_integration/scatter4.pdf", width=1.5, height=1.5)
+pdf(file="../figures/02d_rnaseqavoidance/scatter4.pdf", width=1.5, height=1.5)
 plot(scatter)
 dev.off()
-
-
-scatter <- ggplot(alldata, aes(Behavior_PC3, as.numeric(CA1_PC3), color=APA2.x)) + 
-  geom_point(size = 2, alpha = 0.5) +
-  scale_color_manual(values = colorvalAPA00)+
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") +
-    scale_x_continuous(name="Behavior PC1") +
-     scale_y_continuous(name="CA1 PC3")  
-scatter
-
-
-
-
 ```

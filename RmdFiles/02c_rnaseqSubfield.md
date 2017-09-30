@@ -79,8 +79,7 @@ DG
 
     ## [1] 32 19 12  6  6  4  4  3  3
 
-    aov1 <- aov(PC1 ~ APA2, data=pcadata)
-    summary(aov1) 
+    summary(aov(PC1 ~ APA2, data=pcadata)) 
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
     ## APA2         3  813.7   271.2   3.132 0.0656 .
@@ -88,7 +87,7 @@ DG
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    TukeyHSD(aov1, which = "APA2") 
+    TukeyHSD((aov(PC1 ~ APA2, data=pcadata)) , which = "APA2") 
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
@@ -104,8 +103,7 @@ DG
     ## yoked_consistent-consistent     15.4443530  -5.656981 36.54569 0.1859964
     ## yoked_consistent-yoked_conflict -0.8207787 -20.356818 18.71526 0.9992658
 
-    aov2 <- aov(PC2 ~ APA2, data=pcadata)
-    summary(aov2) 
+    summary(aov(PC2 ~ APA2, data=pcadata)) 
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
     ## APA2         3  534.4  178.15   3.646 0.0446 *
@@ -113,7 +111,7 @@ DG
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    TukeyHSD(aov2, which = "APA2") 
+    TukeyHSD((aov(PC2 ~ APA2, data=pcadata)), which = "APA2") 
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
@@ -129,15 +127,13 @@ DG
     ## yoked_consistent-consistent     16.292191   0.441010 32.14337 0.0433400
     ## yoked_consistent-yoked_conflict 10.421479  -4.253863 25.09682 0.2052640
 
-    aov3 <- aov(PC3 ~ APA2, data=pcadata)
-    summary(aov3) 
+    summary(aov(PC3 ~ APA2, data=pcadata)) 
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
     ## APA2         3  142.6   47.55   1.039   0.41
     ## Residuals   12  549.1   45.76
 
-    aov4 <- aov(PC4 ~ APA2, data=pcadata)
-    summary(aov4) 
+    summary(aov(PC4 ~ APA2, data=pcadata)) 
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
     ## APA2         3  54.68   18.23     0.7   0.57
@@ -148,33 +144,33 @@ DG
 
     #calculate significance of all two way comparisions
     # see source "functions_RNAseq.R" 
-    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 74
+    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 95
 
-    ## [1] 74
+    ## [1] 95
 
-    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05) # 2
+    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 5
 
-    ## [1] 2
+    ## [1] 5
 
-    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.05) # 0
+    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
 
     ## [1] 0
 
-    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 2
+    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 2
 
     ## [1] 2
 
-    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
+    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
     ## 
     ## out of 16658 with nonzero total read count
-    ## adjusted p-value < 0.05
-    ## LFC > 0 (up)     : 90, 0.54% 
-    ## LFC < 0 (down)   : 0, 0% 
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 119, 0.71% 
+    ## LFC < 0 (down)   : 2, 0.012% 
     ## outliers [1]     : 243, 1.5% 
-    ## low counts [2]   : 7555, 45% 
-    ## (mean count < 8)
+    ## low counts [2]   : 7235, 43% 
+    ## (mean count < 7)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
@@ -198,16 +194,16 @@ DG
     ## Lmna     31.66528       1.714228 0.3063322  5.595976 2.193845e-08
     ##                 padj
     ##            <numeric>
-    ## Smad7   3.802473e-08
-    ## Arc     1.153573e-07
-    ## Gm13889 4.729810e-07
-    ## Plk2    1.472661e-06
-    ## Tiparp  2.389782e-06
-    ## Egr1    2.958252e-06
-    ## Egr4    1.531349e-05
-    ## Homer1  1.531349e-05
-    ## Fzd5    2.019708e-05
-    ## Lmna    2.019708e-05
+    ## Smad7   3.939809e-08
+    ## Arc     1.195237e-07
+    ## Gm13889 4.900638e-07
+    ## Plk2    1.525850e-06
+    ## Tiparp  2.476095e-06
+    ## Egr1    3.065096e-06
+    ## Egr4    1.586657e-05
+    ## Homer1  1.586657e-05
+    ## Fzd5    2.092654e-05
+    ## Lmna    2.092654e-05
 
     topGene <- rownames(res)[which.min(res$padj)]
     plotCounts(dds, gene = topGene, intgroup=c("APA2"))
@@ -219,9 +215,9 @@ DG
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
     data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
                             yes = "consistent", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
                                         no = "none")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
@@ -229,11 +225,10 @@ DG
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       scale_color_manual(values = volcano1)  + 
-      scale_x_continuous(name="log2 (consistent/yoked)",
-                         limits=c(-4, 4)) +
-      scale_y_continuous(name="-log10(pvalue") +
+      scale_x_continuous(name="log2(consistent/yoked)") +
+      scale_y_continuous(name=NULL) +
       theme_cowplot(font_size = 8, line_size = 0.25) +
-      geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )+ 
+      geom_hline(yintercept = 1,  size = 0.25, linetype = 2 )+ 
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
             panel.grid.major=element_blank())
@@ -241,7 +236,7 @@ DG
 
 ![](../figures/02c_rnaseqSubfield/DG-2.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.75, height=2)
+    pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.25, height=2)
     plot(DGvolcano)
     dev.off()
 
@@ -455,19 +450,19 @@ CA3
 
     #calculate significance of all two way comparisions
     # see source "functions_RNAseq.R" 
-    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 0
+    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 0
 
     ## [1] 0
 
-    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05) # 0
+    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 0
 
     ## [1] 0
 
-    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.05) # 1
+    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
 
     ## [1] 1
 
-    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 0
+    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 0
 
     ## [1] 0
 
@@ -616,33 +611,33 @@ CA1
     ##                 2
 
     # calculate significance of all two way comparisions
-    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 102
+    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 196
 
-    ## [1] 102
+    ## [1] 196
 
-    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05) # 2
+    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 2
 
     ## [1] 2
 
-    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.05) # 0
+    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
 
     ## [1] 0
 
-    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 95
+    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 201
 
-    ## [1] 95
+    ## [1] 201
 
-    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05, cooksCutoff = F)
+    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
     ## 
     ## out of 16467 with nonzero total read count
-    ## adjusted p-value < 0.05
-    ## LFC > 0 (up)     : 95, 0.58% 
-    ## LFC < 0 (down)   : 64, 0.39% 
-    ## outliers [1]     : 0, 0% 
-    ## low counts [2]   : 7981, 48% 
-    ## (mean count < 10)
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 202, 1.2% 
+    ## LFC < 0 (down)   : 154, 0.94% 
+    ## outliers [1]     : 224, 1.4% 
+    ## low counts [2]   : 7141, 43% 
+    ## (mean count < 8)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
@@ -666,16 +661,16 @@ CA1
     ## Inhbb    18.95224     -2.2297740 0.4421761 -5.042728 4.589410e-07
     ##                 padj
     ##            <numeric>
-    ## Sdhaf2  1.032156e-05
-    ## Atxn10  3.116652e-05
-    ## Gpd1    1.597162e-04
-    ## Tmem199 1.955859e-04
-    ## Scn4b   2.504372e-04
-    ## Nek9    3.035990e-04
-    ## Dcaf12  3.214836e-04
-    ## Adamts1 3.540521e-04
-    ## Fbxo32  3.540521e-04
-    ## Inhbb   3.540521e-04
+    ## Sdhaf2  0.0000110708
+    ## Atxn10  0.0000334289
+    ## Gpd1    0.0001713100
+    ## Tmem199 0.0002097835
+    ## Scn4b   0.0002686165
+    ## Nek9    0.0003256373
+    ## Dcaf12  0.0003448202
+    ## Adamts1 0.0003797528
+    ## Fbxo32  0.0003797528
+    ## Inhbb   0.0003797528
 
     topGene <- rownames(res)[which.min(res$padj)]
     plotCounts(dds, gene = topGene, intgroup=c("APA2"))
@@ -687,9 +682,9 @@ CA1
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
     data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
                             yes = "consistent", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
                                         no = "none")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
@@ -698,11 +693,10 @@ CA1
     CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       scale_color_manual(values = volcano1)  + 
-      scale_x_continuous(name="log2 (consistent/yoked)",
-                         limits=c(-4, 4)) +
-      scale_y_continuous(name="-log10(pvalue") +
+      scale_x_continuous(name="log2 (consistent/yoked)") +
+      scale_y_continuous(name=NULL) +
       theme_cowplot(font_size = 8, line_size = 0.25) +
-      geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )+ 
+      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
             panel.grid.major=element_blank())
@@ -710,7 +704,7 @@ CA1
 
 ![](../figures/02c_rnaseqSubfield/CA1-3.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf", width=1.75, height=2)
+    pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf", width=1.25, height=2)
     plot(CA1volcano)
     dev.off()
 

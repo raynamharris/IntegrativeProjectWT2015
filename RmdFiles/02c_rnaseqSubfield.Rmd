@@ -61,32 +61,29 @@ pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 percentVar
 
-aov1 <- aov(PC1 ~ APA2, data=pcadata)
-summary(aov1) 
-TukeyHSD(aov1, which = "APA2") 
+ 
+summary(aov(PC1 ~ APA2, data=pcadata)) 
+TukeyHSD((aov(PC1 ~ APA2, data=pcadata)) , which = "APA2") 
 
-aov2 <- aov(PC2 ~ APA2, data=pcadata)
-summary(aov2) 
-TukeyHSD(aov2, which = "APA2") 
+summary(aov(PC2 ~ APA2, data=pcadata)) 
+TukeyHSD((aov(PC2 ~ APA2, data=pcadata)), which = "APA2") 
 
-aov3 <- aov(PC3 ~ APA2, data=pcadata)
-summary(aov3) 
+summary(aov(PC3 ~ APA2, data=pcadata)) 
 
-aov4 <- aov(PC4 ~ APA2, data=pcadata)
-summary(aov4) 
+summary(aov(PC4 ~ APA2, data=pcadata)) 
 
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 pcadata$wrap <- "Principle Compent Analysis"
 
 #calculate significance of all two way comparisions
 # see source "functions_RNAseq.R" 
-contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 74
-contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05) # 2
-contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.05) # 0
-contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 2
+contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 95
+contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 5
+contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
+contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 2
 
 
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
@@ -100,9 +97,9 @@ data <- data.frame(gene = row.names(res),
                    lfc = res$log2FoldChange)
 data <- na.omit(data)
 data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
                         yes = "consistent", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                     yes = "yoked_consistent", 
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
@@ -113,7 +110,7 @@ DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_x_continuous(name="log2(consistent/yoked)") +
   scale_y_continuous(name=NULL) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 )+ 
+  geom_hline(yintercept = 1,  size = 0.25, linetype = 2 )+ 
   theme(panel.grid.minor=element_blank(),
         legend.position = "none", # remove legend 
         panel.grid.major=element_blank())
@@ -232,10 +229,10 @@ dev.off()
  
 #calculate significance of all two way comparisions
 # see source "functions_RNAseq.R" 
-contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 0
-contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05) # 0
-contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.05) # 1
-contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 0
+contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 0
+contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 0
+contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
+contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 0
 
 ```
 
@@ -326,12 +323,12 @@ plot(PCA14)
 dev.off()
  
 # calculate significance of all two way comparisions
-contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.05) # 102
-contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.05) # 2
-contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.05) # 0
-contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.05) # 95
+contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 196
+contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 2
+contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
+contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 201
 
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05, cooksCutoff = F)
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
@@ -344,9 +341,9 @@ data <- data.frame(gene = row.names(res),
                    lfc = res$log2FoldChange)
 data <- na.omit(data)
 data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
                         yes = "consistent", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                     yes = "yoked_consistent", 
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
@@ -358,7 +355,7 @@ CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) +
   scale_x_continuous(name="log2 (consistent/yoked)") +
   scale_y_continuous(name=NULL) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
+  geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
   theme(panel.grid.minor=element_blank(),
         legend.position = "none", # remove legend 
         panel.grid.major=element_blank())
