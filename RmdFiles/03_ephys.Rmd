@@ -109,7 +109,9 @@ four <- ephys3 %>%
   ggplot(aes(x=APA2, y=MaxfEPSP, fill=APA2)) +  
   geom_violin() +
   scale_fill_manual(values = colorvalAPA00) + 
-  scale_y_continuous(name= NULL) +
+  scale_y_continuous(trans = "reverse",
+                     limits = c(-0.001 , -0.008),
+                     name=NULL) + 
   theme_cowplot(font_size = 8, line_size = 0.25)   + 
   theme(axis.title.x = element_blank(), 
         axis.text.x = element_blank(),

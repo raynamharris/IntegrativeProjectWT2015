@@ -9,3 +9,10 @@ This repo contains the experiment that I like to call "Integrative Wild Type 201
 
 <img src="./figures/02b_RNAseqAll/02_RNAseqAll-01.png" />
 
+## Figure 3: Electrophysiology
+
+<img src="./figures/03_ephys/03_ephys-01.png" />
+
+## Figure 4: Integration
+<img src="./figures/04_integration/04_integration-01.png" />
+
