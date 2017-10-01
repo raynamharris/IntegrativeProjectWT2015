@@ -125,8 +125,6 @@ PCA12
 pdf(file="../figures/02d_rnaseqavoidance/DGpca12.pdf", width=1.5, height=1.75)
 plot(PCA12)
 dev.off()
-
-
 ```
 
 
@@ -301,8 +299,13 @@ rld <- rlog(dds, blind=FALSE) ## log transformed data
 
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","avoidance"), returnData=TRUE)
+pcadata$wrap <- "Principle Compent Analysis"
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 percentVar
+
+pcadata$PunchAPA <- as.factor(paste(pcadata$Punch, pcadata$APA2, sep="_"))
+pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
+pcadata$APA2 <- factor(pcadata$avoidance, levels=c("no","yes"))
 
 summary(aov(PC1 ~ avoidance, data=pcadata)) 
 summary(aov(PC2 ~ avoidance, data=pcadata)) 
@@ -311,11 +314,15 @@ summary(aov(PC4 ~ avoidance, data=pcadata))
 summary(aov(PC5 ~ avoidance, data=pcadata)) 
 summary(aov(PC6 ~ avoidance, data=pcadata)) 
 
-pcadata$wrap <- "Principle Compent Analysis"
+summary(aov(PC1 ~ Punch, data=pcadata)) 
+summary(aov(PC2 ~ Punch, data=pcadata)) 
+summary(aov(PC3 ~ Punch, data=pcadata)) 
+summary(aov(PC4 ~ Punch, data=pcadata)) 
+summary(aov(PC5 ~ Punch, data=pcadata)) 
+summary(aov(PC6 ~ Punch, data=pcadata)) 
 
-#calculate significance of all two way comparisions
-# see source "functions_RNAseq.R" 
-contrast4 <- resvals(contrastvector = c("avoidance", "yes", "no"), mypval = 0.1) # 8
+TukeyHSD((aov(PC1 ~ Punch, data=pcadata)), which = "Punch") 
+TukeyHSD((aov(PC2 ~ Punch, data=pcadata)), which = "Punch") 
 
 res <- results(dds, contrast =c("avoidance", "yes", "no"), independentFiltering = T, alpha = 0.1)
 summary(res)
@@ -340,6 +347,7 @@ top_labelled <- top_n(data, n = 5, wt = lfc)
 contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 2556
 contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 1851
 contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 23541
+contrast4 <- resvals(contrastvector = c("avoidance", "yes", "no"), mypval = 0.1) # 8
 
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4)
@@ -352,6 +360,7 @@ drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
 DEGes <- as.matrix(DEGes)
 DEGes <- DEGes - rowMeans(DEGes)
+dim(DEGes)
 
 df <- as.data.frame(colData(dds)[,c("avoidance", "Punch")]) ## matrix to df
 rownames(df) <- names(countData)
@@ -393,26 +402,6 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          filename = "../figures/02d_rnaseqavoidance/pheatmap1.pdf"
          )
 
-pcadata <- pcadataframe(rld, intgroup=c("Punch","avoidance"), returnData=TRUE)
-percentVar <- round(100 * attr(pcadata, "percentVar"))
-percentVar
-
-pcadata$PunchAPA <- as.factor(paste(pcadata$Punch, pcadata$APA2, sep="_"))
-
-TukeyHSD((aov(PC1 ~ Punch, data=pcadata)), which = "Punch") 
-TukeyHSD((aov(PC2 ~ Punch, data=pcadata)), which = "Punch") 
-
-summary(aov(PC1 ~ avoidance, data=pcadata)) 
-summary(aov(PC2 ~ avoidance, data=pcadata)) 
-summary(aov(PC3 ~ avoidance, data=pcadata)) 
-summary(aov(PC4 ~ avoidance, data=pcadata)) 
-summary(aov(PC5 ~ avoidance, data=pcadata)) 
-summary(aov(PC6 ~ avoidance, data=pcadata)) 
-
-pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
-pcadata$APA2 <- factor(pcadata$avoidance, levels=c("no","yes"))
-
-
 plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
   ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
     geom_point(size=3, aes(shape=APA2), alpha = 0.5) +
@@ -448,7 +437,6 @@ PCA34
 pdf(file="../figures/02d_rnaseqavoidance/allPCA34.pdf", width=1.5, height=1.5)
 plot(PCA34)
 dev.off()
-
 ```
 
 ## venn diagrams
@@ -482,3 +470,6 @@ grid.draw(prettyvenn)
 ```
 
 
+```{r pcadf}
+write.csv(pcadata, file = "../data/02a_pcadata.csv", row.names = T)
+```

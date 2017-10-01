@@ -36,294 +36,60 @@ To help make production of these figures more reproducible, I first import some 
 
 ```{r data, message=F}
 behavior <- read.csv("../data/01a_behavior.csv", header = T)
-retention <- read.csv("../data/01a_retention.csv", header = T) 
-behaviorsummaryNum <- read.csv("../data/01a_behaviorsummaryNum.csv", header = T)
-behaviorsummaryNumAPA2 <- read.csv("../data/01a_behaviorsummaryNumAPA2.csv", header = T)
-speedsummary <- read.csv("../data/01a_speedsummary.csv", header = T)
-timecw <- read.csv("../data/01a_timecw.csv", header = T)
+threeplots <- read.csv("../data/01a_threeplots.csv", header = T)
 scoresdf <- read.csv("../data/01a_scoresdf.csv", header = T)
 rotationdf <- read.csv("../data/01a_rotationdf.csv", header = T, row.names = 1)
 behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.names = 1)
 
 #set factor levels
-behavior$APA <- factor(behavior$APA, levels = c("control",  "consistent", "conflict"))
-behaviorsummaryNum$APA <- factor(behaviorsummaryNum$APA, levels = c("control",  "conflict","consistent", "conflict"))
-behaviorsummaryNumAPA2$APA2 <- factor(behaviorsummaryNumAPA2$APA2, levels = c( "yoked-consistent" ,"yoked-conflict", "consistent", "conflict"))
 scoresdf$APA <- NULL
-scoresdf$APA2 <- factor(scoresdf$APA2, levels = c( "yoked-consistent" ,"yoked-conflict", "consistent", "conflict"))
-levels(behaviorsummaryNumAPA2$APA2) #confirm factor levels set
-speedsummary$APA2 <- factor(speedsummary$APA2, levels = c(  "yoked-consistent" ,"yoked-conflict", "consistent", "conflict"))
-timecw$APA2 <- factor(timecw$APA2, levels = c( "yoked-consistent" , "yoked-conflict", "consistent",  "conflict"))
-
+scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+threeplots$APA2 <- factor(threeplots$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+threeplots$measure <- factor(threeplots$measure, levels = c("Number of Entrances" , "Max Avoidance Time", "Speed"))
 ```
 
 ## Figure 1B: Standard vizualization of mean avoidance beavior
 First, I visualze the group mean and standard error for the time it takes before an individual mouse enters the spatial region marked "schock zone" or equivilent (Fig. 1A).
 
-```{r numentrance}
+```{r behaviorplots}
 
-# plotting mean and se for time to total number of entrances
-numentrance1 <- ggplot(behaviorsummaryNumAPA2, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 2) +
    geom_line() +
-    scale_y_continuous(name="Number of Entrances") +
-    scale_x_continuous(name = NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Hab. ", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  background_grid(major = "y", minor = "y") +
-  scale_color_manual(values = colorvalAPA2) + 
-  #theme(legend.position=c(0.7, 0.8))  +
-  theme(legend.title=element_blank()) +
-  theme(legend.position="none")
-numentrance1
-
-pdf(file="../figures/01_behavior/numentrance1.pdf",width=3.25, height=2.25)
-plot(numentrance1)
-dev.off()
-
-
-# plotting mean and se for time to total number of entrances
-numentrance2 <- behaviorsummaryNumAPA2 %>%
-  filter(APA2 %in% c("consistent", "yoked-consistent")) %>%
-  ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 2) +
-   geom_line() +
-    scale_y_continuous(name="Number of Entrances") +
-    scale_x_continuous(name = NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Hab.  ", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest", "6" = "T4",
-                                "7" = "T5", "8" = "T6", "9"= "Reten.")) +
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  background_grid(major = "y", minor = "y") +
-  scale_color_manual(values = colorvalAPA5) + 
-  #theme(legend.position=c(0.8, 0.8))  + 
-  theme(legend.title=element_blank()) +
-  theme(legend.position="none")
-numentrance2
-
-pdf(file="../figures/01_behavior/numentrance2.pdf",width=3.25, height=2.25)
-plot(numentrance2)
-dev.off()
-
-
-
-numentrance3 <- behaviorsummaryNumAPA2 %>%
-  filter(APA2 %in% c("consistent", "conflict")) %>%
-  ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 2) +
-   geom_line() +
-    scale_y_continuous(name="Number of Entrances\nper 10 min training session") +
-    scale_x_continuous(name = NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Habituation  ", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest", "6" = "T4/C1 ",
-                                "7" = "T5/C2 ", "8" = "T6/C3  ", "9"= "Retention")) +
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  background_grid(major = "y", minor = "y") +
-  scale_color_manual(values = colorvalAPA6) + 
-  #theme(legend.position=c(0.8, 0.8))  + 
-  theme(legend.title=element_blank()) +
-  theme(legend.position="none")
-numentrance3
-
-pdf(file="../figures/01_behavior/numentrance3.pdf", width=3.5, height=1.75)
-plot(numentrance3)
-dev.off()
-
-numentrance4 <- behaviorsummaryNumAPA2 %>%
-  filter(APA2 %in% c("yoked-consistent", "yoked-conflict")) %>%
-  ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 2) +
-   geom_line() +
-    scale_y_continuous(name="Number of Entrances\nper 10 min training session",
-                       limits=c(0, 35)) +
-    scale_x_continuous(name = NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Habituation ", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Retention")) +
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  background_grid(major = "y", minor = "y") +
-  scale_color_manual(values = colorvalAPA7) + 
-  #theme(legend.position=c(0.8, 0.8))  + 
-  theme(legend.title=element_blank()) +
-  theme(legend.position="none")
-numentrance4
-
-pdf(file="../figures/01_behavior/numentrance4.pdf", width=3.5, height=1.75)
-plot(numentrance4)
-dev.off()
-
-
-```
-
-
-
-
-
-
-
-
-
-
-```{r speedccw}
-#mean and sem for two variables
-timecwplot <- ggplot(timecw, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 2) +
-    geom_line() +
-    scale_y_continuous(name="Time spent CCW") +
-    scale_x_continuous(name = NULL, 
+   scale_y_continuous(name= NULL) +
+    scale_x_continuous(name="Training Session", 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels = NULL) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   #background_grid(major = "y", minor = "y") +
-  scale_color_manual(values = colorvalAPA2)  +
+  scale_color_manual(values = colorvalAPA00)  +
   theme(legend.position=c(0.7, 0.8))  +
   theme(legend.title=element_blank()) +
-  theme(legend.position="none") 
-  
-timecwplot
+  theme(legend.position="none") +
+  facet_wrap(~measure, ncol=1, scales = "free")
+behaviorwrap
 
-pdf(file="../figures/01_behavior/timecwplot.pdf",width=3.25, height=1.25)
-plot(timecwplot)
-dev.off()
-
-speedplot <- ggplot(speedsummary, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 2) +
-   geom_line() +
-    scale_y_continuous(name="Speed") +
-    scale_x_continuous(name = NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                         labels=c("1" = "Hab. ", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) +
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  #background_grid(major = "y", minor = "y") +
-  scale_color_manual(values = colorvalAPA2)  +
-  theme(legend.position=c(0.7, 0.8))  +
-  theme(legend.title=element_blank()) +
-  theme(legend.position="none")
-speedplot
-
-pdf(file="../figures/01_behavior/speedplot.pdf",width=3.25, height=1.25)
-plot(speedplot)
-dev.off()
-
-numentrance <- ggplot(behaviorsummaryNumAPA2, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 2) +
-   geom_line() +
-    scale_y_continuous(name="Number of Entrances") +
-    scale_x_continuous(name = NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels = NULL) +
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  #background_grid(major = "y", minor = "y") +
-  scale_color_manual(values = colorvalAPA2)  +
-  theme(legend.position=c(0.7, 0.8))  +
-  theme(legend.title=element_blank()) +
-  theme(legend.position="none")
-numentrance
-
-pdf(file="../figures/01_behavior/numentrance.pdf",width=3.25, height=1.25)
-plot(numentrance)
-dev.off()
-
-```
-
-
-### Supplemnentary time series plot
-Here I visualze the individual data points for each annimal then use a linar model to fit a 95% confidence internal for  the time it take a mouse to enter the "schock zone" or equivilent .
-
-```{r numentrance5}
-# plotting all data points and linear model smoothing for number of entrances
-numentrance5 <- onebehavior(data=behavior, 
-                  xcol="TrainSessionComboNum", ycol="NumEntrances",
-                  yaxislabel="Number of Entrances",
-                  colorcode="APA")
-
-onebehavior(data=behavior, 
-                  xcol="TrainSessionComboNum", ycol="Speed1",
-                  yaxislabel="Speed1",
-                  colorcode="APA")
-
-numentrance5
-pdf(file="../figures/01_behavior/numentrance5.pdf", width=6, height=3)
-plot(numentrance5)
+pdf(file="../figures/01_behavior/threebehaviors.pdf", width=3.25, height=3.75)
+plot(behaviorwrap)
 dev.off()
 ```
 
 
-## Figure 1C: Hierarchical clusering of time series behavioral data
 
-Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed (Fig. 1C). The row dendrogram helps visuzlise the interaction between treatment group and (grey: control, pink: consistent, red: conflict) and training session (white: habitutation, shades of brown: training sessino 1-3, dark down: retest, shades of purple: training session 4-6 or conflict session 1-3, dark purple: retention). 
+## Hierarchical clusering of time series behavioral data
 
-
-```{r pheatmap,  message=FALSE, results='hide'}
-## make annotation df and ann_colors for pheatmap
-scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior))
-
-# create a rubric for the color coding and load the colors from figureoptions.R
-df <- as.data.frame(makecolumnannotations(scaledaveragedata))
-ann_colors = APAsession  # includes color for session & APA
-
-
-# set color breaks
-paletteLength <- 30
-myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
-              seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
-
-## pheatmap for markdown
-pheatmap(scaledaveragedata, show_colnames=F, show_rownames = F,
-         annotation_col=df, annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 50,
-         fontsize = 8, 
-         #width=4.5, height=3,
-         border_color = "grey60" ,
-         color = viridis(30),
-         cellwidth = 10, 
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation" 
-         )
-
-# pheatmapfor adobe
-pheatmap(scaledaveragedata, show_colnames=F, show_rownames = F,
-         annotation_col=df, annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 50,
-         fontsize = 8, 
-         border_color = "grey60" ,
-         color = viridis(30),
-         cellwidth = 7, 
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation",
-         filename = "../figures/01_behavior/pheatmap.pdf"
-         )
-
-```
-
-
-Now with 4 treatment groups
-
+Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed (Fig. 1C). 
 
 ```{r pheatmap2,  message=FALSE, results='hide'}
 ## make annotation df and ann_colors for pheatmap
+behavior$RayleigAngle <- NULL
+behavior$PolarMinBin <- NULL
 scaledaveragedata2 <- as.data.frame(makescaledaveragedata2(behavior))
 
 # create a rubric for the color coding and load the colors from figureoptions.R
-df2 <- as.data.frame(makecolumnannotations(scaledaveragedata2))
-ann_colors = APAsession2  # includes color for session & APA
+df2 <- as.data.frame(makecolumnannotations2(scaledaveragedata2))
+ann_colors = ann_colors9  # includes color for session & APA
 
 # set color breaks
 paletteLength <- 30
@@ -331,15 +97,12 @@ myBreaks <- c(seq(min(scaledaveragedata2), 0, length.out=ceiling(paletteLength/2
               seq(max(scaledaveragedata2)/paletteLength, max(scaledaveragedata2), length.out=floor(paletteLength/2)))
 
 ## pheatmap for markdown
-pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = T,
+pheatmap(scaledaveragedata2, show_colnames=T, show_rownames = T,
          annotation_col=df2, 
          annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 50,
-         fontsize = 8, 
-         #width=4.5, height=3,
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 10, 
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation" 
@@ -348,12 +111,12 @@ pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = T,
 # pheatmapfor adobe
 pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = F,
          annotation_col=df2, annotation_colors = ann_colors,
+         annotation_names_col = F,
          treeheight_row = 0, treeheight_col = 25,
          fontsize = 6, 
          border_color = "grey60" ,
          color = viridis(30),
-         cellwidth = 6,
-         cellheight = 6,
+          width = 3.25, height = 3.5,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",
@@ -365,32 +128,6 @@ pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = F,
 ```
 
 
-
-
-### Supplmentary heatmap
-The next image shows how all the behaviors measured change over time. Here, the data are normalized to a z-score with more positive values shown the viridis color scheme with yellow being positive and purple being negative. Each row contains value for each behavioral measurement. Each column is the average value for a group of animals as specific by APA group and training session. 
-
-This particular graph clusters the data according to a kmean of 3 rather than by heriarchical clustering. I use the R package superheat.
-
-```{r superheat,  message=FALSE, results='hide'}
-scaledaveragedatatranposed <- t(scaledaveragedata)
-
-superheat(scaledaveragedata,
-          # change the size of the labels
-          left.label.size = 0.3, 
-          bottom.label.size = 0.4,
-          bottom.label.text.angle = 90, 
-          # cluster rows and add dendrogram
-          pretty.order.cols = TRUE,
-          n.clusters.rows = 3,
-          left.label = 'variable',
-          heat.lim = c(-1.5, 1.5), 
-          extreme.values.na = FALSE)
-
-```
-
-
-
 ### Figure 1D1 and 1D2: Principle component analysis 
 Next, I next reduced the dimentionality of the data with a PCA anlaysis. PC1 explains 35% of the variation in the data. All other PCs explain less than 10% of the variation.
 
@@ -400,7 +137,7 @@ behaviormatrix %>%
   scale() %>%                 # scale to 0 mean and unit variance
   prcomp() ->                 # do PCA
   pca                         # store result as `pca`
-percent <- 100*pca$sdev^2/sum(pca$sdev^2)
+percent <- round(100*pca$sdev^2/sum(pca$sdev^2),2)
 perc_data <- data.frame(percent=percent, PC=1:length(percent))
 res.pca <- prcomp(behaviormatrix,  scale = TRUE)
 
@@ -415,13 +152,6 @@ ggplot(perc_data, aes(x=PC, y=percent)) +
 PC1 encompases differences between yoked trained indivdual but does not significantly differ between consistent and conflict trained aniamls. To confirm statistical significance of this visual pattern, we conducted a two-way treatment x region ANOVA and confirmed a significant effect of region (F2,31= 101.39; p = 2.5e-14). Post hoc Tukey tests confirmed conflict = consistent < control). The major contibutors to this variation are number of shocks and distance to first entrance.
 
 ```{r PCAplots}
-pca12 <- makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC2",colorcode="APA2", newxlab = "PC1 (35.7%)", newylab = "PC2 (9.7%)")
-pca12
-
-pdf(file="../figures/01_behavior/pca12.pdf", width=3, height=3)
-plot(pca12)
-dev.off()
-
 ## statistics
 aov1 <- aov(PC1 ~ APA2, data=scoresdf)
 summary(aov1) # p = 1.01e-13
@@ -431,29 +161,42 @@ aov2 <- aov(PC2 ~ APA2, data=scoresdf)
 summary(aov2) # p = 0.0295 *
 TukeyHSD(aov2, which = "APA2") # p > 0.05
 
-fviz12 <- fviz_pca_var(res.pca, select.var = list(contrib = 3), axes = c(1, 2))
-fviz12
 
-pdf(file="../figures/01_behavior/fviz12.pdf", width=3, height=3)
-plot(fviz12)
+summary(aov(PC3 ~ APA2, data=scoresdf)) # p = 0.117
+summary(aov(PC3 ~ APA2, data=scoresdf))
+summary(aov(PC4 ~ APA2, data=scoresdf))
+summary(aov(PC5 ~ APA2, data=scoresdf))
+summary(aov(PC6 ~ APA2, data=scoresdf))
+TukeyHSD((aov(PC6 ~ APA2, data=scoresdf)), which = "APA2") # p > 0.05
+
+
+pca12 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
+    geom_point(size=3, alpha = 0.7) +
+    xlab(paste0("PC 1: ", percent[1],"% variance")) +
+    ylab(paste0("PC 2: ", percent[2],"% variance")) +
+    #stat_ellipse(level = 0.95, (aes(color=avoidance)),size=0.25) + 
+    scale_colour_manual(values=c(colorvalAPA00)) + 
+
+    theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme(legend.position="none")
+pca12
+
+pdf(file="../figures/01_behavior/pca12.pdf",  width=1.5, height=1.5)
+plot(pca12)
 dev.off()
 
+pca16 <- ggplot(scoresdf, aes(PC1,PC6, color=APA2)) +
+    geom_point(size=3, alpha = 0.7) +
+    xlab(paste0("PC 1: ", percent[1],"% variance")) +
+    ylab(paste0("PC 6: ", percent[6],"% variance")) +
+    stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
+    scale_colour_manual(values=c(colorvalAPA00)) + 
+    theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme(legend.position="none")
+pca16
 
-
-aov3 <- aov(PC3 ~ APA2, data=scoresdf)
-summary(aov3) # p = 0.117
-TukeyHSD(aov3, which = "APA") # p = 0.0557503 for conflict-consistent 
-
-pca36 <-makepcaplotwithpercent(data=scoresdf,xcol="PC1",ycol="PC6",colorcode="APA2", newxlab = "PC3 (8.4%)", newylab = "PC6 (3.6%)")
-pca36
-pdf(file="../figures/01_behavior/pca36.pdf", width=3, height=3)
-plot(pca36)
-dev.off()
-
-fviz36 <- fviz_pca_var(res.pca, select.var = list(contrib = 3), axes = c(3, 6))
-fviz36
-pdf(file="../figures/01_behavior/fviz36.pdf", width=3, height=3)
-plot(fviz36)
+pdf(file="../figures/01_behavior/pca16.pdf",  width=3.5, height=2)
+plot(pca16)
 dev.off()
 
 ```

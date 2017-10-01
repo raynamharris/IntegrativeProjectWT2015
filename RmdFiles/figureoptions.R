@@ -141,8 +141,11 @@ ann_colors8 = list(
             DG = (values=c("#d95f02"))))
 
 
-
-
+ann_colors9 = list(
+  APA2 =  c('yoked-conflict' = (values=c("#bababa")),
+            'yoked-consistent' = (values=c("#404040")), 
+            'conflict' = (values=c("#f4a582")),
+            'consistent' = (values=c("#ca0020"))))
 
 
 APAsession = list(

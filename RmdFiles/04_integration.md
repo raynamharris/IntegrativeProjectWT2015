@@ -25,24 +25,19 @@ Import Data
 behaviorpca <- read.csv("../data/01a_scoresdf.csv", header = T)
 behavior <- read.csv("../data/01a_behavior.csv", header = T)
 
-
 pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
+pcadata$Punch <- ifelse(grepl("DG", pcadata$group), "DG", 
+                                        ifelse(grepl("CA3", pcadata$group), "CA3","CA1"))
+names(pcadata)[names(pcadata)=="name"] <- "RNAseqID"
+
 rossetta <- read.csv("../data/00_rossettastone.csv", header = F)
 
 colData <- read.csv("../data/02a_colData.csv", header = T) # for better group names
 
-ephys <- read.csv("../data/03_ephys.csv", header = T)
-ephys3 <- left_join(ephys, colData, by = "Mouse")
-```
+ephys3 <- read.csv("../data/03_ephys.csv", header = T)
+ephys3 <- ephys3[,(c(1:6))]
 
-    ## Warning in left_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
-    ## factors with different levels, coercing to character vector
-
-``` r
-ephys3 <- na.omit(ephys3)
-ephys3$APA2 <- factor(ephys3$APA2, levels = c("yoked_consistent", "consistent",  "yoked_conflict", "conflict"))
-levels(ephys3$APA2) <- c("yoked-consistent", "consistent",  "yoked-conflict", "conflict")
-names(ephys3)[3] <- "Pre-Potentiation"
+names(ephys3)[3] <- "Pre_Potentiation"
 names(ephys3)[4] <- "Early_Potentiation"
 names(ephys3)[5] <- "Late_Potentiation"
 names(ephys3)[6] <- "Max_fEPSP"
@@ -169,13 +164,11 @@ names(behaviorpca)[names(behaviorpca)=="PC3"] <- "Behavior_PC3"
 names(behaviorpca)[names(behaviorpca)=="PC4"] <- "Behavior_PC4"
 names(behaviorpca)[names(behaviorpca)=="PC5"] <- "Behavior_PC5"
 
-
 behaviorpca <- behaviorpca %>% dplyr::filter(ID != "15148", ID !=  "15140A", ID !=  "15140B", ID !=  "15140C", ID !=  "15140D", ID !=  "15141C", ID !=  "15141D", ID !=  "15142C", ID !=  "15142D", ID !=  "15142A", ID !=  "15142B", ID !=  "15145C", ID !=  "15145C", ID !=  "15145D", ID !=  "15147A", ID !=  "15147B", ID !=  "15148C", ID !=  "15148D")
 
-pcadata <- pcadata[(c(1:9,11,13))]
-names(pcadata)[names(pcadata)=="name"] <- "RNAseqID"
+pcadata <- pcadata[(c(11:17,2:10))]
 
-#wident then length RNAseq data so each row is an animals
+#widen then length RNAseq data so each row is an animals
 pcadatabyregion <- left_join(pcadata, rossetta)
 ```
 
@@ -185,40 +178,38 @@ pcadatabyregion <- left_join(pcadata, rossetta)
     ## factors with different levels, coercing to character vector
 
 ``` r
-pcadatabyregion <- melt(pcadatabyregion, id = c(10:14))
-pcadatabyregion$RegionPC <- as.factor(paste(pcadatabyregion$Region, pcadatabyregion$variable, sep="_"))
-pcadatabyregion <- dcast(pcadatabyregion, Mouse + ID ~ RegionPC)
+pcadatabyregion <- pcadatabyregion[(c(17:19,2:16))]
+pcadatabyregion <- melt(pcadatabyregion, id = c(1:9))
+pcadatabyregion$RegionPC <- as.factor(paste(pcadatabyregion$Punch, pcadatabyregion$variable, sep="_"))
+pcadatabyregion <- dcast(pcadatabyregion, Mouse ~ RegionPC)
 ```
 
 ``` r
-alldata <- left_join(behaviorpca, pcadatabyregion)
+rossetta <- unique(rossetta[ , 1:2 ]) # for joining keop only
+alldata <- left_join(pcadatabyregion, rossetta , by="Mouse")
+alldata <- left_join(alldata, behaviorpca, by="ID")
 ```
-
-    ## Joining, by = "ID"
 
     ## Warning in left_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
     ## factors with different levels, coercing to character vector
 
 ``` r
-alldata <- left_join(alldata, ephys3, by="ID")
+alldata <- left_join(alldata, ephys3, by="Mouse")
 ```
 
     ## Warning in left_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
-    ## factor and character vector, coercing into character vector
+    ## factors with different levels, coercing to character vector
 
 ``` r
-#alldata <- na.omit(alldata)
-
-alldataslim <- alldata[,-c(6:8,18,28,38:40,45:50)]
+alldataslim <- alldata[,-c(1, 5:10,14:19,23:29,35:36)]
 alldataslim <- sapply( alldataslim, as.numeric )
-alldataslimmer <- alldataslim[,-c(10:14,19:23,26:32)]
 ```
 
 ``` r
-sh2 <- superheat(X = alldataslimmer,
+sh2 <- superheat(X = alldataslim,
                 #yr = behaviorpca[,10],
                 #yr.axis.name = "PC10",
-                membership.rows = alldata$APA2.x,
+                membership.rows = alldata$APA2,
                 pretty.order.cols = TRUE,
                 col.dendrogram = TRUE,
                 bottom.label.size = 0.3,
@@ -230,9 +221,8 @@ sh2 <- superheat(X = alldataslimmer,
 ![](../figures/04_integration/superheat-1.png)
 
 ``` r
-cormat <- rcorr(as.matrix(alldataslimmer))
-res2 <- rcorr(as.matrix(alldataslimmer))
-
+cormat <- rcorr(as.matrix(alldataslim))
+res2 <- rcorr(as.matrix(alldataslim))
 
 corrplot(res2$r, type = "lower", order = "hclust", 
         tl.col = "black", tl.srt = 45)
@@ -268,24 +258,48 @@ pheatmap(cormat$r, show_colnames=T, show_rownames = T,
 ![](../figures/04_integration/correlations-3.png)
 
 ``` r
-alldata$APA2.x <- factor(alldata$APA2.x, levels = c("yoked-consistent", "consistent",  "yoked-conflict", "conflict"))
+pheatmap(cormat$r, show_colnames=F, show_rownames = T,
+         #annotation_col=df, annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 8, 
+         width=3, height=3,
+         border_color = "grey60" ,
+         color = viridis(30),
+         #cellwidth = 10, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/04_integration/correlation.pdf"
+         )
+
+alldata$APA2 <- factor(alldata$APA2, levels = c("yoked-consistent", "consistent",  "yoked-conflict", "conflict"))
+
+alldata$avoidance <-  ifelse(grepl("yoked", alldata$APA), "no", "yes")
 
 
-scatter <- ggplot(alldata, aes(Behavior_PC1, as.numeric(DG_PC2), color=APA2.x)) + 
-  geom_point(size = 2, alpha = 0.5) +
+scatter <- ggplot(alldata, aes(Behavior_PC1, as.numeric(DG_PC2), color=APA2)) + 
+  geom_point(size = 1, alpha = 0.75) +
   scale_color_manual(values = colorvalAPA00) +
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
+    stat_ellipse(level = 0.95, linetype =2) + 
     scale_x_continuous(name="Behavior PC1") +
-     scale_y_continuous(name="DG PC2")  
+    scale_y_continuous(name="DG_PC1")  
 scatter
 ```
+
+    ## Too few points to calculate an ellipse
 
 ![](../figures/04_integration/correlations-4.png)
 
 ``` r
 pdf(file="../figures/04_integration/scatter1.pdf", width=1.5, height=1.5)
 plot(scatter)
+```
+
+    ## Too few points to calculate an ellipse
+
+``` r
 dev.off()
 ```
 
@@ -293,20 +307,21 @@ dev.off()
     ##                 2
 
 ``` r
-scatter <- ggplot(alldata, aes(Behavior_PC1, as.numeric(CA1_PC3), color=APA2.x)) + 
-  geom_point(size = 2, alpha = 0.5) +
-  scale_color_manual(values = colorvalAPA00)+
+scatter <- ggplot(alldata, aes(Behavior_PC1, as.numeric(DG_PC2), color=avoidance)) + 
+  geom_point(size = 1, alpha = 0.75) +
+  scale_color_manual(values = colorvalavoidance) +
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
+    stat_ellipse(level = 0.95, linetype =2) + 
     scale_x_continuous(name="Behavior PC1") +
-     scale_y_continuous(name="CA1 PC3")  
+     scale_y_continuous(name="DG_PC1")  
 scatter
 ```
 
 ![](../figures/04_integration/correlations-5.png)
 
 ``` r
-pdf(file="../figures/04_integration/scatter2.pdf", width=1.5, height=1.5)
+pdf(file="../figures/04_integration/scatter5.pdf", width=1.5, height=1.5)
 plot(scatter)
 dev.off()
 ```
@@ -315,22 +330,29 @@ dev.off()
     ##                 2
 
 ``` r
-scatter <- ggplot(alldata, aes(x = Late_Potentiation, as.numeric(CA1_PC1), color=APA2.x)) + 
-  geom_point(size = 2, alpha = 0.5) +
+scatter <- ggplot(alldata, aes(Pre_Potentiation, as.numeric(CA1_PC1), color=APA2)) + 
+  geom_point(size = 1, alpha = 0.75) +
   scale_color_manual(values = colorvalAPA00) +
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
-    scale_x_continuous(name="Late Potentiation",
-                       limits = c(75,225)) +
+      stat_ellipse(level = 0.95, linetype =2) + 
+    scale_x_continuous(name="Pre Potentiation") +
      scale_y_continuous(name="CA1 PC1")  
 scatter
 ```
 
+    ## Too few points to calculate an ellipse
+
 ![](../figures/04_integration/correlations-6.png)
 
 ``` r
-pdf(file="../figures/04_integration/scatter3.pdf", width=1.5, height=1.5)
+pdf(file="../figures/04_integration/scatter2.pdf", width=1.5, height=1.5)
 plot(scatter)
+```
+
+    ## Too few points to calculate an ellipse
+
+``` r
 dev.off()
 ```
 
@@ -338,20 +360,21 @@ dev.off()
     ##                 2
 
 ``` r
-scatter <- ggplot(alldata, aes(as.numeric(DG_PC2), as.numeric(CA1_PC3), color=APA2.x)) + 
-  geom_point(size = 2, alpha = 0.5) +
-  scale_color_manual(values = colorvalAPA00) +
+scatter <- ggplot(alldata, aes(Pre_Potentiation, as.numeric(CA1_PC1), color=avoidance)) + 
+  geom_point(size = 1, alpha = 0.75) +
+  scale_color_manual(values = colorvalavoidance) +
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
-    scale_x_continuous(name="DG PC2") +
-     scale_y_continuous(name="CA1 PC3")  
+      stat_ellipse(level = 0.95, linetype =2) + 
+    scale_x_continuous(name="Pre Potentiation") +
+     scale_y_continuous(name="CA1 PC1")  
 scatter
 ```
 
 ![](../figures/04_integration/correlations-7.png)
 
 ``` r
-pdf(file="../figures/04_integration/scatter4.pdf", width=1.5, height=1.5)
+pdf(file="../figures/04_integration/scatter6.pdf", width=1.5, height=1.5)
 plot(scatter)
 dev.off()
 ```
@@ -360,14 +383,56 @@ dev.off()
     ##                 2
 
 ``` r
-scatter <- ggplot(alldata, aes(Behavior_PC3, as.numeric(CA1_PC3), color=APA2.x)) + 
-  geom_point(size = 2, alpha = 0.5) +
-  scale_color_manual(values = colorvalAPA00)+
+scatter <- ggplot(alldata, aes(as.numeric(DG_PC3), as.numeric(CA1_PC3), color=APA2)) + 
+  geom_point(size = 1, alpha = 0.75) +
+  scale_color_manual(values = colorvalAPA00) +
     theme_cowplot(font_size = 8, line_size = 0.25)  +
+        stat_ellipse(level = 0.95, linetype =2) + 
     theme(legend.position="none") +
-    scale_x_continuous(name="Behavior PC1") +
+    scale_x_continuous(name="DG PC3") +
      scale_y_continuous(name="CA1 PC3")  
 scatter
 ```
 
+    ## Too few points to calculate an ellipse
+    ## Too few points to calculate an ellipse
+
 ![](../figures/04_integration/correlations-8.png)
+
+``` r
+pdf(file="../figures/04_integration/scatter3.pdf", width=1.5, height=1.5)
+plot(scatter)
+```
+
+    ## Too few points to calculate an ellipse
+    ## Too few points to calculate an ellipse
+
+``` r
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+scatter <- ggplot(alldata, aes(as.numeric(DG_PC3), as.numeric(CA1_PC3), color=avoidance)) + 
+  geom_point(size = 1, alpha = 0.75) +
+  scale_color_manual(values = colorvalavoidance) +
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+        stat_ellipse(level = 0.95, linetype =2) + 
+    theme(legend.position="none") +
+    scale_x_continuous(name="DG PC3") +
+     scale_y_continuous(name="CA1 PC3")  
+scatter
+```
+
+![](../figures/04_integration/correlations-9.png)
+
+``` r
+pdf(file="../figures/04_integration/scatter7.pdf", width=1.5, height=1.5)
+plot(scatter)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2

@@ -23,38 +23,37 @@ source("functions_behavior.R")
 ```{r behaivordata, message=F}
 ## read intermediate data (raw data from video tracker program analyzed in matlab)
 behavior <- read.csv("../data/01_behaviordata.csv", header = T)
-## relevel factors
+## relevel / revaluefactors
 behavior$APA <- factor(behavior$APA, levels = c("Yoked", "Same", "Conflict"))
 behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "YokedConflict","Same", "Conflict"))
-str(behavior$APA)
-
-## revalue factors
 levels(behavior$APA) <- c("control","consistent","conflict")
 levels(behavior$APA2) <- c("yoked-consistent","yoked-conflict","consistent","conflict")
 
 ## log transformation 
 behavior$Time1stEntrLog <- log(behavior$Time1stEntr) 
-summary(behavior)
 ```
 
-```{r retention, message=F}
-## subset to view just the data from the retention session
-retention <- behavior %>% filter(TrainSessionCombo == "Retention") %>%  droplevels() 
-```
+# mean, sd, sqrt
 
-```{r behaviorsummary}
-behaviorsummaryNum <- dplyr::summarise(group_by(behavior, APA, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
-behaviorsummaryNum
+To make the point and line graphs, I must create and merge some data frames
+```{r makenewdf}
 
+## number of entrances
 behaviorsummaryNumAPA2 <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
-#behaviorsummaryNumAPA2
 
-timecw <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(pTimeCW), se = sd(pTimeCW)/sqrt(length(pTimeCW)))
-#timecw
-
+## speed
 speedsummary <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Speed1), se = sd(Speed1)/sqrt(length(Speed1)))
-#speedsummary
 
+## max avoidance time
+maxavoid <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(MaxTimeAvoid), se = sd(MaxTimeAvoid)/sqrt(length(MaxTimeAvoid)))
+
+## create the column for faceting
+behaviorsummaryNumAPA2$measure <- "Number of Entrances"
+speedsummary$measure <- "Speed"
+maxavoid$measure <- "Max Avoidance Time"
+
+# rbind
+threeplots <- rbind(behaviorsummaryNumAPA2,speedsummary,maxavoid)
 ```
 
 
@@ -65,6 +64,7 @@ Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
 pc = prcomp(Z, scale.=TRUE)
 loadings <- pc$rotation
 scores <- pc$x
+
 scoresdf <- makepcadf(behavior) #create the df of pcas
 rotationdf <- mkrotationdf(behavior) #loadings for specific factors
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
@@ -72,11 +72,7 @@ behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 
 ```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
-write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
-write.csv(behaviorsummaryNum, file = "../data/01a_behaviorsummaryNum.csv", row.names = FALSE)
-write.csv(timecw, file = "../data/01a_timecw.csv", row.names = FALSE)
-write.csv(speedsummary, file = "../data/01a_speedsummary.csv", row.names = FALSE)
-write.csv(behaviorsummaryNumAPA2, file = "../data/01a_behaviorsummaryNumAPA2.csv", row.names = FALSE)
+write.csv(threeplots, file = "../data/01a_threeplots.csv", row.names = FALSE)
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
 write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
 write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
