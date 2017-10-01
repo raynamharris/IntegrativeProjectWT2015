@@ -60,14 +60,15 @@ behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2
    scale_y_continuous(name= NULL) +
     scale_x_continuous(name="Training Session", 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels = NULL) +
+                       labels = c( "Hab.", "T1", "T2", "T3",
+                                   "Retest", "T4", "T5", "T6", "Reten.")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   #background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA00)  +
   theme(legend.position=c(0.7, 0.8))  +
   theme(legend.title=element_blank()) +
   theme(legend.position="none") +
-  facet_wrap(~measure, ncol=1, scales = "free")
+  facet_wrap(~measure, ncol=1, scales = "free_y")
 behaviorwrap
 
 pdf(file="../figures/01_behavior/threebehaviors.pdf", width=3.25, height=3.75)
@@ -195,7 +196,7 @@ pca16 <- ggplot(scoresdf, aes(PC1,PC6, color=APA2)) +
       theme(legend.position="none")
 pca16
 
-pdf(file="../figures/01_behavior/pca16.pdf",  width=3.5, height=2)
+pdf(file="../figures/01_behavior/pca16.pdf",  width=3.25, height=2.25)
 plot(pca16)
 dev.off()
 

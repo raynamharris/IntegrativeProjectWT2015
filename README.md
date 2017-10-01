@@ -1,18 +1,18 @@
 This repo contains the experiment that I like to call "Integrative Wild Type 2015" because it reflect that behavior, electrophysiology, and RNAseq data were collected from WT mice in 2015 and analyzed in an integrative fashion. The R markdown files to reproducible run the code are saved in the  RmdFiles subdirectory. Rather than have a single Rmd file for the entire project, the workflow is broken down into pieces. The workflows to recreated the figures are specified by the figure name. All the files are ordered from 00 to 04 to indicate the order of execution.
 
-## Figure 1: Avoidance Behavior
+## Figure 1: Cognitive training alters spatial approach and avoidance behavior
 
-<img src="./figures/01_behavior/01_avoidancebehvaior-01.png" />
+<img src="./figures/figures-01.png" />
 
 
 ## Figure 2: Transcriptional stability in the hippocampus
 
-<img src="./figures/02b_RNAseqAll/02_RNAseqAll-01.png" />
+<img src="./figures/figures-02-01.png" />
 
 ## Figure 3: Electrophysiology
 
 <img src="./figures/03_ephys/03_ephys-01.png" />
 
 ## Figure 4: Integration
-<img src="./figures/04_integration/04_integration-01.png" />
+<img src="./figures/figures-03.png" />
 

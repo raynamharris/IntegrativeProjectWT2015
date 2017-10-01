@@ -73,3 +73,15 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, aesshape, shapename, co
     theme(legend.position="none")
 }
 
+
+plotPCwrap <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
+  ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
+    geom_point(size=2, alpha= 0.8) +
+    xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
+    ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
+    stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
+    scale_colour_manual(name=colorname, values=c(colorvalues))+ 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="none") +
+    facet_wrap(~warp)
+}
