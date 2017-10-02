@@ -104,7 +104,8 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          annotation_col=df, annotation_colors = ann_colors, 
          annotation_row = NA, 
          annotation_legend = FALSE,
-         annotation_names_row = FALSE, annotation_names_col = FALSE,
+         annotation_names_row = FALSE, 
+         annotation_names_col = FALSE,
          treeheight_row = 0, treeheight_col = 25,
          fontsize = 8, 
          border_color = "grey60" ,
@@ -143,6 +144,7 @@ summary(aov(PC6 ~ APA2, data=pcadata))
 pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent","consistent",  "yoked_conflict","conflict"))
 
+pcadata$wrap <- "Principal Component Analyses of Hippocampal Samples"
 
 plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
   ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
@@ -153,7 +155,8 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     scale_colour_manual(name=colorname, values=c(colorvalues))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
-    scale_shape_manual(values=c(16, 1, 15,2), aes(color=APA2)) 
+    scale_shape_manual(values=c(16, 1, 15,2), aes(color=APA2)) +
+    facet_wrap(~wrap)
 }
 
 PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", colorvalues = colorvalPunch)
