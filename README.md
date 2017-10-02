@@ -6,7 +6,7 @@ This repo contains the experiment that I like to call "Integrative Wild Type 201
 
 ## Figure 2: Transcriptional stability in the hippocampus
 
-<img src="./figures/figures-02-01.png" />
+<img src="./figures/figures-02.png" />
 
 ## Figure 3: Integration
 <img src="./figures/figures-03.png" />
