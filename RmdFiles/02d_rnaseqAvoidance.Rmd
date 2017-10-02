@@ -256,7 +256,23 @@ PCA12
 pdf(file="../figures/02d_rnaseqavoidance/CA1pca12.pdf", width=1.75, height = 2)
 plot(PCA12)
 dev.off()
+
+plotPCelipse <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
+  ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
+    geom_point(size=2, alpha= 0.8) +
+    xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
+    ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
+    stat_ellipse(level = 0.95, color = avoidance, (aes(color=colorvalavoidance)),size=0.25) + 
+    scale_colour_manual(name=colorname, values=c(colorvalues))+ 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="none") +
+    facet_wrap(~wrap)
+}
  
+PCA12 <- plotPCelipse(pcadata, 1, 2, aescolor = pcadata$avoidance, colorname = " ",  colorvalues = colorvalavoidance)
+
+PCA12
+
 ```
 
 ## All

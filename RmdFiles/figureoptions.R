@@ -177,6 +177,15 @@ APAsession2 = list(
                T6_C3 = (values=c("#756bb1")),
                Retention = (values=c("#54278f"))))
 
+ann_colorsLevel = list(
+  Level = c(
+    Behavior = (values=c("#e6ab02")),
+    Physiology = (values=c("#a6761d")),
+    DG = (values=c("#d95f02")),
+    CA3 = (values=c("#1b9e77")), 
+    CA1 = (values=c("#7570b3"))))
+
+
 
 imgDG <- magick::image_read("../figures/00_schematics/DG.png")
 imgCA3 <- magick::image_read("../figures/00_schematics/CA3.png")

@@ -104,35 +104,29 @@ data <- data %>%
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 
+# for faceting
+pcadata$wrap <- "DG PCA"
+data$wrap <- "DG contrasts"
+
 DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   scale_color_manual(values = volcano1)  + 
-  scale_x_continuous(name="log2(consistent/yoked)") +
-  scale_y_continuous(name=NULL) +
+  xlab(paste0("Consistent / Yoked")) +
+  ylab(paste0("log10(pvalue)")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   geom_hline(yintercept = 1,  size = 0.25, linetype = 2 )+ 
   theme(panel.grid.minor=element_blank(),
         legend.position = "none", # remove legend 
-        panel.grid.major=element_blank())
+        panel.grid.major=element_blank()) +
+  facet_wrap(~wrap)
 DGvolcano
 
-pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.25, height=2)
+pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
 plot(DGvolcano)
 dev.off()
 
-plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-  ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-    geom_point(size=2) +
-    xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-    ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-    scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none")
-}
 
-
-PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
+PCA12 <- plotPCwrap(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
 PCA12
 
 pdf(file="../figures/02c_rnaseqSubfield/DGpca12.pdf", width=1.75, height=2)
@@ -209,18 +203,8 @@ summary(aov(PC6 ~ APA2, data=pcadata))
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 pcadata$wrap <- "Principle Compent Analysis"
 
-plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-  ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-    geom_point(size=2, alpha= 0.8) +
-    xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-    ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-    scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none")
-}
 
-PCA14 <- plotPCs(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
+PCA14 <- plotPCwrapnoe(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
 PCA14
 
 pdf(file="../figures/02c_rnaseqSubfield/CA3pca14.pdf", width=1.75, height=2)
@@ -302,7 +286,14 @@ summary(aov(PC4 ~ APA2, data=pcadata))
 
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 
- 
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+summary(res)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("APA2"))
+
 data <- data.frame(gene = row.names(res),
                    pvalue = -log10(res$padj), 
                    lfc = res$log2FoldChange)
@@ -321,44 +312,71 @@ data$wrap <- "CA1 contrasts"
 CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   scale_color_manual(values = volcano1)  + 
-  scale_x_continuous(name="log2 (consistent/yoked)") +
-  scale_y_continuous(name=NULL) +
+  xlab(paste0("Consistent / Yoked")) +
+  ylab(paste0("log10(pvalue)")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
   theme(panel.grid.minor=element_blank(),
         legend.position = "none", # remove legend 
-        panel.grid.major=element_blank())
+        panel.grid.major=element_blank()) +
+  facet_wrap(~wrap)
 CA1volcano
-
 
 pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf",  width=1.5, height=2)
 plot(CA1volcano)
 dev.off()
 
 
-plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-  ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-    geom_point(size=2, alpha = 0.8 ) +
-    xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-    ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-    scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") +
-    facet_wrap(~wrap)
-}
 
+res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+summary(res)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
 
-PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
-PCA12
+topGene <- rownames(res)[which.min(res$padj)]
+plotCounts(dds, gene = topGene, intgroup=c("APA2"))
 
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+                        yes = "yoked_conflict", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                                    yes = "yoked_consistent", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 5, wt = lfc)
 
-pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf", width=1.75, height = 2)
-plot(CA1volcano)
+pcadata$wrap <- "CA1 PCA"
+data$wrap <- "CA1 contrasts"
+
+CA1volcano2 <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  scale_color_manual(values = volcano3)  + 
+  xlab(paste0("Yoked Conflict / Yoked Consistent")) +
+  ylab(paste0("log10(pvalue)")) +
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+  theme(panel.grid.minor=element_blank(),
+        legend.position = "none", # remove legend 
+        panel.grid.major=element_blank()) +
+  facet_wrap(~wrap)
+CA1volcano2
+
+pdf(file="../figures/02c_rnaseqSubfield/CA1volcano2.pdf",  width=1.5, height=2)
+plot(CA1volcano2)
 dev.off()
 
 
-PCA14 <- plotPCs(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
+PCA12 <- plotPCwrap(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
+PCA12
+
+pdf(file="../figures/02c_rnaseqSubfield/CA1pca12.pdf", width=1.75, height = 2)
+plot(PCA12)
+dev.off()
+
+PCA14 <- plotPCwrapnoe(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
 PCA14
 
 pdf(file="../figures/02c_rnaseqSubfield/CA1pca14.pdf", width=1.75, height=2)

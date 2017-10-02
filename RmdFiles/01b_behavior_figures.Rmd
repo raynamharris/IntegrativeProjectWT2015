@@ -106,7 +106,8 @@ pheatmap(scaledaveragedata2, show_colnames=T, show_rownames = T,
          color = viridis(30),
          clustering_method="average",
          breaks=myBreaks,
-         clustering_distance_cols="correlation" 
+         clustering_distance_cols="correlation" ,
+         clustering_distance_rows = "correlation"
          )
 
 # pheatmapfor adobe
@@ -162,7 +163,6 @@ aov2 <- aov(PC2 ~ APA2, data=scoresdf)
 summary(aov2) # p = 0.0295 *
 TukeyHSD(aov2, which = "APA2") # p > 0.05
 
-
 summary(aov(PC3 ~ APA2, data=scoresdf)) # p = 0.117
 summary(aov(PC3 ~ APA2, data=scoresdf))
 summary(aov(PC4 ~ APA2, data=scoresdf))
@@ -175,9 +175,7 @@ pca12 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
     geom_point(size=3, alpha = 0.7) +
     xlab(paste0("PC 1: ", percent[1],"% variance")) +
     ylab(paste0("PC 2: ", percent[2],"% variance")) +
-    #stat_ellipse(level = 0.95, (aes(color=avoidance)),size=0.25) + 
     scale_colour_manual(values=c(colorvalAPA00)) + 
-
     theme_cowplot(font_size = 8, line_size = 0.25) +
       theme(legend.position="none")
 pca12
@@ -200,19 +198,23 @@ pdf(file="../figures/01_behavior/pca16.pdf",  width=3.25, height=2.25)
 plot(pca16)
 dev.off()
 
+forhist <- behavior %>%
+  filter(TrainGroup == "trained",
+         TrainSession %in% c("T4","C1"))
+forhist <- forhist[,c(1,22)]
+forhist <- left_join(scoresdf, forhist)
+
+entrance <- ggplot(forhist, aes(0, NumEntrances, color=APA2)) +
+   geom_point() +
+    xlab(paste0("PC 1: ", percent[1],"% variance")) +
+    ylab(paste0("PC 6: ", percent[6],"% variance")) +
+    scale_colour_manual(values=c(colorvalAPA00)) + 
+    theme_cowplot(font_size = 8, line_size = 0.25) +
+    #theme(legend.position="none")
+entrance
+head(scoresdf)
 ```
 
-
-PC2 and 9 also difference by p < 0.01. 
-```{r otherpcs}
-
-
-
-aov9 <- aov(PC9 ~ APA2, data=scoresdf)
-summary(aov9) # p =  0.018
-TukeyHSD(aov9, which = "APA") # p = 0.0939973 for conflict-consistent 
-
-```
 
 Here are some stats modeling combinatorail PCs. I'm really not sure if this makes sense. I should probabaly model some behavior time interaction....
 
