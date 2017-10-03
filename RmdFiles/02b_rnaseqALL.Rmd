@@ -45,7 +45,16 @@ Behavioral Groups: "conflict", "consistent"
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData %>% select(APA2,Punch)  %>%  summary()
+head(colData)
+
+summarytable <- colData
+summarytable$PunchAPA <- as.factor(paste(summarytable$Punch, summarytable$APA2, sep="_"))
+summarytabledf <- summarytable %>% select(PunchAPA)  %>%  table()
+summarytabledf
+
 totalCounts=colSums(countData)
+### on average 1 million gene counts per sample 
+summary((colSums(countData)/1000000))
 
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,

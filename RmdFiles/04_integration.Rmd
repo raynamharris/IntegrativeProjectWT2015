@@ -28,28 +28,19 @@ knitr::opts_chunk$set(fig.path = '../figures/04_integration/')
 
 ## Import Data
 ```{r importdata}
-behaviorpca <- read.csv("../data/01a_scoresdf.csv", header = T)
+# behavior
 behavior <- read.csv("../data/01a_behavior.csv", header = T)
 
-pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
-pcadata$Punch <- ifelse(grepl("DG", pcadata$group), "DG", 
-                                        ifelse(grepl("CA3", pcadata$group), "CA3","CA1"))
-names(pcadata)[names(pcadata)=="name"] <- "RNAseqID"
-
-rossetta <- read.csv("../data/00_rossettastone.csv", header = F)
-
-colData <- read.csv("../data/02a_colData.csv", header = T) # for better group names
-
+# physiology
 ephys3 <- read.csv("../data/03_ephys.csv", header = T)
 ephys3 <- ephys3[,(c(1:6))]
-
 names(ephys3)[3] <- "Pre_Potentiation"
 names(ephys3)[4] <- "Early_Potentiation"
 names(ephys3)[5] <- "Late_Potentiation"
 names(ephys3)[6] <- "Max_fEPSP"
 
-
 # clearnup the rosetts data and filter extraneous samples
+rossetta <- read.csv("../data/00_rossettastone.csv", header = F)
 names(rossetta)[1] <- "organism"
 names(rossetta)[2] <- "ID"
 names(rossetta)[3] <- "Region"
@@ -57,15 +48,16 @@ names(rossetta)[4] <- "RNAseqID"
 names(rossetta)[5] <- "R1filename"
 rossetta$R2filename <- rossetta$R1filename
 rossetta$R2filename <- gsub("R1", "R2", rossetta$R2filename)
+head(rossetta)
 
 ## previously used for the Dissocation Test. No longer functional
 #rossetta$Mouse <- gsub("15-101", "15-100", rossetta$Mouse)
 #write.csv(rossetta, "../../DissociationTest/data/00_metadata.csv")
-
-colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_CA1" = "142C-CA1-S")) 
-colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_DG" = "142C-DG-S")) 
-colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_CA1" = "143C-CA1-S")) 
-colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_DG" = "143C-DG-S"))
+colData <- read.csv("../data/02a_colData.csv", header = T) # for better group names
+#colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_CA1" = "142C-CA1-S")) 
+#colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_DG" = "142C-DG-S")) 
+#colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_CA1" = "143C-CA1-S")) 
+#colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_DG" = "143C-DG-S"))
 
 metadata <- full_join(colData, rossetta)
 names(metadata)[1] <- "samplename"
@@ -92,10 +84,10 @@ names(rossetta)[4] <- "RNAseqID"
 names(rossetta)[5] <- "R1filename"
 rossetta$R1filename <- NULL
 rossetta <- rossetta %>% dplyr::filter(Mouse != "15-100", Mouse != "15-101", Mouse != "15-147")
-head(rossetta) # dictionary of names
-
+rossetta <- unique(rossetta[ , c(1:2,4) ]) # for joining keop only
 
 ## slim behavior ephy to top 5 pcs and rename the columsn
+behaviorpca <- read.csv("../data/01a_scoresdf.csv", header = T)
 behaviorpca <- behaviorpca[(c(1:5,35:36))]
 names(behaviorpca)[names(behaviorpca)=="PC1"] <- "Behavior_PC1"
 names(behaviorpca)[names(behaviorpca)=="PC2"] <- "Behavior_PC2"
@@ -105,21 +97,25 @@ names(behaviorpca)[names(behaviorpca)=="PC5"] <- "Behavior_PC5"
 
 behaviorpca <- behaviorpca %>% dplyr::filter(ID != "15148", ID !=  "15140A", ID !=  "15140B", ID !=  "15140C", ID !=  "15140D", ID !=  "15141C", ID !=  "15141D", ID !=  "15142C", ID !=  "15142D", ID !=  "15142A", ID !=  "15142B", ID !=  "15145C", ID !=  "15145C", ID !=  "15145D", ID !=  "15147A", ID !=  "15147B", ID !=  "15148C", ID !=  "15148D")
 
+
+pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
+pcadata$Punch <- ifelse(grepl("DG", pcadata$group), "DG", 
+                                        ifelse(grepl("CA3", pcadata$group), "CA3","CA1"))
+names(pcadata)[names(pcadata)=="name"] <- "RNAseqID"
+pcadata <- pcadata[c(11:17,2:10)]
+
 ```
 
 
 ```{r integratedata}
-head(pcadata)
-names(pcadata)
-names(rossetta )
-pcadata <- pcadata[c(11:17,2:10)]
-rossetta <- unique(rossetta[ , 1:2 ]) # for joining keop only
+head(rossetta)
 
 #widen then length RNAseq data so each row is an animals
 pcadatabyregion <- dplyr::left_join(pcadata, rossetta, by = "RNAseqID")
 names(pcadatabyregion)
-pcadatabyregion <- pcadatabyregion[(c(11:20,2:10))]
-pcadatabyregion <- melt(pcadatabyregion, id = c(1:10))
+pcadatabyregion <- pcadatabyregion[(c(1:7,17:18,8:16))]
+
+pcadatabyregion <- melt(pcadatabyregion, id = c(1:9))
 pcadatabyregion$RegionPC <- as.factor(paste(pcadatabyregion$Punch, pcadatabyregion$variable, sep="_"))
 pcadatabyregion <- dcast(pcadatabyregion, Mouse ~ RegionPC)
 
@@ -134,7 +130,7 @@ alldataslim <- dplyr::filter(alldata, APA2 %in% c("conflict","consistent"))
 
 names(alldataslim)
 
-alldataslim <- alldataslim[,-c(1,5:10,14:19,23:30,29:32,38:39)]
+alldataslim <- alldataslim[,-c(1,5:10,14:19,23:28,29:30,36:37)]
 alldataslim <- sapply( alldataslim, as.numeric )
 
 cormat <- rcorr(as.matrix(alldataslim))
@@ -156,12 +152,13 @@ DEGes$group <- NULL
 paletteLength <- 30
 myBreaks <- c(seq(min(cormat$r), 0, length.out=ceiling(paletteLength/2) + 1),
               seq(max(cormat$r)/paletteLength, max(cormat$r), length.out=floor(paletteLength/2)))
+
 pheatmap(DEGes, show_colnames=T, show_rownames = T,
          annotation_col = df, annotation_colors = ann_colorsLevel,
          annotation_row = df, 
          #annotation_legend = FALSE,
          annotation_names_row = FALSE, annotation_names_col = FALSE,
-         treeheight_row = 0, treeheight_col = 25,
+         treeheight_row = 10, treeheight_col = 10,
          fontsize = 8, 
          width=2.5, height=2,
          border_color = "grey60" ,
@@ -191,6 +188,7 @@ pheatmap(cormat$r, show_colnames=F, show_rownames = T,
          filename = "../figures/04_integration/corrTrained.pdf"
          )
 
+head(alldata)
 alldata$APA2 <- factor(alldata$APA2, levels = c("yoked-consistent", "consistent",  "yoked-conflict", "conflict"))
 
 alldata$avoidance <-  ifelse(grepl("yoked", alldata$APA), "no", "yes")
@@ -198,6 +196,7 @@ alldata$avoidance <-  ifelse(grepl("yoked", alldata$APA), "no", "yes")
 alldata$wrap <- "All Cognitively Trained" 
 
 behavDG <- alldata %>%
+  filter(avoidance == "yes") %>%
   ggplot(aes(as.numeric(DG_PC2), Behavior_PC1, color=avoidance)) + 
   geom_point(size = 1, alpha = 0.75) +
   scale_color_manual(values = "red") +
@@ -209,7 +208,7 @@ behavDG <- alldata %>%
   facet_wrap(~wrap)
 behavDG
 
-pdf(file="../figures/04_integration/behavDG.pdf", , width=1.75, height=2)
+pdf(file="../figures/04_integration/behavDG.pdf", width=1.75, height=2)
 plot(behavDG)
 dev.off()
 
@@ -225,7 +224,7 @@ alldata <- left_join(alldata, ephys3, by="Mouse")
 
 alldataslim <- dplyr::filter(alldata, APA2 %in% c("yoked-conflict","yoked-consistent"))
 
-alldataslim <- alldataslim[,-c(1, 5:10,14:19,23:29,35:36)]
+alldataslim <- alldataslim[,-c(1,5:10,14:19,23:28,29:30,36:37)]
 alldataslim <- sapply( alldataslim, as.numeric )
 
 cormat <- rcorr(as.matrix(alldataslim))
@@ -252,7 +251,7 @@ pheatmap(DEGes, show_colnames=T, show_rownames = T,
          annotation_row = df, 
          #annotation_legend = FALSE,
          annotation_names_row = FALSE, annotation_names_col = FALSE,
-         treeheight_row = 0, treeheight_col = 25,
+         treeheight_row = 10, treeheight_col = 10,
          fontsize = 8, 
          width=2.5, height=2,
          border_color = "grey60" ,
@@ -268,11 +267,11 @@ pheatmap(DEGes, show_colnames=T, show_rownames = T,
 pheatmap(cormat$r, show_colnames=F, show_rownames = T,
          annotation_col = df, annotation_colors = ann_colorsLevel,
          annotation_row = df, 
-         annotation_legend = FALSE,
+         #annotation_legend = FALSE,
          annotation_names_row = FALSE, annotation_names_col = FALSE,
-         treeheight_row = 0, treeheight_col = 12.5,
-         fontsize = 6, 
-         width=3.5, height=2,
+         treeheight_row = 10, treeheight_col = 10,
+         fontsize = 8, 
+         width=4, height=2.25,
          border_color = "grey60" ,
          color = viridis(30),
          clustering_method="average",
@@ -283,24 +282,6 @@ pheatmap(cormat$r, show_colnames=F, show_rownames = T,
          main="All Yoked"
          )
 
-
-alldata$wrap <- "All Cognitively Trained" 
-
-behavDG <- alldata %>%
-  ggplot(aes(as.numeric(DG_PC2), Behavior_PC1)) + 
-  geom_point(size = 1, alpha = 0.75) +
-  scale_color_manual(values = c("red")) +
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") +
-    stat_smooth(method = "lm") + 
-    ylab(paste0("Behavior PC1")) +
-    xlab(paste0("DG PC1"))  +
-  facet_wrap(~wrap)
-behavDG
-
-pdf(file="../figures/04_integration/behavDG.pdf", , width=1.75, height=2)
-plot(behavDG)
-dev.off()
 
 
 ```
