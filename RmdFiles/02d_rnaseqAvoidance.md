@@ -16,7 +16,31 @@
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqavoidance/')
+    knitr::opts_chunk$set(fig.path = '../figures/02d_rnaseqavoidance/')
+
+Summary of samples sizes
+------------------------
+
+    colData <- read.csv("../data/02a_colData.csv", header = T)
+    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+    colData$avoidance <-  ifelse(grepl("Control", colData$APA), "no", "yes")
+    colData$avoidance <- as.factor(colData$avoidance)
+    colData %>% select(APA2,Punch, avoidance)  %>%  summary()
+
+    ##                APA2    Punch    avoidance
+    ##  conflict        :14   CA1:15   no :21   
+    ##  consistent      : 9   CA3:13   yes:23   
+    ##  yoked_conflict  :12   DG :16            
+    ##  yoked_consistent: 9
+
+    summarytable <- colData
+    summarytable$PunchAvoid <- as.factor(paste(summarytable$Punch, summarytable$avoidance, sep="_"))
+    summarytabledf <- summarytable %>% select(PunchAvoid)  %>%  table()
+    summarytabledf
+
+    ## .
+    ##  CA1_no CA1_yes  CA3_no CA3_yes   DG_no  DG_yes 
+    ##       7       8       6       7       8       8
 
 DG
 --
@@ -106,14 +130,6 @@ DG
     ## avoidance    1    6.6   6.609   0.287  0.601
     ## Residuals   14  322.4  23.028
 
-    pcadata$wrap <- "Principle Compent Analysis"
-
-    #calculate significance of all two way comparisions
-    # see source "functions_RNAseq.R" 
-    contrast1 <- resvals(contrastvector = c("avoidance", "yes", "no"), mypval = 0.1) # 137
-
-    ## [1] 137
-
     res <- results(dds, contrast =c("avoidance", "yes", "no"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
@@ -162,7 +178,7 @@ DG
     topGene <- rownames(res)[which.min(res$padj)]
     plotCounts(dds, gene = topGene, intgroup=c("avoidance"))
 
-![](../figures/02c_rnaseqavoidance/DG-1.png)
+![](../figures/02d_rnaseqavoidance/DG-1.png)
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -174,94 +190,40 @@ DG
                             no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "no", 
                                         no = "none")))
-    top_labelled <- top_n(data, n = 5, wt = lfc)
+
+    # for faceting
+    pcadata$wrap <- "DG PCA"
+    data$wrap <- "DG contrasts"
 
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       scale_color_manual(values = volcano5)  + 
-      scale_x_continuous(name="log2(consistent/yoked)") +
-      scale_y_continuous(name=NULL) +
+      xlab(paste0("All Trained / All Yoked")) +
+      ylab(paste0("log10(pvalue)")) +
       theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2 )+ 
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
+            panel.grid.major=element_blank()) +
+      facet_wrap(~wrap)
     DGvolcano
 
-![](../figures/02c_rnaseqavoidance/DG-2.png)
+![](../figures/02d_rnaseqavoidance/DG-2.png)
 
-    pdf(file="../figures/02d_rnaseqavoidance/DGvolcano.pdf", width=1.25, height=2)
+    pdf(file="../figures/02d_rnaseqavoidance/DGvolcano.pdf", width=1.5, height=2)
     plot(DGvolcano)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-    plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-      ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-        geom_point(size=2) +
-        xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-        ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-        stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-        scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
-        theme(legend.position="none")
-    }
-
-    PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$avoidance, colorname = " ",  colorvalues = colorvalavoidance)
+    PCA12 <- plotPCwrap(pcadata, 1, 2, aescolor = pcadata$avoidance, colorname = " ",  colorvalues = colorvalavoidance)
     PCA12
 
-![](../figures/02c_rnaseqavoidance/DG-3.png)
+![](../figures/02d_rnaseqavoidance/DG-3.png)
 
-    pdf(file="../figures/02d_rnaseqavoidance/DGpca12.pdf", width=1.75, height=2)
+    pdf(file="../figures/02d_rnaseqavoidance/DGpca12.pdf", width=1.75, height = 2)
     plot(PCA12)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    scatter <- ggplot(pcadata, aes(PC1, PC2, color=avoidance)) + 
-      geom_point(size = 2, alpha = 0.5) +
-      scale_color_manual(values = colorvalavoidance) +
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
-        theme(legend.position="none") +
-        scale_x_continuous(name="PC1") +
-         scale_y_continuous(name="PC2")  
-    scatter
-
-![](../figures/02c_rnaseqavoidance/DG-4.png)
-
-    scatter <- ggplot(pcadata, aes(PC1, PC2, color=avoidance)) + 
-      geom_point(size = 2, alpha = 0.5) +
-      scale_color_manual(values = colorvalavoidance) +
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
-        theme(legend.position="none") +
-        scale_x_continuous(name="PC1") +
-         scale_y_continuous(name="PC2")  
-    scatter
-
-![](../figures/02c_rnaseqavoidance/DG-5.png)
-
-    pdf(file="../figures/02d_rnaseqavoidance/pc12avoidance.pdf", width=1.25, height=2)
-    plot(scatter)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    scatter <- ggplot(pcadata, aes(PC2, PC3, color=avoidance)) + 
-      geom_point(size = 2, alpha = 0.5) +
-      scale_color_manual(values = colorvalavoidance) +
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
-        theme(legend.position="none") +
-        scale_x_continuous(name="PC2") +
-         scale_y_continuous(name="PC3")  
-    scatter
-
-![](../figures/02c_rnaseqavoidance/DG-6.png)
-
-    pdf(file="../figures/02d_rnaseqavoidance/pc23avoidance.pdf", width=1.25, height=2)
-    plot(scatter)
     dev.off()
 
     ## quartz_off_screen 
@@ -319,6 +281,20 @@ CA3
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
 
+    res <- results(dds, contrast =c("avoidance", "yes", "no"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16153 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 0, 0% 
+    ## LFC < 0 (down)   : 0, 0% 
+    ## outliers [1]     : 55, 0.34% 
+    ## low counts [2]   : 55, 0.34% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
     # create the dataframe using my function pcadataframe
     pcadata <- pcadataframe(rld, intgroup=c("Punch","avoidance"), returnData=TRUE)
     percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -367,21 +343,6 @@ CA3
     ##             Df Sum Sq Mean Sq F value Pr(>F)
     ## avoidance    1   0.68   0.684   0.077  0.787
     ## Residuals   11  97.78   8.889
-
-    pcadata$wrap <- "Principle Compent Analysis"
-
-
-    PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$avoidance, colorname = " ",  colorvalues = colorvalavoidance)
-    PCA12
-
-![](../figures/02c_rnaseqavoidance/CA3-1.png)
-
-    pdf(file="../figures/02d_rnaseqavoidance/CA3pca12.pdf", width=1.75, height=2)
-    plot(PCA12)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
 
     #calculate significance of all two way comparisions
     # see source "functions_RNAseq.R" 
@@ -440,8 +401,6 @@ CA1
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
 
-
-    # PCA analysis
     pcadata <- pcadataframe(rld, intgroup=c("Punch","avoidance"), returnData=TRUE)
     percentVar <- round(100 * attr(pcadata, "percentVar"))
     percentVar
@@ -475,21 +434,6 @@ CA1
     ## Residuals   13  223.5    17.2                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    pcadata$wrap <- "Principle Compent Analysis"
-
-
-    PCA14 <- plotPCs(pcadata, 1, 4, aescolor = pcadata$avoidance, colorname = " ",  colorvalues = colorvalavoidance)
-    PCA14
-
-![](../figures/02c_rnaseqavoidance/CA1-1.png)
-
-    pdf(file="../figures/02d_rnaseqavoidance/CA1pca14.pdf", width=1.75, height=2)
-    plot(PCA14)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
 
     # calculate significance of all two way comparisions
     contrast1 <- resvals(contrastvector = c("avoidance", "yes", "no"), mypval = 0.1) # 9
@@ -544,37 +488,56 @@ CA1
     topGene <- rownames(res)[which.min(res$padj)]
     plotCounts(dds, gene = topGene, intgroup=c("avoidance"))
 
-![](../figures/02c_rnaseqavoidance/CA1-2.png)
+![](../figures/02d_rnaseqavoidance/CA1-1.png)
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
+
+    # for faceting
+    pcadata$wrap <- "CA1 PCA"
+    data$wrap <- "CA1 contrasts"
+
+
     data <- data %>%
       mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
-                            yes = "consistent", 
+                            yes = "yes", 
                             no = ifelse(data$lfc < 0 & data$pvalue > 1, 
-                                        yes = "yoked_consistent", 
+                                        yes = "no", 
                                         no = "none")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
     # Color corresponds to fold change directionality
     CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-      scale_color_manual(values = volcano1)  + 
-      scale_x_continuous(name="log2 (consistent/yoked)") +
-      scale_y_continuous(name=NULL) +
+      scale_color_manual(values = volcano5)  + 
+      xlab(paste0("All Trained / All Yoked")) +
+      ylab(paste0("log10(pvalue)")) +
       theme_cowplot(font_size = 8, line_size = 0.25) +
-      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+      geom_hline(yintercept = 1,  size = 0.25, linetype = 2 )+ 
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
+            panel.grid.major=element_blank()) +
+      facet_wrap(~wrap)
     CA1volcano
 
-![](../figures/02c_rnaseqavoidance/CA1-3.png)
+![](../figures/02d_rnaseqavoidance/CA1-2.png)
 
-    pdf(file="../figures/02d_rnaseqavoidance/CA1volcano.pdf", width=1.25, height=2)
+    pdf(file="../figures/02d_rnaseqavoidance/CA1volcano.pdf",  width=1.5, height=2)
     plot(CA1volcano)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    PCA12 <- plotPCwrap(pcadata, 1, 2, aescolor = pcadata$avoidance, colorname = " ",  colorvalues = colorvalavoidance)
+    PCA12
+
+![](../figures/02d_rnaseqavoidance/CA1-3.png)
+
+    pdf(file="../figures/02d_rnaseqavoidance/CA1pca12.pdf", width=1.75, height = 2)
+    plot(PCA12)
     dev.off()
 
     ## quartz_off_screen 
@@ -647,13 +610,17 @@ All
 
     rld <- rlog(dds, blind=FALSE) ## log transformed data
 
-
     # create the dataframe using my function pcadataframe
     pcadata <- pcadataframe(rld, intgroup=c("Punch","avoidance"), returnData=TRUE)
+    pcadata$wrap <- "Principle Compent Analysis"
     percentVar <- round(100 * attr(pcadata, "percentVar"))
     percentVar
 
     ## [1] 49 21  5  3  2  1  1  1  1
+
+    pcadata$PunchAPA <- as.factor(paste(pcadata$Punch, pcadata$APA2, sep="_"))
+    pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
+    pcadata$APA2 <- factor(pcadata$avoidance, levels=c("no","yes"))
 
     summary(aov(PC1 ~ avoidance, data=pcadata)) 
 
@@ -695,13 +662,71 @@ All
     ## avoidance    1    7.3   7.253   0.589  0.447
     ## Residuals   42  517.0  12.310
 
-    pcadata$wrap <- "Principle Compent Analysis"
+    summary(aov(PC1 ~ Punch, data=pcadata)) 
 
-    #calculate significance of all two way comparisions
-    # see source "functions_RNAseq.R" 
-    contrast4 <- resvals(contrastvector = c("avoidance", "yes", "no"), mypval = 0.1) # 8
+    ##             Df Sum Sq Mean Sq F value Pr(>F)    
+    ## Punch        2  16911    8455     252 <2e-16 ***
+    ## Residuals   41   1375      34                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    ## [1] 8
+    summary(aov(PC2 ~ Punch, data=pcadata)) 
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)    
+    ## Punch        2   7529    3765   915.2 <2e-16 ***
+    ## Residuals   41    169       4                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(PC3 ~ Punch, data=pcadata)) 
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## Punch        2   28.3   14.13   0.298  0.744
+    ## Residuals   41 1944.0   47.42
+
+    summary(aov(PC4 ~ Punch, data=pcadata)) 
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## Punch        2    6.3   3.132   0.116  0.891
+    ## Residuals   41 1105.8  26.972
+
+    summary(aov(PC5 ~ Punch, data=pcadata)) 
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## Punch        2    0.4   0.216   0.014  0.986
+    ## Residuals   41  621.9  15.169
+
+    summary(aov(PC6 ~ Punch, data=pcadata)) 
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## Punch        2    4.2    2.09   0.165  0.849
+    ## Residuals   41  520.1   12.69
+
+    TukeyHSD((aov(PC1 ~ Punch, data=pcadata)), which = "Punch") 
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC1 ~ Punch, data = pcadata)
+    ## 
+    ## $Punch
+    ##                diff       lwr        upr     p adj
+    ## CA3-DG  -41.2316729 -46.49065 -35.972700 0.0000000
+    ## CA1-DG  -40.3267065 -45.38855 -35.264862 0.0000000
+    ## CA1-CA3   0.9049664  -4.43201   6.241943 0.9107532
+
+    TukeyHSD((aov(PC2 ~ Punch, data=pcadata)), which = "Punch") 
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC2 ~ Punch, data = pcadata)
+    ## 
+    ## $Punch
+    ##              diff       lwr       upr p adj
+    ## CA3-DG  -16.94782 -18.78926 -15.10638     0
+    ## CA1-DG   15.92264  14.15022  17.69506     0
+    ## CA1-CA3  32.87046  31.00170  34.73922     0
 
     res <- results(dds, contrast =c("avoidance", "yes", "no"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -751,7 +776,7 @@ All
     topGene <- rownames(res)[which.min(res$padj)]
     plotCounts(dds, gene = topGene, intgroup=c("avoidance"))
 
-![](../figures/02c_rnaseqavoidance/unnamed-chunk-1-1.png)
+![](../figures/02d_rnaseqavoidance/unnamed-chunk-2-1.png)
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -765,11 +790,6 @@ All
                                         no = "none")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
-
-
-
-
-
     contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 2556
 
     ## [1] 2556
@@ -782,6 +802,10 @@ All
 
     ## [1] 3541
 
+    contrast4 <- resvals(contrastvector = c("avoidance", "yes", "no"), mypval = 0.1) # 8
+
+    ## [1] 8
+
     DEGes <- assay(rld)
     DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4)
     DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
@@ -793,7 +817,9 @@ All
     DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
     DEGes <- as.matrix(DEGes)
     DEGes <- DEGes - rowMeans(DEGes)
+    dim(DEGes)
 
+    ## [1] 3382   44
 
     df <- as.data.frame(colData(dds)[,c("avoidance", "Punch")]) ## matrix to df
     rownames(df) <- names(countData)
@@ -818,7 +844,7 @@ All
              clustering_distance_cols="correlation" 
              )
 
-![](../figures/02c_rnaseqavoidance/unnamed-chunk-1-2.png)
+![](../figures/02d_rnaseqavoidance/unnamed-chunk-2-2.png)
 
     pheatmap(DEGes, show_colnames=F, show_rownames = F,
              annotation_col=df, annotation_colors = ann_colors, 
@@ -837,149 +863,17 @@ All
              filename = "../figures/02d_rnaseqavoidance/pheatmap1.pdf"
              )
 
-    pcadata <- pcadataframe(rld, intgroup=c("Punch","avoidance"), returnData=TRUE)
-    percentVar <- round(100 * attr(pcadata, "percentVar"))
-    percentVar
 
-    ## [1] 49 21  5  3  2  1  1  1  1
-
-    pcadata$PunchAPA <- as.factor(paste(pcadata$Punch, pcadata$APA2, sep="_"))
-
-    summary(aov(PC1 ~ Punch, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2  16911    8455     252 <2e-16 ***
-    ## Residuals   41   1375      34                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    TukeyHSD((aov(PC1 ~ Punch, data=pcadata)), which = "Punch") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC1 ~ Punch, data = pcadata)
-    ## 
-    ## $Punch
-    ##               diff       lwr      upr     p adj
-    ## CA3-CA1 -0.9049664 -6.241943  4.43201 0.9107532
-    ## DG-CA1  40.3267065 35.264862 45.38855 0.0000000
-    ## DG-CA3  41.2316729 35.972700 46.49065 0.0000000
-
-    summary(aov(PC2 ~ Punch, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2   7529    3765   915.2 <2e-16 ***
-    ## Residuals   41    169       4                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    TukeyHSD((aov(PC2 ~ Punch, data=pcadata)), which = "Punch") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC2 ~ Punch, data = pcadata)
-    ## 
-    ## $Punch
-    ##              diff       lwr       upr p adj
-    ## CA3-CA1 -32.87046 -34.73922 -31.00170     0
-    ## DG-CA1  -15.92264 -17.69506 -14.15022     0
-    ## DG-CA3   16.94782  15.10638  18.78926     0
-
-    summary(aov(PC1 ~ avoidance, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## avoidance    1     50    49.5   0.114  0.737
-    ## Residuals   42  18237   434.2
-
-    summary(aov(PC2 ~ avoidance, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## avoidance    1      7    7.34    0.04  0.842
-    ## Residuals   42   7690  183.11
-
-    summary(aov(PC3 ~ avoidance, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## avoidance    1  204.6  204.57    4.86  0.033 *
-    ## Residuals   42 1767.7   42.09                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    summary(aov(PC4 ~ avoidance, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## avoidance    1  388.1   388.1   22.51 2.43e-05 ***
-    ## Residuals   42  724.0    17.2                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    summary(aov(PC5 ~ avoidance, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## avoidance    1    0.2   0.213   0.014  0.905
-    ## Residuals   42  622.1  14.813
-
-    summary(aov(PC6 ~ avoidance, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## avoidance    1    7.3   7.253   0.589  0.447
-    ## Residuals   42  517.0  12.310
-
-    pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
-    pcadata$APA2 <- factor(pcadata$avoidance, levels=c("no","yes"))
-
-
-    plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-      ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-        geom_point(size=3, aes(shape=APA2), alpha = 0.5) +
-        xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-        ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-        #stat_ellipse(level = 0.95, (aes(color=avoidance)),size=0.25) + 
-        scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
-        theme(legend.position="none") +
-        scale_shape_manual(values=c(16, 1, 15,2), aes(color=colorvalavoidance)) 
-    }
-
-    PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", colorvalues = colorvalPunch)
-    PCA12
-
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-
-![](../figures/02c_rnaseqavoidance/unnamed-chunk-1-3.png)
-
-    PCA34 <- plotPCs(pcadata, 3, 4, aescolor = pcadata$Punch, colorname = " ", colorvalues = colorvalPunch)
+    PCA34 <- plotPCwrap(pcadata, 3, 4, aescolor = pcadata$avoidance, colorname = " ", colorvalues = colorvalavoidance)
     PCA34
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-
-![](../figures/02c_rnaseqavoidance/unnamed-chunk-1-4.png)
-
-    plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-      ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-        geom_point(size=3, alpha = 0.5) +
-        xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-        ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-        #stat_ellipse(level = 0.95, (aes(color=avoidance)),size=0.25) + 
-        scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
-        theme(legend.position="none") 
-    }
-
-    PCA34 <- plotPCs(pcadata, 3, 4, aescolor = pcadata$avoidance, colorname = " ", colorvalues = colorvalavoidance)
-    PCA34
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02c_rnaseqavoidance/unnamed-chunk-1-5.png)
+![](../figures/02d_rnaseqavoidance/unnamed-chunk-2-3.png)
 
-    pdf(file="../figures/02d_rnaseqavoidance/allPCA34.pdf", width=1.5, height=2.5)
+    pdf(file="../figures/02d_rnaseqavoidance/allPCA34.pdf", width=1.5, height=1.5)
     plot(PCA34)
 
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
@@ -993,4 +887,6 @@ All
 venn diagrams
 -------------
 
-![](../figures/02c_rnaseqavoidance/venndiagrams-1.png)
+![](../figures/02d_rnaseqavoidance/venndiagrams-1.png)
+
+    write.csv(pcadata, file = "../data/02a_pcadata.csv", row.names = T)

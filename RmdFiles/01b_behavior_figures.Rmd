@@ -14,6 +14,7 @@ After wrangling the behaivoral data in the previous script ([01a_beahvior_create
 ```{r setup, message=F, warning=F}
 library(ggplot2) ## for awesome plots!
 library(cowplot) ## for some easy to use themes
+library(plyr)
 library(dplyr) ## for filtering and selecting rows
 library(factoextra)  ##pca with vectors
 library(car) ## stats
@@ -22,7 +23,7 @@ library(pheatmap)  # for pretty heatmap
 library(viridis) # for awesome color pallette
 library(reshape2) ## for melting dataframe
 library(tidyr) ## for respahing data
-library(plyr)
+
 
 ## load user-written functions 
 source("functions_behavior.R")
@@ -201,21 +202,6 @@ pdf(file="../figures/01_behavior/pca16.pdf",  width=3.25, height=2.25)
 plot(pca16)
 dev.off()
 
-forhist <- behavior %>%
-  filter(TrainGroup == "trained",
-         TrainSession %in% c("T4","C1"))
-forhist <- forhist[,c(1,22)]
-forhist <- left_join(scoresdf, forhist)
-
-entrance <- ggplot(forhist, aes(0, NumEntrances, color=APA2)) +
-   geom_point() +
-    xlab(paste0("PC 1: ", percent[1],"% variance")) +
-    ylab(paste0("PC 6: ", percent[6],"% variance")) +
-    scale_colour_manual(values=c(colorvalAPA00)) + 
-    theme_cowplot(font_size = 8, line_size = 0.25) +
-    #theme(legend.position="none")
-entrance
-head(scoresdf)
 ```
 
 

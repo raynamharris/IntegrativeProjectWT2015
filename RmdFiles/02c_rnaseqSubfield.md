@@ -222,40 +222,33 @@ DG
                                         no = "none")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
+    # for faceting
+    pcadata$wrap <- "DG PCA"
+    data$wrap <- "DG contrasts"
+
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       scale_color_manual(values = volcano1)  + 
-      scale_x_continuous(name="log2(consistent/yoked)") +
-      scale_y_continuous(name=NULL) +
+      xlab(paste0("Consistent / Yoked")) +
+      ylab(paste0("log10(pvalue)")) +
       theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2 )+ 
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
+            panel.grid.major=element_blank()) +
+      facet_wrap(~wrap)
     DGvolcano
 
 ![](../figures/02c_rnaseqSubfield/DG-2.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.25, height=2)
+    pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
     plot(DGvolcano)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-    plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-      ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-        geom_point(size=2) +
-        xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-        ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-        stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-        scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
-        theme(legend.position="none")
-    }
-
-
-    PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
+    PCA12 <- plotPCwrap(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
     PCA12
 
 ![](../figures/02c_rnaseqSubfield/DG-3.png)
@@ -330,85 +323,31 @@ CA3
 
     ## [1] 40 14 10  8  7  4  4  3  3
 
-    TukeyHSD((aov(PC1 ~ APA2, data=pcadata)), which = "APA2") 
+    summary(aov(PC1 ~ APA2, data=pcadata))
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC1 ~ APA2, data = pcadata)
-    ## 
-    ## $APA2
-    ##                                       diff       lwr      upr     p adj
-    ## consistent-conflict               7.069691 -14.31775 28.45713 0.7360455
-    ## yoked_conflict-conflict          -6.200751 -24.86924 12.46774 0.7333213
-    ## yoked_consistent-conflict        -3.194066 -21.86255 15.47442 0.9485037
-    ## yoked_conflict-consistent       -13.270443 -36.60605 10.06517 0.3438076
-    ## yoked_consistent-consistent     -10.263757 -33.59937 13.07185 0.5443942
-    ## yoked_consistent-yoked_conflict   3.006685 -17.86532 23.87869 0.9680258
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA2         3  230.7   76.91   1.147  0.382
+    ## Residuals    9  603.5   67.05
 
-    TukeyHSD((aov(PC2 ~ APA2, data=pcadata)), which = "APA2") 
+    summary(aov(PC2 ~ APA2, data=pcadata))
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC2 ~ APA2, data = pcadata)
-    ## 
-    ## $APA2
-    ##                                       diff        lwr      upr     p adj
-    ## consistent-conflict             -1.7401173 -15.773469 12.29323 0.9790854
-    ## yoked_conflict-conflict          2.7485123  -9.500801 14.99783 0.8943668
-    ## yoked_consistent-conflict       -0.0689986 -12.318312 12.18031 0.9999979
-    ## yoked_conflict-consistent        4.4886296 -10.823012 19.80027 0.7976540
-    ## yoked_consistent-consistent      1.6711187 -13.640523 16.98276 0.9855027
-    ## yoked_consistent-yoked_conflict -2.8175109 -16.512660 10.87764 0.9156205
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA2         3  27.13   9.045   0.313  0.815
+    ## Residuals    9 259.81  28.868
 
-    TukeyHSD((aov(PC3 ~ APA2, data=pcadata)), which = "APA2") 
+    summary(aov(PC3 ~ APA2, data=pcadata))
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC3 ~ APA2, data = pcadata)
-    ## 
-    ## $APA2
-    ##                                       diff       lwr      upr     p adj
-    ## consistent-conflict             -1.8925376 -14.07758 10.29251 0.9605491
-    ## yoked_conflict-conflict          0.5284603 -10.10752 11.16444 0.9985687
-    ## yoked_consistent-conflict       -0.6071265 -11.24311 10.02885 0.9978379
-    ## yoked_conflict-consistent        2.4209979 -10.87398 15.71597 0.9390096
-    ## yoked_consistent-consistent      1.2854111 -12.00956 14.58039 0.9897975
-    ## yoked_consistent-yoked_conflict -1.1355868 -13.02697 10.75580 0.9901581
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA2         3   7.86   2.621    0.12  0.946
+    ## Residuals    9 195.88  21.764
 
-    TukeyHSD((aov(PC4 ~ APA2, data=pcadata)), which = "APA2") 
+    summary(aov(PC4 ~ APA2, data=pcadata))
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC4 ~ APA2, data = pcadata)
-    ## 
-    ## $APA2
-    ##                                       diff         lwr       upr     p adj
-    ## consistent-conflict              6.1658825  -0.6859095 13.017675 0.0799758
-    ## yoked_conflict-conflict          3.0772800  -2.9034544  9.058014 0.4218604
-    ## yoked_consistent-conflict        6.8331673   0.8524329 12.813902 0.0256649
-    ## yoked_conflict-consistent       -3.0886025 -10.5645205  4.387315 0.5910148
-    ## yoked_consistent-consistent      0.6672848  -6.8086332  8.143203 0.9919192
-    ## yoked_consistent-yoked_conflict  3.7558873  -2.9307770 10.442552 0.3532822
-
-    TukeyHSD((aov(PC4 ~ APA2, data=pcadata)), which = "APA2") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC4 ~ APA2, data = pcadata)
-    ## 
-    ## $APA2
-    ##                                       diff         lwr       upr     p adj
-    ## consistent-conflict              6.1658825  -0.6859095 13.017675 0.0799758
-    ## yoked_conflict-conflict          3.0772800  -2.9034544  9.058014 0.4218604
-    ## yoked_consistent-conflict        6.8331673   0.8524329 12.813902 0.0256649
-    ## yoked_conflict-consistent       -3.0886025 -10.5645205  4.387315 0.5910148
-    ## yoked_consistent-consistent      0.6672848  -6.8086332  8.143203 0.9919192
-    ## yoked_consistent-yoked_conflict  3.7558873  -2.9307770 10.442552 0.3532822
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA2         3 108.42   36.14   5.252 0.0228 *
+    ## Residuals    9  61.94    6.88                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     summary(aov(PC5 ~ APA2, data=pcadata))
 
@@ -425,18 +364,8 @@ CA3
     pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
     pcadata$wrap <- "Principle Compent Analysis"
 
-    plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-      ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-        geom_point(size=2) +
-        xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-        ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-        stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-        scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
-        theme(legend.position="none")
-    }
 
-    PCA14 <- plotPCs(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
+    PCA14 <- plotPCwrapnoe(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
     PCA14
 
 ![](../figures/02c_rnaseqSubfield/CA3-1.png)
@@ -465,6 +394,62 @@ CA3
     contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 0
 
     ## [1] 0
+
+    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16208 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 0, 0% 
+    ## LFC < 0 (down)   : 0, 0% 
+    ## outliers [1]     : 253, 1.6% 
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
+    res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16208 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 0, 0% 
+    ## LFC < 0 (down)   : 0, 0% 
+    ## outliers [1]     : 253, 1.6% 
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
+    res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16208 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 0, 0% 
+    ## LFC < 0 (down)   : 1, 0.0062% 
+    ## outliers [1]     : 253, 1.6% 
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
+    res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16208 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 0, 0% 
+    ## LFC < 0 (down)   : 0, 0% 
+    ## outliers [1]     : 253, 1.6% 
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
 
 ![](../figures/02c_rnaseqSubfield/CA3venndiagrams-1.png)
 
@@ -584,48 +569,6 @@ CA1
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-    pcadata$wrap <- "Principle Compent Analysis"
-
-
-    plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-      ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-        geom_point(size=2) +
-        xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-        ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-        stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-        scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
-        theme(legend.position="none")
-    }
-
-    PCA14 <- plotPCs(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
-    PCA14
-
-![](../figures/02c_rnaseqSubfield/CA1-1.png)
-
-    pdf(file="../figures/02c_rnaseqSubfield/CA1pca14.pdf", width=1.75, height=2)
-    plot(PCA14)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    # calculate significance of all two way comparisions
-    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 196
-
-    ## [1] 196
-
-    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 2
-
-    ## [1] 2
-
-    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
-
-    ## [1] 0
-
-    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 201
-
-    ## [1] 201
 
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -675,7 +618,7 @@ CA1
     topGene <- rownames(res)[which.min(res$padj)]
     plotCounts(dds, gene = topGene, intgroup=c("APA2"))
 
-![](../figures/02c_rnaseqSubfield/CA1-2.png)
+![](../figures/02c_rnaseqSubfield/CA1-1.png)
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -689,26 +632,138 @@ CA1
                                         no = "none")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
-    # Color corresponds to fold change directionality
+    pcadata$wrap <- "CA1 PCA"
+    data$wrap <- "CA1 contrasts"
+
     CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       scale_color_manual(values = volcano1)  + 
-      scale_x_continuous(name="log2 (consistent/yoked)") +
-      scale_y_continuous(name=NULL) +
+      xlab(paste0("Consistent / Yoked")) +
+      ylab(paste0("log10(pvalue)")) +
       theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
+            panel.grid.major=element_blank()) +
+      facet_wrap(~wrap)
     CA1volcano
 
-![](../figures/02c_rnaseqSubfield/CA1-3.png)
+![](../figures/02c_rnaseqSubfield/CA1-2.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf", width=1.25, height=2)
+    pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf",  width=1.5, height=2)
     plot(CA1volcano)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-![](../figures/02c_rnaseqSubfield/CA1venndiagrams-1.png)
+    res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16467 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 200, 1.2% 
+    ## LFC < 0 (down)   : 142, 0.86% 
+    ## outliers [1]     : 224, 1.4% 
+    ## low counts [2]   : 7777, 47% 
+    ## (mean count < 10)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MAP): APA2 yoked_conflict vs yoked_consistent 
+    ## Wald test p-value: APA2 yoked_conflict vs yoked_consistent 
+    ## DataFrame with 10 rows and 6 columns
+    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Srprb    46.99449       2.529191 0.3940987  6.417660 1.383848e-10
+    ## Notch2   36.69887       2.399579 0.3948938  6.076517 1.228209e-09
+    ## Pcdhb12  27.64061      -2.605094 0.4420604 -5.893074 3.790773e-09
+    ## Gm20390  47.85241      -2.382653 0.4346132 -5.482239 4.199763e-08
+    ## Tmem199  46.86081      -1.366337 0.2512065 -5.439100 5.355028e-08
+    ## Ercc6    61.68620       1.961837 0.3642248  5.386335 7.190873e-08
+    ## Tgoln1  255.45054       1.400754 0.2642180  5.301507 1.148506e-07
+    ## Mars2    41.65167      -1.699460 0.3320317 -5.118366 3.081946e-07
+    ## Scn4b   127.70755       1.854646 0.3668301  5.055871 4.284302e-07
+    ## Cog3     64.12741       1.536606 0.3096145  4.962965 6.942508e-07
+    ##                 padj
+    ##            <numeric>
+    ## Srprb   1.171565e-06
+    ## Notch2  5.199009e-06
+    ## Pcdhb12 1.069756e-05
+    ## Gm20390 8.888798e-05
+    ## Tmem199 9.067133e-05
+    ## Ercc6   1.014632e-04
+    ## Tgoln1  1.389036e-04
+    ## Mars2   3.261470e-04
+    ## Scn4b   4.030101e-04
+    ## Cog3    5.877527e-04
+
+    topGene <- rownames(res)[which.min(res$padj)]
+    plotCounts(dds, gene = topGene, intgroup=c("APA2"))
+
+![](../figures/02c_rnaseqSubfield/CA1-3.png)
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+                            yes = "yoked_conflict", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                                        yes = "yoked_consistent", 
+                                        no = "none")))
+    top_labelled <- top_n(data, n = 5, wt = lfc)
+
+    pcadata$wrap <- "CA1 PCA"
+    data$wrap <- "CA1 contrasts"
+
+    CA1volcano2 <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      scale_color_manual(values = volcano3)  + 
+      xlab(paste0("Yoked Conflict / Yoked Consistent")) +
+      ylab(paste0("log10(pvalue)")) +
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+      theme(panel.grid.minor=element_blank(),
+            legend.position = "none", # remove legend 
+            panel.grid.major=element_blank()) +
+      facet_wrap(~wrap)
+    CA1volcano2
+
+![](../figures/02c_rnaseqSubfield/CA1-4.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/CA1volcano2.pdf",  width=1.5, height=2)
+    plot(CA1volcano2)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    PCA12 <- plotPCwrap(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
+    PCA12
+
+![](../figures/02c_rnaseqSubfield/CA1-5.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/CA1pca12.pdf", width=1.75, height = 2)
+    plot(PCA12)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    PCA14 <- plotPCwrapnoe(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
+    PCA14
+
+![](../figures/02c_rnaseqSubfield/CA1-6.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/CA1pca14.pdf", width=1.75, height=2)
+    plot(PCA14)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2

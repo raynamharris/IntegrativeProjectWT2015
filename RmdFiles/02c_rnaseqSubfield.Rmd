@@ -192,11 +192,10 @@ pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 percentVar
 
-TukeyHSD((aov(PC1 ~ APA2, data=pcadata)), which = "APA2") 
-TukeyHSD((aov(PC2 ~ APA2, data=pcadata)), which = "APA2") 
-TukeyHSD((aov(PC3 ~ APA2, data=pcadata)), which = "APA2") 
-TukeyHSD((aov(PC4 ~ APA2, data=pcadata)), which = "APA2") 
-TukeyHSD((aov(PC4 ~ APA2, data=pcadata)), which = "APA2") 
+summary(aov(PC1 ~ APA2, data=pcadata))
+summary(aov(PC2 ~ APA2, data=pcadata))
+summary(aov(PC3 ~ APA2, data=pcadata))
+summary(aov(PC4 ~ APA2, data=pcadata))
 summary(aov(PC5 ~ APA2, data=pcadata))
 summary(aov(PC6 ~ APA2, data=pcadata))
 
@@ -218,6 +217,15 @@ contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), m
 contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
 contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 0
 
+
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+summary(res)
+res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
+summary(res)
+res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
+summary(res)
+res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+summary(res)
 ```
 
 
@@ -386,37 +394,4 @@ dev.off()
 
 
 
-
-```{r CA1venndiagrams, echo=F}
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-topGene <- rownames(res)[which.min(res$padj)]
-plotCounts(dds, gene = topGene, intgroup=c("APA2"))
-
-
-rldpadjs <- assay(rld)
-rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast4)
-rldpadjs <- as.data.frame(rldpadjs)
-rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
-
-venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) 
-venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) 
-venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) 
-
-candidates <- list("consistent vs yoked" = venn1 , "conflict vs yoked" = venn2,  "yoked vs yoked" = venn3)
-
-prettyvenn <- venn.diagram(
-  scaled=T,
-  x = candidates, filename=NULL, 
-  col = "black",
-  fill = c( "white", "white", "white"),
-  alpha = 0.5,
-  cex = 1, fontfamily = "sans", #fontface = "bold",
-  cat.default.pos = "text",
-  cat.dist = c(0.03, 0.03, 0.02), cat.pos = 1,
-  cat.cex = 1, cat.fontfamily = "sans")
-grid.draw(prettyvenn)
-```
 
