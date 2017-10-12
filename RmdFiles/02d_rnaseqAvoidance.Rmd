@@ -85,10 +85,8 @@ summary(aov(PC3 ~ avoidance, data=pcadata))
 summary(aov(PC4 ~ avoidance, data=pcadata)) 
 
 
-res <- results(dds, contrast =c("avoidance", "yes", "no"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
+summary(results(dds, contrast =c("avoidance", "yes", "no"), independentFiltering = T, alpha = 0.1))
+head((resOrdered <- res[order(res$padj),]), 10)
 
 topGene <- rownames(res)[which.min(res$padj)]
 plotCounts(dds, gene = topGene, intgroup=c("avoidance"))

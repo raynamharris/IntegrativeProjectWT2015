@@ -1,5 +1,5 @@
 ---
-title: "02c_rnaseq_ConsistentConflict"
+title: "02c_rnaseq_All"
 author: "Rayna M Harris"
 date: "8/24/17"
 output: md_document
@@ -7,7 +7,7 @@ output: md_document
 
 The figures made from this script were compiled in Adobe.
 
-<img src="../figures/02c_RNAseqConflict/02_RNAseq_Conflict-01.png" width="1370" />
+<img src="../figures/figures-02.png" width="1370" />
 
 
 ```{r setup, message=F}
@@ -41,7 +41,7 @@ Hippocampal subfield: "DG","CA3", "CA1"
 Behavioral Groups: "conflict", "consistent"
 
 
-```{r data, message=F, warning=F, echo=F}
+```{r data, message=F, warning=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData %>% select(APA2,Punch)  %>%  summary()
@@ -68,17 +68,93 @@ dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
+```
 
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 1159
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 771
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 2122
+```{r results='asis'}
+print(xtable::xtable(summarytabledf), comment=F)
+```
+## this is for CA1 DG
+
+```{r}
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T)
+summary(res)
+summaryres <- summary(res)
+head((res[order(res$padj),]), 10)
+head((res[order(res$log2FoldChange),]), 10)
+```
+
+
+## this is for CA1 CA3
+
+```{r}
+res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = T)
+summary(res)
+head((res[order(res$padj),]), 10)
+head((res[order(res$log2FoldChange),]), 10)
+```
+## this is for CA3 DG
+
+```{r}
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T)
+summary(res)
+head((res[order(res$padj),]), 10)
+head((res[order(res$log2FoldChange),]), 10)
+
+```
+## this is for consistent yoked-consistent DG
+
+```{r}
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+summary(res)
+head((res[order(res$padj),]), 10)
+head((res[order(res$log2FoldChange),]), 10)
+
+```
+
+## this is for consistent yoked-conflict yoked-consistent DG
+
+```{r}
+res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+summary(res)
+head((res[order(res$padj),]), 10)
+head((res[order(res$log2FoldChange),]), 10)
+```
+
+
+## this is for consistent conflict yoked-conflict 
+
+```{r}
+res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
+summary(res)
+head((res[order(res$padj),]), 10)
+head((res[order(res$log2FoldChange),]), 10)
+```
+
+## this is for consistent conflict yoked-conflict
+
+```{r}
+res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T)
+summary(res)
+head((res[order(res$padj),]), 10)
+head((res[order(res$log2FoldChange),]), 10)
+```
+
+```{r heatmap}
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 1924
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 1442
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 2986
+contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 120
+contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 39
+contrast6 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
+contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 31
+
 
 DEGes <- assay(rld)
-DEGes <- cbind(DEGes, contrast1, contrast2, contrast3)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast7)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
 DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG)) 
-DEGes <- DEGes %>% filter(padjmin < 0.01)
+DEGes <- DEGes %>% filter(padjmin < 0.000000001)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
@@ -119,7 +195,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
          fontsize = 8, 
          border_color = "grey60" ,
          color = viridis(30),
-         height = 4.75, 
+         height = 3.75, 
          width = 3.5,
          clustering_method="average",
          breaks=myBreaks,
@@ -164,14 +240,13 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     scale_colour_manual(name=colorname, values=c(colorvalues))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
-    scale_shape_manual(values=c(16, 1, 15,2), aes(color=APA2)) +
-    facet_wrap(~wrap)
+    scale_shape_manual(values=c(16, 1, 15,2), aes(color=APA2))
 }
 
 PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", colorvalues = colorvalPunch)
 PCA12
 
-pdf(file="../figures/02b_RNAseqAll/PCA12.pdf", width=3.5, height=2.5)
+pdf(file="../figures/02b_RNAseqAll/PCA12.pdf", width=1.75, height=2.25)
 plot(PCA12)
 dev.off()
 
@@ -190,7 +265,7 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
 PCA62 <- plotPCs(pcadata, 6, 2, aescolor = pcadata$APA2, colorname = "APA2",  colorvalues = colorvalAPA00)
 PCA62
 
-pdf(file="../figures/02b_RNAseqAll/PCA62.pdf", width=3.5, height=2.5)
+pdf(file="../figures/02b_RNAseqAll/PCA62.pdf", width=3.25, height=2.5)
 plot(PCA62)
 dev.off()
 
@@ -198,127 +273,190 @@ dev.off()
 
 # Number of differentially expressed genes per two-way contrast
 
-```{r Twowaycontrasts3}
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.05) # 2685
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.05) # 1411
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.05) # 3902
-```
-
 ## venn diagrams
 
-```{r venndiagrams, echo=F}
+```{r venndiagrams}
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 1924
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 1442
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 2986
+contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 120
+contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) #39
+contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 31
+contrast7 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
+
 rldpadjs <- assay(rld)
-rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3)
+rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
 rldpadjs <- as.data.frame(rldpadjs)
 rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
 
-venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) # CA1 DG
-venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) # CA1 CA3
-venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) # CA3 DG
+venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) 
+venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) 
+venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) 
+venn4 <- row.names(rldpadjs[rldpadjs[4] <0.05 & !is.na(rldpadjs[4]),]) 
+venn5 <- row.names(rldpadjs[rldpadjs[5] <0.05 & !is.na(rldpadjs[5]),]) 
+venn6 <- row.names(rldpadjs[rldpadjs[6] <0.05 & !is.na(rldpadjs[6]),]) 
+
+candidates1 <- list("CA1DG" = venn1, "CA3DG" = venn3, "CA1CA3" = venn2) 
+candidates2 <- list("V4" = venn4, "V5" = venn5, "V6" = venn6)
+
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates1, filename=NULL, 
+  col = "black",
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  cat.cex = 1, cat.fontfamily = "sans")
+#dev.off()
+grid.draw(prettyvenn)
+
 ```
 
 
 ## Volcanos plots and and gene lists
 
+## ca3 dg
 
-```{r volcanos, include=F}
-# gene lists
-res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.05)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "CA1", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "DG", 
-                                    no = "none")))
-top_labelled <- top_n(data, n = 5, wt = lfc)
-
-# Color corresponds to fold change directionality
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  scale_color_manual(values = c("CA1" = "#7570b3",
-                                "DG" = "#d95f02", 
-                                "none" = "#d9d9d9")) + 
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
-  scale_y_continuous(name="-log10(pvalue") +
-  scale_x_continuous(name="log2(CA1/DG)") +
-  theme(panel.grid.minor=element_blank(),
-        legend.position = "none", # remove legend 
-        panel.grid.major=element_blank())
-colored
-
-pdf(file="../figures/02b_RNAseq/AllCA1DG.pdf", width=1.5, height=2)
-plot(colored)
-dev.off()
-
-res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = T, alpha = 0.05)
+```{r }
+res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T, alpha = 0.1)
+summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
 data <- na.omit(data)
 head(data)
-data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "CA1", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "CA3", 
-                                    no = "none")))
-top_labelled <- top_n(data, n = 5, wt = lfc)
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  theme_bw(base_size = 8) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = c("CA1" = "#7570b3",
-                                "CA3" = "#1b9e77", 
-                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
-           panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (CA1/CA3)",
-                     limits=c(-10, 10)) +
-  scale_y_log10(name="-log10 (adjusted p-value")  +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
-colored
-pdf(file="../figures/02b_RNAseqAll/AllCA1CA3.pdf", width=1.5, height=1.75)
-plot(colored)
-dev.off()
 
+summary(log10(data$pvalue +1))
 
-
-res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T, alpha = 0.05)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
-data <- na.omit(data)
-head(data)
 data <- data %>%
   mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
                         yes = "CA3", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
                                     yes = "DG", 
                                     no = "none")))
-top_labelled <- top_n(data, n = 5, wt = lfc)
+top_n(data, n = 5, wt = lfc)
+top_n(data, n = 5, wt = pvalue)
+data$logp <- log10(data$pvalue +1 )
+
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  theme_bw(base_size = 8) + # clean up theme
+  geom_point(aes(color = factor(color)), size = 0.5, alpha = 0.5, na.rm = T) + 
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = c("CA3" = "#1b9e77",
                                 "DG" = "#d95f02", 
-                                "none" = "#d9d9d9")) + theme(panel.grid.minor=element_blank(),
-           panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (CA3/DG)",
-                     limits=c(-10, 10)) +
-  scale_y_log10(name="-log10 (adjusted p-value")  +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
+                                "none" = "#d9d9d9")) + 
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
+  scale_y_continuous(limits=c(0, 40)) +
+  scale_x_continuous( limits=c(-10, 10)) +
+  xlab(paste0("CA3 / DG")) +
+  ylab(paste0("log10 p-value")) +       
+  theme(panel.grid.minor=element_blank(),
+        legend.position = "none", # remove legend 
+        panel.grid.major=element_blank())
 
+pdf(file="../figures/02b_RNAseqAll/AllDGCA3.pdf", width=1.75, height=2.25)
+plot(colored)
+dev.off()
+```
+
+## DG CA1
+
+```{r volcanos, include=F}
+
+res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.1)
+summary(res)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+data <- na.omit(data)
+head(data)
+
+
+data <- data.frame(gene = row.names(res), pvalue =  -log10(res$pvalue), lfc = res$log2FoldChange)
+data <- na.omit(data)
+head(data)
+
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "CA1", 
+                        no = ifelse(data$lfc < 0 & data$pvalue >1.3, 
+                                    yes = "DG", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 5, wt = lfc)
+head(data)
+
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
+  scale_color_manual(values = c("CA1" = "#7570b3",
+                                "DG" = "#d95f02", 
+                                "none" = "#d9d9d9")) + 
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
+  scale_y_continuous(limits=c(0, 40)) +
+  scale_x_continuous( limits=c(-10, 10)) +
+  xlab(paste0("CA1 / DG")) +
+  ylab(paste0("log10 p-value")) +       
+  theme(panel.grid.minor=element_blank(),
+        legend.position = "none", # remove legend 
+        panel.grid.major=element_blank())
 colored
-#cvd_grid(colored)
-pdf(file="../figures/02b_RNAseqAll/AllDGCA3.pdf", width=1.5, height=1.75)
+
+pdf(file="../figures/02b_RNAseqAll/AllCA1DG.pdf", width=1.75, height=2.25)
+plot(colored)
+dev.off()
+```
+
+# ca1 ca3
+
+```{r }
+res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = T, alpha = 0.1)
+summary(res)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
+data <- na.omit(data)
+head(data)
+
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "CA1", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "CA3", 
+                                    no = "none")))
+top_n(data, n = 5, wt = lfc)
+top_n(data, n = 5, wt = pvalue)
+
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
+  theme_bw(base_size = 8) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  scale_color_manual(values = c("CA1" = "#7570b3",
+                                "CA3" = "#1b9e77", 
+                                "none" = "#d9d9d9")) +  
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
+  scale_y_continuous(limits=c(0, 40)) +
+  scale_x_continuous( limits=c(-10, 10)) +
+  xlab(paste0("CA1 / CA3")) +
+  ylab(paste0("log10 p-value")) +       
+  theme(panel.grid.minor=element_blank(),
+        legend.position = "none", # remove legend 
+        panel.grid.major=element_blank())
+colored
+
+
+pdf(file="../figures/02b_RNAseqAll/AllCA1CA3.pdf", width=1.75, height=2.25)
 plot(colored)
 dev.off()
 
+```
+
+
+
+
+
+```{r }
 
 
 res <- results(dds, contrast =c("APA2",  "conflict", "consistent"), independentFiltering = T, alpha = 0.05)
@@ -336,9 +474,10 @@ data <- data %>%
                                     yes = "consistent", 
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
-# Color corresponds to fold change directionality
+
+
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
   theme(legend.position = "none") + # remove legend 
   scale_color_manual(values = volcano2) + 
@@ -350,8 +489,6 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
 colored
 
-
-#cvd_grid(colored) # to view plot for color blind 
 pdf(file="../figures/02b_RNAseqAll/Allconsistentconflict.pdf", width=1.5, height=1.75)
 plot(colored)
 dev.off()

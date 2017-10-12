@@ -71,7 +71,6 @@ DG
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
 
-
     # create the dataframe using my function pcadataframe
     pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
     percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -142,15 +141,13 @@ DG
     pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
     pcadata$wrap <- "Principle Compent Analysis"
 
-    #calculate significance of all two way comparisions
-    # see source "functions_RNAseq.R" 
-    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 95
+    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 121
 
-    ## [1] 95
+    ## [1] 121
 
-    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 5
+    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 9
 
-    ## [1] 5
+    ## [1] 9
 
     contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
 
@@ -159,6 +156,8 @@ DG
     contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 2
 
     ## [1] 2
+
+### DG consistent yoked
 
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -205,11 +204,6 @@ DG
     ## Fzd5    2.092654e-05
     ## Lmna    2.092654e-05
 
-    topGene <- rownames(res)[which.min(res$padj)]
-    plotCounts(dds, gene = topGene, intgroup=c("APA2"))
-
-![](../figures/02c_rnaseqSubfield/DG-1.png)
-
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
                        lfc = res$log2FoldChange)
@@ -220,26 +214,21 @@ DG
                             no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
                                         no = "none")))
-    top_labelled <- top_n(data, n = 5, wt = lfc)
-
-    # for faceting
-    pcadata$wrap <- "DG PCA"
-    data$wrap <- "DG contrasts"
-
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-      scale_color_manual(values = volcano1)  + 
-      xlab(paste0("Consistent / Yoked")) +
-      ylab(paste0("log10(pvalue)")) +
       theme_cowplot(font_size = 8, line_size = 0.25) +
-      geom_hline(yintercept = 1,  size = 0.25, linetype = 2 )+ 
+      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+      scale_color_manual(values = volcano1)  + 
+      scale_y_continuous(limits=c(0, 8)) +
+      scale_x_continuous( limits=c(-3, 3),
+                          name=NULL)+
+      ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) +
-      facet_wrap(~wrap)
+            panel.grid.major=element_blank())
     DGvolcano
 
-![](../figures/02c_rnaseqSubfield/DG-2.png)
+![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-1.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
     plot(DGvolcano)
@@ -248,13 +237,265 @@ DG
     ## quartz_off_screen 
     ##                 2
 
-    PCA12 <- plotPCwrap(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
+    res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16658 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 2, 0.012% 
+    ## LFC < 0 (down)   : 0, 0% 
+    ## outliers [1]     : 243, 1.5% 
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MAP): APA2 yoked_conflict vs yoked_consistent 
+    ## Wald test p-value: APA2 yoked_conflict vs yoked_consistent 
+    ## DataFrame with 10 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Kcnc2   21.66879       1.688348 0.3364518  5.018098 5.218566e-07
+    ## Gm2115  19.01205       1.647117 0.3421573  4.813917 1.480001e-06
+    ## Cxcl14  59.02066       1.288228 0.3121196  4.127355 3.669591e-05
+    ## Sdc4    49.08806       1.107216 0.2860926  3.870133 1.087762e-04
+    ## Cnr1    59.69861       1.190983 0.3196014  3.726463 1.941856e-04
+    ## Cpe    835.63422       0.840981 0.2516239  3.342214 8.311299e-04
+    ## Csrnp1 100.83372       1.092850 0.3213831  3.400460 6.727256e-04
+    ## Dner    16.46346       1.083347 0.3336218  3.247230 1.165340e-03
+    ## Endod1  66.94762       1.054545 0.3195395  3.300204 9.661474e-04
+    ## Ezr     59.17799       1.024955 0.2929115  3.499197 4.666610e-04
+    ##               padj
+    ##          <numeric>
+    ## Kcnc2  0.008566277
+    ## Gm2115 0.012147109
+    ## Cxcl14 0.200787772
+    ## Sdc4   0.446390373
+    ## Cnr1   0.637511391
+    ## Cpe    0.956453037
+    ## Csrnp1 0.956453037
+    ## Dner   0.956453037
+    ## Endod1 0.956453037
+    ## Ezr    0.956453037
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+                            yes = "yoked_conflict", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                                        yes = "yoked_consistent", 
+                                        no = "none")))
+    DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+      scale_color_manual(values = volcano2)  + 
+      scale_y_continuous(limits=c(0, 8)) +
+      scale_x_continuous( limits=c(-3, 3),
+                          name=NULL)+
+      ylab(paste0("log10 p-value")) +       
+      theme(panel.grid.minor=element_blank(),
+            legend.position = "none", # remove legend 
+            panel.grid.major=element_blank())
+    DGvolcano
+
+![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-2.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/DGvolcano2.pdf", width=1.5, height=2)
+    plot(DGvolcano)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16658 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 6, 0.036% 
+    ## LFC < 0 (down)   : 3, 0.018% 
+    ## outliers [1]     : 243, 1.5% 
+    ## low counts [2]   : 7875, 47% 
+    ## (mean count < 9)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MAP): APA2 conflict vs yoked_conflict 
+    ## Wald test p-value: APA2 conflict vs yoked_conflict 
+    ## DataFrame with 10 rows and 6 columns
+    ##           baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Slc16a1  52.068136       1.384561 0.3045990  4.545522 5.479923e-06
+    ## Dbpht2  181.531371       1.147480 0.2617935  4.383150 1.169755e-05
+    ## Insm1     9.266309      -1.369948 0.3209912 -4.267869 1.973489e-05
+    ## Pcdh8   418.794854       1.146718 0.2724521  4.208879 2.566402e-05
+    ## Nptx2   290.839915       1.087514 0.2716342  4.003597 6.238653e-05
+    ## Smad7    43.605962       1.236356 0.3102214  3.985398 6.736709e-05
+    ## Arc     451.437094       1.135686 0.2923906  3.884140 1.026928e-04
+    ## Slc6a7   20.285269      -1.238576 0.3185920 -3.887655 1.012175e-04
+    ## Sv2b     10.863636      -1.222300 0.3124245 -3.912303 9.141992e-05
+    ## Kcnc2    21.668786      -1.308599 0.3410022 -3.837509 1.242887e-04
+    ##               padj
+    ##          <numeric>
+    ## Slc16a1 0.04679854
+    ## Dbpht2  0.04994855
+    ## Insm1   0.05479269
+    ## Pcdh8   0.05479269
+    ## Nptx2   0.09588582
+    ## Smad7   0.09588582
+    ## Arc     0.09744402
+    ## Slc6a7  0.09744402
+    ## Sv2b    0.09744402
+    ## Kcnc2   0.10574649
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+                            yes = "conflict", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                                        yes = "yoked_conflict", 
+                                        no = "none")))
+    DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+      scale_color_manual(values = volcano4)  + 
+      scale_y_continuous(limits=c(0, 8)) +
+      scale_x_continuous( limits=c(-3, 3),
+                          name=NULL)+
+      ylab(paste0("log10 p-value")) +       
+      theme(panel.grid.minor=element_blank(),
+            legend.position = "none", # remove legend 
+            panel.grid.major=element_blank())
+    DGvolcano
+
+![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-3.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/DGvolcano3.pdf", width=1.5, height=2)
+    plot(DGvolcano)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16658 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 0, 0% 
+    ## LFC < 0 (down)   : 0, 0% 
+    ## outliers [1]     : 243, 1.5% 
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MAP): APA2 conflict vs consistent 
+    ## Wald test p-value: APA2 conflict vs consistent 
+    ## DataFrame with 10 rows and 6 columns
+    ##                 baseMean log2FoldChange     lfcSE        stat    pvalue
+    ##                <numeric>      <numeric> <numeric>   <numeric> <numeric>
+    ## 0610007P14Rik 19.9857247    -0.06960922 0.3076947 -0.22622821 0.8210239
+    ## 0610009B22Rik  3.9054655    -0.28438965 0.3320810 -0.85638635 0.3917841
+    ## 0610009L18Rik  2.6620072     0.08084757 0.2862827  0.28240468 0.7776332
+    ## 0610009O20Rik 48.6332670     0.20335225 0.2497604  0.81418940 0.4155365
+    ## 0610010F05Rik  7.7098060    -0.18593681 0.3329729 -0.55841432 0.5765615
+    ## 0610010K14Rik  2.2320608     0.13603386 0.3021516  0.45021726 0.6525538
+    ## 0610012G03Rik 54.2048370     0.04691216 0.2862676  0.16387518 0.8698294
+    ## 0610030E20Rik 45.2268624    -0.07088693 0.2918365 -0.24289945 0.8080833
+    ## 0610037L13Rik  9.1462863     0.00820131 0.3370921  0.02432959 0.9805897
+    ## 0610040J01Rik  0.6723497    -0.09758928 0.2179934 -0.44767072 0.6543909
+    ##                    padj
+    ##               <numeric>
+    ## 0610007P14Rik         1
+    ## 0610009B22Rik         1
+    ## 0610009L18Rik         1
+    ## 0610009O20Rik         1
+    ## 0610010F05Rik         1
+    ## 0610010K14Rik         1
+    ## 0610012G03Rik         1
+    ## 0610030E20Rik         1
+    ## 0610037L13Rik         1
+    ## 0610040J01Rik         1
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+                            yes = "conflict", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                                        yes = "consistent", 
+                                        no = "none")))
+    DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+      scale_color_manual(values = volcano2)  + 
+      scale_y_continuous(limits=c(0, 8)) +
+      scale_x_continuous( limits=c(-3, 3),
+                          name=NULL)+
+      ylab(paste0("log10 p-value")) +       
+      theme(panel.grid.minor=element_blank(),
+            legend.position = "none", # remove legend 
+            panel.grid.major=element_blank())
+    DGvolcano
+
+![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-4.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/DGvolcano4.pdf", width=1.5, height=2)
+    plot(DGvolcano)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    plotPC <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
+      ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
+        geom_point(size=2, alpha= 0.8) +
+        xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
+        ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
+        #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
+        scale_colour_manual(name=colorname, values=c(colorvalues))+ 
+        theme_cowplot(font_size = 8, line_size = 0.25)  +
+        theme(legend.position="none") 
+    }
+
+    PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
     PCA12
 
-![](../figures/02c_rnaseqSubfield/DG-3.png)
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
+![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-5.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGpca12.pdf", width=1.75, height=2)
     plot(PCA12)
+
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
+
     dev.off()
 
     ## quartz_off_screen 
@@ -365,13 +606,13 @@ CA3
     pcadata$wrap <- "Principle Compent Analysis"
 
 
-    PCA14 <- plotPCwrapnoe(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA2)
-    PCA14
+    PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
+    PCA12
 
 ![](../figures/02c_rnaseqSubfield/CA3-1.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/CA3pca14.pdf", width=1.75, height=2)
-    plot(PCA14)
+    pdf(file="../figures/02c_rnaseqSubfield/CA3pca12.pdf", width=1.75, height=2)
+    plot(PCA12)
     dev.off()
 
     ## quartz_off_screen 
@@ -637,15 +878,16 @@ CA1
 
     CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+        theme_cowplot(font_size = 8, line_size = 0.25) +
       scale_color_manual(values = volcano1)  + 
-      xlab(paste0("Consistent / Yoked")) +
-      ylab(paste0("log10(pvalue)")) +
-      theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+      scale_y_continuous(limits=c(0, 8)) +
+      scale_x_continuous( limits=c(-3, 3),
+                          name=NULL)+
+      ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) +
-      facet_wrap(~wrap)
+            panel.grid.major=element_blank())
     CA1volcano
 
 ![](../figures/02c_rnaseqSubfield/CA1-2.png)
@@ -724,15 +966,16 @@ CA1
 
     CA1volcano2 <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-      scale_color_manual(values = volcano3)  + 
-      xlab(paste0("Yoked Conflict / Yoked Consistent")) +
-      ylab(paste0("log10(pvalue)")) +
       theme_cowplot(font_size = 8, line_size = 0.25) +
+      scale_color_manual(values = volcano3)  + 
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+      scale_y_continuous(limits=c(0, 8)) +
+      scale_x_continuous( limits=c(-3, 3),
+                          name=NULL)+
+      ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) +
-      facet_wrap(~wrap)
+            panel.grid.major=element_blank())
     CA1volcano2
 
 ![](../figures/02c_rnaseqSubfield/CA1-4.png)
@@ -744,25 +987,91 @@ CA1
     ## quartz_off_screen 
     ##                 2
 
-    PCA12 <- plotPCwrap(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
-    PCA12
+    res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16467 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 0, 0% 
+    ## LFC < 0 (down)   : 0, 0% 
+    ## outliers [1]     : 224, 1.4% 
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
+    resOrdered <- res[order(res$padj),]
+    head(resOrdered, 10)
+
+    ## log2 fold change (MAP): APA2 conflict vs consistent 
+    ## Wald test p-value: APA2 conflict vs consistent 
+    ## DataFrame with 10 rows and 6 columns
+    ##                 baseMean log2FoldChange     lfcSE       stat       pvalue
+    ##                <numeric>      <numeric> <numeric>  <numeric>    <numeric>
+    ## Atxn10        424.622216      0.4366100 0.1005423  4.3425509 1.408378e-05
+    ## Csmd2         143.985087     -0.8608025 0.1984326 -4.3380099 1.437787e-05
+    ## Atp6v0c       236.464913      0.5837507 0.1472534  3.9642593 7.362418e-05
+    ## Pebp1         233.464322      0.5837170 0.1490405  3.9164991 8.984416e-05
+    ## Gm527           7.378619      1.6190437 0.4431466  3.6535170 2.586727e-04
+    ## Rps3           82.173297      0.7601365 0.2077222  3.6593894 2.528169e-04
+    ## Psmb3          79.909536      0.7888939 0.2261600  3.4882117 4.862629e-04
+    ## Rpl36          96.378329      0.9851858 0.2824526  3.4879685 4.867054e-04
+    ## Znhit2         47.306160      0.8548162 0.2415927  3.5382536 4.027830e-04
+    ## 0610007P14Rik  20.262198      0.1937278 0.2905131  0.6668472 5.048697e-01
+    ##                    padj
+    ##               <numeric>
+    ## Atxn10        0.1167699
+    ## Csmd2         0.1167699
+    ## Atp6v0c       0.3648347
+    ## Pebp1         0.3648347
+    ## Gm527         0.7002700
+    ## Rps3          0.7002700
+    ## Psmb3         0.8783951
+    ## Rpl36         0.8783951
+    ## Znhit2        0.8783951
+    ## 0610007P14Rik 1.0000000
+
+    data <- data.frame(gene = row.names(res),
+                       pvalue = -log10(res$padj), 
+                       lfc = res$log2FoldChange)
+    data <- na.omit(data)
+    data <- data %>%
+      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+                            yes = "conflict", 
+                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                                        yes = "consistent", 
+                                        no = "none")))
+    CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+      scale_color_manual(values = volcano2)  + 
+      scale_y_continuous(limits=c(0, 8)) +
+      scale_x_continuous( limits=c(-3, 3),
+                          name=NULL)+
+      ylab(paste0("log10 p-value")) +       
+      theme(panel.grid.minor=element_blank(),
+            legend.position = "none", # remove legend 
+            panel.grid.major=element_blank())
+    CA1volcano
 
 ![](../figures/02c_rnaseqSubfield/CA1-5.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/CA1pca12.pdf", width=1.75, height = 2)
-    plot(PCA12)
+    pdf(file="../figures/02c_rnaseqSubfield/CA1volcano4.pdf", width=1.5, height=2)
+    plot(DGvolcano)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-    PCA14 <- plotPCwrapnoe(pcadata, 1, 4, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
-    PCA14
+    PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
+    PCA12
 
 ![](../figures/02c_rnaseqSubfield/CA1-6.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/CA1pca14.pdf", width=1.75, height=2)
-    plot(PCA14)
+    pdf(file="../figures/02c_rnaseqSubfield/CA1pca12.pdf", width=1.75, height = 2)
+    plot(PCA12)
     dev.off()
 
     ## quartz_off_screen 

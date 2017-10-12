@@ -1,5 +1,5 @@
 resvals <- function(contrastvector, mypval){
-  res <- results(dds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = F)
+  res <- results(dds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = T)
   sumpvalue <- sum(res$pvalue < mypval, na.rm = TRUE)
   #print(sumpvalue)
   sumpadj <- sum(res$padj < mypval, na.rm = TRUE)
@@ -12,7 +12,7 @@ resvals <- function(contrastvector, mypval){
 }
 
 myhistogram <- function(contrastvector, mypval){
-  res <- results(dds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = F)
+  res <- results(dds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = T)
   vals <- cbind(res$pvalue)
   pvalcolname <- as.character(paste(contrastvector[2], "vs",contrastvector[3], sep=" "))
   colnames(vals) <- c(pvalcolname)
