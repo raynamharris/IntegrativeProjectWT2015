@@ -1,10 +1,11 @@
 After wrangling the behaivoral data in the previous script ([01a\_beahvior\_create\_dfs.Rmd](./01a_beahvior_create_dfs.Rmd)), conducted the analyses descirbed in this scipt. All plots are generate as **.png** files for markdown viewing and as **.pdf** files for incorporation to Adobe Illustrator.
 
-<img src="../figures/01_behavior/01_avoidancebehvaior-01.png" width="1370" />
+<img src="../figures/figures-01.png" width="1370" />
 
 ``` r
 library(ggplot2) ## for awesome plots!
 library(cowplot) ## for some easy to use themes
+library(plyr)
 library(dplyr) ## for filtering and selecting rows
 library(factoextra)  ##pca with vectors
 library(car) ## stats
@@ -13,7 +14,7 @@ library(pheatmap)  # for pretty heatmap
 library(viridis) # for awesome color pallette
 library(reshape2) ## for melting dataframe
 library(tidyr) ## for respahing data
-library(plyr)
+
 
 ## load user-written functions 
 source("functions_behavior.R")
@@ -52,14 +53,15 @@ behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2
    scale_y_continuous(name= NULL) +
     scale_x_continuous(name="Training Session", 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels = NULL) +
+                       labels = c( "Hab.", "T1", "T2", "T3",
+                                   "Retest", "T4", "T5", "T6", "Reten.")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   #background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA00)  +
   theme(legend.position=c(0.7, 0.8))  +
   theme(legend.title=element_blank()) +
   theme(legend.position="none") +
-  facet_wrap(~measure, ncol=1, scales = "free")
+  facet_wrap(~measure, ncol=1, scales = "free_y")
 behaviorwrap
 ```
 
@@ -103,7 +105,8 @@ pheatmap(scaledaveragedata2, show_colnames=T, show_rownames = T,
          color = viridis(30),
          clustering_method="average",
          breaks=myBreaks,
-         clustering_distance_cols="correlation" 
+         clustering_distance_cols="correlation" ,
+         clustering_distance_rows = "correlation"
          )
 ```
 
@@ -286,15 +289,16 @@ TukeyHSD((aov(PC6 ~ APA2, data=scoresdf)), which = "APA2") # p > 0.05
     ## conflict-yoked-conflict          4.0343049 -0.06332378 8.1319336 0.0548778
 
 ``` r
+scoresdf$wrap <- "Principal Component Analyses of Behavior"
+
 pca12 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
     geom_point(size=3, alpha = 0.7) +
     xlab(paste0("PC 1: ", percent[1],"% variance")) +
     ylab(paste0("PC 2: ", percent[2],"% variance")) +
-    #stat_ellipse(level = 0.95, (aes(color=avoidance)),size=0.25) + 
     scale_colour_manual(values=c(colorvalAPA00)) + 
-
     theme_cowplot(font_size = 8, line_size = 0.25) +
-      theme(legend.position="none")
+      theme(legend.position="none") +
+  facet_wrap(~wrap)
 pca12
 ```
 
@@ -317,47 +321,21 @@ pca16 <- ggplot(scoresdf, aes(PC1,PC6, color=APA2)) +
     stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
     scale_colour_manual(values=c(colorvalAPA00)) + 
     theme_cowplot(font_size = 8, line_size = 0.25) +
-      theme(legend.position="none")
+      theme(legend.position="none") +
+  facet_wrap(~wrap)
 pca16
 ```
 
 ![](../figures/01_behavior/PCAplots-2.png)
 
 ``` r
-pdf(file="../figures/01_behavior/pca16.pdf",  width=3.5, height=2)
+pdf(file="../figures/01_behavior/pca16.pdf",  width=3.25, height=2.25)
 plot(pca16)
 dev.off()
 ```
 
     ## quartz_off_screen 
     ##                 2
-
-PC2 and 9 also difference by p &lt; 0.01.
-
-``` r
-aov9 <- aov(PC9 ~ APA2, data=scoresdf)
-summary(aov9) # p =  0.018
-```
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA2         3  105.2   35.05   3.916  0.018 *
-    ## Residuals   30  268.5    8.95                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-TukeyHSD(aov9, which = "APA") # p = 0.0939973 for conflict-consistent 
-```
-
-    ## Warning in qtukey(conf.level, length(means), x$df.residual): NaNs produced
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC9 ~ APA2, data = scoresdf)
-    ## 
-    ## $<NA>
-    ##      diff lwr upr p adj
 
 Here are some stats modeling combinatorail PCs. I'm really not sure if this makes sense. I should probabaly model some behavior time interaction....
 

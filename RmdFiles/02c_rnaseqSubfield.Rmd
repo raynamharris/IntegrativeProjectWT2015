@@ -5,6 +5,10 @@ date: "8/22/17"
 output: md_document
 ---
 
+## Summary
+<img src="../figures/figures2-01.png" width="1370" />
+
+
 ```{r setup, message=F}
 library(ggplot2) ## for awesome plots!
 library(cowplot) ## for some easy to use themes
