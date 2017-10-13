@@ -1,3 +1,8 @@
+Summary
+-------
+
+<img src="../figures/figures2-01.png" width="1370" />
+
     library(ggplot2) ## for awesome plots!
     library(cowplot) ## for some easy to use themes
     library(dplyr) ## for filtering and selecting rows
@@ -161,8 +166,8 @@ DG
     avo1.table <- xtable::xtable(avo1)
     print(avo1.table)
 
-% latex table generated in R 3.3.3 by xtable 1.8-2 package % Thu Oct 12
-20:17:52 2017
+% latex table generated in R 3.3.3 by xtable 1.8-2 package % Fri Oct 13
+11:07:26 2017
 ### DG contraststs
 
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
@@ -760,20 +765,6 @@ CA3
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-    res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
-    summary(res)
-
-    ## 
-    ## out of 16208 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 0, 0% 
-    ## LFC < 0 (down)   : 1, 0.0062% 
-    ## outliers [1]     : 253, 1.6% 
-    ## low counts [2]   : 0, 0% 
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-
     res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
@@ -788,7 +779,39 @@ CA3
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-![](../figures/02c_rnaseqSubfield/CA3venndiagrams-1.png)
+    res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16208 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 0, 0% 
+    ## LFC < 0 (down)   : 1, 0.0062% 
+    ## outliers [1]     : 253, 1.6% 
+    ## low counts [2]   : 0, 0% 
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
+    ## go setup
+    table(res$padj<0.1)
+
+    ## 
+    ## FALSE  TRUE 
+    ## 15954     1
+
+    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+    logs$logP=as.numeric(as.character(logs$logP))
+    sign <- rep(1,nrow(logs))
+    sign[res$log2FoldChange<0]=-1  ##change to correct model
+    table(sign)
+
+    ## sign
+    ##   -1    1 
+    ## 7611 8597
+
+    logs$logP <- logs$logP*sign
+    write.csv(logs, file = "./02e_GO_MWU/CA3conflictconsistent.csv", row.names = F)
 
 CA1
 ---
@@ -994,6 +1017,29 @@ CA1
 
     ## quartz_off_screen 
     ##                 2
+
+    ## go setup
+    table(res$padj<0.1)
+
+    ## 
+    ## FALSE  TRUE 
+    ##  8746   356
+
+    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+    logs$logP=as.numeric(as.character(logs$logP))
+    sign <- rep(1,nrow(logs))
+    sign[res$log2FoldChange<0]=-1  ##change to correct model
+    table(sign)
+
+    ## sign
+    ##   -1    1 
+    ## 7335 9132
+
+    logs$logP <- logs$logP*sign
+    write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
+
+
+
 
     res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
