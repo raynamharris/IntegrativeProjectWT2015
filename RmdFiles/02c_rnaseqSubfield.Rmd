@@ -18,7 +18,7 @@ library(DESeq2) ## for gene expression analysis
 library(edgeR)  ## for basic read counts status
 library(magrittr) ## to use the weird pipe
 library(genefilter)  ## for PCA fuction
-
+library(xtable)
 ## load functions 
 source("figureoptions.R")
 source("functions_RNAseq.R")
@@ -80,9 +80,15 @@ contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypva
 contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 2
 ```
 
-### DG consistent yoked
+```{r DGanova, results='asis'}
+avo1 <- aov(PC1 ~ APA2, data=pcadata)
+avo1.table <- xtable::xtable(avo1)
+print(avo1.table)
+```
 
-```{r}
+### DG contraststs
+
+```{r DGcontrasts}
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
@@ -115,7 +121,17 @@ pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
 plot(DGvolcano)
 dev.off()
 
+## go setup
+table(res$padj<0.1)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP=as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  ##change to correct model
+table(sign)
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/DGconsistentyoked.csv", row.names = F)
 
+## yoked yoked
 res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
@@ -147,6 +163,17 @@ DGvolcano
 pdf(file="../figures/02c_rnaseqSubfield/DGvolcano2.pdf", width=1.5, height=2)
 plot(DGvolcano)
 dev.off()
+
+## go setup
+table(res$padj<0.1)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP=as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  ##change to correct model
+table(sign)
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/DGyokedyoked.csv", row.names = F)
+
 
 
 res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
@@ -181,8 +208,19 @@ pdf(file="../figures/02c_rnaseqSubfield/DGvolcano3.pdf", width=1.5, height=2)
 plot(DGvolcano)
 dev.off()
 
+## go setup
+table(res$padj<0.1)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP=as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  ##change to correct model
+table(sign)
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/DGconflictyoked.csv", row.names = F)
 
 
+
+####
 res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
@@ -214,6 +252,18 @@ DGvolcano
 pdf(file="../figures/02c_rnaseqSubfield/DGvolcano4.pdf", width=1.5, height=2)
 plot(DGvolcano)
 dev.off()
+
+## go setup
+table(res$padj<0.1)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP=as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  ##change to correct model
+table(sign)
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
+
+
 
 
 
@@ -263,6 +313,9 @@ prettyvenn <- venn.diagram(
   cat.cex = 1, cat.fontfamily = "sans")
 grid.draw(prettyvenn)
 ```
+
+
+
 
 ## CA3
 
@@ -324,39 +377,26 @@ res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), indep
 summary(res)
 res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
 summary(res)
-res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
+
+
 res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
-```
 
 
+res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
+summary(res)
 
-```{r CA3venndiagrams, echo=F}
-rldpadjs <- assay(rld)
-rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4)
-rldpadjs <- as.data.frame(rldpadjs)
-rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
+## go setup
+table(res$padj<0.1)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP=as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  ##change to correct model
+table(sign)
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/CA3conflictconsistent.csv", row.names = F)
 
-venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) 
-venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) 
-venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) 
-venn4 <- row.names(rldpadjs[rldpadjs[4] <0.05 & !is.na(rldpadjs[4]),]) 
 
-
-candidates <- list("consistent vs yoked" = venn1 , "conflict vs yoked" = venn2, "conflict vs consistent" = venn3, "yoked vs yoked" = venn4)
-
-prettyvenn <- venn.diagram(
-  scaled=T,
-  x = candidates, filename=NULL, 
-  col = "black",
-  fill = c( "white", "white", "white", "white"),
-  alpha = 0.5,
-  cex = 1, fontfamily = "sans", #fontface = "bold",
-  cat.default.pos = "text",
-  cat.dist = c(0.03, 0.03, 0.02,0.02), cat.pos = 1,
-  cat.cex = 1, cat.fontfamily = "sans")
-grid.draw(prettyvenn)
 ```
 
 
@@ -437,6 +477,17 @@ pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf",  width=1.5, height=2)
 plot(CA1volcano)
 dev.off()
 
+## go setup
+table(res$padj<0.1)
+logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs$logP=as.numeric(as.character(logs$logP))
+sign <- rep(1,nrow(logs))
+sign[res$log2FoldChange<0]=-1  ##change to correct model
+table(sign)
+logs$logP <- logs$logP*sign
+write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
+
+
 
 
 res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
@@ -515,10 +566,6 @@ CA1volcano
 pdf(file="../figures/02c_rnaseqSubfield/CA1volcano4.pdf", width=1.5, height=2)
 plot(DGvolcano)
 dev.off()
-
-
-
-
 
 
 PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)

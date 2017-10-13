@@ -9,16 +9,17 @@ output: md_document
 
 #### From Mikhail V. Matz https://github.com/z0on/GO_MWU
 
-GO_MWU uses continuous measure of significance (such as fold-change or -log(p-value) ) to identify GO categories that are significantly enriches with either up- or down-regulated genes. The advantage - no need to impose arbitrary significance cutoff.
+GO_MWU uses continuous measure of significance (-log(p-value)) to identify GO categories that are significantly enriches with either up- or down-regulated genes. The advantage - no need to impose arbitrary significance cutoff.
 
-If the measure is binary (0 or 1) the script will perform a typical "GO enrichment" analysis based Fisher's exact test: it will show GO categories over-represented among the genes that have 1 as their measure. On the plot, different fonts are used to indicate significance and color indicates enrichment with either up (red) or down (blue) regulated genes. No colors are shown for binary measure analysis.The tree on the plot is hierarchical clustering of GO categories based on shared genes. Categories with no branch length between them are subsets of each other. The fraction next to GO category name indicates the fracton of "good" genes in it; "good" genes being the ones exceeding the arbitrary absValue cutoff (option in results <- gomwuPlot). For Fisher's based test, specify absValue=0.5. This value does not affect statistics and is used for plotting only.
+On the plot, different fonts are used to indicate significance and color indicates enrichment according to treatment group. The tree on the plot is hierarchical clustering of GO categories based on shared genes. Categories with no branch length between them are subsets of each other. The fraction next to GO category name indicates the fracton of "good" genes in it; "good" genes being the ones exceeding the arbitrary absValue cutoff (option in results <- gomwuPlot). For Fisher's based test, specify absValue=0.5. This value does not affect statistics and is used for plotting only.
+
+If the measure is binary (0 or 1) the script will perform a typical "GO enrichment" analysis based Fisher's exact test: it will show GO categories over-represented among the genes that have 1 as their measure. No colors are shown for binary measure analysis.
 
 NOTES: This program drains memory and creates some very large intermediate files, especially for the biological process catagory. First, I run the stats from the command line to make sure its working. Once I've generated the temp files, I comment out then stats portions and recreate the plots by kniting the rmd file. 
 
 ```{r setup}
 library(ape) # For GO analysis
 source("gomwu.functions.R")
-
 library(reshape2) # for splitting column
 
 # set output file for figures 
@@ -45,12 +46,12 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
   absValue=1,
-	level1=0.01, 
-	level2=0.01, 
+	level1=0.05, 
+	level2=0.05, 
 	level3=0.000000000000000000000000001, 
 	txtsize=2,    
 	treeHeight=0.5, 
-  colors=c("grey20","red","grey20","red") 
+  colors=c("#404040","#ca0020","#404040","#ca0020") 
 )
 
 results$rownames <- row.names(results)
@@ -65,9 +66,9 @@ write.csv(results, file = "GO_DGconsistentyoked.csv", row.names = T)
 
 ## CA3 consistent yoked
 
-```{r CA3consistentyoked, warning=F, message=F, echo=F}
+```{r CA3confictconsistent, warning=F, message=F, echo=F}
 # input files
-input="CA3consistentyoked.csv" 
+input="CA3conflictconsistent.csv" 
 goAnnotations="goAnnotations.tab" 
 goDatabase="go.obo" 
 goDivision="MF" # either MF, or BP, or CC
@@ -82,12 +83,12 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
-	level1=0.01, 
-	level2=0.01, 
+	level1=0.05, 
+	level2=0.05, 
 	level3=0.0000000000000000000001, 
 	txtsize=2,    
 	treeHeight=0.5, 
-  colors=c("grey20","red","grey20","red") 
+  colors=c("#ca0020","#f4a582","#ca0020","#f4a582") 
 )
 
 results$rownames <- row.names(results)
@@ -96,7 +97,7 @@ results <- cbind(results, y)
 results$rownames <- NULL
 results$Punch <- "CA3"
 
-write.csv(results, file = "GO_CA3consistentyoked.csv", row.names = TRUE)
+write.csv(results, file = "GO_CA3conflictconsistent.csv.csv", row.names = TRUE)
 ```
 
 
@@ -197,12 +198,12 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
-	level1=0.01, 
-	level2=0.01, 
+	level1=0.05, 
+	level2=0.05, 
 	level3=0.0000000000000000000000001, 
 	txtsize=2,    
 	treeHeight=0.5, 
-  colors=c("red","lightsalmon","red","lightsalmon")
+  colors=c("#ca0020","#f4a582","#ca0020","#f4a582")
 )
 
 results$rownames <- row.names(results)
@@ -218,9 +219,9 @@ write.csv(results, file = "GO_CA3conflictconsistent.csv", row.names = TRUE)
 
 ## CA1 consistent yoked
 
-```{r CA1conflictconsistent, warning=F, message=F, echo=F}
+```{r CA1consistentyoked, warning=F, message=F, echo=F}
 # input files
-input="CA1conflictconsistent.csv" 
+input="CA1consistentyoked.csv" 
 goAnnotations="goAnnotations.tab" 
 goDatabase="go.obo" 
 goDivision="MF" # either MF, or BP, or CC
@@ -236,12 +237,12 @@ goDivision="MF" # either MF, or BP, or CC
 # Data viz
 results <- results <- gomwuPlot(input,goAnnotations,goDivision,
 	absValue=1, 
-	level1=0.0000001, 
-	level2=0.0000001, 
+	level1=0.01, 
+	level2=0.01, 
 	level3=0.0000000000000000000000000000000000001,  
 	txtsize=2,    
 	treeHeight=0.5, 
-  colors=c("red","lightsalmon","red","lightsalmon")
+  colors=c("#404040","#ca0020","#404040","#ca0020")
 )
 
 results$rownames <- row.names(results)
@@ -252,8 +253,6 @@ results$Punch <- "CA1"
 
 write.csv(results, file = "GO_CA1conflictconsistent.csv", row.names = TRUE)
 ```
-
-
 
 
 ## DG yoked vs. yoked

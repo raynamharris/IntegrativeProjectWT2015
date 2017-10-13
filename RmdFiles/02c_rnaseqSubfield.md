@@ -10,7 +10,7 @@
     library(edgeR)  ## for basic read counts status
     library(magrittr) ## to use the weird pipe
     library(genefilter)  ## for PCA fuction
-
+    library(xtable)
     ## load functions 
     source("figureoptions.R")
     source("functions_RNAseq.R")
@@ -157,7 +157,13 @@ DG
 
     ## [1] 2
 
-### DG consistent yoked
+    avo1 <- aov(PC1 ~ APA2, data=pcadata)
+    avo1.table <- xtable::xtable(avo1)
+    print(avo1.table)
+
+% latex table generated in R 3.3.3 by xtable 1.8-2 package % Thu Oct 12
+20:17:52 2017
+### DG contraststs
 
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -228,7 +234,7 @@ DG
             panel.grid.major=element_blank())
     DGvolcano
 
-![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-1.png)
+![](../figures/02c_rnaseqSubfield/DGcontrasts-1.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
     plot(DGvolcano)
@@ -237,6 +243,27 @@ DG
     ## quartz_off_screen 
     ##                 2
 
+    ## go setup
+    table(res$padj<0.1)
+
+    ## 
+    ## FALSE  TRUE 
+    ##  9059   121
+
+    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+    logs$logP=as.numeric(as.character(logs$logP))
+    sign <- rep(1,nrow(logs))
+    sign[res$log2FoldChange<0]=-1  ##change to correct model
+    table(sign)
+
+    ## sign
+    ##   -1    1 
+    ## 8366 8292
+
+    logs$logP <- logs$logP*sign
+    write.csv(logs, file = "./02e_GO_MWU/DGconsistentyoked.csv", row.names = F)
+
+    ## yoked yoked
     res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
@@ -306,7 +333,7 @@ DG
             panel.grid.major=element_blank())
     DGvolcano
 
-![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-2.png)
+![](../figures/02c_rnaseqSubfield/DGcontrasts-2.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano2.pdf", width=1.5, height=2)
     plot(DGvolcano)
@@ -314,6 +341,28 @@ DG
 
     ## quartz_off_screen 
     ##                 2
+
+    ## go setup
+    table(res$padj<0.1)
+
+    ## 
+    ## FALSE  TRUE 
+    ## 16413     2
+
+    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+    logs$logP=as.numeric(as.character(logs$logP))
+    sign <- rep(1,nrow(logs))
+    sign[res$log2FoldChange<0]=-1  ##change to correct model
+    table(sign)
+
+    ## sign
+    ##   -1    1 
+    ## 7252 9406
+
+    logs$logP <- logs$logP*sign
+    write.csv(logs, file = "./02e_GO_MWU/DGyokedyoked.csv", row.names = F)
+
+
 
     res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -384,7 +433,7 @@ DG
             panel.grid.major=element_blank())
     DGvolcano
 
-![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-3.png)
+![](../figures/02c_rnaseqSubfield/DGcontrasts-3.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano3.pdf", width=1.5, height=2)
     plot(DGvolcano)
@@ -393,6 +442,29 @@ DG
     ## quartz_off_screen 
     ##                 2
 
+    ## go setup
+    table(res$padj<0.1)
+
+    ## 
+    ## FALSE  TRUE 
+    ##  8531     9
+
+    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+    logs$logP=as.numeric(as.character(logs$logP))
+    sign <- rep(1,nrow(logs))
+    sign[res$log2FoldChange<0]=-1  ##change to correct model
+    table(sign)
+
+    ## sign
+    ##   -1    1 
+    ## 9334 7324
+
+    logs$logP <- logs$logP*sign
+    write.csv(logs, file = "./02e_GO_MWU/DGconflictyoked.csv", row.names = F)
+
+
+
+    ####
     res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
@@ -462,7 +534,7 @@ DG
             panel.grid.major=element_blank())
     DGvolcano
 
-![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-4.png)
+![](../figures/02c_rnaseqSubfield/DGcontrasts-4.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano4.pdf", width=1.5, height=2)
     plot(DGvolcano)
@@ -470,6 +542,30 @@ DG
 
     ## quartz_off_screen 
     ##                 2
+
+    ## go setup
+    table(res$padj<0.1)
+
+    ## 
+    ## FALSE 
+    ## 16415
+
+    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+    logs$logP=as.numeric(as.character(logs$logP))
+    sign <- rep(1,nrow(logs))
+    sign[res$log2FoldChange<0]=-1  ##change to correct model
+    table(sign)
+
+    ## sign
+    ##   -1    1 
+    ## 8763 7895
+
+    logs$logP <- logs$logP*sign
+    write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
+
+
+
+
 
     plotPC <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
       ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
@@ -488,7 +584,7 @@ DG
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
 
-![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-5.png)
+![](../figures/02c_rnaseqSubfield/DGcontrasts-5.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGpca12.pdf", width=1.75, height=2)
     plot(PCA12)
