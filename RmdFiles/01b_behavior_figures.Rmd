@@ -78,7 +78,6 @@ dev.off()
 ```
 
 
-
 ## Hierarchical clusering of time series behavioral data
 
 Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed (Fig. 1C). 
@@ -149,6 +148,7 @@ ggplot(perc_data, aes(x=PC, y=percent)) +
   geom_bar(stat="identity") + 
   geom_text(aes(label=round(percent, 2)), size=4, vjust=-.5) + 
   xlim(0, 10)
+
 ```
 
 ### Figure 1D1: 35% of behaivor variance (PC1) separates yoked from trained 

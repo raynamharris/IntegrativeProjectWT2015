@@ -185,12 +185,12 @@ TukeyHSD(aov1, which = "APA2") # p<< 0.001 for both control comparisions
     ## 
     ## $APA2
     ##                                        diff        lwr        upr
-    ## consistent-yoked-consistent     -21.0488034 -26.360379 -15.737228
-    ## yoked-conflict-yoked-consistent  -2.8209039  -7.982828   2.341020
-    ## conflict-yoked-consistent       -20.8378476 -25.999771 -15.675924
-    ## yoked-conflict-consistent        18.2278994  13.065976  23.389823
-    ## conflict-consistent               0.2109558  -4.950968   5.372879
-    ## conflict-yoked-conflict         -18.0169437 -23.024745 -13.009142
+    ## consistent-yoked-consistent      21.0488034  15.737228  26.360379
+    ## yoked-conflict-yoked-consistent   2.8209039  -2.341020   7.982828
+    ## conflict-yoked-consistent        20.8378476  15.675924  25.999771
+    ## yoked-conflict-consistent       -18.2278994 -23.389823 -13.065976
+    ## conflict-consistent              -0.2109558  -5.372879   4.950968
+    ## conflict-yoked-conflict          18.0169437  13.009142  23.024745
     ##                                     p adj
     ## consistent-yoked-consistent     0.0000000
     ## yoked-conflict-yoked-consistent 0.4582117
@@ -349,15 +349,15 @@ summary(lm1)
     ## lm(formula = PC1 ~ APA2, data = scoresdf)
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -10.180  -2.252  -0.098   2.518   7.026 
+    ##    Min     1Q Median     3Q    Max 
+    ## -7.026 -2.518  0.098  2.252 10.180 
     ## 
     ## Coefficients:
     ##                    Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)          11.215      1.381   8.119 4.60e-09 ***
-    ## APA2consistent      -21.049      1.953 -10.775 7.82e-12 ***
-    ## APA2yoked-conflict   -2.821      1.898  -1.486    0.148    
-    ## APA2conflict        -20.838      1.898 -10.977 5.00e-12 ***
+    ## (Intercept)         -11.215      1.381  -8.119 4.60e-09 ***
+    ## APA2consistent       21.049      1.953  10.775 7.82e-12 ***
+    ## APA2yoked-conflict    2.821      1.898   1.486    0.148    
+    ## APA2conflict         20.838      1.898  10.977 5.00e-12 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -375,21 +375,21 @@ summary(lm16)
     ## lm(formula = PC1 + PC6 ~ APA2, data = scoresdf)
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -9.6653 -3.1977 -0.1108  4.0493  9.9851 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -11.7560  -3.6630   0.7667   2.6693  10.6940 
     ## 
     ## Coefficients:
     ##                    Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)          12.671      1.825   6.942 1.04e-07 ***
-    ## APA2consistent      -24.834      2.581  -9.621 1.12e-10 ***
-    ## APA2yoked-conflict   -5.905      2.508  -2.354   0.0253 *  
-    ## APA2conflict        -19.887      2.508  -7.928 7.55e-09 ***
+    ## (Intercept)         -9.7600     1.7434  -5.598 4.30e-06 ***
+    ## APA2consistent      17.2636     2.4655   7.002 8.82e-08 ***
+    ## APA2yoked-conflict  -0.2627     2.3960  -0.110    0.913    
+    ## APA2conflict        21.7885     2.3960   9.094 3.99e-10 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 5.162 on 30 degrees of freedom
-    ## Multiple R-squared:  0.8073, Adjusted R-squared:  0.788 
-    ## F-statistic: 41.88 on 3 and 30 DF,  p-value: 7.628e-11
+    ## Residual standard error: 4.931 on 30 degrees of freedom
+    ## Multiple R-squared:  0.8242, Adjusted R-squared:  0.8066 
+    ## F-statistic: 46.87 on 3 and 30 DF,  p-value: 1.945e-11
 
 ``` r
 lm136 <- lm(PC1+PC3+PC6~APA2, data=scoresdf)
@@ -402,20 +402,20 @@ summary(lm136)
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -12.156  -3.382  -1.010   4.361  13.919 
+    ## -10.637  -3.346  -1.297   3.727  14.601 
     ## 
     ## Coefficients:
     ##                    Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)          13.052      2.262   5.769 2.66e-06 ***
-    ## APA2consistent      -27.352      3.199  -8.549 1.54e-09 ***
-    ## APA2yoked-conflict   -7.236      3.109  -2.327   0.0269 *  
-    ## APA2conflict        -17.758      3.109  -5.712 3.13e-06 ***
+    ## (Intercept)          -9.379      1.838  -5.103 1.74e-05 ***
+    ## APA2consistent       14.746      2.599   5.674 3.48e-06 ***
+    ## APA2yoked-conflict   -1.594      2.526  -0.631    0.533    
+    ## APA2conflict         23.917      2.526   9.469 1.60e-10 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 6.399 on 30 degrees of freedom
-    ## Multiple R-squared:  0.7404, Adjusted R-squared:  0.7144 
-    ## F-statistic: 28.52 on 3 and 30 DF,  p-value: 6.395e-09
+    ## Residual standard error: 5.198 on 30 degrees of freedom
+    ## Multiple R-squared:  0.8287, Adjusted R-squared:  0.8115 
+    ## F-statistic: 48.36 on 3 and 30 DF,  p-value: 1.322e-11
 
 getting file name for a time spent heatmap
 ------------------------------------------

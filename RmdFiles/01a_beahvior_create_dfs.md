@@ -97,6 +97,9 @@ rotationdf <- mkrotationdf(behavior) #loadings for specific factors
 
 ``` r
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
+
+
+scoresdf$PC1 <- scoresdf$PC1 * -1
 ```
 
 ``` r

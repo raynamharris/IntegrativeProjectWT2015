@@ -88,12 +88,12 @@ rossetta <- unique(rossetta[ , c(1:2,4) ]) # for joining keop only
 
 ## slim behavior ephy to top 5 pcs and rename the columsn
 behaviorpca <- read.csv("../data/01a_scoresdf.csv", header = T)
-behaviorpca <- behaviorpca[(c(1:5,35:36))]
+behaviorpca <- behaviorpca[(c(1:4,6,35:36))]
 names(behaviorpca)[names(behaviorpca)=="PC1"] <- "Behavior_PC1"
 names(behaviorpca)[names(behaviorpca)=="PC2"] <- "Behavior_PC2"
 names(behaviorpca)[names(behaviorpca)=="PC3"] <- "Behavior_PC3"
 names(behaviorpca)[names(behaviorpca)=="PC4"] <- "Behavior_PC4"
-names(behaviorpca)[names(behaviorpca)=="PC5"] <- "Behavior_PC5"
+names(behaviorpca)[names(behaviorpca)=="PC6"] <- "Behavior_PC6"
 
 behaviorpca <- behaviorpca %>% dplyr::filter(ID != "15148", ID !=  "15140A", ID !=  "15140B", ID !=  "15140C", ID !=  "15140D", ID !=  "15141C", ID !=  "15141D", ID !=  "15142C", ID !=  "15142D", ID !=  "15142A", ID !=  "15142B", ID !=  "15145C", ID !=  "15145C", ID !=  "15145D", ID !=  "15147A", ID !=  "15147B", ID !=  "15148C", ID !=  "15148D")
 
@@ -197,14 +197,14 @@ alldata$wrap <- "All Cognitively Trained"
 
 behavDG <- alldata %>%
   filter(avoidance == "yes") %>%
-  ggplot(aes(as.numeric(DG_PC2), Behavior_PC1, color=avoidance)) + 
-  geom_point(size = 1, alpha = 0.75) +
-  scale_color_manual(values = "red") +
+  ggplot(aes(Behavior_PC1,as.numeric(DG_PC2))) + 
+  geom_point(size = 2, alpha = 0.75, aes(color=APA2)) +
+  scale_color_manual(values = colorvalAPA6) +
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
-    stat_smooth(method = "lm") + 
-    ylab(paste0("Behavior PC1")) +
-    xlab(paste0("DG PC1"))  +
+    stat_smooth(method = "lm", color="red") + 
+    ylab(paste0("DG PC1")) +
+    xlab(paste0("Behavior PC1"))  +
   facet_wrap(~wrap)
 behavDG
 

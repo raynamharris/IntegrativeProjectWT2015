@@ -133,12 +133,12 @@ rossetta <- unique(rossetta[ , c(1:2,4) ]) # for joining keop only
 
 ## slim behavior ephy to top 5 pcs and rename the columsn
 behaviorpca <- read.csv("../data/01a_scoresdf.csv", header = T)
-behaviorpca <- behaviorpca[(c(1:5,35:36))]
+behaviorpca <- behaviorpca[(c(1:4,6,35:36))]
 names(behaviorpca)[names(behaviorpca)=="PC1"] <- "Behavior_PC1"
 names(behaviorpca)[names(behaviorpca)=="PC2"] <- "Behavior_PC2"
 names(behaviorpca)[names(behaviorpca)=="PC3"] <- "Behavior_PC3"
 names(behaviorpca)[names(behaviorpca)=="PC4"] <- "Behavior_PC4"
-names(behaviorpca)[names(behaviorpca)=="PC5"] <- "Behavior_PC5"
+names(behaviorpca)[names(behaviorpca)=="PC6"] <- "Behavior_PC6"
 
 behaviorpca <- behaviorpca %>% dplyr::filter(ID != "15148", ID !=  "15140A", ID !=  "15140B", ID !=  "15140C", ID !=  "15140D", ID !=  "15141C", ID !=  "15141D", ID !=  "15142C", ID !=  "15142D", ID !=  "15142A", ID !=  "15142B", ID !=  "15145C", ID !=  "15145C", ID !=  "15145D", ID !=  "15147A", ID !=  "15147B", ID !=  "15148C", ID !=  "15148D")
 
@@ -217,7 +217,7 @@ names(alldataslim)
     ## [25] "DG_PC6"             "DG_PC7"             "DG_PC8"            
     ## [28] "DG_PC9"             "ID"                 "RNAseqID"          
     ## [31] "Behavior_PC1"       "Behavior_PC2"       "Behavior_PC3"      
-    ## [34] "Behavior_PC4"       "Behavior_PC5"       "APA2"              
+    ## [34] "Behavior_PC4"       "Behavior_PC6"       "APA2"              
     ## [37] "Group"              "Pre_Potentiation"   "Early_Potentiation"
     ## [40] "Late_Potentiation"  "Max_fEPSP"
 
@@ -324,19 +324,19 @@ head(alldata)
     ## 5         NA        NA        NA          NA        NA        NA
     ## 6         NA        NA        NA          NA        NA        NA
     ##       DG_PC8    DG_PC9     ID   RNAseqID Behavior_PC1 Behavior_PC2
-    ## 1 -0.6829819 0.7056409 15143A 143A-CA3-1    -9.165882     3.810737
-    ## 2 -0.6829819 0.7056409 15143A  143A-DG-1    -9.165882     3.810737
-    ## 3  1.6244657 3.8663534 15143B 143B-CA1-1     7.882608     2.740916
-    ## 4  1.6244657 3.8663534 15143B  143B-DG-1     7.882608     2.740916
-    ## 5         NA        NA 15143C 143C-CA1-1   -12.305985    -5.579053
-    ## 6         NA        NA 15143C 143C-CA1-S   -12.305985    -5.579053
-    ##   Behavior_PC3 Behavior_PC4 Behavior_PC5           APA2    Group
-    ## 1    -3.249502   -0.6859113    0.3874279       conflict     <NA>
-    ## 2    -3.249502   -0.6859113    0.3874279       conflict     <NA>
-    ## 3     1.765345   -7.3832419    1.2252157 yoked-conflict  control
-    ## 4     1.765345   -7.3832419    1.2252157 yoked-conflict  control
-    ## 5    -7.434939    0.9827877    0.2754100     consistent conflict
-    ## 6    -7.434939    0.9827877    0.2754100     consistent conflict
+    ## 1 -0.6829819 0.7056409 15143A 143A-CA3-1     9.165882     3.810737
+    ## 2 -0.6829819 0.7056409 15143A  143A-DG-1     9.165882     3.810737
+    ## 3  1.6244657 3.8663534 15143B 143B-CA1-1    -7.882608     2.740916
+    ## 4  1.6244657 3.8663534 15143B  143B-DG-1    -7.882608     2.740916
+    ## 5         NA        NA 15143C 143C-CA1-1    12.305985    -5.579053
+    ## 6         NA        NA 15143C 143C-CA1-S    12.305985    -5.579053
+    ##   Behavior_PC3 Behavior_PC4 Behavior_PC6           APA2    Group
+    ## 1    -3.249502   -0.6859113     6.861722       conflict     <NA>
+    ## 2    -3.249502   -0.6859113     6.861722       conflict     <NA>
+    ## 3     1.765345   -7.3832419    -6.016981 yoked-conflict  control
+    ## 4     1.765345   -7.3832419    -6.016981 yoked-conflict  control
+    ## 5    -7.434939    0.9827877    -3.072166     consistent conflict
+    ## 6    -7.434939    0.9827877    -3.072166     consistent conflict
     ##   Pre_Potentiation Early_Potentiation Late_Potentiation  Max_fEPSP
     ## 1               NA                 NA                NA         NA
     ## 2               NA                 NA                NA         NA
@@ -354,14 +354,14 @@ alldata$wrap <- "All Cognitively Trained"
 
 behavDG <- alldata %>%
   filter(avoidance == "yes") %>%
-  ggplot(aes(as.numeric(DG_PC2), Behavior_PC1, color=avoidance)) + 
-  geom_point(size = 1, alpha = 0.75) +
-  scale_color_manual(values = "red") +
+  ggplot(aes(Behavior_PC1,as.numeric(DG_PC2))) + 
+  geom_point(size = 2, alpha = 0.75, aes(color=APA2)) +
+  scale_color_manual(values = colorvalAPA6) +
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
-    stat_smooth(method = "lm") + 
-    ylab(paste0("Behavior PC1")) +
-    xlab(paste0("DG PC1"))  +
+    stat_smooth(method = "lm", color="red") + 
+    ylab(paste0("DG PC1")) +
+    xlab(paste0("Behavior PC1"))  +
   facet_wrap(~wrap)
 behavDG
 ```
