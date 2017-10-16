@@ -4,11 +4,17 @@ This repo contains the experiment that I like to call "IntegrativeProjectWT2015"
 
 ## Organization
 
+### UNIX workflow
+Initial processing of RNA sequencing was performed on the Stampede cluster at the Texas Advanced Computing Facility. My workflow for this is described in the UNIXworkflow. 
+* **00_rawdata:** Download the data to scratch on Stampede with `00_gsaf_download.sh`. 
+* **01_fastqc:** Evaluate the quality of the reads using the program FastQC.
+* **02_filtrimreads:** Filter low quality reads and trim adapters using the program cutadapt.
+* **03_fastqc:** Evaluate the quality of the processed reads
+* **04_kallisto:** Quantify transcript-level expression using Kallisto
+
+### R workflow
 Three are three main directories for the scripts, figures, and data. The file names were chosen to indicated their order of execution in the workflow and provide a brief description.
-
-### scripts
-The R markdown files used reproducible run the analysis and the output md files are saved here. 
-
+ 
 - Overview
 	- **00_methods:** a description of the behavior, electrophysiology, and RNA-seq methods 
 - Part 1: Behavior	
@@ -28,9 +34,9 @@ The R markdown files used reproducible run the analysis and the output md files 
 	- **99_colorblindr:** a simulation of how some of my figures will look to colorblind readers
 	- **99_forDeep:** a targeted PC analysis of a colleague	
 
-## Results
+### Results
 
-### Quick view of the overall results from 02b_rnaseqALL
+#### Quick view of the overall results from 02b_rnaseqALL
 
 | Contrast | up | down | total |
 | --- | --- | --- | --- |
@@ -42,7 +48,7 @@ yoked conflict	yoked consistent | 30 | 1 | 31
 conflict yoked conflict | 15 | 24 | 39
 conflict consistent | 0 | 0 | 0
 
-### Figure 1: Experimental overview 
+#### Figure 1: Experimental overview 
 
 <img src="./figures/figures-05.png" />
 
@@ -50,25 +56,25 @@ conflict consistent | 0 | 0 | 0
 
 <img src="./figures/figures-01.png" />
 
-### Figure 3: RNA sequencing confirms large differences in DG, CA3, and CA1 hippocampal subfields  
+#### Figure 3: RNA sequencing confirms large differences in DG, CA3, and CA1 hippocampal subfields  
 
 <img src="./figures/figures-02.png" />
 
-### Figure 4: Cognitive training alters gene expression in DG and CA1 but not CA3
+#### Figure 4: Cognitive training alters gene expression in DG and CA1 but not CA3
 
 <img src="./figures/figures2-01.png" />
 
-### Figure 5: Training has little effect on electrophysiology
+#### Figure 5: Training has little effect on electrophysiology
 
 <img src="./figures/figures-04.png" />
 
-### Figure 6: Correlations across levels of biological organization
+#### Figure 6: Correlations across levels of biological organization
 
 <img src="./figures/figures-03.png" />
 
-## Data
+### Data
 
 This directory contains both raw and intermediate data files. 
 - Intermediate data files have alphanumeric prefixes that correspond to the R script that created them. 
-- Raw files have a numeric prefix (aka lack an alphabetical character) that indicates whether it is for behavior, ephys, or RNAseq. 
+- Raw files have a numeric prefix (aka lack an alphabetical character) that indicates whether it is for behavior, ephys, or RNA-seq. 
 - Files with more genearl names were created for NCBI or another public repository
