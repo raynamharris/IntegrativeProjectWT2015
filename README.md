@@ -10,7 +10,7 @@ Three are three main directories for the scripts, figures, and data. The file na
 The R markdown files used reproducible run the analysis and the output md files are saved here. 
 
 - Overview
-	- **00_methods:** a description of the behavior, ephys, and RNA-seq methods 
+	- **00_methods:** a description of the behavior, electrophysiology, and RNA-seq methods 
 - Part 1: Behavior	
 	- **01a_behavior_create_dfs:** wrangling the behavior data
 	- **01b_behavior_figures:** statistical analysis and behavior data visualization
@@ -63,3 +63,9 @@ conflict consistent | 0 | 0 | 0
 
 <img src="./figures/figures-03.png" />
 
+## Data
+
+This directory contains both raw and intermediate data files. 
+- Intermediate data files have alphanumeric prefixes that correspond to the R script that created them. 
+- Raw files have a numeric prefix (aka lack an alphabetical character) that indicates whether it is for behavior, ephys, or RNAseq. 
+- Files with more genearl names were created for NCBI or another public repository
