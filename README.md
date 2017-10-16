@@ -4,7 +4,7 @@ This repo contains the experiment that I like to call "IntegrativeProjectWT2015"
 
 ## Organization
 
-Three are four main directories for the R scripts, UNIX workflow, figures, and data. 
+Three are four main directories for the R scripts, UNIX workflow, figures, and data. All .Rmd and related .md files are in the scripts directory. All .md files descripting the UNIX workflow are in the UNIXworkflow directory. 
 
 The file names were chosen to indicated their order of execution in the workflow and provide a brief description of the contents.
 
@@ -19,11 +19,11 @@ The file names were chosen to indicated their order of execution in the workflow
 - Part 2.1: UNIX for RNA-seq
 	-  UNIX workflow 
 Initial processing of RNA sequencing was performed on the Stampede cluster at the Texas Advanced Computing Facility. My workflow for this is described in the 'UNIXworkflow' directory. 
-	- **../UNIXworkflow/00_rawdata:** Download the data to scratch on Stampede with `00_gsaf_download.sh`. 
-	- **../UNIXworkflow/01_fastqc:** Evaluate the quality of the reads using the program FastQC.
-	- **../UNIXworkflow/02_filtrimreads:** Filter low quality reads and trim adapters using the program cutadapt.
-	- **../UNIXworkflow/03_fastqc:** Evaluate the quality of the processed reads
-	- **../UNIXworkflow/04_kallisto:** Quantify transcript-level expression using Kallisto
+	- **00_rawdata:** Download the data to scratch on Stampede with `00_gsaf_download.sh`. 
+	- **01_fastqc:** Evaluate the quality of the reads using the program FastQC.
+	- **02_filtrimreads:** Filter low quality reads and trim adapters using the program cutadapt.
+	- **.03_fastqc:** Evaluate the quality of the processed reads
+	- **04_kallisto:** Quantify transcript-level expression using Kallisto
 - Part 2.2: R for RNA-seq
 	- **02a_rnaseq_makedfs:** converting the Kallisto transcript counts to gene counts and wrangling the categorical data about the samples
 	- **02b_rnaseqALL:** analyzing all the RNA-seq data together
