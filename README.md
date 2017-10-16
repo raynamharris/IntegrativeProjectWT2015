@@ -4,8 +4,8 @@ This repo contains the experiment that I like to call "IntegrativeProjectWT2015"
 
 ## Organization
 
-### UNIX workflow
-Initial processing of RNA sequencing was performed on the Stampede cluster at the Texas Advanced Computing Facility. My workflow for this is described in the UNIXworkflow. 
+### UNIX workflow 
+Initial processing of RNA sequencing was performed on the Stampede cluster at the Texas Advanced Computing Facility. My workflow for this is described in the 'UNIXworkflow' directory. 
 * **00_rawdata:** Download the data to scratch on Stampede with `00_gsaf_download.sh`. 
 * **01_fastqc:** Evaluate the quality of the reads using the program FastQC.
 * **02_filtrimreads:** Filter low quality reads and trim adapters using the program cutadapt.
@@ -38,21 +38,21 @@ Three are three main directories for the scripts, figures, and data. The file na
 
 #### Quick view of the overall results from 02b_rnaseqALL
 
-| Contrast | up | down | total |
+| contrast | up | down | total |
 | --- | --- | --- | --- |
-CA3	DG | 1625 | 1361 | 2986
-CA1	DG | 968 | 956 | 1924
-CA1	CA3 | 651 | 791 | 1442
-consistent	yoked consistent | 113 | 7 | 120
-yoked conflict	yoked consistent | 30 | 1 | 31
-conflict yoked conflict | 15 | 24 | 39
-conflict consistent | 0 | 0 | 0
+CA3	vs. DG | 1625 | 1361 | 2986
+CA1	vs. DG | 968 | 956 | 1924
+CA1	vs. CA3 | 651 | 791 | 1442
+consistent vs.	yoked consistent | 113 | 7 | 120
+yoked conflict vs. yoked consistent | 30 | 1 | 31
+conflict vs. yoked conflict | 15 | 24 | 39
+conflict vs. consistent | 0 | 0 | 0
 
 #### Figure 1: Experimental overview 
 
 <img src="./figures/figures-05.png" />
 
-### Figure 2: Cognitive training induces avoidance behavior in conflict and consisently trained animals
+### Figure 2: Cognitive training induces avoidance behavior in conflict and consistently trained animals
 
 <img src="./figures/figures-01.png" />
 
@@ -77,4 +77,4 @@ conflict consistent | 0 | 0 | 0
 This directory contains both raw and intermediate data files. 
 - Intermediate data files have alphanumeric prefixes that correspond to the R script that created them. 
 - Raw files have a numeric prefix (aka lack an alphabetical character) that indicates whether it is for behavior, ephys, or RNA-seq. 
-- Files with more genearl names were created for NCBI or another public repository
+- Files with more general names were created for public repositories
