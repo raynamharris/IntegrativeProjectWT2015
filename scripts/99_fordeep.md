@@ -138,53 +138,6 @@ PC4 doesn't really give four clusters by treatment.
 
 ![](../figures/99_fordeep/pca_All-2.png)
 
-Top 10 differentially expressed genes between consistent & yoked consistent treatment
--------------------------------------------------------------------------------------
-
-    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-    summary(res)
-
-    ## 
-    ## out of 17674 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 134, 0.76% 
-    ## LFC < 0 (down)   : 106, 0.6% 
-    ## outliers [1]     : 7, 0.04% 
-    ## low counts [2]   : 9931, 56% 
-    ## (mean count < 13)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-
-    head(res[order(res$padj),], 10)
-
-    ## log2 fold change (MLE): APA2 consistent vs yoked_consistent 
-    ## Wald test p-value: APA2 consistent vs yoked_consistent 
-    ## DataFrame with 10 rows and 6 columns
-    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Sdhaf2  63.30359     -1.8287171 0.3155713 -5.794940 6.834553e-09
-    ## Atxn10 398.82758     -0.8058125 0.1715021 -4.698558 2.620046e-06
-    ## Lhfpl4 105.87094      1.5911682 0.3371010  4.720152 2.356680e-06
-    ## Nek9   108.52559      1.7048299 0.3674715  4.639352 3.495026e-06
-    ## Dcaf12  71.13168      2.3041114 0.5055927  4.557248 5.182819e-06
-    ## Ttc7b  222.88678      1.0984486 0.2440139  4.501583 6.744931e-06
-    ## Thop1  103.69180     -1.1981749 0.2698965 -4.439387 9.021557e-06
-    ## Tgoln1 229.01336      1.2748375 0.2899640  4.396538 1.099912e-05
-    ## Srprb   53.27890      6.4013529 1.4970259  4.276047 1.902412e-05
-    ## Ubiad1  13.78074     -2.7637411 0.6443640 -4.289099 1.793991e-05
-    ##                padj
-    ##           <numeric>
-    ## Sdhaf2 0.0000528721
-    ## Atxn10 0.0067562251
-    ## Lhfpl4 0.0067562251
-    ## Nek9   0.0067593798
-    ## Dcaf12 0.0080188581
-    ## Ttc7b  0.0086964640
-    ## Thop1  0.0099701095
-    ## Tgoln1 0.0106361527
-    ## Srprb  0.0147170562
-    ## Ubiad1 0.0147170562
-
 DESeq analysis of just the DG tissue samples
 --------------------------------------------
 

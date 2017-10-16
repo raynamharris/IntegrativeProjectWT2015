@@ -88,13 +88,6 @@ ggplot(pcadata, aes(PC4, PC2, color=APA2, shape=Punch)) +
     scale_shape_manual(values=c(15,16,17))
 ```
 
-## Top 10 differentially expressed genes between consistent & yoked consistent treatment
-
-```{r res}
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
-head(res[order(res$padj),], 10)
-```
 
 ## DESeq analysis of just the DG tissue samples
 
