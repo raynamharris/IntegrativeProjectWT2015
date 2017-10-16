@@ -40,7 +40,10 @@ Initial processing of RNA sequencing was performed on the Stampede cluster at th
 
 ### Results
 
-Quick view of the overall numbers of differentially expressed genes by two-way contrasts from the 02b_rnaseqALL.Rmd analysis
+Quick view of the overall numbers and patterns of differentially expressed beahvioras and genes in response to beahvioral manipulatlions.
+
+#### Table 2: Sample sizes for tissue specific analysis of the resopnse to behavior manipulations in DG, CA3, and CA1 hippocampal subfields  
+
 
 | contrast | up | down | total |
 | --- | --- | --- | --- |
@@ -62,9 +65,27 @@ conflict vs. consistent | 0 | 0 | 0
 
 <img src="./figures/figures-01.png" />
 
+#### Table 2: Sample sizes for tissue specific analysis of the resopnse to behavior manipulations in DG, CA3, and CA1 hippocampal subfields  
+
+| Training Group | DG | CA3 | CA1 |
+|----|:----:|:-----:|:-----:|
+| consistent yoked | 4 | 3 | 2 |
+| consistent trained | 3 | 2 | 4 |
+| conflict yoked | 4 | 3 | 5 |
+| conflict trained | 5| 5 | 4 |
+
+
 #### Figure 3: RNA sequencing confirms large differences in DG, CA3, and CA1 hippocampal subfields  
 
-<img src="./figures/figures-02.png" />
+<img src="../figures/figures-02.png" />
+
+
+| Two-way contrasts between groups | DG | CA3 | CA1 |
+|----|:----:|:-----:|:-----:|
+| consistent vs. yoked-consisten | 95 | 0 | 196 |
+| conflict vs. consistent | 0 | 1 | 0 |
+| yoked-conflict vs. yoked-consistent | 2 | 0 | 201 |
+| conflict vs. yoked-conflict | 5| 0 | 2 |
 
 #### Figure 4: Cognitive training alters gene expression in DG and CA1 but not CA3
 
