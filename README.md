@@ -42,8 +42,26 @@ Initial processing of RNA sequencing was performed on the Stampede cluster at th
 
 Quick view of the overall numbers and patterns of differentially expressed beahvioras and genes in response to beahvioral manipulatlions.
 
-#### Table 2: Sample sizes for tissue specific analysis of the resopnse to behavior manipulations in DG, CA3, and CA1 hippocampal subfields  
 
+#### Figure 1: Experimental overview 
+
+![](./figures-05.png)
+
+#### Figure 2: Cognitive training induces avoidance behavior in conflict and consistently trained animals. 
+See **01b_behavior_figures:Rmd** for the corresponding analysis
+
+
+<img src="./figures/figures-01.png" />
+
+
+#### Figure 3: RNA sequencing confirms large differences in DG, CA3, and CA1 hippocampal subfields  
+See **02b_rnaseqALL:Rmd** for the corresponding analysis
+
+<img src="../figures/figures-02.png" />
+
+
+#### Table 1: Numbers of differentially expressed genes by two-way contrast when all data is included in the normalization and quantificaiton
+See **02b_rnaseqALL:Rmd** for the corresponding analysis
 
 | contrast | up | down | total |
 | --- | --- | --- | --- |
@@ -55,17 +73,9 @@ yoked conflict vs. yoked consistent | 30 | 1 | 31
 conflict vs. yoked conflict | 15 | 24 | 39
 conflict vs. consistent | 0 | 0 | 0
 
-#### Figure 1: Experimental overview 
+#### Table 2: Sample sizes for tissue specific analysis of the resopnse to behavior manipulations in DG, CA3, and CA1 hippocampal subfields 
+See **02c_rnaseqSubfield.Rmd** for the corresponding analysis
 
-![](./figures-05.png)
-
-<img src="./figures/figures-05.png" />
-
-#### Figure 2: Cognitive training induces avoidance behavior in conflict and consistently trained animals
-
-<img src="./figures/figures-01.png" />
-
-#### Table 2: Sample sizes for tissue specific analysis of the resopnse to behavior manipulations in DG, CA3, and CA1 hippocampal subfields  
 
 | Training Group | DG | CA3 | CA1 |
 |----|:----:|:-----:|:-----:|
@@ -75,9 +85,14 @@ conflict vs. consistent | 0 | 0 | 0
 | conflict trained | 5| 5 | 4 |
 
 
-#### Figure 3: RNA sequencing confirms large differences in DG, CA3, and CA1 hippocampal subfields  
+#### Figure 4: Cognitive training alters gene expression in DG and CA1 but not CA3
+See **02c_rnaseqSubfield.Rmd** for the corresponding analysis
 
-<img src="../figures/figures-02.png" />
+<img src="./figures/figures2-01.png" />
+
+
+#### Table 1: Numbers of differentially expressed genes by two-way contrast the data is subset by hippocampal tissue before normalization and quantification 
+See **02c_rnaseqSubfield.Rmd** for the corresponding analysis
 
 
 | Two-way contrasts between groups | DG | CA3 | CA1 |
@@ -87,15 +102,15 @@ conflict vs. consistent | 0 | 0 | 0
 | yoked-conflict vs. yoked-consistent | 2 | 0 | 201 |
 | conflict vs. yoked-conflict | 5| 0 | 2 |
 
-#### Figure 4: Cognitive training alters gene expression in DG and CA1 but not CA3
 
-<img src="./figures/figures2-01.png" />
 
 #### Figure 5: Training has little effect on electrophysiology
+See **003_ephys.Rmd** for the corresponding analysis
 
 <img src="./figures/figures-04.png" />
 
 #### Figure 6: Correlations across levels of biological organization
+See **04_integration.Rmd** for the corresponding analysis
 
 <img src="./figures/figures-03.png" />
 
