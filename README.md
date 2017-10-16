@@ -45,7 +45,7 @@ Quick view of the overall numbers and patterns of differentially expressed beahv
 
 #### Figure 1: Experimental overview 
 
-![](./figures-05.png)
+![](./figures/figures-05.png)
 
 #### Figure 2: Cognitive training induces avoidance behavior in conflict and consistently trained animals. See **01b_behavior_figures:Rmd** for the corresponding analysis
 
@@ -56,7 +56,7 @@ Quick view of the overall numbers and patterns of differentially expressed beahv
 #### Figure 3: RNA sequencing confirms large differences in DG, CA3, and CA1 hippocampal subfields  
 See **02b_rnaseqALL:Rmd** for the corresponding analysis
 
-<img src="../figures/figures-02.png" />
+<img src="./figures/figures-02.png" />
 
 
 #### Table 1: Numbers of differentially expressed genes by two-way contrast when all data is included in the normalization and quantificaiton. See **02b_rnaseqALL:Rmd** for the corresponding analysis
