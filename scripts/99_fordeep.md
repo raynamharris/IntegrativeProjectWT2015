@@ -50,6 +50,7 @@ Running DESeq2 will all the data
 
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
+    resALL <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1) # analysis of differentially expressed genes for one contrast
 
 Principle component analysis on all the data.
 ---------------------------------------------
@@ -226,6 +227,7 @@ Here I focus on the DG samples.
 
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
+    resDG <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1) # analysis of differentially expressed genes by contrast
 
 ### PC anlayiss of only DG samples
 
@@ -284,15 +286,70 @@ only data.
 
 ![](../figures/99_fordeep/PCA_DG-1.png)
 
-Top 10 DEGs in only DG
-----------------------
+Comparsion of Differentially Expressed genes from the full analysis and the DG-only analysis
+--------------------------------------------------------------------------------------------
 
-This top 10 gene list for how the DG tissue responds to treatment is
-very different from the top 10 list above that showed genes in all three
-tissues that responded significantly to the behavioral treatment.
+### All data
 
-    res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-    summary(res)
+This shows the overall number of statistically significant genes and
+lists the top 10 deferentially genes for the yoked vs. yoked-consistent
+comparison when we included data from all three tissue samples. About
+200 genes are deferentially expression, but they aren't *that*
+significant.
+
+    summary(resALL)
+
+    ## 
+    ## out of 17674 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)     : 134, 0.76% 
+    ## LFC < 0 (down)   : 106, 0.6% 
+    ## outliers [1]     : 7, 0.04% 
+    ## low counts [2]   : 9931, 56% 
+    ## (mean count < 13)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+
+    head(resALL[order(resALL$padj),], 10)
+
+    ## log2 fold change (MLE): APA2 consistent vs yoked_consistent 
+    ## Wald test p-value: APA2 consistent vs yoked_consistent 
+    ## DataFrame with 10 rows and 6 columns
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Sdhaf2  63.30359     -1.8287171 0.3155713 -5.794940 6.834553e-09
+    ## Atxn10 398.82758     -0.8058125 0.1715021 -4.698558 2.620046e-06
+    ## Lhfpl4 105.87094      1.5911682 0.3371010  4.720152 2.356680e-06
+    ## Nek9   108.52559      1.7048299 0.3674715  4.639352 3.495026e-06
+    ## Dcaf12  71.13168      2.3041114 0.5055927  4.557248 5.182819e-06
+    ## Ttc7b  222.88678      1.0984486 0.2440139  4.501583 6.744931e-06
+    ## Thop1  103.69180     -1.1981749 0.2698965 -4.439387 9.021557e-06
+    ## Tgoln1 229.01336      1.2748375 0.2899640  4.396538 1.099912e-05
+    ## Srprb   53.27890      6.4013529 1.4970259  4.276047 1.902412e-05
+    ## Ubiad1  13.78074     -2.7637411 0.6443640 -4.289099 1.793991e-05
+    ##                padj
+    ##           <numeric>
+    ## Sdhaf2 0.0000528721
+    ## Atxn10 0.0067562251
+    ## Lhfpl4 0.0067562251
+    ## Nek9   0.0067593798
+    ## Dcaf12 0.0080188581
+    ## Ttc7b  0.0086964640
+    ## Thop1  0.0099701095
+    ## Tgoln1 0.0106361527
+    ## Srprb  0.0147170562
+    ## Ubiad1 0.0147170562
+
+### DG only data
+
+This shows the overall number of statistically significant genes and
+lists the top 10 differential genes for the yoked vs. yoked-consistent
+comparison when I include only the DG data. About a hundred are
+significantly different, but these p-values are much lower than in the
+previous analysis, and they tell us something biologically relevant
+about neurons in the DG subfield of the hippocampus.
+
+    summary(resDG)
 
     ## 
     ## out of 16658 with nonzero total read count
@@ -305,7 +362,7 @@ tissues that responded significantly to the behavioral treatment.
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
-    head(res[order(res$padj),], 10)
+    head(resDG[order(resDG$padj),], 10)
 
     ## log2 fold change (MAP): APA2 consistent vs yoked_consistent 
     ## Wald test p-value: APA2 consistent vs yoked_consistent 
