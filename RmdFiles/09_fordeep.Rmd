@@ -8,6 +8,7 @@ output: md_document
 ## Load libraries, custom funcitons, and custom color schemes
 ```{r setup, message=F}
 library(ggplot2) ## for awesome plots!
+library(cowplot) ## for some easy to use ggplot themes
 library(dplyr) ## for filtering and selecting rows
 library(DESeq2) ## for gene expression analysis
 library(genefilter)  ## for PCA fuction
@@ -73,6 +74,7 @@ ggplot(pcadata, aes(PC1, PC2, color=APA2, shape=Punch)) +
     xlab(paste0("PC1: ", percentVar[1],"% variance")) +
     ylab(paste0("PC2: ", percentVar[2],"% variance")) +
     scale_colour_manual(values=colorvalAPA00) + 
+    theme_cowplot(font_size = 12, line_size = 0.25)  +
     scale_shape_manual(values=c(15,16,17))
 
 ggplot(pcadata, aes(PC4, PC2, color=APA2, shape=Punch)) +
@@ -80,6 +82,7 @@ ggplot(pcadata, aes(PC4, PC2, color=APA2, shape=Punch)) +
     xlab(paste0("PC4: ", percentVar[4],"% variance")) +
     ylab(paste0("PC2: ", percentVar[2],"% variance")) +
     scale_colour_manual(values=colorvalAPA00) + 
+    theme_cowplot(font_size = 12, line_size = 0.25)  +
     scale_shape_manual(values=c(15,16,17))
 ```
 
@@ -139,6 +142,7 @@ ggplot(pcadata, aes(PC1, PC2, color=APA2, shape=Punch)) +
     xlab(paste0("PC1: ", percentVar[1],"% variance")) +
     ylab(paste0("PC2: ", percentVar[2],"% variance")) +
     scale_colour_manual(values=colorvalAPA00) + 
+    theme_cowplot(font_size = 12, line_size = 0.25)  +
     scale_shape_manual(values=c(15))
 ```
 

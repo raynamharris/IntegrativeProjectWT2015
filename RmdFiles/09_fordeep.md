@@ -2,6 +2,7 @@ Load libraries, custom funcitons, and custom color schemes
 ----------------------------------------------------------
 
     library(ggplot2) ## for awesome plots!
+    library(cowplot) ## for some easy to use ggplot themes
     library(dplyr) ## for filtering and selecting rows
     library(DESeq2) ## for gene expression analysis
     library(genefilter)  ## for PCA fuction
@@ -119,6 +120,7 @@ PC4 doesn't really give four clusters by treatment.
         xlab(paste0("PC1: ", percentVar[1],"% variance")) +
         ylab(paste0("PC2: ", percentVar[2],"% variance")) +
         scale_colour_manual(values=colorvalAPA00) + 
+        theme_cowplot(font_size = 12, line_size = 0.25)  +
         scale_shape_manual(values=c(15,16,17))
 
 ![](../figures/09_fordeep/pca_All-1.png)
@@ -128,6 +130,7 @@ PC4 doesn't really give four clusters by treatment.
         xlab(paste0("PC4: ", percentVar[4],"% variance")) +
         ylab(paste0("PC2: ", percentVar[2],"% variance")) +
         scale_colour_manual(values=colorvalAPA00) + 
+        theme_cowplot(font_size = 12, line_size = 0.25)  +
         scale_shape_manual(values=c(15,16,17))
 
 ![](../figures/09_fordeep/pca_All-2.png)
@@ -274,6 +277,7 @@ only data.
         xlab(paste0("PC1: ", percentVar[1],"% variance")) +
         ylab(paste0("PC2: ", percentVar[2],"% variance")) +
         scale_colour_manual(values=colorvalAPA00) + 
+        theme_cowplot(font_size = 12, line_size = 0.25)  +
         scale_shape_manual(values=c(15))
 
 ![](../figures/09_fordeep/PCA_DG-1.png)
