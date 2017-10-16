@@ -54,6 +54,8 @@ conflict vs. consistent | 0 | 0 | 0
 
 #### Figure 1: Experimental overview 
 
+![](https://github.com/raynamharris/IntegrativeProjectWT2015/figures-05.png)
+
 <img src="../figures/figures-05.png" />
 
 #### Figure 2: Cognitive training induces avoidance behavior in conflict and consistently trained animals
