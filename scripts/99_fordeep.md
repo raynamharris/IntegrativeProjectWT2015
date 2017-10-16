@@ -1,5 +1,5 @@
-Load libraries, custom funcitons, and custom color schemes
-----------------------------------------------------------
+Load libraries, functions, and color pallettes
+----------------------------------------------
 
     library(ggplot2) ## for awesome plots!
     library(cowplot) ## for some easy to use ggplot themes
@@ -12,13 +12,13 @@ Load libraries, custom funcitons, and custom color schemes
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/09_fordeep/')
+    knitr::opts_chunk$set(fig.path = '../figures/99_fordeep/')
 
 Exerperimental Design
 ---------------------
 
-APA2: the column name for the four behaivoral treament Punch: the column
-name for the tissue samples from three hippocampal subfields
+APA2: the column name for the four behavioral treatments  
+Punch: the column name for the three tissue types from the hippocampus
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
@@ -54,9 +54,11 @@ Running DESeq2 will all the data
 Principle component analysis on all the data.
 ---------------------------------------------
 
-PC1 and PC2 are signficant for tissue (aka "Punch") and explains 50% and
-21%, respectively, of the variation. PC4 is significant for behavioral
-treatment (aka "APA2") and explains 3% of the variation
+PC1 and PC2 are significant for tissue (aka "Punch") and explains 50%
+and 21%, respectively, of the variation.
+
+PC4 is significant for behavioral treatment (aka "APA2") and explains 3%
+of the variation.
 
 The scatter plot of PC1 and PC2 nicely clusters the three tissues, but
 PC4 doesn't really give four clusters by treatment.
@@ -123,7 +125,7 @@ PC4 doesn't really give four clusters by treatment.
         theme_cowplot(font_size = 12, line_size = 0.25)  +
         scale_shape_manual(values=c(15,16,17))
 
-![](../figures/09_fordeep/pca_All-1.png)
+![](../figures/99_fordeep/pca_All-1.png)
 
     ggplot(pcadata, aes(PC4, PC2, color=APA2, shape=Punch)) +
         geom_point(size=3) +
@@ -133,7 +135,7 @@ PC4 doesn't really give four clusters by treatment.
         theme_cowplot(font_size = 12, line_size = 0.25)  +
         scale_shape_manual(values=c(15,16,17))
 
-![](../figures/09_fordeep/pca_All-2.png)
+![](../figures/99_fordeep/pca_All-2.png)
 
 Top 10 differentially expressed genes between consistent & yoked consistent treatment
 -------------------------------------------------------------------------------------
@@ -186,7 +188,7 @@ DESeq analysis of just the DG tissue samples
 --------------------------------------------
 
 To look for a larger percent of variation according to behavioral
-treatment, I can subset the data to remove the tissue-specic variance.
+treatment, I can subset the data to remove the tissue-specific variance.
 Here I focus on the DG samples.
 
     #subset to only view DG data
@@ -227,7 +229,7 @@ Here I focus on the DG samples.
 
 ### PC anlayiss of only DG samples
 
-Now, PC1 is marginally significant and PC2 is significant for beahvioral
+Now, PC1 is marginally significant and PC2 is significant for behavioral
 treatment ("APA2") and explain 32% and 19% of the variation in the DG
 only data.
 
@@ -280,14 +282,14 @@ only data.
         theme_cowplot(font_size = 12, line_size = 0.25)  +
         scale_shape_manual(values=c(15))
 
-![](../figures/09_fordeep/PCA_DG-1.png)
+![](../figures/99_fordeep/PCA_DG-1.png)
 
 Top 10 DEGs in only DG
 ----------------------
 
 This top 10 gene list for how the DG tissue responds to treatment is
 very different from the top 10 list above that showed genes in all three
-tissues that responded significantly to the beahvioral treatment.
+tissues that responded significantly to the behavioral treatment.
 
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
