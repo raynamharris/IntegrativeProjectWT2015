@@ -8,7 +8,6 @@ output: md_document
 ## Load libraries, custom funcitons, and custom color schemes
 ```{r setup, message=F}
 library(ggplot2) ## for awesome plots!
-library(cowplot) ## for some easy to use ggplot themes
 library(dplyr) ## for filtering and selecting rows
 library(DESeq2) ## for gene expression analysis
 library(genefilter)  ## for PCA fuction
@@ -38,7 +37,6 @@ colData %>% select(APA2,Punch)  %>%  summary()
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ Punch + APA2 + Punch*APA2)
-dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes after normalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
@@ -46,7 +44,7 @@ rld <- rlog(dds, blind=FALSE) ## log transformed data
 ```
 
 ## Principle component analysis on all the data. 
-PC1 and PC2 are signficant for tissue (aka "Punch") and explains 71% of the variation.
+PC1 and PC2 are signficant for tissue (aka "Punch") and explains 50% and 21%, respectively, of the variation.
 PC4 is significant for behavioral treatment (aka "APA2") and explains 3% of the variation
 
 The scatter plot of PC1 and PC2 nicely clusters the three tissues, but PC4 doesn't really give four clusters by treatment. 
@@ -75,7 +73,6 @@ ggplot(pcadata, aes(PC1, PC2, color=APA2, shape=Punch)) +
     xlab(paste0("PC1: ", percentVar[1],"% variance")) +
     ylab(paste0("PC2: ", percentVar[2],"% variance")) +
     scale_colour_manual(values=colorvalAPA00) + 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
     scale_shape_manual(values=c(15,16,17))
 
 ggplot(pcadata, aes(PC4, PC2, color=APA2, shape=Punch)) +
@@ -83,7 +80,6 @@ ggplot(pcadata, aes(PC4, PC2, color=APA2, shape=Punch)) +
     xlab(paste0("PC4: ", percentVar[4],"% variance")) +
     ylab(paste0("PC2: ", percentVar[2],"% variance")) +
     scale_colour_manual(values=colorvalAPA00) + 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
     scale_shape_manual(values=c(15,16,17))
 ```
 
@@ -115,7 +111,6 @@ colData %>% select(APA2,Punch)  %>%  summary()
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ APA2)
-dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
@@ -144,7 +139,6 @@ ggplot(pcadata, aes(PC1, PC2, color=APA2, shape=Punch)) +
     xlab(paste0("PC1: ", percentVar[1],"% variance")) +
     ylab(paste0("PC2: ", percentVar[2],"% variance")) +
     scale_colour_manual(values=colorvalAPA00) + 
-    theme_cowplot(font_size = 8, line_size = 0.25) +
     scale_shape_manual(values=c(15))
 ```
 

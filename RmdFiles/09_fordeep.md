@@ -2,7 +2,6 @@ Load libraries, custom funcitons, and custom color schemes
 ----------------------------------------------------------
 
     library(ggplot2) ## for awesome plots!
-    library(cowplot) ## for some easy to use ggplot themes
     library(dplyr) ## for filtering and selecting rows
     library(DESeq2) ## for gene expression analysis
     library(genefilter)  ## for PCA fuction
@@ -36,17 +35,6 @@ Running DESeq2 will all the data
     dds <- DESeqDataSetFromMatrix(countData = countData,
                                   colData = colData,
                                   design = ~ Punch + APA2 + Punch*APA2)
-    dds # view the DESeq object - note numnber of genes
-
-    ## class: DESeqDataSet 
-    ## dim: 22485 44 
-    ## metadata(1): version
-    ## assays(1): counts
-    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
-    ## rowData names(0):
-    ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
-    ## colData names(8): RNAseqID Mouse ... APA APA2
-
     dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
     dds # view number of genes after normalization and the number of samples
 
@@ -65,9 +53,9 @@ Running DESeq2 will all the data
 Principle component analysis on all the data.
 ---------------------------------------------
 
-PC1 and PC2 are signficant for tissue (aka "Punch") and explains 71% of
-the variation. PC4 is significant for behavioral treatment (aka "APA2")
-and explains 3% of the variation
+PC1 and PC2 are signficant for tissue (aka "Punch") and explains 50% and
+21%, respectively, of the variation. PC4 is significant for behavioral
+treatment (aka "APA2") and explains 3% of the variation
 
 The scatter plot of PC1 and PC2 nicely clusters the three tissues, but
 PC4 doesn't really give four clusters by treatment.
@@ -131,7 +119,6 @@ PC4 doesn't really give four clusters by treatment.
         xlab(paste0("PC1: ", percentVar[1],"% variance")) +
         ylab(paste0("PC2: ", percentVar[2],"% variance")) +
         scale_colour_manual(values=colorvalAPA00) + 
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
         scale_shape_manual(values=c(15,16,17))
 
 ![](../figures/09_fordeep/pca_All-1.png)
@@ -141,7 +128,6 @@ PC4 doesn't really give four clusters by treatment.
         xlab(paste0("PC4: ", percentVar[4],"% variance")) +
         ylab(paste0("PC2: ", percentVar[2],"% variance")) +
         scale_colour_manual(values=colorvalAPA00) + 
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
         scale_shape_manual(values=c(15,16,17))
 
 ![](../figures/09_fordeep/pca_All-2.png)
@@ -221,17 +207,6 @@ Here I focus on the DG samples.
     dds <- DESeqDataSetFromMatrix(countData = countData,
                                   colData = colData,
                                   design = ~ APA2)
-    dds # view the DESeq object - note numnber of genes
-
-    ## class: DESeqDataSet 
-    ## dim: 22485 16 
-    ## metadata(1): version
-    ## assays(1): counts
-    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
-    ## rowData names(0):
-    ## colnames(16): 143A-DG-1 143B-DG-1 ... 148A-DG-3 148B-DG-4
-    ## colData names(8): RNAseqID Mouse ... APA APA2
-
     dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
     dds # view number of genes afternormalization and the number of samples
 
@@ -299,7 +274,6 @@ only data.
         xlab(paste0("PC1: ", percentVar[1],"% variance")) +
         ylab(paste0("PC2: ", percentVar[2],"% variance")) +
         scale_colour_manual(values=colorvalAPA00) + 
-        theme_cowplot(font_size = 8, line_size = 0.25) +
         scale_shape_manual(values=c(15))
 
 ![](../figures/09_fordeep/PCA_DG-1.png)
