@@ -47,10 +47,7 @@ countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, 
 colData %>% select(APA2,Punch)  %>%  summary()
 head(colData)
 
-summarytable <- colData
-summarytable$PunchAPA <- as.factor(paste(summarytable$Punch, summarytable$APA2, sep="_"))
-summarytabledf <- summarytable %>% select(PunchAPA)  %>%  table()
-summarytabledf
+
 
 totalCounts=colSums(countData)
 ### on average 1 million gene counts per sample 
@@ -70,15 +67,12 @@ dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
 ```
 
-```{r results='asis'}
-print(xtable::xtable(summarytabledf), comment=F)
-```
+
 ## this is for CA1 DG
 
 ```{r}
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T)
 summary(res)
-summaryres <- summary(res)
 head((res[order(res$padj),]), 10)
 head((res[order(res$log2FoldChange),]), 10)
 ```
@@ -108,7 +102,6 @@ res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), indep
 summary(res)
 head((res[order(res$padj),]), 10)
 head((res[order(res$log2FoldChange),]), 10)
-
 ```
 
 ## this is for consistent yoked-conflict yoked-consistent DG
@@ -116,8 +109,15 @@ head((res[order(res$log2FoldChange),]), 10)
 ```{r}
 res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
+table(res$padj<0.05)
 head((res[order(res$padj),]), 10)
 head((res[order(res$log2FoldChange),]), 10)
+
+## Order by adjusted p-value
+res <- res[order(res$padj),]
+resdata <- as.data.frame(res)
+head(resdata,30)
+
 ```
 
 
@@ -127,7 +127,9 @@ head((res[order(res$log2FoldChange),]), 10)
 res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
 summary(res)
 head((res[order(res$padj),]), 10)
-head((res[order(res$log2FoldChange),]), 10)
+#head((res[order(res$log2FoldChange),]), 10)
+table(res$padj<0.05)
+table(res$padj<0.1)
 ```
 
 ## this is for consistent conflict yoked-conflict
@@ -137,6 +139,9 @@ res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFi
 summary(res)
 head((res[order(res$padj),]), 10)
 head((res[order(res$log2FoldChange),]), 10)
+table(res$padj<0.05)
+table(res$padj<0.1)
+
 ```
 
 ```{r heatmap}
@@ -239,11 +244,11 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
     scale_colour_manual(name=colorname, values=c(colorvalues))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") +
+    #theme(legend.position="none") +
     scale_shape_manual(values=c(16, 1, 15,2), aes(color=APA2))
 }
 
-PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = " ", colorvalues = colorvalPunch)
+PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = "Punch", colorvalues = colorvalPunch)
 PCA12
 
 pdf(file="../figures/02b_RNAseqAll/PCA12.pdf", width=1.75, height=2.25)
@@ -258,7 +263,7 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
     scale_colour_manual(name=colorname, values=c(colorvalues))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") +
+    #theme(legend.position="none") +
     scale_shape_manual(values=c(15, 16,17)) 
 }
 
@@ -268,6 +273,7 @@ PCA62
 pdf(file="../figures/02b_RNAseqAll/PCA62.pdf", width=3.25, height=2.5)
 plot(PCA62)
 dev.off()
+
 
 ```
 

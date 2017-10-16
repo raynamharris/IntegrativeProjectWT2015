@@ -1,0 +1,159 @@
+---
+title: "ForDeep"
+author: "Rayna M Harris"
+date: "10/15/2017"
+output: md_document
+---
+
+## Load libraries, custom funcitons, and custom color schemes
+```{r setup, message=F}
+library(ggplot2) ## for awesome plots!
+library(cowplot) ## for some easy to use ggplot themes
+library(dplyr) ## for filtering and selecting rows
+library(DESeq2) ## for gene expression analysis
+library(genefilter)  ## for PCA fuction
+
+## load functions 
+source("figureoptions.R")
+source("functions_RNAseq.R")
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/09_fordeep/')
+```
+
+## Exerperimental Design
+
+APA2: the column name for the four behaivoral treament
+Punch: the column name for the tissue samples from three hippocampal subfields
+
+```{r data, message=F, warning=F}
+colData <- read.csv("../data/02a_colData.csv", header = T)
+countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+colData %>% select(APA2,Punch)  %>%  summary()
+```
+
+## Running DESeq2 will all the data
+
+```{r deseq2, message=F, warning=F}
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ Punch + APA2 + Punch*APA2)
+dds # view the DESeq object - note numnber of genes
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes after normalization and the number of samples
+dds <- DESeq(dds) # Differential expression analysis
+rld <- rlog(dds, blind=FALSE) ## log transformed data
+```
+
+## Principle component analysis on all the data. 
+PC1 and PC2 are signficant for tissue (aka "Punch") and explains 71% of the variation.
+PC4 is significant for behavioral treatment (aka "APA2") and explains 3% of the variation
+
+The scatter plot of PC1 and PC2 nicely clusters the three tissues, but PC4 doesn't really give four clusters by treatment. 
+
+```{r pca_All, message=F, warning=F}
+# create the dataframe using my function pcadataframe 
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
+
+# extract the variance associated with each PC
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+percentVar
+
+# anova for each PCA
+summary(aov(PC1 ~ Punch, data=pcadata)) 
+summary(aov(PC2 ~ Punch, data=pcadata)) 
+summary(aov(PC4 ~ APA2, data=pcadata)) 
+TukeyHSD((aov(PC4 ~ APA2, data=pcadata)) , which = "APA2") 
+
+
+# set factors
+pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
+pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent","consistent",  "yoked_conflict","conflict"))
+
+ggplot(pcadata, aes(PC1, PC2, color=APA2, shape=Punch)) +
+    geom_point(size=3) +
+    xlab(paste0("PC1: ", percentVar[1],"% variance")) +
+    ylab(paste0("PC2: ", percentVar[2],"% variance")) +
+    scale_colour_manual(values=colorvalAPA00) + 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    scale_shape_manual(values=c(15,16,17))
+
+ggplot(pcadata, aes(PC4, PC2, color=APA2, shape=Punch)) +
+    geom_point(size=3) +
+    xlab(paste0("PC4: ", percentVar[4],"% variance")) +
+    ylab(paste0("PC2: ", percentVar[2],"% variance")) +
+    scale_colour_manual(values=colorvalAPA00) + 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    scale_shape_manual(values=c(15,16,17))
+```
+
+## Top 10 differentially expressed genes between consistent & yoked consistent treatment
+
+```{r res}
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+summary(res)
+head(res[order(res$padj),], 10)
+```
+
+## DESeq analysis of just the DG tissue samples
+
+To look for a larger percent of variation according to behavioral treatment, I can subset the data to remove the tissue-specic variance. Here I focus on the DG samples. 
+
+```{r DGonly, message=F, warning=F}
+#subset to only view DG data
+colData <- colData %>% 
+  filter(Punch %in% c("DG"))  %>% 
+  droplevels()
+savecols <- as.character(colData$RNAseqID) 
+savecols <- as.vector(savecols) 
+countData <- countData %>% dplyr::select(one_of(savecols)) 
+
+# show number of samples for each treatment
+colData %>% select(APA2,Punch)  %>%  summary()
+
+## create DESeq object using the factors Punch and APA
+dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ APA2)
+dds # view the DESeq object - note numnber of genes
+dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds # view number of genes afternormalization and the number of samples
+dds <- DESeq(dds) # Differential expression analysis
+rld <- rlog(dds, blind=FALSE) ## log transformed data
+```
+
+### PC anlayiss of only DG samples
+
+Now, PC1 is marginally significant and PC2 is significant for beahvioral treatment ("APA2") and explain 32% and 19% of the variation in the DG only data.
+
+```{r PCA_DG}
+# create the dataframe using my function pcadataframe
+pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
+percentVar <- round(100 * attr(pcadata, "percentVar"))
+percentVar
+
+summary(aov(PC1 ~ APA2, data=pcadata)) 
+summary(aov(PC2 ~ APA2, data=pcadata)) 
+TukeyHSD((aov(PC2 ~ APA2, data=pcadata)) , which = "APA2") 
+
+
+pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent","consistent",  "yoked_conflict","conflict"))
+
+ggplot(pcadata, aes(PC1, PC2, color=APA2, shape=Punch)) +
+    geom_point(size=3) +
+    xlab(paste0("PC1: ", percentVar[1],"% variance")) +
+    ylab(paste0("PC2: ", percentVar[2],"% variance")) +
+    scale_colour_manual(values=colorvalAPA00) + 
+    theme_cowplot(font_size = 8, line_size = 0.25) +
+    scale_shape_manual(values=c(15))
+```
+
+## Top 10 DEGs in only DG
+
+This top 10 gene list for how the DG tissue responds to treatment is very different from the top 10 list above that showed genes in all three tissues that responded significantly to the beahvioral treatment. 
+
+```{r resDG}
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+summary(res)
+head(res[order(res$padj),], 10)
+```

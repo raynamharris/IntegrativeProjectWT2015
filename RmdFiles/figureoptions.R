@@ -73,11 +73,6 @@ volcano5 <-  c("yes" = "red",
 colorvalavoidance <- c("black","red")
 
 
-
-## pheatmap
-colorpalette <-  colorRampPalette(c("Deep Sky Blue 3", "white", "red"))( 30 )
-
-
 ann_colors1 = list(
   Group =  c(control = (values=c("#404040")), 
              conflict = (values=c("#f4a582")), 
@@ -184,9 +179,3 @@ ann_colorsLevel = list(
     DG = (values=c("#d95f02")),
     CA3 = (values=c("#1b9e77")), 
     CA1 = (values=c("#7570b3"))))
-
-
-
-imgDG <- magick::image_read("../figures/00_schematics/DG.png")
-imgCA3 <- magick::image_read("../figures/00_schematics/CA3.png")
-imgCA1 <- magick::image_read("../figures/00_schematics/CA1.png")
