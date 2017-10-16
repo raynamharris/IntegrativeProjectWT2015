@@ -76,5 +76,5 @@ conflict vs. consistent | 0 | 0 | 0
 
 This directory contains both raw and intermediate data files. 
 - Intermediate data files have alphanumeric prefixes that correspond to the R script that created them. 
-- Raw files have a numeric prefix (aka lack an alphabetical character) that indicates whether it is for behavior, ephys, or RNA-seq. 
+- Raw files have only numeric prefix (aka lack an alphabetical character) that indicates whether it is for behavior (01), RNA-seq (02), or ephys (03). 
 - Files with more general names were created for public repositories
