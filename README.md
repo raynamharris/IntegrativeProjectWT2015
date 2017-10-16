@@ -54,29 +54,29 @@ conflict vs. consistent | 0 | 0 | 0
 
 #### Figure 1: Experimental overview 
 
-![](../figures-05.png)
+![](./figures-05.png)
 
-<img src="../figures/figures-05.png" />
+<img src="./figures/figures-05.png" />
 
 #### Figure 2: Cognitive training induces avoidance behavior in conflict and consistently trained animals
 
-<img src="../figures/figures-01.png" />
+<img src="./figures/figures-01.png" />
 
 #### Figure 3: RNA sequencing confirms large differences in DG, CA3, and CA1 hippocampal subfields  
 
-<img src="../figures/figures-02.png" />
+<img src="./figures/figures-02.png" />
 
 #### Figure 4: Cognitive training alters gene expression in DG and CA1 but not CA3
 
-<img src="../figures/figures2-01.png" />
+<img src="./figures/figures2-01.png" />
 
 #### Figure 5: Training has little effect on electrophysiology
 
-<img src="../figures/figures-04.png" />
+<img src="./figures/figures-04.png" />
 
 #### Figure 6: Correlations across levels of biological organization
 
-<img src="../figures/figures-03.png" />
+<img src="./figures/figures-03.png" />
 
 ### Data
 
