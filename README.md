@@ -24,6 +24,9 @@ The R markdown files used reproducible run the analysis and the output md files 
 	- **03_ephys:** analysis of electrophysiology data	
 - Part 4: Integrative analysis
 	- **04_integration:** correlations across levels, mostly using PCA data
+- Extras
+	- **99_colorblindr:** a simulation of how some of my figures will look to colorblind readers
+	- **99_forDeep:** a targeted PC analysis of a colleague	
 
 ## Results
 
