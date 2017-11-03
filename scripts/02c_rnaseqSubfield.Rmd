@@ -58,6 +58,10 @@ dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
+vsd <- getVarianceStabilizedData(dds)
+
+write.csv(colData, file = "../data/02c_DGcolData.csv", row.names = T)
+write.csv(vsd, file = "../data/02c_DGvsd.csv", row.names = T)
 
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
@@ -124,6 +128,9 @@ DGvolcano
 pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
 plot(DGvolcano)
 dev.off()
+
+
+pkcs <- data[grep("Prkc", data$gene), ]
 
 ## go setup
 table(res$padj<0.1)
@@ -267,10 +274,6 @@ table(sign)
 logs$logP <- logs$logP*sign
 write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
 
-
-
-
-
 plotPC <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
   ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
     geom_point(size=2, alpha= 0.8) +
@@ -290,6 +293,15 @@ plot(PCA12)
 dev.off()
 
 ```
+
+
+## plot single gene counts
+
+```{r}
+plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
+```
+
+
 
 ## venn diagrams
 
@@ -400,7 +412,7 @@ table(sign)
 logs$logP <- logs$logP*sign
 write.csv(logs, file = "./02e_GO_MWU/CA3conflictconsistent.csv", row.names = F)
 
-
+plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA3")
 ```
 
 
@@ -535,10 +547,6 @@ pdf(file="../figures/02c_rnaseqSubfield/CA1volcano2.pdf",  width=1.5, height=2)
 plot(CA1volcano2)
 dev.off()
 
-
-
-
-
 res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
@@ -571,7 +579,6 @@ pdf(file="../figures/02c_rnaseqSubfield/CA1volcano4.pdf", width=1.5, height=2)
 plot(DGvolcano)
 dev.off()
 
-
 PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
 PCA12
 
@@ -579,9 +586,5 @@ pdf(file="../figures/02c_rnaseqSubfield/CA1pca12.pdf", width=1.75, height = 2)
 plot(PCA12)
 dev.off()
 
-
+plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
 ```
-
-
-
-

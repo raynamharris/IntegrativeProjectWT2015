@@ -133,15 +133,6 @@ makecolumnannotations <- function(data){
   return(columnannotations)
 }
 
-makecolumnannotations2 <- function(data){  
-  columnannotations <- as.data.frame(colnames(data))
-  names(columnannotations)[names(columnannotations)=="colnames(data)"] <- "column"
-  rownames(columnannotations) <- columnannotations$column
-  columnannotations$APA2 <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 1)
-  columnannotations$column <- NULL
-  return(columnannotations)
-}
-
 ## correlation heatmat ----
 makecorrelationheatmap <- function(data, APAgroup, clusterTF){
   dataslim <- data %>% filter(APA==APAgroup)

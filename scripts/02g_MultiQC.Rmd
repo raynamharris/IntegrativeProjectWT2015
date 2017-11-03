@@ -1,0 +1,36 @@
+---
+title: "MULTIQC"
+author: "Rayna M Harris"
+date: "10/31/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r multiqc}
+multiqc <- read.csv(file = "../data/multiqc_report.csv")
+summary(multiqc)
+before <- multiqc[multiqc$QualityFiltered == "No",]
+after <- multiqc[multiqc$QualityFiltered == "Yes",]
+
+# mean before 7.3 million reads max 37 min 1.5. 
+# mean after 4.8 millino reads Max 35 min 0.5
+hist(before$MillionReads, ylim = c(0,80))
+hist(after$MillionReads, ylim = c(0,80))
+boxplot(multiqc$MillionReads ~ multiqc$QualityFiltered,
+        names = c("Before", "After"),
+        main = "Million reads per sample",
+        xlab = "Samples before and after quality control",
+        ylab = "Million reads per sample",
+        ylim = c(0,40))
+boxplot(multiqc$Length ~ multiqc$QualityFiltered,
+        names = c("Before", "After"),
+        main = "Read Lenght",
+        xlab = "Samples before and after quality control",
+        ylab = "Read Length (bp)")
+```
+
+

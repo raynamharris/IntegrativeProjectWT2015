@@ -237,12 +237,22 @@ summary(aov(PC3 ~ APA2, data=scoresdf)) # p = 0.117
     ## Residuals   30  480.0   16.00
 
 ``` r
-summary(aov(PC3 ~ APA2, data=scoresdf))
+TukeyHSD((aov(PC3 ~ APA2, data=scoresdf)), which = "APA2") 
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  102.5   34.17   2.135  0.117
-    ## Residuals   30  480.0   16.00
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC3 ~ APA2, data = scoresdf)
+    ## 
+    ## $APA2
+    ##                                      diff        lwr      upr     p adj
+    ## consistent-yoked-consistent     -2.517549 -7.9556882 2.920591 0.5954357
+    ## yoked-conflict-yoked-consistent -1.331357 -6.6162791 3.953564 0.9020015
+    ## conflict-yoked-consistent        2.128797 -3.1561244 7.413719 0.6950837
+    ## yoked-conflict-consistent        1.186191 -4.0987304 6.471113 0.9280078
+    ## conflict-consistent              4.646346 -0.6385758 9.931268 0.1006931
+    ## conflict-yoked-conflict          3.460155 -1.6669725 8.587282 0.2773302
 
 ``` r
 summary(aov(PC4 ~ APA2, data=scoresdf))
@@ -314,10 +324,10 @@ dev.off()
     ##                 2
 
 ``` r
-pca16 <- ggplot(scoresdf, aes(PC1,PC6, color=APA2)) +
+pca16 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
     geom_point(size=3, alpha = 0.7) +
     xlab(paste0("PC 1: ", percent[1],"% variance")) +
-    ylab(paste0("PC 6: ", percent[6],"% variance")) +
+    ylab(paste0("PC 2: ", percent[2],"% variance")) +
     stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
     scale_colour_manual(values=c(colorvalAPA00)) + 
     theme_cowplot(font_size = 8, line_size = 0.25) +
@@ -336,6 +346,45 @@ dev.off()
 
     ## quartz_off_screen 
     ##                 2
+
+``` r
+pca12 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
+    geom_point(size=3, alpha = 0.7) +
+    xlab(paste0("PC 1: ", percent[1],"% variance")) +
+    ylab(paste0("PC 2: ", percent[2],"% variance")) +
+    stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
+    scale_colour_manual(values=c(colorvalAPA00)) + 
+    theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme(legend.position="none") +
+  facet_wrap(~wrap)
+pca12
+```
+
+![](../figures/01_behavior/PCAplots-3.png)
+
+``` r
+library(factoextra)
+res.pca <- prcomp(behaviormatrix, scale = TRUE)
+fviz_eig(res.pca)
+```
+
+![](../figures/01_behavior/PCAplots-4.png)
+
+``` r
+fviz_pca_var(res.pca,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE,     # Avoid text overlapping
+             select.var = list(contrib = 10))
+```
+
+![](../figures/01_behavior/PCAplots-5.png)
+
+``` r
+fviz_pca_biplot(res.pca, label ="var")
+```
+
+![](../figures/01_behavior/PCAplots-6.png)
 
 Here are some stats modeling combinatorail PCs. I'm really not sure if this makes sense. I should probabaly model some behavior time interaction....
 

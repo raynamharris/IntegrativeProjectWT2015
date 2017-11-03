@@ -31,7 +31,7 @@ cat 03_fastqc.cmds
 Create a launcher script and launch the fastqc job
 
 ~~~ {.bash}
-launcher_creator.py -t 0:30:00 -n 03_fastqc -j 03_fastqc.cmds -l 03_fastqc.slurm -A NeuroEthoEvoDevo -m 'module load fastqc/0.11.5'
+launcher_creator.py -t 0:30:00 -n 03_fastqc -j 03_fastqc.cmds -l 03_fastqc.slurm -A NeuroEthoEvoDevo -q 'normal' -m 'module load fastqc/0.11.5'
 sbatch 03_fastqc.slurm
 ~~~
 
@@ -53,18 +53,18 @@ Then, I moved all the output files to a separate folder where we will store the 
 mkdir ../03_fastqc
 mv *.html ../03_fastqc
 mv *.zip ../03_fastqc
+cd ../03_fastqc
 ~~~
 
-## save locallaly
+## MultiQC
 
-One must save the data locally in order to view the html files. 
-
-In a new terminal window:
+Setup MultiQC on Stampede and run for all files in working directory. Use scp to save the `multiqc_report.html` file to your local computer.
 
 ~~~ {.bash}
-cd <pathtoplaceonyourpersonalpc>
-cd $RNAseqProject/$RNAseqJob
-scp <username>@stampede.tacc.utexas.edu:$SCRATCH/$RNAseqProject/$RNAseqJob/03_fastqc/*html .
+module load python
+export PATH="/work/projects/BioITeam/stampede/bin/multiqc-1.0:$PATH"
+export PYTHONPATH="/work/projects/BioITeam/stampede/lib/python2.7/annab-packages:$PYTHONPATH"
+multiqc .
 ~~~
 
 ## References

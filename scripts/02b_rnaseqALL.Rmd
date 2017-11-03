@@ -32,7 +32,6 @@ source("functions_RNAseq.R")
 
 ## set output file for figures 
 knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/')
-
 ```
 
 ## Design
@@ -46,8 +45,6 @@ colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData %>% select(APA2,Punch)  %>%  summary()
 head(colData)
-
-
 
 totalCounts=colSums(countData)
 ### on average 1 million gene counts per sample 
@@ -65,6 +62,8 @@ dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
+vsd <- getVarianceStabilizedData(dds)
+write.csv(vsd, file = "../data/02b_vsd.csv", row.names = T)
 ```
 
 
@@ -117,9 +116,7 @@ head((res[order(res$log2FoldChange),]), 10)
 res <- res[order(res$padj),]
 resdata <- as.data.frame(res)
 head(resdata,30)
-
 ```
-
 
 ## this is for consistent conflict yoked-conflict 
 
@@ -501,3 +498,11 @@ dev.off()
 
 ```
 
+
+## plot single gene counts
+
+```{r}
+
+plotCounts(dds, "Prkcz", intgroup = "Punch", normalized = TRUE)
+plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE)
+```

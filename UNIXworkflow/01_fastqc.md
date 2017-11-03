@@ -52,7 +52,8 @@ First, let's move the output files to a separate folder where we will store and 
 
 ~~~ {.bash}
 mkdir ../01_fastqc
-mv *_fastqc ../01_fastqc
+mv *fastqc.zip ../01_fastqc
+mv *fastqc.html ../01_fastqc
 cd ../01_fastqc
 ~~~
 
@@ -87,7 +88,20 @@ cat $file/fastqc_data.txt | grep -w -A 1 "Length" | grep -v "Length" >> readcoun
 done
 ~~~
 
+## MultiQC
+
+Setup MultiQC on Stampede and run for all files in working directory. Use scp to save the `multiqc_report.html` file to your local computer.
+
+~~~ {.bash}
+module load python
+export PATH="/work/projects/BioITeam/stampede/bin/multiqc-1.0:$PATH"
+export PYTHONPATH="/work/projects/BioITeam/stampede/lib/python2.7/annab-packages:$PYTHONPATH"
+multiqc .
+~~~
+
+
 ## References
 - FastQC: http://www.bioinformatics.babraham.ac.uk/projects/fastqc/
 - BioITeam Launcher Creator: https://wikis.utexas.edu/display/bioiteam/launcher_creator.py
 - FastQC Overview: https://wikis.utexas.edu/display/bioiteam/FASTQ+Quality+Assurance+Tools
+- MultiQC Tutorial: https://wikis.utexas.edu/display/bioiteam/Using+MultiQC
