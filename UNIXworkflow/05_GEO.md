@@ -18,7 +18,7 @@ mv 00_rawdata/multiqc* temp/
 Then zip
 
 ~~~{.bash
-tar -cvpf 00_rawdata.zip 00_rawdata
+tar -cvpf 00_rawdata.tar 00_rawdata
 ~~~
 
 Then turn the extra files to their home. 
@@ -38,11 +38,11 @@ Then I'll do the same for kallisto. FIrst, let's rename the files so that they h
 #done
 for abund in */abundance.h5; do
     newAbund=$(echo $abund | perl -pe 's|(.*)/.*|\1/abundance_\1.h5|')
-    mv $abund $newAbund
+    echo $abund $newAbund
 done
 for abund in */run_info.json; do
     newAbund=$(echo $abund | perl -pe 's|(.*)/.*|\1/runinfo_\1.json|')
-    mv $abund $newAbund
+    echo $abund $newAbund
 done
 ~~~
 
@@ -56,7 +56,7 @@ mv */*json ../hd5runinfo
 
 ~~~{.bash
 cd ..
-tar -cvpf 02_kallistoquant.zip 02_kallistoquant
+tar -cvpf 02_kallistoquant.tar 02_kallistoquant
 ~~~
 
-Now use ftp to transfer the files (00_rawdata, 02_kallistoquant.zip, and FMR1MetaData.xls) to NCBI. First, I copy the files to the Hofmann lab server so I can use Filzilla to transfer the files. The instructions are at: https://www.ncbi.nlm.nih.gov/geo/info/seq.html#data
+Now use ftp to transfer the files (00_rawdata.tar, 02_kallistoquant.tar, and FMR1MetaData.xls) to NCBI. First, I copy the files to the Hofmann lab server so I can use Filzilla to transfer the files. The instructions are at: https://www.ncbi.nlm.nih.gov/geo/info/seq.html#data
