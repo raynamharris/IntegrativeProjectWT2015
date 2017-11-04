@@ -7,8 +7,6 @@ For workflow purposes, I keep launcher scripts and output files in the directory
 So, first I'll move these extranous files to a temporary folder. Then, I'll zip the raw files. Then I move the extracous files back into the un-zipped director of raw data.
 
 ~~~{.bash
-cds
-cd FMR1
 mv 00_rawdata/*.slurm temp/
 mv 00_rawdata/*.e8* temp/
 mv 00_rawdata/*.o8* temp/
