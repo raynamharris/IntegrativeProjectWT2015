@@ -38,11 +38,11 @@ Then I'll do the same for kallisto. FIrst, let's rename the files so that they h
 #done
 for abund in */abundance.h5; do
     newAbund=$(echo $abund | perl -pe 's|(.*)/.*|\1/abundance_\1.h5|')
-    echo $abund $newAbund
+    mv $abund $newAbund
 done
 for abund in */run_info.json; do
     newAbund=$(echo $abund | perl -pe 's|(.*)/.*|\1/runinfo_\1.json|')
-    echo $abund $newAbund
+    mv $abund $newAbund
 done
 ~~~
 
