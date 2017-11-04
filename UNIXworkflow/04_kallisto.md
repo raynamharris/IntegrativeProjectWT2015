@@ -118,63 +118,6 @@ launcher_creator.py -t 1:00:00 -j 05_kallistoquant.cmds -n 05_kallistoquant -l 0
 sbatch 05_kallistoquant.slurm
 ~~~
 
-### All files per one cmd and slurm on raw reads
-
-~~~{.bash}
-rm 06_kallistoquant.cmds
-for R1 in *R1_001.fastq.gz
-do
-    R2=$(basename $R1 R1_001.fastq.gz)R2_001.fastq.gz
-    samp=$(basename $R1 _R1_001.fastq.gz)
-    echo $R1 $R2 $samp
-    echo "kallisto quant -b 100 -t 16 -i /work/02189/rmharris/SingleNeuronSeq/data/reference_genomes/gencode.vM7.transcripts.idx -o /scratch/02189/rmharris/IntegrativeProjectWT2015/06_kallistoquant/${samp} $R1 $R2" >> 06_kallistoquant.cmds
-done
-
-launcher_creator.py -t 1:00:00 -j 06_kallistoquant.cmds -n 06_kallistoquant -l 06_kallistoquant.slurm -A NeuroEthoEvoDevo -q largemem -m 'module use -a /work/03439/wallen/public/modulefiles; module load gcc/4.9.1; module load hdf5/1.8.15; module load zlib/1.2.8; module load kallisto/0.42.3'
-sbatch 06_kallistoquant.slurm
-~~~
-
-~~~{.bash}
-
-grep -A 1 'processed' *.e* | awk 'BEGIN {RS = "--"; OFS="\t"}; {print $3, $5, $13}' > readsprocessed.tsv
-~~~
-
-### Single file per cmd and slurm on raw reads
-
-
-~~~ {.bash}
-# Create the commands files
-
-for R1 in *R1_001.fastq.gz
-do
-    R2=$(basename $R1 R1_001.fastq.gz)R2_001.fastq.gz
-    samp=$(basename $R1 _R1_001.fastq.gz)
-    echo $R1 $R2 $samp
-    echo "kallisto quant -b 100 -t 16 -i /work/02189/rmharris/SingleNeuronSeq/data/reference_genomes/gencode.vM7.transcripts.idx  -o /scratch/02189/rmharris/IntegrativeProjectWT2015/07_kallistoquant/${samp} $R1 $R2" > ${samp}_07_kallistoquant.cmds
-done
-ls
-
-# Create the slurm files and a bash file to execute them
-
-rm 07_kallistoquant.sh
-for cmd in *07_kallistoquant.cmds
-do
-	samp=$(basename $cmd _07_kallistoquant.cmds)
-	slurm=$(basename $cmd _07_kallistoquant.cmds).slurm
-	echo $cmd $samp
-	echo "launcher_creator.py -t 0:30:00 -j $cmd -n $samp -l $slurm -A NeuroEthoEvoDevo -q normal -m 'module use -a /work/03439/wallen/public/modulefiles; module load gcc/4.9.1; module load hdf5/1.8.15; module load zlib/1.2.8; module load kallisto/0.42.3'" >> 07_kallistoquant.sh
-	echo "sbatch $slurm" >> 07_kallistoquant.sh
-done
-cat 07_kallistoquant.sh		
-
-# Launch all the jobs
-
-chmod a+x 07_kallistoquant.sh
-bash 07_kallistoquant.sh
-~~~ 
-
-
-
 ## MultiQC
 
 Setup MultiQC on Stampede and run for all files in working directory. Use scp to save the `multiqc_report.html` file to your local computer.
@@ -186,8 +129,28 @@ export PYTHONPATH="/work/projects/BioITeam/stampede/lib/python2.7/annab-packages
 multiqc .
 ~~~
 
-## Summary of reads processesd
+### All files per one cmd and slurm on raw reads
 
+~~~{.bash}
+rm 02_kallistoquant.cmds
+for R1 in *R1_001.fastq.gz
+do
+    R2=$(basename $R1 R1_001.fastq.gz)R2_001.fastq.gz
+    samp=$(basename $R1 _R1_001.fastq.gz)
+    echo $R1 $R2 $samp
+    echo "kallisto quant -b 100 -t 16 -i /work/02189/rmharris/SingleNeuronSeq/data/reference_genomes/gencode.vM7.transcripts.idx -o /scratch/02189/rmharris/IntegrativeProjectWT2015/02_kallistoquant/${samp} $R1 $R2" >> 02_kallistoquant.cmds
+done
+
+launcher_creator.py -t 1:00:00 -j 02_kallistoquant.cmds -n 02_kallistoquant -l 02_kallistoquant.slurm -A NeuroEthoEvoDevo -q largemem -m 'module use -a /work/03439/wallen/public/modulefiles; module load gcc/4.9.1; module load hdf5/1.8.15; module load zlib/1.2.8; module load kallisto/0.42.3'
+sbatch 02_kallistoquant.slurm
+~~~
+
+~~~{.bash}
+
+grep -A 1 'processed' *.e* | awk 'BEGIN {RS = "--"; OFS="\t"}; {print $3, $5, $13}' > readsprocessed.tsv
+~~~
+
+## Summary of reads processesd
 
 ~~~{.bash}
 
@@ -220,15 +183,8 @@ done
 ~~~
 
 
-## Now, save the data locally
+## Save the data locally
 
-~~~ {.bash}
-## navigate to an appropriate folder on your personal computer
-/work/02189/rmharris/IntProWT/02_filtrimmedreads
-
-scp [username]@stampede.tacc.utexas.edu:$SCRATCH/IntegrativeProjectWT2015/04_kallistoquant/ .
-
-~~~
 
 ## References
 - Kallisto: https://pachterlab.github.io/kallisto/

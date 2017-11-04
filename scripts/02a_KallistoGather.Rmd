@@ -9,18 +9,35 @@ output: md_document
 library("dplyr") ## for filtering and selecting rows
 library("plyr")  ## for renmaing factors
 library("reshape2") ##  for melting dataframe
-knitr::opts_chunk$set(fig.path = '../results/02b_KallistoGather/') # set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/02a_KallistoGather/') # set output file for figures 
 ```
 
-## RNAseq samples
-In the summers of 2015 and 2016, I processed a bunch of hippocampal tissue samples from 59 mice. Most mice were trained in an active place avoidance task or used as yoked controls; however, a few animals were taken straight from the home cage. This data has been cleaned using a different script `02a_tidysamples.R`. After gathering the kallisto data, I will do one more cleaning step at the end.
+## The Data
 
-```{r ReadAndTidySampleData, warning=FALSE}
-tidysamples <- read.csv("../data/rnaseq/tidysamples.csv", header=TRUE)
-rownames(tidysamples) <- tidysamples$RNAseqID   # make RNAseqID the row name
-tidysamples$year <- as.factor(tidysamples$year) # was being read as intger
-tidysamples$Slice <- as.factor(tidysamples$Slice) # was being read as intger
-tidysamples <- tidysamples %>% arrange(RNAseqID) # sort by RNAseqID
+Here is a summary of the data so far.
+
+```{r}
+
+multiqc <- read.csv(file = "../data/multiqc_report_0407.csv")
+summary(multiqc)
+levels(multiqc$QC) <- c("raw", "filtrim")
+# mean 2.2 million reads alligned per sample. max 3.3 min 0.4
+hist(multiqc$millalign)
+
+boxplot(multiqc$millalign ~ multiqc$QC,
+        xlab = "All samples",
+        names = c("Raw", "Trimmed and Filtered"),
+        ylab = "Million reads aligned per sample")
+
+boxplot(multiqc$fracalign ~ multiqc$QC,
+        xlab = "All samples",
+        names = c("Raw", "Trimmed and Filtered"),
+        ylab = "Fraction aligned")
+
+boxplot(multiqc$bp ~ multiqc$QC,
+        xlab = "All samples",
+        names = c("Raw", "Trimmed and Filtered"),
+        ylab = "Lenght (bp)")
 ```
 
 ## Kallisto Gather
@@ -126,6 +143,8 @@ tpmbygene <- tpmbygene %>% select(one_of(savecols)) # keep good samples
 
 summary(kallistosamples)
 ```
+
+
 
 ## Write files 
 Now, let's save the output files for future use
