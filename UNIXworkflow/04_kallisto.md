@@ -55,7 +55,7 @@ bash 04_kallistoindex.cmds
 ~~~
 
 
-## 04_kallistoquant
+## 04_kallistoquant on filtered and trimmed reads
 
 Now, let's quantify our transcripts. I'm a big fan of the kallisto program because its super fast and easy to use! Its also becoming more widely used and trusted.
 
@@ -66,56 +66,21 @@ cd $SCRATCH/IntegrativeProjectWT2015/02_filtrimmedreads
 mkdir ../04_kallistoquant
 ~~~
 
-Now, we will use the `kallistoquant` function to quantify reads! Again, we use a for loop to create the commands file. The output for each pair of samples will be stored in a subdirectory.  
+Now, we will use the `kallistoquant` function to quantify reads! Again, we use a for loop to create the commands file. The output for each pair of samples will be stored in a subdirectory. I'll use the `&>` symbol to redirect the standard error and output to a file for each sample
 
-### Single file per cmd and slurm on filtrimmed reads
-
-
-~~~ {.bash}
-# Create the commands files
-
-for R1 in *R1_001.filtrim.fastq.gz
-do
-    R2=$(basename $R1 R1_001.filtrim.fastq.gz)R2_001.filtrim.fastq.gz
-    samp=$(basename $R1 _R1_001.filtrim.fastq.gz)
-    echo $R1 $R2 $samp
-    echo "kallisto quant -b 100 -t 16 -i /work/02189/rmharris/SingleNeuronSeq/data/reference_genomes/gencode.vM7.transcripts.idx  -o /scratch/02189/rmharris/IntegrativeProjectWT2015/04_kallistoquant/${samp} $R1 $R2" > ${samp}_04_kallistoquant.cmds
-done
-ls
-
-# Create the slurm files and a bash file to execute them
-
-rm 04_kallistoquant.sh
-for cmd in *04_kallistoquant.cmds
-do
-	samp=$(basename $cmd _04_kallistoquant.cmds)
-	slurm=$(basename $cmd _04_kallistoquant.cmds).slurm
-	echo $cmd $samp
-	echo "launcher_creator.py -t 0:30:00 -j $cmd -n $samp -l $slurm -A NeuroEthoEvoDevo -q normal -m 'module use -a /work/03439/wallen/public/modulefiles; module load gcc/4.9.1; module load hdf5/1.8.15; module load zlib/1.2.8; module load kallisto/0.42.3'" >> 04_kallistoquant.sh
-	echo "sbatch $slurm" >> 04_kallistoquant.sh
-done
-cat 04_kallistoquant.sh		
-
-# Launch all the jobs
-
-chmod a+x 04_kallistoquant.sh
-bash 04_kallistoquant.sh
-~~~ 
-
-### All files per one cmd and slurm on filtrimmed reads
 
 ~~~{.bash}
-rm 05_kallistoquant.cmds
+rm 04_kallistoquant.cmds
 for R1 in *R1_001.filtrim.fastq.gz
 do
     R2=$(basename $R1 R1_001.filtrim.fastq.gz)R2_001.filtrim.fastq.gz
     samp=$(basename $R1 _R1_001.filtrim.fastq.gz)
     echo $R1 $R2 $samp
-    echo "kallisto quant -b 100 -t 16 -i /work/02189/rmharris/SingleNeuronSeq/data/reference_genomes/gencode.vM7.transcripts.idx -o /scratch/02189/rmharris/IntegrativeProjectWT2015/05_kallistoquant/${samp} $R1 $R2" >> 05_kallistoquant.cmds
+    echo "kallisto quant -b 100 -t 16 -i /work/02189/rmharris/SingleNeuronSeq/data/reference_genomes/gencode.vM7.transcripts.idx -o /scratch/02189/rmharris/IntegrativeProjectWT2015/04_kallistoquant/${samp} $R1 $R2 &> ${samp}.errout.txt" >> 04_kallistoquant.cmds
 done
 
-launcher_creator.py -t 1:00:00 -j 05_kallistoquant.cmds -n 05_kallistoquant -l 05_kallistoquant.slurm -A NeuroEthoEvoDevo -q largemem -m 'module use -a /work/03439/wallen/public/modulefiles; module load gcc/4.9.1; module load hdf5/1.8.15; module load zlib/1.2.8; module load kallisto/0.42.3'
-sbatch 05_kallistoquant.slurm
+launcher_creator.py -t 1:00:00 -j 04_kallistoquant.cmds -n 04_kallistoquant -l 04_kallistoquant.slurm -A NeuroEthoEvoDevo -q largemem -m 'module use -a /work/03439/wallen/public/modulefiles; module load gcc/4.9.1; module load hdf5/1.8.15; module load zlib/1.2.8; module load kallisto/0.42.3'
+sbatch 04_kallistoquant.slurm
 ~~~
 
 ## MultiQC
@@ -129,7 +94,15 @@ export PYTHONPATH="/work/projects/BioITeam/stampede/lib/python2.7/annab-packages
 multiqc .
 ~~~
 
-### All files per one cmd and slurm on raw reads
+The results of the MutliQC analysis of quality are here:
+![](../figures/02a_multiqc/multiqc_report_04.png)
+
+You can see that I have less than 1 million mapped reads for each sample. Not good. Thus...
+
+
+### 02_kallistoquant on raw reads
+
+Kallisto says that you can perform the pseudoalignment with raw reads, so I decided to try mapping the raw read to obtain a higher number of millions of reads. It worked!
 
 ~~~{.bash}
 rm 02_kallistoquant.cmds
@@ -138,24 +111,28 @@ do
     R2=$(basename $R1 R1_001.fastq.gz)R2_001.fastq.gz
     samp=$(basename $R1 _R1_001.fastq.gz)
     echo $R1 $R2 $samp
-    echo "kallisto quant -b 100 -t 16 -i /work/02189/rmharris/SingleNeuronSeq/data/reference_genomes/gencode.vM7.transcripts.idx -o /scratch/02189/rmharris/IntegrativeProjectWT2015/02_kallistoquant/${samp} $R1 $R2" >> 02_kallistoquant.cmds
+    echo "kallisto quant -b 100 -t 16 -i /work/02189/rmharris/SingleNeuronSeq/data/reference_genomes/gencode.vM7.transcripts.idx -o /work/02189/rmharris/IntProWT/02_kallistoquant/${samp} $R1 $R2 &> ${samp}.errout.txt" >> 02_kallistoquant.cmds
 done
 
 launcher_creator.py -t 1:00:00 -j 02_kallistoquant.cmds -n 02_kallistoquant -l 02_kallistoquant.slurm -A NeuroEthoEvoDevo -q largemem -m 'module use -a /work/03439/wallen/public/modulefiles; module load gcc/4.9.1; module load hdf5/1.8.15; module load zlib/1.2.8; module load kallisto/0.42.3'
 sbatch 02_kallistoquant.slurm
 ~~~
 
-~~~{.bash}
+## MultiQC
 
-grep -A 1 'processed' *.e* | awk 'BEGIN {RS = "--"; OFS="\t"}; {print $3, $5, $13}' > readsprocessed.tsv
+Setup MultiQC on Stampede and run for all files in working directory. Use scp to save the `multiqc_report.html` file to your local computer. 
+
+~~~ {.bash}
+module load python
+export PATH="/work/projects/BioITeam/stampede/bin/multiqc-1.0:$PATH"
+export PYTHONPATH="/work/projects/BioITeam/stampede/lib/python2.7/annab-packages:$PYTHONPATH"
+multiqc .
 ~~~
 
-## Summary of reads processesd
+The results of the MutliQC analysis of quality are here:
+![](../figures/02a_multiqc/multiqc_report_02.png)
 
-~~~{.bash}
-
-grep -A 1 'processed' *.e* | awk 'BEGIN {RS = "--"; OFS="\t"}; {print $3, $5, $13}' > readsprocessed.tsv
-~~~
+You can see that most samples have more than 1 million reads mapped. 
 
 
 ## Rename sample file names
