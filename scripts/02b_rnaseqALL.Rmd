@@ -9,7 +9,6 @@ The figures made from this script were compiled in Adobe.
 
 <img src="../figures/figures-02.png" width="1370" />
 
-
 ```{r setup, message=F}
 library(ggplot2) ## for awesome plots!
 library(cowplot) ## for some easy to use themes
@@ -142,20 +141,20 @@ table(res$padj<0.1)
 ```
 
 ```{r heatmap}
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 1924
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 1442
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 2986
-contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 120
-contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 39
-contrast6 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
-contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 31
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2526
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2022
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 3145
+contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 114
+contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 60
+contrast6 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
+contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 35
 
 
 DEGes <- assay(rld)
-DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast7)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG)) 
+DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA2conflictconsistent, padjAPA2yoked_conflictyoked_consistent,padjAPA2conflictyoked_conflict, padjAPA2consistentyoked_consistent)) 
 DEGes <- DEGes %>% filter(padjmin < 0.000000001)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -223,6 +222,10 @@ TukeyHSD((aov(PC1 ~ Punch, data=pcadata)), which = "Punch")
 summary(aov(PC2 ~ Punch, data=pcadata)) 
 TukeyHSD((aov(PC2 ~ Punch, data=pcadata)), which = "Punch") 
 
+summary(aov(PC3 ~ Punch, data=pcadata)) 
+TukeyHSD((aov(PC3 ~ Punch, data=pcadata)), which = "Punch") 
+
+
 summary(aov(PC3 ~ APA2, data=pcadata)) 
 summary(aov(PC4 ~ APA2, data=pcadata)) 
 summary(aov(PC5 ~ APA2, data=pcadata)) 
@@ -245,7 +248,7 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     scale_shape_manual(values=c(16, 1, 15,2), aes(color=APA2))
 }
 
-PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = "Punch", colorvalues = colorvalPunch)
+PCA12 <- plotPCs(pcadata, 1, 3, aescolor = pcadata$Punch, colorname = "Punch", colorvalues = colorvalPunch)
 PCA12
 
 pdf(file="../figures/02b_RNAseqAll/PCA12.pdf", width=1.75, height=2.25)
@@ -264,7 +267,8 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     scale_shape_manual(values=c(15, 16,17)) 
 }
 
-PCA62 <- plotPCs(pcadata, 6, 2, aescolor = pcadata$APA2, colorname = "APA2",  colorvalues = colorvalAPA00)
+
+PCA62 <- plotPCs(pcadata, 5, 3, aescolor = pcadata$APA2, colorname = "APA2",  colorvalues = colorvalAPA00)
 PCA62
 
 pdf(file="../figures/02b_RNAseqAll/PCA62.pdf", width=3.25, height=2.5)
@@ -278,14 +282,14 @@ dev.off()
 
 ## venn diagrams
 
-```{r venndiagrams}
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 1924
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 1442
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 2986
-contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 120
-contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) #39
-contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 31
-contrast7 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
+```{r venndiagrams1}
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2526
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2022
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 3145
+contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 114
+contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) #60
+contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 35
+contrast7 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
 
 rldpadjs <- assay(rld)
 rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
@@ -299,8 +303,8 @@ venn4 <- row.names(rldpadjs[rldpadjs[4] <0.05 & !is.na(rldpadjs[4]),])
 venn5 <- row.names(rldpadjs[rldpadjs[5] <0.05 & !is.na(rldpadjs[5]),]) 
 venn6 <- row.names(rldpadjs[rldpadjs[6] <0.05 & !is.na(rldpadjs[6]),]) 
 
-candidates1 <- list("CA1DG" = venn1, "CA3DG" = venn3, "CA1CA3" = venn2) 
-candidates2 <- list("V4" = venn4, "V5" = venn5, "V6" = venn6)
+candidates1 <- list("CA1-DG" = venn1, "CA3-DG" = venn3, "CA1-CA3" = venn2) 
+candidates2 <- list("Yoked-Consistent" = venn4, "Yoked-Conflict" = venn5, "Yoked-Yoked" = venn6)
 
 prettyvenn <- venn.diagram(
   scaled=T,
@@ -315,6 +319,18 @@ grid.draw(prettyvenn)
 
 ```
 
+```{r venndiagrams2}
+prettyvenn <- venn.diagram(
+  scaled=T,
+  x = candidates2, filename=NULL, 
+  col = "black",
+  alpha = 0.5,
+  cex = 1, fontfamily = "sans", #fontface = "bold",
+  cat.default.pos = "text",
+  cat.cex = 1, cat.fontfamily = "sans")
+#dev.off()
+grid.draw(prettyvenn)
+```
 
 ## Volcanos plots and and gene lists
 
@@ -356,6 +372,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
   theme(panel.grid.minor=element_blank(),
         legend.position = "none", # remove legend 
         panel.grid.major=element_blank())
+colored
 
 pdf(file="../figures/02b_RNAseqAll/AllDGCA3.pdf", width=1.75, height=2.25)
 plot(colored)
@@ -374,7 +391,6 @@ head(resOrdered, 10)
 data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
 data <- na.omit(data)
 head(data)
-
 
 data <- data.frame(gene = row.names(res), pvalue =  -log10(res$pvalue), lfc = res$log2FoldChange)
 data <- na.omit(data)
@@ -448,7 +464,6 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
         panel.grid.major=element_blank())
 colored
 
-
 pdf(file="../figures/02b_RNAseqAll/AllCA1CA3.pdf", width=1.75, height=2.25)
 plot(colored)
 dev.off()
@@ -460,8 +475,6 @@ dev.off()
 
 
 ```{r }
-
-
 res <- results(dds, contrast =c("APA2",  "conflict", "consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
@@ -478,7 +491,6 @@ data <- data %>%
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 
-
 colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
   theme_bw(base_size = 8) + # clean up theme
@@ -488,7 +500,7 @@ colored <- ggplot(data, aes(x = lfc, y = pvalue)) +
            panel.grid.major=element_blank()) + 
   scale_x_continuous(name="log2 (conflict/consistent)",
                      limits=c(-10, 10)) +
-  scale_y_log10(name="-log10 (adjusted p-value")  +
+  scale_y_continuous(name="-log10 (adjusted p-value")  +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
 colored
 
@@ -502,7 +514,6 @@ dev.off()
 ## plot single gene counts
 
 ```{r}
-
 plotCounts(dds, "Prkcz", intgroup = "Punch", normalized = TRUE)
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE)
 ```

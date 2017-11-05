@@ -42,13 +42,13 @@ Behavioral Groups: "conflict", "consistent"
 
     head(colData)
 
-    ##     RNAseqID   Mouse   Conflict Punch Slice     ID        APA
-    ## 1 143A-CA3-1 15-143A   Conflict   CA3     1 15143A   Conflict
-    ## 2  143A-DG-1 15-143A   Conflict    DG     1 15143A   Conflict
-    ## 3 143B-CA1-1 15-143B   Conflict   CA1     1 15143B    Control
-    ## 4  143B-DG-1 15-143B   Conflict    DG     1 15143B    Control
-    ## 5 143C-CA1-1 15-143C NoConflict   CA1     1 15143C Consistent
-    ## 6 143D-CA1-3 15-143D NoConflict   CA1     3 15143D    Control
+    ##     RNAseqID   Mouse Punch      Group   Conflict     ID        APA
+    ## 1 143A-CA3-1 15-143A   CA3   conflict   Conflict 15143A   Conflict
+    ## 2  143A-DG-1 15-143A    DG   conflict   Conflict 15143A   Conflict
+    ## 3 143B-CA1-1 15-143B   CA1    control   Conflict 15143B    Control
+    ## 4  143B-DG-1 15-143B    DG    control   Conflict 15143B    Control
+    ## 5 143C-CA1-1 15-143C   CA1 consistent NoConflict 15143C Consistent
+    ## 6 143D-CA1-3 15-143D   CA1    control NoConflict 15143D    Control
     ##               APA2
     ## 1         conflict
     ## 2         conflict
@@ -57,27 +57,12 @@ Behavioral Groups: "conflict", "consistent"
     ## 5       consistent
     ## 6 yoked_consistent
 
-    summarytable <- colData
-    summarytable$PunchAPA <- as.factor(paste(summarytable$Punch, summarytable$APA2, sep="_"))
-    summarytabledf <- summarytable %>% select(PunchAPA)  %>%  table()
-    summarytabledf
-
-    ## .
-    ##         CA1_conflict       CA1_consistent   CA1_yoked_conflict 
-    ##                    4                    4                    5 
-    ## CA1_yoked_consistent         CA3_conflict       CA3_consistent 
-    ##                    2                    5                    2 
-    ##   CA3_yoked_conflict CA3_yoked_consistent          DG_conflict 
-    ##                    3                    3                    5 
-    ##        DG_consistent    DG_yoked_conflict  DG_yoked_consistent 
-    ##                    3                    4                    4
-
     totalCounts=colSums(countData)
     ### on average 1 million gene counts per sample 
     summary((colSums(countData)/1000000))
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ## 0.04349 0.53220 1.07000 1.25500 1.60400 5.61900
+    ##  0.1406  1.2980  2.2640  2.6580  3.4160 12.1000
 
     dds <- DESeqDataSetFromMatrix(countData = countData,
                                   colData = colData,
@@ -89,10 +74,10 @@ Behavioral Groups: "conflict", "consistent"
     dds # view the DESeq object - note numnber of genes
 
     ## class: DESeqDataSet 
-    ## dim: 22485 44 
+    ## dim: 46403 44 
     ## metadata(1): version
     ## assays(1): counts
-    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rownames(46403): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
     ## colData names(8): RNAseqID Mouse ... APA APA2
@@ -101,18 +86,18 @@ Behavioral Groups: "conflict", "consistent"
     dds # view number of genes afternormalization and the number of samples
 
     ## class: DESeqDataSet 
-    ## dim: 17674 44 
+    ## dim: 28074 44 
     ## metadata(1): version
     ## assays(1): counts
-    ## rownames(17674): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rownames(28074): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
     ## colData names(8): RNAseqID Mouse ... APA APA2
 
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
-
-    print(xtable::xtable(summarytabledf), comment=F)
+    vsd <- getVarianceStabilizedData(dds)
+    write.csv(vsd, file = "../data/02b_vsd.csv", row.names = T)
 
 this is for CA1 DG
 ------------------
@@ -121,26 +106,13 @@ this is for CA1 DG
     summary(res)
 
     ## 
-    ## out of 17674 with nonzero total read count
+    ## out of 28074 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 968, 5.5% 
-    ## LFC < 0 (down)   : 956, 5.4% 
-    ## outliers [1]     : 7, 0.04% 
-    ## low counts [2]   : 6165, 35% 
-    ## (mean count < 3)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-
-    summaryres <- summary(res)
-
-    ## 
-    ## out of 17674 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 968, 5.5% 
-    ## LFC < 0 (down)   : 956, 5.4% 
-    ## outliers [1]     : 7, 0.04% 
-    ## low counts [2]   : 6165, 35% 
-    ## (mean count < 3)
+    ## LFC > 0 (up)     : 1099, 3.9% 
+    ## LFC < 0 (down)   : 1427, 5.1% 
+    ## outliers [1]     : 14, 0.05% 
+    ## low counts [2]   : 14146, 50% 
+    ## (mean count < 4)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
@@ -151,58 +123,58 @@ this is for CA1 DG
     ## DataFrame with 10 rows and 6 columns
     ##           baseMean log2FoldChange     lfcSE      stat       pvalue
     ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Mpped1    25.52651       6.910394 0.6107546 11.314519 1.112109e-29
-    ## Wfs1     186.06663       6.318247 0.5736616 11.013891 3.275438e-28
-    ## Prkcg    534.81768       3.003292 0.2872744 10.454438 1.398254e-25
-    ## Pou3f1   219.85725       5.968238 0.5726208 10.422670 1.953890e-25
-    ## Slc9a2    33.61930       7.435026 0.7231286 10.281749 8.516765e-25
-    ## Pde1a     25.49671       6.440581 0.6328524 10.177066 2.510157e-24
-    ## Map4      98.71267       2.388505 0.2357040 10.133497 3.923623e-24
-    ## St8sia5   34.65231       7.350142 0.7470324  9.839120 7.637584e-23
-    ## Tmem200a  51.06226       7.730489 0.7905094  9.779124 1.384033e-22
-    ## Gm2115   250.24766       6.763651 0.7085751  9.545425 1.355506e-21
-    ##                  padj
-    ##             <numeric>
-    ## Mpped1   1.279148e-25
-    ## Wfs1     1.883704e-24
-    ## Prkcg    5.360905e-22
-    ## Pou3f1   5.618409e-22
-    ## Slc9a2   1.959197e-21
-    ## Pde1a    4.811972e-21
-    ## Map4     6.447074e-21
-    ## St8sia5  1.098094e-19
-    ## Tmem200a 1.768795e-19
-    ## Gm2115   1.559103e-18
+    ## St8sia5   70.66256       6.677426 0.6604426 10.110531 4.961451e-24
+    ## Synj2    114.36825       6.234418 0.6352737  9.813752 9.824655e-23
+    ## Pex5l    438.37687       3.544655 0.3750550  9.451027 3.355232e-21
+    ## Prkcg   1637.14375       2.746241 0.3022794  9.085106 1.035979e-19
+    ## Tiam1    326.55581      -4.584131 0.5052248 -9.073447 1.153099e-19
+    ## Wfs1     578.25629       5.759807 0.6543682  8.802089 1.342928e-18
+    ## Khdrbs3  337.32013       3.790277 0.4358327  8.696632 3.418792e-18
+    ## Pou3f1   220.14704       5.359812 0.6152305  8.711876 2.988867e-18
+    ## Tenm4    157.93420       4.437264 0.5100930  8.698933 3.350201e-18
+    ## Nov       74.41290       6.677462 0.7738979  8.628350 6.224336e-18
+    ##                 padj
+    ##            <numeric>
+    ## St8sia5 6.903362e-20
+    ## Synj2   6.835013e-19
+    ## Pex5l   1.556156e-17
+    ## Prkcg   3.208843e-16
+    ## Tiam1   3.208843e-16
+    ## Wfs1    3.114251e-15
+    ## Khdrbs3 5.285453e-15
+    ## Pou3f1  5.285453e-15
+    ## Tenm4   5.285453e-15
+    ## Nov     8.660541e-15
 
     head((res[order(res$log2FoldChange),]), 10)
 
     ## log2 fold change (MLE): Punch CA1 vs DG 
     ## Wald test p-value: Punch CA1 vs DG 
     ## DataFrame with 10 rows and 6 columns
-    ##            baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##           <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Fam19a2  117.414499      -8.867054  1.507670 -5.881298 4.070607e-09
-    ## Dsp       91.281889      -8.793224  1.931325 -4.552948 5.289927e-06
-    ## Plk5      55.737240      -8.325455  1.558505 -5.341949 9.195245e-08
-    ## Prox1     96.762379      -7.757924  1.406465 -5.515904 3.469918e-08
-    ## Kif26b    33.401613      -7.707848  1.594001 -4.835536 1.327871e-06
-    ## Pcp4      84.522820      -7.447899  1.631879 -4.564003 5.018738e-06
-    ## Fscn2      8.774994      -7.437796  3.951414 -1.882312 5.979360e-02
-    ## Shisa9    42.889551      -7.405684  1.608060 -4.605352 4.117678e-06
-    ## Traf3ip2  17.136517      -6.801633  1.679698 -4.049320 5.136659e-05
-    ## Srprb     53.278903      -6.781243  1.500276 -4.519996 6.184084e-06
-    ##                  padj
-    ##             <numeric>
-    ## Fam19a2  4.335196e-07
-    ## Dsp      1.937730e-04
-    ## Plk5     6.185012e-06
-    ## Prox1    2.696689e-06
-    ## Kif26b   5.992986e-05
-    ## Pcp4     1.850177e-04
-    ## Fscn2    2.233640e-01
-    ## Shisa9   1.568263e-04
-    ## Traf3ip2 1.321742e-03
-    ## Srprb    2.181882e-04
+    ##             baseMean log2FoldChange     lfcSE       stat       pvalue
+    ##            <numeric>      <numeric> <numeric>  <numeric>    <numeric>
+    ## Gm28438    45.276508     -18.410568  8.411056 -2.1888535 2.860749e-02
+    ## Gm26702    12.886220     -16.263718  5.955318 -2.7309570 6.315070e-03
+    ## Gm26461     7.845879      -9.130738  8.464875 -1.0786618           NA
+    ## Rpl10-ps3 119.837348      -8.089918  1.728203 -4.6811148 2.853190e-06
+    ## Mylk3      22.825271      -7.417280  1.703588 -4.3539164 1.337267e-05
+    ## Fscn2       8.186816      -7.389867  3.778986 -1.9555158 5.052222e-02
+    ## Npcd        8.370693      -7.326148  8.411434 -0.8709749 3.837679e-01
+    ## Lrp8os3     6.823413      -7.123806  3.338401 -2.1338976 3.285116e-02
+    ## Adamts17   31.758171      -7.077354  1.593829 -4.4404722 8.976168e-06
+    ## Gm14393     5.791923      -6.937555  6.936221 -1.0001923 3.172175e-01
+    ##                   padj
+    ##              <numeric>
+    ## Gm28438   0.1328516794
+    ## Gm26702   0.0493917312
+    ## Gm26461             NA
+    ## Rpl10-ps3 0.0001205763
+    ## Mylk3     0.0004440748
+    ## Fscn2     0.1877580540
+    ## Npcd      0.6257026107
+    ## Lrp8os3   0.1439656894
+    ## Adamts17  0.0003161884
+    ## Gm14393   0.5644705358
 
 this is for CA1 CA3
 -------------------
@@ -211,13 +183,13 @@ this is for CA1 CA3
     summary(res)
 
     ## 
-    ## out of 17674 with nonzero total read count
+    ## out of 28074 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 651, 3.7% 
-    ## LFC < 0 (down)   : 791, 4.5% 
-    ## outliers [1]     : 7, 0.04% 
-    ## low counts [2]   : 6165, 35% 
-    ## (mean count < 3)
+    ## LFC > 0 (up)     : 850, 3% 
+    ## LFC < 0 (down)   : 1172, 4.2% 
+    ## outliers [1]     : 14, 0.05% 
+    ## low counts [2]   : 14146, 50% 
+    ## (mean count < 4)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
@@ -226,60 +198,60 @@ this is for CA1 CA3
     ## log2 fold change (MLE): Punch CA1 vs CA3 
     ## Wald test p-value: Punch CA1 vs CA3 
     ## DataFrame with 10 rows and 6 columns
-    ##         baseMean log2FoldChange     lfcSE       stat       pvalue
-    ##        <numeric>      <numeric> <numeric>  <numeric>    <numeric>
-    ## Itpka  712.20310       3.073453 0.2158630  14.237982 5.324215e-46
-    ## Doc2b  351.76381       7.136499 0.5198022  13.729259 6.782335e-43
-    ## Pou3f1 219.85725       6.506303 0.5913889  11.001733 3.748584e-28
-    ## Fibcd1 361.24751       7.658648 0.7344959  10.427080 1.865325e-25
-    ## Syn2   367.34401      -2.238529 0.2159165 -10.367572 3.482628e-25
-    ## C1ql3  288.38305       6.413302 0.6524966   9.828867 8.456470e-23
-    ## Wfs1   186.06663       5.369378 0.5608770   9.573182 1.036650e-21
-    ## Mpped1  25.52651       4.389502 0.4598871   9.544738 1.364518e-21
-    ## Bcr    343.00374       2.292545 0.2439557   9.397382 5.593776e-21
-    ## Ahi1   241.16807       1.769745 0.1925839   9.189475 3.947636e-20
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Itpka   730.9373       2.942103 0.2403135 12.242771 1.836531e-34
+    ## Doc2b   356.9267       6.288673 0.5404129 11.636793 2.679020e-31
+    ## Fibcd1  370.6083       6.811095 0.6694119 10.174744 2.570763e-24
+    ## Syn2   1140.2049      -2.147075 0.2193603 -9.787891 1.269149e-22
+    ## Pou3f1  220.1470       6.183465 0.6376705  9.696959 3.106175e-22
+    ## Ahi1    491.0714       1.726725 0.1928521  8.953627 3.439893e-19
+    ## Bcr     351.3789       2.165229 0.2425153  8.928215 4.329363e-19
+    ## Homer3  189.2740      -4.116145 0.4614371 -8.920273 4.651409e-19
+    ## C1ql3   286.6724       5.120135 0.5857813  8.740692 2.316863e-18
+    ## Nptxr  1951.6528      -2.372224 0.2744764 -8.642725 5.488772e-18
     ##                padj
     ##           <numeric>
-    ## Itpka  6.123912e-42
-    ## Doc2b  3.900521e-39
-    ## Pou3f1 1.437207e-24
-    ## Fibcd1 5.363743e-22
-    ## Syn2   8.011437e-22
-    ## C1ql3  1.621105e-19
-    ## Wfs1   1.703363e-18
-    ## Mpped1 1.961835e-18
-    ## Bcr    7.148846e-18
-    ## Ahi1   4.540571e-17
+    ## Itpka  2.555349e-30
+    ## Doc2b  1.863794e-27
+    ## Fibcd1 1.192320e-20
+    ## Syn2   4.414735e-19
+    ## Pou3f1 8.643863e-19
+    ## Ahi1   7.977113e-16
+    ## Bcr    8.089963e-16
+    ## Homer3 8.089963e-16
+    ## C1ql3  3.581870e-15
+    ## Nptxr  7.637077e-15
 
     head((res[order(res$log2FoldChange),]), 10)
 
     ## log2 fold change (MLE): Punch CA1 vs CA3 
     ## Wald test p-value: Punch CA1 vs CA3 
     ## DataFrame with 10 rows and 6 columns
-    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Cpne4    44.59733      -8.053652  1.484820 -5.423992 5.828238e-08
-    ## Fam19a2 117.41450      -7.943788  1.512695 -5.251413 1.509369e-07
-    ## Amigo2   33.05653      -7.392150  1.711426 -4.319294 1.565295e-05
-    ## Adgrf5   36.23905      -7.327856  1.611035 -4.548540 5.401944e-06
-    ## Tuba8    20.37245      -6.950903  1.703689 -4.079913 4.505248e-05
-    ## Fndc10   39.97041      -6.692815  1.538400 -4.350504 1.358250e-05
-    ## Ccbe1    24.55630      -6.565534  1.648261 -3.983309 6.796228e-05
-    ## Srprb    53.27890      -6.505247  1.502480 -4.329674 1.493305e-05
-    ## Apln     20.83790      -6.438589  1.633191 -3.942338 8.069119e-05
-    ## Cib2     21.02772      -6.400945  1.571794 -4.072383 4.653468e-05
-    ##                 padj
-    ##            <numeric>
-    ## Cpne4   8.175170e-06
-    ## Fam19a2 1.808413e-05
-    ## Amigo2  7.896501e-04
-    ## Adgrf5  3.441804e-04
-    ## Tuba8   1.811866e-03
-    ## Fndc10  7.199349e-04
-    ## Ccbe1   2.537994e-03
-    ## Srprb   7.704877e-04
-    ## Apln    2.927792e-03
-    ## Cib2    1.864954e-03
+    ##             baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##            <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Gm26702    12.886220     -17.670795  6.239681 -2.832003 4.625741e-03
+    ## Gm26461     7.845879      -9.409294  8.930808 -1.053577           NA
+    ## Rpl10-ps3 119.837348      -8.296297  1.752302 -4.734512 2.195824e-06
+    ## Prr18      38.871380      -7.293035  1.575985 -4.627604 3.699202e-06
+    ## Tuba8      20.343310      -7.069450  1.676628 -4.216469 2.481570e-05
+    ## Slc17a8    21.870464      -6.850745  1.851564 -3.699978 2.156182e-04
+    ## Lhx9       29.269574      -6.798419  1.590645 -4.274000 1.919967e-05
+    ## Ppp1r26    16.736472      -6.620571  1.629450 -4.063071 4.843122e-05
+    ## Srprb      54.310036      -6.606666  1.499953 -4.404583 1.059875e-05
+    ## Apln       21.116779      -6.553251  1.638612 -3.999270 6.353809e-05
+    ##                   padj
+    ##              <numeric>
+    ## Gm26702   0.0506393048
+    ## Gm26461             NA
+    ## Rpl10-ps3 0.0001633834
+    ## Prr18     0.0002535542
+    ## Tuba8     0.0011174292
+    ## Slc17a8   0.0062087060
+    ## Lhx9      0.0009275840
+    ## Ppp1r26   0.0018982310
+    ## Srprb     0.0005875339
+    ## Apln      0.0023264973
 
 this is for CA3 DG
 ------------------
@@ -288,13 +260,13 @@ this is for CA3 DG
     summary(res)
 
     ## 
-    ## out of 17674 with nonzero total read count
+    ## out of 28074 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 1625, 9.2% 
-    ## LFC < 0 (down)   : 1361, 7.7% 
-    ## outliers [1]     : 7, 0.04% 
-    ## low counts [2]   : 4455, 25% 
-    ## (mean count < 1)
+    ## LFC > 0 (up)     : 1585, 5.6% 
+    ## LFC < 0 (down)   : 1560, 5.6% 
+    ## outliers [1]     : 14, 0.05% 
+    ## low counts [2]   : 11971, 43% 
+    ## (mean count < 2)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
@@ -303,60 +275,60 @@ this is for CA3 DG
     ## log2 fold change (MLE): Punch CA3 vs DG 
     ## Wald test p-value: Punch CA3 vs DG 
     ## DataFrame with 10 rows and 6 columns
-    ##           baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Fam163b  632.63230      -5.674235 0.3528797 -16.07980 3.535108e-58
-    ## Doc2b    351.76381      -6.985282 0.4696300 -14.87401 4.861017e-50
-    ## C1ql3    288.38305      -8.023868 0.5819242 -13.78851 2.988664e-43
-    ## Gnao1    164.33213       1.609036 0.1289476  12.47821 9.816440e-36
-    ## Pitpnm2  157.76399      -3.037954 0.2455791 -12.37057 3.771355e-35
-    ## Pnmal2   777.66865      -1.707431 0.1402372 -12.17530 4.208416e-34
-    ## Cpe     3074.70125       2.968743 0.2487199  11.93609 7.674487e-33
-    ## Me1       44.02835       4.393035 0.3744782  11.73108 8.832196e-32
-    ## Ahi1     241.16807      -1.793898 0.1544626 -11.61380 3.506656e-31
-    ## Pde1b    259.78724      -3.353212 0.2903870 -11.54739 7.609648e-31
+    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Fam163b  640.7142      -5.424836 0.3462510 -15.66735 2.528952e-55
+    ## C1ql3    286.6724      -6.783352 0.5044676 -13.44656 3.225440e-41
+    ## Doc2b    356.9267      -6.160752 0.4724915 -13.03886 7.354570e-39
+    ## Pde1b    262.4669      -3.319108 0.2702932 -12.27966 1.164893e-34
+    ## Pter     163.9560      -6.192537 0.5392544 -11.48352 1.596504e-30
+    ## Cpe     3172.2598       2.773492 0.2421395  11.45411 2.242592e-30
+    ## Pnmal2   793.0014      -1.676574 0.1475724 -11.36102 6.537560e-30
+    ## Adcy1   2703.0855      -3.283901 0.2917109 -11.25738 2.129907e-29
+    ## Ahi1     491.0714      -1.794860 0.1603154 -11.19581 4.274891e-29
+    ## Pitpnm2  983.1507      -2.916795 0.2615723 -11.15101 7.079728e-29
     ##                 padj
     ##            <numeric>
-    ## Fam163b 4.670585e-54
-    ## Doc2b   3.211188e-46
-    ## C1ql3   1.316208e-39
-    ## Gnao1   3.242370e-32
-    ## Pitpnm2 9.965427e-32
-    ## Pnmal2  9.266933e-31
-    ## Cpe     1.448505e-29
-    ## Me1     1.458637e-28
-    ## Ahi1    5.147771e-28
-    ## Pde1b   1.005387e-27
+    ## Fam163b 4.068831e-51
+    ## C1ql3   2.594705e-37
+    ## Doc2b   3.944256e-35
+    ## Pde1b   4.685490e-31
+    ## Pter    5.137231e-27
+    ## Cpe     6.013511e-27
+    ## Pnmal2  1.502611e-26
+    ## Adcy1   4.283509e-26
+    ## Ahi1    7.642080e-26
+    ## Pitpnm2 1.139057e-25
 
     head((res[order(res$log2FoldChange),]), 10)
 
     ## log2 fold change (MLE): Punch CA3 vs DG 
     ## Wald test p-value: Punch CA3 vs DG 
     ## DataFrame with 10 rows and 6 columns
-    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Rps12   18.164975     -15.351022  7.409212 -2.071883 3.827633e-02
-    ## Plk5    55.737240     -10.597739  1.288733 -8.223381 1.978450e-16
-    ## Npcd     6.072969      -9.030334  6.221069 -1.451573 1.466205e-01
-    ## Pter    40.155764      -8.919350  1.200258 -7.431191 1.076240e-13
-    ## Pla2g4e 15.438614      -8.849853  1.578420 -5.606780 2.061260e-08
-    ## Tespa1   4.036187      -8.721162  7.405458 -1.177667 2.389294e-01
-    ## Pdyn    12.858134      -8.381770  1.312038 -6.388357 1.676780e-10
-    ## Dsp     91.281889      -8.189180  1.342592 -6.099530 1.063807e-09
-    ## Glb1l3   2.657819      -8.141436  7.407569 -1.099070 2.717376e-01
-    ## Il5      3.116986      -8.123593  4.615169 -1.760194 7.837490e-02
-    ##                 padj
-    ##            <numeric>
-    ## Rps12   1.465392e-01
-    ## Plk5    2.722842e-14
-    ## Npcd    3.547893e-01
-    ## Pter    1.008460e-11
-    ## Pla2g4e 6.947287e-07
-    ## Tespa1  4.807700e-01
-    ## Pdyn    8.897037e-09
-    ## Dsp     4.796933e-08
-    ## Glb1l3  5.196406e-01
-    ## Il5     2.376065e-01
+    ##                 baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##                <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Gm28438        45.276508     -23.774333  7.403021 -3.211437 1.320731e-03
+    ## Gm10925        88.406384     -21.231585  7.410945 -2.864896           NA
+    ## Lrcol1          2.160108     -18.586920  7.471009 -2.487873           NA
+    ## Rps6-ps4       16.998747     -15.993663  3.968031 -4.030629 5.562769e-05
+    ## Gm12895        42.255218     -13.094097  4.037469 -3.243145 1.182180e-03
+    ## Npcd            8.370693      -9.481880  7.403451 -1.280738 2.002857e-01
+    ## Pdyn           27.965727      -9.331458  1.359674 -6.863009 6.742484e-12
+    ## RP24-246N21.1  14.006798      -9.080397  4.399696 -2.063869 3.903012e-02
+    ## Plk5          114.288691      -9.079633  1.147754 -7.910786 2.557688e-15
+    ## Glb1l3          4.914444      -8.989463  7.404383 -1.214073 2.247198e-01
+    ##                       padj
+    ##                  <numeric>
+    ## Gm28438       1.284718e-02
+    ## Gm10925                 NA
+    ## Lrcol1                  NA
+    ## Rps6-ps4      9.511093e-04
+    ## Gm12895       1.182841e-02
+    ## Npcd          4.561718e-01
+    ## Pdyn          6.234473e-10
+    ## RP24-246N21.1 1.629170e-01
+    ## Plk5          4.662986e-13
+    ## Glb1l3        4.869382e-01
 
 this is for consistent yoked-consistent DG
 ------------------------------------------
@@ -365,13 +337,13 @@ this is for consistent yoked-consistent DG
     summary(res)
 
     ## 
-    ## out of 17674 with nonzero total read count
+    ## out of 28074 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 113, 0.64% 
-    ## LFC < 0 (down)   : 7, 0.04% 
-    ## outliers [1]     : 7, 0.04% 
-    ## low counts [2]   : 8561, 48% 
-    ## (mean count < 8)
+    ## LFC > 0 (up)     : 105, 0.37% 
+    ## LFC < 0 (down)   : 9, 0.032% 
+    ## outliers [1]     : 14, 0.05% 
+    ## low counts [2]   : 12515, 45% 
+    ## (mean count < 2)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
@@ -382,58 +354,58 @@ this is for consistent yoked-consistent DG
     ## DataFrame with 10 rows and 6 columns
     ##         baseMean log2FoldChange     lfcSE      stat       pvalue
     ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Plk2   697.03923       2.352508 0.2999148  7.843919 4.366988e-15
-    ## Arc    436.24502       2.932892 0.4081472  7.185868 6.678147e-13
-    ## Frmd6  116.84596       3.294066 0.4749978  6.934908 4.064851e-12
-    ## Dnaja1 106.22420       1.151488 0.1680492  6.852091 7.277826e-12
-    ## Smad7   25.81154       3.476292 0.5075848  6.848691 7.452852e-12
-    ## Lmna    26.32554       2.384168 0.3565015  6.687681 2.267346e-11
-    ## Sgk1    27.18260       2.432382 0.3678629  6.612196 3.786597e-11
-    ## Junb   514.04985       2.401985 0.3775447  6.362122 1.989857e-10
-    ## Fbxo33  74.39061       2.984504 0.4886561  6.107576 1.011557e-09
-    ## Ubc    469.30786       1.141296 0.1871946  6.096844 1.081828e-09
+    ## Plk2    709.1026       2.280584 0.2895038  7.877561 3.338344e-15
+    ## Arc     892.7932       2.835362 0.3834924  7.393527 1.429842e-13
+    ## Smad7   106.2128       3.381718 0.4736593  7.139559 9.363100e-13
+    ## Lmna    119.4333       2.258696 0.3221917  7.010412 2.376172e-12
+    ## Egr4    413.3462       3.062658 0.4435043  6.905588 4.999576e-12
+    ## Frmd6   117.8255       3.214067 0.4641004  6.925371 4.348351e-12
+    ## Sgk1    250.2746       2.502314 0.3625334  6.902299 5.116773e-12
+    ## Dnaja1  572.3186       1.121150 0.1671043  6.709284 1.955817e-11
+    ## Junb    522.6259       2.327045 0.3511946  6.626084 3.447094e-11
+    ## Fbxo33  229.0949       2.971342 0.4506487  6.593478 4.296404e-11
     ##                padj
     ##           <numeric>
-    ## Plk2   3.976579e-11
-    ## Arc    3.040561e-09
-    ## Frmd6  1.233818e-08
-    ## Dnaja1 1.357313e-08
-    ## Smad7  1.357313e-08
-    ## Lmna   3.441075e-08
-    ## Sgk1   4.925821e-08
-    ## Junb   2.264955e-07
-    ## Fbxo33 9.851123e-07
-    ## Ubc    9.851123e-07
+    ## Plk2   5.189455e-11
+    ## Arc    1.111345e-09
+    ## Smad7  4.851646e-09
+    ## Lmna   9.234397e-09
+    ## Egr4   1.136289e-08
+    ## Frmd6  1.136289e-08
+    ## Sgk1   1.136289e-08
+    ## Dnaja1 3.800397e-08
+    ## Junb   5.953898e-08
+    ## Fbxo33 6.678760e-08
 
     head((res[order(res$log2FoldChange),]), 10)
 
     ## log2 fold change (MLE): APA2 consistent vs yoked_consistent 
     ## Wald test p-value: APA2 consistent vs yoked consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##                baseMean log2FoldChange     lfcSE       stat      pvalue
-    ##               <numeric>      <numeric> <numeric>  <numeric>   <numeric>
-    ## Gm20425        9.237215     -17.789805  4.690063 -3.7930844          NA
-    ## Tespa1         4.036187      -7.918820  7.405793 -1.0692738 0.284946310
-    ## Gm10251        1.925807      -6.761646  6.636271 -1.0188924 0.308254037
-    ## Prl            1.763678      -6.749016  7.411101 -0.9106630 0.362472952
-    ## 4930455H04Rik  1.855854      -6.736106  7.411186 -0.9089106 0.363397297
-    ## Gm10093        2.152990      -6.736068  7.411186 -0.9089056 0.363399975
-    ## Gm12184        3.951296      -6.313503  7.414424 -0.8515163 0.394482608
-    ## Spink6         1.656561      -6.312836  7.414428 -0.8514260 0.394532755
-    ## Gm1818         5.392939      -6.276826  2.140503 -2.9324062 0.003363465
-    ## Glb1l3         2.657819      -6.011749  7.383797 -0.8141812 0.415541143
-    ##                    padj
-    ##               <numeric>
-    ## Gm20425              NA
-    ## Tespa1               NA
-    ## Gm10251              NA
-    ## Prl                  NA
-    ## 4930455H04Rik        NA
-    ## Gm10093              NA
-    ## Gm12184              NA
-    ## Spink6               NA
-    ## Gm1818               NA
-    ## Glb1l3               NA
+    ##             baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##            <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Gm26702    12.886220     -20.910613  5.235322 -3.994141 6.492930e-05
+    ## Gm20425     9.954703     -18.254950  4.043711 -4.514405 6.349479e-06
+    ## Rps6-ps4   16.998747     -15.577370  3.968084 -3.925665 8.649031e-05
+    ## Gm12895    42.255218     -14.310627  4.037524 -3.544407 3.934980e-04
+    ## Gm24514     7.295654      -7.928869  2.782869 -2.849171 4.383335e-03
+    ## Gm10251     3.933258      -7.809839  7.405835 -1.054552 2.916302e-01
+    ## Tespa1      3.720087      -7.809413  7.405836 -1.054495 2.916565e-01
+    ## AL670236.1 10.545858      -7.700972  4.447392 -1.731570 8.335012e-02
+    ## Pdzk1       3.585870      -7.637979  7.406381 -1.031270 3.024142e-01
+    ## Prl         2.836902      -7.456352  7.407033 -1.006658 3.140989e-01
+    ##                   padj
+    ##              <numeric>
+    ## Gm26702    0.016021047
+    ## Gm20425    0.002056305
+    ## Rps6-ps4   0.020371089
+    ## Gm12895    0.063061102
+    ## Gm24514    0.334014441
+    ## Gm10251    1.000000000
+    ## Tespa1     1.000000000
+    ## AL670236.1 1.000000000
+    ## Pdzk1      1.000000000
+    ## Prl        1.000000000
 
 this is for consistent yoked-conflict yoked-consistent DG
 ---------------------------------------------------------
@@ -442,15 +414,21 @@ this is for consistent yoked-conflict yoked-consistent DG
     summary(res)
 
     ## 
-    ## out of 17674 with nonzero total read count
+    ## out of 28074 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 30, 0.17% 
-    ## LFC < 0 (down)   : 1, 0.0057% 
-    ## outliers [1]     : 7, 0.04% 
-    ## low counts [2]   : 8561, 48% 
-    ## (mean count < 8)
+    ## LFC > 0 (up)     : 33, 0.12% 
+    ## LFC < 0 (down)   : 2, 0.0071% 
+    ## outliers [1]     : 14, 0.05% 
+    ## low counts [2]   : 14146, 50% 
+    ## (mean count < 4)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
+
+    table(res$padj<0.05)
+
+    ## 
+    ## FALSE  TRUE 
+    ## 13896    18
 
     head((res[order(res$padj),]), 10)
 
@@ -459,58 +437,126 @@ this is for consistent yoked-conflict yoked-consistent DG
     ## DataFrame with 10 rows and 6 columns
     ##           baseMean log2FoldChange     lfcSE      stat       pvalue
     ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Kcnc2    145.09714      3.8170020 0.5808500  6.571407 4.984192e-11
-    ## Gm2115   250.24766      3.4698844 0.6316131  5.493686 3.936297e-08
-    ## St8sia5   34.65231      4.1709096 0.7707730  5.411333 6.255716e-08
-    ## Cnr1     176.42633      3.8490675 0.7741110  4.972243 6.618279e-07
-    ## Dner      57.09091      1.7593101 0.3740379  4.703561 2.556629e-06
-    ## Spock1    79.66333      3.0533707 0.6697536  4.558946 5.141097e-06
-    ## Slc32a1   91.68713      3.9723836 0.9097520  4.366447 1.262841e-05
-    ## Cpe     3074.70125      0.9845432 0.2352792  4.184574 2.857010e-05
-    ## Me1       44.02835      1.8032867 0.4263382  4.229709 2.339937e-05
-    ## Pou3f1   219.85725      2.1494860 0.5143322  4.179178 2.925641e-05
-    ##                 padj
-    ##            <numeric>
-    ## Kcnc2   4.538605e-07
-    ## Gm2115  1.792196e-04
-    ## St8sia5 1.898818e-04
-    ## Cnr1    1.506651e-03
-    ## Dner    4.656133e-03
-    ## Spock1  7.802472e-03
-    ## Slc32a1 1.642776e-02
-    ## Cpe     2.220074e-02
-    ## Me1     2.220074e-02
-    ## Pou3f1  2.220074e-02
+    ## Kcnc2    149.83702       3.505345 0.5952516  5.888846 3.889012e-09
+    ## St8sia5   70.66256       3.601006 0.6416641  5.611979 2.000252e-08
+    ## Dner     178.21523       1.805065 0.3370213  5.355936 8.511459e-08
+    ## Cnr1     353.39617       3.632563 0.7000948  5.188673 2.117982e-07
+    ## Camk1g    41.58880       3.027599 0.6246273  4.847050 1.253111e-06
+    ## Gm2115    75.73189       3.878557 0.8133284  4.768746 1.853758e-06
+    ## Bicc1     28.39145       4.786031 1.0228595  4.679070 2.881791e-06
+    ## Slc32a1   85.97303       3.741974 0.8233970  4.544556 5.505119e-06
+    ## Nlrp3     32.68235       3.968012 0.8897606  4.459640 8.209750e-06
+    ## Tmem200a  52.95948       3.644796 0.8202287  4.443635 8.845177e-06
+    ##                  padj
+    ##             <numeric>
+    ## Kcnc2    5.411172e-05
+    ## St8sia5  1.391575e-04
+    ## Dner     3.947615e-04
+    ## Cnr1     7.367401e-04
+    ## Camk1g   3.487156e-03
+    ## Gm2115   4.298865e-03
+    ## Bicc1    5.728178e-03
+    ## Slc32a1  9.574778e-03
+    ## Nlrp3    1.230718e-02
+    ## Tmem200a 1.230718e-02
 
     head((res[order(res$log2FoldChange),]), 10)
 
     ## log2 fold change (MLE): APA2 yoked_conflict vs yoked_consistent 
     ## Wald test p-value: APA2 yoked conflict vs yoked consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##           baseMean log2FoldChange     lfcSE       stat     pvalue
-    ##          <numeric>      <numeric> <numeric>  <numeric>  <numeric>
-    ## Gm20425   9.237215     -17.058386  4.330199 -3.9393998         NA
-    ## Gm21949  15.475998      -6.965458  3.901938 -1.7851280 0.07424056
-    ## Tespa1    4.036187      -6.605952  6.843635 -0.9652695 0.33440985
-    ## Fscn2     8.774994      -6.458296  3.128305 -2.0644711 0.03897307
-    ## Npcd      6.072969      -6.080921  5.728593 -1.0615034 0.28846119
-    ## Glb1l3    2.657819      -6.026106  6.845920 -0.8802478 0.37872509
-    ## Il5       3.116986      -6.012327  4.252815 -1.4137288 0.15744154
-    ## Gm14393   2.938163      -6.005287  4.473547 -1.3423995 0.17946648
-    ## Atp6v0a4  2.333545      -5.753862  6.847347 -0.8403053 0.40073721
-    ## Gm10251   1.925807      -5.449357  6.130589 -0.8888799 0.37406762
-    ##               padj
-    ##          <numeric>
-    ## Gm20425         NA
-    ## Gm21949  0.9998426
-    ## Tespa1          NA
-    ## Fscn2    0.9998426
-    ## Npcd            NA
-    ## Glb1l3          NA
-    ## Il5             NA
-    ## Gm14393         NA
-    ## Atp6v0a4        NA
-    ## Gm10251         NA
+    ##             baseMean log2FoldChange     lfcSE       stat      pvalue
+    ##            <numeric>      <numeric> <numeric>  <numeric>   <numeric>
+    ## Gm26461     7.845879     -11.918278  6.909751 -1.7248491          NA
+    ## Npcd        8.370693      -7.557210  6.843455 -1.1042975 0.269464116
+    ## Lrp8os3     6.823413      -7.357950  2.662201 -2.7638600 0.005712205
+    ## Gm14393     5.791923      -7.168774  5.633585 -1.2725066 0.203193166
+    ## Atp6v0a4    4.412153      -6.791468  6.535005 -1.0392444 0.298691072
+    ## Gm10251     3.933258      -6.634885  6.845673 -0.9692085 0.332441165
+    ## Tespa1      3.720087      -6.634603  6.845673 -0.9691673 0.332461730
+    ## Fscn2       8.186816      -6.535274  2.988952 -2.1864767 0.028780745
+    ## AL670236.1 10.545858      -6.527323  4.099488 -1.5922287 0.111333327
+    ## Pdzk1       3.585870      -6.462969  6.846262 -0.9440143 0.345162341
+    ##                 padj
+    ##            <numeric>
+    ## Gm26461           NA
+    ## Npcd       0.9995060
+    ## Lrp8os3    0.4236339
+    ## Gm14393    0.9995060
+    ## Atp6v0a4   0.9995060
+    ## Gm10251           NA
+    ## Tespa1            NA
+    ## Fscn2      0.7717963
+    ## AL670236.1 0.9949209
+    ## Pdzk1             NA
+
+    ## Order by adjusted p-value
+    res <- res[order(res$padj),]
+    resdata <- as.data.frame(res)
+    head(resdata,30)
+
+    ##                  baseMean log2FoldChange     lfcSE      stat       pvalue
+    ## Kcnc2          149.837022       3.505345 0.5952516  5.888846 3.889012e-09
+    ## St8sia5         70.662559       3.601006 0.6416641  5.611979 2.000252e-08
+    ## Dner           178.215235       1.805065 0.3370213  5.355936 8.511459e-08
+    ## Cnr1           353.396166       3.632563 0.7000948  5.188673 2.117982e-07
+    ## Camk1g          41.588804       3.027599 0.6246273  4.847050 1.253111e-06
+    ## Gm2115          75.731890       3.878557 0.8133284  4.768746 1.853758e-06
+    ## Bicc1           28.391450       4.786031 1.0228595  4.679070 2.881791e-06
+    ## Slc32a1         85.973027       3.741974 0.8233970  4.544556 5.505119e-06
+    ## Nlrp3           32.682352       3.968012 0.8897606  4.459640 8.209750e-06
+    ## Tmem200a        52.959477       3.644796 0.8202287  4.443635 8.845177e-06
+    ## Me1             89.733920       1.855449 0.4207410  4.409955 1.033923e-05
+    ## Sulf2          140.753557       1.963920 0.4546768  4.319377 1.564705e-05
+    ## Nell1           97.807863       3.314214 0.7850072  4.221890 2.422624e-05
+    ## Khdrbs3        337.320125       1.566366 0.3798869  4.123243 3.735755e-05
+    ## Tenm4          157.934197       1.906297 0.4605862  4.138850 3.490504e-05
+    ## Elfn1           21.375332       3.749594 0.9169207  4.089333 4.326155e-05
+    ## Strip2         102.690442       3.259595 0.8078240  4.035031 5.459512e-05
+    ## Gm26559          7.802238      -6.292722 1.5668602 -4.016135 5.916045e-05
+    ## Rnase4          15.462134       3.390807 0.8515482  3.981933 6.835716e-05
+    ## Slc9a2          69.408636       3.024357 0.7660364  3.948059 7.878727e-05
+    ## Synj2          114.368252       2.377474 0.6006356  3.958263 7.549673e-05
+    ## C530008M17Rik  152.248326       1.021251 0.2655391  3.845955 1.200839e-04
+    ## Cpe           3172.259818       0.881772 0.2280766  3.866123 1.105792e-04
+    ## Csrnp1          93.736649       1.722491 0.4475500  3.848711 1.187409e-04
+    ## Klk8            34.574240       3.935606 1.0279746  3.828505 1.289240e-04
+    ## Slc17a8         21.870464       3.872330 1.0136091  3.820338 1.332687e-04
+    ## Slc6a7          92.887442       1.649971 0.4310547  3.827753 1.293185e-04
+    ## Tmem178b       174.231553       1.755788 0.4531550  3.874587 1.068058e-04
+    ## Spock1         412.415156       2.452129 0.6470115  3.789931 1.506890e-04
+    ## Gap43           82.881195       1.860876 0.4946857  3.761735 1.687388e-04
+    ##                       padj
+    ## Kcnc2         5.411172e-05
+    ## St8sia5       1.391575e-04
+    ## Dner          3.947615e-04
+    ## Cnr1          7.367401e-04
+    ## Camk1g        3.487156e-03
+    ## Gm2115        4.298865e-03
+    ## Bicc1         5.728178e-03
+    ## Slc32a1       9.574778e-03
+    ## Nlrp3         1.230718e-02
+    ## Tmem200a      1.230718e-02
+    ## Me1           1.307818e-02
+    ## Sulf2         1.814276e-02
+    ## Nell1         2.592953e-02
+    ## Khdrbs3       3.465286e-02
+    ## Tenm4         3.465286e-02
+    ## Elfn1         3.762133e-02
+    ## Strip2        4.468450e-02
+    ## Gm26559       4.573103e-02
+    ## Rnase4        5.005903e-02
+    ## Slc9a2        5.220219e-02
+    ## Synj2         5.220219e-02
+    ## C530008M17Rik 6.622504e-02
+    ## Cpe           6.622504e-02
+    ## Csrnp1        6.622504e-02
+    ## Klk8          6.622504e-02
+    ## Slc17a8       6.622504e-02
+    ## Slc6a7        6.622504e-02
+    ## Tmem178b      6.622504e-02
+    ## Spock1        7.229953e-02
+    ## Gap43         7.573650e-02
 
 this is for consistent conflict yoked-conflict
 ----------------------------------------------
@@ -519,13 +565,13 @@ this is for consistent conflict yoked-conflict
     summary(res)
 
     ## 
-    ## out of 17674 with nonzero total read count
+    ## out of 28074 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 15, 0.085% 
-    ## LFC < 0 (down)   : 24, 0.14% 
-    ## outliers [1]     : 7, 0.04% 
-    ## low counts [2]   : 11987, 68% 
-    ## (mean count < 24)
+    ## LFC > 0 (up)     : 19, 0.068% 
+    ## LFC < 0 (down)   : 41, 0.15% 
+    ## outliers [1]     : 14, 0.05% 
+    ## low counts [2]   : 18495, 66% 
+    ## (mean count < 22)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
@@ -536,58 +582,41 @@ this is for consistent conflict yoked-conflict
     ## DataFrame with 10 rows and 6 columns
     ##          baseMean log2FoldChange     lfcSE      stat       pvalue
     ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Kcnc2   145.09714      -2.520075 0.4924622 -5.117295 3.099479e-07
-    ## Neurod6 333.02885      -3.525915 0.6931363 -5.086901 3.639624e-07
-    ## Sv2b    142.82830      -3.731971 0.7369799 -5.063871 4.108283e-07
-    ## Stmn2   418.60097      -2.218191 0.4627514 -4.793482 1.639112e-06
-    ## Slc16a1  51.34226       1.926065 0.4236948  4.545877 5.470688e-06
-    ## Khdrbs3 328.27759      -1.626203 0.3679544 -4.419579 9.889335e-06
-    ## Slc6a7   90.86015      -1.794156 0.4024943 -4.457594 8.288453e-06
-    ## Stox2   645.60944      -5.140065 1.1665864 -4.406073 1.052613e-05
-    ## Plk2    697.03923       1.124026 0.2629750  4.274270 1.917649e-05
-    ## Arc     436.24502       1.484054 0.3570558  4.156363 3.233534e-05
+    ## Camk1g   41.58880      -3.170321 0.5825176 -5.442446 5.255387e-08
+    ## Gm12895  42.25522     -17.897820 3.4930907 -5.123778 2.994741e-07
+    ## Kcnc2   149.83702      -2.353144 0.5112396 -4.602821 4.168067e-06
+    ## Khdrbs3 337.32013      -1.577826 0.3433236 -4.595739 4.312179e-06
+    ## Stmn2   433.06834      -2.120505 0.4610852 -4.598943 4.246403e-06
+    ## Plk2    709.10261       1.133947 0.2531652  4.479081 7.496513e-06
+    ## Arc     892.79317       1.487597 0.3347722  4.443608 8.846272e-06
+    ## Frmd6   117.82550       1.811310 0.4117545  4.399004 1.087488e-05
+    ## Fbxo33  229.09490       1.687575 0.3961535  4.259900 2.045180e-05
+    ## Fosl2   308.85152       1.506853 0.3579206  4.210021 2.553470e-05
     ##                 padj
     ##            <numeric>
-    ## Kcnc2   0.0007778348
-    ## Neurod6 0.0007778348
-    ## Sv2b    0.0007778348
-    ## Stmn2   0.0023275395
-    ## Slc16a1 0.0062147011
-    ## Khdrbs3 0.0074735516
-    ## Slc6a7  0.0074735516
-    ## Stox2   0.0074735516
-    ## Plk2    0.0121024981
-    ## Arc     0.0154911448
+    ## Camk1g  0.0005026778
+    ## Gm12895 0.0014322348
+    ## Kcnc2   0.0082491991
+    ## Khdrbs3 0.0082491991
+    ## Stmn2   0.0082491991
+    ## Plk2    0.0119506915
+    ## Arc     0.0120877988
+    ## Frmd6   0.0130022729
+    ## Fbxo33  0.0214535353
+    ## Fosl2   0.0214535353
 
-    head((res[order(res$log2FoldChange),]), 10)
+    #head((res[order(res$log2FoldChange),]), 10)
+    table(res$padj<0.05)
 
-    ## log2 fold change (MLE): APA2 conflict vs yoked_conflict 
-    ## Wald test p-value: APA2 conflict vs yoked_conflict 
-    ## DataFrame with 10 rows and 6 columns
-    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Rps12   18.164975     -16.685369  6.489484 -2.571140 0.0101364465
-    ## Slc10a5  5.601705      -8.990581  6.487222 -1.385891 0.1657802580
-    ## Olfr91   2.037580      -7.488777  6.493617 -1.153252 0.2488069511
-    ## Fzd10    2.408579      -7.476701  5.063193 -1.476677 0.1397622336
-    ## Zfp784   4.267555      -7.360657  5.532246 -1.330501 0.1833533654
-    ## Stpg2    1.521601      -7.162344  6.496104 -1.102560 0.2702183296
-    ## Ifi35    2.364365      -6.858682  1.969312 -3.482781 0.0004962347
-    ## Hpse     2.513052      -6.794263  4.791494 -1.417984 0.1561953315
-    ## Gm4737   3.713759      -6.739714  6.500253 -1.036839           NA
-    ## Gm2244   1.498813      -6.739581  6.500257 -1.036818 0.2998208731
-    ##              padj
-    ##         <numeric>
-    ## Rps12          NA
-    ## Slc10a5        NA
-    ## Olfr91         NA
-    ## Fzd10          NA
-    ## Zfp784         NA
-    ## Stpg2          NA
-    ## Ifi35          NA
-    ## Hpse           NA
-    ## Gm4737         NA
-    ## Gm2244         NA
+    ## 
+    ## FALSE  TRUE 
+    ##  9534    31
+
+    table(res$padj<0.1)
+
+    ## 
+    ## FALSE  TRUE 
+    ##  9505    60
 
 this is for consistent conflict yoked-conflict
 ----------------------------------------------
@@ -596,11 +625,11 @@ this is for consistent conflict yoked-conflict
     summary(res)
 
     ## 
-    ## out of 17674 with nonzero total read count
+    ## out of 28074 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 0, 0% 
+    ## LFC > 0 (up)     : 1, 0.0036% 
     ## LFC < 0 (down)   : 0, 0% 
-    ## outliers [1]     : 7, 0.04% 
+    ## outliers [1]     : 14, 0.05% 
     ## low counts [2]   : 0, 0% 
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -611,94 +640,106 @@ this is for consistent conflict yoked-conflict
     ## log2 fold change (MLE): APA2 conflict vs consistent 
     ## Wald test p-value: APA2 conflict vs consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##                 baseMean log2FoldChange     lfcSE        stat    pvalue
-    ##                <numeric>      <numeric> <numeric>   <numeric> <numeric>
-    ## 0610007P14Rik 21.5461759    -0.05019271 0.3742306 -0.13412240 0.8933058
-    ## 0610009B22Rik  6.4277426    -0.76243785 0.6582895 -1.15821053 0.2467781
-    ## 0610009L18Rik  3.9008693     0.53613979 1.1080722  0.48384914 0.6284929
-    ## 0610009O20Rik 48.6140661     0.25676554 0.3790443  0.67740248 0.4981506
-    ## 0610010F05Rik  8.1466102    -0.27012199 0.3928997 -0.68750873 0.4917622
-    ## 0610010K14Rik  1.9324187     0.79827392 1.0021639  0.79655024 0.4257123
-    ## 0610012G03Rik 61.5516314     0.11916134 0.3437908  0.34661003 0.7288843
-    ## 0610030E20Rik 39.9081366    -0.10853833 0.4965014 -0.21860629 0.8269568
-    ## 0610037L13Rik  7.6331581     0.04250870 0.4686990  0.09069511 0.9277349
-    ## 0610040J01Rik  0.9055227    -0.92499512 1.2783405 -0.72359054 0.4693172
-    ##                    padj
-    ##               <numeric>
-    ## 0610007P14Rik         1
-    ## 0610009B22Rik         1
-    ## 0610009L18Rik         1
-    ## 0610009O20Rik         1
-    ## 0610010F05Rik         1
-    ## 0610010K14Rik         1
-    ## 0610012G03Rik         1
-    ## 0610030E20Rik         1
-    ## 0610037L13Rik         1
-    ## 0610040J01Rik         1
+    ##                 baseMean log2FoldChange     lfcSE       stat       pvalue
+    ##                <numeric>      <numeric> <numeric>  <numeric>    <numeric>
+    ## Gm20425        9.9547031     18.3761659 3.8552983  4.7664705 1.874811e-06
+    ## Gm26702       12.8862199     21.6656306 4.9982871  4.3346111 1.460180e-05
+    ## 0610005C13Rik  0.5314602     -1.6537609 4.0150729 -0.4118881 6.804214e-01
+    ## 0610007P14Rik 44.1662180     -0.3010539 0.3503880 -0.8592014 3.902294e-01
+    ## 0610009B22Rik 13.6936599     -0.6360010 0.6360642 -0.9999008 3.173585e-01
+    ## 0610009E02Rik  0.5789240     -1.2567488 3.6923508 -0.3403655 7.335813e-01
+    ## 0610009L18Rik  4.3110852      0.5139942 1.1375195  0.4518552 6.513733e-01
+    ## 0610009O20Rik 48.6495711      0.2999714 0.3929565  0.7633706 4.452424e-01
+    ## 0610010F05Rik 66.9154162     -0.3497983 0.3171319 -1.1030056 2.700247e-01
+    ## 0610010K14Rik 20.5700916      0.2369065 0.5786025  0.4094461 6.822123e-01
+    ##                     padj
+    ##                <numeric>
+    ## Gm20425       0.05260721
+    ## Gm26702       0.20486331
+    ## 0610005C13Rik 1.00000000
+    ## 0610007P14Rik 1.00000000
+    ## 0610009B22Rik 1.00000000
+    ## 0610009E02Rik 1.00000000
+    ## 0610009L18Rik 1.00000000
+    ## 0610009O20Rik 1.00000000
+    ## 0610010F05Rik 1.00000000
+    ## 0610010K14Rik 1.00000000
 
     head((res[order(res$log2FoldChange),]), 10)
 
     ## log2 fold change (MLE): APA2 conflict vs consistent 
     ## Wald test p-value: APA2 conflict vs consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##            baseMean log2FoldChange     lfcSE       stat     pvalue
-    ##           <numeric>      <numeric> <numeric>  <numeric>  <numeric>
-    ## Rps12    18.1649745     -16.186423  7.050382 -2.2958223 0.02168605
-    ## Apoo-ps   2.6101226      -7.251036  7.051627 -1.0282785 0.30381885
-    ## Gm6563    2.4589694      -6.247788  7.055737 -0.8854904 0.37589219
-    ## Rps27rt   1.4665602      -6.185501  7.056097 -0.8766178 0.38069427
-    ## Atg4a-ps  0.4490799      -5.830494  7.058481 -0.8260267 0.40878893
-    ## Phf19     0.9574938      -5.734969  3.117802 -1.8394272 0.06585237
-    ## Gm21949  15.4759983      -5.729948  4.014243 -1.4274044 0.15346337
-    ## Gm28539   2.0370507      -5.539838  7.038759 -0.7870474 0.43125410
-    ## Fam83e    0.5151725      -5.466157  7.061610 -0.7740667 0.43889136
-    ## Neurog2   1.6340752      -5.256210  2.229883 -2.3571690 0.01841487
-    ##               padj
-    ##          <numeric>
-    ## Rps12            1
-    ## Apoo-ps          1
-    ## Gm6563           1
-    ## Rps27rt          1
-    ## Atg4a-ps         1
-    ## Phf19            1
-    ## Gm21949          1
-    ## Gm28539          1
-    ## Fam83e           1
-    ## Neurog2          1
+    ##           baseMean log2FoldChange     lfcSE       stat     pvalue
+    ##          <numeric>      <numeric> <numeric>  <numeric>  <numeric>
+    ## Gm10925 88.4063837     -29.685289  7.048281 -4.2117062         NA
+    ## Gm26461  7.8458791     -27.519698  7.097875 -3.8771741         NA
+    ## Lrcol1   2.1601083     -18.187619  7.136301 -2.5486060         NA
+    ## Rps12   15.0315147      -7.823158  7.050194 -1.1096372 0.26715538
+    ## Gm7206   4.9575785      -7.348245  7.051234 -1.0421218 0.29735519
+    ## Gm4294   8.1016236      -7.260706  4.413727 -1.6450282 0.09996399
+    ## Gm28539  1.3631856      -7.177783  7.051700 -1.0178799 0.30873504
+    ## Apoo-ps  3.0885665      -7.177716  7.051700 -1.0178703 0.30873959
+    ## Gm25526  0.8425093      -6.635732  7.053601 -0.9407581 0.34682882
+    ## Gm28792  0.7922522      -6.182164  7.055839 -0.8761770 0.38093382
+    ##              padj
+    ##         <numeric>
+    ## Gm10925        NA
+    ## Gm26461        NA
+    ## Lrcol1         NA
+    ## Rps12           1
+    ## Gm7206          1
+    ## Gm4294          1
+    ## Gm28539         1
+    ## Apoo-ps         1
+    ## Gm25526         1
+    ## Gm28792         1
 
-    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 1924
+    table(res$padj<0.05)
 
-    ## [1] 1924
+    ## 
+    ## FALSE 
+    ## 28060
 
-    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 1442
+    table(res$padj<0.1)
 
-    ## [1] 1442
+    ## 
+    ## FALSE  TRUE 
+    ## 28059     1
 
-    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 2986
+    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2526
 
-    ## [1] 2986
+    ## [1] 2526
 
-    contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 120
+    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2022
 
-    ## [1] 120
+    ## [1] 2022
 
-    contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 39
+    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 3145
 
-    ## [1] 39
+    ## [1] 3145
 
-    contrast6 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
+    contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 114
 
-    ## [1] 0
+    ## [1] 114
 
-    contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 31
+    contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 60
 
-    ## [1] 31
+    ## [1] 60
+
+    contrast6 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
+
+    ## [1] 1
+
+    contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 35
+
+    ## [1] 35
 
     DEGes <- assay(rld)
-    DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast7)
+    DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
     DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
     DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-    DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG)) 
+    DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA2conflictconsistent, padjAPA2yoked_conflictyoked_consistent,padjAPA2conflictyoked_conflict, padjAPA2consistentyoked_consistent)) 
     DEGes <- DEGes %>% filter(padjmin < 0.000000001)
     rownames(DEGes) <- DEGes$rownames
     drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -753,11 +794,11 @@ this is for consistent conflict yoked-conflict
 Principle component analysis
 ----------------------------
 
-    ## [1] 50 21  5  3  2  1  1  1  1
+    ## [1] 37 28 14  5  1  1  1  1  1
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2  15879    7939   256.2 <2e-16 ***
-    ## Residuals   41   1270      31                   
+    ## Punch        2  13741    6871   134.8 <2e-16 ***
+    ## Residuals   41   2089      51                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -767,16 +808,14 @@ Principle component analysis
     ## Fit: aov(formula = PC1 ~ Punch, data = pcadata)
     ## 
     ## $Punch
-    ##               diff        lwr       upr    p adj
-    ## CA3-DG  -40.241740 -45.295804 -35.18768 0.000000
-    ## CA1-DG  -38.806018 -43.670635 -33.94140 0.000000
-    ## CA1-CA3   1.435721  -3.693307   6.56475 0.775999
+    ##               diff        lwr        upr     p adj
+    ## CA3-DG  -35.748687 -42.230044 -29.267330 0.0000000
+    ## CA1-DG  -37.537268 -43.775677 -31.298859 0.0000000
+    ## CA1-CA3  -1.788581  -8.366073   4.788911 0.7870855
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2   7153    3576    1030 <2e-16 ***
-    ## Residuals   41    142       3                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## Punch        2    859   429.7    1.57   0.22
+    ## Residuals   41  11223   273.7
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
@@ -784,28 +823,47 @@ Principle component analysis
     ## Fit: aov(formula = PC2 ~ Punch, data = pcadata)
     ## 
     ## $Punch
-    ##              diff       lwr       upr p adj
-    ## CA3-DG  -16.21577 -17.90743 -14.52411     0
-    ## CA1-DG   15.81186  14.18361  17.44011     0
-    ## CA1-CA3  32.02763  30.31088  33.74438     0
+    ##               diff       lwr       upr     p adj
+    ## CA3-DG  -10.575254 -25.59740  4.446892 0.2130127
+    ## CA1-DG   -7.148650 -21.60770  7.310403 0.4586622
+    ## CA1-CA3   3.426604 -11.81836 18.671566 0.8487989
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  231.4   77.13   1.854  0.153
-    ## Residuals   40 1664.1   41.60
-
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## APA2         3  495.0  165.01   12.01 9.57e-06 ***
-    ## Residuals   40  549.5   13.74                     
+    ##             Df Sum Sq Mean Sq F value Pr(>F)    
+    ## Punch        2   5899  2949.6   533.7 <2e-16 ***
+    ## Residuals   41    227     5.5                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   17.9   5.965   0.424  0.737
-    ## Residuals   40  563.3  14.083
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC3 ~ Punch, data = pcadata)
+    ## 
+    ## $Punch
+    ##              diff       lwr       upr p adj
+    ## CA3-DG   15.65204  13.51744  17.78664     0
+    ## CA1-DG  -13.45221 -15.50680 -11.39763     0
+    ## CA1-CA3 -29.10425 -31.27051 -26.93799     0
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   31.2   10.41   0.963   0.42
-    ## Residuals   40  432.4   10.81
+    ## APA2         3    269   89.75   0.613  0.611
+    ## Residuals   40   5857  146.41
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA2         3   98.6   32.88   0.659  0.582
+    ## Residuals   40 1995.5   49.89
+
+    ##             Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## APA2         3  168.3   56.11   4.906 0.00537 **
+    ## Residuals   40  457.5   11.44                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    ##             Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## APA2         3  155.2   51.73   5.389 0.00328 **
+    ## Residuals   40  384.0    9.60                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ![](../figures/02b_RNAseqAll/pca-1.png)
 
@@ -823,33 +881,33 @@ Number of differentially expressed genes per two-way contrast
 venn diagrams
 -------------
 
-    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 1924
+    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2526
 
-    ## [1] 1924
+    ## [1] 2526
 
-    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 1442
+    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2022
 
-    ## [1] 1442
+    ## [1] 2022
 
-    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 2986
+    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 3145
 
-    ## [1] 2986
+    ## [1] 3145
 
-    contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 120
+    contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 114
 
-    ## [1] 120
+    ## [1] 114
 
-    contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) #39
+    contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) #60
 
-    ## [1] 39
+    ## [1] 60
 
-    contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 31
+    contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 35
 
-    ## [1] 31
+    ## [1] 35
 
-    contrast7 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
+    contrast7 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
 
-    ## [1] 0
+    ## [1] 1
 
     rldpadjs <- assay(rld)
     rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
@@ -863,8 +921,8 @@ venn diagrams
     venn5 <- row.names(rldpadjs[rldpadjs[5] <0.05 & !is.na(rldpadjs[5]),]) 
     venn6 <- row.names(rldpadjs[rldpadjs[6] <0.05 & !is.na(rldpadjs[6]),]) 
 
-    candidates1 <- list("CA1DG" = venn1, "CA3DG" = venn3, "CA1CA3" = venn2) 
-    candidates2 <- list("V4" = venn4, "V5" = venn5, "V6" = venn6)
+    candidates1 <- list("CA1-DG" = venn1, "CA3-DG" = venn3, "CA1-CA3" = venn2) 
+    candidates2 <- list("Yoked-Consistent" = venn4, "Yoked-Conflict" = venn5, "Yoked-Yoked" = venn6)
 
     prettyvenn <- venn.diagram(
       scaled=T,
@@ -877,7 +935,20 @@ venn diagrams
     #dev.off()
     grid.draw(prettyvenn)
 
-![](../figures/02b_RNAseqAll/venndiagrams-1.png)
+![](../figures/02b_RNAseqAll/venndiagrams1-1.png)
+
+    prettyvenn <- venn.diagram(
+      scaled=T,
+      x = candidates2, filename=NULL, 
+      col = "black",
+      alpha = 0.5,
+      cex = 1, fontfamily = "sans", #fontface = "bold",
+      cat.default.pos = "text",
+      cat.cex = 1, cat.fontfamily = "sans")
+    #dev.off()
+    grid.draw(prettyvenn)
+
+![](../figures/02b_RNAseqAll/venndiagrams2-1.png)
 
 Volcanos plots and and gene lists
 ---------------------------------
@@ -889,13 +960,13 @@ ca3 dg
     summary(res)
 
     ## 
-    ## out of 17674 with nonzero total read count
+    ## out of 28074 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 1625, 9.2% 
-    ## LFC < 0 (down)   : 1361, 7.7% 
-    ## outliers [1]     : 7, 0.04% 
-    ## low counts [2]   : 4455, 25% 
-    ## (mean count < 1)
+    ## LFC > 0 (up)     : 1585, 5.6% 
+    ## LFC < 0 (down)   : 1560, 5.6% 
+    ## outliers [1]     : 14, 0.05% 
+    ## low counts [2]   : 11971, 43% 
+    ## (mean count < 2)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
@@ -905,47 +976,47 @@ ca3 dg
     ## log2 fold change (MLE): Punch CA3 vs DG 
     ## Wald test p-value: Punch CA3 vs DG 
     ## DataFrame with 10 rows and 6 columns
-    ##           baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Fam163b  632.63230      -5.674235 0.3528797 -16.07980 3.535108e-58
-    ## Doc2b    351.76381      -6.985282 0.4696300 -14.87401 4.861017e-50
-    ## C1ql3    288.38305      -8.023868 0.5819242 -13.78851 2.988664e-43
-    ## Gnao1    164.33213       1.609036 0.1289476  12.47821 9.816440e-36
-    ## Pitpnm2  157.76399      -3.037954 0.2455791 -12.37057 3.771355e-35
-    ## Pnmal2   777.66865      -1.707431 0.1402372 -12.17530 4.208416e-34
-    ## Cpe     3074.70125       2.968743 0.2487199  11.93609 7.674487e-33
-    ## Me1       44.02835       4.393035 0.3744782  11.73108 8.832196e-32
-    ## Ahi1     241.16807      -1.793898 0.1544626 -11.61380 3.506656e-31
-    ## Pde1b    259.78724      -3.353212 0.2903870 -11.54739 7.609648e-31
+    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Fam163b  640.7142      -5.424836 0.3462510 -15.66735 2.528952e-55
+    ## C1ql3    286.6724      -6.783352 0.5044676 -13.44656 3.225440e-41
+    ## Doc2b    356.9267      -6.160752 0.4724915 -13.03886 7.354570e-39
+    ## Pde1b    262.4669      -3.319108 0.2702932 -12.27966 1.164893e-34
+    ## Pter     163.9560      -6.192537 0.5392544 -11.48352 1.596504e-30
+    ## Cpe     3172.2598       2.773492 0.2421395  11.45411 2.242592e-30
+    ## Pnmal2   793.0014      -1.676574 0.1475724 -11.36102 6.537560e-30
+    ## Adcy1   2703.0855      -3.283901 0.2917109 -11.25738 2.129907e-29
+    ## Ahi1     491.0714      -1.794860 0.1603154 -11.19581 4.274891e-29
+    ## Pitpnm2  983.1507      -2.916795 0.2615723 -11.15101 7.079728e-29
     ##                 padj
     ##            <numeric>
-    ## Fam163b 4.670585e-54
-    ## Doc2b   3.211188e-46
-    ## C1ql3   1.316208e-39
-    ## Gnao1   3.242370e-32
-    ## Pitpnm2 9.965427e-32
-    ## Pnmal2  9.266933e-31
-    ## Cpe     1.448505e-29
-    ## Me1     1.458637e-28
-    ## Ahi1    5.147771e-28
-    ## Pde1b   1.005387e-27
+    ## Fam163b 4.068831e-51
+    ## C1ql3   2.594705e-37
+    ## Doc2b   3.944256e-35
+    ## Pde1b   4.685490e-31
+    ## Pter    5.137231e-27
+    ## Cpe     6.013511e-27
+    ## Pnmal2  1.502611e-26
+    ## Adcy1   4.283509e-26
+    ## Ahi1    7.642080e-26
+    ## Pitpnm2 1.139057e-25
 
     data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
     data <- na.omit(data)
     head(data)
 
     ##            gene     pvalue        lfc
-    ## 1 0610007P14Rik 0.34427089 -0.4723008
-    ## 2 0610009B22Rik 0.18594227  0.5552003
-    ## 3 0610009L18Rik 0.03094948 -0.1970618
-    ## 4 0610009O20Rik 0.28216617 -0.4427569
-    ## 5 0610010F05Rik 0.38631940  0.5035075
-    ## 6 0610010K14Rik 0.59238548 -1.8559179
+    ## 2 0610007P14Rik 0.19514020 -0.3283554
+    ## 3 0610009B22Rik 0.23151594  0.6824716
+    ## 5 0610009L18Rik 0.02214522 -0.1740628
+    ## 6 0610009O20Rik 0.17482553 -0.3461581
+    ## 7 0610010F05Rik 0.40095180  0.4741619
+    ## 8 0610010K14Rik 1.32587669 -1.6893329
 
     summary(log10(data$pvalue +1))
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ## 0.00000 0.04214 0.11910 0.20420 0.27480 1.73500
+    ## 0.00000 0.03733 0.10250 0.18310 0.24530 1.71100
 
     data <- data %>%
       mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
@@ -955,21 +1026,21 @@ ca3 dg
                                         no = "none")))
     top_n(data, n = 5, wt = lfc)
 
-    ##      gene    pvalue      lfc color
-    ## 1   Crhbp  6.698921 7.864258   CA3
-    ## 2    Klk8 11.721029 7.596153   CA3
-    ## 3   Krt73  5.805905 7.703681   CA3
-    ## 4     Sst  6.282484 9.023261   CA3
-    ## 5 Tmem215  6.115328 7.274514   CA3
+    ##            gene    pvalue      lfc color
+    ## 1 2310002F09Rik  6.743819 7.246620   CA3
+    ## 2         Crhbp  5.348403 7.235562   CA3
+    ## 3          Klk8 12.616421 7.687844   CA3
+    ## 4           Sst  5.614643 7.528500   CA3
+    ## 5       Tmem215  7.585915 7.420281   CA3
 
     top_n(data, n = 5, wt = pvalue)
 
     ##      gene   pvalue       lfc color
-    ## 1   C1ql3 38.88068 -8.023868    DG
-    ## 2   Doc2b 45.49333 -6.985282    DG
-    ## 3 Fam163b 53.33063 -5.674235    DG
-    ## 4   Gnao1 31.48914  1.609036   CA3
-    ## 5 Pitpnm2 31.00150 -3.037954    DG
+    ## 1   C1ql3 36.58591 -6.783352    DG
+    ## 2   Doc2b 34.40403 -6.160752    DG
+    ## 3 Fam163b 50.39053 -5.424836    DG
+    ## 4   Pde1b 30.32924 -3.319108    DG
+    ## 5    Pter 26.28927 -6.192537    DG
 
     data$logp <- log10(data$pvalue +1 )
 
@@ -988,6 +1059,9 @@ ca3 dg
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
             panel.grid.major=element_blank())
+    colored
+
+![](../figures/02b_RNAseqAll/unnamed-chunk-8-1.png)
 
     pdf(file="../figures/02b_RNAseqAll/AllDGCA3.pdf", width=1.75, height=2.25)
     plot(colored)
@@ -1006,13 +1080,13 @@ ca1 ca3
     summary(res)
 
     ## 
-    ## out of 17674 with nonzero total read count
+    ## out of 28074 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 651, 3.7% 
-    ## LFC < 0 (down)   : 791, 4.5% 
-    ## outliers [1]     : 7, 0.04% 
-    ## low counts [2]   : 6165, 35% 
-    ## (mean count < 3)
+    ## LFC > 0 (up)     : 850, 3% 
+    ## LFC < 0 (down)   : 1172, 4.2% 
+    ## outliers [1]     : 14, 0.05% 
+    ## low counts [2]   : 14146, 50% 
+    ## (mean count < 4)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
@@ -1022,42 +1096,42 @@ ca1 ca3
     ## log2 fold change (MLE): Punch CA1 vs CA3 
     ## Wald test p-value: Punch CA1 vs CA3 
     ## DataFrame with 10 rows and 6 columns
-    ##         baseMean log2FoldChange     lfcSE       stat       pvalue
-    ##        <numeric>      <numeric> <numeric>  <numeric>    <numeric>
-    ## Itpka  712.20310       3.073453 0.2158630  14.237982 5.324215e-46
-    ## Doc2b  351.76381       7.136499 0.5198022  13.729259 6.782335e-43
-    ## Pou3f1 219.85725       6.506303 0.5913889  11.001733 3.748584e-28
-    ## Fibcd1 361.24751       7.658648 0.7344959  10.427080 1.865325e-25
-    ## Syn2   367.34401      -2.238529 0.2159165 -10.367572 3.482628e-25
-    ## C1ql3  288.38305       6.413302 0.6524966   9.828867 8.456470e-23
-    ## Wfs1   186.06663       5.369378 0.5608770   9.573182 1.036650e-21
-    ## Mpped1  25.52651       4.389502 0.4598871   9.544738 1.364518e-21
-    ## Bcr    343.00374       2.292545 0.2439557   9.397382 5.593776e-21
-    ## Ahi1   241.16807       1.769745 0.1925839   9.189475 3.947636e-20
+    ##         baseMean log2FoldChange     lfcSE      stat       pvalue
+    ##        <numeric>      <numeric> <numeric> <numeric>    <numeric>
+    ## Itpka   730.9373       2.942103 0.2403135 12.242771 1.836531e-34
+    ## Doc2b   356.9267       6.288673 0.5404129 11.636793 2.679020e-31
+    ## Fibcd1  370.6083       6.811095 0.6694119 10.174744 2.570763e-24
+    ## Syn2   1140.2049      -2.147075 0.2193603 -9.787891 1.269149e-22
+    ## Pou3f1  220.1470       6.183465 0.6376705  9.696959 3.106175e-22
+    ## Ahi1    491.0714       1.726725 0.1928521  8.953627 3.439893e-19
+    ## Bcr     351.3789       2.165229 0.2425153  8.928215 4.329363e-19
+    ## Homer3  189.2740      -4.116145 0.4614371 -8.920273 4.651409e-19
+    ## C1ql3   286.6724       5.120135 0.5857813  8.740692 2.316863e-18
+    ## Nptxr  1951.6528      -2.372224 0.2744764 -8.642725 5.488772e-18
     ##                padj
     ##           <numeric>
-    ## Itpka  6.123912e-42
-    ## Doc2b  3.900521e-39
-    ## Pou3f1 1.437207e-24
-    ## Fibcd1 5.363743e-22
-    ## Syn2   8.011437e-22
-    ## C1ql3  1.621105e-19
-    ## Wfs1   1.703363e-18
-    ## Mpped1 1.961835e-18
-    ## Bcr    7.148846e-18
-    ## Ahi1   4.540571e-17
+    ## Itpka  2.555349e-30
+    ## Doc2b  1.863794e-27
+    ## Fibcd1 1.192320e-20
+    ## Syn2   4.414735e-19
+    ## Pou3f1 8.643863e-19
+    ## Ahi1   7.977113e-16
+    ## Bcr    8.089963e-16
+    ## Homer3 8.089963e-16
+    ## C1ql3  3.581870e-15
+    ## Nptxr  7.637077e-15
 
     data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
     data <- na.omit(data)
     head(data)
 
-    ##            gene    pvalue        lfc
-    ## 1 0610007P14Rik 0.1056849  0.3087746
-    ## 2 0610009B22Rik 0.2384953 -1.2505139
-    ## 3 0610009L18Rik 0.5469948 -3.2706630
-    ## 4 0610009O20Rik 0.2413655 -0.5878760
-    ## 5 0610010F05Rik 0.1915075 -0.6331969
-    ## 7 0610012G03Rik 0.3831395 -0.6573223
+    ##            gene     pvalue        lfc
+    ## 2 0610007P14Rik 0.05307248  0.1427189
+    ## 3 0610009B22Rik 0.34474251 -1.2031477
+    ## 5 0610009L18Rik 0.31746049 -2.0631798
+    ## 6 0610009O20Rik 0.18643189 -0.4471835
+    ## 7 0610010F05Rik 0.41268415 -0.5956828
+    ## 8 0610010K14Rik 1.42342773  2.2172319
 
     data <- data %>%
       mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
@@ -1067,21 +1141,21 @@ ca1 ca3
                                         no = "none")))
     top_n(data, n = 5, wt = lfc)
 
-    ##            gene    pvalue       lfc color
-    ## 1 3100002H09Rik 1.5907049  8.898656   CA1
-    ## 2       Alox12b 5.0379514  8.917244   CA1
-    ## 3       Gm10273 0.2239276  8.910547  none
-    ## 4         Rps12 0.6414271 17.189424  none
-    ## 5         Thbs4 2.9101857  8.868200   CA1
+    ##       gene    pvalue       lfc color
+    ## 1  Alox12b 5.3999174  8.893057   CA1
+    ## 2  Gm12895 1.7916076 15.903262   CA1
+    ## 3  Gm28439 0.3150749 10.253442  none
+    ## 4    Rps12 0.2580097  8.966535  none
+    ## 5 Rps6-ps4 2.1405492 17.050443   CA1
 
     top_n(data, n = 5, wt = pvalue)
 
     ##     gene   pvalue       lfc color
-    ## 1  Doc2b 38.40888  7.136499   CA1
-    ## 2 Fibcd1 21.27053  7.658648   CA1
-    ## 3  Itpka 41.21297  3.073453   CA1
-    ## 4 Pou3f1 23.84248  6.506303   CA1
-    ## 5   Syn2 21.09629 -2.238529   CA3
+    ## 1  Doc2b 26.72960  6.288673   CA1
+    ## 2 Fibcd1 19.92361  6.811095   CA1
+    ## 3  Itpka 29.59255  2.942103   CA1
+    ## 4 Pou3f1 18.06329  6.183465   CA1
+    ## 5   Syn2 18.35510 -2.147075   CA3
 
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
@@ -1101,7 +1175,7 @@ ca1 ca3
             panel.grid.major=element_blank())
     colored
 
-![](../figures/02b_RNAseqAll/unnamed-chunk-10-1.png)
+![](../figures/02b_RNAseqAll/unnamed-chunk-9-1.png)
 
     pdf(file="../figures/02b_RNAseqAll/AllCA1CA3.pdf", width=1.75, height=2.25)
     plot(colored)
@@ -1117,30 +1191,30 @@ ca1 ca3
     ## log2 fold change (MLE): APA2 conflict vs consistent 
     ## Wald test p-value: APA2 conflict vs consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##                 baseMean log2FoldChange     lfcSE        stat    pvalue
-    ##                <numeric>      <numeric> <numeric>   <numeric> <numeric>
-    ## 0610007P14Rik 21.5461759    -0.05019271 0.3742306 -0.13412240 0.8933058
-    ## 0610009B22Rik  6.4277426    -0.76243785 0.6582895 -1.15821053 0.2467781
-    ## 0610009L18Rik  3.9008693     0.53613979 1.1080722  0.48384914 0.6284929
-    ## 0610009O20Rik 48.6140661     0.25676554 0.3790443  0.67740248 0.4981506
-    ## 0610010F05Rik  8.1466102    -0.27012199 0.3928997 -0.68750873 0.4917622
-    ## 0610010K14Rik  1.9324187     0.79827392 1.0021639  0.79655024 0.4257123
-    ## 0610012G03Rik 61.5516314     0.11916134 0.3437908  0.34661003 0.7288843
-    ## 0610030E20Rik 39.9081366    -0.10853833 0.4965014 -0.21860629 0.8269568
-    ## 0610037L13Rik  7.6331581     0.04250870 0.4686990  0.09069511 0.9277349
-    ## 0610040J01Rik  0.9055227    -0.92499512 1.2783405 -0.72359054 0.4693172
-    ##                    padj
-    ##               <numeric>
-    ## 0610007P14Rik         1
-    ## 0610009B22Rik         1
-    ## 0610009L18Rik         1
-    ## 0610009O20Rik         1
-    ## 0610010F05Rik         1
-    ## 0610010K14Rik         1
-    ## 0610012G03Rik         1
-    ## 0610030E20Rik         1
-    ## 0610037L13Rik         1
-    ## 0610040J01Rik         1
+    ##                 baseMean log2FoldChange     lfcSE       stat       pvalue
+    ##                <numeric>      <numeric> <numeric>  <numeric>    <numeric>
+    ## Gm20425        9.9547031     18.3761659 3.8552983  4.7664705 1.874811e-06
+    ## Gm26702       12.8862199     21.6656306 4.9982871  4.3346111 1.460180e-05
+    ## 0610005C13Rik  0.5314602     -1.6537609 4.0150729 -0.4118881 6.804214e-01
+    ## 0610007P14Rik 44.1662180     -0.3010539 0.3503880 -0.8592014 3.902294e-01
+    ## 0610009B22Rik 13.6936599     -0.6360010 0.6360642 -0.9999008 3.173585e-01
+    ## 0610009E02Rik  0.5789240     -1.2567488 3.6923508 -0.3403655 7.335813e-01
+    ## 0610009L18Rik  4.3110852      0.5139942 1.1375195  0.4518552 6.513733e-01
+    ## 0610009O20Rik 48.6495711      0.2999714 0.3929565  0.7633706 4.452424e-01
+    ## 0610010F05Rik 66.9154162     -0.3497983 0.3171319 -1.1030056 2.700247e-01
+    ## 0610010K14Rik 20.5700916      0.2369065 0.5786025  0.4094461 6.822123e-01
+    ##                     padj
+    ##                <numeric>
+    ## Gm20425       0.05260721
+    ## Gm26702       0.20486331
+    ## 0610005C13Rik 1.00000000
+    ## 0610007P14Rik 1.00000000
+    ## 0610009B22Rik 1.00000000
+    ## 0610009E02Rik 1.00000000
+    ## 0610009L18Rik 1.00000000
+    ## 0610009O20Rik 1.00000000
+    ## 0610010F05Rik 1.00000000
+    ## 0610010K14Rik 1.00000000
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -1154,7 +1228,6 @@ ca1 ca3
                                         no = "none")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
-
     colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
       theme_bw(base_size = 8) + # clean up theme
@@ -1164,20 +1237,26 @@ ca1 ca3
                panel.grid.major=element_blank()) + 
       scale_x_continuous(name="log2 (conflict/consistent)",
                          limits=c(-10, 10)) +
-      scale_y_log10(name="-log10 (adjusted p-value")  +
+      scale_y_continuous(name="-log10 (adjusted p-value")  +
       geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
     colored
 
-    ## Warning: Transformation introduced infinite values in continuous y-axis
-
-![](../figures/02b_RNAseqAll/unnamed-chunk-11-1.png)
+![](../figures/02b_RNAseqAll/unnamed-chunk-10-1.png)
 
     pdf(file="../figures/02b_RNAseqAll/Allconsistentconflict.pdf", width=1.5, height=1.75)
     plot(colored)
-
-    ## Warning: Transformation introduced infinite values in continuous y-axis
-
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
+
+plot single gene counts
+-----------------------
+
+    plotCounts(dds, "Prkcz", intgroup = "Punch", normalized = TRUE)
+
+![](../figures/02b_RNAseqAll/unnamed-chunk-11-1.png)
+
+    plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE)
+
+![](../figures/02b_RNAseqAll/unnamed-chunk-11-2.png)

@@ -68,7 +68,6 @@ pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 percentVar
 
- 
 summary(aov(PC1 ~ APA2, data=pcadata)) 
 TukeyHSD((aov(PC1 ~ APA2, data=pcadata)) , which = "APA2") 
 
@@ -89,9 +88,8 @@ contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consist
 ```
 
 ```{r DGanova, results='asis'}
-avo1 <- aov(PC1 ~ APA2, data=pcadata)
-avo1.table <- xtable::xtable(avo1)
-print(avo1.table)
+aov(PC1 ~ APA2, data=pcadata)
+summary(aov(PC1 ~ APA2, data=pcadata))
 ```
 
 ### DG contraststs
