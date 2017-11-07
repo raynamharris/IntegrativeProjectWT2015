@@ -1259,6 +1259,464 @@ for(y in names(slim4)){
 
 ![](../figures/01_behavior/unnamed-chunk-1-5.png)![](../figures/01_behavior/unnamed-chunk-1-6.png)![](../figures/01_behavior/unnamed-chunk-1-7.png)![](../figures/01_behavior/unnamed-chunk-1-8.png)![](../figures/01_behavior/unnamed-chunk-1-9.png)![](../figures/01_behavior/unnamed-chunk-1-10.png)
 
+Repeated measures anova
+-----------------------
+
+ges: Generalized Eta-Squared measure of effect size (see in references below: Bakeman, 2005).
+Sphericity: assumption of the test
+
+``` r
+slim1 <- behavior[,c(15,16,6,20:59)] # drop frivolous columns
+slim2 <- slim1 %>% 
+  filter(TrainGroup == "trained") 
+slim3 <- slim2[,c(1:3)] # extract experimental design variables
+slim4 <- slim2[,c(4:43)]
+
+
+for(y in names(slim4)){
+  ymod<- summary(aov(slim4[[y]] ~ slim3$APA2 * slim3$TrainSessionCombo ))
+  cat(paste('\nDependent var:', y, '\n'))
+  print(ymod)
+}
+```
+
+    ## 
+    ## Dependent var: SdevSpeedArena 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)    
+    ## slim3$APA2                           1  0.359  0.3588   2.119  0.148    
+    ## slim3$TrainSessionCombo              8 22.373  2.7966  16.516 <2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8  1.298  0.1623   0.958  0.471    
+    ## Residuals                          135 22.860  0.1693                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Linearity.Arena. 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)    
+    ## slim3$APA2                           1 0.0132 0.01319   6.963 0.0093 ** 
+    ## slim3$TrainSessionCombo              8 0.4562 0.05702  30.097 <2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8 0.0155 0.00193   1.020 0.4240    
+    ## Residuals                          135 0.2558 0.00189                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: NumEntrances 
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1    148   147.6   5.838 0.017018 *  
+    ## slim3$TrainSessionCombo              8  11253  1406.7  55.653  < 2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8    813   101.6   4.019 0.000262 ***
+    ## Residuals                          135   3412    25.3                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Time1stEntr 
+    ##                                     Df  Sum Sq Mean Sq F value   Pr(>F)
+    ## slim3$APA2                           1   58341   58341   1.677    0.198
+    ## slim3$TrainSessionCombo              8 1736981  217123   6.242 7.38e-07
+    ## slim3$APA2:slim3$TrainSessionCombo   8  406492   50812   1.461    0.177
+    ## Residuals                          135 4695862   34784                 
+    ##                                       
+    ## slim3$APA2                            
+    ## slim3$TrainSessionCombo            ***
+    ## slim3$APA2:slim3$TrainSessionCombo    
+    ## Residuals                             
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Path1stEntr 
+    ##                                     Df Sum Sq Mean Sq F value  Pr(>F)    
+    ## slim3$APA2                           1   21.3   21.29   0.929   0.337    
+    ## slim3$TrainSessionCombo              8 1124.5  140.57   6.132 9.8e-07 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8  293.5   36.69   1.601   0.130    
+    ## Residuals                          135 3094.5   22.92                    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Speed1stEntr.cm.s. 
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1    1.3    1.33   0.060    0.807    
+    ## slim3$TrainSessionCombo              8 1141.2  142.64   6.465 4.15e-07 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8   72.7    9.09   0.412    0.912    
+    ## Residuals                          135 2978.8   22.07                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Dist1stEntr.m. 
+    ##                                     Df Sum Sq Mean Sq F value  Pr(>F)    
+    ## slim3$APA2                           1  0.394  0.3935   5.855 0.01686 *  
+    ## slim3$TrainSessionCombo              8 11.633  1.4542  21.637 < 2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8  1.841  0.2301   3.424 0.00129 ** 
+    ## Residuals                          135  9.073  0.0672                    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: NumShock 
+    ##                                     Df Sum Sq Mean Sq F value  Pr(>F)    
+    ## slim3$APA2                           1    399     399   7.862 0.00579 ** 
+    ## slim3$TrainSessionCombo              8  38859    4857  95.757 < 2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8   1188     149   2.928 0.00478 ** 
+    ## Residuals                          135   6848      51                    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: MaxTimeAvoid 
+    ##                                     Df  Sum Sq Mean Sq F value   Pr(>F)
+    ## slim3$APA2                           1   71883   71883   3.340   0.0698
+    ## slim3$TrainSessionCombo              8 1641566  205196   9.534 2.12e-10
+    ## slim3$APA2:slim3$TrainSessionCombo   8  178024   22253   1.034   0.4138
+    ## Residuals                          135 2905642   21523                 
+    ##                                       
+    ## slim3$APA2                         .  
+    ## slim3$TrainSessionCombo            ***
+    ## slim3$APA2:slim3$TrainSessionCombo    
+    ## Residuals                             
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Time2ndEntr 
+    ##                                     Df  Sum Sq Mean Sq F value   Pr(>F)
+    ## slim3$APA2                           1  128822  128822   3.032   0.0839
+    ## slim3$TrainSessionCombo              8 3124476  390559   9.193 4.75e-10
+    ## slim3$APA2:slim3$TrainSessionCombo   8  682401   85300   2.008   0.0500
+    ## Residuals                          135 5735214   42483                 
+    ##                                       
+    ## slim3$APA2                         .  
+    ## slim3$TrainSessionCombo            ***
+    ## slim3$APA2:slim3$TrainSessionCombo *  
+    ## Residuals                             
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Path2ndEntr 
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1     46   45.62   1.573   0.2119    
+    ## slim3$TrainSessionCombo              8   1967  245.92   8.480 2.65e-09 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8    511   63.91   2.204   0.0308 *  
+    ## Residuals                          135   3915   29.00                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Speed2ndEntr 
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1   94.4   94.40   4.410   0.0376 *  
+    ## slim3$TrainSessionCombo              8 1427.9  178.48   8.338 3.75e-09 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8  239.6   29.95   1.399   0.2023    
+    ## Residuals                          135 2889.9   21.41                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: TimeTarget 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)    
+    ## slim3$APA2                           1    736     736   5.968 0.0159 *  
+    ## slim3$TrainSessionCombo              8 143803   17975 145.845 <2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8   1823     228   1.849 0.0732 .  
+    ## Residuals                          135  16639     123                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: pTimeTarget 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)    
+    ## slim3$APA2                           1 0.0022 0.00215   3.430 0.0662 .  
+    ## slim3$TrainSessionCombo              8 0.9194 0.11493 183.304 <2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8 0.0060 0.00075   1.193 0.3075    
+    ## Residuals                          135 0.0846 0.00063                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: pTimeCCW 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)
+    ## slim3$APA2                           1  0.000 0.00019   0.004  0.951
+    ## slim3$TrainSessionCombo              8  0.423 0.05293   1.064  0.392
+    ## slim3$APA2:slim3$TrainSessionCombo   8  0.340 0.04250   0.854  0.557
+    ## Residuals                          135  6.718 0.04976               
+    ## 
+    ## Dependent var: pTimeOPP 
+    ##                                     Df Sum Sq Mean Sq F value  Pr(>F)    
+    ## slim3$APA2                           1  0.114 0.11426   3.266   0.073 .  
+    ## slim3$TrainSessionCombo              8  1.686 0.21078   6.025 1.3e-06 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8  0.332 0.04145   1.185   0.313    
+    ## Residuals                          135  4.723 0.03499                    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: pTimeCW 
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1 0.0932 0.09321   4.590 0.033950 *  
+    ## slim3$TrainSessionCombo              8 0.6046 0.07557   3.722 0.000582 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8 0.4004 0.05005   2.465 0.015932 *  
+    ## Residuals                          135 2.7414 0.02031                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: RayleigLength 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)    
+    ## slim3$APA2                           1  0.002  0.0022   0.133  0.716    
+    ## slim3$TrainSessionCombo              8  5.418  0.6772  41.100 <2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8  0.152  0.0190   1.153  0.333    
+    ## Residuals                          135  2.224  0.0165                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: RayleigAngle 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)  
+    ## slim3$APA2                           1    344     344   0.135 0.7144  
+    ## slim3$TrainSessionCombo              8  38237    4780   1.869 0.0698 .
+    ## slim3$APA2:slim3$TrainSessionCombo   8  11154    1394   0.545 0.8205  
+    ## Residuals                          135 345189    2557                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: PolarAvgVal 
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1  64074   64074   92.17  < 2e-16 ***
+    ## slim3$TrainSessionCombo              8 104175   13022   18.73  < 2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8  84282   10535   15.15 1.02e-15 ***
+    ## Residuals                          135  93846     695                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: PolarSdVal 
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1   5254    5254  14.087 0.000258 ***
+    ## slim3$TrainSessionCombo              8  38612    4827  12.942 9.96e-14 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8  14326    1791   4.802 3.25e-05 ***
+    ## Residuals                          135  50347     373                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: PolarMinVal 
+    ##                                     Df   Sum Sq   Mean Sq F value Pr(>F)
+    ## slim3$APA2                           1 0.000009 0.0000091   2.887 0.0916
+    ## slim3$TrainSessionCombo              8 0.003313 0.0004142 130.932 <2e-16
+    ## slim3$APA2:slim3$TrainSessionCombo   8 0.000040 0.0000050   1.571 0.1390
+    ## Residuals                          135 0.000427 0.0000032               
+    ##                                       
+    ## slim3$APA2                         .  
+    ## slim3$TrainSessionCombo            ***
+    ## slim3$APA2:slim3$TrainSessionCombo    
+    ## Residuals                             
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: PolarMinBin 
+    ##                                     Df  Sum Sq Mean Sq F value   Pr(>F)
+    ## slim3$APA2                           1   33884   33884   2.112 0.148463
+    ## slim3$TrainSessionCombo              8  465482   58185   3.627 0.000749
+    ## slim3$APA2:slim3$TrainSessionCombo   8  302140   37767   2.354 0.021112
+    ## Residuals                          135 2165800   16043                 
+    ##                                       
+    ## slim3$APA2                            
+    ## slim3$TrainSessionCombo            ***
+    ## slim3$APA2:slim3$TrainSessionCombo *  
+    ## Residuals                             
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Min50.RngLoBin 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)  
+    ## slim3$APA2                           1   1617    1617   0.636 0.4266  
+    ## slim3$TrainSessionCombo              8  39605    4951   1.947 0.0579 .
+    ## slim3$APA2:slim3$TrainSessionCombo   8  11219    1402   0.552 0.8157  
+    ## Residuals                          135 343247    2543                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Min50.RngHiBin 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)
+    ## slim3$APA2                           1   2343    2343   0.579  0.448
+    ## slim3$TrainSessionCombo              8  51499    6437   1.591  0.133
+    ## slim3$APA2:slim3$TrainSessionCombo   8  21186    2648   0.655  0.730
+    ## Residuals                          135 546094    4045               
+    ## 
+    ## Dependent var: PolarMaxVal 
+    ##                                     Df  Sum Sq  Mean Sq F value   Pr(>F)
+    ## slim3$APA2                           1 0.00102 0.001023   2.044    0.155
+    ## slim3$TrainSessionCombo              8 0.06305 0.007881  15.746 3.14e-16
+    ## slim3$APA2:slim3$TrainSessionCombo   8 0.00257 0.000321   0.641    0.742
+    ## Residuals                          135 0.06757 0.000500                 
+    ##                                       
+    ## slim3$APA2                            
+    ## slim3$TrainSessionCombo            ***
+    ## slim3$APA2:slim3$TrainSessionCombo    
+    ## Residuals                             
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: PolarMaxBin 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)
+    ## slim3$APA2                           1   1431    1431   0.368  0.545
+    ## slim3$TrainSessionCombo              8  19899    2487   0.639  0.744
+    ## slim3$APA2:slim3$TrainSessionCombo   8  10347    1293   0.332  0.952
+    ## Residuals                          135 525540    3893               
+    ## 
+    ## Dependent var: Max50.RngLoBin 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)
+    ## slim3$APA2                           1     41      41   0.011  0.917
+    ## slim3$TrainSessionCombo              8  39835    4979   1.333  0.232
+    ## slim3$APA2:slim3$TrainSessionCombo   8   5956     745   0.199  0.991
+    ## Residuals                          135 504321    3736               
+    ## 
+    ## Dependent var: Max50.RngHiBin 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)  
+    ## slim3$APA2                           1   1297    1297   0.489 0.4856  
+    ## slim3$TrainSessionCombo              8  48847    6106   2.302 0.0241 *
+    ## slim3$APA2:slim3$TrainSessionCombo   8   9156    1144   0.431 0.9005  
+    ## Residuals                          135 358147    2653                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: AnnularMinVal 
+    ##                                     Df   Sum Sq   Mean Sq F value   Pr(>F)
+    ## slim3$APA2                           1 0.000047 4.668e-05   0.879 0.350206
+    ## slim3$TrainSessionCombo              8 0.001676 2.094e-04   3.943 0.000322
+    ## slim3$APA2:slim3$TrainSessionCombo   8 0.000157 1.961e-05   0.369 0.935264
+    ## Residuals                          135 0.007171 5.312e-05                 
+    ##                                       
+    ## slim3$APA2                            
+    ## slim3$TrainSessionCombo            ***
+    ## slim3$APA2:slim3$TrainSessionCombo    
+    ## Residuals                             
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: AnnularMinBin 
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1      7    7.47   0.225    0.636    
+    ## slim3$TrainSessionCombo              8   1618  202.21   6.077 1.13e-06 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8    204   25.53   0.767    0.632    
+    ## Residuals                          135   4492   33.28                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: AnnularMaxVal 
+    ##                                     Df Sum Sq  Mean Sq F value  Pr(>F)    
+    ## slim3$APA2                           1 0.0108 0.010841   1.778   0.185    
+    ## slim3$TrainSessionCombo              8 0.2473 0.030908   5.069 1.6e-05 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8 0.0265 0.003314   0.544   0.822    
+    ## Residuals                          135 0.8231 0.006097                    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: AnnularMaxBin 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)    
+    ## slim3$APA2                           1   0.72   0.722   0.946  0.333    
+    ## slim3$TrainSessionCombo              8 135.40  16.925  22.161 <2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8   3.29   0.411   0.538  0.826    
+    ## Residuals                          135 103.10   0.764                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: AnnularAvg 
+    ##                                     Df Sum Sq Mean Sq F value Pr(>F)    
+    ## slim3$APA2                           1   1.31   1.307   3.308 0.0712 .  
+    ## slim3$TrainSessionCombo              8 159.57  19.946  50.474 <2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8   1.17   0.146   0.370 0.9346    
+    ## Residuals                          135  53.35   0.395                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: AnnularSd 
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1   14.9   14.92   1.364    0.245    
+    ## slim3$TrainSessionCombo              8 1219.1  152.39  13.928 1.25e-14 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8   84.1   10.52   0.961    0.469    
+    ## Residuals                          135 1477.0   10.94                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: AnnularSkewnes 
+    ##                                     Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## slim3$APA2                           1   3.07  3.0663   4.535 0.03503 * 
+    ## slim3$TrainSessionCombo              8  14.32  1.7901   2.647 0.00996 **
+    ## slim3$APA2:slim3$TrainSessionCombo   8   5.00  0.6256   0.925 0.49791   
+    ## Residuals                          135  91.28  0.6762                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: AnnularKurtosis 
+    ##                                     Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## slim3$APA2                           1    498   498.1   9.342 0.00270 **
+    ## slim3$TrainSessionCombo              8   1392   174.0   3.264 0.00197 **
+    ## slim3$APA2:slim3$TrainSessionCombo   8    373    46.7   0.875 0.53929   
+    ## Residuals                          135   7198    53.3                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Speed1 
+    ##                                     Df  Sum Sq   Mean Sq F value   Pr(>F)
+    ## slim3$APA2                           1 0.00005 0.0000501   0.191    0.663
+    ## slim3$TrainSessionCombo              8 0.01253 0.0015663   5.973 1.48e-06
+    ## slim3$APA2:slim3$TrainSessionCombo   8 0.00125 0.0001559   0.594    0.781
+    ## Residuals                          135 0.03540 0.0002622                 
+    ##                                       
+    ## slim3$APA2                            
+    ## slim3$TrainSessionCombo            ***
+    ## slim3$APA2:slim3$TrainSessionCombo    
+    ## Residuals                             
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Speed2 
+    ##                                     Df   Sum Sq  Mean Sq F value Pr(>F)
+    ## slim3$APA2                           1 0.000502 0.000502   5.549 0.0199
+    ## slim3$TrainSessionCombo              8 0.025590 0.003199  35.391 <2e-16
+    ## slim3$APA2:slim3$TrainSessionCombo   8 0.000773 0.000097   1.069 0.3886
+    ## Residuals                          135 0.012202 0.000090               
+    ##                                       
+    ## slim3$APA2                         *  
+    ## slim3$TrainSessionCombo            ***
+    ## slim3$APA2:slim3$TrainSessionCombo    
+    ## Residuals                             
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Dependent var: Time1stEntrLog 
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1   1.43    1.43   0.659    0.418    
+    ## slim3$TrainSessionCombo              8 290.39   36.30  16.756  < 2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8  87.18   10.90   5.031 1.77e-05 ***
+    ## Residuals                          135 292.45    2.17                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+summary(aov(slim4$NumEntrances ~ slim3$APA2 * slim3$TrainSessionCombo))
+```
+
+    ##                                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## slim3$APA2                           1    148   147.6   5.838 0.017018 *  
+    ## slim3$TrainSessionCombo              8  11253  1406.7  55.653  < 2e-16 ***
+    ## slim3$APA2:slim3$TrainSessionCombo   8    813   101.6   4.019 0.000262 ***
+    ## Residuals                          135   3412    25.3                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+library(ez)
+ezANOVA(trained, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
+```
+
+    ## Warning: Data is unbalanced (unequal N per group). Make sure you specified
+    ## a well-considered value for the type argument to ezANOVA().
+
+    ## $ANOVA
+    ##                   Effect DFn DFd         F            p p<.05        ges
+    ## 2                   APA2   1  15  2.312766 1.491132e-01       0.04145403
+    ## 3      TrainSessionCombo   8 120 68.753449 3.402258e-41     * 0.76732992
+    ## 4 APA2:TrainSessionCombo   8 120  4.965579 2.514143e-05     * 0.19236717
+    ## 
+    ## $`Mauchly's Test for Sphericity`
+    ##                   Effect            W            p p<.05
+    ## 3      TrainSessionCombo 8.316293e-05 8.646959e-10     *
+    ## 4 APA2:TrainSessionCombo 8.316293e-05 8.646959e-10     *
+    ## 
+    ## $`Sphericity Corrections`
+    ##                   Effect       GGe        p[GG] p[GG]<.05      HFe
+    ## 3      TrainSessionCombo 0.3996539 8.396272e-18         * 0.520595
+    ## 4 APA2:TrainSessionCombo 0.3996539 3.740327e-03         * 0.520595
+    ##          p[HF] p[HF]<.05
+    ## 3 1.574820e-22         *
+    ## 4 1.336868e-03         *
+
 Standard vizualization of mean avoidance beavior
 ------------------------------------------------
 
@@ -1634,62 +2092,3 @@ summary(lm136)
     ## Residual standard error: 5.198 on 30 degrees of freedom
     ## Multiple R-squared:  0.8287, Adjusted R-squared:  0.8115 
     ## F-statistic: 48.36 on 3 and 30 DF,  p-value: 1.322e-11
-
-Repeated measures anova
------------------------
-
-ges: Generalized Eta-Squared measure of effect size (see in references below: Bakeman, 2005).
-Sphericity: assumption of the test
-
-``` r
-library(ez)
-ezANOVA(behavior, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
-```
-
-    ## Warning: Data is unbalanced (unequal N per group). Make sure you specified
-    ## a well-considered value for the type argument to ezANOVA().
-
-    ## $ANOVA
-    ##                   Effect DFn DFd         F            p p<.05       ges
-    ## 2                   APA2   3  30 33.733594 9.693702e-10     * 0.5131907
-    ## 3      TrainSessionCombo   8 240 95.850114 2.521202e-70     * 0.6871626
-    ## 4 APA2:TrainSessionCombo  24 240  5.140122 6.424403e-12     * 0.2611096
-    ## 
-    ## $`Mauchly's Test for Sphericity`
-    ##                   Effect          W            p p<.05
-    ## 3      TrainSessionCombo 0.06018833 8.036245e-05     *
-    ## 4 APA2:TrainSessionCombo 0.06018833 8.036245e-05     *
-    ## 
-    ## $`Sphericity Corrections`
-    ##                   Effect       GGe        p[GG] p[GG]<.05       HFe
-    ## 3      TrainSessionCombo 0.5852923 3.270168e-42         * 0.7067817
-    ## 4 APA2:TrainSessionCombo 0.5852923 9.356868e-08         * 0.7067817
-    ##          p[HF] p[HF]<.05
-    ## 3 1.874137e-50         *
-    ## 4 5.567995e-09         *
-
-``` r
-ezANOVA(trained, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
-```
-
-    ## Warning: Data is unbalanced (unequal N per group). Make sure you specified
-    ## a well-considered value for the type argument to ezANOVA().
-
-    ## $ANOVA
-    ##                   Effect DFn DFd         F            p p<.05        ges
-    ## 2                   APA2   1  15  2.312766 1.491132e-01       0.04145403
-    ## 3      TrainSessionCombo   8 120 68.753449 3.402258e-41     * 0.76732992
-    ## 4 APA2:TrainSessionCombo   8 120  4.965579 2.514143e-05     * 0.19236717
-    ## 
-    ## $`Mauchly's Test for Sphericity`
-    ##                   Effect            W            p p<.05
-    ## 3      TrainSessionCombo 8.316293e-05 8.646959e-10     *
-    ## 4 APA2:TrainSessionCombo 8.316293e-05 8.646959e-10     *
-    ## 
-    ## $`Sphericity Corrections`
-    ##                   Effect       GGe        p[GG] p[GG]<.05      HFe
-    ## 3      TrainSessionCombo 0.3996539 8.396272e-18         * 0.520595
-    ## 4 APA2:TrainSessionCombo 0.3996539 3.740327e-03         * 0.520595
-    ##          p[HF] p[HF]<.05
-    ## 3 1.574820e-22         *
-    ## 4 1.336868e-03         *

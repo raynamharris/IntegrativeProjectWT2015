@@ -122,6 +122,36 @@ for(y in names(slim4)){
 ```
 
 
+## Repeated measures anova
+
+ges: Generalized Eta-Squared measure of effect size (see in references below: Bakeman, 2005).  
+Sphericity: assumption of the test
+
+```{r}
+# sample sizes
+slim1 <- behavior[,c(15,16,6,20:59)] # drop frivolous columns
+slim2 <- slim1 %>% 
+  filter(TrainGroup == "trained") 
+slim3 <- slim2[,c(1:3)] # extract experimental design variables
+slim4 <- slim2[,c(4:43)]
+
+for(y in names(slim4)){
+  ymod<- summary(aov(slim4[[y]] ~ slim3$APA2 * slim3$TrainSessionCombo ))
+  cat(paste('\nDependent var:', y, '\n'))
+  print(ymod)
+}
+
+summary(aov(slim4$NumEntrances ~ slim3$APA2 * slim3$TrainSessionCombo))
+
+# sample sizes
+behavior %>% filter(TrainSession == "Retention") %>% select(APA2)  %>%  summary()
+
+library(ez)
+ezANOVA(trained, dv = NumEntrances, wid = ID, detailed = F,
+        within = TrainSessionCombo, between = APA2)
+
+```
+
 ## Standard vizualization of mean avoidance beavior
 First, I visualze the group mean and standard error for the time it takes before an individual mouse enters the spatial region marked "schock zone" or equivilent.
 
@@ -317,13 +347,4 @@ summary(lm136)
 ```
 
 
-## Repeated measures anova
 
-ges: Generalized Eta-Squared measure of effect size (see in references below: Bakeman, 2005).  
-Sphericity: assumption of the test
-
-```{r}
-library(ez)
-ezANOVA(behavior, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
-ezANOVA(trained, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
-```
