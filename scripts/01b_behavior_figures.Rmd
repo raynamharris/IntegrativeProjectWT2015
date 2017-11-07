@@ -37,20 +37,93 @@ To help make production of these figures more reproducible, I first import some 
 
 ```{r data, message=F}
 behavior <- read.csv("../data/01a_behavior.csv", header = T)
+# list of all behaviors measured
+names(behavior[c(19:57)])
 threeplots <- read.csv("../data/01a_threeplots.csv", header = T)
 scoresdf <- read.csv("../data/01a_scoresdf.csv", header = T)
 rotationdf <- read.csv("../data/01a_rotationdf.csv", header = T, row.names = 1)
 behaviormatrix <- read.csv("../data/01a_behaviormatrix.csv", header = T, row.names = 1)
 
+trained <- behavior %>% filter(TrainGroup == "trained") %>% droplevels()
+
 #set factor levels
+behavior$APA2 <- factor(behavior$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
 scoresdf$APA <- NULL
 scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
 threeplots$APA2 <- factor(threeplots$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
 threeplots$measure <- factor(threeplots$measure, levels = c("Number of Entrances" , "Max Avoidance Time", "Speed"))
 ```
 
-## Figure 1B: Standard vizualization of mean avoidance beavior
-First, I visualze the group mean and standard error for the time it takes before an individual mouse enters the spatial region marked "schock zone" or equivilent (Fig. 1A).
+
+# Summary Statistics
+
+```{r}
+# sample sizes
+behavior %>% 
+  filter(TrainSession == "Retention") %>%
+  select(APA2)  %>%  summary()
+
+names(behavior[c(19:57)])
+names(behavior)
+slim1 <- behavior[,c(15,16,14,20:59)]
+slim2 <- slim1 %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
+slim3 <- as.data.frame(slim2[,1])
+slim4 <- slim2[,c(4:43)]
+
+slim3$APA2 <- factor(slim2$APA2, levels = c("consistent", "conflict"))
+
+ 
+for(y in names(slim4)){
+  ymod<- summary(aov(slim4[[y]] ~ slim3$APA2 ))
+  cat(paste('\nDependent var:', y, '\n'))
+  print(ymod)
+}
+
+# *** Time1stEntrLog, pTimeTarget, TimeTarget, Path2ndEntr, Time2ndEntr, NumEntrances
+# **  Speed2, PolarSdVal, Dist1stEntr.m, Time1stEntr
+# *   PolarMinVal, PolarAvgVal, pTimeOPP, Speed2ndEntr
+# .   Speed1, pTimeCW
+# not AnnularKurtosis, AnnularSkewnes, AnnularSd, AnnularAvg, AnnularMinBin, AnnularMaxBin, Max50.RngHiBin, Max50.RngLoBin, PolarMaxBin, PolarMaxVal, Min50.RngHiBin, Min50.RngLoBin, PolarMinBin, RayleigAngle, pTimeCCW, MaxTimeAvoid, Linearity.Arena, SdevSpeedArena
+
+for(y in names(slim4)){
+  ymod <- t.test(slim4[[y]] ~ slim3$APA2 )
+  cat(paste('\nDependent var:', y, '\n'))
+  print(ymod)
+}
+
+for(y in names(slim4)){
+  ymod <- leveneTest(slim4[[y]] ~ slim3$APA2 )
+  cat(paste('\nDependent var:', y, '\n'))
+  print(ymod)
+}
+
+# *** Speed1, Path2ndEntr, Time2ndEntr, Path2ndEntr, Time2ndEntr
+# ** Path1stEntr, Time1stEntr
+# * Max50.RngHiBin ,  PolarMaxBin  , PolarMinVal, RayleigAngle, pTimeCW, pTimeOPP,
+# . Time1stEntrLog, Speed2, Min50.RngLoBin , TimeTarget, NumShock, NumEntrances
+# AnnularKurtosis, AnnularSkewnes, AnnularSd, AnnularMaxBin, AnnularMaxVal, AnnularMinBin, AnnularMinVal, Max50.RngLoBin, RayleigLength PolarMaxVal, Min50.RngHiBin , PolarMinBin, PolarSdVal, PolarAvgVal, RayleigLength, pTimeTarget, Speed2ndEntr, MaxTimeAvoid, Dist1stEntr.m, Speed1stEntr.cm.s, Linearity.Arena, SdevSpeedArena
+
+par(mfrow=c(3,3))
+hist(slim4$Time1stEntrLog)
+boxplot(slim4$Time1stEntrLog ~ slim3$APA2)
+
+for(y in names(slim4)){
+  ymod <- hist(slim4[[y]],
+               main = y, xlab = NULL,
+               col = c())
+}
+
+for(y in names(slim4)){
+  ymod <- boxplot(slim4[[y]] ~ slim3$APA2,
+               main = y,
+               xlab = NULL)
+}
+
+```
+
+
+## Standard vizualization of mean avoidance beavior
+First, I visualze the group mean and standard error for the time it takes before an individual mouse enters the spatial region marked "schock zone" or equivilent.
 
 ```{r behaviorplots}
 
@@ -82,7 +155,7 @@ dev.off()
 
 Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed (Fig. 1C). 
 
-```{r pheatmap2,  message=FALSE, results='hide'}
+```{r pheatmap2,  message=FALSE, results='hide', include = F, eval = FALSE}
 ## make annotation df and ann_colors for pheatmap
 behavior$RayleigAngle <- NULL
 behavior$PolarMinBin <- NULL
@@ -243,49 +316,13 @@ summary(lm136)
 
 ```
 
-## getting file name for a time spent heatmap
 
-```{r forandre}
-y <- behavior %>%
-  distinct(ID, APA2)
-x <- read.csv("~/Github/BehavEphyRNAseq/data/behavior/APA_2013-2016.csv", header = T)
-x <- x %>%
-  distinct(ID, filename)
-
-z <- inner_join(x,y)
-write.csv(z, "filnames.csv", row.names = F)
-```
-
-## anova conflict
+## Repeated measures anova
 
 ```{r}
-slim1 <- behavior[,c(15,16,14,20:59)]
-slim2 <- slim1 %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
-APA2 <- slim2[,1]
-slim3 <- slim2[,c(4:43)]
+library(ez)
+ezANOVA(behavior, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
+ezANOVA(trained, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
 
-for(y in names(slim3)){
-  ymod<- summary(aov(slim3[[y]] ~ APA2 ))
-  cat(paste('\nDependent var:', y, '\n'))
-  print(ymod)
-}
-
-for(y in names(slim3)){
-  ymod <- t.test(slim3[[y]] ~ APA2 )
-  cat(paste('\nDependent var:', y, '\n'))
-  print(ymod)
-}
-
-# *** Time1stEntrLog, pTimeTarget, TimeTarget, Path2ndEntr, Time2ndEntr, NumEntrances
-# **  Speed2, PolarSdVal, Dist1stEntr.m, Time1stEntr
-# *   PolarMinVal, PolarAvgVal, pTimeOPP, Speed2ndEntr
-# .   Speed1, pTimeCW
-# not AnnularKurtosis, AnnularSkewnes, AnnularSd, AnnularAvg, AnnularMinBin, AnnularMaxBin, Max50.RngHiBin, Max50.RngLoBin, PolarMaxBin, PolarMaxVal, Min50.RngHiBin, Min50.RngLoBin, PolarMinBin, RayleigAngle, pTimeCCW, MaxTimeAvoid, Linearity.Arena, SdevSpeedArena
-
-
-hist(slim3$Time1stEntrLog)
-boxplot(slim3$Time1stEntrLog ~ APA2)
-summary(aov(slim3$Time1stEntrLog ~ APA2)) 
-t.test(slim3$Time1stEntrLog ~ APA2)
-
-```
+ezANOVA(behavior, dv = Time1stEntrLog, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
+ezANOVA(trained, dv = Time1stEntrLog, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)

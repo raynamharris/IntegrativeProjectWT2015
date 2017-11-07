@@ -37,7 +37,6 @@ behavior$Time1stEntrLog <- log(behavior$Time1stEntr)
 
 To make the point and line graphs, I must create and merge some data frames
 ```{r makenewdf}
-
 ## number of entrances
 behaviorsummaryNumAPA2 <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
 
@@ -49,7 +48,7 @@ maxavoid <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m =
 
 ## create the column for faceting
 behaviorsummaryNumAPA2$measure <- "Number of Entrances"
-speedsummary$measure <- "Speed"
+speedsummary$measure <- "Speed1"
 maxavoid$measure <- "Max Avoidance Time"
 
 # rbind
@@ -68,7 +67,6 @@ scores <- pc$x
 scoresdf <- makepcadf(behavior) #create the df of pcas
 rotationdf <- mkrotationdf(behavior) #loadings for specific factors
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
-
 
 scoresdf$PC1 <- scoresdf$PC1 * -1
 ```

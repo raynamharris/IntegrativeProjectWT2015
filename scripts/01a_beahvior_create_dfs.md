@@ -39,7 +39,7 @@ maxavoid <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m =
 
 ## create the column for faceting
 behaviorsummaryNumAPA2$measure <- "Number of Entrances"
-speedsummary$measure <- "Speed"
+speedsummary$measure <- "Speed1"
 maxavoid$measure <- "Max Avoidance Time"
 
 # rbind
@@ -97,7 +97,6 @@ rotationdf <- mkrotationdf(behavior) #loadings for specific factors
 
 ``` r
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
-
 
 scoresdf$PC1 <- scoresdf$PC1 * -1
 ```
