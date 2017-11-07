@@ -319,10 +319,11 @@ summary(lm136)
 
 ## Repeated measures anova
 
+ges: Generalized Eta-Squared measure of effect size (see in references below: Bakeman, 2005).  
+Sphericity: assumption of the test
+
 ```{r}
 library(ez)
 ezANOVA(behavior, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
 ezANOVA(trained, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
-
-ezANOVA(behavior, dv = Time1stEntrLog, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
-ezANOVA(trained, dv = Time1stEntrLog, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
+```

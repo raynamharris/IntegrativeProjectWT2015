@@ -1638,6 +1638,9 @@ summary(lm136)
 Repeated measures anova
 -----------------------
 
+ges: Generalized Eta-Squared measure of effect size (see in references below: Bakeman, 2005).
+Sphericity: assumption of the test
+
 ``` r
 library(ez)
 ezANOVA(behavior, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
@@ -1690,55 +1693,3 @@ ezANOVA(trained, dv = NumEntrances, wid = ID, within = TrainSessionCombo, betwee
     ##          p[HF] p[HF]<.05
     ## 3 1.574820e-22         *
     ## 4 1.336868e-03         *
-
-``` r
-ezANOVA(behavior, dv = Time1stEntrLog, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
-```
-
-    ## Warning: Data is unbalanced (unequal N per group). Make sure you specified
-    ## a well-considered value for the type argument to ezANOVA().
-
-    ## $ANOVA
-    ##                   Effect DFn DFd         F            p p<.05       ges
-    ## 2                   APA2   3  30  8.129517 4.140185e-04     * 0.1346659
-    ## 3      TrainSessionCombo   8 240 16.689106 1.284474e-19     * 0.3102547
-    ## 4 APA2:TrainSessionCombo  24 240  4.634301 1.802821e-10     * 0.2725770
-    ## 
-    ## $`Mauchly's Test for Sphericity`
-    ##                   Effect        W         p p<.05
-    ## 3      TrainSessionCombo 0.311093 0.6367248      
-    ## 4 APA2:TrainSessionCombo 0.311093 0.6367248      
-    ## 
-    ## $`Sphericity Corrections`
-    ##                   Effect       GGe        p[GG] p[GG]<.05      HFe
-    ## 3      TrainSessionCombo 0.7859369 6.774505e-16         * 1.016934
-    ## 4 APA2:TrainSessionCombo 0.7859369 1.248993e-08         * 1.016934
-    ##          p[HF] p[HF]<.05
-    ## 3 1.284474e-19         *
-    ## 4 1.802821e-10         *
-
-``` r
-ezANOVA(trained, dv = Time1stEntrLog, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
-```
-
-    ## Warning: Data is unbalanced (unequal N per group). Make sure you specified
-    ## a well-considered value for the type argument to ezANOVA().
-
-    ## $ANOVA
-    ##                   Effect DFn DFd          F            p p<.05         ges
-    ## 2                   APA2   1  15  0.2954936 5.947089e-01       0.004860869
-    ## 3      TrainSessionCombo   8 120 19.8053759 8.856963e-19     * 0.498235934
-    ## 4 APA2:TrainSessionCombo   8 120  5.9459071 2.054113e-06     * 0.229646804
-    ## 
-    ## $`Mauchly's Test for Sphericity`
-    ##                   Effect           W           p p<.05
-    ## 3      TrainSessionCombo 0.004377029 0.001969253     *
-    ## 4 APA2:TrainSessionCombo 0.004377029 0.001969253     *
-    ## 
-    ## $`Sphericity Corrections`
-    ##                   Effect       GGe        p[GG] p[GG]<.05       HFe
-    ## 3      TrainSessionCombo 0.5014277 1.846536e-10         * 0.7073565
-    ## 4 APA2:TrainSessionCombo 0.5014277 4.183070e-04         * 0.7073565
-    ##          p[HF] p[HF]<.05
-    ## 3 6.605539e-14         *
-    ## 4 4.567554e-05         *
