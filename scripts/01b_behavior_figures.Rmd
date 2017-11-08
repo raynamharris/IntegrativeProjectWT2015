@@ -141,7 +141,7 @@ for(y in names(slim4)){
   print(ymod)
 }
 
-summary(aov(slim4$NumEntrances ~ slim3$APA2 * slim3$TrainSessionCombo))
+kruskal.test(slim4$NumEntrances ~ slim3$APA2 )
 
 # sample sizes
 behavior %>% filter(TrainSession == "Retention") %>% select(APA2)  %>%  summary()
@@ -149,7 +149,6 @@ behavior %>% filter(TrainSession == "Retention") %>% select(APA2)  %>%  summary(
 library(ez)
 ezANOVA(trained, dv = NumEntrances, wid = ID, detailed = F,
         within = TrainSessionCombo, between = APA2)
-
 ```
 
 ## Standard vizualization of mean avoidance beavior

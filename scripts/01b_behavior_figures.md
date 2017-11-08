@@ -1266,12 +1266,12 @@ ges: Generalized Eta-Squared measure of effect size (see in references below: Ba
 Sphericity: assumption of the test
 
 ``` r
+# sample sizes
 slim1 <- behavior[,c(15,16,6,20:59)] # drop frivolous columns
 slim2 <- slim1 %>% 
   filter(TrainGroup == "trained") 
 slim3 <- slim2[,c(1:3)] # extract experimental design variables
 slim4 <- slim2[,c(4:43)]
-
 
 for(y in names(slim4)){
   ymod<- summary(aov(slim4[[y]] ~ slim3$APA2 * slim3$TrainSessionCombo ))
@@ -1691,8 +1691,20 @@ summary(aov(slim4$NumEntrances ~ slim3$APA2 * slim3$TrainSessionCombo))
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
+# sample sizes
+behavior %>% filter(TrainSession == "Retention") %>% select(APA2)  %>%  summary()
+```
+
+    ##                APA2  
+    ##  yoked-consistent:8  
+    ##  consistent      :8  
+    ##  yoked-conflict  :9  
+    ##  conflict        :9
+
+``` r
 library(ez)
-ezANOVA(trained, dv = NumEntrances, wid = ID, within = TrainSessionCombo, between = APA2, detailed = F)
+ezANOVA(trained, dv = NumEntrances, wid = ID, detailed = F,
+        within = TrainSessionCombo, between = APA2)
 ```
 
     ## Warning: Data is unbalanced (unequal N per group). Make sure you specified

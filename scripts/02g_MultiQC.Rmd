@@ -2,11 +2,12 @@
 title: "MULTIQC"
 author: "Rayna M Harris"
 date: "10/31/2017"
-output: html_document
+output:  md_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.path = '../figures/02g_MultiQC/')
 ```
 
 
