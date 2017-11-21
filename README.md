@@ -19,7 +19,7 @@ Initial processing of RNA sequencing was performed on the Stampede cluster at th
 	- **00_rawdata:** Download the data to scratch on Stampede with `00_gsaf_download.sh`. 
 	- **01_fastqc:** Evaluate the quality of the reads using the program FastQC.
 	- **02_filtrimreads:** Filter low quality reads and trim adapters using the program cutadapt.
-	- **.03_fastqc:** Evaluate the quality of the processed reads
+	- **03_fastqc:** Evaluate the quality of the processed reads
 	- **04_kallisto:** Quantify transcript-level expression using Kallisto
 - Part 2.2: R for RNA-seq
 	- **02a_rnaseq_makedfs:** converting the Kallisto transcript counts to gene counts and wrangling the categorical data about the samples
