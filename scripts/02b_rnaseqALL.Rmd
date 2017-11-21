@@ -43,7 +43,6 @@ Behavioral Groups: "conflict", "consistent"
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData %>% select(APA2,Punch)  %>%  summary()
-head(colData)
 
 totalCounts=colSums(countData)
 ### on average 1 million gene counts per sample 
@@ -65,14 +64,17 @@ vsd <- getVarianceStabilizedData(dds)
 write.csv(vsd, file = "../data/02b_vsd.csv", row.names = T)
 ```
 
-
 ## this is for CA1 DG
 
 ```{r}
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T)
 summary(res)
 head((res[order(res$padj),]), 10)
-head((res[order(res$log2FoldChange),]), 10)
+
+## Order by adjusted p-value
+res <- res[order(res$padj),]
+resdata <- as.data.frame(res)
+head(resdata,30)
 ```
 
 
@@ -82,8 +84,8 @@ head((res[order(res$log2FoldChange),]), 10)
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = T)
 summary(res)
 head((res[order(res$padj),]), 10)
-head((res[order(res$log2FoldChange),]), 10)
 ```
+
 ## this is for CA3 DG
 
 ```{r}
@@ -99,7 +101,6 @@ head((res[order(res$log2FoldChange),]), 10)
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 head((res[order(res$padj),]), 10)
-head((res[order(res$log2FoldChange),]), 10)
 ```
 
 ## this is for consistent yoked-conflict yoked-consistent DG
@@ -109,7 +110,6 @@ res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), i
 summary(res)
 table(res$padj<0.05)
 head((res[order(res$padj),]), 10)
-head((res[order(res$log2FoldChange),]), 10)
 
 ## Order by adjusted p-value
 res <- res[order(res$padj),]
@@ -123,7 +123,6 @@ head(resdata,30)
 res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
 summary(res)
 head((res[order(res$padj),]), 10)
-#head((res[order(res$log2FoldChange),]), 10)
 table(res$padj<0.05)
 table(res$padj<0.1)
 ```
@@ -137,7 +136,6 @@ head((res[order(res$padj),]), 10)
 head((res[order(res$log2FoldChange),]), 10)
 table(res$padj<0.05)
 table(res$padj<0.1)
-
 ```
 
 ```{r heatmap}
@@ -148,7 +146,6 @@ contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"
 contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 60
 contrast6 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
 contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 35
-
 
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
@@ -244,8 +241,8 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
     scale_colour_manual(name=colorname, values=c(colorvalues))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
-    #theme(legend.position="none") +
-    scale_shape_manual(values=c(16, 1, 15,2), aes(color=APA2))
+    theme(legend.position="none") +
+    scale_shape_manual(values=c(16, 1, 15, 0), aes(color=APA2))
 }
 
 PCA12 <- plotPCs(pcadata, 1, 3, aescolor = pcadata$Punch, colorname = "Punch", colorvalues = colorvalPunch)
@@ -263,7 +260,7 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
     scale_colour_manual(name=colorname, values=c(colorvalues))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
-    #theme(legend.position="none") +
+    theme(legend.position="none") +
     scale_shape_manual(values=c(15, 16,17)) 
 }
 
@@ -381,7 +378,7 @@ dev.off()
 
 ## DG CA1
 
-```{r volcanos, include=F}
+```{r volcanos, include=T}
 
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.1)
 summary(res)
@@ -517,3 +514,25 @@ dev.off()
 plotCounts(dds, "Prkcz", intgroup = "Punch", normalized = TRUE)
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE)
 ```
+
+## Observed versus expected ration of DEGs
+
+```{r}
+# chisq.test equal expression of increased versus decreased expression
+chisq.test(c(1099,	1427), p = c(0.45, 0.55))$expected
+chisq.test(c(1099,	1427), p = c(0.45, 0.55))
+prop.table(c(1099,	1427))
+
+chisq.test(c(850,	1172), p = c(0.4, 0.6))$expected
+chisq.test(c(850,	1172), p = c(0.4, 0.6))
+prop.table(c(850,	1172))
+
+chisq.test(c(1585,	1560), p = c(0.5, 0.5))$expected
+chisq.test(c(1585,	1560), p = c(0.5, 0.5))
+prop.table(c(1585,	1560))
+
+
+
+chisq.test(c(1,	0), p = c(0.5, 0.5))$expected
+chisq.test(c(1,	0), p = c(0.5, 0.5))
+prop.table(c(1,	0))

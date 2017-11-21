@@ -16,6 +16,8 @@ multiqc <- read.csv(file = "../data/multiqc_report.csv")
 summary(multiqc)
 before <- multiqc[multiqc$QualityFiltered == "No",]
 after <- multiqc[multiqc$QualityFiltered == "Yes",]
+summary(before$MillionReads)
+summary(after$MillionReads)
 # mean before 7.3 million reads max 37 min 1.5. 
 # mean after 4.8 millino reads Max 35 min 0.5
 hist(before$MillionReads, ylim = c(0,80))
@@ -35,6 +37,10 @@ boxplot(multiqc$Length ~ multiqc$QualityFiltered,
 multiqc <- read.csv(file = "../data/multiqc_report_0204.csv")
 summary(multiqc)
 multiqc$QC <- factor(multiqc$QC, levels = c("raw" ,"filtertrim"))
+before <- multiqc[multiqc$QC == "raw",]
+after <- multiqc[multiqc$QC == "filtertrim",]
+summary(before$millalign)
+summary(after$millalign)
 
 boxplot(multiqc$millalign ~ multiqc$QC,
         names = c("Raw reads", "Filtered & trimmed reads"),

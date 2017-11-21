@@ -1,94 +1,3 @@
-## box plot ----
-myboxplotlegendtop <- function(data, xcol, ycol, colorcode, session, yaxislabel){
-  plot <- data %>% filter(TrainSessionCombo==session) %>%  droplevels() %>%
-    ggplot(aes_string(x=xcol, y=ycol, fill=colorcode)) + 
-    geom_boxplot() +
-    scale_fill_manual(name="Group", 
-                      values=colorvalAPA) +
-    scale_y_continuous(name=yaxislabel) + 
-    scale_x_discrete(name=NULL) +   
-    theme_cowplot(font_size = 15) +
-    theme(legend.justification=c(1,1), legend.position=c(1,1), 
-          legend.title = element_blank(), axis.text.x = element_blank())
-    return(plot)
-}
-
-## box plot no legend ----
-myboxplotlegendbottom <- function(data, xcol, ycol, colorcode, session, yaxislabel){
-  plot <- data %>% filter(TrainSessionCombo==session) %>%  droplevels() %>%
-    ggplot(aes_string(x=xcol, y=ycol, fill=colorcode)) + 
-    geom_boxplot() + 
-    scale_fill_manual(name="Group", 
-                      values=colorvalAPA) +
-    scale_y_continuous(name=yaxislabel) + 
-    #scale_x_discrete(name=NULL) +   
-    theme_cowplot(font_size = 15) +
-    #theme(legend.position="bottom") +
-    theme(legend.text = element_text(size = 10))  +
-    theme(legend.justification=c(1,0), legend.position=c(1,0), 
-          legend.title = element_blank(), axis.text.x = element_blank())
-  return(plot)
-}
-
-## plot function for single behavior with wide data ----
-onebehavior <- function(data, xcol, ycol, yaxislabel, colorcode){
-  plot <- data %>% 
-    ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
-    geom_point(size=1) + geom_jitter() +
-    stat_smooth(alpha=0.25, method = "loess")  +
-    theme_cowplot(font_size = 14, line_size = 0.5) + 
-    #background_grid(major = "xy", minor = "none") + 
-    scale_colour_manual(name="APA Training", values=colorvalAPA,
-                        breaks = c("Yoked", "Same", "Conflict")) +
-    scale_y_continuous(name=yaxislabel) + 
-    scale_x_continuous(name = NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels=c("1" = "Hab.", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest", "6" = "T4/C1",
-                                "7" = "T5/C2", "8" = "T6/C3", "9"= "Reten.")) + 
-    theme(legend.position="top") 
-  return(plot)
-}
-
-onebehaviorhabtoretest <- function(data, xcol, ycol, yaxislabel, colorcode){
-  plot <- data %>% 
-    ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
-    geom_point(size=1) + geom_jitter() +
-    stat_smooth(alpha=0.5)  +
-    theme_cowplot(font_size = 15, line_size = 0.5) + 
-    #background_grid(major = "xy", minor = "none") + 
-    scale_colour_manual(name="APA Training", values=colorvalAPA,
-                        breaks = c("Control", "Consistent", "Conflict")) +
-    scale_y_continuous(name=yaxislabel) + 
-    scale_x_continuous(name = "Training Session", 
-                       breaks = c(1, 2, 3, 4, 5),
-                       labels=c("1" = "Habituation", "2" = "T1", "3" = "T2", 
-                                "4" = "T3", "5" = "Retest")) +
-    theme(legend.justification=c(1,1), legend.position=c(1,1),
-          axis.text.x = element_text(angle=60, vjust=0.5)) 
-  return(plot)
-}
-
-
-onebehaviorc4toRentention <- function(data, xcol, ycol, yaxislabel, colorcode){
-  plot <- data %>% 
-    ggplot(aes_string(x=xcol, y=ycol, color=colorcode)) +
-    geom_point(size=1) + geom_jitter() +
-    stat_smooth(alpha=0.5, method = "loess")  +
-    theme_cowplot(font_size = 15, line_size = 0.5) + 
-    #background_grid(major = "xy", minor = "none") + 
-    scale_colour_manual(name="APA Training", values=colorvalAPA,
-                        breaks = c("Control", "Consistent", "Conflict")) +
-    scale_y_continuous(name=yaxislabel) + 
-    scale_x_continuous(name = "Training Session", 
-                       breaks = c(1, 2, 3, 4),
-                       labels=c("1" = "T4_C1", "2" = "T5_C2", "3" = "T6_C3", 
-                                "4" = "Retention")) +
-    theme(legend.justification=c(1,1), legend.position=c(1,1),
-          axis.text.x = element_text(angle=60, vjust=0.5)) 
-  return(plot)
-}
-
 ## make a heatmap from all sessions ----
 makescaledaveragedata <- function(data){
   longdata <- melt(data, id = c(1:18));  #longdata <- melt(behavior, id = c(1:18))
@@ -123,12 +32,21 @@ makecolumnannotations <- function(data){
   columnannotations <- as.data.frame(colnames(data))
   names(columnannotations)[names(columnannotations)=="colnames(data)"] <- "column"
   rownames(columnannotations) <- columnannotations$column
-  columnannotations$APA <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 1)
+  columnannotations$APA2 <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 1)
   columnannotations$Session <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 2)
   columnannotations$Session <- as.factor(columnannotations$Session)
   columnannotations$Session <- revalue(columnannotations$Session, c("T4" = "T4_C1")) 
   columnannotations$Session <- revalue(columnannotations$Session, c("T5" = "T5_C2")) 
   columnannotations$Session <- revalue(columnannotations$Session, c("T6" = "T6_C3")) 
+  columnannotations$column <- NULL
+  return(columnannotations)
+}
+
+makecolumnannotations2 <- function(data){  
+  columnannotations <- as.data.frame(colnames(data))
+  names(columnannotations)[names(columnannotations)=="colnames(data)"] <- "column"
+  rownames(columnannotations) <- columnannotations$column
+  columnannotations$APA2 <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 1)
   columnannotations$column <- NULL
   return(columnannotations)
 }
@@ -161,7 +79,7 @@ makepcadf <- function(data){
   longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
   longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
   # calculate and save PCs
-  Z <- longdata[,3:371]
+  Z <- longdata[,3:362]
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
   loadings <- pc$rotation
@@ -195,11 +113,11 @@ mkrotationdf <- function(data){
   longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
   longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
   # calculate and save PCs
-  Z <- longdata[,3:371]
+  Z <- longdata[,3:362]
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
   rotationdf <- data.frame(pc$rotation, variable=row.names(pc$rotation))
-  str(rotationdf)
+  #str(rotationdf)
   return(rotationdf)
 }
 

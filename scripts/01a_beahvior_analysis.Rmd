@@ -1,0 +1,388 @@
+---
+title: "Behavior Data Analysis"
+author: "Rayna M Harris"
+date: "Last updated November 15, 2017"
+output: md_document
+---
+
+This markdown file is used for behavioral data wrangling, statistical analysis, and data visualization. Figures from this analysis were assembled into this multi-panel plot using Adobe Illustrator. Files used to create the individual figures are saved in the data subdirectory with the prefix 01a.
+
+<img src="../figures/figures-01.png" width="1370" />
+
+## Setup
+
+```{r setup, message=F}
+## load libraries 
+library(tidyr) ## for respahing data
+library(plyr) ## for renmaing factors
+library(dplyr) ## for filtering and selecting rows
+library(reshape2) ## for melting dataframe
+library(ggplot2) ## for awesome plots!
+library(cowplot) ## for some easy to use themes
+library(factoextra)  ##pca with vectors
+library(car) ## stats
+library(superheat) # for kmeans clustered heatmap
+library(pheatmap)  # for pretty heatmap
+library(viridis) # for awesome color pallette
+library(ez)      # for non-parametric ANOVA
+
+## load user-written functions 
+source("functions_behavior.R")
+source("figureoptions.R")
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
+```
+
+## Sample sizes
+
+The 'APA2' column describes the four behavioral treatment groups.  
+The 'TrainSessionCombo' column describes the behvioral training sessions. Here I filter by a single session to calculte the number of mice. 
+
+```{r wrangledata, message=F}
+## import output from video tracker program 
+behavior <- read.csv("../data/01_behaviordata.csv", header = T)
+
+## set level for APA2 then renmae
+behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "Same", "YokedConflict","Conflict"))
+levels(behavior$APA2) <-  c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict")
+
+# sample sizes
+behavior %>% 
+  filter(TrainSessionCombo == "Retention") %>%
+  select(APA2)  %>%  summary()
+```
+
+
+## Summary statistics comparing all groups across sessions
+
+1. First, I create some "slim" datasets with just the quantitiave variables and just the relevant catagorical factors
+2. Then, I use for loops to run statistical tests for all quantitive variables
+3. Then I make a box plot for all variables
+
+```{r}
+# sample sizes
+slim1 <- behavior[,c(15,16,14,20:58)] # drop frivolous columns
+slim2 <- slim1 # subsequently in this analysis, I use this line to filter rows 
+slim3 <- slim2[,c(1:3)] # extract experimental design variables
+slim4 <- slim2[,c(4:42)]
+
+# Anova
+#for(y in names(slim4)){
+#  ymod<- summary(aov(slim4[[y]] ~ slim3$APA2 * slim3$TrainSessionCombo ))
+#  cat(paste('\nDependent var:', y, '\n'))
+#  print(ymod)
+#}
+
+# Variables that are significant for training, time, and the interaction
+# PolarMaxVal, PolarMinBin, PolarMinVal, PolarSdVal, PolarAvgVal, RayleigLength
+# pTimeCW, pTimeOPP, pTimeTarget, TimeTarget, Speed2ndEntr, Path2ndEntr, Time2ndEntr,
+# MaxTimeAvoid, NumShock, Dist1stEntr.m, Path1stEntr, Time1stEntr, NumEntrances
+```
+
+
+
+## Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 training session
+
+1. First, I create some "slim" datasets to look at only the trained animals to look for statistically significant differences between consistent and conflict trained on the T4/C1 training session
+2. Then, I used for loops to run statistical tests for all quantitive variables. For space saving, I have quoted out the stats test for space saving and just showed my handwritten notes
+3. Then I make a box plot for all variables
+
+```{r}
+names(behavior[c(1:19)]) # various catagorical variables descibing the data
+names(behavior[c(20:58)]) # All quantitive values collected are
+
+slim1 <- behavior[,c(15,16,14,20:58)]
+slim2 <- slim1 %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
+slim3 <- as.data.frame(slim2[,1])
+slim4 <- slim2[,c(4:42)]
+slim3$APA2 <- factor(slim2$APA2, levels = c("consistent", "conflict"))
+
+# Levene's test for normality
+#for(y in names(slim4)){
+#  ymod <- leveneTest(slim4[[y]] ~ slim3$APA2)
+#  cat(paste('\nDependent var:', y, '\n'))
+#  print(ymod)
+#}
+
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# *** Speed1, Path2ndEntr, Time2ndEntr, Path2ndEntr, Time2ndEntr
+# ** Path1stEntr, Time1stEntr
+# *  Max50.RngHiBin ,  PolarMaxBin  , PolarMinVal, RayleigAngle, pTimeCW, pTimeOPP,
+# .  Speed2, Min50.RngLoBin , TimeTarget, NumShock, NumEntrances
+#    AnnularKurtosis, AnnularSkewnes, AnnularSd, AnnularMaxBin, AnnularMaxVal, AnnularMinBin, AnnularMinVal, Max50.RngLoBin, RayleigLength PolarMaxVal, Min50.RngHiBin , PolarMinBin, PolarSdVal, PolarAvgVal, RayleigLength, pTimeTarget, Speed2ndEntr, MaxTimeAvoid, Dist1stEntr.m, Speed1stEntr.cm.s, Linearity.Arena, SdevSpeedArena
+
+for(y in names(slim4)){
+  ymod <- wilcox.test(slim4[[y]] ~ slim3$APA2 )
+  cat(paste('\nDependent var:', y, '\n'))
+  print(ymod)
+}
+
+# *** Path2ndEntr 
+# **  Speed2, PolarMinVal, pTimeOPP, pTimeTarget, TimeTarget, Time2ndEntr, NumShock
+# **  Dist1stEntr.m., Path1stEntr , Time1stEntr, NumEntrances
+# *   PolarSdVal, PolarAvgVal 
+# .    
+#     Speed1, AnnularKurtosis, AnnularSkewnes, AnnularSd, AnnularAvg, AnnularMaxBin,
+#     AnnularMaxVal, AnnularMinBin, AnnularMinVal, Max50.RngHiBin , PolarMaxBin, 
+#     PolarMaxVal, Min50.RngHiBin, Min50.RngLoBin, PolarMinBin, RayleigAngle
+#     RayleigLength, pTimeCW, pTimeCCW, Speed2ndEntr, MaxTimeAvoid, Speed1stEntr.cm.s., #     Linearity.Arena., SdevSpeedArena 
+ 
+par(mfrow=c(4,4))
+for(y in names(slim4)){
+  ymod <- boxplot(slim4[[y]] ~ slim3$APA2,
+               main = y,
+               xlab = "T4/C1")
+}
+par(mfrow=c(1,1))
+```
+
+## Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 training session
+
+```{r}
+slim1 <- behavior[,c(15,16,14,20:58)]
+slim2 <- slim1 %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
+slim3 <- as.data.frame(slim2[,1])
+slim4 <- slim2[,c(4:42)]
+slim3$APA2 <- factor(slim2$APA2, levels = c("consistent", "conflict"))
+
+for(y in names(slim4)){
+  ymod<- wilcox.test(slim4[[y]] ~ slim3$APA2 )
+  cat(paste('\nDependent var:', y, '\n'))
+  print(ymod)
+}
+
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# ***  
+# **  PolarAvgVal,
+# *   Speed1stEntr.cm.s. 
+# .   PolarSdVal,   
+#     Speed2, Speed1, AnnularKurtosis, AnnularSkewnes, AnnularSd,
+#     AnnularAvg, AnnularMaxBin, AnnularMaxVal, AnnularMinBin, AnnularMinVal
+#     Max50.RngHiBin, Max50.RngLoBin, PolarMaxBin, PolarMaxVal, Min50.RngHiBin   
+#     Min50.RngLoBin, PolarMinBin, PolarMinVal, RayleigAngle, RayleigLength,
+#     pTimeCW, pTimeOPP, pTimeCCW, pTimeTarget, TimeTarget, Speed2ndEntr, 
+#     Path2ndEntr, Time2ndEntr, MaxTimeAvoid, NumShock, Dist1stEntr.m. 
+#     Path1stEntr, Time1stEntr, NumEntrances, Linearity.Arena., SdevSpeedArena
+
+par(mfrow=c(4,4))
+for(y in names(slim4)){
+  ymod <- boxplot(slim4[[y]] ~ slim3$APA2,
+               main = y,
+               xlab = "T6/C3")
+}
+par(mfrow=c(1,1))
+```
+
+# Vizualizing Mean and Standard error
+
+To make the point and line graphs, I must create and merge some data frames
+
+```{r makenewdf}
+## number of entrances
+behaviorsummaryNumAPA2 <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+
+## speed
+speedsummary <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Speed2), se = sd(Speed2)/sqrt(length(Speed2)))
+
+## time second entrance
+Time2ndEntr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time2ndEntr), se = sd(Time2ndEntr)/sqrt(length(Time2ndEntr)))
+
+## create the column for faceting
+behaviorsummaryNumAPA2$measure <- "Number of Entrances"
+speedsummary$measure <- "Speed"
+Time2ndEntr$measure <- "Time to 2nd Entrance"
+
+# rbind
+threeplots <- rbind(behaviorsummaryNumAPA2,speedsummary, Time2ndEntr)
+
+# set factors
+threeplots$APA2 <- factor(threeplots$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+threeplots$measure <- factor(threeplots$measure, levels = c("Number of Entrances" ,   "Time to 2nd Entrance", "Speed"))
+summary(threeplots)
+
+behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+    geom_point(size = 2) +
+   geom_line() +
+   scale_y_continuous(name= NULL) +
+    scale_x_continuous(name="Training Session", 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels = c( "Hab.", "T1", "T2", "T3",
+                                   "Retest", "T4", "T5", "T6", "Reten.")) +
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  #background_grid(major = "y", minor = "y") +
+  scale_color_manual(values = colorvalAPA00)  +
+  theme(legend.position=c(0.7, 0.8))  +
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none") +
+  facet_wrap(~measure, ncol=1, scales = "free_y")
+behaviorwrap
+
+pdf(file="../figures/01_behavior/threebehaviors.pdf", width=3.25, height=3.75)
+plot(behaviorwrap)
+dev.off()
+
+```
+
+## Hierarchical clusering of time series behavioral data
+
+Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed. 
+
+```{r pheatmap2,  message=FALSE, results='hide', include = F, eval = FALSE}
+## make annotation df and ann_colors for pheatmap
+behavior2 <- behavior
+behavior2$RayleigAngle <- NULL
+behavior2$PolarMinBin <- NULL
+scaledaveragedata2 <- as.data.frame(makescaledaveragedata2(behavior2))
+
+# create a rubric for the color coding and load the colors from figureoptions.R
+df2 <- as.data.frame(makecolumnannotations2(scaledaveragedata2))
+ann_colors = ann_colors_APA2
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(scaledaveragedata2), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(scaledaveragedata2)/paletteLength, max(scaledaveragedata2), length.out=floor(paletteLength/2)))
+
+## pheatmap for markdown
+pheatmap(scaledaveragedata2, show_colnames=T, show_rownames = T,
+         annotation_col=df2, 
+         annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         border_color = "grey60" ,
+         color = viridis(30),
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" ,
+         clustering_distance_rows = "correlation"
+         )
+
+# pheatmapfor adobe
+pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = F,
+         annotation_col=df2, annotation_colors = ann_colors,
+         annotation_names_col = F,
+         treeheight_row = 0, treeheight_col = 25,
+         fontsize = 6, 
+         border_color = "grey60" ,
+         color = viridis(30),
+          width = 3.25, height = 3.5,
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/01_behavior/pheatmap2.pdf",
+         legend = TRUE,
+         annotation_legend = FALSE
+         )
+
+```
+
+### Principle component analysis 
+Next, I next reduced the dimentionality of the data with a PCA anlaysis. 
+```{r PCA}
+longdata <- makelongdata(behavior)
+Z <- longdata[,3:362]
+Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
+pc = prcomp(Z, scale.=TRUE)
+loadings <- pc$rotation
+scores <- pc$x
+
+scoresdf <- makepcadf(behavior) #create the df of pcas
+rotationdf <- mkrotationdf(behavior) #loadings for specific factors
+behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
+scoresdf$PC1 <- scoresdf$PC1 * -1
+scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+
+
+## data wraningly for pca anlysis
+behaviormatrix %>% 
+  scale() %>%                 # scale to 0 mean and unit variance
+  prcomp() ->                 # do PCA
+  pca                         # store result as `pca`
+percent <- round(100*pca$sdev^2/sum(pca$sdev^2),2)
+perc_data <- data.frame(percent=percent, PC=1:length(percent))
+res.pca <- prcomp(behaviormatrix,  scale = TRUE)
+
+# plot of percent contribution
+ggplot(perc_data, aes(x=PC, y=percent)) + 
+  geom_bar(stat="identity") + 
+  geom_text(aes(label=round(percent, 2)), size=4, vjust=-.5) + 
+  xlim(0, 10)
+
+## statistics
+aov1 <- aov(PC1 ~ APA2, data=scoresdf)
+summary(aov1) # p = 1.01e-13
+TukeyHSD(aov1, which = "APA2") # p<< 0.001 for both control comparisions
+
+aov2 <- aov(PC2 ~ APA2, data=scoresdf)
+summary(aov2) # p = 0.0295 *
+TukeyHSD(aov2, which = "APA2") # p > 0.05
+
+summary(aov(PC3 ~ APA2, data=scoresdf)) # p = 0.117
+TukeyHSD((aov(PC3 ~ APA2, data=scoresdf)), which = "APA2") 
+
+summary(aov(PC4 ~ APA2, data=scoresdf))
+TukeyHSD((aov(PC4 ~ APA2, data=scoresdf)), which = "APA2") 
+
+summary(aov(PC5 ~ APA2, data=scoresdf))
+TukeyHSD((aov(PC5 ~ APA2, data=scoresdf)), which = "APA2") 
+
+summary(aov(PC6 ~ APA2, data=scoresdf))
+TukeyHSD((aov(PC6 ~ APA2, data=scoresdf)), which = "APA2") # p > 0.05
+
+
+pca12 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
+    geom_point(size=3, alpha = 0.7) +
+    xlab(paste0("PC 1: ", percent[1],"% variance")) +
+    ylab(paste0("PC 2: ", percent[2],"% variance")) +
+    scale_colour_manual(values=c(colorvalAPA00)) + 
+    theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme(legend.position="none") 
+pca12
+
+pdf(file="../figures/01_behavior/pca12.pdf",  width=1.5, height=1.5)
+plot(pca12)
+dev.off()
+
+pca16 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
+    geom_point(size=3, alpha = 0.7) +
+    xlab(paste0("PC 1: ", percent[1],"% variance")) +
+    ylab(paste0("PC 2: ", percent[2],"% variance")) +
+    stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
+    scale_colour_manual(values=c(colorvalAPA00)) + 
+    theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme(legend.position="none") 
+pca16
+
+pdf(file="../figures/01_behavior/pca16.pdf",  width=3.25, height=2.25)
+plot(pca16)
+dev.off()
+
+pca12 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
+    geom_point(size=3, alpha = 0.7) +
+    xlab(paste0("PC 1: ", percent[1],"% variance")) +
+    ylab(paste0("PC 2: ", percent[2],"% variance")) +
+    stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
+    scale_colour_manual(values=c(colorvalAPA00)) + 
+    theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme(legend.position="none") 
+pca12
+
+
+res.pca <- prcomp(behaviormatrix, scale = TRUE)
+fviz_eig(res.pca)
+fviz_pca_var(res.pca,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE,     # Avoid text overlapping
+             select.var = list(contrib = 10))
+fviz_pca_biplot(res.pca, label ="var")
+```
+
+```{r writefiles}
+write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
+write.csv(threeplots, file = "../data/01a_threeplots.csv", row.names = FALSE)
+write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
+write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
+write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
+```

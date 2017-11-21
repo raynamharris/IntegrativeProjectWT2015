@@ -20,6 +20,16 @@
 
     before <- multiqc[multiqc$QualityFiltered == "No",]
     after <- multiqc[multiqc$QualityFiltered == "Yes",]
+    summary(before$MillionReads)
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   1.500   3.900   5.500   7.304   7.900  37.900
+
+    summary(after$MillionReads)
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##    0.50    1.90    3.35    4.87    6.10   35.80
+
     # mean before 7.3 million reads max 37 min 1.5. 
     # mean after 4.8 millino reads Max 35 min 0.5
     hist(before$MillionReads, ylim = c(0,80))
@@ -68,6 +78,17 @@
     ## 
 
     multiqc$QC <- factor(multiqc$QC, levels = c("raw" ,"filtertrim"))
+    before <- multiqc[multiqc$QC == "raw",]
+    after <- multiqc[multiqc$QC == "filtertrim",]
+    summary(before$millalign)
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   0.100   1.225   2.250   2.656   3.475  12.100
+
+    summary(after$millalign)
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ## 0.00000 0.00000 0.00000 0.01111 0.00000 0.20000
 
     boxplot(multiqc$millalign ~ multiqc$QC,
             names = c("Raw reads", "Filtered & trimmed reads"),

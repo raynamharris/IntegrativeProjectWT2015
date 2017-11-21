@@ -18,6 +18,7 @@ library(VennDiagram) ## venn diagrams
 library(pheatmap) ## awesome heatmaps
 library(viridis) # for awesome color pallette
 library(reshape2) ## for melting dataframe
+
 library(DESeq2) ## for gene expression analysis
 library(edgeR)  ## for basic read counts status
 library(magrittr) ## to use the weird pipe
@@ -129,6 +130,9 @@ dev.off()
 
 
 pkcs <- data[grep("Prkc", data$gene), ]
+
+
+
 
 ## go setup
 table(res$padj<0.1)
@@ -299,6 +303,13 @@ dev.off()
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
 ```
 
+
+```{r}
+# order results table by the smallest adjusted p value:
+res <- res[order(res$padj),]
+
+results = as.data.frame(dplyr::mutate(as.data.frame(res), sig=ifelse(res$padj<0.05, "FDR<0.05", "Not Sig")), row.names=rownames(res))
+head(results)
 
 
 ## venn diagrams

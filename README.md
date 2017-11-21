@@ -11,11 +11,8 @@ The file names were chosen to indicated their order of execution in the workflow
 
 ### Workflow
  
-- Overview
-	- **00_methods:** a description of the behavior, electrophysiology, and RNA-seq methods 
 - Part 1: Behavior	
-	- **01a_behavior_create_dfs:** wrangling the behavior data
-	- **01b_behavior_figures:** statistical analysis and behavior data visualization
+	- **01a_behavior_analysis:** behavior data wrangling, statistics, and data visualization
 - Part 2.1: UNIX for RNA-seq
 	-  UNIX workflow 
 Initial processing of RNA sequencing was performed on the Stampede cluster at the Texas Advanced Computing Facility. My workflow for this is described in the 'UNIXworkflow' directory. 
