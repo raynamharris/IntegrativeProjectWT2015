@@ -73,7 +73,7 @@ plot_grid(f2, f4, nrow=1)
 ## Figure 3: RNA-seq data subset by subfiel
 
 ```{r fig3}
-fig3 <- magick::image_read("../figures/figures-03.png")
+fig3 <- magick::image_read("../figures/figures2-01.png")
 f <- ggdraw() + draw_image(fig2) # turn png into ggplot object
 f2 <- edit_colors(f, tritan, sev = 1.0)
 f4 <- edit_colors(f, protan, sev = 1.0)

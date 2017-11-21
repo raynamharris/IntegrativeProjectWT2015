@@ -33,7 +33,7 @@ Initial processing of RNA sequencing was performed on the Stampede cluster at th
 	- **04_integration:** correlations across levels, mostly using PCA data
 - Extras
 	- **99_colorblindr:** a simulation of how some of my figures will look to colorblind readers
-	- **99_forDeep:** a targeted PC analysis of a colleague	
+	
 
 ### Results
 

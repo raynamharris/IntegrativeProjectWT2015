@@ -70,7 +70,7 @@ Figure 2: RNA-seq all data
 Figure 3: RNA-seq data subset by subfiel
 ----------------------------------------
 
-    fig3 <- magick::image_read("../figures/figures-03.png")
+    fig3 <- magick::image_read("../figures/figures2-01.png")
     f <- ggdraw() + draw_image(fig2) # turn png into ggplot object
     f2 <- edit_colors(f, tritan, sev = 1.0)
     f4 <- edit_colors(f, protan, sev = 1.0)
