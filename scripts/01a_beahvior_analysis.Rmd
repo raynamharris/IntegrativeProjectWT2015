@@ -223,11 +223,12 @@ pdf(file="../figures/01_behavior/threebehaviors.pdf", width=3.25, height=3.75)
 plot(behaviorwrap)
 dev.off()
 
-
 ezANOVA(behavior, dv = NumEntrances, wid = ID, detailed = F,
         within = TrainSessionCombo, between = APA2)
 ezANOVA(behavior, dv = Time2ndEntr, wid = ID, detailed = F,
         within = TrainSessionCombo, between = APA2)
+
+cor.test(behavior$NumEntrances, behavior$Time2ndEntr, method = "kendall")
 
 ```
 

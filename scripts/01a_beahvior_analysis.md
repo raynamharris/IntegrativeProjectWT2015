@@ -1183,6 +1183,18 @@ frames
     ## 3 5.415810e-14         *
     ## 4 2.202366e-09         *
 
+    cor.test(behavior$NumEntrances, behavior$Time2ndEntr, method = "kendall")
+
+    ## 
+    ##  Kendall's rank correlation tau
+    ## 
+    ## data:  behavior$NumEntrances and behavior$Time2ndEntr
+    ## z = -14.043, p-value < 2.2e-16
+    ## alternative hypothesis: true tau is not equal to 0
+    ## sample estimates:
+    ##        tau 
+    ## -0.5519762
+
 Hierarchical clusering of time series behavioral data
 -----------------------------------------------------
 
