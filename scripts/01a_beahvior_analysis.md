@@ -1113,7 +1113,7 @@ frames
        scale_y_continuous(name= NULL) +
         scale_x_continuous(name="Training Session", 
                            breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = c( "Hab.", "T1", "T2", "T3",
+                           labels = c( "Pre.", "T1", "T2", "T3",
                                        "Retest", "T4", "T5", "T6", "Reten.")) +
       theme_cowplot(font_size = 8, line_size = 0.25) +
       #background_grid(major = "y", minor = "y") +
@@ -1132,6 +1132,56 @@ frames
 
     ## quartz_off_screen 
     ##                 2
+
+    ezANOVA(behavior, dv = NumEntrances, wid = ID, detailed = F,
+            within = TrainSessionCombo, between = APA2)
+
+    ## Warning: Data is unbalanced (unequal N per group). Make sure you specified
+    ## a well-considered value for the type argument to ezANOVA().
+
+    ## $ANOVA
+    ##                   Effect DFn DFd         F            p p<.05       ges
+    ## 2                   APA2   3  30 33.733594 9.693702e-10     * 0.5131907
+    ## 3      TrainSessionCombo   8 240 95.850114 2.521202e-70     * 0.6871626
+    ## 4 APA2:TrainSessionCombo  24 240  5.140122 6.424403e-12     * 0.2611096
+    ## 
+    ## $`Mauchly's Test for Sphericity`
+    ##                   Effect          W            p p<.05
+    ## 3      TrainSessionCombo 0.06018833 8.036245e-05     *
+    ## 4 APA2:TrainSessionCombo 0.06018833 8.036245e-05     *
+    ## 
+    ## $`Sphericity Corrections`
+    ##                   Effect       GGe        p[GG] p[GG]<.05       HFe
+    ## 3      TrainSessionCombo 0.5852923 3.270168e-42         * 0.7067817
+    ## 4 APA2:TrainSessionCombo 0.5852923 9.356868e-08         * 0.7067817
+    ##          p[HF] p[HF]<.05
+    ## 3 1.874137e-50         *
+    ## 4 5.567995e-09         *
+
+    ezANOVA(behavior, dv = Time2ndEntr, wid = ID, detailed = F,
+            within = TrainSessionCombo, between = APA2)
+
+    ## Warning: Data is unbalanced (unequal N per group). Make sure you specified
+    ## a well-considered value for the type argument to ezANOVA().
+
+    ## $ANOVA
+    ##                   Effect DFn DFd         F            p p<.05       ges
+    ## 2                   APA2   3  30 12.484195 1.801800e-05     * 0.3238047
+    ## 3      TrainSessionCombo   8 240 15.849193 1.028496e-18     * 0.2456594
+    ## 4 APA2:TrainSessionCombo  24 240  5.301402 2.238112e-12     * 0.2463021
+    ## 
+    ## $`Mauchly's Test for Sphericity`
+    ##                   Effect           W            p p<.05
+    ## 3      TrainSessionCombo 0.008153253 9.907594e-13     *
+    ## 4 APA2:TrainSessionCombo 0.008153253 9.907594e-13     *
+    ## 
+    ## $`Sphericity Corrections`
+    ##                   Effect       GGe        p[GG] p[GG]<.05       HFe
+    ## 3      TrainSessionCombo 0.5902759 6.083328e-12         * 0.7140083
+    ## 4 APA2:TrainSessionCombo 0.5902759 4.425697e-08         * 0.7140083
+    ##          p[HF] p[HF]<.05
+    ## 3 5.415810e-14         *
+    ## 4 2.202366e-09         *
 
 Hierarchical clusering of time series behavioral data
 -----------------------------------------------------

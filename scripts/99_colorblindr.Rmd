@@ -70,7 +70,7 @@ f4 <- edit_colors(f, protan, sev = 1.0)
 plot_grid(f2, f4, nrow=1)
 ```
 
-## Figure 3: RNA-seq data subset by subfiel
+## Figure 3: RNA-seq data subset by subfield
 
 ```{r fig3}
 fig3 <- magick::image_read("../figures/figures2-01.png")

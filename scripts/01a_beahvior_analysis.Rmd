@@ -208,7 +208,7 @@ behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2
    scale_y_continuous(name= NULL) +
     scale_x_continuous(name="Training Session", 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels = c( "Hab.", "T1", "T2", "T3",
+                       labels = c( "Pre.", "T1", "T2", "T3",
                                    "Retest", "T4", "T5", "T6", "Reten.")) +
   theme_cowplot(font_size = 8, line_size = 0.25) +
   #background_grid(major = "y", minor = "y") +
@@ -222,6 +222,12 @@ behaviorwrap
 pdf(file="../figures/01_behavior/threebehaviors.pdf", width=3.25, height=3.75)
 plot(behaviorwrap)
 dev.off()
+
+
+ezANOVA(behavior, dv = NumEntrances, wid = ID, detailed = F,
+        within = TrainSessionCombo, between = APA2)
+ezANOVA(behavior, dv = Time2ndEntr, wid = ID, detailed = F,
+        within = TrainSessionCombo, between = APA2)
 
 ```
 
