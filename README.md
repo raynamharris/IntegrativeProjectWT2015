@@ -94,16 +94,6 @@ conflict vs. consistent | 0 | 0 | 0
 | conflict vs. yoked-conflict | 5| 0 | 2 |
 
 
-
-#### Figure 5: Training has little effect on electrophysiology. See **003_ephys.Rmd** for the corresponding analysis
-
-![](./figures/figures-04.png)
-
-
-#### Figure 6: Correlations across levels of biological organization. See **04_integration.Rmd** for the corresponding analysis
-
-![](./figures/figures-03.png)
-
 ### Data
 
 This directory contains both raw and intermediate data files. 
