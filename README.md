@@ -46,7 +46,7 @@ A) Mice were assigned to one of four groups: consistently-trained (red, n=8), yo
 
 
 1. Cognitive training induces avoidance behavior in conflict and consistently trained animals. 
-
+![](./figures/figures-01.png)
 A) Consistently trained (red lines) mice make fewer entrances into the shock zone than yoked-mice (dark grey lines) on all training (T1-T6), restest, and retention (Reten.) sessions but not during the pre-training session (Pre.). Conflict-trained mice (peach) and their yoked controls (light grey) show a similar pattern except for that mean number of differences between T1 and T4 do not differ between conflict-trained mice. B) Time to second shock zone entrance shows a pattern that is reciprocal to the mean number of entrances. C) A principal component analysis estimates that cognitive training explains 36% of the observed variation in behavior (red and peach versus dark grey and light grey). Among the top five contributing 
 
 
