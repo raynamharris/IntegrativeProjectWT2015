@@ -11,6 +11,7 @@ Summary
     library(pheatmap) ## awesome heatmaps
     library(viridis) # for awesome color pallette
     library(reshape2) ## for melting dataframe
+
     library(DESeq2) ## for gene expression analysis
     library(edgeR)  ## for basic read counts status
     library(magrittr) ## to use the weird pipe
@@ -59,7 +60,7 @@ DG
     ## rownames(46403): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(16): 143A-DG-1 143B-DG-1 ... 148A-DG-3 148B-DG-4
-    ## colData names(8): RNAseqID Mouse ... APA APA2
+    ## colData names(8): RNAseqID Mouse ... ID APA2
 
     dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
     dds # view number of genes afternormalization and the number of samples
@@ -71,7 +72,7 @@ DG
     ## rownames(25229): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(16): 143A-DG-1 143B-DG-1 ... 148A-DG-3 148B-DG-4
-    ## colData names(8): RNAseqID Mouse ... APA APA2
+    ## colData names(8): RNAseqID Mouse ... ID APA2
 
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
@@ -252,7 +253,7 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
       scale_color_manual(values = volcano1)  + 
       scale_y_continuous(limits=c(0, 8)) +
       scale_x_continuous( limits=c(-3, 3),
-                          name=NULL)+
+                          name="Log fold change")+
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
@@ -269,6 +270,9 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     ##                 2
 
     pkcs <- data[grep("Prkc", data$gene), ]
+
+
+
 
     ## go setup
     table(res$padj<0.1)
@@ -627,8 +631,28 @@ plot single gene counts
 
 ![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-1.png)
 
-venn diagrams
--------------
+    # order results table by the smallest adjusted p value:
+    res <- res[order(res$padj),]
+
+    results = as.data.frame(dplyr::mutate(as.data.frame(res), sig=ifelse(res$padj<0.05, "FDR<0.05", "Not Sig")), row.names=rownames(res))
+    head(results)
+
+    ##                 baseMean log2FoldChange     lfcSE       stat    pvalue
+    ## 0610005C13Rik  0.4271273    -0.05454299 0.1913556 -0.2850347 0.7756176
+    ## 0610007P14Rik 38.6134531    -0.27937332 0.3292652 -0.8484751 0.3961734
+    ## 0610009B22Rik  9.6887247    -0.37793590 0.4494087 -0.8409626 0.4003689
+    ## 0610009E02Rik  0.5060872    -0.10676793 0.2479167 -0.4306605 0.6667153
+    ## 0610009L18Rik  3.4849909     0.10447557 0.4328623  0.2413598 0.8092763
+    ## 0610009O20Rik 50.0920951     0.25960888 0.2949442  0.8801966 0.3787528
+    ##               padj     sig
+    ## 0610005C13Rik    1 Not Sig
+    ## 0610007P14Rik    1 Not Sig
+    ## 0610009B22Rik    1 Not Sig
+    ## 0610009E02Rik    1 Not Sig
+    ## 0610009L18Rik    1 Not Sig
+    ## 0610009O20Rik    1 Not Sig
+
+    ## venn diagrams
 
 ![](../figures/02c_rnaseqSubfield/DGvenndiagrams-1.png)
 
@@ -666,7 +690,7 @@ CA3
     ## rownames(46403): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(13): 143A-CA3-1 144A-CA3-2 ... 148A-CA3-3 148B-CA3-4
-    ## colData names(8): RNAseqID Mouse ... APA APA2
+    ## colData names(8): RNAseqID Mouse ... ID APA2
 
     dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
     dds # view number of genes afternormalization and the number of samples
@@ -678,7 +702,7 @@ CA3
     ## rownames(23075): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(13): 143A-CA3-1 144A-CA3-2 ... 148A-CA3-3 148B-CA3-4
-    ## colData names(8): RNAseqID Mouse ... APA APA2
+    ## colData names(8): RNAseqID Mouse ... ID APA2
 
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
@@ -872,7 +896,7 @@ CA1
     ## rownames(46403): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(15): 143B-CA1-1 143C-CA1-1 ... 148A-CA1-3 148B-CA1-4
-    ## colData names(8): RNAseqID Mouse ... APA APA2
+    ## colData names(8): RNAseqID Mouse ... ID APA2
 
     dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
     dds # view number of genes afternormalization and the number of samples
@@ -884,7 +908,7 @@ CA1
     ## rownames(24113): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(15): 143B-CA1-1 143C-CA1-1 ... 148A-CA1-3 148B-CA1-4
-    ## colData names(8): RNAseqID Mouse ... APA APA2
+    ## colData names(8): RNAseqID Mouse ... ID APA2
 
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
@@ -1027,7 +1051,7 @@ CA1
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_y_continuous(limits=c(0, 8)) +
       scale_x_continuous( limits=c(-3, 3),
-                          name=NULL)+
+                          name="Log fold change")+
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
@@ -1138,7 +1162,7 @@ CA1
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_y_continuous(limits=c(0, 8)) +
       scale_x_continuous( limits=c(-3, 3),
-                          name=NULL)+
+                          name="Log fold change")+
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
@@ -1216,7 +1240,7 @@ CA1
       scale_color_manual(values = volcano2)  + 
       scale_y_continuous(limits=c(0, 8)) +
       scale_x_continuous( limits=c(-3, 3),
-                          name=NULL)+
+                          name="Log fold change")+
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 

@@ -35,27 +35,28 @@ Initial processing of RNA sequencing was performed on the Stampede cluster at th
 	- **99_colorblindr:** a simulation of how some of my figures will look to colorblind readers
 	
 
-### Results
+### Approach
 
-Quick view of the overall numbers and patterns of differentially expressed beahvioras and genes in response to beahvioral manipulatlions.
-
-
-#### Figure 1: Experimental overview 
+Here is a graphical overview of the experimental design
 
 ![](./figures/figures-05.png)
+A) Mice were assigned to one of four groups: consistently-trained (red, n=8), yoked-consistent (dark grey, n=8), conflict-trained (peach, n=9), or yoked-conflict (light grey, n=9). Mice were placed on the rotating arena (1 rpm) for training sessions that lasted 10 min and was separated by 2-hour intersession interval or overnight (~17 hrs). Behavior was recorded during the Pre-training, Training (T1-T6), Retest, and Retention session. In the active place avoidance schematics, the shaded pie-shaped region is the behaviorally relevant region used for counting the number of entrances into the shock zone. The shocking of yoked mice is not spatially limited to the dark-grey pie-shaped zone, but consistent and conflict trained mice only receive shocks in the red and peach-shaded regions, respectively. B) A representative photo shows the size and location of tissue samples collected for RNA-sequencing.  C) Graphical illustration of hippocampal tissues sequenced and sample sizes for each treatment group and hippocampal subfield.
 
-#### Figure 2: Cognitive training induces avoidance behavior in conflict and consistently trained animals. See **01b_behavior_figures:Rmd** for the corresponding analysis
-
-![](./figures/figures-01.png)
+#### Results
 
 
-#### Figure 3: RNA sequencing confirms large differences in DG, CA3, and CA1 hippocampal subfields  
-See **02b_rnaseqALL:Rmd** for the corresponding analysis
+1. Cognitive training induces avoidance behavior in conflict and consistently trained animals. 
+
+A) Consistently trained (red lines) mice make fewer entrances into the shock zone than yoked-mice (dark grey lines) on all training (T1-T6), restest, and retention (Reten.) sessions but not during the pre-training session (Pre.). Conflict-trained mice (peach) and their yoked controls (light grey) show a similar pattern except for that mean number of differences between T1 and T4 do not differ between conflict-trained mice. B) Time to second shock zone entrance shows a pattern that is reciprocal to the mean number of entrances. C) A principal component analysis estimates that cognitive training explains 36% of the observed variation in behavior (red and peach versus dark grey and light grey). Among the top five contributing 
+
+
+1. RNA sequencing confirms large differences in DG, CA3, and CA1 hippocampal subfields  
 
 ![](./figures/figures-02.png)
+A) I compared gene expression in three hippocampal subfields from our four treatment groups (DG: orange, CA3: green, CA1: purple, yoked-consistent: filled circle, consistent: open square, yoked-conflict: filled square, conflict: open square). B) Hierarchical clustering of differentially expressed genes shows variation between subfields is much greater than variation induced by treatment. C) A principal component analysis estimates that over 50 % of the variation is capture in PC1 and P3, which visually separate the three hippocampal subfields. D) 3000 are differentially expressed in a symmetric pattern between DG and CA. E, F) Fewer genes are up-regulated in CA1 compared to both DG and CA3, but the magnitude of expression differences in greater between DG-CA1 than between CA3-CA1. For volcano plots, dots are partially transparent to aid visualization of density.
 
 
-#### Table 1: Numbers of differentially expressed genes by two-way contrast when all data is included in the normalization and quantificaiton. See **02b_rnaseqALL:Rmd** for the corresponding analysis
+1. Table 1: Numbers of differentially expressed genes by two-way contrast when all data is included in the normalization and quantificaiton. 
 
 | contrast | up | down | total |
 | --- | --- | --- | --- |
@@ -67,31 +68,22 @@ yoked conflict vs. yoked consistent | 30 | 1 | 31
 conflict vs. yoked conflict | 15 | 24 | 39
 conflict vs. consistent | 0 | 0 | 0
 
-#### Table 2: Sample sizes for tissue specific analysis of the resopnse to behavior manipulations in DG, CA3, and CA1 hippocampal subfields. See **02c_rnaseqSubfield.Rmd** for the corresponding analysis
 
-
-| Training Group | DG | CA3 | CA1 |
-|----|:----:|:-----:|:-----:|
-| consistent yoked | 4 | 3 | 2 |
-| consistent trained | 3 | 2 | 4 |
-| conflict yoked | 4 | 3 | 5 |
-| conflict trained | 5| 5 | 4 |
-
-
-#### Figure 4: Cognitive training alters gene expression in DG and CA1 but not CA3. See **02c_rnaseqSubfield.Rmd** for the corresponding analysis
+1. Place avoidance is associated with up-regulation genes involved in regulation of transcription.  
 
 ![](./figures/figures2-01.png)
+A) In the dentate gyrus (DG) 116 genes are upregulated in the consistently training group compared to the yoked samples (FDR = 0.1). An analysis of enrichment in gene ontology categories shows an enrichment in molecular function processes related to promoter binding and nuclear sequence binding (p < 0.05).  B) Genes and GO categories are colored according to enrichment in trained (red) or yoked (black). The active place avoidance schematics, the shaded pie-shaped region is the behaviorally relevant region for counting a number of entrances into the shock zone. Trained (red) mice are shocked in this zone, but the shocking of yoked mice is not spatially limited to the dark-grey pie-shaped zone.
 
+1. Place avoidance is associated with increased expression of genes that regulate synaptic activity in CA1   
 
-#### Table 1: Numbers of differentially expressed genes by two-way contrast the data is subset by hippocampal tissue before normalization and quantification. See **02c_rnaseqSubfield.Rmd** for the corresponding analysis
+![](./figures/figures2-02.png)
+A) In the CA1, 253 genes are upregulated in the consistently training group while only 255 are downregulated (FDR = 0.1). B) An analysis of enrichment in gene ontology (GO) categories shows an enrichment in molecular function processes related to ion channel transport and activity (p < 0.05). Genes and GO categories are colored according to enrichment in trained (red) or yoked (black)  
 
+1.  Additional punishment also influences gene expression in CA1  
 
-| Two-way contrasts between groups | DG | CA3 | CA1 |
-|----|:----:|:-----:|:-----:|
-| consistent vs. yoked-consisten | 95 | 0 | 196 |
-| conflict vs. consistent | 0 | 1 | 0 |
-| yoked-conflict vs. yoked-consistent | 2 | 0 | 201 |
-| conflict vs. yoked-conflict | 5| 0 | 2 |
+![](./figures/figures2-03.png)
+A) In the CA1, 409 genes are differentially expressed in between yoked groups that received different amounts of punishment.  (FDR = 0.1). B) An analysis of enrichment in gene ontology (GO) categories shows an enrichment in molecular function processes related to ion channel transport and synaptic activity (p < 0.05). Genes and GO categories are colored according to enrichment in yoked-conflict (light grey) or yoked-consistent (dark-grey).  
+
 
 
 ### Data
