@@ -80,8 +80,6 @@ slim4 <- slim2[,c(4:42)]
 # MaxTimeAvoid, NumShock, Dist1stEntr.m, Path1stEntr, Time1stEntr, NumEntrances
 ```
 
-
-
 ## Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 training session
 
 1. First, I create some "slim" datasets to look at only the trained animals to look for statistically significant differences between consistent and conflict trained on the T4/C1 training session
@@ -188,18 +186,23 @@ speedsummary <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum),
 ## time second entrance
 Time2ndEntr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time2ndEntr), se = sd(Time2ndEntr)/sqrt(length(Time2ndEntr)))
 
+## time second entrance
+Time1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
+
+
 ## create the column for faceting
 behaviorsummaryNumAPA2$measure <- "Number of Entrances"
 speedsummary$measure <- "Speed"
-Time2ndEntr$measure <- "Time to 2nd Entrance"
+Time1Entr$measure <- "Time to 1st Entrance"
 
 # rbind
-threeplots <- rbind(behaviorsummaryNumAPA2,speedsummary, Time2ndEntr)
+threeplots <- rbind(behaviorsummaryNumAPA2,speedsummary, Time1Entr)
 
 # set factors
 threeplots$APA2 <- factor(threeplots$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
-threeplots$measure <- factor(threeplots$measure, levels = c("Number of Entrances" ,   "Time to 2nd Entrance", "Speed"))
+threeplots$measure <- factor(threeplots$measure, levels = c("Number of Entrances" ,   "Time to 1st Entrance", "Speed"))
 summary(threeplots)
+
 
 behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
@@ -222,14 +225,75 @@ behaviorwrap
 pdf(file="../figures/01_behavior/threebehaviors.pdf", width=3.25, height=3.75)
 plot(behaviorwrap)
 dev.off()
+```
 
-ezANOVA(behavior, dv = NumEntrances, wid = ID, detailed = F,
-        within = TrainSessionCombo, between = APA2)
-ezANOVA(behavior, dv = Time2ndEntr, wid = ID, detailed = F,
-        within = TrainSessionCombo, between = APA2)
+# This chunk is for creating files and figures for the FMR1 chapter
+```{r forFMR1}
+## This is for the FMR1 chapter
+Path1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Path1stEntr), se = sd(Path1stEntr)/sqrt(length(Path1stEntr)))
 
-cor.test(behavior$NumEntrances, behavior$Time2ndEntr, method = "kendall")
+NumEntr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
 
+Path1Entr$results <- "Expected Results"
+NumEntr$results <- "Expected Results"
+Path1Entr$measure <- "Path to the 1st Entrance"
+NumEntr$measure <- "Number of entrances"
+
+PathNum <- rbind(Path1Entr,NumEntr)
+
+numenrwt15 <- PathNum  %>% 
+  #filter(TrainSessionComboNum != "1", TrainSessionComboNum != "9") %>% 
+  filter(measure == "Number of entrances") %>% 
+  droplevels()  %>% 
+  ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se), width=.1) +
+    geom_point(size = 2) +
+   geom_line(aes(colour=APA2)) +
+   scale_y_continuous(name= "Number of Entrances",
+                      limits = c(0,35)) +
+    scale_x_continuous(name="Training Session", 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels = c( "Pre.", "T1", "T2", "T3",
+                                   "Retest", 
+                                   "C1", "C2", "C3", "Reten.")) +
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  background_grid(major = "y", minor="non") +
+  scale_color_manual(values = colorvalAPA00)  +
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none") +
+  scale_shape_manual(values=c(16, 1)) 
+numenrwt15
+
+pdf(file="../../FMR1CA1rnaseq/figures/01_behavior/numenrwt15.pdf", width=2.25, height=2)
+plot(numenrwt15)
+dev.off()
+
+pathentrwt15 <- PathNum  %>% 
+  #filter(TrainSessionComboNum != "1", TrainSessionComboNum != "9") %>% 
+  filter(measure == "Path to the 1st Entrance") %>% 
+  droplevels()  %>% 
+  ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se), width=.1) +
+    geom_point(size = 2) +
+   geom_line(aes(colour=APA2)) +
+   scale_y_continuous(name= "Path to the 1st Entrance",
+                      limits = c(0,17.5)) +
+    scale_x_continuous(name="Training Session", 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels = c( "Pre.", "T1", "T2", "T3",
+                                   "Retest", "C1", "C2", 
+                                   "C3", "Reten.")) +
+  theme_cowplot(font_size = 8, line_size = 0.25) +
+  background_grid(major = "y", minor="non") +
+  scale_color_manual(values = colorvalAPA00)  +
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none") +
+  scale_shape_manual(values=c(16, 1)) 
+pathentrwt15
+
+pdf(file="../../FMR1CA1rnaseq/figures/01_behavior/pathentrwt15.pdf", width=2.25, height=2)
+plot(pathentrwt15)
+dev.off()
 ```
 
 ## Hierarchical clusering of time series behavioral data

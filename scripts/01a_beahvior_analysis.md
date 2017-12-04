@@ -1078,33 +1078,37 @@ frames
     ## time second entrance
     Time2ndEntr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time2ndEntr), se = sd(Time2ndEntr)/sqrt(length(Time2ndEntr)))
 
+    ## time second entrance
+    Time1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
+
+
     ## create the column for faceting
     behaviorsummaryNumAPA2$measure <- "Number of Entrances"
     speedsummary$measure <- "Speed"
-    Time2ndEntr$measure <- "Time to 2nd Entrance"
+    Time1Entr$measure <- "Time to 1st Entrance"
 
     # rbind
-    threeplots <- rbind(behaviorsummaryNumAPA2,speedsummary, Time2ndEntr)
+    threeplots <- rbind(behaviorsummaryNumAPA2,speedsummary, Time1Entr)
 
     # set factors
     threeplots$APA2 <- factor(threeplots$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
-    threeplots$measure <- factor(threeplots$measure, levels = c("Number of Entrances" ,   "Time to 2nd Entrance", "Speed"))
+    threeplots$measure <- factor(threeplots$measure, levels = c("Number of Entrances" ,   "Time to 1st Entrance", "Speed"))
     summary(threeplots)
 
     ##                APA2    TrainSessionComboNum       m           
     ##  yoked-consistent:27   Min.   :1            Min.   :  0.0149  
     ##  consistent      :27   1st Qu.:3            1st Qu.:  0.0351  
-    ##  yoked-conflict  :27   Median :5            Median : 14.2222  
-    ##  conflict        :27   Mean   :5            Mean   : 59.2463  
-    ##                        3rd Qu.:7            3rd Qu.: 48.7872  
-    ##                        Max.   :9            Max.   :471.4978  
+    ##  yoked-conflict  :27   Median :5            Median :  8.1628  
+    ##  conflict        :27   Mean   :5            Mean   : 36.5275  
+    ##                        3rd Qu.:7            3rd Qu.: 22.3431  
+    ##                        Max.   :9            Max.   :359.2163  
     ##        se                            measure  
     ##  Min.   :  0.00044   Number of Entrances :36  
-    ##  1st Qu.:  0.00392   Time to 2nd Entrance:36  
-    ##  Median :  1.51376   Speed               :36  
-    ##  Mean   : 13.00903                            
-    ##  3rd Qu.:  8.37054                            
-    ##  Max.   :101.93841
+    ##  1st Qu.:  0.00392   Time to 1st Entrance:36  
+    ##  Median :  1.49536   Speed               :36  
+    ##  Mean   : 10.83833                            
+    ##  3rd Qu.:  3.85247                            
+    ##  Max.   :106.74167
 
     behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
         geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
@@ -1133,67 +1137,84 @@ frames
     ## quartz_off_screen 
     ##                 2
 
-    ezANOVA(behavior, dv = NumEntrances, wid = ID, detailed = F,
-            within = TrainSessionCombo, between = APA2)
+This chunk is for creating files and figures for the FMR1 chapter
+=================================================================
 
-    ## Warning: Data is unbalanced (unequal N per group). Make sure you specified
-    ## a well-considered value for the type argument to ezANOVA().
+    ## This is for the FMR1 chapter
+    Path1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Path1stEntr), se = sd(Path1stEntr)/sqrt(length(Path1stEntr)))
 
-    ## $ANOVA
-    ##                   Effect DFn DFd         F            p p<.05       ges
-    ## 2                   APA2   3  30 33.733594 9.693702e-10     * 0.5131907
-    ## 3      TrainSessionCombo   8 240 95.850114 2.521202e-70     * 0.6871626
-    ## 4 APA2:TrainSessionCombo  24 240  5.140122 6.424403e-12     * 0.2611096
-    ## 
-    ## $`Mauchly's Test for Sphericity`
-    ##                   Effect          W            p p<.05
-    ## 3      TrainSessionCombo 0.06018833 8.036245e-05     *
-    ## 4 APA2:TrainSessionCombo 0.06018833 8.036245e-05     *
-    ## 
-    ## $`Sphericity Corrections`
-    ##                   Effect       GGe        p[GG] p[GG]<.05       HFe
-    ## 3      TrainSessionCombo 0.5852923 3.270168e-42         * 0.7067817
-    ## 4 APA2:TrainSessionCombo 0.5852923 9.356868e-08         * 0.7067817
-    ##          p[HF] p[HF]<.05
-    ## 3 1.874137e-50         *
-    ## 4 5.567995e-09         *
+    NumEntr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
 
-    ezANOVA(behavior, dv = Time2ndEntr, wid = ID, detailed = F,
-            within = TrainSessionCombo, between = APA2)
+    Path1Entr$results <- "Expected Results"
+    NumEntr$results <- "Expected Results"
+    Path1Entr$measure <- "Path to the 1st Entrance"
+    NumEntr$measure <- "Number of entrances"
 
-    ## Warning: Data is unbalanced (unequal N per group). Make sure you specified
-    ## a well-considered value for the type argument to ezANOVA().
+    PathNum <- rbind(Path1Entr,NumEntr)
 
-    ## $ANOVA
-    ##                   Effect DFn DFd         F            p p<.05       ges
-    ## 2                   APA2   3  30 12.484195 1.801800e-05     * 0.3238047
-    ## 3      TrainSessionCombo   8 240 15.849193 1.028496e-18     * 0.2456594
-    ## 4 APA2:TrainSessionCombo  24 240  5.301402 2.238112e-12     * 0.2463021
-    ## 
-    ## $`Mauchly's Test for Sphericity`
-    ##                   Effect           W            p p<.05
-    ## 3      TrainSessionCombo 0.008153253 9.907594e-13     *
-    ## 4 APA2:TrainSessionCombo 0.008153253 9.907594e-13     *
-    ## 
-    ## $`Sphericity Corrections`
-    ##                   Effect       GGe        p[GG] p[GG]<.05       HFe
-    ## 3      TrainSessionCombo 0.5902759 6.083328e-12         * 0.7140083
-    ## 4 APA2:TrainSessionCombo 0.5902759 4.425697e-08         * 0.7140083
-    ##          p[HF] p[HF]<.05
-    ## 3 5.415810e-14         *
-    ## 4 2.202366e-09         *
+    numenrwt15 <- PathNum  %>% 
+      #filter(TrainSessionComboNum != "1", TrainSessionComboNum != "9") %>% 
+      filter(measure == "Number of entrances") %>% 
+      droplevels()  %>% 
+      ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+        geom_errorbar(aes(ymin=m-se, ymax=m+se), width=.1) +
+        geom_point(size = 2) +
+       geom_line(aes(colour=APA2)) +
+       scale_y_continuous(name= "Number of Entrances",
+                          limits = c(0,35)) +
+        scale_x_continuous(name="Training Session", 
+                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                           labels = c( "Pre.", "T1", "T2", "T3",
+                                       "Retest", 
+                                       "C1", "C2", "C3", "Reten.")) +
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      background_grid(major = "y", minor="non") +
+      scale_color_manual(values = colorvalAPA00)  +
+      theme(legend.title=element_blank()) +
+      theme(legend.position="none") +
+      scale_shape_manual(values=c(16, 1)) 
+    numenrwt15
 
-    cor.test(behavior$NumEntrances, behavior$Time2ndEntr, method = "kendall")
+![](../figures/01_behavior/forFMR1-1.png)
 
-    ## 
-    ##  Kendall's rank correlation tau
-    ## 
-    ## data:  behavior$NumEntrances and behavior$Time2ndEntr
-    ## z = -14.043, p-value < 2.2e-16
-    ## alternative hypothesis: true tau is not equal to 0
-    ## sample estimates:
-    ##        tau 
-    ## -0.5519762
+    pdf(file="../../FMR1CA1rnaseq/figures/01_behavior/numenrwt15.pdf", width=2.25, height=2)
+    plot(numenrwt15)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    pathentrwt15 <- PathNum  %>% 
+      #filter(TrainSessionComboNum != "1", TrainSessionComboNum != "9") %>% 
+      filter(measure == "Path to the 1st Entrance") %>% 
+      droplevels()  %>% 
+      ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+        geom_errorbar(aes(ymin=m-se, ymax=m+se), width=.1) +
+        geom_point(size = 2) +
+       geom_line(aes(colour=APA2)) +
+       scale_y_continuous(name= "Path to the 1st Entrance",
+                          limits = c(0,17.5)) +
+        scale_x_continuous(name="Training Session", 
+                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                           labels = c( "Pre.", "T1", "T2", "T3",
+                                       "Retest", "C1", "C2", 
+                                       "C3", "Reten.")) +
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      background_grid(major = "y", minor="non") +
+      scale_color_manual(values = colorvalAPA00)  +
+      theme(legend.title=element_blank()) +
+      theme(legend.position="none") +
+      scale_shape_manual(values=c(16, 1)) 
+    pathentrwt15
+
+![](../figures/01_behavior/forFMR1-2.png)
+
+    pdf(file="../../FMR1CA1rnaseq/figures/01_behavior/pathentrwt15.pdf", width=2.25, height=2)
+    plot(pathentrwt15)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
 
 Hierarchical clusering of time series behavioral data
 -----------------------------------------------------
