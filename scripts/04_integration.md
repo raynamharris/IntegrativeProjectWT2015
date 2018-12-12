@@ -4,11 +4,14 @@ Setup
 ``` r
 library(plyr)
 library(dplyr)
+```
+
+    ## Warning: package 'dplyr' was built under R version 3.5.1
+
+``` r
 library(reshape2)
-library(superheat)
 library("Hmisc")
 library("corrplot")
-library("PerformanceAnalytics")
 library(viridis)
 library(cowplot)
 library(pheatmap)
@@ -75,11 +78,11 @@ metadata <- full_join(colData, rossetta)
 
     ## Joining, by = c("RNAseqID", "ID")
 
-    ## Warning in full_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
-    ## factors with different levels, coercing to character vector
+    ## Warning: Column `RNAseqID` joining factors with different levels, coercing
+    ## to character vector
 
-    ## Warning in full_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
-    ## factors with different levels, coercing to character vector
+    ## Warning: Column `ID` joining factors with different levels, coercing to
+    ## character vector
 
 ``` r
 names(metadata)[1] <- "samplename"
@@ -97,17 +100,17 @@ str(metadata)
     ## 'data.frame':    54 obs. of  19 variables:
     ##  $ samplename: chr  "143A-CA3-1" "143A-DG-1" "143B-CA1-1" "143B-DG-1" ...
     ##  $ Mouse     : Factor w/ 18 levels "15-143A","15-143B",..: 1 1 2 2 3 4 4 5 5 5 ...
-    ##  $ Conflict  : Factor w/ 2 levels "Conflict","NoConflict": 1 1 1 1 2 2 2 1 1 1 ...
     ##  $ Punch     : Factor w/ 3 levels "CA1","CA3","DG": 2 3 1 3 1 1 3 1 2 3 ...
-    ##  $ Slice     : int  1 1 1 1 1 3 3 2 2 2 ...
-    ##  $ sourcename: chr  "15143A" "15143A" "15143B" "15143B" ...
-    ##  $ APA       : Factor w/ 3 levels "Conflict","Consistent",..: 1 1 3 3 2 3 3 1 1 1 ...
+    ##  $ Group     : Factor w/ 3 levels "conflict","consistent",..: 1 1 3 3 2 3 3 1 1 1 ...
+    ##  $ Conflict  : Factor w/ 2 levels "Conflict","NoConflict": 1 1 1 1 2 2 2 1 1 1 ...
+    ##  $ sourcename: Factor w/ 4 levels "conflict","shocked",..: 1 1 2 2 3 4 4 1 1 1 ...
+    ##  $ ID        : chr  "15143A" "15143A" "15143B" "15143B" ...
     ##  $ APA2      : Factor w/ 4 levels "conflict","consistent",..: 1 1 3 3 2 4 4 1 1 1 ...
     ##  $ organism  : Factor w/ 21 levels "15-142C","15-143A",..: 2 2 3 3 4 5 5 6 6 6 ...
     ##  $ Region    : Factor w/ 3 levels "CA1","CA3","DG": 2 3 1 3 1 1 3 1 2 3 ...
     ##  $ R1filename: Factor w/ 54 levels "142C_CA1_S_S19_L003_R1_001.fastq.gz",..: 3 4 5 6 7 10 11 12 13 14 ...
     ##  $ R2filename: chr  "143A_CA3_1_S35_L002_R2_001.fastq.gz" "143A_DG_1_S36_L002_R2_001.fastq.gz" "143B_CA1_1_S37_L002_R2_001.fastq.gz" "143B_DG_1_S38_L002_R2_001.fastq.gz" ...
-    ##  $ title     : Factor w/ 53 levels "15142C CA1 ",..: 3 4 5 6 7 9 10 11 12 13 ...
+    ##  $ title     : Factor w/ 54 levels "15142C CA1 NA",..: 3 4 5 6 7 10 11 12 13 14 ...
     ##  $ char1     : chr  "Mus musculus" "Mus musculus" "Mus musculus" "Mus musculus" ...
     ##  $ char2     : chr  "C57BL/6" "C57BL/6" "C57BL/6" "C57BL/6" ...
     ##  $ mol       : chr  "RNA" "RNA" "RNA" "RNA" ...
@@ -167,8 +170,8 @@ head(rossetta)
 pcadatabyregion <- dplyr::left_join(pcadata, rossetta, by = "RNAseqID")
 ```
 
-    ## Warning in left_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
-    ## factors with different levels, coercing to character vector
+    ## Warning: Column `RNAseqID` joining factors with different levels, coercing
+    ## to character vector
 
 ``` r
 names(pcadatabyregion)
@@ -190,15 +193,15 @@ alldata <- left_join(pcadatabyregion, rossetta , by="Mouse")
 alldata <- left_join(alldata, behaviorpca, by="ID")
 ```
 
-    ## Warning in left_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
-    ## factors with different levels, coercing to character vector
+    ## Warning: Column `ID` joining factors with different levels, coercing to
+    ## character vector
 
 ``` r
 alldata <- left_join(alldata, ephys3, by="Mouse")
 ```
 
-    ## Warning in left_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
-    ## factors with different levels, coercing to character vector
+    ## Warning: Column `Mouse` joining factors with different levels, coercing to
+    ## character vector
 
 ``` r
 alldataslim <- dplyr::filter(alldata, APA2 %in% c("conflict","consistent"))
@@ -324,19 +327,19 @@ head(alldata)
     ## 5         NA        NA        NA          NA        NA        NA
     ## 6         NA        NA        NA          NA        NA        NA
     ##       DG_PC8    DG_PC9     ID   RNAseqID Behavior_PC1 Behavior_PC2
-    ## 1 -0.6829819 0.7056409 15143A 143A-CA3-1     9.165882     3.810737
-    ## 2 -0.6829819 0.7056409 15143A  143A-DG-1     9.165882     3.810737
-    ## 3  1.6244657 3.8663534 15143B 143B-CA1-1    -7.882608     2.740916
-    ## 4  1.6244657 3.8663534 15143B  143B-DG-1    -7.882608     2.740916
-    ## 5         NA        NA 15143C 143C-CA1-1    12.305985    -5.579053
-    ## 6         NA        NA 15143C 143C-CA1-S    12.305985    -5.579053
+    ## 1 -0.6829819 0.7056409 15143A 143A-CA3-1     9.013673     3.642287
+    ## 2 -0.6829819 0.7056409 15143A  143A-DG-1     9.013673     3.642287
+    ## 3  1.6244657 3.8663534 15143B 143B-CA1-1    -7.898468     2.755012
+    ## 4  1.6244657 3.8663534 15143B  143B-DG-1    -7.898468     2.755012
+    ## 5         NA        NA 15143C 143C-CA1-1    12.076409    -4.937202
+    ## 6         NA        NA 15143C 143C-CA1-S    12.076409    -4.937202
     ##   Behavior_PC3 Behavior_PC4 Behavior_PC6           APA2    Group
-    ## 1    -3.249502   -0.6859113     6.861722       conflict     <NA>
-    ## 2    -3.249502   -0.6859113     6.861722       conflict     <NA>
-    ## 3     1.765345   -7.3832419    -6.016981 yoked-conflict  control
-    ## 4     1.765345   -7.3832419    -6.016981 yoked-conflict  control
-    ## 5    -7.434939    0.9827877    -3.072166     consistent conflict
-    ## 6    -7.434939    0.9827877    -3.072166     consistent conflict
+    ## 1    -3.596817   -0.4147028     5.692802       conflict     <NA>
+    ## 2    -3.596817   -0.4147028     5.692802       conflict     <NA>
+    ## 3     2.094312   -7.3446799    -7.113559 yoked-conflict  control
+    ## 4     2.094312   -7.3446799    -7.113559 yoked-conflict  control
+    ## 5    -7.514289    1.0751628    -3.413626     consistent conflict
+    ## 6    -7.514289    1.0751628    -3.413626     consistent conflict
     ##   Pre_Potentiation Early_Potentiation Late_Potentiation  Max_fEPSP
     ## 1               NA                 NA                NA         NA
     ## 2               NA                 NA                NA         NA
@@ -364,18 +367,14 @@ behavDG <- alldata %>%
     xlab(paste0("Behavior PC1"))  +
   facet_wrap(~wrap)
 behavDG
-```
 
-![](../figures/04_integration/correlationsAvoidance-4.png)
-
-``` r
 pdf(file="../figures/04_integration/behavDG.pdf", width=1.75, height=2)
 plot(behavDG)
 dev.off()
 ```
 
-    ## quartz_off_screen 
-    ##                 2
+    ## pdf 
+    ##   3
 
 ``` r
 alldata <- left_join(pcadatabyregion, rossetta , by="Mouse")

@@ -8,14 +8,13 @@ output:
 ---
 
 ## Setup
+
 ```{r setup, message=F}
 library(plyr)
 library(dplyr)
 library(reshape2)
-library(superheat)
 library("Hmisc")
 library("corrplot")
-library("PerformanceAnalytics")
 library(viridis)
 library(cowplot)
 library(pheatmap)
