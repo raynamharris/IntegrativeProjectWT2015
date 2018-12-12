@@ -1,3 +1,8 @@
+[![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/raynamharris/DissociationTest/master?urlpath=rstudio)
+*Click the button to launch a Binder R session. Navigate to the
+`scripts` directory and open any `.Rmd` file. Note: the first two are
+long and slow. The rest are quick scripts that make figures.*
+
 # IntegrativeProjectWT2015
 
 This repo contains the experiment that I like to call "IntegrativeProjectWT2015" because it is an **integrative** analysis of behavior, electrophysiology, and RNA-seq data collected from **wild type** mice in **2015**. 
