@@ -1,7 +1,6 @@
 [![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/raynamharris/DissociationTest/master?urlpath=rstudio)
 *Click the button to launch a Binder R session. Navigate to the
-`scripts` directory and open any `.Rmd` file. Note: the first two are
-long and slow. The rest are quick scripts that make figures.*
+`scripts` directory and open any `.Rmd` file.*
 
 # IntegrativeProjectWT2015
 
