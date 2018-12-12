@@ -13,15 +13,16 @@ Setup
     library(tidyr) ## for respahing data
     library(plyr) ## for renmaing factors
     library(dplyr) ## for filtering and selecting rows
+
+    ## Warning: package 'dplyr' was built under R version 3.5.1
+
     library(reshape2) ## for melting dataframe
     library(ggplot2) ## for awesome plots!
     library(cowplot) ## for some easy to use themes
     library(factoextra)  ##pca with vectors
     library(car) ## stats
-    library(superheat) # for kmeans clustered heatmap
     library(pheatmap)  # for pretty heatmap
     library(viridis) # for awesome color pallette
-    library(ez)      # for non-parametric ANOVA
 
     ## load user-written functions 
     source("functions_behavior.R")
@@ -33,8 +34,8 @@ Setup
 Sample sizes
 ------------
 
-The 'APA2' column describes the four behavioral treatment groups.  
-The 'TrainSessionCombo' column describes the behvioral training
+The ‘APA2’ column describes the four behavioral treatment groups.  
+The ‘TrainSessionCombo’ column describes the behvioral training
 sessions. Here I filter by a single session to calculte the number of
 mice.
 
@@ -59,7 +60,7 @@ mice.
 Summary statistics comparing all groups across sessions
 -------------------------------------------------------
 
-1.  First, I create some "slim" datasets with just the quantitiave
+1.  First, I create some “slim” datasets with just the quantitiave
     variables and just the relevant catagorical factors
 2.  Then, I use for loops to run statistical tests for all quantitive
     variables
@@ -88,7 +89,7 @@ Summary statistics comparing all groups across sessions
 Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 training session
 -----------------------------------------------------------------------------------------------
 
-1.  First, I create some "slim" datasets to look at only the trained
+1.  First, I create some “slim” datasets to look at only the trained
     animals to look for statistically significant differences between
     consistent and conflict trained on the T4/C1 training session
 2.  Then, I used for loops to run statistical tests for all quantitive
@@ -589,18 +590,18 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     #     PolarMaxVal, Min50.RngHiBin, Min50.RngLoBin, PolarMinBin, RayleigAngle
     #     RayleigLength, pTimeCW, pTimeCCW, Speed2ndEntr, MaxTimeAvoid, Speed1stEntr.cm.s., #     Linearity.Arena., SdevSpeedArena 
      
-    par(mfrow=c(4,4))
+    par(mfrow=c(2,2))
     for(y in names(slim4)){
       ymod <- boxplot(slim4[[y]] ~ slim3$APA2,
                    main = y,
                    xlab = "T4/C1")
     }
 
-![](../figures/01_behavior/unnamed-chunk-2-1.png)![](../figures/01_behavior/unnamed-chunk-2-2.png)
+![](../figures/01_behavior/T4consistentconflict-1.png)![](../figures/01_behavior/T4consistentconflict-2.png)![](../figures/01_behavior/T4consistentconflict-3.png)![](../figures/01_behavior/T4consistentconflict-4.png)![](../figures/01_behavior/T4consistentconflict-5.png)![](../figures/01_behavior/T4consistentconflict-6.png)![](../figures/01_behavior/T4consistentconflict-7.png)![](../figures/01_behavior/T4consistentconflict-8.png)![](../figures/01_behavior/T4consistentconflict-9.png)
 
     par(mfrow=c(1,1))
 
-![](../figures/01_behavior/unnamed-chunk-2-3.png)
+![](../figures/01_behavior/T4consistentconflict-10.png)
 
 Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 training session
 -----------------------------------------------------------------------------------------------
@@ -1050,18 +1051,18 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     #     Path2ndEntr, Time2ndEntr, MaxTimeAvoid, NumShock, Dist1stEntr.m. 
     #     Path1stEntr, Time1stEntr, NumEntrances, Linearity.Arena., SdevSpeedArena
 
-    par(mfrow=c(4,4))
+    par(mfrow=c(3,3))
     for(y in names(slim4)){
       ymod <- boxplot(slim4[[y]] ~ slim3$APA2,
                    main = y,
                    xlab = "T6/C3")
     }
 
-![](../figures/01_behavior/unnamed-chunk-3-1.png)![](../figures/01_behavior/unnamed-chunk-3-2.png)
+![](../figures/01_behavior/T6consistentconflict-1.png)![](../figures/01_behavior/T6consistentconflict-2.png)![](../figures/01_behavior/T6consistentconflict-3.png)![](../figures/01_behavior/T6consistentconflict-4.png)
 
-    par(mfrow=c(1,1))
+    par(mfrow=c(2,2))
 
-![](../figures/01_behavior/unnamed-chunk-3-3.png)
+![](../figures/01_behavior/T6consistentconflict-5.png)
 
 Vizualizing Mean and Standard error
 ===================================

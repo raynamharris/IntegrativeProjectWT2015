@@ -21,10 +21,8 @@ library(ggplot2) ## for awesome plots!
 library(cowplot) ## for some easy to use themes
 library(factoextra)  ##pca with vectors
 library(car) ## stats
-library(superheat) # for kmeans clustered heatmap
 library(pheatmap)  # for pretty heatmap
 library(viridis) # for awesome color pallette
-library(ez)      # for non-parametric ANOVA
 
 ## load user-written functions 
 source("functions_behavior.R")
@@ -60,7 +58,7 @@ behavior %>%
 2. Then, I use for loops to run statistical tests for all quantitive variables
 3. Then I make a box plot for all variables
 
-```{r}
+```{r slim1}
 # sample sizes
 slim1 <- behavior[,c(15,16,14,20:58)] # drop frivolous columns
 slim2 <- slim1 # subsequently in this analysis, I use this line to filter rows 
@@ -86,7 +84,7 @@ slim4 <- slim2[,c(4:42)]
 2. Then, I used for loops to run statistical tests for all quantitive variables. For space saving, I have quoted out the stats test for space saving and just showed my handwritten notes
 3. Then I make a box plot for all variables
 
-```{r}
+```{r T4consistentconflict}
 names(behavior[c(1:19)]) # various catagorical variables descibing the data
 names(behavior[c(20:58)]) # All quantitive values collected are
 
@@ -126,7 +124,7 @@ for(y in names(slim4)){
 #     PolarMaxVal, Min50.RngHiBin, Min50.RngLoBin, PolarMinBin, RayleigAngle
 #     RayleigLength, pTimeCW, pTimeCCW, Speed2ndEntr, MaxTimeAvoid, Speed1stEntr.cm.s., #     Linearity.Arena., SdevSpeedArena 
  
-par(mfrow=c(4,4))
+par(mfrow=c(2,2))
 for(y in names(slim4)){
   ymod <- boxplot(slim4[[y]] ~ slim3$APA2,
                main = y,
@@ -137,7 +135,7 @@ par(mfrow=c(1,1))
 
 ## Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 training session
 
-```{r}
+```{r T6consistentconflict}
 slim1 <- behavior[,c(15,16,14,20:58)]
 slim2 <- slim1 %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
 slim3 <- as.data.frame(slim2[,1])
@@ -163,13 +161,13 @@ for(y in names(slim4)){
 #     Path2ndEntr, Time2ndEntr, MaxTimeAvoid, NumShock, Dist1stEntr.m. 
 #     Path1stEntr, Time1stEntr, NumEntrances, Linearity.Arena., SdevSpeedArena
 
-par(mfrow=c(4,4))
+par(mfrow=c(3,3))
 for(y in names(slim4)){
   ymod <- boxplot(slim4[[y]] ~ slim3$APA2,
                main = y,
                xlab = "T6/C3")
 }
-par(mfrow=c(1,1))
+par(mfrow=c(2,2))
 ```
 
 # Vizualizing Mean and Standard error
