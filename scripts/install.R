@@ -24,14 +24,10 @@ install.packages("xtable")
 install.packages("WGCNA")
 install.packages("flashClust")
 
-
-library(superheat)
 library("Hmisc")
 library("corrplot")
-library("PerformanceAnalytics")
-library(viridis)
-library(cowplot)
-library(pheatmap)
+
+install.packages("magick")
 
 source("http://www.bioconductor.org/biocLite.R")
 biocLite("DESeq2")
