@@ -51,7 +51,7 @@ behavior %>%
   select(APA2)  %>%  summary()
 
 # keep only relevant columns
-beahvior_slim <- behavior[,c(15,16,14,20:58)] 
+behavior_slim <- behavior[,c(15,16,14,20:58)] 
 ```
 
 
@@ -67,7 +67,7 @@ Steps
 ### Comparing Consistent and Conflict behaviors during the T4/C1 training session
 
 ```{r T4consistentconflict}
-filtered <- beahvior_slim %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
+filtered <- behavior_slim %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
 exp_factors <- as.data.frame(filtered[,1])
 exp_nums <- filtered[,c(4:42)]
 exp_factors$APA2 <- factor(filtered$APA2, levels = c("consistent", "conflict"))
@@ -113,7 +113,7 @@ for(y in names(exp_nums)){
 ### Comparing Consistent and Conflict behaviors during the T6/C3 training session
 
 ```{r T6consistentconflict}
-filtered <- beahvior_slim %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
+filtered <- behavior_slim %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
 exp_factors <- as.data.frame(filtered[,1])
 exp_nums <- filtered[,c(4:42)]
 exp_factors$APA2 <- factor(filtered$APA2, levels = c("consistent", "conflict"))
@@ -149,7 +149,7 @@ for(y in names(exp_nums)){
 
 To make the point and line graphs, I must create and merge some data frames
 
-```{r makenewdf}
+```{r twobehaviors}
 ## number of entrances
 behaviorsummaryNumAPA2 <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
 
@@ -416,7 +416,7 @@ fviz_pca_biplot(res.pca, label ="var")
 
 ```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
-write.csv(threeplots, file = "../data/01a_threeplots.csv", row.names = FALSE)
+write.csv(twoplots, file = "../data/01a_twoplots.csv", row.names = FALSE)
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
 write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
 write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)

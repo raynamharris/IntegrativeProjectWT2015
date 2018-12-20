@@ -57,83 +57,27 @@ mice.
     ##  yoked-conflict  :9  
     ##  conflict        :9
 
+    # keep only relevant columns
+    behavior_slim <- behavior[,c(15,16,14,20:58)] 
+
 Summary statistics comparing all groups across sessions
 -------------------------------------------------------
 
-1.  First, I create some “slim” datasets with just the quantitiave
-    variables and just the relevant catagorical factors
-2.  Then, I use for loops to run statistical tests for all quantitive
-    variables
-3.  Then I make a box plot for all variables
+Steps 1. Filter by session 1. Create some new datasets with just the
+quantitiave variables and just the relevant catagorical factors 1. Use
+for loops to run statistical tests for all quantitive variables 1. Make
+a box plot for all variables
 
-<!-- -->
+### Comparing Consistent and Conflict behaviors during the T4/C1 training session
 
-    # sample sizes
-    slim1 <- behavior[,c(15,16,14,20:58)] # drop frivolous columns
-    slim2 <- slim1 # subsequently in this analysis, I use this line to filter rows 
-    slim3 <- slim2[,c(1:3)] # extract experimental design variables
-    slim4 <- slim2[,c(4:42)]
-
-    # Anova
-    #for(y in names(slim4)){
-    #  ymod<- summary(aov(slim4[[y]] ~ slim3$APA2 * slim3$TrainSessionCombo ))
-    #  cat(paste('\nDependent var:', y, '\n'))
-    #  print(ymod)
-    #}
-
-    # Variables that are significant for training, time, and the interaction
-    # PolarMaxVal, PolarMinBin, PolarMinVal, PolarSdVal, PolarAvgVal, RayleigLength
-    # pTimeCW, pTimeOPP, pTimeTarget, TimeTarget, Speed2ndEntr, Path2ndEntr, Time2ndEntr,
-    # MaxTimeAvoid, NumShock, Dist1stEntr.m, Path1stEntr, Time1stEntr, NumEntrances
-
-Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 training session
------------------------------------------------------------------------------------------------
-
-1.  First, I create some “slim” datasets to look at only the trained
-    animals to look for statistically significant differences between
-    consistent and conflict trained on the T4/C1 training session
-2.  Then, I used for loops to run statistical tests for all quantitive
-    variables. For space saving, I have quoted out the stats test for
-    space saving and just showed my handwritten notes
-3.  Then I make a box plot for all variables
-
-<!-- -->
-
-    names(behavior[c(1:19)]) # various catagorical variables descibing the data
-
-    ##  [1] "ID"                   "Year"                 "Genotype"            
-    ##  [4] "TrainProtocol"        "TrainSequence"        "TrainGroup"          
-    ##  [7] "Day"                  "TrainSession"         "ShockOnOff"          
-    ## [10] "PairedPartner"        "Experimenter"         "Housing"             
-    ## [13] "TestLocation"         "APA"                  "APA2"                
-    ## [16] "TrainSessionCombo"    "pair1"                "pair2"               
-    ## [19] "TrainSessionComboNum"
-
-    names(behavior[c(20:58)]) # All quantitive values collected are
-
-    ##  [1] "SdevSpeedArena"     "Linearity.Arena."   "NumEntrances"      
-    ##  [4] "Time1stEntr"        "Path1stEntr"        "Speed1stEntr.cm.s."
-    ##  [7] "Dist1stEntr.m."     "NumShock"           "MaxTimeAvoid"      
-    ## [10] "Time2ndEntr"        "Path2ndEntr"        "Speed2ndEntr"      
-    ## [13] "TimeTarget"         "pTimeTarget"        "pTimeCCW"          
-    ## [16] "pTimeOPP"           "pTimeCW"            "RayleigLength"     
-    ## [19] "RayleigAngle"       "PolarAvgVal"        "PolarSdVal"        
-    ## [22] "PolarMinVal"        "PolarMinBin"        "Min50.RngLoBin"    
-    ## [25] "Min50.RngHiBin"     "PolarMaxVal"        "PolarMaxBin"       
-    ## [28] "Max50.RngLoBin"     "Max50.RngHiBin"     "AnnularMinVal"     
-    ## [31] "AnnularMinBin"      "AnnularMaxVal"      "AnnularMaxBin"     
-    ## [34] "AnnularAvg"         "AnnularSd"          "AnnularSkewnes"    
-    ## [37] "AnnularKurtosis"    "Speed1"             "Speed2"
-
-    slim1 <- behavior[,c(15,16,14,20:58)]
-    slim2 <- slim1 %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
-    slim3 <- as.data.frame(slim2[,1])
-    slim4 <- slim2[,c(4:42)]
-    slim3$APA2 <- factor(slim2$APA2, levels = c("consistent", "conflict"))
+    filtered <- behavior_slim %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
+    exp_factors <- as.data.frame(filtered[,1])
+    exp_nums <- filtered[,c(4:42)]
+    exp_factors$APA2 <- factor(filtered$APA2, levels = c("consistent", "conflict"))
 
     # Levene's test for normality
-    #for(y in names(slim4)){
-    #  ymod <- leveneTest(slim4[[y]] ~ slim3$APA2)
+    #for(y in names(exp_nums)){
+    #  ymod <- leveneTest(exp_nums[[y]] ~ exp_factors$APA2)
     #  cat(paste('\nDependent var:', y, '\n'))
     #  print(ymod)
     #}
@@ -145,8 +89,8 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     # .  Speed2, Min50.RngLoBin , TimeTarget, NumShock, NumEntrances
     #    AnnularKurtosis, AnnularSkewnes, AnnularSd, AnnularMaxBin, AnnularMaxVal, AnnularMinBin, AnnularMinVal, Max50.RngLoBin, RayleigLength PolarMaxVal, Min50.RngHiBin , PolarMinBin, PolarSdVal, PolarAvgVal, RayleigLength, pTimeTarget, Speed2ndEntr, MaxTimeAvoid, Dist1stEntr.m, Speed1stEntr.cm.s, Linearity.Arena, SdevSpeedArena
 
-    for(y in names(slim4)){
-      ymod <- wilcox.test(slim4[[y]] ~ slim3$APA2 )
+    for(y in names(exp_nums)){
+      ymod <- wilcox.test(exp_nums[[y]] ~ exp_factors$APA2 )
       cat(paste('\nDependent var:', y, '\n'))
       print(ymod)
     }
@@ -159,7 +103,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 33, p-value = 0.8098
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -171,7 +115,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 52.5, p-value = 0.1234
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -183,7 +127,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 4.5, p-value = 0.002804
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -195,7 +139,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 72, p-value = 0.0006258
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -207,7 +151,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 72, p-value = 0.0005879
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -219,7 +163,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 48, p-value = 0.258
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -231,7 +175,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 6, p-value = 0.004506
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -243,7 +187,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 2.5, p-value = 0.001456
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -255,7 +199,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 49.5, p-value = 0.2104
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -267,7 +211,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 72, p-value = 0.0006306
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -276,7 +220,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 72, p-value = 8.227e-05
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -288,7 +232,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 23.5, p-value = 0.2473
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -300,7 +244,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 1, p-value = 0.0008944
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -312,7 +256,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 3, p-value = 0.001753
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -321,7 +265,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 37, p-value = 0.9626
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -330,7 +274,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 64, p-value = 0.005512
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -339,7 +283,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 20, p-value = 0.1388
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -351,7 +295,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 40.5, p-value = 0.6998
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -360,7 +304,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 38, p-value = 0.8884
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -369,7 +313,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 57, p-value = 0.0464
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -378,7 +322,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 11, p-value = 0.01522
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -390,7 +334,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 10, p-value = 0.00948
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -402,7 +346,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 22, p-value = 0.1828
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -414,7 +358,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 36.5, p-value = 1
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -426,7 +370,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 44, p-value = 0.4688
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -435,7 +379,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 30, p-value = 0.6058
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -447,7 +391,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 34.5, p-value = 0.9231
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -459,7 +403,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 40.5, p-value = 0.6998
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -471,7 +415,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 35, p-value = 0.9615
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -483,7 +427,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 40, p-value = 0.736
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -495,7 +439,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 34, p-value = 0.8797
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -504,7 +448,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 24, p-value = 0.2766
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -516,7 +460,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 40.5, p-value = 0.6614
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -528,7 +472,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 41, p-value = 0.6648
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -537,7 +481,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 34, p-value = 0.8884
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -546,7 +490,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 34, p-value = 0.8884
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -555,7 +499,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 33, p-value = 0.8148
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -567,7 +511,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 48, p-value = 0.2655
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -576,7 +520,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 6, p-value = 0.002468
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -590,30 +534,24 @@ Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 t
     #     PolarMaxVal, Min50.RngHiBin, Min50.RngLoBin, PolarMinBin, RayleigAngle
     #     RayleigLength, pTimeCW, pTimeCCW, Speed2ndEntr, MaxTimeAvoid, Speed1stEntr.cm.s., #     Linearity.Arena., SdevSpeedArena 
      
-    par(mfrow=c(2,2))
-    for(y in names(slim4)){
-      ymod <- boxplot(slim4[[y]] ~ slim3$APA2,
+    par(mfrow=c(3,3))
+    for(y in names(exp_nums)){
+      ymod <- boxplot(exp_nums[[y]] ~ exp_factors$APA2,
                    main = y,
                    xlab = "T4/C1")
     }
 
-![](../figures/01_behavior/T4consistentconflict-1.png)![](../figures/01_behavior/T4consistentconflict-2.png)![](../figures/01_behavior/T4consistentconflict-3.png)![](../figures/01_behavior/T4consistentconflict-4.png)![](../figures/01_behavior/T4consistentconflict-5.png)![](../figures/01_behavior/T4consistentconflict-6.png)![](../figures/01_behavior/T4consistentconflict-7.png)![](../figures/01_behavior/T4consistentconflict-8.png)![](../figures/01_behavior/T4consistentconflict-9.png)
+![](../figures/01_behavior/T4consistentconflict-1.png)![](../figures/01_behavior/T4consistentconflict-2.png)![](../figures/01_behavior/T4consistentconflict-3.png)![](../figures/01_behavior/T4consistentconflict-4.png)![](../figures/01_behavior/T4consistentconflict-5.png)
 
-    par(mfrow=c(1,1))
+### Comparing Consistent and Conflict behaviors during the T6/C3 training session
 
-![](../figures/01_behavior/T4consistentconflict-10.png)
+    filtered <- behavior_slim %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
+    exp_factors <- as.data.frame(filtered[,1])
+    exp_nums <- filtered[,c(4:42)]
+    exp_factors$APA2 <- factor(filtered$APA2, levels = c("consistent", "conflict"))
 
-Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 training session
------------------------------------------------------------------------------------------------
-
-    slim1 <- behavior[,c(15,16,14,20:58)]
-    slim2 <- slim1 %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
-    slim3 <- as.data.frame(slim2[,1])
-    slim4 <- slim2[,c(4:42)]
-    slim3$APA2 <- factor(slim2$APA2, levels = c("consistent", "conflict"))
-
-    for(y in names(slim4)){
-      ymod<- wilcox.test(slim4[[y]] ~ slim3$APA2 )
+    for(y in names(exp_nums)){
+      ymod<- wilcox.test(exp_nums[[y]] ~ exp_factors$APA2 )
       cat(paste('\nDependent var:', y, '\n'))
       print(ymod)
     }
@@ -626,7 +564,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 21.5, p-value = 0.1774
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -635,7 +573,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 36, p-value = 1
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -647,7 +585,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 23.5, p-value = 0.2421
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -659,7 +597,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 42, p-value = 0.5944
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -668,7 +606,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 41, p-value = 0.673
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -680,7 +618,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 11, p-value = 0.01769
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -692,7 +630,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 25, p-value = 0.3081
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -704,7 +642,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 23.5, p-value = 0.2421
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -716,7 +654,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 47, p-value = 0.3093
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -728,7 +666,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 44.5, p-value = 0.4163
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -737,7 +675,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 31, p-value = 0.673
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -749,7 +687,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 26.5, p-value = 0.3605
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -761,7 +699,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 21.5, p-value = 0.175
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -773,7 +711,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 27, p-value = 0.4102
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -782,7 +720,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 41, p-value = 0.673
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -791,7 +729,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 31, p-value = 0.673
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -803,7 +741,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 26, p-value = 0.3603
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -815,7 +753,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 42.5, p-value = 0.5635
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -824,7 +762,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 35, p-value = 0.9626
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -833,7 +771,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 68, p-value = 0.0009872
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -842,7 +780,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 18, p-value = 0.09272
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -854,7 +792,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 24, p-value = 0.1657
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -866,7 +804,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 31, p-value = 0.6121
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -878,7 +816,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 34.5, p-value = 0.9229
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -890,7 +828,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 37.5, p-value = 0.9226
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -899,7 +837,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 37, p-value = 0.9626
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -911,7 +849,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 35, p-value = 0.9615
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -923,7 +861,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 37, p-value = 0.9612
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -935,7 +873,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 35.5, p-value = 1
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -947,7 +885,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 50.5, p-value = 0.1777
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -959,7 +897,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 23, p-value = 0.185
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -968,7 +906,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 34, p-value = 0.8884
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -980,7 +918,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test with continuity correction
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 33, p-value = 0.7609
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -989,7 +927,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 26, p-value = 0.3704
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -998,7 +936,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 41, p-value = 0.673
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -1007,7 +945,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 32, p-value = 0.743
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -1016,7 +954,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 31, p-value = 0.673
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -1025,7 +963,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 20, p-value = 0.1388
     ## alternative hypothesis: true location shift is not equal to 0
     ## 
@@ -1034,7 +972,7 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     ## 
     ##  Wilcoxon rank sum test
     ## 
-    ## data:  slim4[[y]] by slim3$APA2
+    ## data:  exp_nums[[y]] by exp_factors$APA2
     ## W = 22, p-value = 0.1996
     ## alternative hypothesis: true location shift is not equal to 0
 
@@ -1052,20 +990,16 @@ Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 t
     #     Path1stEntr, Time1stEntr, NumEntrances, Linearity.Arena., SdevSpeedArena
 
     par(mfrow=c(3,3))
-    for(y in names(slim4)){
-      ymod <- boxplot(slim4[[y]] ~ slim3$APA2,
+    for(y in names(exp_nums)){
+      ymod <- boxplot(exp_nums[[y]] ~ exp_factors$APA2,
                    main = y,
                    xlab = "T6/C3")
     }
 
-![](../figures/01_behavior/T6consistentconflict-1.png)![](../figures/01_behavior/T6consistentconflict-2.png)![](../figures/01_behavior/T6consistentconflict-3.png)![](../figures/01_behavior/T6consistentconflict-4.png)
+![](../figures/01_behavior/T6consistentconflict-1.png)![](../figures/01_behavior/T6consistentconflict-2.png)![](../figures/01_behavior/T6consistentconflict-3.png)![](../figures/01_behavior/T6consistentconflict-4.png)![](../figures/01_behavior/T6consistentconflict-5.png)
 
-    par(mfrow=c(2,2))
-
-![](../figures/01_behavior/T6consistentconflict-5.png)
-
-Vizualizing Mean and Standard error
-===================================
+Vizualizing Mean and Standard error for num entrace and time 1st entrance
+=========================================================================
 
 To make the point and line graphs, I must create and merge some data
 frames
@@ -1082,40 +1016,39 @@ frames
     ## time second entrance
     Time1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
 
-
     ## create the column for faceting
     behaviorsummaryNumAPA2$measure <- "Number of Entrances"
     speedsummary$measure <- "Speed"
     Time1Entr$measure <- "Time to 1st Entrance"
 
     # rbind
-    threeplots <- rbind(behaviorsummaryNumAPA2,speedsummary, Time1Entr)
+    twoplots <- rbind(behaviorsummaryNumAPA2,Time1Entr)
 
     # set factors
-    threeplots$APA2 <- factor(threeplots$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
-    threeplots$measure <- factor(threeplots$measure, levels = c("Number of Entrances" ,   "Time to 1st Entrance", "Speed"))
-    summary(threeplots)
+    twoplots$APA2 <- factor(twoplots$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+    twoplots$measure <- factor(twoplots$measure, levels = c("Number of Entrances" ,   "Time to 1st Entrance", "Speed"))
+    summary(twoplots)
 
-    ##                APA2    TrainSessionComboNum       m           
-    ##  yoked-consistent:27   Min.   :1            Min.   :  0.0149  
-    ##  consistent      :27   1st Qu.:3            1st Qu.:  0.0351  
-    ##  yoked-conflict  :27   Median :5            Median :  8.1628  
-    ##  conflict        :27   Mean   :5            Mean   : 36.5275  
-    ##                        3rd Qu.:7            3rd Qu.: 22.3431  
-    ##                        Max.   :9            Max.   :359.2163  
-    ##        se                            measure  
-    ##  Min.   :  0.00044   Number of Entrances :36  
-    ##  1st Qu.:  0.00392   Time to 1st Entrance:36  
-    ##  Median :  1.49536   Speed               :36  
-    ##  Mean   : 10.83833                            
-    ##  3rd Qu.:  3.85247                            
-    ##  Max.   :106.74167
+    ##                APA2    TrainSessionComboNum       m          
+    ##  yoked-consistent:18   Min.   :1            Min.   :  2.222  
+    ##  consistent      :18   1st Qu.:3            1st Qu.:  8.248  
+    ##  yoked-conflict  :18   Median :5            Median : 16.324  
+    ##  conflict        :18   Mean   :5            Mean   : 54.776  
+    ##                        3rd Qu.:7            3rd Qu.: 35.314  
+    ##                        Max.   :9            Max.   :359.216  
+    ##        se                          measure  
+    ##  Min.   :  0.294   Number of Entrances :36  
+    ##  1st Qu.:  1.498   Time to 1st Entrance:36  
+    ##  Median :  2.295   Speed               : 0  
+    ##  Mean   : 16.256                            
+    ##  3rd Qu.:  9.080                            
+    ##  Max.   :106.742
 
-    behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    behaviorwrap <- ggplot(twoplots, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
         geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
         geom_point(size = 2) +
        geom_line() +
-       scale_y_continuous(name= NULL) +
+       scale_y_continuous(name= "Value") +
         scale_x_continuous(name="Training Session", 
                            breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                            labels = c( "Pre.", "T1", "T2", "T3",
@@ -1129,89 +1062,10 @@ frames
       facet_wrap(~measure, ncol=1, scales = "free_y")
     behaviorwrap
 
-![](../figures/01_behavior/makenewdf-1.png)
+![](../figures/01_behavior/twobehaviors-1.png)
 
-    pdf(file="../figures/01_behavior/threebehaviors.pdf", width=3.25, height=3.75)
+    pdf(file="../figures/01_behavior/twobehaviors.pdf", width=3.25, height=3)
     plot(behaviorwrap)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-This chunk is for creating files and figures for the FMR1 chapter
-=================================================================
-
-    ## This is for the FMR1 chapter
-    Path1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Path1stEntr), se = sd(Path1stEntr)/sqrt(length(Path1stEntr)))
-
-    NumEntr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
-
-    Path1Entr$results <- "Expected Results"
-    NumEntr$results <- "Expected Results"
-    Path1Entr$measure <- "Path to the 1st Entrance"
-    NumEntr$measure <- "Number of entrances"
-
-    PathNum <- rbind(Path1Entr,NumEntr)
-
-    numenrwt15 <- PathNum  %>% 
-      #filter(TrainSessionComboNum != "1", TrainSessionComboNum != "9") %>% 
-      filter(measure == "Number of entrances") %>% 
-      droplevels()  %>% 
-      ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-        geom_errorbar(aes(ymin=m-se, ymax=m+se), width=.1) +
-        geom_point(size = 2) +
-       geom_line(aes(colour=APA2)) +
-       scale_y_continuous(name= "Number of Entrances",
-                          limits = c(0,35)) +
-        scale_x_continuous(name="Training Session", 
-                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = c( "Pre.", "T1", "T2", "T3",
-                                       "Retest", 
-                                       "C1", "C2", "C3", "Reten.")) +
-      theme_cowplot(font_size = 8, line_size = 0.25) +
-      background_grid(major = "y", minor="non") +
-      scale_color_manual(values = colorvalAPA00)  +
-      theme(legend.title=element_blank()) +
-      theme(legend.position="none") +
-      scale_shape_manual(values=c(16, 1)) 
-    numenrwt15
-
-![](../figures/01_behavior/forFMR1-1.png)
-
-    pdf(file="../../FMR1CA1rnaseq/figures/01_behavior/numenrwt15.pdf", width=2.25, height=2)
-    plot(numenrwt15)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    pathentrwt15 <- PathNum  %>% 
-      #filter(TrainSessionComboNum != "1", TrainSessionComboNum != "9") %>% 
-      filter(measure == "Path to the 1st Entrance") %>% 
-      droplevels()  %>% 
-      ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-        geom_errorbar(aes(ymin=m-se, ymax=m+se), width=.1) +
-        geom_point(size = 2) +
-       geom_line(aes(colour=APA2)) +
-       scale_y_continuous(name= "Path to the 1st Entrance",
-                          limits = c(0,17.5)) +
-        scale_x_continuous(name="Training Session", 
-                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = c( "Pre.", "T1", "T2", "T3",
-                                       "Retest", "C1", "C2", 
-                                       "C3", "Reten.")) +
-      theme_cowplot(font_size = 8, line_size = 0.25) +
-      background_grid(major = "y", minor="non") +
-      scale_color_manual(values = colorvalAPA00)  +
-      theme(legend.title=element_blank()) +
-      theme(legend.position="none") +
-      scale_shape_manual(values=c(16, 1)) 
-    pathentrwt15
-
-![](../figures/01_behavior/forFMR1-2.png)
-
-    pdf(file="../../FMR1CA1rnaseq/figures/01_behavior/pathentrwt15.pdf", width=2.25, height=2)
-    plot(pathentrwt15)
     dev.off()
 
     ## quartz_off_screen 
@@ -1224,6 +1078,53 @@ Here I use heirarhical cluster to identify patterns in the behavioral
 data. On the y axis see three distinct clusters of behaviors that are 1)
 higher in trained animals, 2) higher in yoked animals, and 3) measures
 of speed.
+
+    ## create scaled data frame
+    behavior_slim_heat <- behavior_slim
+    behavior_slim_heat$RayleigAngle <- NULL
+    behavior_slim_heat$PolarMinBin <- NULL
+    scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
+
+    ## make annotation df and ann_colors for pheatmap
+    ann_cols <- as.data.frame(makecolumnannotations(scaledaveragedata))
+    ann_colors = ann_colors_APA2
+
+    # set color breaks
+    paletteLength <- 30
+    myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
+                  seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
+
+    ## pheatmap for markdown
+    pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
+             annotation_col=ann_cols, 
+             annotation_colors = ann_colors,
+             treeheight_row = 0, treeheight_col = 50,
+             border_color = "grey60" ,
+             color = viridis(30),
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation" ,
+             clustering_distance_rows = "correlation"
+             )
+
+![](../figures/01_behavior/pheatmap2-1.png)
+
+    # pheatmapfor adobe
+    pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
+             annotation_col=ann_cols, annotation_colors = ann_colors,
+             annotation_names_col = F,
+             treeheight_row = 0, treeheight_col = 15,
+             fontsize = 6, 
+             border_color = "grey60" ,
+             color = viridis(30),
+              width = 4, height = 4,
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation",
+             filename = "../figures/01_behavior/pheatmap2.pdf",
+             legend = TRUE,
+             annotation_legend = FALSE
+             )
 
 ### Principle component analysis
 
@@ -1430,7 +1331,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## quartz_off_screen 
     ##                 2
 
-    pca16 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
+    pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
         geom_point(size=3, alpha = 0.7) +
         xlab(paste0("PC 1: ", percent[1],"% variance")) +
         ylab(paste0("PC 2: ", percent[2],"% variance")) +
@@ -1438,33 +1339,21 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
         scale_colour_manual(values=c(colorvalAPA00)) + 
         theme_cowplot(font_size = 8, line_size = 0.25) +
           theme(legend.position="none") 
-    pca16
+    pca12elipse
 
 ![](../figures/01_behavior/PCA-3.png)
 
-    pdf(file="../figures/01_behavior/pca16.pdf",  width=3.25, height=2.25)
-    plot(pca16)
+    pdf(file="../figures/01_behavior/pca12elipse.pdf",  width=3.25, height=2.25)
+    plot(pca12elipse)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-    pca12 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
-        geom_point(size=3, alpha = 0.7) +
-        xlab(paste0("PC 1: ", percent[1],"% variance")) +
-        ylab(paste0("PC 2: ", percent[2],"% variance")) +
-        stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
-        scale_colour_manual(values=c(colorvalAPA00)) + 
-        theme_cowplot(font_size = 8, line_size = 0.25) +
-          theme(legend.position="none") 
-    pca12
-
-![](../figures/01_behavior/PCA-4.png)
-
     res.pca <- prcomp(behaviormatrix, scale = TRUE)
     fviz_eig(res.pca)
 
-![](../figures/01_behavior/PCA-5.png)
+![](../figures/01_behavior/PCA-4.png)
 
     fviz_pca_var(res.pca,
                  col.var = "contrib", # Color by contributions to the PC
@@ -1472,14 +1361,14 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
                  repel = TRUE,     # Avoid text overlapping
                  select.var = list(contrib = 10))
 
-![](../figures/01_behavior/PCA-6.png)
+![](../figures/01_behavior/PCA-5.png)
 
     fviz_pca_biplot(res.pca, label ="var")
 
-![](../figures/01_behavior/PCA-7.png)
+![](../figures/01_behavior/PCA-6.png)
 
     write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
-    write.csv(threeplots, file = "../data/01a_threeplots.csv", row.names = FALSE)
+    write.csv(twoplots, file = "../data/01a_twoplots.csv", row.names = FALSE)
     write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
     write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
     write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
