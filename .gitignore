@@ -9,3 +9,5 @@ figures/*.ai
 data/04_kallistoquant.tar
 scripts/VennDiagram2017-11-15_22-42-03.log
 scripts/VennDiagram*
+data/.DS_Store
+
