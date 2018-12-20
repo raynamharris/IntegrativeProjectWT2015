@@ -39,7 +39,6 @@ makecolumnannotations2 <- function(data){
   return(columnannotations)
 }
 
-
 ## correlation heatmat ----
 makecorrelationheatmap <- function(data, APAgroup, clusterTF){
   dataslim <- data %>% filter(APA==APAgroup)
