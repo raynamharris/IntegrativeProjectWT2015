@@ -49,47 +49,25 @@ levels(behavior$APA2) <-  c("yoked-consistent" ,"consistent", "yoked-conflict", 
 behavior %>% 
   filter(TrainSessionCombo == "Retention") %>%
   select(APA2)  %>%  summary()
+
+# keep only relevant columns
+beahvior_slim <- behavior[,c(15,16,14,20:58)] 
 ```
 
 
 ## Summary statistics comparing all groups across sessions
 
-1. First, I create some "slim" datasets with just the quantitiave variables and just the relevant catagorical factors
-2. Then, I use for loops to run statistical tests for all quantitive variables
-3. Then I make a box plot for all variables
+Steps
+1. Filter by session 
+1. Create some new datasets with just the quantitiave variables and just the relevant catagorical factors
+1. Use for loops to run statistical tests for all quantitive variables
+1. Make a box plot for all variables
 
-```{r slim1}
-# sample sizes
-slim1 <- behavior[,c(15,16,14,20:58)] # drop frivolous columns
-filtered <- slim1 # subsequently in this analysis, I use this line to filter rows 
-exp_factors <- filtered[,c(1:3)] # extract experimental design variables
-exp_nums <- filtered[,c(4:42)]
 
-# Anova
-#for(y in names(exp_nums)){
-#  ymod<- summary(aov(exp_nums[[y]] ~ exp_factors$APA2 * exp_factors$TrainSessionCombo ))
-#  cat(paste('\nDependent var:', y, '\n'))
-#  print(ymod)
-#}
-
-# Variables that are significant for training, time, and the interaction
-# PolarMaxVal, PolarMinBin, PolarMinVal, PolarSdVal, PolarAvgVal, RayleigLength
-# pTimeCW, pTimeOPP, pTimeTarget, TimeTarget, Speed2ndEntr, Path2ndEntr, Time2ndEntr,
-# MaxTimeAvoid, NumShock, Dist1stEntr.m, Path1stEntr, Time1stEntr, NumEntrances
-```
-
-## Summary statistics comparing Consisten and Conflict behaviors during the T4/C1 training session
-
-1. First, I create some "slim" datasets to look at only the trained animals to look for statistically significant differences between consistent and conflict trained on the T4/C1 training session
-2. Then, I used for loops to run statistical tests for all quantitive variables. For space saving, I have quoted out the stats test for space saving and just showed my handwritten notes
-3. Then I make a box plot for all variables
+### Comparing Consistent and Conflict behaviors during the T4/C1 training session
 
 ```{r T4consistentconflict}
-names(behavior[c(1:19)]) # various catagorical variables descibing the data
-names(behavior[c(20:58)]) # All quantitive values collected are
-
-slim1 <- behavior[,c(15,16,14,20:58)]
-filtered <- slim1 %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
+filtered <- beahvior_slim %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
 exp_factors <- as.data.frame(filtered[,1])
 exp_nums <- filtered[,c(4:42)]
 exp_factors$APA2 <- factor(filtered$APA2, levels = c("consistent", "conflict"))
@@ -124,20 +102,18 @@ for(y in names(exp_nums)){
 #     PolarMaxVal, Min50.RngHiBin, Min50.RngLoBin, PolarMinBin, RayleigAngle
 #     RayleigLength, pTimeCW, pTimeCCW, Speed2ndEntr, MaxTimeAvoid, Speed1stEntr.cm.s., #     Linearity.Arena., SdevSpeedArena 
  
-par(mfrow=c(2,2))
+par(mfrow=c(3,3))
 for(y in names(exp_nums)){
   ymod <- boxplot(exp_nums[[y]] ~ exp_factors$APA2,
                main = y,
                xlab = "T4/C1")
 }
-par(mfrow=c(1,1))
 ```
 
-## Summary statistics comparing Consisten and Conflict behaviors during the T6/C3 training session
+### Comparing Consistent and Conflict behaviors during the T6/C3 training session
 
 ```{r T6consistentconflict}
-slim1 <- behavior[,c(15,16,14,20:58)]
-filtered <- slim1 %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
+filtered <- beahvior_slim %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
 exp_factors <- as.data.frame(filtered[,1])
 exp_nums <- filtered[,c(4:42)]
 exp_factors$APA2 <- factor(filtered$APA2, levels = c("consistent", "conflict"))
@@ -167,10 +143,9 @@ for(y in names(exp_nums)){
                main = y,
                xlab = "T6/C3")
 }
-par(mfrow=c(2,2))
 ```
 
-# Vizualizing Mean and Standard error
+# Vizualizing Mean and Standard error for num entrace and time 1st entrance
 
 To make the point and line graphs, I must create and merge some data frames
 
@@ -186,7 +161,6 @@ Time2ndEntr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), 
 
 ## time second entrance
 Time1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
-
 
 ## create the column for faceting
 behaviorsummaryNumAPA2$measure <- "Number of Entrances"
@@ -206,7 +180,7 @@ behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 2) +
    geom_line() +
-   scale_y_continuous(name= NULL) +
+   scale_y_continuous(name= "Value") +
     scale_x_continuous(name="Training Session", 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels = c( "Pre.", "T1", "T2", "T3",
@@ -347,7 +321,9 @@ pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = F,
 ```
 
 ### Principle component analysis 
+
 Next, I next reduced the dimentionality of the data with a PCA anlaysis. 
+
 ```{r PCA}
 longdata <- makelongdata(behavior)
 Z <- longdata[,3:362]
