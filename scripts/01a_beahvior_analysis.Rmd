@@ -168,15 +168,15 @@ speedsummary$measure <- "Speed"
 Time1Entr$measure <- "Time to 1st Entrance"
 
 # rbind
-threeplots <- rbind(behaviorsummaryNumAPA2,speedsummary, Time1Entr)
+twoplots <- rbind(behaviorsummaryNumAPA2,Time1Entr)
 
 # set factors
-threeplots$APA2 <- factor(threeplots$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
-threeplots$measure <- factor(threeplots$measure, levels = c("Number of Entrances" ,   "Time to 1st Entrance", "Speed"))
-summary(threeplots)
+twoplots$APA2 <- factor(twoplots$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+twoplots$measure <- factor(twoplots$measure, levels = c("Number of Entrances" ,   "Time to 1st Entrance", "Speed"))
+summary(twoplots)
 
 
-behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+behaviorwrap <- ggplot(twoplots, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 2) +
    geom_line() +
@@ -194,12 +194,13 @@ behaviorwrap <- ggplot(threeplots, aes(x=, TrainSessionComboNum, y=m, color=APA2
   facet_wrap(~measure, ncol=1, scales = "free_y")
 behaviorwrap
 
-pdf(file="../figures/01_behavior/threebehaviors.pdf", width=3.25, height=3.75)
+pdf(file="../figures/01_behavior/twobehaviors.pdf", width=3.25, height=3)
 plot(behaviorwrap)
 dev.off()
 ```
 
 # This chunk is for creating files and figures for the FMR1 chapter
+
 ```{r forFMR1}
 ## This is for the FMR1 chapter
 Path1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Path1stEntr), se = sd(Path1stEntr)/sqrt(length(Path1stEntr)))
