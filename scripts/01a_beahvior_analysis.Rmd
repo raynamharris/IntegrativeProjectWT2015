@@ -199,10 +199,11 @@ plot(behaviorwrap)
 dev.off()
 ```
 
-# This chunk is for creating files and figures for the FMR1 chapter
 
-```{r forFMR1}
-## This is for the FMR1 chapter
+```{r forFMR1, include = F}
+# This chunk is for creating files and figures for the FMR1 chapter
+# See https://github.com/raynamharris/FMR1CA1rnaseq
+
 Path1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Path1stEntr), se = sd(Path1stEntr)/sqrt(length(Path1stEntr)))
 
 NumEntr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
