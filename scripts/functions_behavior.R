@@ -1,21 +1,6 @@
-## make a heatmap from all sessions ----
+## make a scale data matrix for heatmap from all sessions 
 makescaledaveragedata <- function(data){
-  longdata <- melt(data, id = c(1:18));  #longdata <- melt(behavior, id = c(1:18))
-  longdata <- longdata %>% drop_na();
-  # then widen with group averages, add row names, scale, and transpose
-  longdata$APAsession <- as.factor(paste(longdata$APA,longdata$TrainSessionCombo, sep="_"))
-  averagedata <- dcast(longdata, APAsession ~ variable, value.var= "value", fun.aggregate=mean);
-  rownames(averagedata) <- averagedata$APAsession;    
-  averagedata[1] <- NULL;
-  scaledaveragedata <- scale(averagedata)
-  scaledaveragedata <- t(scaledaveragedata)
-  scaledaveragedata <- scaledaveragedata[-1,]
-  return(scaledaveragedata)
-}  
-
-
-makescaledaveragedata2 <- function(data){
-  longdata <- melt(data, id = c(1:18));  #longdata <- melt(behavior, id = c(1:18))
+  longdata <- melt(data, id = c(1:3));  #longdata <- melt(behavior, id = c(1:3))
   longdata <- longdata %>% drop_na();
   # then widen with group averages, add row names, scale, and transpose
   longdata$APAsession <- as.factor(paste(longdata$APA2,longdata$TrainSessionCombo, sep="_"))
@@ -26,9 +11,21 @@ makescaledaveragedata2 <- function(data){
   scaledaveragedata <- t(scaledaveragedata)
   scaledaveragedata <- scaledaveragedata[-1,]
   return(scaledaveragedata)
-} 
+}  
 
+
+# make a heat map annotation with only APA2
 makecolumnannotations <- function(data){  
+  columnannotations <- as.data.frame(colnames(data))
+  names(columnannotations)[names(columnannotations)=="colnames(data)"] <- "column"
+  rownames(columnannotations) <- columnannotations$column
+  columnannotations$APA2 <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 1)
+  columnannotations$column <- NULL
+  return(columnannotations)
+}
+
+# make a heat map annotation with session and APA2
+makecolumnannotations2 <- function(data){  
   columnannotations <- as.data.frame(colnames(data))
   names(columnannotations)[names(columnannotations)=="colnames(data)"] <- "column"
   rownames(columnannotations) <- columnannotations$column
@@ -42,14 +39,6 @@ makecolumnannotations <- function(data){
   return(columnannotations)
 }
 
-makecolumnannotations2 <- function(data){  
-  columnannotations <- as.data.frame(colnames(data))
-  names(columnannotations)[names(columnannotations)=="colnames(data)"] <- "column"
-  rownames(columnannotations) <- columnannotations$column
-  columnannotations$APA2 <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 1)
-  columnannotations$column <- NULL
-  return(columnannotations)
-}
 
 ## correlation heatmat ----
 makecorrelationheatmap <- function(data, APAgroup, clusterTF){

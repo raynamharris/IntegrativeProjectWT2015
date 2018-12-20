@@ -175,7 +175,6 @@ twoplots$APA2 <- factor(twoplots$APA2, levels = c("yoked-consistent" ,"consisten
 twoplots$measure <- factor(twoplots$measure, levels = c("Number of Entrances" ,   "Time to 1st Entrance", "Speed"))
 summary(twoplots)
 
-
 behaviorwrap <- ggplot(twoplots, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 2) +
@@ -274,25 +273,25 @@ dev.off()
 
 Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed. 
 
-```{r pheatmap2,  message=FALSE, results='hide', include = F, eval = FALSE}
-## make annotation df and ann_colors for pheatmap
-behavior2 <- behavior
-behavior2$RayleigAngle <- NULL
-behavior2$PolarMinBin <- NULL
-scaledaveragedata2 <- as.data.frame(makescaledaveragedata2(behavior2))
+```{r pheatmap2,  message=FALSE}
+## create scaled data frame
+behavior_slim_heat <- behavior_slim
+behavior_slim_heat$RayleigAngle <- NULL
+behavior_slim_heat$PolarMinBin <- NULL
+scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
 
-# create a rubric for the color coding and load the colors from figureoptions.R
-df2 <- as.data.frame(makecolumnannotations2(scaledaveragedata2))
+## make annotation df and ann_colors for pheatmap
+ann_cols <- as.data.frame(makecolumnannotations(scaledaveragedata))
 ann_colors = ann_colors_APA2
 
 # set color breaks
 paletteLength <- 30
-myBreaks <- c(seq(min(scaledaveragedata2), 0, length.out=ceiling(paletteLength/2) + 1), 
-              seq(max(scaledaveragedata2)/paletteLength, max(scaledaveragedata2), length.out=floor(paletteLength/2)))
+myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
 
 ## pheatmap for markdown
-pheatmap(scaledaveragedata2, show_colnames=T, show_rownames = T,
-         annotation_col=df2, 
+pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
+         annotation_col=ann_cols, 
          annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 50,
          border_color = "grey60" ,
@@ -304,14 +303,14 @@ pheatmap(scaledaveragedata2, show_colnames=T, show_rownames = T,
          )
 
 # pheatmapfor adobe
-pheatmap(scaledaveragedata2, show_colnames=F, show_rownames = F,
-         annotation_col=df2, annotation_colors = ann_colors,
+pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
+         annotation_col=ann_cols, annotation_colors = ann_colors,
          annotation_names_col = F,
-         treeheight_row = 0, treeheight_col = 25,
+         treeheight_row = 0, treeheight_col = 15,
          fontsize = 6, 
          border_color = "grey60" ,
          color = viridis(30),
-          width = 3.25, height = 3.5,
+          width = 4, height = 4,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",

@@ -8,21 +8,20 @@ ann_colors_APA2 = list(
             'conflict' = (values=c("#f4a582"))))
 
 # for beahvir heatmap
-APAsession = list(
-  APA2 =  c(
-    'yoked-consistent' = (values=c("#404040")), 
-    'consistent' = (values=c("#ca0020"))),
-   'yoked-conflict' = (values=c("#bababa")),
-   'conflict' = (values=c("#f4a582")),
-   Session =  c(Hab = (values=c("#eff3ff")), 
-               T1 = (values=c("#dfc27d")),
-               T2 = (values=c("#bf812d")),
-               T3 = (values=c("#8c510a")),
-               Retest = (values=c("#543005")),
-               T4_C1 = (values=c("#cbc9e2")),
-               T5_C2 = (values=c("#9e9ac8")),
-               T6_C3 = (values=c("#756bb1")),
-               Retention = (values=c("#54278f"))))
+APA2session = list(
+   APA2 =  c('yoked-consistent' = (values=c("#404040")), 
+            'consistent' = (values=c("#ca0020")),
+            'yoked-conflict' = (values=c("#bababa")),
+            'conflict' = (values=c("#f4a582"))),
+   Session =  c(Hab = (values=c("#ffffff")), 
+               T1 = (values=c("#f0f0f0")),
+               T2 = (values=c("#d9d9d9")),
+               T3 = (values=c("#bdbdbd")),
+               Retest = (values=c("#969696")),
+               T4_C1 = (values=c("#737373")),
+               T5_C2 = (values=c("#525252")),
+               T6_C3 = (values=c("#252525")),
+               Retention = (values=c("#000000"))))
 
 colorvalPunch <- c("#d95f02","#1b9e77", "#7570b3")
 ## DG  "#d95f02"
