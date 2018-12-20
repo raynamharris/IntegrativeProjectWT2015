@@ -1,7 +1,7 @@
 ---
 title: "Behavior Data Analysis"
 author: "Rayna M Harris"
-date: "Last updated November 15, 2017"
+date: "Last updated December 20, 2018"
 output: md_document
 ---
 
