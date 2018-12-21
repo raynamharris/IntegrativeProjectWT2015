@@ -34,7 +34,7 @@ Now, I create data frames from three csv files
 - colData: This file contains all the information I collected for each sample that was sequenced. Not all columns will be needed, so some are removed later. 
 
 ```{r getdata, message=F}
-countData <- read.csv("../data/IntegrativeWT2015CountData.csv", row.names=1, check.names=FALSE )
+countData <- read.csv("../data/00_CountData.csv", row.names=1, check.names=FALSE )
 colData <- read.csv("../data/IntegrativeWT2015ColData.csv")
 ```
 
