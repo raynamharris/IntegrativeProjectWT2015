@@ -23,7 +23,6 @@ library(edgeR)  ## for basic read counts status
 library(magrittr) ## to use the weird pipe
 library(genefilter)  ## for PCA fuction
 library(ggrepel) ## for labeling volcano plot
-library(colorblindr) # simulates color-blind viewing 
 
 ## load functions 
 source("figureoptions.R")
@@ -34,9 +33,10 @@ knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/')
 ```
 
 ## Design
+
 The major comparision here is 
-Hippocampal subfield: "DG","CA3", "CA1"
-Behavioral Groups: "conflict", "consistent"
+- Hippocampal subfield: "DG","CA3", "CA1"
+- Behavioral Groups: "conflict", "consistent"
 
 
 ```{r data, message=F, warning=F}
@@ -95,7 +95,8 @@ head((res[order(res$padj),]), 10)
 head((res[order(res$log2FoldChange),]), 10)
 
 ```
-## this is for consistent yoked-consistent DG
+
+## this is for consistent yoked-consistent
 
 ```{r}
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
@@ -117,7 +118,7 @@ resdata <- as.data.frame(res)
 head(resdata,30)
 ```
 
-## this is for consistent conflict yoked-conflict 
+## this is for consistent-conflict vs yoked-conflict 
 
 ```{r}
 res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
@@ -138,15 +139,17 @@ table(res$padj<0.05)
 table(res$padj<0.1)
 ```
 
-```{r heatmap}
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2526
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2022
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 3145
-contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 114
-contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 60
-contrast6 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
-contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 35
+```{r heatmap_prep}
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2526 or 2765
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2022 or 2165
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 3145 or 2948
+contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 114 or 114
+contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 60 or 61
+contrast6 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1 or 0
+contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 35 or 40
+```
 
+```{r heatmap}
 DEGes <- assay(rld)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
@@ -233,25 +236,39 @@ pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent","consistent",  
 
 pcadata$wrap <- "Principal Component Analyses of Hippocampal Samples"
 
+# function not working for some reson
+# error "Columns `x`, `y` must be 1d atomic vectors or lists"
 plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
   ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
     geom_point(size=3, aes(shape=APA2), alpha = 0.8) +
     xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
     ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
+    stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
     scale_colour_manual(name=colorname, values=c(colorvalues))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
     scale_shape_manual(values=c(16, 1, 15, 0), aes(color=APA2))
 }
+#PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = "Punch", colorvalues = colorvalPunch)
+#PCA12
 
-PCA12 <- plotPCs(pcadata, 1, 3, aescolor = pcadata$Punch, colorname = "Punch", colorvalues = colorvalPunch)
+PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=Punch)) +
+    geom_point(size=3, aes(shape=APA2), alpha = 0.8) +
+    #xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
+    #ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
+    #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
+    scale_colour_manual(values=c(colorvalPunch))+ 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="bottom") +
+    scale_shape_manual(values=c(16, 1, 15, 0), aes(color=colorvalPunch))
 PCA12
 
 pdf(file="../figures/02b_RNAseqAll/PCA12.pdf", width=1.75, height=2.25)
 plot(PCA12)
 dev.off()
 
+# function not working for some reson
+# error "Columns `x`, `y` must be 1d atomic vectors or lists"
 plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
   ggplot(df, aes(df[xcol], df[ycol], color=aescolor, shape=Punch)) +
     geom_point(size=3, aes(shape=Punch), alpha = 0.8) +
@@ -263,9 +280,30 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     theme(legend.position="none") +
     scale_shape_manual(values=c(15, 16,17)) 
 }
+#PCA53 <- plotPCs(pcadata, 5, 3, aescolor = pcadata$APA2, colorname = "APA2",  colorvalues = colorvalAPA00)
+#PCA53
 
+# new pca plot with colors by treatment and shapes by region
+PCA12b <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=pcadata$APA2))+
+    geom_point(size=3, aes(shape=Punch), alpha = 0.8) +
+    #xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
+    #ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
+    #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
+    scale_colour_manual(name="APA2", values=c(colorvalAPA00))+ 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="bottom") +
+    scale_shape_manual(values=c(15, 16,17)) 
+PCA12b
 
-PCA62 <- plotPCs(pcadata, 5, 3, aescolor = pcadata$APA2, colorname = "APA2",  colorvalues = colorvalAPA00)
+PCA62 <- ggplot(pcadata, aes(pcadata$PC6, pcadata$PC2, color=pcadata$APA2))+
+    geom_point(size=3, aes(shape=Punch), alpha = 0.8) +
+    #xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
+    #ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
+    #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
+    scale_colour_manual(name="APA2", values=c(colorvalAPA00))+ 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="bottom") +
+    scale_shape_manual(values=c(15, 16,17)) 
 PCA62
 
 pdf(file="../figures/02b_RNAseqAll/PCA62.pdf", width=3.25, height=2.5)
@@ -279,14 +317,8 @@ dev.off()
 
 ## venn diagrams
 
-```{r venndiagrams1}
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2526
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2022
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 3145
-contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 114
-contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) #60
-contrast6 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 35
-contrast7 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
+```{r venndiagram_prep}
+# uses contrast 1-6 from heat map prep
 
 rldpadjs <- assay(rld)
 rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
@@ -316,7 +348,7 @@ grid.draw(prettyvenn)
 
 ```
 
-```{r venndiagrams2}
+```{r venndiagram}
 prettyvenn <- venn.diagram(
   scaled=T,
   x = candidates2, filename=NULL, 
@@ -331,9 +363,9 @@ grid.draw(prettyvenn)
 
 ## Volcanos plots and and gene lists
 
-## ca3 dg
+### ca3 dg
 
-```{r }
+```{r volcanoCA3GDG}
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
@@ -376,9 +408,9 @@ plot(colored)
 dev.off()
 ```
 
-## DG CA1
+### DG CA1
 
-```{r volcanos, include=T}
+```{r volcanoCA1DG, include=T}
 
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.1)
 summary(res)
@@ -423,9 +455,9 @@ plot(colored)
 dev.off()
 ```
 
-# ca1 ca3
+### ca1 ca3
 
-```{r }
+```{r volcanoca1ca3}
 res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
@@ -468,10 +500,47 @@ dev.off()
 ```
 
 
+### consistent yoked_consistent
+
+```{r volcanoconsistentyoked_consistent}
+res <- results(dds, contrast =c("APA2",  "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 10)
+
+data <- data.frame(gene = row.names(res),
+                   pvalue = -log10(res$padj), 
+                   lfc = res$log2FoldChange)
+data <- na.omit(data)
+data <- data %>%
+  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
+                        yes = "consistent", 
+                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
+                                    yes = "yoked_consistent", 
+                                    no = "none")))
+top_labelled <- top_n(data, n = 5, wt = lfc)
+
+colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
+  geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
+  theme_bw(base_size = 8) + # clean up theme
+  theme(legend.position = "none") + # remove legend 
+  scale_color_manual(values = volcano2) + 
+  theme(panel.grid.minor=element_blank(),
+           panel.grid.major=element_blank()) + 
+  scale_x_continuous(name="log2 (consistent/yoked_consistent)",
+                     limits=c(-10, 10)) +
+  scale_y_continuous(name="-log10 (adjusted p-value")  +
+  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
+colored
+
+pdf(file="../figures/02b_RNAseqAll/Allconsistentyoked_consistent.pdf", width=1.5, height=1.75)
+plot(colored)
+dev.off()
+```
 
 
+#### consistent yoked-consistent
 
-```{r }
+```{r volcanoconsistentconflict}
 res <- results(dds, contrast =c("APA2",  "conflict", "consistent"), independentFiltering = T, alpha = 0.05)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
@@ -507,17 +576,16 @@ dev.off()
 
 ```
 
-
 ## plot single gene counts
 
-```{r}
+```{r counts}
 plotCounts(dds, "Prkcz", intgroup = "Punch", normalized = TRUE)
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE)
 ```
 
 ## Observed versus expected ration of DEGs
 
-```{r}
+```{r stats}
 # chisq.test equal expression of increased versus decreased expression
 chisq.test(c(1099,	1427), p = c(0.45, 0.55))$expected
 chisq.test(c(1099,	1427), p = c(0.45, 0.55))
@@ -531,8 +599,7 @@ chisq.test(c(1585,	1560), p = c(0.5, 0.5))$expected
 chisq.test(c(1585,	1560), p = c(0.5, 0.5))
 prop.table(c(1585,	1560))
 
-
-
 chisq.test(c(1,	0), p = c(0.5, 0.5))$expected
 chisq.test(c(1,	0), p = c(0.5, 0.5))
 prop.table(c(1,	0))
+```
