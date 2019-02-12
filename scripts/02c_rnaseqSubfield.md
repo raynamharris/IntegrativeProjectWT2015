@@ -6,17 +6,32 @@ Summary
     library(ggplot2) ## for awesome plots!
     library(cowplot) ## for some easy to use themes
     library(dplyr) ## for filtering and selecting rows
+
+    ## Warning: package 'dplyr' was built under R version 3.5.1
+
     library(car) ## stats
     library(VennDiagram) ## venn diagrams
     library(pheatmap) ## awesome heatmaps
     library(viridis) # for awesome color pallette
     library(reshape2) ## for melting dataframe
-
     library(DESeq2) ## for gene expression analysis
+
+    ## Warning: package 'IRanges' was built under R version 3.5.1
+
+    ## Warning: package 'GenomicRanges' was built under R version 3.5.1
+
+    ## Warning: package 'DelayedArray' was built under R version 3.5.1
+
     library(edgeR)  ## for basic read counts status
+
+    ## Warning: package 'edgeR' was built under R version 3.5.1
+
+    ## Warning: package 'limma' was built under R version 3.5.1
+
     library(magrittr) ## to use the weird pipe
     library(genefilter)  ## for PCA fuction
-    library(xtable)
+    library(xtable) # for latex or html tables
+
     ## load functions 
     source("figureoptions.R")
     source("functions_RNAseq.R")
@@ -54,10 +69,10 @@ DG
     dds # view the DESeq object - note numnber of genes
 
     ## class: DESeqDataSet 
-    ## dim: 46403 16 
+    ## dim: 22485 16 
     ## metadata(1): version
     ## assays(1): counts
-    ## rownames(46403): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
+    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(16): 143A-DG-1 143B-DG-1 ... 148A-DG-3 148B-DG-4
     ## colData names(8): RNAseqID Mouse ... ID APA2
@@ -66,10 +81,10 @@ DG
     dds # view number of genes afternormalization and the number of samples
 
     ## class: DESeqDataSet 
-    ## dim: 25229 16 
+    ## dim: 17011 16 
     ## metadata(1): version
     ## assays(1): counts
-    ## rownames(25229): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
+    ## rownames(17011): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(16): 143A-DG-1 143B-DG-1 ... 148A-DG-3 148B-DG-4
     ## colData names(8): RNAseqID Mouse ... ID APA2
@@ -86,13 +101,13 @@ DG
     percentVar <- round(100 * attr(pcadata, "percentVar"))
     percentVar
 
-    ## [1] 73  7  4  3  2  2  2  1  1
+    ## [1] 36 19 14  6  5  4  3  2  2
 
     summary(aov(PC1 ~ APA2, data=pcadata)) 
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3    770   256.8   0.335    0.8
-    ## Residuals   12   9185   765.4
+    ## APA2         3  770.4   256.8   2.377  0.121
+    ## Residuals   12 1296.1   108.0
 
     TukeyHSD((aov(PC1 ~ APA2, data=pcadata)) , which = "APA2") 
 
@@ -102,19 +117,19 @@ DG
     ## Fit: aov(formula = PC1 ~ APA2, data = pcadata)
     ## 
     ## $APA2
-    ##                                       diff       lwr      upr     p adj
-    ## consistent-conflict               2.568022 -57.41575 62.55179 0.9992233
-    ## yoked_conflict-conflict          17.747933 -37.35068 72.84654 0.7758636
-    ## yoked_consistent-conflict         5.065169 -50.03344 60.16378 0.9925164
-    ## yoked_conflict-consistent        15.179911 -47.55261 77.91244 0.8878895
-    ## yoked_consistent-consistent       2.497147 -60.23538 65.22967 0.9993751
-    ## yoked_consistent-yoked_conflict -12.682764 -70.76180 45.39627 0.9141206
+    ##                                       diff        lwr      upr     p adj
+    ## consistent-conflict             -2.4140068 -24.947655 20.11964 0.9883016
+    ## yoked_conflict-conflict         13.2885919  -7.409886 33.98707 0.2760740
+    ## yoked_consistent-conflict       12.4321355  -8.266342 33.13061 0.3271831
+    ## yoked_conflict-consistent       15.7025987  -7.863655 39.26885 0.2489245
+    ## yoked_consistent-consistent     14.8461423  -8.720111 38.41240 0.2903015
+    ## yoked_consistent-yoked_conflict -0.8564564 -22.674567 20.96165 0.9994006
 
     summary(aov(PC2 ~ APA2, data=pcadata)) 
 
-    ##             Df Sum Sq Mean Sq F value  Pr(>F)    
-    ## APA2         3  796.7  265.58   17.22 0.00012 ***
-    ## Residuals   12  185.0   15.42                    
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA2         3  577.2  192.39   4.576 0.0234 *
+    ## Residuals   12  504.6   42.05                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -126,115 +141,107 @@ DG
     ## Fit: aov(formula = PC2 ~ APA2, data = pcadata)
     ## 
     ## $APA2
-    ##                                       diff        lwr          upr
-    ## consistent-conflict               4.389295  -4.124598  12.90318891
-    ## yoked_conflict-conflict          -7.751736 -15.572246   0.06877463
-    ## yoked_consistent-conflict       -14.716547 -22.537057  -6.89603621
-    ## yoked_conflict-consistent       -12.141031 -21.045074  -3.23698839
-    ## yoked_consistent-consistent     -19.105842 -28.009885 -10.20179923
-    ## yoked_consistent-yoked_conflict  -6.964811 -15.208353   1.27873109
-    ##                                     p adj
-    ## consistent-conflict             0.4507201
-    ## yoked_conflict-conflict         0.0523032
-    ## yoked_consistent-conflict       0.0005927
-    ## yoked_conflict-consistent       0.0075985
-    ## yoked_consistent-consistent     0.0001805
-    ## yoked_consistent-yoked_conflict 0.1089399
+    ##                                       diff        lwr        upr     p adj
+    ## consistent-conflict               4.754257  -9.305023 18.8135366 0.7501500
+    ## yoked_conflict-conflict          -1.982875 -14.897148 10.9313986 0.9671941
+    ## yoked_consistent-conflict       -12.343148 -25.257421  0.5711251 0.0626549
+    ## yoked_conflict-consistent        -6.737131 -21.440678  7.9664156 0.5452218
+    ## yoked_consistent-consistent     -17.097405 -31.800952 -2.3938579 0.0215230
+    ## yoked_consistent-yoked_conflict -10.360274 -23.973113  3.2525657 0.1625913
 
     summary(aov(PC3 ~ APA2, data=pcadata)) 
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   61.7   20.57   0.562   0.65
-    ## Residuals   12  439.2   36.60
+    ## APA2         3  203.8   67.93   1.328  0.311
+    ## Residuals   12  613.8   51.15
 
     summary(aov(PC4 ~ APA2, data=pcadata)) 
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA2         3  161.8   53.93   3.126 0.0659 .
-    ## Residuals   12  207.0   17.25                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## APA2         3  51.92   17.31   0.722  0.558
+    ## Residuals   12 287.69   23.97
 
     pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
     pcadata$wrap <- "Principle Compent Analysis"
 
-    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 121
+    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 125
 
-    ## [1] 116
+    ## [1] 125
 
-    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 9
+    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 10
 
-    ## [1] 4
+    ## [1] 10
 
-    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
-
-    ## [1] 0
-
-    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 2
+    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
 
     ## [1] 1
+
+    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 3
+
+    ## [1] 3
 
     aov(PC1 ~ APA2, data=pcadata)
 
 Call: aov(formula = PC1 ~ APA2, data = pcadata)
 
-Terms: APA2 Residuals Sum of Squares 770.340 9184.564 Deg. of Freedom 3
-12
+Terms: APA2 Residuals Sum of Squares 770.3622 1296.1464 Deg. of Freedom
+3 12
 
-Residual standard error: 27.66551 Estimated effects may be unbalanced
+Residual standard error: 10.39289 Estimated effects may be unbalanced
 
     summary(aov(PC1 ~ APA2, data=pcadata))
 
             Df Sum Sq Mean Sq F value Pr(>F)
 
-APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
+APA2 3 770.4 256.8 2.377 0.121 Residuals 12 1296.1 108.0
 
 ### DG contraststs
 
+    ###  "consistent", "yoked_consistent"
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
     ## 
-    ## out of 25229 with nonzero total read count
+    ## out of 17011 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 116, 0.46% 
-    ## LFC < 0 (down)   : 0, 0% 
-    ## outliers [1]     : 1122, 4.4% 
-    ## low counts [2]   : 12477, 49% 
-    ## (mean count < 8)
+    ## LFC > 0 (up)       : 119, 0.7%
+    ## LFC < 0 (down)     : 6, 0.035%
+    ## outliers [1]       : 20, 0.12%
+    ## low counts [2]     : 4608, 27%
+    ## (mean count < 4)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
-    ## log2 fold change (MAP): APA2 consistent vs yoked_consistent 
+    ## log2 fold change (MLE): APA2 consistent vs yoked_consistent 
     ## Wald test p-value: APA2 consistent vs yoked_consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##          baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##         <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Smad7    179.1580       2.843969 0.3397038  8.371907 5.669300e-17
-    ## Sgk1     355.6777       2.181032 0.3187105  6.843300 7.738946e-12
-    ## Gm13889  427.3403       2.170913 0.3286790  6.604962 3.976194e-11
-    ## Frmd6    201.6491       2.503311 0.3867980  6.471883 9.678905e-11
-    ## Plk2     858.3975       2.012054 0.3159946  6.367369 1.922981e-10
-    ## Lmna     149.4888       1.978357 0.3128213  6.324240 2.544824e-10
-    ## Tiparp   150.1605       2.370483 0.3794815  6.246637 4.193853e-10
-    ## Junb     698.0471       2.006986 0.3306682  6.069485 1.283210e-09
-    ## Btg2     443.7864       2.081603 0.3469878  5.999067 1.984549e-09
-    ## Egr4     715.9209       2.342997 0.3962927  5.912289 3.373867e-09
-    ##                 padj
-    ##            <numeric>
-    ## Smad7   6.593396e-13
-    ## Sgk1    4.500197e-08
-    ## Gm13889 1.541438e-07
-    ## Frmd6   2.814142e-07
-    ## Plk2    4.472853e-07
-    ## Lmna    4.932718e-07
-    ## Tiparp  6.967787e-07
-    ## Junb    1.865467e-06
-    ## Btg2    2.564479e-06
-    ## Egr4    3.923808e-06
+    ##                baseMean   log2FoldChange             lfcSE
+    ##               <numeric>        <numeric>         <numeric>
+    ## Smad7  171.392871064045 3.53587630546276 0.418085263001235
+    ## Sgk1   341.089572273562 2.52942417594796 0.361917138618265
+    ## Lmna   127.261228543472 2.38190944527576 0.360880330414225
+    ## Tiparp 146.843901753813 3.00078251228731 0.456274430076876
+    ## Fzd5   26.8401177227407 4.05654356592169 0.655253175606779
+    ## Acan   50.8597490321187 2.45912773236628 0.428543544588545
+    ## Egr4   683.770839985962 3.23264668960927 0.562954537617405
+    ## Errfi1  196.30327794802 2.16723775140178 0.378461151913533
+    ## Rasd1  72.8100929443534 3.11825818416375 0.542898092373717
+    ## Per1   512.774508684412 1.82273176771818 0.322402773641593
+    ##                    stat               pvalue                 padj
+    ##               <numeric>            <numeric>            <numeric>
+    ## Smad7  8.45730911460593 2.73617917722616e-17 3.38821067515915e-13
+    ## Sgk1      6.98895936679 2.76932604930945e-12 1.71462822342994e-08
+    ## Lmna   6.60027506221178 4.10395627378058e-11 1.48901359411528e-07
+    ## Tiparp 6.57670540902702 4.80986382658575e-11 1.48901359411528e-07
+    ## Fzd5    6.1908033672103 5.98583433033886e-10 1.48245173025172e-06
+    ## Acan    5.7383380602019 9.56101231319715e-09 1.41105309237205e-05
+    ## Egr4   5.74228729604137 9.34061706254104e-09 1.41105309237205e-05
+    ## Errfi1 5.72644706185573 1.02555744418545e-08 1.41105309237205e-05
+    ## Rasd1  5.74372654457076 9.26153120045455e-09 1.41105309237205e-05
+    ## Per1   5.65358587685248 1.57134545200805e-08 1.94579707322157e-05
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -269,17 +276,27 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     ## quartz_off_screen 
     ##                 2
 
+    # are any protein kinases differentially expressed?
     pkcs <- data[grep("Prkc", data$gene), ]
+    pkcs # no pkcs are differentially expressed
 
-
-
+    ##         gene       pvalue         lfc color
+    ## 8139   Prkca 2.793108e-05 -0.06147923  none
+    ## 8140   Prkcb 2.793108e-05 -0.23086376  none
+    ## 8141   Prkcd 2.793108e-05 -1.74799258  none
+    ## 8142 Prkcdbp 2.793108e-05  0.89326487  none
+    ## 8143   Prkce 2.793108e-05 -0.08024100  none
+    ## 8144   Prkcg 2.793108e-05 -0.35258124  none
+    ## 8145   Prkci 2.793108e-05  0.14227925  none
+    ## 8146  Prkcsh 2.793108e-05 -0.12210803  none
+    ## 8147   Prkcz 2.793108e-05 -0.07894751  none
 
     ## go setup
     table(res$padj<0.1)
 
     ## 
     ## FALSE  TRUE 
-    ## 11514   116
+    ## 12258   125
 
     logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
     logs$logP=as.numeric(as.character(logs$logP))
@@ -288,8 +305,8 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     table(sign)
 
     ## sign
-    ##    -1     1 
-    ## 13273 11956
+    ##   -1    1 
+    ## 8853 8158
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/DGconsistentyoked.csv", row.names = F)
@@ -299,12 +316,12 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     summary(res)
 
     ## 
-    ## out of 25229 with nonzero total read count
+    ## out of 17011 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 1, 0.004% 
-    ## LFC < 0 (down)   : 0, 0% 
-    ## outliers [1]     : 1122, 4.4% 
-    ## low counts [2]   : 0, 0% 
+    ## LFC > 0 (up)       : 3, 0.018%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 20, 0.12%
+    ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
@@ -312,33 +329,33 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
-    ## log2 fold change (MAP): APA2 yoked_conflict vs yoked_consistent 
+    ## log2 fold change (MLE): APA2 yoked_conflict vs yoked_consistent 
     ## Wald test p-value: APA2 yoked_conflict vs yoked_consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##           baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Nlrp3    22.254843      2.0931975 0.4507254  4.644064 3.416219e-06
-    ## Dner     53.737953      1.5181189 0.3598676  4.218549 2.458799e-05
-    ## Cnr1    121.811061      1.8304248 0.4638537  3.946125 7.942614e-05
-    ## Cxcl14   61.633841      1.4177174 0.3568941  3.972375 7.115945e-05
-    ## Kcnc2    26.242835      1.8001774 0.4631208  3.887058 1.014665e-04
-    ## Gadd45b  54.371384      1.2709812 0.3514546  3.616345 2.987923e-04
-    ## Gm2115    8.098618      1.6778335 0.4628679  3.624864 2.891132e-04
-    ## Kif5a   734.038940      0.8082552 0.2230265  3.624031 2.900463e-04
-    ## Rnase4   14.082218      1.6997559 0.4593210  3.700584 2.151041e-04
-    ## Strip2   17.049363      1.6908302 0.4631764  3.650511 2.617195e-04
-    ##              padj
-    ##         <numeric>
-    ## Nlrp3   0.0823548
-    ## Dner    0.2963714
-    ## Cnr1    0.4786815
-    ## Cxcl14  0.4786815
-    ## Kcnc2   0.4892106
-    ## Gadd45b 0.6548170
-    ## Gm2115  0.6548170
-    ## Kif5a   0.6548170
-    ## Rnase4  0.6548170
-    ## Strip2  0.6548170
+    ##                baseMean   log2FoldChange             lfcSE
+    ##               <numeric>        <numeric>         <numeric>
+    ## Nlrp3  20.9424446578681 4.09843296366574  0.77923374127775
+    ## Kcnc2  22.0989714545398  4.0853572173812 0.828862390929107
+    ## Gm2115 18.9055674115327 3.48302773153726 0.740349228112595
+    ## Rnase4 15.5820343950564 3.55390988651979 0.842613820491949
+    ## Cxcl14 58.4698286328215 1.83345102740602 0.452447198842891
+    ## Sst    5.79777379074028 6.11617852820523  1.54412893086366
+    ## Cnr1   121.554806190537 3.88279836743752  1.00562221165236
+    ## Dner    48.134823231393 1.78996353992257 0.466270200246526
+    ## Itga5  18.4196792457967   2.978384440916 0.770052016771093
+    ## Myb    6.92940033536349 5.85347258329016  1.53376995782851
+    ##                    stat               pvalue                padj
+    ##               <numeric>            <numeric>           <numeric>
+    ## Nlrp3  5.25956814568287 1.44394111343109e-07 0.00245340034583077
+    ## Kcnc2    4.928872708052 8.27054357503709e-07 0.00702624029417276
+    ## Gm2115 4.70457400275367 2.54396579921199e-06  0.0144081742981369
+    ## Rnase4 4.21772085870238 2.46784058046291e-05   0.104827698256613
+    ## Cxcl14 4.05229832805898 5.07169366376427e-05   0.172346294082037
+    ## Sst    3.96092476862301 7.46600544114441e-05   0.211424830750808
+    ## Cnr1   3.86109049944074 0.000112882079380255   0.228300316931863
+    ## Dner   3.83889757264389 0.000123587970402978   0.228300316931863
+    ## Itga5  3.86777045712401 0.000109834980276631   0.228300316931863
+    ## Myb     3.8163953814674 0.000135415452559867   0.228300316931863
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -378,7 +395,7 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
 
     ## 
     ## FALSE  TRUE 
-    ## 24106     1
+    ## 16988     3
 
     logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
     logs$logP=as.numeric(as.character(logs$logP))
@@ -387,24 +404,24 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     table(sign)
 
     ## sign
-    ##    -1     1 
-    ## 11301 13928
+    ##   -1    1 
+    ## 7543 9468
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/DGyokedyoked.csv", row.names = F)
 
 
-
+    ##  "conflict", "yoked_conflict"
     res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
     ## 
-    ## out of 25229 with nonzero total read count
+    ## out of 17011 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 4, 0.016% 
-    ## LFC < 0 (down)   : 0, 0% 
-    ## outliers [1]     : 1122, 4.4% 
-    ## low counts [2]   : 0, 0% 
+    ## LFC > 0 (up)       : 8, 0.047%
+    ## LFC < 0 (down)     : 2, 0.012%
+    ## outliers [1]       : 20, 0.12%
+    ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
@@ -412,33 +429,33 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
-    ## log2 fold change (MAP): APA2 conflict vs yoked_conflict 
+    ## log2 fold change (MLE): APA2 conflict vs yoked_conflict 
     ## Wald test p-value: APA2 conflict vs yoked_conflict 
     ## DataFrame with 10 rows and 6 columns
-    ##           baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##          <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Smad7    179.15805      1.5388871 0.3091317  4.978095 6.421319e-07
-    ## Pcdh8    868.59036      1.2611931 0.2795392  4.511685 6.431454e-06
-    ## Dbpht2   184.51472      1.2444411 0.2868747  4.337925 1.438340e-05
-    ## Rgs2     262.75864      1.4994211 0.3471555  4.319163 1.566223e-05
-    ## Acan      51.10505      1.3602089 0.3317928  4.099574 4.139116e-05
-    ## Frmd6    201.64908      1.4660727 0.3588180  4.085840 4.391768e-05
-    ## Nptx2    299.90235      1.2040791 0.2932666  4.105749 4.030071e-05
-    ## Slc16a1   55.26469      1.4384181 0.3512964  4.094599 4.228993e-05
-    ## Ankrd33b 225.38634      0.9865118 0.2472916  3.989264 6.627849e-05
-    ## Sgk1     355.67774      1.1266675 0.2881732  3.909689 9.241497e-05
-    ##                padj
-    ##           <numeric>
-    ## Smad7    0.01547987
-    ## Pcdh8    0.07752153
-    ## Dbpht2   0.09439236
-    ## Rgs2     0.09439236
-    ## Acan     0.13234043
-    ## Frmd6    0.13234043
-    ## Nptx2    0.13234043
-    ## Slc16a1  0.13234043
-    ## Ankrd33b 0.17753062
-    ## Sgk1     0.22278476
+    ##                  baseMean    log2FoldChange             lfcSE
+    ##                 <numeric>         <numeric>         <numeric>
+    ## Rps12    18.1519752295379 -21.4660372235101  3.98668946399401
+    ## Smad7    171.392871064045  1.75395877649941 0.367789349169671
+    ## Dbpht2   179.735977990203  1.43077032426827  0.32133350449148
+    ## Insm1    9.54062645923209 -4.64275029977526  1.03675452742903
+    ## Slc16a1  51.2786850104172  1.93718965194453 0.446154808676806
+    ## Ankrd33b  209.87162559181  1.14655990310839 0.276132373178601
+    ## Nptx2    287.767100019705  1.36387651791528 0.326912129485928
+    ## Sgk1     341.089572273562  1.32296838420707  0.31899157276228
+    ## Fzd5     26.8401177227407  2.51256156493201 0.616467582890519
+    ## Acan     50.8597490321187  1.57030753918313 0.390249971345474
+    ##                       stat               pvalue               padj
+    ##                  <numeric>            <numeric>          <numeric>
+    ## Rps12    -5.38442670726719 7.26759094316345e-08 0.0012348363771529
+    ## Smad7     4.76892215736857 1.85214205533671e-06 0.0157348728311131
+    ## Dbpht2    4.45260237189555 8.48357704857436e-06 0.0360361144080817
+    ## Insm1    -4.47815772870406  7.5289965568597e-06 0.0360361144080817
+    ## Slc16a1     4.341967438813 1.41212464833709e-05  0.047986819799791
+    ## Ankrd33b  4.15221109321652 3.29278313316402e-05 0.0714369056620668
+    ## Nptx2     4.17199728887387 3.01941230562506e-05 0.0714369056620668
+    ## Sgk1      4.14734587735638 3.36351742273282e-05 0.0714369056620668
+    ## Fzd5       4.0757399653539 4.58682534733302e-05 0.0865941660850393
+    ## Acan        4.023850491953 5.72542716941817e-05 0.0972807330355842
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -478,7 +495,7 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
 
     ## 
     ## FALSE  TRUE 
-    ## 24103     4
+    ## 16981    10
 
     logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
     logs$logP=as.numeric(as.character(logs$logP))
@@ -487,25 +504,25 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     table(sign)
 
     ## sign
-    ##    -1     1 
-    ## 13973 11256
+    ##   -1    1 
+    ## 9674 7337
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/DGconflictyoked.csv", row.names = F)
 
 
 
-    ####
+    #### "conflict", "consistent"
     res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
     ## 
-    ## out of 25229 with nonzero total read count
+    ## out of 17011 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 0, 0% 
-    ## LFC < 0 (down)   : 0, 0% 
-    ## outliers [1]     : 1122, 4.4% 
-    ## low counts [2]   : 0, 0% 
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 1, 0.0059%
+    ## outliers [1]       : 20, 0.12%
+    ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
@@ -513,33 +530,33 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
-    ## log2 fold change (MAP): APA2 conflict vs consistent 
+    ## log2 fold change (MLE): APA2 conflict vs consistent 
     ## Wald test p-value: APA2 conflict vs consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##                 baseMean log2FoldChange     lfcSE        stat    pvalue
-    ##                <numeric>      <numeric> <numeric>   <numeric> <numeric>
-    ## 0610005C13Rik  0.4271273   -0.054542987 0.1913556 -0.28503469 0.7756176
-    ## 0610007P14Rik 38.6134531   -0.279373323 0.3292652 -0.84847511 0.3961734
-    ## 0610009B22Rik  9.6887247   -0.377935904 0.4494087 -0.84096260 0.4003689
-    ## 0610009E02Rik  0.5060872   -0.106767927 0.2479167 -0.43066048 0.6667153
-    ## 0610009L18Rik  3.4849909    0.104475567 0.4328623  0.24135980 0.8092763
-    ## 0610009O20Rik 50.0920951    0.259608881 0.2949442  0.88019664 0.3787528
-    ## 0610010F05Rik 61.3811232   -0.312271631 0.2996695 -1.04205326 0.2973870
-    ## 0610010K14Rik 23.9310902    0.123986244 0.4116388  0.30120153 0.7632608
-    ## 0610011F06Rik 23.0446817    0.005357886 0.3995634  0.01340935 0.9893012
-    ## 0610012G03Rik  8.5065522   -0.103387165 0.3202046 -0.32287847 0.7467873
-    ##                    padj
-    ##               <numeric>
-    ## 0610005C13Rik         1
-    ## 0610007P14Rik         1
-    ## 0610009B22Rik         1
-    ## 0610009E02Rik         1
-    ## 0610009L18Rik         1
-    ## 0610009O20Rik         1
-    ## 0610010F05Rik         1
-    ## 0610010K14Rik         1
-    ## 0610011F06Rik         1
-    ## 0610012G03Rik         1
+    ##                       baseMean      log2FoldChange             lfcSE
+    ##                      <numeric>           <numeric>         <numeric>
+    ## Rps12         18.1519752295379   -20.9602515412509  4.31657511842665
+    ## 0610007P14Rik 41.0311096797814  -0.147853585358429 0.401936989088285
+    ## 0610009B22Rik 8.74131849081542  -0.757911677387021 0.749958107311731
+    ## 0610009L18Rik 2.61860548764425   0.604880308193334  1.47685825843458
+    ## 0610009O20Rik 48.3693444464377   0.245771257518523 0.338998927574654
+    ## 0610010F05Rik 60.2560857800178  -0.366265579236547 0.337328940633006
+    ## 0610010K14Rik 21.0476159827708   0.408843299351544 0.633957053036292
+    ## 0610012G03Rik 54.2812123171702   0.107773629510678 0.399888012498432
+    ## 0610030E20Rik 44.9946840589216 -0.0960001442131723 0.418155894506165
+    ## 0610037L13Rik  88.714181322051   0.113994422485766 0.427197151641241
+    ##                             stat               pvalue               padj
+    ##                        <numeric>            <numeric>          <numeric>
+    ## Rps12          -4.85575970907479 1.19926058988033e-06 0.0203766366826567
+    ## 0610007P14Rik -0.367852646987792    0.712983110459147  0.999877921572714
+    ## 0610009B22Rik  -1.01060535248269    0.312205353000397  0.999877921572714
+    ## 0610009L18Rik  0.409572350453244    0.682119683062293  0.999877921572714
+    ## 0610009O20Rik  0.724991253738995    0.468457396118792  0.999877921572714
+    ## 0610010F05Rik  -1.08578166625502    0.277575599518543  0.999877921572714
+    ## 0610010K14Rik  0.644906933984594    0.518987497960177  0.999877921572714
+    ## 0610012G03Rik  0.269509528023425    0.787537611086085  0.999877921572714
+    ## 0610030E20Rik -0.229579794221355    0.818418309399155  0.999877921572714
+    ## 0610037L13Rik  0.266842655780387    0.789590310071293  0.999877921572714
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -578,8 +595,8 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     table(res$padj<0.1)
 
     ## 
-    ## FALSE 
-    ## 24107
+    ## FALSE  TRUE 
+    ## 16990     1
 
     logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
     logs$logP=as.numeric(as.character(logs$logP))
@@ -588,48 +605,18 @@ APA2 3 770 256.8 0.335 0.8 Residuals 12 9185 765.4
     table(sign)
 
     ## sign
-    ##    -1     1 
-    ## 13033 12196
+    ##   -1    1 
+    ## 8670 8341
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
 
-    plotPC <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-      ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-        geom_point(size=2, alpha= 0.8) +
-        xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-        ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-        #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-        scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-        theme_cowplot(font_size = 8, line_size = 0.25)  +
-        theme(legend.position="none") 
-    }
-
-    PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
-    PCA12
-
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-
-![](../figures/02c_rnaseqSubfield/DGcontrasts-5.png)
-
-    pdf(file="../figures/02c_rnaseqSubfield/DGpca12.pdf", width=1.75, height=2)
-    plot(PCA12)
-
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type data.frame. Defaulting to continuous.
-
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-plot single gene counts
------------------------
+plot single gene counts for Prkcz
+---------------------------------
 
     plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
 
-![](../figures/02c_rnaseqSubfield/unnamed-chunk-1-1.png)
+![](../figures/02c_rnaseqSubfield/prkcz-1.png)
 
     # order results table by the smallest adjusted p value:
     res <- res[order(res$padj),]
@@ -637,22 +624,23 @@ plot single gene counts
     results = as.data.frame(dplyr::mutate(as.data.frame(res), sig=ifelse(res$padj<0.05, "FDR<0.05", "Not Sig")), row.names=rownames(res))
     head(results)
 
-    ##                 baseMean log2FoldChange     lfcSE       stat    pvalue
-    ## 0610005C13Rik  0.4271273    -0.05454299 0.1913556 -0.2850347 0.7756176
-    ## 0610007P14Rik 38.6134531    -0.27937332 0.3292652 -0.8484751 0.3961734
-    ## 0610009B22Rik  9.6887247    -0.37793590 0.4494087 -0.8409626 0.4003689
-    ## 0610009E02Rik  0.5060872    -0.10676793 0.2479167 -0.4306605 0.6667153
-    ## 0610009L18Rik  3.4849909     0.10447557 0.4328623  0.2413598 0.8092763
-    ## 0610009O20Rik 50.0920951     0.25960888 0.2949442  0.8801966 0.3787528
-    ##               padj     sig
-    ## 0610005C13Rik    1 Not Sig
-    ## 0610007P14Rik    1 Not Sig
-    ## 0610009B22Rik    1 Not Sig
-    ## 0610009E02Rik    1 Not Sig
-    ## 0610009L18Rik    1 Not Sig
-    ## 0610009O20Rik    1 Not Sig
+    ##                baseMean log2FoldChange     lfcSE       stat       pvalue
+    ## Rps12         18.151975    -20.9602515 4.3165751 -4.8557597 1.199261e-06
+    ## 0610007P14Rik 41.031110     -0.1478536 0.4019370 -0.3678526 7.129831e-01
+    ## 0610009B22Rik  8.741318     -0.7579117 0.7499581 -1.0106054 3.122054e-01
+    ## 0610009L18Rik  2.618605      0.6048803 1.4768583  0.4095724 6.821197e-01
+    ## 0610009O20Rik 48.369344      0.2457713 0.3389989  0.7249913 4.684574e-01
+    ## 0610010F05Rik 60.256086     -0.3662656 0.3373289 -1.0857817 2.775756e-01
+    ##                     padj      sig
+    ## Rps12         0.02037664 FDR<0.05
+    ## 0610007P14Rik 0.99987792  Not Sig
+    ## 0610009B22Rik 0.99987792  Not Sig
+    ## 0610009L18Rik 0.99987792  Not Sig
+    ## 0610009O20Rik 0.99987792  Not Sig
+    ## 0610010F05Rik 0.99987792  Not Sig
 
-    ## venn diagrams
+venn diagrams
+-------------
 
 ![](../figures/02c_rnaseqSubfield/DGvenndiagrams-1.png)
 
@@ -684,10 +672,10 @@ CA3
     dds # view the DESeq object - note numnber of genes
 
     ## class: DESeqDataSet 
-    ## dim: 46403 13 
+    ## dim: 22485 13 
     ## metadata(1): version
     ## assays(1): counts
-    ## rownames(46403): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
+    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(13): 143A-CA3-1 144A-CA3-2 ... 148A-CA3-3 148B-CA3-4
     ## colData names(8): RNAseqID Mouse ... ID APA2
@@ -696,10 +684,10 @@ CA3
     dds # view number of genes afternormalization and the number of samples
 
     ## class: DESeqDataSet 
-    ## dim: 23075 13 
+    ## dim: 16502 13 
     ## metadata(1): version
     ## assays(1): counts
-    ## rownames(23075): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
+    ## rownames(16502): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(13): 143A-CA3-1 144A-CA3-2 ... 148A-CA3-3 148B-CA3-4
     ## colData names(8): RNAseqID Mouse ... ID APA2
@@ -712,65 +700,55 @@ CA3
     percentVar <- round(100 * attr(pcadata, "percentVar"))
     percentVar
 
-    ## [1] 39 18 10  8  6  4  3  3  3
+    ## [1] 46 13 10  7  6  3  3  3  3
 
     summary(aov(PC1 ~ APA2, data=pcadata))
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  243.0   80.99   0.902  0.477
-    ## Residuals    9  807.9   89.77
+    ## APA2         3  259.8   86.60   1.152   0.38
+    ## Residuals    9  676.5   75.17
 
     summary(aov(PC2 ~ APA2, data=pcadata))
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  120.5   40.16   1.014  0.431
-    ## Residuals    9  356.4   39.60
+    ## APA2         3  25.97   8.657   0.327  0.806
+    ## Residuals    9 238.34  26.482
 
     summary(aov(PC3 ~ APA2, data=pcadata))
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  16.74   5.579   0.197  0.896
-    ## Residuals    9 255.02  28.336
+    ## APA2         3   6.53   2.177   0.097   0.96
+    ## Residuals    9 202.00  22.444
 
     summary(aov(PC4 ~ APA2, data=pcadata))
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  19.34   6.446   0.317  0.813
-    ## Residuals    9 183.14  20.349
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA2         3  100.9   33.63   6.331 0.0134 *
+    ## Residuals    9   47.8    5.31                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     summary(aov(PC5 ~ APA2, data=pcadata))
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  16.58   5.525   0.334  0.801
-    ## Residuals    9 148.99  16.555
+    ## APA2         3  30.88  10.295   1.127  0.389
+    ## Residuals    9  82.23   9.137
 
     summary(aov(PC6 ~ APA2, data=pcadata))
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  14.14   4.713   0.497  0.693
-    ## Residuals    9  85.32   9.480
+    ## APA2         3  18.64   6.212   1.102  0.398
+    ## Residuals    9  50.74   5.638
 
     pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
     pcadata$wrap <- "Principle Compent Analysis"
 
-
-    PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
-    PCA12
-
-![](../figures/02c_rnaseqSubfield/CA3-1.png)
-
-    pdf(file="../figures/02c_rnaseqSubfield/CA3pca12.pdf", width=1.75, height=2)
-    plot(PCA12)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
+     
     #calculate significance of all two way comparisions
     # see source "functions_RNAseq.R" 
     contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 0
 
-    ## [1] 0
+    ## [1] 1
 
     contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 0
 
@@ -778,22 +756,22 @@ CA3
 
     contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
 
-    ## [1] 2
+    ## [1] 0
 
     contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 0
 
-    ## [1] 1
+    ## [1] 2
 
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
     ## 
-    ## out of 23075 with nonzero total read count
+    ## out of 16502 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 0, 0% 
-    ## LFC < 0 (down)   : 0, 0% 
-    ## outliers [1]     : 1012, 4.4% 
-    ## low counts [2]   : 0, 0% 
+    ## LFC > 0 (up)       : 1, 0.0061%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 11, 0.067%
+    ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
@@ -802,12 +780,12 @@ CA3
     summary(res)
 
     ## 
-    ## out of 23075 with nonzero total read count
+    ## out of 16502 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 0, 0% 
-    ## LFC < 0 (down)   : 0, 0% 
-    ## outliers [1]     : 1012, 4.4% 
-    ## low counts [2]   : 0, 0% 
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 11, 0.067%
+    ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
@@ -816,12 +794,12 @@ CA3
     summary(res)
 
     ## 
-    ## out of 23075 with nonzero total read count
+    ## out of 16502 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 0, 0% 
-    ## LFC < 0 (down)   : 1, 0.0043% 
-    ## outliers [1]     : 1012, 4.4% 
-    ## low counts [2]   : 0, 0% 
+    ## LFC > 0 (up)       : 1, 0.0061%
+    ## LFC < 0 (down)     : 1, 0.0061%
+    ## outliers [1]       : 11, 0.067%
+    ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
@@ -830,12 +808,12 @@ CA3
     summary(res)
 
     ## 
-    ## out of 23075 with nonzero total read count
+    ## out of 16502 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 0, 0% 
-    ## LFC < 0 (down)   : 2, 0.0087% 
-    ## outliers [1]     : 1012, 4.4% 
-    ## low counts [2]   : 0, 0% 
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 11, 0.067%
+    ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
@@ -844,8 +822,8 @@ CA3
     table(res$padj<0.1)
 
     ## 
-    ## FALSE  TRUE 
-    ## 22061     2
+    ## FALSE 
+    ## 16491
 
     logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
     logs$logP=as.numeric(as.character(logs$logP))
@@ -854,15 +832,15 @@ CA3
     table(sign)
 
     ## sign
-    ##    -1     1 
-    ##  9976 13099
+    ##   -1    1 
+    ## 7619 8883
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/CA3conflictconsistent.csv", row.names = F)
 
     plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA3")
 
-![](../figures/02c_rnaseqSubfield/CA3-2.png)
+![](../figures/02c_rnaseqSubfield/CA3-1.png)
 
 CA1
 ---
@@ -890,10 +868,10 @@ CA1
     dds # view the DESeq object - note numnber of genes
 
     ## class: DESeqDataSet 
-    ## dim: 46403 15 
+    ## dim: 22485 15 
     ## metadata(1): version
     ## assays(1): counts
-    ## rownames(46403): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
+    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(15): 143B-CA1-1 143C-CA1-1 ... 148A-CA1-3 148B-CA1-4
     ## colData names(8): RNAseqID Mouse ... ID APA2
@@ -902,10 +880,10 @@ CA1
     dds # view number of genes afternormalization and the number of samples
 
     ## class: DESeqDataSet 
-    ## dim: 24113 15 
+    ## dim: 16852 15 
     ## metadata(1): version
     ## assays(1): counts
-    ## rownames(24113): 0610005C13Rik 0610007P14Rik ... Zzef1 Zzz3
+    ## rownames(16852): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(15): 143B-CA1-1 143C-CA1-1 ... 148A-CA1-3 148B-CA1-4
     ## colData names(8): RNAseqID Mouse ... ID APA2
@@ -919,13 +897,13 @@ CA1
     percentVar <- round(100 * attr(pcadata, "percentVar"))
     percentVar
 
-    ## [1] 65  7  5  5  4  3  3  2  2
+    ## [1] 35 23 10  8  5  4  3  3  2
 
     summary(aov(PC1 ~ APA2, data=pcadata)) 
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   1476   492.0   1.394  0.296
-    ## Residuals   11   3882   352.9
+    ## APA2         3  356.8  118.93   2.047  0.166
+    ## Residuals   11  639.2   58.11
 
     TukeyHSD((aov(PC1 ~ APA2, data=pcadata)), which = "APA2") 
 
@@ -935,19 +913,19 @@ CA1
     ## Fit: aov(formula = PC1 ~ APA2, data = pcadata)
     ## 
     ## $APA2
-    ##                                      diff       lwr      upr     p adj
-    ## consistent-conflict              2.274833 -37.70174 42.25140 0.9981028
-    ## yoked_conflict-conflict         13.526092 -24.39901 51.45120 0.7119103
-    ## yoked_consistent-conflict       29.843123 -19.11798 78.80422 0.3090137
-    ## yoked_conflict-consistent       11.251259 -26.67385 49.17636 0.8087380
-    ## yoked_consistent-consistent     27.568290 -21.39281 76.52939 0.3711754
-    ## yoked_consistent-yoked_conflict 16.317030 -30.98389 63.61795 0.7315985
+    ##                                      diff        lwr      upr     p adj
+    ## consistent-conflict              1.511888 -14.710579 17.73436 0.9918574
+    ## yoked_conflict-conflict          6.901885  -8.488099 22.29187 0.5530182
+    ## yoked_consistent-conflict       14.788355  -5.080029 34.65674 0.1722251
+    ## yoked_conflict-consistent        5.389996  -9.999988 20.77998 0.7227678
+    ## yoked_consistent-consistent     13.276466  -6.591918 33.14485 0.2416285
+    ## yoked_consistent-yoked_conflict  7.886470 -11.308212 27.08115 0.6181661
 
     summary(aov(PC2 ~ APA2, data=pcadata)) 
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  128.8   42.93   1.095  0.392
-    ## Residuals   11  431.3   39.21
+    ## APA2         3  239.3   79.76   2.105  0.158
+    ## Residuals   11  416.7   37.88
 
     TukeyHSD((aov(PC2 ~ APA2, data=pcadata)) , which = "APA2") 
 
@@ -957,25 +935,27 @@ CA1
     ## Fit: aov(formula = PC2 ~ APA2, data = pcadata)
     ## 
     ## $APA2
-    ##                                       diff        lwr      upr     p adj
-    ## consistent-conflict              4.3415389  -8.983161 17.66624 0.7630884
-    ## yoked_conflict-conflict          7.5768653  -5.064055 20.21779 0.3219164
-    ## yoked_consistent-conflict        3.4332817 -12.886077 19.75264 0.9191587
-    ## yoked_conflict-consistent        3.2353264  -9.405594 15.87625 0.8661682
-    ## yoked_consistent-consistent     -0.9082573 -17.227615 15.41110 0.9982239
-    ## yoked_consistent-yoked_conflict -4.1435837 -19.909582 11.62241 0.8570777
+    ##                                      diff        lwr       upr     p adj
+    ## consistent-conflict             -2.554911 -15.653007 10.543185 0.9339281
+    ## yoked_conflict-conflict         -4.900485 -17.326430  7.525459 0.6469089
+    ## yoked_consistent-conflict        7.683217  -8.358609 23.725043 0.5015017
+    ## yoked_conflict-consistent       -2.345574 -14.771519 10.080371 0.9395296
+    ## yoked_consistent-consistent     10.238128  -5.803697 26.279954 0.2745176
+    ## yoked_consistent-yoked_conflict 12.583703  -2.914173 28.081578 0.1256213
 
     summary(aov(PC3 ~ APA2, data=pcadata))
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  154.6   51.53   1.963  0.178
-    ## Residuals   11  288.8   26.25
+    ## APA2         3  69.45   23.15   1.143  0.375
+    ## Residuals   11 222.86   20.26
 
     summary(aov(PC4 ~ APA2, data=pcadata))
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  113.3   37.77   1.443  0.283
-    ## Residuals   11  288.0   26.18
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## APA2         3  99.72   33.24   2.841 0.0868 .
+    ## Residuals   11 128.70   11.70                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 
@@ -983,46 +963,46 @@ CA1
     summary(res)
 
     ## 
-    ## out of 24113 with nonzero total read count
+    ## out of 16852 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 253, 1% 
-    ## LFC < 0 (down)   : 255, 1.1% 
-    ## outliers [1]     : 815, 3.4% 
-    ## low counts [2]   : 10046, 42% 
-    ## (mean count < 4)
+    ## LFC > 0 (up)       : 522, 3.1%
+    ## LFC < 0 (down)     : 360, 2.1%
+    ## outliers [1]       : 32, 0.19%
+    ## low counts [2]     : 4892, 29%
+    ## (mean count < 5)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
-    ## log2 fold change (MAP): APA2 consistent vs yoked_consistent 
+    ## log2 fold change (MLE): APA2 consistent vs yoked_consistent 
     ## Wald test p-value: APA2 consistent vs yoked_consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##             baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##            <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Mga       105.494812       2.296032 0.3571652  6.428489 1.288790e-10
-    ## Rpl10-ps3 123.429876       2.800759 0.4808630  5.824443 5.730341e-09
-    ## Gm15585     6.862457      -2.754411 0.5227389 -5.269190 1.370272e-07
-    ## Ncoa4     103.455205       1.965834 0.3745187  5.248960 1.529606e-07
-    ## Srprb      45.142461       2.413794 0.4547775  5.307638 1.110549e-07
-    ## Gpd1      254.895785      -1.138800 0.2186162 -5.209130 1.897281e-07
-    ## Lhfpl4    215.886157       1.471716 0.2864555  5.137676 2.781564e-07
-    ## Sdhaf2     74.596296      -1.665859 0.3238888 -5.143304 2.699478e-07
-    ## Scn4b     128.359648       2.061055 0.4043924  5.096671 3.456780e-07
-    ## Agap1     150.633346       1.636290 0.3293027  4.968955 6.731466e-07
-    ##                   padj
-    ##              <numeric>
-    ## Mga       1.707904e-06
-    ## Rpl10-ps3 3.796924e-05
-    ## Gm15585   4.054069e-04
-    ## Ncoa4     4.054069e-04
-    ## Srprb     4.054069e-04
-    ## Gpd1      4.190460e-04
-    ## Lhfpl4    4.607661e-04
-    ## Sdhaf2    4.607661e-04
-    ## Scn4b     5.089916e-04
-    ## Agap1     8.920538e-04
+    ##                 baseMean    log2FoldChange             lfcSE
+    ##                <numeric>         <numeric>         <numeric>
+    ## Agap1   141.608762023137  2.77875046323028 0.429199296190091
+    ## Mga     103.422400328703  2.88512466619299 0.476961395194488
+    ## Adamts1  114.05510912055  3.03089016770375 0.542440999554141
+    ## Gpd1    249.757427758137 -1.22793747874702 0.227810028910739
+    ## Sdhaf2  77.6262495970029 -1.88444201930518 0.348951742801298
+    ## Scn4b   126.513273389751  2.75983601093444  0.53291136892103
+    ## Lhfpl4  214.234684832542  1.68458658679185 0.339420793178537
+    ## Ncoa4   101.428981706278  2.35081948916179 0.479986115716983
+    ## Lats2   79.0118946108766  2.50181097858582 0.521225803364738
+    ## Gad2    132.201113296669  2.85189408073533 0.598342010017182
+    ##                      stat               pvalue                 padj
+    ##                 <numeric>            <numeric>            <numeric>
+    ## Agap1    6.47426612274679 9.52738560798276e-11 1.13642655532018e-06
+    ## Mga      6.04896894226951 1.45775755684507e-09 8.69406606902402e-06
+    ## Adamts1   5.5875019959682 2.30359111553791e-08 9.15907827537872e-05
+    ## Gpd1    -5.39018183096829 7.03864293094537e-08 0.000167913865760633
+    ## Sdhaf2  -5.40029404689985 6.65317533489317e-08 0.000167913865760633
+    ## Scn4b    5.17878989243971 2.23329823700518e-07 0.000443979689516631
+    ## Lhfpl4   4.96312135451805 6.93692079381607e-07  0.00118205130326626
+    ## Ncoa4    4.89768227076785 9.69736686637254e-07  0.00144587739977615
+    ## Lats2    4.79986018043532 1.58776440997872e-06  0.00210431709802513
+    ## Gad2     4.76632767378883 1.87614050241445e-06  0.00223786039127996
 
     topGene <- rownames(res)[which.min(res$padj)]
     plotCounts(dds, gene = topGene, intgroup=c("APA2"))
@@ -1072,7 +1052,7 @@ CA1
 
     ## 
     ## FALSE  TRUE 
-    ## 12744   508
+    ## 11046   882
 
     logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
     logs$logP=as.numeric(as.character(logs$logP))
@@ -1081,8 +1061,8 @@ CA1
     table(sign)
 
     ## sign
-    ##    -1     1 
-    ## 10486 13627
+    ##   -1    1 
+    ## 7694 9158
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
@@ -1094,46 +1074,46 @@ CA1
     summary(res)
 
     ## 
-    ## out of 24113 with nonzero total read count
+    ## out of 16852 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 217, 0.9% 
-    ## LFC < 0 (down)   : 192, 0.8% 
-    ## outliers [1]     : 815, 3.4% 
-    ## low counts [2]   : 9157, 38% 
-    ## (mean count < 3)
+    ## LFC > 0 (up)       : 545, 3.2%
+    ## LFC < 0 (down)     : 372, 2.2%
+    ## outliers [1]       : 32, 0.19%
+    ## low counts [2]     : 4892, 29%
+    ## (mean count < 5)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
 
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
-    ## log2 fold change (MAP): APA2 yoked_conflict vs yoked_consistent 
+    ## log2 fold change (MLE): APA2 yoked_conflict vs yoked_consistent 
     ## Wald test p-value: APA2 yoked_conflict vs yoked_consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##                 baseMean log2FoldChange     lfcSE      stat       pvalue
-    ##                <numeric>      <numeric> <numeric> <numeric>    <numeric>
-    ## Srprb          45.142461       2.801910 0.4513580  6.207733 5.375429e-10
-    ## Gm15585         6.862457      -3.002835 0.5219945 -5.752619 8.787160e-09
-    ## Gm16105        17.288158      -2.975717 0.5265917 -5.650900 1.596098e-08
-    ## Ncoa4         103.455205       2.087115 0.3702547  5.636972 1.730664e-08
-    ## Rpl10-ps3     123.429876       2.633509 0.4738992  5.557109 2.742798e-08
-    ## Sdc3          222.365572       1.614871 0.3092786  5.221412 1.775636e-07
-    ## Pcdhb12        25.532513      -2.689515 0.5236926 -5.135675 2.811330e-07
-    ## Lats2          80.137942       1.877413 0.3718848  5.048372 4.455918e-07
-    ## Mga           105.494812       1.785340 0.3552004  5.026290 5.000596e-07
-    ## 2410002F23Rik  94.698550       1.708523 0.3442172  4.963501 6.923351e-07
-    ##                       padj
-    ##                  <numeric>
-    ## Srprb         7.601395e-06
-    ## Gm15585       6.118329e-05
-    ## Gm16105       6.118329e-05
-    ## Ncoa4         6.118329e-05
-    ## Rpl10-ps3     7.757181e-05
-    ## Sdc3          4.184878e-04
-    ## Pcdhb12       5.679289e-04
-    ## Lats2         7.857047e-04
-    ## Mga           7.857047e-04
-    ## 2410002F23Rik 9.790311e-04
+    ##                 baseMean    log2FoldChange             lfcSE
+    ##                <numeric>         <numeric>         <numeric>
+    ## Agap1   141.608762023137  2.68968384470947 0.425950937249105
+    ## Pcdhb12  28.059174402023 -4.44059921537497 0.793522420606138
+    ## Sdc3    215.373472922264  1.85322249231914 0.337204018822692
+    ## Gm20390  47.871821328339 -3.80408224976329 0.702192890495312
+    ## Adamts1  114.05510912055  2.88221063805472 0.537733929661711
+    ## Ncoa4   101.428981706278   2.4713781982471 0.475325965110602
+    ## Lats2   79.0118946108766   2.6661801320419 0.517454551359232
+    ## Scn4b   126.513273389751  2.63717217475313 0.525235880320185
+    ## Tgoln1  253.956891941181  1.57640904952372 0.317332343314282
+    ## Mga     103.422400328703  2.31524201605359   0.4748411371402
+    ##                      stat               pvalue                 padj
+    ##                 <numeric>            <numeric>            <numeric>
+    ## Agap1    6.31453909241308 2.70967824020662e-10 3.23210420491846e-06
+    ## Pcdhb12  -5.5960601743086 2.19277621297338e-08 0.000130777173341732
+    ## Sdc3      5.4958493638049 3.88834321833904e-08  0.00015460052636116
+    ## Gm20390 -5.41743202082261 6.04611256628736e-08 0.000180295076726689
+    ## Adamts1  5.35991961650611 8.32589898656502e-08 0.000198622646223495
+    ## Ncoa4    5.19933346723872 2.00004427353209e-07 0.000397608801578179
+    ## Lats2    5.15249141212203 2.57048392342877e-07 0.000438010460552263
+    ## Scn4b     5.0209292121199 5.14221090642523e-07 0.000766703646148002
+    ## Tgoln1   4.96769107447225  6.7754785642546e-07 0.000897976759049209
+    ## Mga      4.87582442834981 1.08354951670463e-06  0.00129245786352528
 
     topGene <- rownames(res)[which.min(res$padj)]
     plotCounts(dds, gene = topGene, intgroup=c("APA2"))
@@ -1182,12 +1162,12 @@ CA1
     summary(res)
 
     ## 
-    ## out of 24113 with nonzero total read count
+    ## out of 16852 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)     : 0, 0% 
-    ## LFC < 0 (down)   : 0, 0% 
-    ## outliers [1]     : 815, 3.4% 
-    ## low counts [2]   : 0, 0% 
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 32, 0.19%
+    ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
@@ -1195,33 +1175,33 @@ CA1
     resOrdered <- res[order(res$padj),]
     head(resOrdered, 10)
 
-    ## log2 fold change (MAP): APA2 conflict vs consistent 
+    ## log2 fold change (MLE): APA2 conflict vs consistent 
     ## Wald test p-value: APA2 conflict vs consistent 
     ## DataFrame with 10 rows and 6 columns
-    ##                 baseMean log2FoldChange     lfcSE        stat    pvalue
-    ##                <numeric>      <numeric> <numeric>   <numeric> <numeric>
-    ## 0610005C13Rik  0.2427395    -0.00427574 0.2550226 -0.01676612 0.9866232
-    ## 0610007P14Rik 43.8910113     0.27332700 0.3017067  0.90593603 0.3649697
-    ## 0610009B22Rik 11.7440112     0.46524944 0.4784352  0.97243983 0.3308318
-    ## 0610009E02Rik  0.5409887     0.09855867 0.2727035  0.36141328 0.7177905
-    ## 0610009L18Rik  3.8925015     0.41569917 0.5306709  0.78334641 0.4334237
-    ## 0610009O20Rik 42.3938281     0.14960918 0.4189254  0.35712606 0.7209974
-    ## 0610010F05Rik 57.7871928     0.20945893 0.3028794  0.69155881 0.4892144
-    ## 0610010K14Rik 20.4612702     0.11707379 0.4026577  0.29075261 0.7712405
-    ## 0610011F06Rik 21.5484525     0.20435483 0.4380681  0.46649101 0.6408641
-    ## 0610012G03Rik  6.8287326     0.66124417 0.4983990  1.32673664 0.1845958
-    ##                    padj
-    ##               <numeric>
-    ## 0610005C13Rik         1
-    ## 0610007P14Rik         1
-    ## 0610009B22Rik         1
-    ## 0610009E02Rik         1
-    ## 0610009L18Rik         1
-    ## 0610009O20Rik         1
-    ## 0610010F05Rik         1
-    ## 0610010K14Rik         1
-    ## 0610011F06Rik         1
-    ## 0610012G03Rik         1
+    ##                       baseMean     log2FoldChange             lfcSE
+    ##                      <numeric>          <numeric>         <numeric>
+    ## Atp6v0c       940.742611922084  0.608861459800811 0.163727606168192
+    ## Csmd2         143.250109872935 -0.914103831504814 0.235968419993719
+    ## Gm21949       21.1841188999619  -16.6146222758793  4.11997084164047
+    ## Rps3          244.145124987844  0.821854348915321 0.220612501449681
+    ## 0610007P14Rik 40.5190246487219  0.196321727885071 0.352801109032421
+    ## 0610009B22Rik  11.309058356894  0.667968463930145 0.634021906064433
+    ## 0610009L18Rik 3.57066470830572  0.852265724984899  1.22386841387385
+    ## 0610009O20Rik 41.9373878209083  0.250361800878926 0.540003660975504
+    ## 0610010F05Rik 55.2563013249849  0.224901035542928 0.344815463078742
+    ## 0610010K14Rik  20.942956262047  0.168090628236215 0.501583604861804
+    ##                            stat               pvalue              padj
+    ##                       <numeric>            <numeric>         <numeric>
+    ## Atp6v0c         3.7187464841778 0.000200213866268932 0.841899307660858
+    ## Csmd2         -3.87383969231623 0.000107133899383567 0.841899307660858
+    ## Gm21949       -4.03270385022041 5.51387487761311e-05 0.841899307660858
+    ## Rps3           3.72532990431086 0.000195059947424386 0.841899307660858
+    ## 0610007P14Rik 0.556465733408536    0.577892513329752 0.999977985728116
+    ## 0610009B22Rik  1.05354161668708     0.29209283113991 0.999977985728116
+    ## 0610009L18Rik 0.696370390250748    0.486196901299482 0.999977985728116
+    ## 0610009O20Rik  0.46362982137316    0.642912984860882 0.999977985728116
+    ## 0610010F05Rik 0.652235933779948    0.514248982221823 0.999977985728116
+    ## 0610010K14Rik 0.335119861588233    0.737534670898309 0.999977985728116
 
     data <- data.frame(gene = row.names(res),
                        pvalue = -log10(res$padj), 
@@ -1256,18 +1236,6 @@ CA1
     ## quartz_off_screen 
     ##                 2
 
-    PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
-    PCA12
-
-![](../figures/02c_rnaseqSubfield/CA1-6.png)
-
-    pdf(file="../figures/02c_rnaseqSubfield/CA1pca12.pdf", width=1.75, height = 2)
-    plot(PCA12)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
     plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
 
-![](../figures/02c_rnaseqSubfield/CA1-7.png)
+![](../figures/02c_rnaseqSubfield/CA1-6.png)

@@ -1,7 +1,7 @@
 ---
 title: "02c_rnaseqSubfield"
 author: "Rayna M Harris"
-date: "8/22/17"
+date: "02/12/19"
 output: md_document
 ---
 
@@ -18,12 +18,12 @@ library(VennDiagram) ## venn diagrams
 library(pheatmap) ## awesome heatmaps
 library(viridis) # for awesome color pallette
 library(reshape2) ## for melting dataframe
-
 library(DESeq2) ## for gene expression analysis
 library(edgeR)  ## for basic read counts status
 library(magrittr) ## to use the weird pipe
 library(genefilter)  ## for PCA fuction
-library(xtable)
+library(xtable) # for latex or html tables
+
 ## load functions 
 source("figureoptions.R")
 source("functions_RNAseq.R")
@@ -82,10 +82,10 @@ summary(aov(PC4 ~ APA2, data=pcadata))
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 pcadata$wrap <- "Principle Compent Analysis"
 
-contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 121
-contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 9
-contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 0
-contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 2
+contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 125
+contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 10
+contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
+contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 3
 ```
 
 ```{r DGanova, results='asis'}
@@ -96,6 +96,8 @@ summary(aov(PC1 ~ APA2, data=pcadata))
 ### DG contraststs
 
 ```{r DGcontrasts}
+
+###  "consistent", "yoked_consistent"
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
@@ -128,11 +130,9 @@ pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
 plot(DGvolcano)
 dev.off()
 
-
+# are any protein kinases differentially expressed?
 pkcs <- data[grep("Prkc", data$gene), ]
-
-
-
+pkcs # no pkcs are differentially expressed
 
 ## go setup
 table(res$padj<0.1)
@@ -188,7 +188,7 @@ logs$logP <- logs$logP*sign
 write.csv(logs, file = "./02e_GO_MWU/DGyokedyoked.csv", row.names = F)
 
 
-
+##  "conflict", "yoked_conflict"
 res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
@@ -233,7 +233,7 @@ write.csv(logs, file = "./02e_GO_MWU/DGconflictyoked.csv", row.names = F)
 
 
 
-####
+#### "conflict", "consistent"
 res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
@@ -275,31 +275,12 @@ sign[res$log2FoldChange<0]=-1  ##change to correct model
 table(sign)
 logs$logP <- logs$logP*sign
 write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
-
-plotPC <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-  ggplot(df, aes(df[xcol], df[ycol], color=aescolor)) +
-    geom_point(size=2, alpha= 0.8) +
-    xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-    ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-    scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") 
-}
-
-PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
-PCA12
-
-pdf(file="../figures/02c_rnaseqSubfield/DGpca12.pdf", width=1.75, height=2)
-plot(PCA12)
-dev.off()
-
 ```
 
 
-## plot single gene counts
+## plot single gene counts for Prkcz
 
-```{r}
+```{r prkcz}
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
 ```
 
@@ -310,7 +291,7 @@ res <- res[order(res$padj),]
 
 results = as.data.frame(dplyr::mutate(as.data.frame(res), sig=ifelse(res$padj<0.05, "FDR<0.05", "Not Sig")), row.names=rownames(res))
 head(results)
-
+```
 
 ## venn diagrams
 
@@ -338,8 +319,6 @@ prettyvenn <- venn.diagram(
   cat.cex = 1, cat.fontfamily = "sans")
 grid.draw(prettyvenn)
 ```
-
-
 
 
 ## CA3
@@ -382,13 +361,6 @@ summary(aov(PC6 ~ APA2, data=pcadata))
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 pcadata$wrap <- "Principle Compent Analysis"
 
-
-PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
-PCA12
-
-pdf(file="../figures/02c_rnaseqSubfield/CA3pca12.pdf", width=1.75, height=2)
-plot(PCA12)
-dev.off()
  
 #calculate significance of all two way comparisions
 # see source "functions_RNAseq.R" 
@@ -586,13 +558,6 @@ CA1volcano
 
 pdf(file="../figures/02c_rnaseqSubfield/CA1volcano4.pdf", width=1.5, height=2)
 plot(DGvolcano)
-dev.off()
-
-PCA12 <- plotPC(pcadata, 1, 2, aescolor = pcadata$APA2, colorname = " ",  colorvalues = colorvalAPA00)
-PCA12
-
-pdf(file="../figures/02c_rnaseqSubfield/CA1pca12.pdf", width=1.75, height = 2)
-plot(PCA12)
 dev.off()
 
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
