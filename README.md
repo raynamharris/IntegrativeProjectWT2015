@@ -30,7 +30,7 @@ This workflow below describes the order in which scripts are used to process and
 	- [scripts/02b_rnaseqALL](scripts/02b_rnaseqALL.md): analyzing all the RNA-seq data together
 	- [scripts/02c_rnaseqSubfield](scripts/02c_rnaseqSubfield.md): analyzing the data for each hippocampal subfield separately
 	- [scripts/02d_rnaseqAvoidance](scripts/02d_rnaseqAvoidance.md): combining the two yoked group and the two training groups before analyzing and then analyzing each subfield separately
-	- [scripts/02e_GO_MWU](scripts/02e_GO_MWU/GO_MWU.md_)** an analysis of gene ontology. Note: this directory contains scripts and data
+	- [scripts/02e_GO_MWU](scripts/02e_GO_MWU/GO_MWU.md_) an analysis of gene ontology. Note: this directory contains scripts and data
 - **Part 3: Electrophysiological analysis**
 	- [scripts/03_ephys](scripts/03_ephys.md): analysis of electrophysiology data	
 - **Part 4: Integrative analysis**
