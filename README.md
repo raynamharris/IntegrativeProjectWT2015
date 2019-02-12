@@ -9,11 +9,11 @@ This repo contains the experiment that I like to call "IntegrativeProjectWT2015"
 ### Bioinformatics Workflow
 
 This project is organized into five main subdirectories: 
-- `[scripts](scripts)`: contains all the `knitr`-based R workflows for statistical analyses and data visualization (source code is in the `.Rmd` files, and `.md` files are used to visualize the code and the results
-- `[UNIXworkflow](UNIXworkflow)`: contains and explanation and all the UNIX commands used to process the raw sequencing data 
-- `[figures](figures)`: all the figures created from the scripts 
-- `[data](data)`: all the input data and the results
-- `[docs](docs)`: presentations generated using R 
+- [`scripts`](scripts): contains all the `knitr`-based R workflows for statistical analyses and data visualization (source code is in the `.Rmd` files, and `.md` files are used to visualize the code and the results
+- [`UNIXworkflow`](UNIXworkflow): contains and explanation and all the UNIX commands used to process the raw sequencing data 
+- [`figures`](figures): all the figures created from the scripts 
+- [`data`](data): all the input data and the results
+- [`docs`](docs): presentations generated using R 
 
 This workflow below describes the order in which scripts are used to process and analyze the data. 
 
