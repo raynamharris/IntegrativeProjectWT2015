@@ -8,33 +8,34 @@ This repo contains the experiment that I like to call "IntegrativeProjectWT2015"
 
 ## Organization
 
-Three are four main directories for the R scripts, UNIX workflow, figures, and data. All .Rmd and related .md files are in the scripts directory. All .md files descripting the UNIX workflow are in the UNIXworkflow directory. 
+Three are four main directories for the scripts, UNIX workflow, figures, and data. All .Rmd and related .md files are in the scripts directory. All .md files descripting the UNIX workflow are in the UNIXworkflow directory. 
 
 The file names were chosen to indicated their order of execution in the workflow and provide a brief description of the contents.
 
 
 ### Workflow
- 
+
+
 - Part 1: Behavior	
-	- **01a_behavior_analysis:** behavior data wrangling, statistics, and data visualization
+	- **[scripts/01a_behavior_analysis](scripts/01a_behavior_analysis.md):** behavior data wrangling, statistics, and data visualization
 - Part 2.1: UNIX for RNA-seq
 	-  UNIX workflow 
 Initial processing of RNA sequencing was performed on the Stampede cluster at the Texas Advanced Computing Facility. My workflow for this is described in the 'UNIXworkflow' directory. 
-	- **00_rawdata:** Download the data to scratch on Stampede with `00_gsaf_download.sh`. 
-	- **01_fastqc:** Evaluate the quality of the reads using the program FastQC.
-	- **02_filtrimreads:** Filter low quality reads and trim adapters using the program cutadapt.
-	- **03_fastqc:** Evaluate the quality of the processed reads
-	- **04_kallisto:** Quantify transcript-level expression using Kallisto
+	- **[UNIXworkflow/00_rawdata](UNIXworkflow/00_rawdata.md):** Download the data to scratch on Stampede with `00_gsaf_download.sh`. 
+	- **[UNIXworkflow/01_fastqc](UNIXworkflow/01_fastqc.md):** Evaluate the quality of the reads using the program FastQC.
+	- **[UNIXworkflow/02_filtrimreads](UNIXworkflow/02_filtrimreads.md):** Filter low quality reads and trim adapters using the program cutadapt.
+	- **[UNIXworkflow/03_fastqc](UNIXworkflow/03_fastqc.md):** Evaluate the quality of the processed reads
+	- **[UNIXworkflow04_kallisto](UNIXworkflow04_kallisto.md):** Quantify transcript-level expression using Kallisto
 - Part 2.2: R for RNA-seq
-	- **02a_rnaseq_makedfs:** converting the Kallisto transcript counts to gene counts and wrangling the categorical data about the samples
-	- **02b_rnaseqALL:** analyzing all the RNA-seq data together
-	- **02c_rnaseqSubfield:** analyzing the data for each hippocampal subfield separately
-	- **02d_rnaseqAvoidance:** combining the two yoked group and the two training groups before analyzing and then analyzing each subfield separately
-	- **02e_GO_MWU** an analysis of gene ontology. Note: this directory contains scripts and data
+	- **[scripts/02a_rnaseq_makedfs](scripts/02a_rnaseq_makedfs.md):** converting the Kallisto transcript counts to gene counts and wrangling the categorical data about the samples
+	- **[scripts/02b_rnaseqALL](scripts/02b_rnaseqALL.md):** analyzing all the RNA-seq data together
+	- **[scripts/02c_rnaseqSubfield](scripts/02c_rnaseqSubfield.md):** analyzing the data for each hippocampal subfield separately
+	- **[scripts/02d_rnaseqAvoidance](scripts/02d_rnaseqAvoidance.md):** combining the two yoked group and the two training groups before analyzing and then analyzing each subfield separately
+	- **[scripts/02e_GO_MWU](scripts/02e_GO_MWU/GO_MWU.md_)** an analysis of gene ontology. Note: this directory contains scripts and data
 - Part 3: Electrophysiology
-	- **03_ephys:** analysis of electrophysiology data	
+	- **[scripts/03_ephys](scripts/03_ephys.md):** analysis of electrophysiology data	
 - Part 4: Integrative analysis
-	- **04_integration:** correlations across levels, mostly using PCA data
+	- **[scripts/04_integration](scripts/04_integration.md):** correlations across levels, mostly using PCA data
 	
 ### Approach
 
