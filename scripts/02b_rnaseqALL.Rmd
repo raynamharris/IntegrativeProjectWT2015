@@ -1,7 +1,7 @@
 ---
 title: "02c_rnaseq_All"
 author: "Rayna M Harris"
-date: "12/264/18"
+date: "2/12/19"
 output: md_document
 ---
 
@@ -36,7 +36,7 @@ knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/')
 
 The major comparision here is 
 - Hippocampal subfield: "DG","CA3", "CA1"
-- Behavioral Groups: "conflict", "consistent"
+- Behavioral Groups: "yoked_consistent", "consistent", "yoked_conflict" , "conflict"
 
 
 ```{r data, message=F, warning=F}
@@ -93,7 +93,6 @@ res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T)
 summary(res)
 head((res[order(res$padj),]), 10)
 head((res[order(res$log2FoldChange),]), 10)
-
 ```
 
 ## this is for consistent yoked-consistent
@@ -140,13 +139,13 @@ table(res$padj<0.1)
 ```
 
 ```{r heatmap_prep}
-contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2526 or 2765
-contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2022 or 2165
-contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 3145 or 2948
-contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 114 or 114
-contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 60 or 61
+contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2765
+contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2165
+contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 2948
+contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) #  114
+contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 61
 contrast6 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1 or 0
-contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 35 or 40
+contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 40
 ```
 
 ```{r heatmap}
@@ -249,67 +248,22 @@ plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     theme(legend.position="none") +
     scale_shape_manual(values=c(16, 1, 15, 0), aes(color=APA2))
 }
-#PCA12 <- plotPCs(pcadata, 1, 2, aescolor = pcadata$Punch, colorname = "Punch", colorvalues = colorvalPunch)
-#PCA12
+
 
 PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=Punch)) +
     geom_point(size=3, aes(shape=APA2), alpha = 0.8) +
-    #xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-    #ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
+    xlab(paste0("PC1:", percentVar[1],"% variance")) +
+    ylab(paste0("PC2:", percentVar[2],"% variance")) +
     #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
     scale_colour_manual(values=c(colorvalPunch))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="bottom") +
+    theme(legend.position="none") +
     scale_shape_manual(values=c(16, 1, 15, 0), aes(color=colorvalPunch))
 PCA12
 
 pdf(file="../figures/02b_RNAseqAll/PCA12.pdf", width=1.75, height=2.25)
 plot(PCA12)
 dev.off()
-
-# function not working for some reson
-# error "Columns `x`, `y` must be 1d atomic vectors or lists"
-plotPCs <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
-  ggplot(df, aes(df[xcol], df[ycol], color=aescolor, shape=Punch)) +
-    geom_point(size=3, aes(shape=Punch), alpha = 0.8) +
-    xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-    ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-    scale_colour_manual(name=colorname, values=c(colorvalues))+ 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") +
-    scale_shape_manual(values=c(15, 16,17)) 
-}
-#PCA53 <- plotPCs(pcadata, 5, 3, aescolor = pcadata$APA2, colorname = "APA2",  colorvalues = colorvalAPA00)
-#PCA53
-
-# new pca plot with colors by treatment and shapes by region
-PCA12b <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=pcadata$APA2))+
-    geom_point(size=3, aes(shape=Punch), alpha = 0.8) +
-    #xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-    #ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-    scale_colour_manual(name="APA2", values=c(colorvalAPA00))+ 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="bottom") +
-    scale_shape_manual(values=c(15, 16,17)) 
-PCA12b
-
-PCA62 <- ggplot(pcadata, aes(pcadata$PC6, pcadata$PC2, color=pcadata$APA2))+
-    geom_point(size=3, aes(shape=Punch), alpha = 0.8) +
-    #xlab(paste0("PC", xcol, ": ", percentVar[xcol],"% variance")) +
-    #ylab(paste0("PC", ycol, ": ", percentVar[ycol],"% variance")) +
-    #stat_ellipse(level = 0.95, (aes(color=aescolor)),size=0.25) + 
-    scale_colour_manual(name="APA2", values=c(colorvalAPA00))+ 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="bottom") +
-    scale_shape_manual(values=c(15, 16,17)) 
-PCA62
-
-pdf(file="../figures/02b_RNAseqAll/PCA62.pdf", width=3.25, height=2.5)
-plot(PCA62)
-dev.off()
-
 
 ```
 
@@ -578,7 +532,7 @@ dev.off()
 
 ## plot single gene counts
 
-```{r counts}
+```{r Prkcz}
 plotCounts(dds, "Prkcz", intgroup = "Punch", normalized = TRUE)
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE)
 ```

@@ -42,7 +42,8 @@ Design
 ------
 
 The major comparision here is - Hippocampal subfield: “DG”,“CA3”, “CA1”
-- Behavioral Groups: “conflict”, “consistent”
+- Behavioral Groups: “yoked\_consistent”, “consistent”,
+“yoked\_conflict” , “conflict”
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
@@ -651,23 +652,23 @@ this is for consistent conflict yoked-conflict
     ## FALSE 
     ## 17921
 
-    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2526 or 2765
+    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2765
 
     ## [1] 2765
 
-    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2022 or 2165
+    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2165
 
     ## [1] 2165
 
-    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 3145 or 2948
+    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 2948
 
     ## [1] 2948
 
-    contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 114 or 114
+    contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) #  114
 
     ## [1] 114
 
-    contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 60 or 61
+    contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 61
 
     ## [1] 61
 
@@ -675,7 +676,7 @@ this is for consistent conflict yoked-conflict
 
     ## [1] 0
 
-    contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 35 or 40
+    contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 40
 
     ## [1] 40
 
@@ -808,11 +809,6 @@ Principle component analysis
     ## Residuals   40  405.5  10.137
 
 ![](../figures/02b_RNAseqAll/pca-1.png)
-
-    ## quartz_off_screen 
-    ##                 2
-
-![](../figures/02b_RNAseqAll/pca-2.png)![](../figures/02b_RNAseqAll/pca-3.png)
 
     ## quartz_off_screen 
     ##                 2
@@ -1349,11 +1345,11 @@ plot single gene counts
 
     plotCounts(dds, "Prkcz", intgroup = "Punch", normalized = TRUE)
 
-![](../figures/02b_RNAseqAll/counts-1.png)
+![](../figures/02b_RNAseqAll/Prkcz-1.png)
 
     plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE)
 
-![](../figures/02b_RNAseqAll/counts-2.png)
+![](../figures/02b_RNAseqAll/Prkcz-2.png)
 
 Observed versus expected ration of DEGs
 ---------------------------------------
