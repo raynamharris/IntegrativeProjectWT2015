@@ -17,9 +17,9 @@ The file names were chosen to indicated their order of execution in the workflow
 
 This workflow below describes the order in which scripts are used to anlayze data. Below, I have linked the correspond markdown file. For source code, replace `.md` with `.Rmd` in the hyperlink. 
 
-- Part 1: Behavior	
+- **Part 1: Behavior**	
 	- [scripts/01a_behavior_analysis](scripts/01a_behavior_analysis.md): behavior data wrangling, statistics, and data visualization
-- Part 2.1: UNIX for RNA-seq
+- **Part 2.1: UNIX for RNA-seq**
 	-  UNIX workflow 
 Initial processing of RNA sequencing was performed on the Stampede cluster at the Texas Advanced Computing Facility. My workflow for this is described in the 'UNIXworkflow' directory. 
 	- [UNIXworkflow/00_rawdata](UNIXworkflow/00_rawdata.md): Download the data to scratch on Stampede with `00_gsaf_download.sh`. 
@@ -27,20 +27,18 @@ Initial processing of RNA sequencing was performed on the Stampede cluster at th
 	- [UNIXworkflow/02_filtrimreads](UNIXworkflow/02_filtrimreads.md): Filter low quality reads and trim adapters using the program cutadapt.
 	- [UNIXworkflow/03_fastqc](UNIXworkflow/03_fastqc.md): Evaluate the quality of the processed reads
 	- [UNIXworkflow04_kallisto](UNIXworkflow04_kallisto.md): Quantify transcript-level expression using Kallisto
-- Part 2.2: R for RNA-seq
+- **Part 2.2: R for RNA-seq**
 	- [scripts/00_kallistoCounts](scripts/00_kallistoCounts.md): converting the kallisto transcript counts to gene counts 
 	- [scripts/02a_rnaseq_makedfs](scripts/02a_rnaseq_makedfs.md): wrangling the categorical data about the samples and the count data
 	- [scripts/02b_rnaseqALL](scripts/02b_rnaseqALL.md): analyzing all the RNA-seq data together
 	- [scripts/02c_rnaseqSubfield](scripts/02c_rnaseqSubfield.md): analyzing the data for each hippocampal subfield separately
 	- [scripts/02d_rnaseqAvoidance](scripts/02d_rnaseqAvoidance.md): combining the two yoked group and the two training groups before analyzing and then analyzing each subfield separately
 	- [scripts/02e_GO_MWU](scripts/02e_GO_MWU/GO_MWU.md_)** an analysis of gene ontology. Note: this directory contains scripts and data
-- Part 3: Electrophysiology
+- **Part 3: Electrophysiology**
 	- [scripts/03_ephys](scripts/03_ephys.md): analysis of electrophysiology data	
-- Part 4: Integrative analysis
+- **Part 4: Integrative analysis**
 	- [scripts/04_integration](scripts/04_integration.md): correlations across levels, mostly using PCA data
 	
-### Approach
-
 Here is a graphical overview of the experimental design
 
 ![](./figures/figures-05.png)
@@ -86,7 +84,6 @@ A) In the CA1, 253 genes are upregulated in the consistently training group whil
 
 ![](./figures/figures2-03.png)
 A) In the CA1, 409 genes are differentially expressed in between yoked groups that received different amounts of punishment.  (FDR = 0.1). B) An analysis of enrichment in gene ontology (GO) categories shows an enrichment in molecular function processes related to ion channel transport and synaptic activity (p < 0.05). Genes and GO categories are colored according to enrichment in yoked-conflict (light grey) or yoked-consistent (dark-grey).  
-
 
 
 ### Data
