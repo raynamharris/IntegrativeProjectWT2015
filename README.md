@@ -15,7 +15,7 @@ This project is organized into five main subdirectories:
 - [`data`](data): all the input data and the results
 - [`docs`](docs): presentations generated using R 
 
-This workflow below describes the order in which scripts are used to process and analyze the data. 
+This workflow below describes the order in which scripts are used to process and analyze behavioral data (part 1), RNA-seq data (part 2), electrophysiology data (part 3). Finally, the last step (part 4) was to integrate across all three levels of analysis. 
 
 - **Part 1: Behavior**	
 	- [scripts/01a_behavior_analysis](scripts/01a_behavior_analysis.md): behavior data wrangling, statistics, and data visualization
@@ -41,7 +41,7 @@ Initial processing of RNA sequencing was performed on the Stampede cluster at th
 	
 #### Experimental Design and Sample Sizes
 
-Here is a graphical overview of the experimental design
+Here is a graphical overview of the experimental design.
 
 ![](./figures/figures-05.png)
 A) Mice were assigned to one of four groups: consistently-trained (red, n=8), yoked-consistent (dark grey, n=8), conflict-trained (peach, n=9), or yoked-conflict (light grey, n=9). Mice were placed on the rotating arena (1 rpm) for training sessions that lasted 10 min and was separated by 2-hour intersession interval or overnight (~17 hrs). Behavior was recorded during the Pre-training, Training (T1-T6), Retest, and Retention session. In the active place avoidance schematics, the shaded pie-shaped region is the behaviorally relevant region used for counting the number of entrances into the shock zone. The shocking of yoked mice is not spatially limited to the dark-grey pie-shaped zone, but consistent and conflict trained mice only receive shocks in the red and peach-shaded regions, respectively. B) A representative photo shows the size and location of tissue samples collected for RNA-sequencing.  C) Graphical illustration of hippocampal tissues sequenced and sample sizes for each treatment group and hippocampal subfield.
