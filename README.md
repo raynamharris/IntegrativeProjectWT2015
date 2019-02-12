@@ -6,16 +6,16 @@
 
 This repo contains the experiment that I like to call "IntegrativeProjectWT2015" because it is an **integrative** analysis of behavior, electrophysiology, and RNA-seq data collected from **wild type** mice in **2015**. 
 
-## Organization
+### Bioinformatics Workflow
 
-Three are four main directories for the scripts, UNIX workflow, figures, and data. All .Rmd and related .md files are in the scripts directory. All .md files descripting the UNIX workflow are in the UNIXworkflow directory. 
+This project is organized into five main subdirectories: 
+- `[scripts](scripts)`: contains all the `knitr`-based R workflows for statistical analyses and data visualization (source code is in the `.Rmd` files, and `.md` files are used to visualize the code and the results
+- `[UNIXworkflow](UNIXworkflow)`: contains and explanation and all the UNIX commands used to process the raw sequencing data 
+- `[figures](figures)`: all the figures created from the scripts 
+- `[data](data)`: all the input data and the results
+- `[docs](docs)`: presentations generated using R 
 
-The file names were chosen to indicated their order of execution in the workflow and provide a brief description of the contents.
-
-
-### Workflow
-
-This workflow below describes the order in which scripts are used to anlayze data. Below, I have linked the correspond markdown file. For source code, replace `.md` with `.Rmd` in the hyperlink. 
+This workflow below describes the order in which scripts are used to process and analyze the data. 
 
 - **Part 1: Behavior**	
 	- [scripts/01a_behavior_analysis](scripts/01a_behavior_analysis.md): behavior data wrangling, statistics, and data visualization
@@ -39,6 +39,8 @@ Initial processing of RNA sequencing was performed on the Stampede cluster at th
 - **Part 4: Integrative analysis**
 	- [scripts/04_integration](scripts/04_integration.md): correlations across levels, mostly using PCA data
 	
+#### Experimental Design and Sample Sizes
+
 Here is a graphical overview of the experimental design
 
 ![](./figures/figures-05.png)
@@ -57,16 +59,16 @@ A) Consistently trained (red lines) mice make fewer entrances into the shock zon
 A) I compared gene expression in three hippocampal subfields from our four treatment groups (DG: orange, CA3: green, CA1: purple, yoked-consistent: filled circle, consistent: open square, yoked-conflict: filled square, conflict: open square). B) Hierarchical clustering of differentially expressed genes shows variation between subfields is much greater than variation induced by treatment. C) A principal component analysis estimates that over 50 % of the variation is capture in PC1 and P3, which visually separate the three hippocampal subfields. D) 3000 are differentially expressed in a symmetric pattern between DG and CA. E, F) Fewer genes are up-regulated in CA1 compared to both DG and CA3, but the magnitude of expression differences in greater between DG-CA1 than between CA3-CA1. For volcano plots, dots are partially transparent to aid visualization of density.
 
 
-1. Table 1: Numbers of differentially expressed genes by two-way contrast when all data is included in the normalization and quantificaiton. 
+1. Table 1: Numbers of differentially expressed genes by two-way contrast when all data is included in the normalization and quantificaiton (adjusted p-value < 0.1). 
 
 | contrast | up | down | total |
 | --- | --- | --- | --- |
-CA3	vs. DG | 1625 | 1361 | 2986
-CA1	vs. DG | 968 | 956 | 1924
-CA1	vs. CA3 | 651 | 791 | 1442
-consistent vs.	yoked consistent | 113 | 7 | 120
-yoked conflict vs. yoked consistent | 30 | 1 | 31
-conflict vs. yoked conflict | 15 | 24 | 39
+CA3	vs. DG | 1571 | 1377 | 2948
+CA1	vs. DG | 1223 | 1542 | 2765
+CA1	vs. CA3 | 877 | 1288 | 2165
+consistent vs.	yoked consistent | 106 | 8 | 114
+yoked conflict vs. yoked consistent | 38 | 2 | 40
+conflict vs. yoked conflict | 17 | 44 | 61
 conflict vs. consistent | 0 | 0 | 0
 
 
@@ -91,4 +93,4 @@ A) In the CA1, 409 genes are differentially expressed in between yoked groups th
 This directory contains both raw and intermediate data files. 
 - Intermediate data files have alphanumeric prefixes that correspond to the R script that created them. 
 - Raw files have only numeric prefix (aka lack an alphabetical character) that indicates whether it is for behavior (01), RNA-seq (02), or ephys (03). 
-- Files with more general names were created for public repositories
+- Files with more descriptive names were created for public repositories
