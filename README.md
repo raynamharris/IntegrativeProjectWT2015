@@ -15,6 +15,7 @@ The file names were chosen to indicated their order of execution in the workflow
 
 ### Workflow
 
+This workflow below describes the order in which scripts are used to anlayze data. Below, I have linked the correspond markdown file. For source code, replace `.md` with `.Rmd` in the hyperlink. 
 
 - Part 1: Behavior	
 	- **[scripts/01a_behavior_analysis](scripts/01a_behavior_analysis.md):** behavior data wrangling, statistics, and data visualization
