@@ -35,10 +35,7 @@ Initial processing of RNA sequencing was performed on the Stampede cluster at th
 	- **03_ephys:** analysis of electrophysiology data	
 - Part 4: Integrative analysis
 	- **04_integration:** correlations across levels, mostly using PCA data
-- Extras
-	- **99_colorblindr:** a simulation of how some of my figures will look to colorblind readers
 	
-
 ### Approach
 
 Here is a graphical overview of the experimental design
@@ -47,7 +44,6 @@ Here is a graphical overview of the experimental design
 A) Mice were assigned to one of four groups: consistently-trained (red, n=8), yoked-consistent (dark grey, n=8), conflict-trained (peach, n=9), or yoked-conflict (light grey, n=9). Mice were placed on the rotating arena (1 rpm) for training sessions that lasted 10 min and was separated by 2-hour intersession interval or overnight (~17 hrs). Behavior was recorded during the Pre-training, Training (T1-T6), Retest, and Retention session. In the active place avoidance schematics, the shaded pie-shaped region is the behaviorally relevant region used for counting the number of entrances into the shock zone. The shocking of yoked mice is not spatially limited to the dark-grey pie-shaped zone, but consistent and conflict trained mice only receive shocks in the red and peach-shaded regions, respectively. B) A representative photo shows the size and location of tissue samples collected for RNA-sequencing.  C) Graphical illustration of hippocampal tissues sequenced and sample sizes for each treatment group and hippocampal subfield.
 
 #### Results
-
 
 1. Cognitive training induces avoidance behavior in conflict and consistently trained animals. 
 ![](./figures/figures-01.png)
