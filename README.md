@@ -63,17 +63,22 @@ This workflow below describes the order in which scripts are used to process and
 **Fig. 6. Additional punishment also influences gene expression in CA1.** A) In the CA1, 409 genes are differentially expressed in between yoked groups that received different amounts of punishment.  (FDR = 0.1). B) An analysis of enrichment in gene ontology (GO) categories shows an enrichment in molecular function processes related to ion channel transport and synaptic activity (p < 0.05). Genes and GO categories are colored according to enrichment in yoked-conflict (light grey) or yoked-consistent (dark-grey).  
 
 
-| contrast | up | down | total |
-| --- | --- | --- | --- |
-CA3	vs. DG | 1571 | 1377 | 2948
-CA1	vs. DG | 1223 | 1542 | 2765
-CA1	vs. CA3 | 877 | 1288 | 2165
-consistent vs.	yoked consistent | 106 | 8 | 114
-yoked conflict vs. yoked consistent | 38 | 2 | 40
-conflict vs. yoked conflict | 17 | 44 | 61
-conflict vs. consistent | 0 | 0 | 0
+| **Subfield** | **Treatment comparisons** | **Up** | **Down** | **Total** |
+|----------|-------------------------------------|-----|------|-------|
+| DG | consistent vs. yoked-consistent | 119 | 6 | 125 |
+| DG | conflict vs. yoked-conflict | 8 | 2 | 10 |
+| DG | conflict vs. consistent | 0 | 1 | 1 |
+| DG | yoked-conflict vs. yoked-consistent | 3 | 0 | 3 |
+| CA3 | consistent vs. yoked-consistent | 1 | 0 | 1 |
+| CA3 | conflict vs. yoked-conflict | 0 | 0 | 0 |
+| CA3 | conflict vs. consistent | 0 | 0 | 0 |
+| CA3 | yoked-conflict vs. yoked-consistent | 1 | 1 | 2 |
+| CA1 | consistent vs. yoked-consistent | 522 | 360 | 882 |
+| CA1 | conflict vs. yoked-conflict | 1 | 3 | 0 |
+| CA1 | conflict vs. consistent | 0 | 0 | 0 |
+| CA1 | yoked-conflict vs. yoked-consistent | 545 | 372 | 917 |
 
-**Table 1: Numbers of differentially expressed genes by two-way contrast when all data is included in the normalization and quantificaiton (adjusted p-value < 0.1).** 
+**Table 1: Numbers of differentially expressed genes by two-way contrast when all data is included in the normalization and quantificaiton (adjusted p-value < 0.1).** Consistent training increases expression of over 100 genes in the DG relative to yoked controls, but conflict training and increased punishment have almost no effect on gene expression in the DG. In the CA3, there only 3 genes changes expression in all pair-wise comparisons. In the CA1, both consistent training and additional punishment (yoked comparison) alter the expression of nearly 1000 genes.  
 
 
 ### Data
