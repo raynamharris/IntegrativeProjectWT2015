@@ -58,19 +58,19 @@ DGConflictConsistent <- c("#f4a582","#ca0020")
 
 volcano1 <-  c("consistent" = "#ca0020",
            "yoked_consistent" = "#404040", 
-           "none" = "#d9d9d9")
+           "neither" = "#d9d9d9")
 
 volcano2 <-  c("consistent" = "#ca0020",
                "conflict" = "#f4a582",
-               "none" = "#d9d9d9")
+               "neither" = "#d9d9d9")
 
 volcano3 <-  c("yoked_consistent" = "#404040",
                "yoked_conflict" = "#bababa", 
-               "none" = "#d9d9d9")
+               "neither" = "#d9d9d9")
 
 volcano4 <-  c("conflict" = "#f4a582",
                "yoked_conflict" = "#bababa", 
-               "none" = "#d9d9d9")
+               "neither" = "#d9d9d9")
 
 volcano5 <-  c("yes" = "red",
                "no" = "black", 

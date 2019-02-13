@@ -104,22 +104,6 @@ yoked-consistent.
     write.csv(colData, file = "../data/02c_DGcolData.csv", row.names = T)
     write.csv(vsd, file = "../data/02c_DGvsd.csv", row.names = T)
 
-    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 125
-
-    ## [1] 125
-
-    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 10
-
-    ## [1] 10
-
-    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
-
-    ## [1] 1
-
-    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 3
-
-    ## [1] 3
-
     ###  "consistent", "yoked_consistent"
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -175,7 +159,7 @@ yoked-consistent.
                             yes = "consistent", 
                             no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
-                                        no = "none")))
+                                        no = "neither")))
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
@@ -203,16 +187,16 @@ yoked-consistent.
     pkcs <- data[grep("Prkc", data$gene), ]
     pkcs # no pkcs are differentially expressed
 
-    ##         gene       pvalue         lfc color
-    ## 8139   Prkca 2.793108e-05 -0.06147923  none
-    ## 8140   Prkcb 2.793108e-05 -0.23086376  none
-    ## 8141   Prkcd 2.793108e-05 -1.74799258  none
-    ## 8142 Prkcdbp 2.793108e-05  0.89326487  none
-    ## 8143   Prkce 2.793108e-05 -0.08024100  none
-    ## 8144   Prkcg 2.793108e-05 -0.35258124  none
-    ## 8145   Prkci 2.793108e-05  0.14227925  none
-    ## 8146  Prkcsh 2.793108e-05 -0.12210803  none
-    ## 8147   Prkcz 2.793108e-05 -0.07894751  none
+    ##         gene       pvalue         lfc   color
+    ## 8139   Prkca 2.793108e-05 -0.06147923 neither
+    ## 8140   Prkcb 2.793108e-05 -0.23086376 neither
+    ## 8141   Prkcd 2.793108e-05 -1.74799258 neither
+    ## 8142 Prkcdbp 2.793108e-05  0.89326487 neither
+    ## 8143   Prkce 2.793108e-05 -0.08024100 neither
+    ## 8144   Prkcg 2.793108e-05 -0.35258124 neither
+    ## 8145   Prkci 2.793108e-05  0.14227925 neither
+    ## 8146  Prkcsh 2.793108e-05 -0.12210803 neither
+    ## 8147   Prkcz 2.793108e-05 -0.07894751 neither
 
     ## go setup
     table(res$padj<0.1)
@@ -289,7 +273,7 @@ yoked-consistent.
                             yes = "yoked_conflict", 
                             no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
-                                        no = "none")))
+                                        no = "neither")))
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
@@ -389,7 +373,7 @@ yoked-consistent.
                             yes = "conflict", 
                             no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "yoked_conflict", 
-                                        no = "none")))
+                                        no = "neither")))
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
@@ -488,7 +472,7 @@ yoked-consistent.
                             yes = "conflict", 
                             no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "consistent", 
-                                        no = "none")))
+                                        no = "neither")))
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
@@ -558,6 +542,14 @@ yoked-consistent.
     ## 0610009O20Rik 0.99987792  Not Sig
     ## 0610010F05Rik 0.99987792  Not Sig
 
+    ## [1] 125
+
+    ## [1] 10
+
+    ## [1] 1
+
+    ## [1] 3
+
 ![](../figures/02c_rnaseqSubfield/DGvenndiagrams-1.png)
 
 CA3
@@ -613,24 +605,6 @@ for the manuscript.
 
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
-
-    #calculate significance of all two way comparisions
-    # see source "functions_RNAseq.R" 
-    contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 0
-
-    ## [1] 1
-
-    contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 0
-
-    ## [1] 0
-
-    contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
-
-    ## [1] 0
-
-    contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 0
-
-    ## [1] 2
 
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -827,7 +801,7 @@ Two comparisons within CA1 are noteable
                             yes = "consistent", 
                             no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
-                                        no = "none")))
+                                        no = "neither")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
 
@@ -951,7 +925,7 @@ Two comparisons within CA1 are noteable
                             yes = "yoked_conflict", 
                             no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
-                                        no = "none")))
+                                        no = "neither")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
 
@@ -1032,7 +1006,7 @@ Two comparisons within CA1 are noteable
                             yes = "conflict", 
                             no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                         yes = "consistent", 
-                                        no = "none")))
+                                        no = "neither")))
     CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +

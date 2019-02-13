@@ -67,11 +67,6 @@ vsd <- getVarianceStabilizedData(dds)
 
 write.csv(colData, file = "../data/02c_DGcolData.csv", row.names = T)
 write.csv(vsd, file = "../data/02c_DGvsd.csv", row.names = T)
-
-contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 125
-contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 10
-contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
-contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 3
 ```
 
 
@@ -91,7 +86,7 @@ data <- data %>%
                         yes = "consistent", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                     yes = "yoked_consistent", 
-                                    no = "none")))
+                                    no = "neither")))
 DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
@@ -138,7 +133,7 @@ data <- data %>%
                         yes = "yoked_conflict", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                     yes = "yoked_consistent", 
-                                    no = "none")))
+                                    no = "neither")))
 DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
@@ -182,7 +177,7 @@ data <- data %>%
                         yes = "conflict", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                     yes = "yoked_conflict", 
-                                    no = "none")))
+                                    no = "neither")))
 DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
@@ -225,7 +220,7 @@ data <- data %>%
                         yes = "conflict", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                     yes = "consistent", 
-                                    no = "none")))
+                                    no = "neither")))
 DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
@@ -271,6 +266,11 @@ head(results)
 
 
 ```{r DGvenndiagrams, echo=F}
+contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) 
+contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1)
+contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) 
+contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1)
+
 rldpadjs <- assay(rld)
 rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast4)
 rldpadjs <- as.data.frame(rldpadjs)
@@ -323,24 +323,14 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
 
-#calculate significance of all two way comparisions
-# see source "functions_RNAseq.R" 
-contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 0
-contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 0
-contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
-contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 0
-
-
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 
 res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
 summary(res)
 
-
 res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
-
 
 res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
@@ -407,7 +397,7 @@ data <- data %>%
                         yes = "consistent", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                     yes = "yoked_consistent", 
-                                    no = "none")))
+                                    no = "neither")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 
 
@@ -463,7 +453,7 @@ data <- data %>%
                         yes = "yoked_conflict", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                     yes = "yoked_consistent", 
-                                    no = "none")))
+                                    no = "neither")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 
 
@@ -498,7 +488,7 @@ data <- data %>%
                         yes = "conflict", 
                         no = ifelse(data$lfc < 0 & data$pvalue > 1, 
                                     yes = "consistent", 
-                                    no = "none")))
+                                    no = "neither")))
 CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
