@@ -41,9 +41,12 @@ The figures made from this script were compiled in Adobe.
 Design
 ------
 
-The major comparision here is - Hippocampal subfield: “DG”,“CA3”, “CA1”
-- Behavioral Groups: “yoked\_consistent”, “consistent”,
-“yoked\_conflict” , “conflict”
+The two two catagorical variables are
+
+-   Hippocampal subfield: DG, CA3, CA1
+-   Treatment: yoked\_consistent, consistent, yoked\_conflict, conflict
+
+<!-- -->
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
@@ -54,6 +57,23 @@ The major comparision here is - Hippocampal subfield: “DG”,“CA3”, “CA1
     ##  consistent      : 9   CA3:13  
     ##  yoked_conflict  :12   DG :16  
     ##  yoked_consistent: 9
+
+    head(colData)
+
+    ##     RNAseqID   Mouse Punch      Group   Conflict Treatment     ID
+    ## 1 143A-CA3-1 15-143A   CA3   conflict   Conflict  conflict 15143A
+    ## 2  143A-DG-1 15-143A    DG   conflict   Conflict  conflict 15143A
+    ## 3 143B-CA1-1 15-143B   CA1    control   Conflict   shocked 15143B
+    ## 4  143B-DG-1 15-143B    DG    control   Conflict   shocked 15143B
+    ## 5 143C-CA1-1 15-143C   CA1 consistent NoConflict   trained 15143C
+    ## 6 143D-CA1-3 15-143D   CA1    control NoConflict     yoked 15143D
+    ##               APA2
+    ## 1         conflict
+    ## 2         conflict
+    ## 3   yoked_conflict
+    ## 4   yoked_conflict
+    ## 5       consistent
+    ## 6 yoked_consistent
 
     totalCounts=colSums(countData)
     ### on average 1 million gene counts per sample 

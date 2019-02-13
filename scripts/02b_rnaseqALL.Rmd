@@ -34,15 +34,18 @@ knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/')
 
 ## Design
 
-The major comparision here is 
-- Hippocampal subfield: "DG","CA3", "CA1"
-- Behavioral Groups: "yoked_consistent", "consistent", "yoked_conflict" , "conflict"
+The two two catagorical variables are
+
+* Hippocampal subfield: DG, CA3, CA1
+* Treatment: yoked_consistent, consistent, yoked_conflict, conflict
 
 
 ```{r data, message=F, warning=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData %>% select(APA2,Punch)  %>%  summary()
+head(colData)
+
 
 totalCounts=colSums(countData)
 ### on average 1 million gene counts per sample 
