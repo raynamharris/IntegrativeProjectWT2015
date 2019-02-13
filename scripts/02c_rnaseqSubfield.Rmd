@@ -71,7 +71,6 @@ write.csv(vsd, file = "../data/02c_DGvsd.csv", row.names = T)
 
 
 ```{r DG}
-
 ###  "consistent", "yoked_consistent"
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
@@ -90,7 +89,7 @@ data <- data %>%
                                     yes = "yoked_consistent", 
                                     no = "neither")))
 DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
   geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
   scale_color_manual(values = volcano1)  + 
@@ -106,7 +105,7 @@ DGvolcano
 pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
 plot(DGvolcano)
 dev.off()
-
+```
 
 # save DEGs
 DGvolcanoDEGs <- data %>%
@@ -145,7 +144,7 @@ data <- data %>%
                                     yes = "yoked_consistent", 
                                     no = "neither")))
 DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
   geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
   scale_color_manual(values = volcano2)  + 
@@ -189,7 +188,7 @@ data <- data %>%
                                     yes = "yoked_conflict", 
                                     no = "neither")))
 DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
   geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
   scale_color_manual(values = volcano4)  + 
@@ -232,7 +231,7 @@ data <- data %>%
                                     yes = "consistent", 
                                     no = "neither")))
 DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
   geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
   scale_color_manual(values = volcano2)  + 
@@ -411,7 +410,7 @@ data <- data %>%
 top_labelled <- top_n(data, n = 5, wt = lfc)
 
 CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
     theme_cowplot(font_size = 8, line_size = 0.25) +
   scale_color_manual(values = volcano1)  + 
   geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
@@ -474,7 +473,7 @@ top_labelled <- top_n(data, n = 5, wt = lfc)
 
 
 CA1volcano2 <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
   scale_color_manual(values = volcano3)  + 
   geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
@@ -514,7 +513,7 @@ data <- data %>%
                                     yes = "consistent", 
                                     no = "neither")))
 CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
   theme_cowplot(font_size = 8, line_size = 0.25) +
   geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
   scale_color_manual(values = volcano2)  + 

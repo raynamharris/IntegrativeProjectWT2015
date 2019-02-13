@@ -161,7 +161,7 @@ yoked-consistent.
                                         yes = "yoked_consistent", 
                                         no = "neither")))
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_color_manual(values = volcano1)  + 
@@ -172,9 +172,6 @@ yoked-consistent.
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
             panel.grid.major=element_blank())
-
-    ## Warning: Ignoring unknown aesthetics: direction
-
     DGvolcano
 
 ![](../figures/02c_rnaseqSubfield/DG-1.png)
@@ -186,401 +183,166 @@ yoked-consistent.
     ## quartz_off_screen 
     ##                 2
 
-    # save DEGs
-    DGvolcanoDEGs <- data %>%
-      filter(direction != "neither") %>%
-      arrange(desc(lfc))
-    head(DGvolcanoDEGs,10)
-
-    ##       gene    pvalue      lfc  direction
-    ## 1  Col10a1  3.528923 6.862672 consistent
-    ## 2   Lrrc32  2.010110 6.049415 consistent
-    ## 3    Thbs1  3.484719 5.491177 consistent
-    ## 4     Fzd5  5.829019 4.056544 consistent
-    ## 5    Nlrp3  3.033381 3.762818 consistent
-    ## 6     Ier3  1.799136 3.758436 consistent
-    ## 7    Npas4  3.656487 3.537464 consistent
-    ## 8    Smad7 12.470030 3.535876 consistent
-    ## 9    Nr4a3  1.953066 3.372927 consistent
-    ## 10    Rfx2  3.579003 3.356056 consistent
-
-    write.csv(DGvolcanoDEGs, "../data/DG-consistent-yokedconsistent.csv")
-
-    # are any protein kinases differentially expressed?
-    pkcs <- data[grep("Prkc", data$gene), ]
-    pkcs # no pkcs are differentially expressed
-
-    ##         gene       pvalue         lfc direction
-    ## 8139   Prkca 2.793108e-05 -0.06147923   neither
-    ## 8140   Prkcb 2.793108e-05 -0.23086376   neither
-    ## 8141   Prkcd 2.793108e-05 -1.74799258   neither
-    ## 8142 Prkcdbp 2.793108e-05  0.89326487   neither
-    ## 8143   Prkce 2.793108e-05 -0.08024100   neither
-    ## 8144   Prkcg 2.793108e-05 -0.35258124   neither
-    ## 8145   Prkci 2.793108e-05  0.14227925   neither
-    ## 8146  Prkcsh 2.793108e-05 -0.12210803   neither
-    ## 8147   Prkcz 2.793108e-05 -0.07894751   neither
-
-    ## go setup
-    table(res$padj<0.1)
-
-    ## 
-    ## FALSE  TRUE 
-    ## 12258   125
-
-    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
-    logs$logP=as.numeric(as.character(logs$logP))
-    sign <- rep(1,nrow(logs))
-    sign[res$log2FoldChange<0]=-1  ##change to correct model
-    table(sign)
-
-    ## sign
-    ##   -1    1 
-    ## 8853 8158
-
-    logs$logP <- logs$logP*sign
-    write.csv(logs, file = "./02e_GO_MWU/DGconsistentyoked.csv", row.names = F)
-
-    ## yoked yoked
-    res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-    summary(res)
-
-    ## 
-    ## out of 17011 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 3, 0.018%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 20, 0.12%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
-
-    ## log2 fold change (MLE): APA2 yoked_conflict vs yoked_consistent 
-    ## Wald test p-value: APA2 yoked_conflict vs yoked_consistent 
-    ## DataFrame with 10 rows and 6 columns
-    ##                baseMean   log2FoldChange             lfcSE
-    ##               <numeric>        <numeric>         <numeric>
-    ## Nlrp3  20.9424446578681 4.09843296366574  0.77923374127775
-    ## Kcnc2  22.0989714545398  4.0853572173812 0.828862390929107
-    ## Gm2115 18.9055674115327 3.48302773153726 0.740349228112595
-    ## Rnase4 15.5820343950564 3.55390988651979 0.842613820491949
-    ## Cxcl14 58.4698286328215 1.83345102740602 0.452447198842891
-    ## Sst    5.79777379074028 6.11617852820523  1.54412893086366
-    ## Cnr1   121.554806190537 3.88279836743752  1.00562221165236
-    ## Dner    48.134823231393 1.78996353992257 0.466270200246526
-    ## Itga5  18.4196792457967   2.978384440916 0.770052016771093
-    ## Myb    6.92940033536349 5.85347258329016  1.53376995782851
-    ##                    stat               pvalue                padj
-    ##               <numeric>            <numeric>           <numeric>
-    ## Nlrp3  5.25956814568287 1.44394111343109e-07 0.00245340034583077
-    ## Kcnc2    4.928872708052 8.27054357503709e-07 0.00702624029417276
-    ## Gm2115 4.70457400275367 2.54396579921199e-06  0.0144081742981369
-    ## Rnase4 4.21772085870238 2.46784058046291e-05   0.104827698256613
-    ## Cxcl14 4.05229832805898 5.07169366376427e-05   0.172346294082037
-    ## Sst    3.96092476862301 7.46600544114441e-05   0.211424830750808
-    ## Cnr1   3.86109049944074 0.000112882079380255   0.228300316931863
-    ## Dner   3.83889757264389 0.000123587970402978   0.228300316931863
-    ## Itga5  3.86777045712401 0.000109834980276631   0.228300316931863
-    ## Myb     3.8163953814674 0.000135415452559867   0.228300316931863
-
-    data <- data.frame(gene = row.names(res),
-                       pvalue = -log10(res$padj), 
-                       lfc = res$log2FoldChange)
-    data <- na.omit(data)
-    data <- data %>%
-      mutate(direction = ifelse(data$lfc > 1 & data$pvalue > 1, 
-                            yes = "yoked_conflict", 
-                            no = ifelse(data$lfc < -1 & data$pvalue > 1, 
-                                        yes = "yoked_consistent", 
-                                        no = "neither")))
-    DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-      theme_cowplot(font_size = 8, line_size = 0.25) +
-      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-      scale_color_manual(values = volcano2)  + 
-      scale_y_continuous(limits=c(0, 8)) +
-      scale_x_continuous( limits=c(-3, 3),
-                          name=NULL)+
-      ylab(paste0("log10 p-value")) +       
-      theme(panel.grid.minor=element_blank(),
-            legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
-
-    ## Warning: Ignoring unknown aesthetics: direction
-
-    DGvolcano
-
-![](../figures/02c_rnaseqSubfield/DG-2.png)
-
-    pdf(file="../figures/02c_rnaseqSubfield/DGvolcano2.pdf", width=1.5, height=2)
-    plot(DGvolcano)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    ## go setup
-    table(res$padj<0.1)
-
-    ## 
-    ## FALSE  TRUE 
-    ## 16988     3
-
-    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
-    logs$logP=as.numeric(as.character(logs$logP))
-    sign <- rep(1,nrow(logs))
-    sign[res$log2FoldChange<0]=-1  ##change to correct model
-    table(sign)
-
-    ## sign
-    ##   -1    1 
-    ## 7543 9468
-
-    logs$logP <- logs$logP*sign
-    write.csv(logs, file = "./02e_GO_MWU/DGyokedyoked.csv", row.names = F)
-
-
-    ##  "conflict", "yoked_conflict"
-    res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
-    summary(res)
-
-    ## 
-    ## out of 17011 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 8, 0.047%
-    ## LFC < 0 (down)     : 2, 0.012%
-    ## outliers [1]       : 20, 0.12%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
-
-    ## log2 fold change (MLE): APA2 conflict vs yoked_conflict 
-    ## Wald test p-value: APA2 conflict vs yoked_conflict 
-    ## DataFrame with 10 rows and 6 columns
-    ##                  baseMean    log2FoldChange             lfcSE
-    ##                 <numeric>         <numeric>         <numeric>
-    ## Rps12    18.1519752295379 -21.4660372235101  3.98668946399401
-    ## Smad7    171.392871064045  1.75395877649941 0.367789349169671
-    ## Dbpht2   179.735977990203  1.43077032426827  0.32133350449148
-    ## Insm1    9.54062645923209 -4.64275029977526  1.03675452742903
-    ## Slc16a1  51.2786850104172  1.93718965194453 0.446154808676806
-    ## Ankrd33b  209.87162559181  1.14655990310839 0.276132373178601
-    ## Nptx2    287.767100019705  1.36387651791528 0.326912129485928
-    ## Sgk1     341.089572273562  1.32296838420707  0.31899157276228
-    ## Fzd5     26.8401177227407  2.51256156493201 0.616467582890519
-    ## Acan     50.8597490321187  1.57030753918313 0.390249971345474
-    ##                       stat               pvalue               padj
-    ##                  <numeric>            <numeric>          <numeric>
-    ## Rps12    -5.38442670726719 7.26759094316345e-08 0.0012348363771529
-    ## Smad7     4.76892215736857 1.85214205533671e-06 0.0157348728311131
-    ## Dbpht2    4.45260237189555 8.48357704857436e-06 0.0360361144080817
-    ## Insm1    -4.47815772870406  7.5289965568597e-06 0.0360361144080817
-    ## Slc16a1     4.341967438813 1.41212464833709e-05  0.047986819799791
-    ## Ankrd33b  4.15221109321652 3.29278313316402e-05 0.0714369056620668
-    ## Nptx2     4.17199728887387 3.01941230562506e-05 0.0714369056620668
-    ## Sgk1      4.14734587735638 3.36351742273282e-05 0.0714369056620668
-    ## Fzd5       4.0757399653539 4.58682534733302e-05 0.0865941660850393
-    ## Acan        4.023850491953 5.72542716941817e-05 0.0972807330355842
-
-    data <- data.frame(gene = row.names(res),
-                       pvalue = -log10(res$padj), 
-                       lfc = res$log2FoldChange)
-    data <- na.omit(data)
-    data <- data %>%
-      mutate(direction = ifelse(data$lfc > 1 & data$pvalue > 1, 
-                            yes = "conflict", 
-                            no = ifelse(data$lfc < -1 & data$pvalue > 1, 
-                                        yes = "yoked_conflict", 
-                                        no = "neither")))
-    DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-      theme_cowplot(font_size = 8, line_size = 0.25) +
-      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-      scale_color_manual(values = volcano4)  + 
-      scale_y_continuous(limits=c(0, 8)) +
-      scale_x_continuous( limits=c(-3, 3),
-                          name=NULL)+
-      ylab(paste0("log10 p-value")) +       
-      theme(panel.grid.minor=element_blank(),
-            legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
-
-    ## Warning: Ignoring unknown aesthetics: direction
-
-    DGvolcano
-
-![](../figures/02c_rnaseqSubfield/DG-3.png)
-
-    pdf(file="../figures/02c_rnaseqSubfield/DGvolcano3.pdf", width=1.5, height=2)
-    plot(DGvolcano)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    ## go setup
-    table(res$padj<0.1)
-
-    ## 
-    ## FALSE  TRUE 
-    ## 16981    10
-
-    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
-    logs$logP=as.numeric(as.character(logs$logP))
-    sign <- rep(1,nrow(logs))
-    sign[res$log2FoldChange<0]=-1  ##change to correct model
-    table(sign)
-
-    ## sign
-    ##   -1    1 
-    ## 9674 7337
-
-    logs$logP <- logs$logP*sign
-    write.csv(logs, file = "./02e_GO_MWU/DGconflictyoked.csv", row.names = F)
-
-    #### "conflict", "consistent"
-    res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
-    summary(res)
-
-    ## 
-    ## out of 17011 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 1, 0.0059%
-    ## outliers [1]       : 20, 0.12%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-
-    resOrdered <- res[order(res$padj),]
-    head(resOrdered, 10)
-
-    ## log2 fold change (MLE): APA2 conflict vs consistent 
-    ## Wald test p-value: APA2 conflict vs consistent 
-    ## DataFrame with 10 rows and 6 columns
-    ##                       baseMean      log2FoldChange             lfcSE
-    ##                      <numeric>           <numeric>         <numeric>
-    ## Rps12         18.1519752295379   -20.9602515412509  4.31657511842665
-    ## 0610007P14Rik 41.0311096797814  -0.147853585358429 0.401936989088285
-    ## 0610009B22Rik 8.74131849081542  -0.757911677387021 0.749958107311731
-    ## 0610009L18Rik 2.61860548764425   0.604880308193334  1.47685825843458
-    ## 0610009O20Rik 48.3693444464377   0.245771257518523 0.338998927574654
-    ## 0610010F05Rik 60.2560857800178  -0.366265579236547 0.337328940633006
-    ## 0610010K14Rik 21.0476159827708   0.408843299351544 0.633957053036292
-    ## 0610012G03Rik 54.2812123171702   0.107773629510678 0.399888012498432
-    ## 0610030E20Rik 44.9946840589216 -0.0960001442131723 0.418155894506165
-    ## 0610037L13Rik  88.714181322051   0.113994422485766 0.427197151641241
-    ##                             stat               pvalue               padj
-    ##                        <numeric>            <numeric>          <numeric>
-    ## Rps12          -4.85575970907479 1.19926058988033e-06 0.0203766366826567
-    ## 0610007P14Rik -0.367852646987792    0.712983110459147  0.999877921572714
-    ## 0610009B22Rik  -1.01060535248269    0.312205353000397  0.999877921572714
-    ## 0610009L18Rik  0.409572350453244    0.682119683062293  0.999877921572714
-    ## 0610009O20Rik  0.724991253738995    0.468457396118792  0.999877921572714
-    ## 0610010F05Rik  -1.08578166625502    0.277575599518543  0.999877921572714
-    ## 0610010K14Rik  0.644906933984594    0.518987497960177  0.999877921572714
-    ## 0610012G03Rik  0.269509528023425    0.787537611086085  0.999877921572714
-    ## 0610030E20Rik -0.229579794221355    0.818418309399155  0.999877921572714
-    ## 0610037L13Rik  0.266842655780387    0.789590310071293  0.999877921572714
-
-    data <- data.frame(gene = row.names(res),
-                       pvalue = -log10(res$padj), 
-                       lfc = res$log2FoldChange)
-    data <- na.omit(data)
-    data <- data %>%
-      mutate(direction = ifelse(data$lfc > 1 & data$pvalue > 1, 
-                            yes = "conflict", 
-                            no = ifelse(data$lfc < -1 & data$pvalue > 1, 
-                                        yes = "consistent", 
-                                        no = "neither")))
-    DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-      theme_cowplot(font_size = 8, line_size = 0.25) +
-      geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-      scale_color_manual(values = volcano2)  + 
-      scale_y_continuous(limits=c(0, 8)) +
-      scale_x_continuous( limits=c(-3, 3),
-                          name=NULL)+
-      ylab(paste0("log10 p-value")) +       
-      theme(panel.grid.minor=element_blank(),
-            legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
-
-    ## Warning: Ignoring unknown aesthetics: direction
-
-    DGvolcano
-
-![](../figures/02c_rnaseqSubfield/DG-4.png)
-
-    pdf(file="../figures/02c_rnaseqSubfield/DGvolcano4.pdf", width=1.5, height=2)
-    plot(DGvolcano)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    ## go setup
-    table(res$padj<0.1)
-
-    ## 
-    ## FALSE  TRUE 
-    ## 16990     1
-
-    logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
-    logs$logP=as.numeric(as.character(logs$logP))
-    sign <- rep(1,nrow(logs))
-    sign[res$log2FoldChange<0]=-1  ##change to correct model
-    table(sign)
-
-    ## sign
-    ##   -1    1 
-    ## 8670 8341
-
-    logs$logP <- logs$logP*sign
-    write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
-
-    ## plot of pkmz
-    plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
-
-![](../figures/02c_rnaseqSubfield/DG-5.png)
-
-    # order results table by the smallest adjusted p value:
-    res <- res[order(res$padj),]
-
-    results = as.data.frame(dplyr::mutate(as.data.frame(res), sig=ifelse(res$padj<0.05, "FDR<0.05", "Not Sig")), row.names=rownames(res))
-    head(results)
-
-    ##                baseMean log2FoldChange     lfcSE       stat       pvalue
-    ## Rps12         18.151975    -20.9602515 4.3165751 -4.8557597 1.199261e-06
-    ## 0610007P14Rik 41.031110     -0.1478536 0.4019370 -0.3678526 7.129831e-01
-    ## 0610009B22Rik  8.741318     -0.7579117 0.7499581 -1.0106054 3.122054e-01
-    ## 0610009L18Rik  2.618605      0.6048803 1.4768583  0.4095724 6.821197e-01
-    ## 0610009O20Rik 48.369344      0.2457713 0.3389989  0.7249913 4.684574e-01
-    ## 0610010F05Rik 60.256086     -0.3662656 0.3373289 -1.0857817 2.775756e-01
-    ##                     padj      sig
-    ## Rps12         0.02037664 FDR<0.05
-    ## 0610007P14Rik 0.99987792  Not Sig
-    ## 0610009B22Rik 0.99987792  Not Sig
-    ## 0610009L18Rik 0.99987792  Not Sig
-    ## 0610009O20Rik 0.99987792  Not Sig
-    ## 0610010F05Rik 0.99987792  Not Sig
-
-    ## [1] 125
-
-    ## [1] 10
-
-    ## [1] 1
-
-    ## [1] 3
+save DEGs
+=========
+
+DGvolcanoDEGs &lt;- data %&gt;% filter(direction != “neither”) %&gt;%
+arrange(desc(lfc)) head(DGvolcanoDEGs,10) write.csv(DGvolcanoDEGs,
+“../data/DG-consistent-yokedconsistent.csv”)
+
+are any protein kinases differentially expressed?
+=================================================
+
+pkcs &lt;- data\[grep(“Prkc”, data$gene), \] pkcs \# no pkcs are
+differentially expressed
+
+go setup
+--------
+
+table(res$padj&lt;0.1) logs &lt;- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs*l**o**g**P* = *a**s*.*n**u**m**e**r**i**c*(*a**s*.*c**h**a**r**a**c**t**e**r*(*l**o**g**s*logP))
+sign &lt;- rep(1,nrow(logs)) sign\[res$log2FoldChange&lt;0\]=-1
+\#\#change to correct model table(sign)
+logs*l**o**g**P* &lt;  − *l**o**g**s*logP\*sign write.csv(logs, file =
+“./02e\_GO\_MWU/DGconsistentyoked.csv”, row.names = F)
+
+yoked yoked
+-----------
+
+res &lt;- results(dds, contrast =c(“APA2”, “yoked\_conflict”,
+“yoked\_consistent”), independentFiltering = T, alpha = 0.1)
+summary(res) resOrdered &lt;- res\[order(res$padj),\] head(resOrdered,
+10) data &lt;- data.frame(gene = row.names(res), pvalue =
+-log10(res*p**a**d**j*), *l**f**c* = *r**e**s*log2FoldChange) data &lt;-
+na.omit(data) data &lt;- data %&gt;% mutate(direction =
+ifelse(data$lfc &gt; 1 & data$pvalue &gt; 1, yes = “yoked\_conflict”, no
+= ifelse(data$lfc &lt; -1 & data$pvalue &gt; 1, yes =
+“yoked\_consistent”, no = “neither”))) DGvolcano &lt;- ggplot(data,
+aes(x = lfc, y = pvalue)) + geom\_point(aes(color = factor(direction)),
+size = 1, alpha = 0.5, na.rm = T) + \# add gene points
+theme\_cowplot(font\_size = 8, line\_size = 0.25) +
+geom\_hline(yintercept = 1, size = 0.25, linetype = 2) +
+scale\_color\_manual(values = volcano2) +
+scale\_y\_continuous(limits=c(0, 8)) + scale\_x\_continuous(
+limits=c(-3, 3), name=NULL)+ ylab(paste0(“log10 p-value”)) +  
+theme(panel.grid.minor=element\_blank(), legend.position = “none”, \#
+remove legend panel.grid.major=element\_blank()) DGvolcano
+
+pdf(file=“../figures/02c\_rnaseqSubfield/DGvolcano2.pdf”, width=1.5,
+height=2) plot(DGvolcano) dev.off()
+
+go setup
+--------
+
+table(res$padj&lt;0.1) logs &lt;- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs*l**o**g**P* = *a**s*.*n**u**m**e**r**i**c*(*a**s*.*c**h**a**r**a**c**t**e**r*(*l**o**g**s*logP))
+sign &lt;- rep(1,nrow(logs)) sign\[res$log2FoldChange&lt;0\]=-1
+\#\#change to correct model table(sign)
+logs*l**o**g**P* &lt;  − *l**o**g**s*logP\*sign write.csv(logs, file =
+“./02e\_GO\_MWU/DGyokedyoked.csv”, row.names = F)
+
+“conflict”, “yoked\_conflict”
+-----------------------------
+
+res &lt;- results(dds, contrast =c(“APA2”, “conflict”,
+“yoked\_conflict”), independentFiltering = T, alpha = 0.1) summary(res)
+resOrdered &lt;- res\[order(res$padj),\] head(resOrdered, 10) data &lt;-
+data.frame(gene = row.names(res), pvalue =
+-log10(res*p**a**d**j*), *l**f**c* = *r**e**s*log2FoldChange) data &lt;-
+na.omit(data) data &lt;- data %&gt;% mutate(direction =
+ifelse(data$lfc &gt; 1 & data$pvalue &gt; 1, yes = “conflict”, no =
+ifelse(data$lfc &lt; -1 & data$pvalue &gt; 1, yes = “yoked\_conflict”,
+no = “neither”))) DGvolcano &lt;- ggplot(data, aes(x = lfc, y = pvalue))
++ geom\_point(aes(color = factor(direction)), size = 1, alpha = 0.5,
+na.rm = T) + \# add gene points theme\_cowplot(font\_size = 8,
+line\_size = 0.25) + geom\_hline(yintercept = 1, size = 0.25, linetype =
+2) + scale\_color\_manual(values = volcano4) +
+scale\_y\_continuous(limits=c(0, 8)) + scale\_x\_continuous(
+limits=c(-3, 3), name=NULL)+ ylab(paste0(“log10 p-value”)) +  
+theme(panel.grid.minor=element\_blank(), legend.position = “none”, \#
+remove legend panel.grid.major=element\_blank()) DGvolcano
+
+pdf(file=“../figures/02c\_rnaseqSubfield/DGvolcano3.pdf”, width=1.5,
+height=2) plot(DGvolcano) dev.off()
+
+go setup
+--------
+
+table(res$padj&lt;0.1) logs &lt;- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs*l**o**g**P* = *a**s*.*n**u**m**e**r**i**c*(*a**s*.*c**h**a**r**a**c**t**e**r*(*l**o**g**s*logP))
+sign &lt;- rep(1,nrow(logs)) sign\[res$log2FoldChange&lt;0\]=-1
+\#\#change to correct model table(sign)
+logs*l**o**g**P* &lt;  − *l**o**g**s*logP\*sign write.csv(logs, file =
+“./02e\_GO\_MWU/DGconflictyoked.csv”, row.names = F)
+
+#### “conflict”, “consistent”
+
+res &lt;- results(dds, contrast =c(“APA2”, “conflict”, “consistent”),
+independentFiltering = T, alpha = 0.1) summary(res) resOrdered &lt;-
+res\[order(res$padj),\] head(resOrdered, 10) data &lt;- data.frame(gene
+= row.names(res), pvalue =
+-log10(res*p**a**d**j*), *l**f**c* = *r**e**s*log2FoldChange) data &lt;-
+na.omit(data) data &lt;- data %&gt;% mutate(direction =
+ifelse(data$lfc &gt; 1 & data$pvalue &gt; 1, yes = “conflict”, no =
+ifelse(data$lfc &lt; -1 & data$pvalue &gt; 1, yes = “consistent”, no =
+“neither”))) DGvolcano &lt;- ggplot(data, aes(x = lfc, y = pvalue)) +
+geom\_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm
+= T) + \# add gene points theme\_cowplot(font\_size = 8, line\_size =
+0.25) + geom\_hline(yintercept = 1, size = 0.25, linetype = 2) +
+scale\_color\_manual(values = volcano2) +
+scale\_y\_continuous(limits=c(0, 8)) + scale\_x\_continuous(
+limits=c(-3, 3), name=NULL)+ ylab(paste0(“log10 p-value”)) +  
+theme(panel.grid.minor=element\_blank(), legend.position = “none”, \#
+remove legend panel.grid.major=element\_blank()) DGvolcano
+
+pdf(file=“../figures/02c\_rnaseqSubfield/DGvolcano4.pdf”, width=1.5,
+height=2) plot(DGvolcano) dev.off()
+
+go setup
+--------
+
+table(res$padj&lt;0.1) logs &lt;- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
+logs*l**o**g**P* = *a**s*.*n**u**m**e**r**i**c*(*a**s*.*c**h**a**r**a**c**t**e**r*(*l**o**g**s*logP))
+sign &lt;- rep(1,nrow(logs)) sign\[res$log2FoldChange&lt;0\]=-1
+\#\#change to correct model table(sign)
+logs*l**o**g**P* &lt;  − *l**o**g**s*logP\*sign write.csv(logs, file =
+“./02e\_GO\_MWU/DGconflictconsistent.csv”, row.names = F)
+
+plot of pkmz
+------------
+
+plotCounts(dds, “Prkcz”, intgroup = “APA2”, normalized = TRUE,
+main=“Prkcz in DG”)
+
+order results table by the smallest adjusted p value:
+=====================================================
+
+res &lt;- res\[order(res$padj),\]
+
+results = as.data.frame(dplyr::mutate(as.data.frame(res),
+sig=ifelse(res$padj&lt;0.05, “FDR&lt;0.05”, “Not Sig”)),
+row.names=rownames(res)) head(results)
+
+
+
+
+
+
+
+
+\[1\] 125
+---------
+
+\[1\] 10
+--------
+
+\[1\] 1
+-------
+
+\[1\] 3
+-------
+
+\`\`\`
 
 ![](../figures/02c_rnaseqSubfield/DGvenndiagrams-1.png)
 
@@ -837,7 +599,7 @@ Two comparisons within CA1 are noteable
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
     CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
         theme_cowplot(font_size = 8, line_size = 0.25) +
       scale_color_manual(values = volcano1)  + 
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
@@ -981,7 +743,7 @@ Two comparisons within CA1 are noteable
 
 
     CA1volcano2 <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
       scale_color_manual(values = volcano3)  + 
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
@@ -1080,7 +842,7 @@ Two comparisons within CA1 are noteable
                                         yes = "consistent", 
                                         no = "neither")))
     CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_color_manual(values = volcano2)  + 
