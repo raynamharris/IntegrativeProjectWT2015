@@ -155,13 +155,13 @@ yoked-consistent.
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
     data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+      mutate(direction = ifelse(data$lfc > 1 & data$pvalue > 1, 
                             yes = "consistent", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                            no = ifelse(data$lfc < -1 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
                                         no = "neither")))
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_color_manual(values = volcano1)  + 
@@ -172,6 +172,9 @@ yoked-consistent.
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
             panel.grid.major=element_blank())
+
+    ## Warning: Ignoring unknown aesthetics: direction
+
     DGvolcano
 
 ![](../figures/02c_rnaseqSubfield/DG-1.png)
@@ -183,20 +186,40 @@ yoked-consistent.
     ## quartz_off_screen 
     ##                 2
 
+    # save DEGs
+    DGvolcanoDEGs <- data %>%
+      filter(direction != "neither") %>%
+      arrange(desc(lfc))
+    head(DGvolcanoDEGs,10)
+
+    ##       gene    pvalue      lfc  direction
+    ## 1  Col10a1  3.528923 6.862672 consistent
+    ## 2   Lrrc32  2.010110 6.049415 consistent
+    ## 3    Thbs1  3.484719 5.491177 consistent
+    ## 4     Fzd5  5.829019 4.056544 consistent
+    ## 5    Nlrp3  3.033381 3.762818 consistent
+    ## 6     Ier3  1.799136 3.758436 consistent
+    ## 7    Npas4  3.656487 3.537464 consistent
+    ## 8    Smad7 12.470030 3.535876 consistent
+    ## 9    Nr4a3  1.953066 3.372927 consistent
+    ## 10    Rfx2  3.579003 3.356056 consistent
+
+    write.csv(DGvolcanoDEGs, "../data/DG-consistent-yokedconsistent.csv")
+
     # are any protein kinases differentially expressed?
     pkcs <- data[grep("Prkc", data$gene), ]
     pkcs # no pkcs are differentially expressed
 
-    ##         gene       pvalue         lfc   color
-    ## 8139   Prkca 2.793108e-05 -0.06147923 neither
-    ## 8140   Prkcb 2.793108e-05 -0.23086376 neither
-    ## 8141   Prkcd 2.793108e-05 -1.74799258 neither
-    ## 8142 Prkcdbp 2.793108e-05  0.89326487 neither
-    ## 8143   Prkce 2.793108e-05 -0.08024100 neither
-    ## 8144   Prkcg 2.793108e-05 -0.35258124 neither
-    ## 8145   Prkci 2.793108e-05  0.14227925 neither
-    ## 8146  Prkcsh 2.793108e-05 -0.12210803 neither
-    ## 8147   Prkcz 2.793108e-05 -0.07894751 neither
+    ##         gene       pvalue         lfc direction
+    ## 8139   Prkca 2.793108e-05 -0.06147923   neither
+    ## 8140   Prkcb 2.793108e-05 -0.23086376   neither
+    ## 8141   Prkcd 2.793108e-05 -1.74799258   neither
+    ## 8142 Prkcdbp 2.793108e-05  0.89326487   neither
+    ## 8143   Prkce 2.793108e-05 -0.08024100   neither
+    ## 8144   Prkcg 2.793108e-05 -0.35258124   neither
+    ## 8145   Prkci 2.793108e-05  0.14227925   neither
+    ## 8146  Prkcsh 2.793108e-05 -0.12210803   neither
+    ## 8147   Prkcz 2.793108e-05 -0.07894751   neither
 
     ## go setup
     table(res$padj<0.1)
@@ -269,13 +292,13 @@ yoked-consistent.
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
     data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+      mutate(direction = ifelse(data$lfc > 1 & data$pvalue > 1, 
                             yes = "yoked_conflict", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                            no = ifelse(data$lfc < -1 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
                                         no = "neither")))
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_color_manual(values = volcano2)  + 
@@ -286,6 +309,9 @@ yoked-consistent.
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
             panel.grid.major=element_blank())
+
+    ## Warning: Ignoring unknown aesthetics: direction
+
     DGvolcano
 
 ![](../figures/02c_rnaseqSubfield/DG-2.png)
@@ -369,13 +395,13 @@ yoked-consistent.
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
     data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+      mutate(direction = ifelse(data$lfc > 1 & data$pvalue > 1, 
                             yes = "conflict", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                            no = ifelse(data$lfc < -1 & data$pvalue > 1, 
                                         yes = "yoked_conflict", 
                                         no = "neither")))
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_color_manual(values = volcano4)  + 
@@ -386,6 +412,9 @@ yoked-consistent.
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
             panel.grid.major=element_blank())
+
+    ## Warning: Ignoring unknown aesthetics: direction
+
     DGvolcano
 
 ![](../figures/02c_rnaseqSubfield/DG-3.png)
@@ -468,13 +497,13 @@ yoked-consistent.
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
     data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+      mutate(direction = ifelse(data$lfc > 1 & data$pvalue > 1, 
                             yes = "conflict", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                            no = ifelse(data$lfc < -1 & data$pvalue > 1, 
                                         yes = "consistent", 
                                         no = "neither")))
     DGvolcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_color_manual(values = volcano2)  + 
@@ -485,6 +514,9 @@ yoked-consistent.
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
             panel.grid.major=element_blank())
+
+    ## Warning: Ignoring unknown aesthetics: direction
+
     DGvolcano
 
 ![](../figures/02c_rnaseqSubfield/DG-4.png)
@@ -797,16 +829,15 @@ Two comparisons within CA1 are noteable
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
     data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+      mutate(direction = ifelse(data$lfc > 1 & data$pvalue > 1, 
                             yes = "consistent", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                            no = ifelse(data$lfc < -1 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
                                         no = "neither")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
-
     CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
         theme_cowplot(font_size = 8, line_size = 0.25) +
       scale_color_manual(values = volcano1)  + 
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
@@ -827,6 +858,26 @@ Two comparisons within CA1 are noteable
 
     ## quartz_off_screen 
     ##                 2
+
+    # save DEGs
+    CA1volcanoDEGs <- data %>%
+      filter(direction != "neither") %>%
+      arrange(desc(lfc))
+    head(CA1volcanoDEGs,10)
+
+    ##       gene   pvalue      lfc  direction
+    ## 1    Srprb 2.032934 6.362542 consistent
+    ## 2   Zfp536 1.770289 6.278678 consistent
+    ## 3    Ahnak 1.715151 6.183278 consistent
+    ## 4    Uvssa 1.628075 6.091268 consistent
+    ## 5  Gm43951 1.702408 6.014951 consistent
+    ## 6     Vcan 1.738275 5.994322 consistent
+    ## 7    Pex26 1.596528 5.857468 consistent
+    ## 8    Med26 1.518925 5.805185 consistent
+    ## 9  Gm16485 1.451045 5.797461 consistent
+    ## 10  Adgrf5 1.544135 5.791507 consistent
+
+    write.csv(CA1volcanoDEGs, "../data/CA1-consistent-yokedconsistent.csv")
 
     ## go setup
     table(res$padj<0.1)
@@ -921,16 +972,16 @@ Two comparisons within CA1 are noteable
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
     data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+      mutate(direction = ifelse(data$lfc > 1 & data$pvalue > 1, 
                             yes = "yoked_conflict", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                            no = ifelse(data$lfc < -1 & data$pvalue > 1, 
                                         yes = "yoked_consistent", 
                                         no = "neither")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
 
     CA1volcano2 <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
       scale_color_manual(values = volcano3)  + 
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
@@ -951,6 +1002,27 @@ Two comparisons within CA1 are noteable
 
     ## quartz_off_screen 
     ##                 2
+
+    # save DEGs
+    CA1volcano2DEGs <- data %>%
+      filter(direction != "neither") %>%
+      arrange(desc(lfc))
+    head(CA1volcano2DEGs,10)
+
+    ##       gene   pvalue      lfc      direction
+    ## 1    Srprb 2.598051 6.962723 yoked_conflict
+    ## 2   Adgrf5 1.841819 6.323867 yoked_conflict
+    ## 3    Ahnak 1.841819 6.288004 yoked_conflict
+    ## 4   Fndc10 1.841819 6.187727 yoked_conflict
+    ## 5  Slco1a4 1.754914 6.093251 yoked_conflict
+    ## 6  Ppfibp1 1.499186 6.031033 yoked_conflict
+    ## 7     Optn 1.380954 6.025644 yoked_conflict
+    ## 8   Rnf207 1.404354 5.934581 yoked_conflict
+    ## 9     Mdc1 1.691825 5.901609 yoked_conflict
+    ## 10    Epyc 1.389620 5.895348 yoked_conflict
+
+    write.csv(CA1volcano2DEGs, "../data/CA1-yokedconflict-yokedconsistent.csv")
+
 
     res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -1002,13 +1074,13 @@ Two comparisons within CA1 are noteable
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
     data <- data %>%
-      mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1, 
+      mutate(direction = ifelse(data$lfc > 1 & data$pvalue > 1, 
                             yes = "conflict", 
-                            no = ifelse(data$lfc < 0 & data$pvalue > 1, 
+                            no = ifelse(data$lfc < -1 & data$pvalue > 1, 
                                         yes = "consistent", 
                                         no = "neither")))
     CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-      geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
+      geom_point(aes(direction = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_color_manual(values = volcano2)  + 
