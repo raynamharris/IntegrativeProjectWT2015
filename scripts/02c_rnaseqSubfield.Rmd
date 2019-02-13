@@ -68,34 +68,12 @@ vsd <- getVarianceStabilizedData(dds)
 write.csv(colData, file = "../data/02c_DGcolData.csv", row.names = T)
 write.csv(vsd, file = "../data/02c_DGvsd.csv", row.names = T)
 
-# create the dataframe using my function pcadataframe
-pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
-percentVar <- round(100 * attr(pcadata, "percentVar"))
-percentVar
-
-summary(aov(PC1 ~ APA2, data=pcadata)) 
-TukeyHSD((aov(PC1 ~ APA2, data=pcadata)) , which = "APA2") 
-
-summary(aov(PC2 ~ APA2, data=pcadata)) 
-TukeyHSD((aov(PC2 ~ APA2, data=pcadata)), which = "APA2") 
-
-summary(aov(PC3 ~ APA2, data=pcadata)) 
-
-summary(aov(PC4 ~ APA2, data=pcadata)) 
-
-pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-pcadata$wrap <- "Principle Compent Analysis"
-
 contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 125
 contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 10
 contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1
 contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 3
 ```
 
-```{r DGanova, results='asis'}
-aov(PC1 ~ APA2, data=pcadata)
-summary(aov(PC1 ~ APA2, data=pcadata))
-```
 
 ```{r DG}
 
@@ -345,22 +323,6 @@ dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
 
-# create the dataframe using my function pcadataframe
-pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
-percentVar <- round(100 * attr(pcadata, "percentVar"))
-percentVar
-
-summary(aov(PC1 ~ APA2, data=pcadata))
-summary(aov(PC2 ~ APA2, data=pcadata))
-summary(aov(PC3 ~ APA2, data=pcadata))
-summary(aov(PC4 ~ APA2, data=pcadata))
-summary(aov(PC5 ~ APA2, data=pcadata))
-summary(aov(PC6 ~ APA2, data=pcadata))
-
-pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-pcadata$wrap <- "Principle Compent Analysis"
-
- 
 #calculate significance of all two way comparisions
 # see source "functions_RNAseq.R" 
 contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 0
@@ -371,6 +333,7 @@ contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consist
 
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
+
 res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
 summary(res)
 
@@ -427,19 +390,6 @@ dds <- DESeq(dds) # Differential expression analysis
 rld <- rlog(dds, blind=FALSE) ## log transformed data
 
 
-# PCA analysis
-pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
-percentVar <- round(100 * attr(pcadata, "percentVar"))
-percentVar
-summary(aov(PC1 ~ APA2, data=pcadata)) 
-TukeyHSD((aov(PC1 ~ APA2, data=pcadata)), which = "APA2") 
-summary(aov(PC2 ~ APA2, data=pcadata)) 
-TukeyHSD((aov(PC2 ~ APA2, data=pcadata)) , which = "APA2") 
-summary(aov(PC3 ~ APA2, data=pcadata))
-summary(aov(PC4 ~ APA2, data=pcadata))
-
-pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
 resOrdered <- res[order(res$padj),]
@@ -460,8 +410,6 @@ data <- data %>%
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 
-pcadata$wrap <- "CA1 PCA"
-data$wrap <- "CA1 contrasts"
 
 CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
@@ -491,6 +439,10 @@ table(sign)
 logs$logP <- logs$logP*sign
 write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
 
+#conflict yoked conflict
+
+res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
+summary(res)
 
 # volcano plots
 
@@ -514,8 +466,6 @@ data <- data %>%
                                     no = "none")))
 top_labelled <- top_n(data, n = 5, wt = lfc)
 
-pcadata$wrap <- "CA1 PCA"
-data$wrap <- "CA1 contrasts"
 
 CA1volcano2 <- ggplot(data, aes(x = lfc, y = pvalue)) + 
   geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points

@@ -104,74 +104,6 @@ yoked-consistent.
     write.csv(colData, file = "../data/02c_DGcolData.csv", row.names = T)
     write.csv(vsd, file = "../data/02c_DGvsd.csv", row.names = T)
 
-    # create the dataframe using my function pcadataframe
-    pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
-    percentVar <- round(100 * attr(pcadata, "percentVar"))
-    percentVar
-
-    ## [1] 36 19 14  6  5  4  3  2  2
-
-    summary(aov(PC1 ~ APA2, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  770.4   256.8   2.377  0.121
-    ## Residuals   12 1296.1   108.0
-
-    TukeyHSD((aov(PC1 ~ APA2, data=pcadata)) , which = "APA2") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC1 ~ APA2, data = pcadata)
-    ## 
-    ## $APA2
-    ##                                       diff        lwr      upr     p adj
-    ## consistent-conflict             -2.4140068 -24.947655 20.11964 0.9883016
-    ## yoked_conflict-conflict         13.2885919  -7.409886 33.98707 0.2760740
-    ## yoked_consistent-conflict       12.4321355  -8.266342 33.13061 0.3271831
-    ## yoked_conflict-consistent       15.7025987  -7.863655 39.26885 0.2489245
-    ## yoked_consistent-consistent     14.8461423  -8.720111 38.41240 0.2903015
-    ## yoked_consistent-yoked_conflict -0.8564564 -22.674567 20.96165 0.9994006
-
-    summary(aov(PC2 ~ APA2, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA2         3  577.2  192.39   4.576 0.0234 *
-    ## Residuals   12  504.6   42.05                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    TukeyHSD((aov(PC2 ~ APA2, data=pcadata)), which = "APA2") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC2 ~ APA2, data = pcadata)
-    ## 
-    ## $APA2
-    ##                                       diff        lwr        upr     p adj
-    ## consistent-conflict               4.754257  -9.305023 18.8135366 0.7501500
-    ## yoked_conflict-conflict          -1.982875 -14.897148 10.9313986 0.9671941
-    ## yoked_consistent-conflict       -12.343148 -25.257421  0.5711251 0.0626549
-    ## yoked_conflict-consistent        -6.737131 -21.440678  7.9664156 0.5452218
-    ## yoked_consistent-consistent     -17.097405 -31.800952 -2.3938579 0.0215230
-    ## yoked_consistent-yoked_conflict -10.360274 -23.973113  3.2525657 0.1625913
-
-    summary(aov(PC3 ~ APA2, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  203.8   67.93   1.328  0.311
-    ## Residuals   12  613.8   51.15
-
-    summary(aov(PC4 ~ APA2, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  51.92   17.31   0.722  0.558
-    ## Residuals   12 287.69   23.97
-
-    pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-    pcadata$wrap <- "Principle Compent Analysis"
-
     contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 125
 
     ## [1] 125
@@ -187,21 +119,6 @@ yoked-consistent.
     contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 3
 
     ## [1] 3
-
-    aov(PC1 ~ APA2, data=pcadata)
-
-Call: aov(formula = PC1 ~ APA2, data = pcadata)
-
-Terms: APA2 Residuals Sum of Squares 770.3622 1296.1464 Deg. of Freedom
-3 12
-
-Residual standard error: 10.39289 Estimated effects may be unbalanced
-
-    summary(aov(PC1 ~ APA2, data=pcadata))
-
-            Df Sum Sq Mean Sq F value Pr(>F)
-
-APA2 3 770.4 256.8 2.377 0.121 Residuals 12 1296.1 108.0
 
     ###  "consistent", "yoked_consistent"
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
@@ -697,55 +614,6 @@ for the manuscript.
     dds <- DESeq(dds) # Differential expression analysis
     rld <- rlog(dds, blind=FALSE) ## log transformed data
 
-    # create the dataframe using my function pcadataframe
-    pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
-    percentVar <- round(100 * attr(pcadata, "percentVar"))
-    percentVar
-
-    ## [1] 46 13 10  7  6  3  3  3  3
-
-    summary(aov(PC1 ~ APA2, data=pcadata))
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  259.8   86.60   1.152   0.38
-    ## Residuals    9  676.5   75.17
-
-    summary(aov(PC2 ~ APA2, data=pcadata))
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  25.97   8.657   0.327  0.806
-    ## Residuals    9 238.34  26.482
-
-    summary(aov(PC3 ~ APA2, data=pcadata))
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   6.53   2.177   0.097   0.96
-    ## Residuals    9 202.00  22.444
-
-    summary(aov(PC4 ~ APA2, data=pcadata))
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA2         3  100.9   33.63   6.331 0.0134 *
-    ## Residuals    9   47.8    5.31                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    summary(aov(PC5 ~ APA2, data=pcadata))
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  30.88  10.295   1.127  0.389
-    ## Residuals    9  82.23   9.137
-
-    summary(aov(PC6 ~ APA2, data=pcadata))
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  18.64   6.212   1.102  0.398
-    ## Residuals    9  50.74   5.638
-
-    pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-    pcadata$wrap <- "Principle Compent Analysis"
-
-     
     #calculate significance of all two way comparisions
     # see source "functions_RNAseq.R" 
     contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) # 0
@@ -900,73 +768,6 @@ Two comparisons within CA1 are noteable
     rld <- rlog(dds, blind=FALSE) ## log transformed data
 
 
-    # PCA analysis
-    pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
-    percentVar <- round(100 * attr(pcadata, "percentVar"))
-    percentVar
-
-    ## [1] 35 23 10  8  5  4  3  3  2
-
-    summary(aov(PC1 ~ APA2, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  356.8  118.93   2.047  0.166
-    ## Residuals   11  639.2   58.11
-
-    TukeyHSD((aov(PC1 ~ APA2, data=pcadata)), which = "APA2") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC1 ~ APA2, data = pcadata)
-    ## 
-    ## $APA2
-    ##                                      diff        lwr      upr     p adj
-    ## consistent-conflict              1.511888 -14.710579 17.73436 0.9918574
-    ## yoked_conflict-conflict          6.901885  -8.488099 22.29187 0.5530182
-    ## yoked_consistent-conflict       14.788355  -5.080029 34.65674 0.1722251
-    ## yoked_conflict-consistent        5.389996  -9.999988 20.77998 0.7227678
-    ## yoked_consistent-consistent     13.276466  -6.591918 33.14485 0.2416285
-    ## yoked_consistent-yoked_conflict  7.886470 -11.308212 27.08115 0.6181661
-
-    summary(aov(PC2 ~ APA2, data=pcadata)) 
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  239.3   79.76   2.105  0.158
-    ## Residuals   11  416.7   37.88
-
-    TukeyHSD((aov(PC2 ~ APA2, data=pcadata)) , which = "APA2") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC2 ~ APA2, data = pcadata)
-    ## 
-    ## $APA2
-    ##                                      diff        lwr       upr     p adj
-    ## consistent-conflict             -2.554911 -15.653007 10.543185 0.9339281
-    ## yoked_conflict-conflict         -4.900485 -17.326430  7.525459 0.6469089
-    ## yoked_consistent-conflict        7.683217  -8.358609 23.725043 0.5015017
-    ## yoked_conflict-consistent       -2.345574 -14.771519 10.080371 0.9395296
-    ## yoked_consistent-consistent     10.238128  -5.803697 26.279954 0.2745176
-    ## yoked_consistent-yoked_conflict 12.583703  -2.914173 28.081578 0.1256213
-
-    summary(aov(PC3 ~ APA2, data=pcadata))
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  69.45   23.15   1.143  0.375
-    ## Residuals   11 222.86   20.26
-
-    summary(aov(PC4 ~ APA2, data=pcadata))
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA2         3  99.72   33.24   2.841 0.0868 .
-    ## Residuals   11 128.70   11.70                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
 
@@ -1029,8 +830,6 @@ Two comparisons within CA1 are noteable
                                         no = "none")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
-    pcadata$wrap <- "CA1 PCA"
-    data$wrap <- "CA1 contrasts"
 
     CA1volcano <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
@@ -1075,6 +874,21 @@ Two comparisons within CA1 are noteable
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
 
+    #conflict yoked conflict
+
+    res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
+    summary(res)
+
+    ## 
+    ## out of 16852 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 1, 0.0059%
+    ## LFC < 0 (down)     : 3, 0.018%
+    ## outliers [1]       : 32, 0.19%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
 
     # volcano plots
 
@@ -1140,8 +954,6 @@ Two comparisons within CA1 are noteable
                                         no = "none")))
     top_labelled <- top_n(data, n = 5, wt = lfc)
 
-    pcadata$wrap <- "CA1 PCA"
-    data$wrap <- "CA1 contrasts"
 
     CA1volcano2 <- ggplot(data, aes(x = lfc, y = pvalue)) + 
       geom_point(aes(color = factor(color)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
