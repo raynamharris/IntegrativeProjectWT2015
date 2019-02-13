@@ -114,7 +114,7 @@ DGvolcanoDEGs <- data %>%
   filter(direction != "neither") %>%
   arrange(desc(lfc))
 head(DGvolcanoDEGs,10)
-write.csv(DGvolcanoDEGs, "../data/DG-consistent-yokedconsistent.csv")
+write.csv(DGvolcanoDEGs, "../data/DG-consistent-yokedconsistent.csv", row.names = F)
 
 # are any protein kinases differentially expressed?
 pkcs <- data[grep("Prkc", data$gene), ]
@@ -135,34 +135,7 @@ res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), i
 summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
-data <- data.frame(gene = row.names(res),
-                   padj = res$padj, 
-                   logpadj = -log10(res$padj),
-                   lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                        yes = "yoked_conflict", 
-                        no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                    yes = "yoked_consistent", 
-                                    no = "neither")))
-DGvolcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-  scale_color_manual(values = volcano2)  + 
-  scale_y_continuous(limits=c(0, 8)) +
-  scale_x_continuous( limits=c(-3, 3),
-                      name=NULL)+
-  ylab(paste0("log10 p-value")) +       
-  theme(panel.grid.minor=element_blank(),
-        legend.position = "none", # remove legend 
-        panel.grid.major=element_blank())
-DGvolcano
 
-pdf(file="../figures/02c_rnaseqSubfield/DGvolcano2.pdf", width=1.5, height=2)
-plot(DGvolcano)
-dev.off()
 
 ## go setup
 table(res$padj<0.1)
@@ -181,35 +154,6 @@ summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
 
-data <- data.frame(gene = row.names(res),
-                   padj = res$padj, 
-                   logpadj = -log10(res$padj),
-                   lfc = res$log2FoldChange)
-
-data <- na.omit(data)
-data <- data %>%
-  mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                        yes = "conflict", 
-                        no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                    yes = "yoked_conflict", 
-                                    no = "neither")))
-DGvolcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-  scale_color_manual(values = volcano4)  + 
-  scale_y_continuous(limits=c(0, 8)) +
-  scale_x_continuous( limits=c(-3, 3),
-                      name=NULL)+
-  ylab(paste0("log10 p-value")) +       
-  theme(panel.grid.minor=element_blank(),
-        legend.position = "none", # remove legend 
-        panel.grid.major=element_blank())
-DGvolcano
-
-pdf(file="../figures/02c_rnaseqSubfield/DGvolcano3.pdf", width=1.5, height=2)
-plot(DGvolcano)
-dev.off()
 
 ## go setup
 table(res$padj<0.1)
@@ -226,35 +170,6 @@ res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFi
 summary(res)
 resOrdered <- res[order(res$padj),]
 head(resOrdered, 10)
-
-data <- data.frame(gene = row.names(res),
-                   padj = res$padj, 
-                   logpadj = -log10(res$padj),
-                   lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                        yes = "conflict", 
-                        no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                    yes = "consistent", 
-                                    no = "neither")))
-DGvolcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-  scale_color_manual(values = volcano2)  + 
-  scale_y_continuous(limits=c(0, 8)) +
-  scale_x_continuous( limits=c(-3, 3),
-                      name=NULL)+
-  ylab(paste0("log10 p-value")) +       
-  theme(panel.grid.minor=element_blank(),
-        legend.position = "none", # remove legend 
-        panel.grid.major=element_blank())
-DGvolcano
-
-pdf(file="../figures/02c_rnaseqSubfield/DGvolcano4.pdf", width=1.5, height=2)
-plot(DGvolcano)
-dev.off()
 
 ## go setup
 table(res$padj<0.1)
@@ -432,6 +347,7 @@ CA1volcano <- ggplot(data, aes(x = lfc, y = logpadj)) +
         panel.grid.major=element_blank())
 CA1volcano
 
+
 pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf",  width=1.5, height=2)
 plot(CA1volcano)
 dev.off()
@@ -441,7 +357,7 @@ CA1volcanoDEGs <- data %>%
   filter(direction != "neither") %>%
   arrange(desc(lfc))
 head(CA1volcanoDEGs,10)
-write.csv(CA1volcanoDEGs, "../data/CA1-consistent-yokedconsistent.csv")
+write.csv(CA1volcanoDEGs, "../data/CA1-consistent-yokedconsistent.csv", row.names = F)
 
 ## go setup
 table(res$padj<0.1)
@@ -457,6 +373,8 @@ write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
 
 res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
 summary(res)
+resOrdered <- res[order(res$padj),]
+head(resOrdered, 3)
 
 # volcano plots
 
@@ -505,42 +423,11 @@ CA1volcano2DEGs <- data %>%
   filter(direction != "neither") %>%
   arrange(desc(lfc))
 head(CA1volcano2DEGs,10)
-write.csv(CA1volcano2DEGs, "../data/CA1-yokedconflict-yokedconsistent.csv")
+write.csv(CA1volcano2DEGs, "../data/CA1-yokedconflict-yokedconsistent.csv", row.names = F)
 
 
 res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-data <- data.frame(gene = row.names(res),
-                   padj = res$padj, 
-                   logpadj = -log10(res$padj),
-                   lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                        yes = "conflict", 
-                        no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                    yes = "consistent", 
-                                    no = "neither")))
-CA1volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-  geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-  scale_color_manual(values = volcano2)  + 
-  scale_y_continuous(limits=c(0, 8)) +
-  scale_x_continuous( limits=c(-3, 3),
-                      name="Log fold change")+
-  ylab(paste0("log10 p-value")) +       
-  theme(panel.grid.minor=element_blank(),
-        legend.position = "none", # remove legend 
-        panel.grid.major=element_blank())
-CA1volcano
-
-pdf(file="../figures/02c_rnaseqSubfield/CA1volcano4.pdf", width=1.5, height=2)
-plot(DGvolcano)
-dev.off()
 
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
 ```
