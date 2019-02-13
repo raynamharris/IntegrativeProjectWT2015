@@ -1,7 +1,10 @@
-Summary
--------
+Subfield analysis
+-----------------
 
-<img src="../figures/figures2-01.png" width="1370" />
+This script is used to identify treatement differences within each
+subfield, generate volcano plots, venn diagrams, and tables for
+subsequent GO analyses. The final mutlipanel figures for the manuscript
+have been inserted just below the subheadings.
 
     library(ggplot2) ## for awesome plots!
     library(cowplot) ## for some easy to use themes
@@ -41,6 +44,11 @@ Summary
 
 DG
 --
+
+The most notable comparison within DG is the consistent verses
+yoked-consistent.
+
+![fig4](../figures/figures2-01.png)
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
@@ -195,8 +203,6 @@ Residual standard error: 10.39289 Estimated effects may be unbalanced
 
 APA2 3 770.4 256.8 2.377 0.121 Residuals 12 1296.1 108.0
 
-### DG contraststs
-
     ###  "consistent", "yoked_consistent"
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -267,7 +273,7 @@ APA2 3 770.4 256.8 2.377 0.121 Residuals 12 1296.1 108.0
             panel.grid.major=element_blank())
     DGvolcano
 
-![](../figures/02c_rnaseqSubfield/DGcontrasts-1.png)
+![](../figures/02c_rnaseqSubfield/DG-1.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
     plot(DGvolcano)
@@ -381,7 +387,7 @@ APA2 3 770.4 256.8 2.377 0.121 Residuals 12 1296.1 108.0
             panel.grid.major=element_blank())
     DGvolcano
 
-![](../figures/02c_rnaseqSubfield/DGcontrasts-2.png)
+![](../figures/02c_rnaseqSubfield/DG-2.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano2.pdf", width=1.5, height=2)
     plot(DGvolcano)
@@ -481,7 +487,7 @@ APA2 3 770.4 256.8 2.377 0.121 Residuals 12 1296.1 108.0
             panel.grid.major=element_blank())
     DGvolcano
 
-![](../figures/02c_rnaseqSubfield/DGcontrasts-3.png)
+![](../figures/02c_rnaseqSubfield/DG-3.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano3.pdf", width=1.5, height=2)
     plot(DGvolcano)
@@ -509,8 +515,6 @@ APA2 3 770.4 256.8 2.377 0.121 Residuals 12 1296.1 108.0
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/DGconflictyoked.csv", row.names = F)
-
-
 
     #### "conflict", "consistent"
     res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
@@ -582,7 +586,7 @@ APA2 3 770.4 256.8 2.377 0.121 Residuals 12 1296.1 108.0
             panel.grid.major=element_blank())
     DGvolcano
 
-![](../figures/02c_rnaseqSubfield/DGcontrasts-4.png)
+![](../figures/02c_rnaseqSubfield/DG-4.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano4.pdf", width=1.5, height=2)
     plot(DGvolcano)
@@ -611,12 +615,10 @@ APA2 3 770.4 256.8 2.377 0.121 Residuals 12 1296.1 108.0
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
 
-plot single gene counts for Prkcz
----------------------------------
-
+    ## plot of pkmz
     plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
 
-![](../figures/02c_rnaseqSubfield/prkcz-1.png)
+![](../figures/02c_rnaseqSubfield/DG-5.png)
 
     # order results table by the smallest adjusted p value:
     res <- res[order(res$padj),]
@@ -639,13 +641,13 @@ plot single gene counts for Prkcz
     ## 0610009O20Rik 0.99987792  Not Sig
     ## 0610010F05Rik 0.99987792  Not Sig
 
-venn diagrams
--------------
-
 ![](../figures/02c_rnaseqSubfield/DGvenndiagrams-1.png)
 
 CA3
 ---
+
+There are so few differences in the CA3 that I don’t make any figures
+for the manuscript.
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
@@ -840,10 +842,16 @@ CA3
 
     plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA3")
 
-![](../figures/02c_rnaseqSubfield/CA3-1.png)
+![](../figures/02c_rnaseqSubfield/CA3deseq-1.png)
 
 CA1
 ---
+
+Two comparisons within CA1 are noteable
+
+![fig5](../figures/figures2-02.png)
+
+![fig6](../figures/figures2-03.png)
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
@@ -1068,7 +1076,7 @@ CA1
     write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
 
 
-
+    # volcano plots
 
     res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)

@@ -1,13 +1,13 @@
 ---
 title: "02c_rnaseqSubfield"
 author: "Rayna M Harris"
-date: "02/12/19"
+date: "02/13/19"
 output: md_document
 ---
 
-## Summary
-<img src="../figures/figures2-01.png" width="1370" />
+## Subfield analysis
 
+This script is used to identify treatement differences within each subfield, generate volcano plots, venn diagrams, and tables for subsequent GO analyses. The final mutlipanel figures for the manuscript have been inserted just below the subheadings. 
 
 ```{r setup, message=F}
 library(ggplot2) ## for awesome plots!
@@ -34,7 +34,11 @@ knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/')
 
 ## DG
 
-```{r DG, message=F, warning=F}
+The most notable comparison within DG is the consistent verses yoked-consistent.
+
+![fig4](../figures/figures2-01.png)
+
+```{r DGdeseq, message=F, warning=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -93,9 +97,7 @@ aov(PC1 ~ APA2, data=pcadata)
 summary(aov(PC1 ~ APA2, data=pcadata))
 ```
 
-### DG contraststs
-
-```{r DGcontrasts}
+```{r DG}
 
 ###  "consistent", "yoked_consistent"
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
@@ -231,8 +233,6 @@ table(sign)
 logs$logP <- logs$logP*sign
 write.csv(logs, file = "./02e_GO_MWU/DGconflictyoked.csv", row.names = F)
 
-
-
 #### "conflict", "consistent"
 res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
@@ -275,17 +275,10 @@ sign[res$log2FoldChange<0]=-1  ##change to correct model
 table(sign)
 logs$logP <- logs$logP*sign
 write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
-```
 
-
-## plot single gene counts for Prkcz
-
-```{r prkcz}
+## plot of pkmz
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
-```
 
-
-```{r}
 # order results table by the smallest adjusted p value:
 res <- res[order(res$padj),]
 
@@ -293,7 +286,11 @@ results = as.data.frame(dplyr::mutate(as.data.frame(res), sig=ifelse(res$padj<0.
 head(results)
 ```
 
-## venn diagrams
+
+
+
+
+
 
 ```{r DGvenndiagrams, echo=F}
 rldpadjs <- assay(rld)
@@ -323,7 +320,9 @@ grid.draw(prettyvenn)
 
 ## CA3
 
-```{r CA3, message=F, warning=F}
+There are so few differences in the CA3 that I don't make any figures for the manuscript.
+
+```{r CA3deseq, message=F, warning=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -398,6 +397,14 @@ plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA
 
 
 ## CA1
+
+Two comparisons within CA1 are noteable
+
+![fig5](../figures/figures2-02.png)
+
+
+![fig6](../figures/figures2-03.png) 
+
 
 ```{r CA1, message=F, warning=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
@@ -485,7 +492,7 @@ logs$logP <- logs$logP*sign
 write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
 
 
-
+# volcano plots
 
 res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
