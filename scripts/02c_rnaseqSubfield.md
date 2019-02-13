@@ -9,31 +9,17 @@ have been inserted just below the subheadings.
     library(ggplot2) ## for awesome plots!
     library(cowplot) ## for some easy to use themes
     library(dplyr) ## for filtering and selecting rows
-
-    ## Warning: package 'dplyr' was built under R version 3.5.1
-
     library(car) ## stats
     library(VennDiagram) ## venn diagrams
     library(pheatmap) ## awesome heatmaps
     library(viridis) # for awesome color pallette
     library(reshape2) ## for melting dataframe
     library(DESeq2) ## for gene expression analysis
-
-    ## Warning: package 'IRanges' was built under R version 3.5.1
-
-    ## Warning: package 'GenomicRanges' was built under R version 3.5.1
-
-    ## Warning: package 'DelayedArray' was built under R version 3.5.1
-
     library(edgeR)  ## for basic read counts status
-
-    ## Warning: package 'edgeR' was built under R version 3.5.1
-
-    ## Warning: package 'limma' was built under R version 3.5.1
-
     library(magrittr) ## to use the weird pipe
     library(genefilter)  ## for PCA fuction
     library(xtable) # for latex or html tables
+    library(ggrepel) # for labeling points
 
     ## load functions 
     source("figureoptions.R")
@@ -98,6 +84,19 @@ yoked-consistent.
     ## colData names(8): RNAseqID Mouse ... ID APA2
 
     dds <- DESeq(dds) # Differential expression analysis
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
     rld <- rlog(dds, blind=FALSE) ## log transformed data
     vsd <- getVarianceStabilizedData(dds)
 
@@ -172,13 +171,21 @@ yoked-consistent.
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
+            panel.grid.major=element_blank()) + 
+      geom_text_repel(data = subset(data, logpadj > 5), aes(label = gene),
+                      colour = "black", min.segment.length = 0,
+                      box.padding = 0.5, size = 2)
     DGvolcano
+
+    ## Warning: Removed 3 rows containing missing values (geom_text_repel).
 
 ![](../figures/02c_rnaseqSubfield/DG-1.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
     plot(DGvolcano)
+
+    ## Warning: Removed 3 rows containing missing values (geom_text_repel).
+
     dev.off()
 
     ## quartz_off_screen 
@@ -725,7 +732,6 @@ Two comparisons within CA1 are noteable
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
                                         yes = "yoked_consistent", 
                                         no = "neither")))
-    top_labelled <- top_n(data, n = 5, wt = lfc)
 
     CA1volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
       geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
@@ -738,7 +744,10 @@ Two comparisons within CA1 are noteable
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
+            panel.grid.major=element_blank()) + 
+      geom_text_repel(data = subset(data, logpadj > 3.5), aes(label = gene),
+                      colour = "black", min.segment.length = 0,
+                      box.padding = 0.5, size = 2)
     CA1volcano
 
 ![](../figures/02c_rnaseqSubfield/CA1-2.png)
@@ -886,8 +895,6 @@ Two comparisons within CA1 are noteable
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
                                         yes = "yoked_consistent", 
                                         no = "neither")))
-    top_labelled <- top_n(data, n = 5, wt = lfc)
-
 
     CA1volcano2 <- ggplot(data, aes(x = lfc, y = logpadj)) + 
       geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
@@ -900,7 +907,10 @@ Two comparisons within CA1 are noteable
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
+            panel.grid.major=element_blank()) + 
+      geom_text_repel(data = subset(data, logpadj > 3.5), aes(label = gene),
+                      colour = "black", min.segment.length = 0,
+                      box.padding = 0.5, size = 2)
     CA1volcano2
 
 ![](../figures/02c_rnaseqSubfield/CA1-4.png)
@@ -931,7 +941,6 @@ Two comparisons within CA1 are noteable
     ## 10    Epyc 0.040773654 1.389620 5.895348 yoked_conflict
 
     write.csv(CA1volcano2DEGs, "../data/CA1-yokedconflict-yokedconsistent.csv", row.names = F)
-
 
     res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
