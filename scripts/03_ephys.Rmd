@@ -1,10 +1,8 @@
 ---
 title: "Electrophysiology"
 author: "Rayna M Harris"
-date: "March 23, 2017"
-output:
-  md_document:
-    variant: markdown_github
+date: "Feb 14, 2019"
+output: md_document
 ---
 
 ```{r setup, message=F}
@@ -14,7 +12,7 @@ library(cowplot) ## for some easy to use themes
 library(tidyr) ## for respahing data
 library(plyr) ## for renmaing factors
 library(dplyr) ## for filtering and selecting rows
-library(reshape)  ## widen a
+library(reshape2)  ## widen df
 library(car) ## for statistics
 
 ## load functions 
@@ -23,6 +21,8 @@ source("figureoptions.R")
 ## set output file for figures 
 knitr::opts_chunk$set(fig.path = '../figures/03_ephys/')
 ```
+
+## Electrophysiology data wrangling
 
 ```{r data,  message=F}
 ## read summarized ephys data and relevel factors
@@ -46,123 +46,112 @@ ephys3 <- na.omit(ephys3)
 ephys3$APA2 <- factor(ephys3$APA2, levels = c("yoked_consistent", "consistent",  "yoked_conflict", "conflict"))
 levels(ephys3$APA2) <- c("yoked-consistent", "consistent",  "yoked-conflict", "conflict")
 
-ephys3$one <- "Pre-Potentiation"
-ephys3$two <- "Early Potentiation"
-ephys3$three <- "Late Potentiation"
-ephys3$four <- "Max fEPSP"
+ephys3$pre <- "Pre-Potentiation"
+ephys3$early <- "Early Potentiation"
+ephys3$late <- "Late Potentiation"
+ephys3$max <- "Max fEPSP"
+head(ephys3)
 ```
 
 
-## the data
-```{r dataviz}
+## Data Viz
 
-one <- ephys3 %>%
-  ggplot(aes(x=APA2, y=PTP_3_10, fill=APA2)) +  
+
+```{r dataviz, fig.width=5.1}
+plotpotentiation <- function(ycol, mysubtitle){ephys3 %>%
+  ggplot(aes(x=APA2, y=ycol, fill=APA2)) +  
   geom_violin() + 
   scale_fill_manual(values = colorvalAPA00) + 
-  scale_y_continuous(name=NULL,
-                     limits = c(100, 300)) + 
+  scale_y_continuous(limits = c(100, 300)) + 
   theme_cowplot(font_size = 8, line_size = 0.25)   + 
   theme(axis.title.x = element_blank(), 
-        axis.text.x = element_blank(),
+        #axis.text.x = element_blank(),
+        axis.text.x = element_text(angle = 50, hjust = 1),
         legend.position="none") +
-  facet_wrap(~one)
-one
-leveneTest(PTP_3_10~APA2, data=ephys3)
-summary(aov(ephys3$PTP_3_10 ~ ephys3$APA2))
-TukeyHSD(aov(ephys3$PTP_3_10 ~ ephys3$APA2))
-  
-two <- ephys3 %>%
-  ggplot(aes(x=APA2, y=EarlyPotentiation_11_20, fill=APA2)) +  
-  geom_violin() + 
-  scale_fill_manual(values = colorvalAPA00) + 
-  scale_y_continuous(name=NULL,
-                     limits = c(100, 300)) + 
-  theme_cowplot(font_size = 8, line_size = 0.25)   + 
-  theme(axis.title.x = element_blank(), 
-        axis.text.x = element_blank(),
-        legend.position="none") +
-  facet_wrap(~two)
-two
-leveneTest(EarlyPotentiation_11_20~APA2, data=ephys3)
-summary(aov(ephys3$EarlyPotentiation_11_20 ~ ephys3$APA2))
-TukeyHSD(aov(ephys3$EarlyPotentiation_11_20 ~ ephys3$APA2))
+  labs(y = mysubtitle) 
+}
 
+A <- plotpotentiation(ycol = ephys3$PTP_3_10, mysubtitle = "Pre-Potentiation")
+B <- plotpotentiation(ycol = ephys3$EarlyPotentiation_11_20, mysubtitle = "Early Potentiation")
+C <- plotpotentiation(ycol = ephys3$LatePotentiation_26_end, mysubtitle = "Late Potentiation")
 
-three <- ephys3 %>%
-  ggplot(aes(x=APA2, y=LatePotentiation_26_end, fill=APA2)) +  
-  geom_violin() + 
-  scale_fill_manual(values = colorvalAPA00) + 
-  scale_y_continuous(name=NULL,
-                     limits = c(100, 300)) + 
-  theme_cowplot(font_size = 8, line_size = 0.25)   + 
-  theme(axis.title.x = element_blank(), 
-        axis.text.x = element_blank(),
-        legend.position="none") +
-  facet_wrap(~three)
-three
-leveneTest(LatePotentiation_26_end~APA2, data=ephys3)
-summary(aov(ephys3$LatePotentiation_26_end ~ ephys3$APA2))
-TukeyHSD(aov(ephys3$LatePotentiation_26_end ~ ephys3$APA2))
-
-four <- ephys3 %>%
+D <- ephys3 %>%
   ggplot(aes(x=APA2, y=MaxfEPSP, fill=APA2)) +  
   geom_violin() +
   scale_fill_manual(values = colorvalAPA00) + 
   scale_y_continuous(trans = "reverse",
-                     limits = c(-0.001 , -0.008),
-                     name=NULL) + 
+                     limits = c(-0.001 , -0.008)) + 
   theme_cowplot(font_size = 8, line_size = 0.25)   + 
   theme(axis.title.x = element_blank(), 
-        axis.text.x = element_blank(),
+        #axis.text.x = element_blank(),
+        axis.text.x = element_text(angle = 50, hjust = 1),
         legend.position="none") +
-  facet_wrap(~four)
-four
-leveneTest(MaxfEPSP~APA2, data=ephys3)
-summary(aov(ephys3$MaxfEPSP ~ ephys3$APA2))
-TukeyHSD(aov(ephys3$MaxfEPSP ~ ephys3$APA2))
+  labs(y = "Max fEPSP")
 
- 
-pdf(file="../figures/03_ephys/1pre.pdf", width=1.75, height=2)
-plot(one)
-dev.off()
-
-pdf(file="../figures/03_ephys/2early.pdf", width=1.75, height=2)
-plot(two)
-dev.off()
-
-pdf(file="../figures/03_ephys/3late.pdf", width=1.75, height=2)
-plot(three)
-dev.off()
-
-pdf(file="../figures/03_ephys/4max.pdf", width=1.75, height=2)
-plot(four)
-dev.off()
-
-
-```
-
-
-
-##  one way anova 
-
-
-
-
-
-```{r plots}
-ephys2long %>% 
-  ggplot(aes(x=variablenumeric, y=value, color=APA )) + 
+E <- ephys2long %>% 
+  ggplot(aes(x=variablenumeric, y=value, color=APA2 )) + 
   stat_smooth(alpha=0.2, size=1) +
   geom_jitter(size=2, width = 0.5) +
   background_grid(major = "xy", minor = "none") + 
-  theme_cowplot(font_size = 20, line_size = 1) + 
+  theme_cowplot(font_size = 8, line_size = 0.25) + 
   scale_y_continuous(trans = "reverse") + 
   scale_x_continuous(breaks=c(1,2,3,4,5,6,7),
                      labels=c("0", "10", "15", "20", "30", "40", "50")) +
-  scale_color_manual(values = colorvalAPA) + 
+  scale_color_manual(values = colorvalAPA00) + 
   labs(x = "Stimulus Strenght (V)", y = "fEPSP Slope") + 
-  theme(legend.position="none")
+  theme(legend.position="none") 
 
 
+top <- plot_grid(A, B, C, labels="AUTO", nrow = 1, label_size = 8)
+bottom <- plot_grid(D, E, labels= c("D", "E"), nrow = 1, label_size = 8,
+          rel_widths = c(0.33,0.66))
+plot_grid(top, bottom, nrow = 2)
+
+
+pdf(file="../figures/03_ephys/1pre.pdf", width=1.75, height=2)
+plot(A)
+dev.off()
+
+pdf(file="../figures/03_ephys/2early.pdf", width=1.75, height=2)
+plot(B)
+dev.off()
+
+pdf(file="../figures/03_ephys/3late.pdf", width=1.75, height=2)
+plot(C)
+dev.off()
+
+pdf(file="../figures/03_ephys/4max.pdf", width=1.75, height=2)
+plot(D)
+dev.off()
 ```
+
+
+```{r, statistics}
+
+## ptp
+
+leveneTest(PTP_3_10~APA2, data=ephys3)
+summary(aov(ephys3$PTP_3_10 ~ ephys3$APA2))
+TukeyHSD(aov(ephys3$PTP_3_10 ~ ephys3$APA2))
+
+## early
+
+leveneTest(EarlyPotentiation_11_20~APA2, data=ephys3)
+summary(aov(ephys3$EarlyPotentiation_11_20 ~ ephys3$APA2))
+TukeyHSD(aov(ephys3$EarlyPotentiation_11_20 ~ ephys3$APA2))
+
+## late
+
+leveneTest(LatePotentiation_26_end~APA2, data=ephys3)
+summary(aov(ephys3$LatePotentiation_26_end ~ ephys3$APA2))
+TukeyHSD(aov(ephys3$LatePotentiation_26_end ~ ephys3$APA2))
+
+
+## max
+
+leveneTest(MaxfEPSP~APA2, data=ephys3)
+summary(aov(ephys3$MaxfEPSP ~ ephys3$APA2))
+TukeyHSD(aov(ephys3$MaxfEPSP ~ ephys3$APA2))
+```
+
+
