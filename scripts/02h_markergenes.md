@@ -57,96 +57,95 @@ Genes from Cembrowski sublement file 1
     CA1CA3 <- wrangledata("../data/CA3vCA1.csv", "CA1-CA3")
     CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3-DG")
 
+    mydfs <- list(CA1DG, CA1CA3, CA3DG)
+
     #look for markers in each supfield
     # make data frames of genes expression results for markers 
 
-    marker_summary <- function(mydf, subfield, markers){
+    marker_summary <- function(mydf, markers){
         MARKERS <- str_to_upper(markers)
         df <- mydf %>%
-        dplyr::filter(gene %in% c(MARKERS)) %>%
-        dplyr::mutate(marker = subfield) %>%
-        droplevels()
-        #return(kable(head(df)))
+        dplyr::filter(gene %in% c(MARKERS)) 
+        #return((head(df)))
         return(summary(df$direction))
     }
 
+    for(i in mydfs){
+      j <- marker_summary(i, CA1_markers)
+      print(i[1, 6])
+      print(j)
+    }
 
-    #CA1 markers
-    marker_summary(CA1DG, "CA1", CA1_markers)
-
-    ##     CA1 neither 
-    ##      17       8
-
-    marker_summary(CA1CA3, "CA1", CA1_markers)
-
+    ## [1] "CA1-DG"
+    ##     CA1      DG neither 
+    ##      17       0       8 
+    ## [1] "CA1-CA3"
     ##     CA1     CA3 neither 
-    ##      16       2       7
-
-    marker_summary(CA3DG, "CA1", CA1_markers)
-
+    ##      16       2       7 
+    ## [1] "CA3-DG"
     ##     CA3      DG neither 
     ##       7       2      18
 
-    #CA3 markers
-    marker_summary(CA1DG, "CA3", CA3_markers)
+    for(i in mydfs){
+      j <- marker_summary(i, CA2_markers)
+      print(i[1, 6])
+      print(j)
+    }
 
+    ## [1] "CA1-DG"
     ##     CA1      DG neither 
-    ##       1       2       7
-
-    marker_summary(CA1CA3, "CA3", CA3_markers)
-
-    ##     CA3 neither 
-    ##       6       4
-
-    marker_summary(CA3DG, "CA3", CA3_markers)
-
-    ##     CA3 neither 
-    ##       7       3
-
-    #DG markers
-    marker_summary(CA1DG, "DG", DG_markers)
-
-    ##      DG neither 
-    ##      50      38
-
-    marker_summary(CA1CA3, "DG", DG_markers)
-
+    ##       4       3      29 
+    ## [1] "CA1-CA3"
     ##     CA1     CA3 neither 
-    ##       3      10      76
-
-    marker_summary(CA3DG, "DG", DG_markers)
-
+    ##       1       8      27 
+    ## [1] "CA3-DG"
     ##     CA3      DG neither 
-    ##       3      50      36
+    ##      16       0      23
 
-    #CA2 markers
-    marker_summary(CA1DG, "CA2", CA2_markers)
+    for(i in mydfs){
+      j <- marker_summary(i, CA3_markers)
+      print(i[1, 6])
+      print(j)
+    }
 
+    ## [1] "CA1-DG"
     ##     CA1      DG neither 
-    ##       4       3      29
-
-    marker_summary(CA1CA3, "CA2", CA2_markers)
-
+    ##       1       2       7 
+    ## [1] "CA1-CA3"
     ##     CA1     CA3 neither 
-    ##       1       8      27
+    ##       0       6       4 
+    ## [1] "CA3-DG"
+    ##     CA3      DG neither 
+    ##       7       0       3
 
-    marker_summary(CA3DG, "CA2", CA2_markers)
+    for(i in mydfs){
+      j <- marker_summary(i, CA4_markers)
+      print(i[1, 6])
+      print(j)
+    }
 
-    ##     CA3 neither 
-    ##      16      23
-
-    #CA4 markers
-    marker_summary(CA1DG, "CA4", CA4_markers)
-
-    ##     CA1 neither 
-    ##       4      23
-
-    marker_summary(CA1CA3, "CA4", CA4_markers)
-
-    ##     CA3 neither 
-    ##       1      27
-
-    marker_summary(CA3DG, "CA4", CA4_markers)
-
+    ## [1] "CA1-DG"
+    ##     CA1      DG neither 
+    ##       4       0      23 
+    ## [1] "CA1-CA3"
+    ##     CA1     CA3 neither 
+    ##       0       1      27 
+    ## [1] "CA3-DG"
     ##     CA3      DG neither 
     ##      11       1      18
+
+    for(i in mydfs){
+      j <- marker_summary(i, DG_markers)
+      print(i[1, 6])
+      print(j)
+    }
+
+    ## [1] "CA1-DG"
+    ##     CA1      DG neither 
+    ##       0      50      38 
+    ## [1] "CA1-CA3"
+    ##     CA1     CA3 neither 
+    ##       3      10      76 
+    ## [1] "CA3-DG"
+    ##     CA3      DG neither 
+    ##       3      50      36
