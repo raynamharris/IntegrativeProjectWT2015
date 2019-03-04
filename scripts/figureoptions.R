@@ -75,6 +75,19 @@ volcano4 <-  c("conflict" = "#f4a582",
 volcano5 <-  c("yes" = "red",
                "no" = "black", 
                "none" = "#d9d9d9")
+               
+volcanoDGvCA3 <- c("CA3" = "#1b9e77",
+                   "DG" = "#d95f02", 
+                    "neither" = "#d9d9d9")  
+                    
+volcanoDGvCA1 <-  c("CA1" = "#7570b3",
+                    "DG" = "#d95f02", 
+                     "neither" = "#d9d9d9")            
+
+volcanoCA3vCA1 <-  c("CA1" = "#7570b3",
+                     "CA3" = "#1b9e77", 
+                     "neither" = "#d9d9d9")
+
 
 colorvalavoidance <- c("black","red")
 
@@ -115,12 +128,6 @@ ann_colors8 = list(
   Punch = c(CA1 = (values=c("#7570b3")),
             CA3 = (values=c("#1b9e77")), 
             DG = (values=c("#d95f02"))))
-
-
-
-
-
-
 
 
 ann_colorsLevel = list(

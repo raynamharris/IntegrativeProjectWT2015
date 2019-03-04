@@ -289,140 +289,56 @@ grid.draw(prettyvenn)
 
 ## Volcanos plots and and gene lists
 
-### ca3 dg
-
 ```{r volcanoCA3GDG}
-res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
-data <- na.omit(data)
-head(data)
 
-summary(log10(data$pvalue +1))
+makevolcanodf <- function(mycontrast, myup, mydown, filename){
+  res <- results(dds, contrast = mycontrast, independentFiltering = T)
 
-data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "CA3", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "DG", 
-                                    no = "none")))
-top_n(data, n = 5, wt = lfc)
-top_n(data, n = 5, wt = pvalue)
-data$logp <- log10(data$pvalue +1 )
+  data <- data.frame(gene = row.names(res), pvalue = (res$padj), 
+                     lfc = res$log2FoldChange)
+  data <- na.omit(data)
 
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 0.5, alpha = 0.5, na.rm = T) + 
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = c("CA3" = "#1b9e77",
-                                "DG" = "#d95f02", 
-                                "none" = "#d9d9d9")) + 
+  data <- data %>%
+  mutate(direction = ifelse(data$lfc > 0 & data$pvalue < 0.05, 
+                        yes = myup, 
+                        no = ifelse(data$lfc < 0 & data$pvalue < 0.05, 
+                                    yes = mydown, 
+                                    no = "neither")))
+  data$logp <- -log10(data$pvalue)
+  data <- dplyr::arrange(data, logp)
+  write.csv(data, filename, row.names = F)
+  return(data)
+}
+
+DGvCA3 <- makevolcanodf(c("Punch", "CA3", "DG"), "CA3", "DG", "../data/DGvCA3.csv")
+DGvCA1 <- makevolcanodf(c("Punch", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
+CA3vCA1 <- makevolcanodf(c("Punch", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
+
+volcanoplot <- function(mydata, mycolors, xlabname, filename){
+  
+  myvolcano <- ggplot(mydata, aes(x = lfc, y = logp)) + 
+  geom_point(aes(color = direction), size = 0.5, alpha = 0.5, na.rm = T) + 
+  scale_color_manual(values = mycolors) + 
   theme_cowplot(font_size = 8, line_size = 0.25) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
-  scale_y_continuous(limits=c(0, 40)) +
+  scale_y_continuous(limits=c(0, 60)) +
   scale_x_continuous( limits=c(-10, 10)) +
-  xlab(paste0("CA3 / DG")) +
+  xlab(paste0(xlabname)) +
   ylab(paste0("log10 p-value")) +       
   theme(panel.grid.minor=element_blank(),
         legend.position = "none", # remove legend 
         panel.grid.major=element_blank())
-colored
+myvolcano
+return(myvolcano)
 
-pdf(file="../figures/02b_RNAseqAll/AllDGCA3.pdf", width=1.75, height=2.25)
-plot(colored)
+pdf(file=filename, width=1.75, height=2.25)
+plot(myvolcano)
 dev.off()
-```
-
-### DG CA1
-
-```{r volcanoCA1DG, include=T}
-
-res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
-data <- na.omit(data)
-head(data)
-
-data <- data.frame(gene = row.names(res), pvalue =  -log10(res$pvalue), lfc = res$log2FoldChange)
-data <- na.omit(data)
-head(data)
-
-data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "CA1", 
-                        no = ifelse(data$lfc < 0 & data$pvalue >1.3, 
-                                    yes = "DG", 
-                                    no = "none")))
-top_labelled <- top_n(data, n = 5, wt = lfc)
-head(data)
-
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
-  scale_color_manual(values = c("CA1" = "#7570b3",
-                                "DG" = "#d95f02", 
-                                "none" = "#d9d9d9")) + 
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
-  scale_y_continuous(limits=c(0, 40)) +
-  scale_x_continuous( limits=c(-10, 10)) +
-  xlab(paste0("CA1 / DG")) +
-  ylab(paste0("log10 p-value")) +       
-  theme(panel.grid.minor=element_blank(),
-        legend.position = "none", # remove legend 
-        panel.grid.major=element_blank())
-colored
-
-pdf(file="../figures/02b_RNAseqAll/AllCA1DG.pdf", width=1.75, height=2.25)
-plot(colored)
-dev.off()
-```
-
-### ca1 ca3
-
-```{r volcanoca1ca3}
-res <- results(dds, contrast =c("Punch", "CA1", "CA3"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-data <- data.frame(gene = row.names(res), pvalue = -log10(res$padj), lfc = res$log2FoldChange)
-data <- na.omit(data)
-head(data)
-
-data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "CA1", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "CA3", 
-                                    no = "none")))
-top_n(data, n = 5, wt = lfc)
-top_n(data, n = 5, wt = pvalue)
-
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
-  theme_bw(base_size = 8) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = c("CA1" = "#7570b3",
-                                "CA3" = "#1b9e77", 
-                                "none" = "#d9d9d9")) +  
-  theme_cowplot(font_size = 8, line_size = 0.25) +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
-  scale_y_continuous(limits=c(0, 40)) +
-  scale_x_continuous( limits=c(-10, 10)) +
-  xlab(paste0("CA1 / CA3")) +
-  ylab(paste0("log10 p-value")) +       
-  theme(panel.grid.minor=element_blank(),
-        legend.position = "none", # remove legend 
-        panel.grid.major=element_blank())
-colored
-
-pdf(file="../figures/02b_RNAseqAll/AllCA1CA3.pdf", width=1.75, height=2.25)
-plot(colored)
-dev.off()
-
+}
+  
+volcanoplot(DGvCA3, volcanoDGvCA3, "CA3 / DG", "../figures/02b_RNAseqAll/AllDGCA3.pdf")  
+volcanoplot(DGvCA1, volcanoDGvCA1, "CA1 / DG", "../figures/02b_RNAseqAll/AllCA1DG.pdf")  
+volcanoplot(CA3vCA1, volcanoCA3vCA1, "CA1 / CA3", "../figures/02b_RNAseqAll/AllCA1CA3.pdf") 
 ```
 
 
