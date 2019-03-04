@@ -197,29 +197,24 @@ pheatmap(DEGes, show_colnames=F, show_rownames = F,
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(rld, intgroup=c("Punch","APA2"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
-percentVar
-
 pcadata$PunchAPA <- as.factor(paste(pcadata$Punch, pcadata$APA2, sep="_"))
-
-summary(aov(PC1 ~ Punch, data=pcadata)) 
-TukeyHSD((aov(PC1 ~ Punch, data=pcadata)), which = "Punch") 
-
-summary(aov(PC2 ~ Punch, data=pcadata)) 
-TukeyHSD((aov(PC2 ~ Punch, data=pcadata)), which = "Punch") 
-
-summary(aov(PC3 ~ Punch, data=pcadata)) 
-TukeyHSD((aov(PC3 ~ Punch, data=pcadata)), which = "Punch") 
-
-
-summary(aov(PC3 ~ APA2, data=pcadata)) 
-summary(aov(PC4 ~ APA2, data=pcadata)) 
-summary(aov(PC5 ~ APA2, data=pcadata)) 
-summary(aov(PC6 ~ APA2, data=pcadata)) 
-
 pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent","consistent",  "yoked_conflict","conflict"))
-
 pcadata$wrap <- "Principal Component Analyses of Hippocampal Samples"
+
+
+summary(aov(PC1 ~ Punch * APA2, data=pcadata)) 
+TukeyHSD((aov(PC1 ~ Punch, data=pcadata)), which = "Punch") 
+
+summary(aov(PC2 ~ Punch * APA2, data=pcadata)) 
+TukeyHSD((aov(PC2 ~ Punch, data=pcadata)), which = "Punch") 
+
+summary(aov(PC3 ~ Punch * APA2, data=pcadata)) 
+TukeyHSD((aov(PC3 ~ Punch, data=pcadata)), which = "Punch") 
+
+summary(aov(PC4 ~ Punch * APA2, data=pcadata)) 
+summary(aov(PC5 ~ Punch * APA2, data=pcadata)) 
+summary(aov(PC6 ~ Punch * APA2, data=pcadata)) 
 
 
 PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=Punch)) +
@@ -236,6 +231,27 @@ PCA12
 pdf(file="../figures/02b_RNAseqAll/PCA12.pdf", width=1.75, height=2.25)
 plot(PCA12)
 dev.off()
+
+PCA42region <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2, color=Punch)) +
+    geom_point(size=3, aes(shape=APA2), alpha = 0.8) +
+    xlab(paste0("PC4:", percentVar[4],"% variance")) +
+    ylab(paste0("PC2:", percentVar[2],"% variance")) +
+    #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
+    scale_colour_manual(values=c(colorvalPunch))+ 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="none") +
+    scale_shape_manual(values=c(16, 1, 15, 0), aes(color=colorvalPunch))
+PCA42region
+
+PCA42APA <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2, color=APA2)) +
+    geom_point(size=3, aes(shape=Punch), alpha = 0.8) +
+    xlab(paste0("PC4:", percentVar[4],"% variance")) +
+    ylab(paste0("PC2:", percentVar[2],"% variance")) +
+    #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
+    scale_colour_manual(values=c(colorvalAPA00))+ 
+    theme_cowplot(font_size = 8, line_size = 0.25)  +
+    theme(legend.position="bottom") 
+PCA42APA
 
 ```
 

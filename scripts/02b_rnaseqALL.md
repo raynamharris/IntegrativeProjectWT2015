@@ -518,11 +518,11 @@ this is for consistent conflict yoked-conflict
 Principle component analysis
 ----------------------------
 
-    ## [1] 54 22  5  3  2  1  1  1  1
-
     ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2  18619    9309   287.6 <2e-16 ***
-    ## Residuals   41   1327      32                   
+    ## Punch        2  18619    9309 315.688 <2e-16 ***
+    ## APA2         3    167      56   1.885  0.152    
+    ## Punch:APA2   6    217      36   1.225  0.320    
+    ## Residuals   32    944      29                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -538,8 +538,10 @@ Principle component analysis
     ## CA1-CA3  -1.279345  -6.52166   3.96297 0.8244072
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2   8050    4025    1049 <2e-16 ***
-    ## Residuals   41    157       4                   
+    ## Punch        2   8050    4025 984.797 <2e-16 ***
+    ## APA2         3     14       5   1.157  0.341    
+    ## Punch:APA2   6     12       2   0.500  0.803    
+    ## Residuals   32    131       4                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -555,8 +557,10 @@ Principle component analysis
     ## CA1-CA3  33.99294  32.18845  35.79743     0
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## Punch        2   26.5   13.24   0.306  0.738
-    ## Residuals   41 1774.6   43.28
+    ## Punch        2   26.5   13.24   0.329  0.722
+    ## APA2         3  250.8   83.60   2.079  0.123
+    ## Punch:APA2   6  237.0   39.49   0.982  0.453
+    ## Residuals   32 1286.8   40.21
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
@@ -569,28 +573,36 @@ Principle component analysis
     ## CA1-DG  -1.6651830 -7.414683 4.084317 0.7623489
     ## CA1-CA3 -0.1199015 -6.181910 5.942107 0.9987255
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3  255.8   85.25   2.207  0.102
-    ## Residuals   40 1545.3   38.63
-
-    ##             Df Sum Sq Mean Sq F value  Pr(>F)    
-    ## APA2         3  443.7   147.9   11.83 1.1e-05 ***
-    ## Residuals   40  499.9    12.5                    
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## Punch        2    3.2    1.61   0.128    0.880    
+    ## APA2         3  454.2  151.41  12.051 1.93e-05 ***
+    ## Punch:APA2   6   84.2   14.03   1.116    0.375    
+    ## Residuals   32  402.1   12.56                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3    9.8   3.277    0.24  0.868
-    ## Residuals   40  547.0  13.675
+    ##             Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## Punch        2    0.4    0.18   0.018 0.98205   
+    ## APA2         3   10.3    3.43   0.347 0.79172   
+    ## Punch:APA2   6  229.2   38.21   3.857 0.00524 **
+    ## Residuals   32  316.9    9.90                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   23.4   7.811   0.771  0.517
-    ## Residuals   40  405.5  10.137
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## Punch        2   5.91   2.954   0.381 0.6861  
+    ## APA2         3  23.89   7.963   1.028 0.3934  
+    ## Punch:APA2   6 151.16  25.193   3.251 0.0131 *
+    ## Residuals   32 247.97   7.749                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ![](../figures/02b_RNAseqAll/pca-1.png)
 
     ## quartz_off_screen 
     ##                 2
+
+![](../figures/02b_RNAseqAll/pca-2.png)![](../figures/02b_RNAseqAll/pca-3.png)
 
 Number of differentially expressed genes per two-way contrast
 =============================================================
@@ -691,15 +703,15 @@ Volcanos plots and and gene lists
       
     volcanoplot(DGvCA3, volcanoDGvCA3, "CA3 / DG", "../figures/02b_RNAseqAll/AllDGCA3.pdf")  
 
-![](../figures/02b_RNAseqAll/volcanoCA3GDG-1.png)
+![](../figures/02b_RNAseqAll/volcanos-1.png)
 
     volcanoplot(DGvCA1, volcanoDGvCA1, "CA1 / DG", "../figures/02b_RNAseqAll/AllCA1DG.pdf")  
 
-![](../figures/02b_RNAseqAll/volcanoCA3GDG-2.png)
+![](../figures/02b_RNAseqAll/volcanos-2.png)
 
     volcanoplot(CA3vCA1, volcanoCA3vCA1, "CA1 / CA3", "../figures/02b_RNAseqAll/AllCA1CA3.pdf") 
 
-![](../figures/02b_RNAseqAll/volcanoCA3GDG-3.png)
+![](../figures/02b_RNAseqAll/volcanos-3.png)
 
 plot single gene counts
 -----------------------
