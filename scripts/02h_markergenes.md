@@ -39,11 +39,15 @@ Genes from Cembrowski sublement file 1
     ##  [9] "ca4-ca3_d-ca3_v-ca2-ca1_d-ca1_v" "dg_d"                           
     ## [11] "dg_d-dg_v"                       "dg_v"
 
-    CA1_markers <- cembrowksimarkers(c("ca1_d", "ca1_v", "ca1_d-ca1_v"))
-    DG_markers <- cembrowksimarkers(c("dg_d", "dg_v", "dg_d-dg_v"))
-    CA3_markers <- cembrowksimarkers(c("ca3_d", "ca3_v", "ca3_d-ca3_v-ca2-ca1_d-ca1_v"))
-    CA2_markers <- cembrowksimarkers(c("ca2"))
-    CA4_markers <- cembrowksimarkers(c("ca4"))
+    # dorsal markers 
+    CA1_markers <- cembrowksimarkers(c("ca1_d", "ca1_d-ca1_v"))
+    DG_markers <- cembrowksimarkers(c("dg_d", "dg_d-dg_v"))
+    CA3_markers <- cembrowksimarkers(c("ca3_d",  "ca3_d-ca3_v-ca2-ca1_d-ca1_v"))
+
+    # ventral-only markers 
+    CA1_ventral <- cembrowksimarkers(c("ca1_v" ))
+    DG_ventral <- cembrowksimarkers(c("dg_v"))
+    CA3_ventral <- cembrowksimarkers(c("ca3_v"))
 
     # import subfield specific data
     wrangledata <- function(filename, mycomparison){
@@ -57,8 +61,6 @@ Genes from Cembrowski sublement file 1
     CA1CA3 <- wrangledata("../data/CA3vCA1.csv", "CA1-CA3")
     CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3-DG")
 
-    mydfs <- list(CA1DG, CA1CA3, CA3DG)
-
     #look for markers in each supfield
     # make data frames of genes expression results for markers 
 
@@ -70,7 +72,8 @@ Genes from Cembrowski sublement file 1
         return(summary(df$direction))
     }
 
-    for(i in mydfs){
+    # dorsal markers (expected to be high since we sample dorsal populations)
+    for(i in list(CA1DG, CA1CA3)){
       j <- marker_summary(i, CA1_markers)
       print(i[1, 6])
       print(j)
@@ -78,39 +81,17 @@ Genes from Cembrowski sublement file 1
 
     ## [1] "CA1-DG"
     ##     CA1      DG neither 
-    ##      17       0       8 
+    ##      15       0       3 
     ## [1] "CA1-CA3"
     ##     CA1     CA3 neither 
-    ##      16       2       7 
-    ## [1] "CA3-DG"
-    ##     CA3      DG neither 
-    ##       7       2      18
+    ##      15       1       2
 
-    for(i in mydfs){
-      j <- marker_summary(i, CA2_markers)
-      print(i[1, 6])
-      print(j)
-    }
-
-    ## [1] "CA1-DG"
-    ##     CA1      DG neither 
-    ##       4       3      29 
-    ## [1] "CA1-CA3"
-    ##     CA1     CA3 neither 
-    ##       1       8      27 
-    ## [1] "CA3-DG"
-    ##     CA3      DG neither 
-    ##      16       0      23
-
-    for(i in mydfs){
+    for(i in list(CA1CA3, CA3DG)){
       j <- marker_summary(i, CA3_markers)
       print(i[1, 6])
       print(j)
     }
 
-    ## [1] "CA1-DG"
-    ##     CA1      DG neither 
-    ##       1       2       7 
     ## [1] "CA1-CA3"
     ##     CA1     CA3 neither 
     ##       0       6       4 
@@ -118,23 +99,7 @@ Genes from Cembrowski sublement file 1
     ##     CA3      DG neither 
     ##       7       0       3
 
-    for(i in mydfs){
-      j <- marker_summary(i, CA4_markers)
-      print(i[1, 6])
-      print(j)
-    }
-
-    ## [1] "CA1-DG"
-    ##     CA1      DG neither 
-    ##       4       0      23 
-    ## [1] "CA1-CA3"
-    ##     CA1     CA3 neither 
-    ##       0       1      27 
-    ## [1] "CA3-DG"
-    ##     CA3      DG neither 
-    ##      11       1      18
-
-    for(i in mydfs){
+    for(i in list(CA1DG, CA3DG)){
       j <- marker_summary(i, DG_markers)
       print(i[1, 6])
       print(j)
@@ -142,10 +107,98 @@ Genes from Cembrowski sublement file 1
 
     ## [1] "CA1-DG"
     ##     CA1      DG neither 
-    ##       0      50      38 
-    ## [1] "CA1-CA3"
-    ##     CA1     CA3 neither 
-    ##       3      10      76 
+    ##       0      48      23 
     ## [1] "CA3-DG"
     ##     CA3      DG neither 
-    ##       3      50      36
+    ##       0      49      22
+
+    # ventral-only makers (expected to be low since we don't sample ventral populations)
+    for(i in list(CA1DG, CA1CA3)){
+      j <- marker_summary(i, CA1_ventral)
+      print(i[1, 6])
+      print(j)
+    }
+
+    ## [1] "CA1-DG"
+    ##     CA1      DG neither 
+    ##       3       0       5 
+    ## [1] "CA1-CA3"
+    ##     CA1     CA3 neither 
+    ##       2       1       5
+
+    for(i in list(CA1DG, CA3DG)){
+      j <- marker_summary(i, DG_ventral)
+      print(i[1, 6])
+      print(j)
+    }
+
+    ## [1] "CA1-DG"
+    ##     CA1      DG neither 
+    ##       0       2      15 
+    ## [1] "CA3-DG"
+    ##     CA3      DG neither 
+    ##       3       1      14
+
+Then, I checked to see how many of the markers that Cembrowski found to
+be enriched in discrete dorsal cell populations were also enriched in my
+comparisons. The enriched coloumn is what percent were confirmed, the
+depleted column means that the marker was experssed in the opposite
+direction, and neither means that the Cembrowski marker was not
+significantly different in expression between the two cell types. Here
+are the results:
+
+<table>
+<thead>
+<tr class="header">
+<th>Maker</th>
+<th>Comparison</th>
+<th>Enriched</th>
+<th>Depleted</th>
+<th>Neither</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CA1</td>
+<td>CA1 v DG</td>
+<td>0.83</td>
+<td>0.00</td>
+<td>0.17</td>
+</tr>
+<tr class="even">
+<td>CA1</td>
+<td>CA1 v CA3</td>
+<td>0.83</td>
+<td>0.06</td>
+<td>0.11</td>
+</tr>
+<tr class="odd">
+<td>CA3</td>
+<td>CA3 v DG</td>
+<td>0.60</td>
+<td>0.00</td>
+<td>0.40</td>
+</tr>
+<tr class="even">
+<td>CA3</td>
+<td>CA1 v CA3</td>
+<td>0.70</td>
+<td>0.00</td>
+<td>0.30</td>
+</tr>
+<tr class="odd">
+<td>DG</td>
+<td>CA1 v DG</td>
+<td>0.68</td>
+<td>0.00</td>
+<td>0.32</td>
+</tr>
+<tr class="even">
+<td>DG</td>
+<td>CA3 v DG</td>
+<td>0.69</td>
+<td>0.00</td>
+<td>0.31</td>
+</tr>
+</tbody>
+</table>
