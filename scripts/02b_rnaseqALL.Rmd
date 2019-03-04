@@ -289,7 +289,7 @@ grid.draw(prettyvenn)
 
 ## Volcanos plots and and gene lists
 
-```{r volcanoCA3GDG}
+```{r volcanos}
 
 makevolcanodf <- function(mycontrast, myup, mydown, filename){
   res <- results(dds, contrast = mycontrast, independentFiltering = T)
