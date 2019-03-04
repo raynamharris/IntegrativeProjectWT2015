@@ -113,4 +113,30 @@ summary(CA1CA3_DG$direction)
 CA3DG_DG <- marker_expression(CA3DG, "DG", DG_markers)
 kable(CA3DG_DG)
 summary(CA3DG_DG$direction)
+
+#CA2 markers
+CA1DG_CA2 <- marker_expression(CA1DG, "CA2", CA2_markers)
+kable(CA1DG_CA2)
+summary(CA1DG_CA2$direction)
+
+CA1CA3_CA2 <- marker_expression(CA1CA3, "CA2", CA2_markers)
+kable(CA1CA3_CA2)
+summary(CA1CA3_CA2$direction)
+
+CA3DG_CA2 <- marker_expression(CA3DG, "CA2", CA2_markers)
+kable(CA3DG_CA2)
+summary(CA3DG_CA2$direction)
+
+#CA4 markers
+CA1DG_CA4 <- marker_expression(CA1DG, "CA4", CA4_markers)
+kable(CA1DG_CA4)
+summary(CA1DG_CA4$direction)
+
+CA1CA3_CA4 <- marker_expression(CA1CA3, "CA4", CA4_markers)
+kable(CA1CA3_CA4)
+summary(CA1CA3_CA4$direction)
+
+CA3DG_CA4 <- marker_expression(CA3DG, "CA4", CA4_markers)
+kable(CA3DG_CA4)
+summary(CA3DG_CA4$direction)
 ```

@@ -8994,3 +8994,4741 @@ DG
 
     ##     CA3      DG neither 
     ##       3      50      36
+
+    #CA2 markers
+    CA1DG_CA2 <- marker_expression(CA1DG, "CA2", CA2_markers)
+    kable(CA1DG_CA2)
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+gene
+</th>
+<th style="text-align:right;">
+pvalue
+</th>
+<th style="text-align:right;">
+lfc
+</th>
+<th style="text-align:left;">
+direction
+</th>
+<th style="text-align:right;">
+logp
+</th>
+<th style="text-align:left;">
+comparison
+</th>
+<th style="text-align:left;">
+marker
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+STARD5
+</td>
+<td style="text-align:right;">
+0.9935771
+</td>
+<td style="text-align:right;">
+0.0162932
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0027984
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TGFB1I1
+</td>
+<td style="text-align:right;">
+0.9898905
+</td>
+<td style="text-align:right;">
+0.0441772
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0044128
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CCDC3
+</td>
+<td style="text-align:right;">
+0.9551579
+</td>
+<td style="text-align:right;">
+-0.1950221
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0199248
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PLCXD3
+</td>
+<td style="text-align:right;">
+0.9351512
+</td>
+<td style="text-align:right;">
+-0.3196008
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0291182
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ADCY5
+</td>
+<td style="text-align:right;">
+0.8410592
+</td>
+<td style="text-align:right;">
+-0.1573519
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0751734
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LMAN2
+</td>
+<td style="text-align:right;">
+0.8361923
+</td>
+<td style="text-align:right;">
+-0.1663754
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0776938
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MMP14
+</td>
+<td style="text-align:right;">
+0.8347651
+</td>
+<td style="text-align:right;">
+0.4434781
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0784357
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GSTO1
+</td>
+<td style="text-align:right;">
+0.7928806
+</td>
+<td style="text-align:right;">
+-0.2536463
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1007922
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CAMK4
+</td>
+<td style="text-align:right;">
+0.7778033
+</td>
+<td style="text-align:right;">
+0.2005606
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1091302
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LRRC8C
+</td>
+<td style="text-align:right;">
+0.7737690
+</td>
+<td style="text-align:right;">
+0.3980932
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1113887
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SYCE2
+</td>
+<td style="text-align:right;">
+0.7041076
+</td>
+<td style="text-align:right;">
+-1.2026633
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1523610
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FGF2
+</td>
+<td style="text-align:right;">
+0.5704946
+</td>
+<td style="text-align:right;">
+1.0620407
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2437484
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EEPD1
+</td>
+<td style="text-align:right;">
+0.5192389
+</td>
+<td style="text-align:right;">
+-0.7643492
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2846328
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FAM46A
+</td>
+<td style="text-align:right;">
+0.4261336
+</td>
+<td style="text-align:right;">
+1.9615263
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3704542
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SLC4A8
+</td>
+<td style="text-align:right;">
+0.3991669
+</td>
+<td style="text-align:right;">
+0.5006611
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3988455
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STXBP5L
+</td>
+<td style="text-align:right;">
+0.3464814
+</td>
+<td style="text-align:right;">
+-0.8131933
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4603201
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ZFP804A
+</td>
+<td style="text-align:right;">
+0.3235648
+</td>
+<td style="text-align:right;">
+0.8243950
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4900388
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+VIT
+</td>
+<td style="text-align:right;">
+0.3213778
+</td>
+<td style="text-align:right;">
+2.6467877
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4929841
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NECAB2
+</td>
+<td style="text-align:right;">
+0.2659709
+</td>
+<td style="text-align:right;">
+-1.2249093
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.5751660
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NDRG3
+</td>
+<td style="text-align:right;">
+0.2513817
+</td>
+<td style="text-align:right;">
+0.3630514
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.5996664
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NTSR2
+</td>
+<td style="text-align:right;">
+0.2224603
+</td>
+<td style="text-align:right;">
+0.8442048
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.6527476
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CACNG5
+</td>
+<td style="text-align:right;">
+0.2028478
+</td>
+<td style="text-align:right;">
+1.6803015
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.6928297
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GPR12
+</td>
+<td style="text-align:right;">
+0.1924836
+</td>
+<td style="text-align:right;">
+1.1624391
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.7156064
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PYGO1
+</td>
+<td style="text-align:right;">
+0.1728874
+</td>
+<td style="text-align:right;">
+-0.7538704
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.7622367
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CLMN
+</td>
+<td style="text-align:right;">
+0.1707979
+</td>
+<td style="text-align:right;">
+-0.8840796
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.7675176
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CTSC
+</td>
+<td style="text-align:right;">
+0.1555730
+</td>
+<td style="text-align:right;">
+2.4131340
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8080659
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RGS14
+</td>
+<td style="text-align:right;">
+0.1526243
+</td>
+<td style="text-align:right;">
+1.0552724
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8163764
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RGS5
+</td>
+<td style="text-align:right;">
+0.1476232
+</td>
+<td style="text-align:right;">
+1.3521955
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8308453
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SRGAP2
+</td>
+<td style="text-align:right;">
+0.0590249
+</td>
+<td style="text-align:right;">
+1.1127172
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.2289650
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FGF5
+</td>
+<td style="text-align:right;">
+0.0486109
+</td>
+<td style="text-align:right;">
+-4.7360174
+</td>
+<td style="text-align:left;">
+DG
+</td>
+<td style="text-align:right;">
+1.3132666
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CACNA2D3
+</td>
+<td style="text-align:right;">
+0.0482890
+</td>
+<td style="text-align:right;">
+1.0153262
+</td>
+<td style="text-align:left;">
+CA1
+</td>
+<td style="text-align:right;">
+1.3161522
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DUSP5
+</td>
+<td style="text-align:right;">
+0.0476250
+</td>
+<td style="text-align:right;">
+1.9199810
+</td>
+<td style="text-align:left;">
+CA1
+</td>
+<td style="text-align:right;">
+1.3221651
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+S100B
+</td>
+<td style="text-align:right;">
+0.0435372
+</td>
+<td style="text-align:right;">
+1.8883109
+</td>
+<td style="text-align:left;">
+CA1
+</td>
+<td style="text-align:right;">
+1.3611396
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PRSS23
+</td>
+<td style="text-align:right;">
+0.0428437
+</td>
+<td style="text-align:right;">
+-4.0970281
+</td>
+<td style="text-align:left;">
+DG
+</td>
+<td style="text-align:right;">
+1.3681135
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+VCAN
+</td>
+<td style="text-align:right;">
+0.0322846
+</td>
+<td style="text-align:right;">
+-4.7241174
+</td>
+<td style="text-align:left;">
+DG
+</td>
+<td style="text-align:right;">
+1.4910042
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ST8SIA6
+</td>
+<td style="text-align:right;">
+0.0310793
+</td>
+<td style="text-align:right;">
+4.6024152
+</td>
+<td style="text-align:left;">
+CA1
+</td>
+<td style="text-align:right;">
+1.5075288
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+</tbody>
+</table>
+
+    summary(CA1DG_CA2$direction)
+
+    ##     CA1      DG neither 
+    ##       4       3      29
+
+    CA1CA3_CA2 <- marker_expression(CA1CA3, "CA2", CA2_markers)
+    kable(CA1CA3_CA2)
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+gene
+</th>
+<th style="text-align:right;">
+pvalue
+</th>
+<th style="text-align:right;">
+lfc
+</th>
+<th style="text-align:left;">
+direction
+</th>
+<th style="text-align:right;">
+logp
+</th>
+<th style="text-align:left;">
+comparison
+</th>
+<th style="text-align:left;">
+marker
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+S100B
+</td>
+<td style="text-align:right;">
+0.9977255
+</td>
+<td style="text-align:right;">
+-0.0037770
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0009889
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SRGAP2
+</td>
+<td style="text-align:right;">
+0.9490577
+</td>
+<td style="text-align:right;">
+-0.0622659
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0227074
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SLC4A8
+</td>
+<td style="text-align:right;">
+0.8972082
+</td>
+<td style="text-align:right;">
+-0.1079909
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0471068
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GSTO1
+</td>
+<td style="text-align:right;">
+0.8119602
+</td>
+<td style="text-align:right;">
+-0.2493835
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0904652
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NDRG3
+</td>
+<td style="text-align:right;">
+0.7476589
+</td>
+<td style="text-align:right;">
+0.1336132
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1262965
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STARD5
+</td>
+<td style="text-align:right;">
+0.7019315
+</td>
+<td style="text-align:right;">
+-0.6818641
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1537053
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PYGO1
+</td>
+<td style="text-align:right;">
+0.6595734
+</td>
+<td style="text-align:right;">
+-0.3089243
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1807369
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CTSC
+</td>
+<td style="text-align:right;">
+0.6294404
+</td>
+<td style="text-align:right;">
+-0.9808923
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2010454
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MMP14
+</td>
+<td style="text-align:right;">
+0.6236426
+</td>
+<td style="text-align:right;">
+-0.9745465
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2050643
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FAM46A
+</td>
+<td style="text-align:right;">
+0.5774541
+</td>
+<td style="text-align:right;">
+-1.4942588
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2384825
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SYCE2
+</td>
+<td style="text-align:right;">
+0.5285267
+</td>
+<td style="text-align:right;">
+-1.9684483
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2769330
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FGF2
+</td>
+<td style="text-align:right;">
+0.4641872
+</td>
+<td style="text-align:right;">
+1.4115874
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3333068
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RGS14
+</td>
+<td style="text-align:right;">
+0.4620550
+</td>
+<td style="text-align:right;">
+0.6454764
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3353063
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STXBP5L
+</td>
+<td style="text-align:right;">
+0.4247891
+</td>
+<td style="text-align:right;">
+-0.7614721
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3718266
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LRRC8C
+</td>
+<td style="text-align:right;">
+0.3710389
+</td>
+<td style="text-align:right;">
+-1.0930686
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4305805
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GPR12
+</td>
+<td style="text-align:right;">
+0.3686918
+</td>
+<td style="text-align:right;">
+0.8980875
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4333365
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EEPD1
+</td>
+<td style="text-align:right;">
+0.3667875
+</td>
+<td style="text-align:right;">
+-1.0754710
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4355855
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+VIT
+</td>
+<td style="text-align:right;">
+0.3399357
+</td>
+<td style="text-align:right;">
+-2.5816984
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4686032
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CACNA2D3
+</td>
+<td style="text-align:right;">
+0.3120334
+</td>
+<td style="text-align:right;">
+-0.5996424
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.5057990
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NTSR2
+</td>
+<td style="text-align:right;">
+0.3054985
+</td>
+<td style="text-align:right;">
+-0.7603744
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.5149910
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ST8SIA6
+</td>
+<td style="text-align:right;">
+0.2016470
+</td>
+<td style="text-align:right;">
+3.1047825
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.6954082
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RGS5
+</td>
+<td style="text-align:right;">
+0.1671370
+</td>
+<td style="text-align:right;">
+-1.3580457
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.7769275
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TGFB1I1
+</td>
+<td style="text-align:right;">
+0.1477010
+</td>
+<td style="text-align:right;">
+-3.4156606
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8306164
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DUSP5
+</td>
+<td style="text-align:right;">
+0.1368807
+</td>
+<td style="text-align:right;">
+-1.5423974
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8636579
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ZFP804A
+</td>
+<td style="text-align:right;">
+0.1212210
+</td>
+<td style="text-align:right;">
+1.2910237
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.9164222
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FGF5
+</td>
+<td style="text-align:right;">
+0.0826691
+</td>
+<td style="text-align:right;">
+-4.4734746
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.0826569
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LMAN2
+</td>
+<td style="text-align:right;">
+0.0619593
+</td>
+<td style="text-align:right;">
+-1.1567661
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.2078933
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PRSS23
+</td>
+<td style="text-align:right;">
+0.0467066
+</td>
+<td style="text-align:right;">
+-4.2405233
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.3306214
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CACNG5
+</td>
+<td style="text-align:right;">
+0.0385633
+</td>
+<td style="text-align:right;">
+2.7255910
+</td>
+<td style="text-align:left;">
+CA1
+</td>
+<td style="text-align:right;">
+1.4138261
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ADCY5
+</td>
+<td style="text-align:right;">
+0.0294636
+</td>
+<td style="text-align:right;">
+-1.2792809
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.5307145
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CLMN
+</td>
+<td style="text-align:right;">
+0.0188761
+</td>
+<td style="text-align:right;">
+-1.4933795
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.7240887
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PLCXD3
+</td>
+<td style="text-align:right;">
+0.0171328
+</td>
+<td style="text-align:right;">
+-5.9662857
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.7661728
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CAMK4
+</td>
+<td style="text-align:right;">
+0.0125333
+</td>
+<td style="text-align:right;">
+-1.3525956
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.9019336
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+VCAN
+</td>
+<td style="text-align:right;">
+0.0070725
+</td>
+<td style="text-align:right;">
+-5.9377661
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.1504243
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CCDC3
+</td>
+<td style="text-align:right;">
+0.0055799
+</td>
+<td style="text-align:right;">
+-5.8589216
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.2533774
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NECAB2
+</td>
+<td style="text-align:right;">
+0.0002185
+</td>
+<td style="text-align:right;">
+-3.4882097
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+3.6605773
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+</tbody>
+</table>
+
+    summary(CA1CA3_CA2$direction)
+
+    ##     CA1     CA3 neither 
+    ##       1       8      27
+
+    CA3DG_CA2 <- marker_expression(CA3DG, "CA2", CA2_markers)
+    kable(CA3DG_CA2)
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+gene
+</th>
+<th style="text-align:right;">
+pvalue
+</th>
+<th style="text-align:right;">
+lfc
+</th>
+<th style="text-align:left;">
+direction
+</th>
+<th style="text-align:right;">
+logp
+</th>
+<th style="text-align:left;">
+comparison
+</th>
+<th style="text-align:left;">
+marker
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+GSTO1
+</td>
+<td style="text-align:right;">
+0.9964599
+</td>
+<td style="text-align:right;">
+-0.0042628
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0015402
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STXBP5L
+</td>
+<td style="text-align:right;">
+0.9618199
+</td>
+<td style="text-align:right;">
+-0.0517211
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0169062
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PRSS23
+</td>
+<td style="text-align:right;">
+0.9355109
+</td>
+<td style="text-align:right;">
+0.1434952
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0289511
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ARG2
+</td>
+<td style="text-align:right;">
+0.9199638
+</td>
+<td style="text-align:right;">
+-0.3804561
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0362293
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FGF5
+</td>
+<td style="text-align:right;">
+0.9025627
+</td>
+<td style="text-align:right;">
+-0.2625428
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0445226
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FGF2
+</td>
+<td style="text-align:right;">
+0.8736317
+</td>
+<td style="text-align:right;">
+-0.3495466
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0586716
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GPR12
+</td>
+<td style="text-align:right;">
+0.8161855
+</td>
+<td style="text-align:right;">
+0.2643516
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0882111
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EEPD1
+</td>
+<td style="text-align:right;">
+0.7924149
+</td>
+<td style="text-align:right;">
+0.3111219
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1010474
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SYCE2
+</td>
+<td style="text-align:right;">
+0.7543322
+</td>
+<td style="text-align:right;">
+0.7657850
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1224373
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STARD5
+</td>
+<td style="text-align:right;">
+0.6343613
+</td>
+<td style="text-align:right;">
+0.6981574
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1976633
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RGS14
+</td>
+<td style="text-align:right;">
+0.6259957
+</td>
+<td style="text-align:right;">
+0.4097959
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2034286
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ZFP804A
+</td>
+<td style="text-align:right;">
+0.5900687
+</td>
+<td style="text-align:right;">
+-0.4666287
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2290974
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ST8SIA6
+</td>
+<td style="text-align:right;">
+0.5606379
+</td>
+<td style="text-align:right;">
+1.4976327
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2513175
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NDRG3
+</td>
+<td style="text-align:right;">
+0.4676081
+</td>
+<td style="text-align:right;">
+0.2294382
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3301180
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CACNG5
+</td>
+<td style="text-align:right;">
+0.4473339
+</td>
+<td style="text-align:right;">
+-1.0452895
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3493682
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SOSTDC1
+</td>
+<td style="text-align:right;">
+0.3853400
+</td>
+<td style="text-align:right;">
+2.5085011
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4141559
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PYGO1
+</td>
+<td style="text-align:right;">
+0.3681432
+</td>
+<td style="text-align:right;">
+-0.4449461
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4339832
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MMP14
+</td>
+<td style="text-align:right;">
+0.3189220
+</td>
+<td style="text-align:right;">
+1.4180246
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4963155
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CLMN
+</td>
+<td style="text-align:right;">
+0.2948182
+</td>
+<td style="text-align:right;">
+0.6092999
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.5304457
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+VCAN
+</td>
+<td style="text-align:right;">
+0.2753338
+</td>
+<td style="text-align:right;">
+1.2136487
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.5601405
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SLC4A8
+</td>
+<td style="text-align:right;">
+0.2197483
+</td>
+<td style="text-align:right;">
+0.6086519
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.6580745
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LRRC8C
+</td>
+<td style="text-align:right;">
+0.0841014
+</td>
+<td style="text-align:right;">
+1.4911618
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.0751968
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1700024P16RIK
+</td>
+<td style="text-align:right;">
+0.0670510
+</td>
+<td style="text-align:right;">
+5.0180267
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.1735949
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FAM46A
+</td>
+<td style="text-align:right;">
+0.0458721
+</td>
+<td style="text-align:right;">
+3.4557852
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.3384516
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LMAN2
+</td>
+<td style="text-align:right;">
+0.0343026
+</td>
+<td style="text-align:right;">
+0.9903907
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.4646730
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+S100B
+</td>
+<td style="text-align:right;">
+0.0143429
+</td>
+<td style="text-align:right;">
+1.8920879
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.8433637
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SRGAP2
+</td>
+<td style="text-align:right;">
+0.0124312
+</td>
+<td style="text-align:right;">
+1.1749831
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.9054883
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ADCY5
+</td>
+<td style="text-align:right;">
+0.0095887
+</td>
+<td style="text-align:right;">
+1.1219289
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.0182389
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CTSC
+</td>
+<td style="text-align:right;">
+0.0056216
+</td>
+<td style="text-align:right;">
+3.3940264
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.2501374
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TGFB1I1
+</td>
+<td style="text-align:right;">
+0.0034586
+</td>
+<td style="text-align:right;">
+3.4598377
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.4610957
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+VIT
+</td>
+<td style="text-align:right;">
+0.0025492
+</td>
+<td style="text-align:right;">
+5.2284861
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.5935931
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NECAB2
+</td>
+<td style="text-align:right;">
+0.0014445
+</td>
+<td style="text-align:right;">
+2.2633004
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.8402683
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NTSR2
+</td>
+<td style="text-align:right;">
+0.0007746
+</td>
+<td style="text-align:right;">
+1.6045792
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+3.1109194
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CAMK4
+</td>
+<td style="text-align:right;">
+0.0000484
+</td>
+<td style="text-align:right;">
+1.5531561
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+4.3150585
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RGS5
+</td>
+<td style="text-align:right;">
+0.0000274
+</td>
+<td style="text-align:right;">
+2.7102412
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+4.5617736
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PLCXD3
+</td>
+<td style="text-align:right;">
+0.0000203
+</td>
+<td style="text-align:right;">
+5.6466849
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+4.6914885
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CACNA2D3
+</td>
+<td style="text-align:right;">
+0.0000095
+</td>
+<td style="text-align:right;">
+1.6149686
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+5.0223894
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DUSP5
+</td>
+<td style="text-align:right;">
+0.0000004
+</td>
+<td style="text-align:right;">
+3.4623784
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+6.4460211
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CCDC3
+</td>
+<td style="text-align:right;">
+0.0000003
+</td>
+<td style="text-align:right;">
+5.6638994
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+6.5873921
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA2
+</td>
+</tr>
+</tbody>
+</table>
+
+    summary(CA3DG_CA2$direction)
+
+    ##     CA3 neither 
+    ##      16      23
+
+    #CA4 markers
+    CA1DG_CA4 <- marker_expression(CA1DG, "CA4", CA4_markers)
+    kable(CA1DG_CA4)
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+gene
+</th>
+<th style="text-align:right;">
+pvalue
+</th>
+<th style="text-align:right;">
+lfc
+</th>
+<th style="text-align:left;">
+direction
+</th>
+<th style="text-align:right;">
+logp
+</th>
+<th style="text-align:left;">
+comparison
+</th>
+<th style="text-align:left;">
+marker
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+RGS12
+</td>
+<td style="text-align:right;">
+0.9870056
+</td>
+<td style="text-align:right;">
+0.0341754
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0056804
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PMP22
+</td>
+<td style="text-align:right;">
+0.9575135
+</td>
+<td style="text-align:right;">
+-0.1540648
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0188551
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HCFC1R1
+</td>
+<td style="text-align:right;">
+0.9258916
+</td>
+<td style="text-align:right;">
+-0.0971213
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0334398
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CAMK2N2
+</td>
+<td style="text-align:right;">
+0.8963837
+</td>
+<td style="text-align:right;">
+-0.1539523
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0475061
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FXYD6
+</td>
+<td style="text-align:right;">
+0.8766904
+</td>
+<td style="text-align:right;">
+-0.3016679
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0571537
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RASL11A
+</td>
+<td style="text-align:right;">
+0.8484333
+</td>
+<td style="text-align:right;">
+0.3478579
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0713823
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ACHE
+</td>
+<td style="text-align:right;">
+0.7948993
+</td>
+<td style="text-align:right;">
+0.2570006
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0996879
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PGP
+</td>
+<td style="text-align:right;">
+0.7843589
+</td>
+<td style="text-align:right;">
+0.2699351
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1054852
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATP6V1F
+</td>
+<td style="text-align:right;">
+0.7287225
+</td>
+<td style="text-align:right;">
+-0.3134524
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1374378
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RPL23
+</td>
+<td style="text-align:right;">
+0.6678181
+</td>
+<td style="text-align:right;">
+-0.2932771
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1753418
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PSMB10
+</td>
+<td style="text-align:right;">
+0.6569476
+</td>
+<td style="text-align:right;">
+0.5380326
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1824693
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RABAC1
+</td>
+<td style="text-align:right;">
+0.6335538
+</td>
+<td style="text-align:right;">
+0.4067661
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1982165
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CTHRC1
+</td>
+<td style="text-align:right;">
+0.5455861
+</td>
+<td style="text-align:right;">
+1.9559600
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2631367
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SERPINF1
+</td>
+<td style="text-align:right;">
+0.5356866
+</td>
+<td style="text-align:right;">
+1.3994361
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2710892
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AI413582
+</td>
+<td style="text-align:right;">
+0.5216133
+</td>
+<td style="text-align:right;">
+0.7560820
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2826513
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RAC3
+</td>
+<td style="text-align:right;">
+0.5110823
+</td>
+<td style="text-align:right;">
+0.8976998
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2915092
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AP2S1
+</td>
+<td style="text-align:right;">
+0.4947345
+</td>
+<td style="text-align:right;">
+0.3973210
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3056278
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+G0S2
+</td>
+<td style="text-align:right;">
+0.4740784
+</td>
+<td style="text-align:right;">
+-2.1673218
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3241498
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CHCHD2
+</td>
+<td style="text-align:right;">
+0.2811228
+</td>
+<td style="text-align:right;">
+0.6003575
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.5511039
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEMA6B
+</td>
+<td style="text-align:right;">
+0.2011970
+</td>
+<td style="text-align:right;">
+0.5716491
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.6963785
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CALB2
+</td>
+<td style="text-align:right;">
+0.1476232
+</td>
+<td style="text-align:right;">
+-4.3086734
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8308453
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EMID1
+</td>
+<td style="text-align:right;">
+0.1163440
+</td>
+<td style="text-align:right;">
+3.3929624
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.9342559
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H2-D1
+</td>
+<td style="text-align:right;">
+0.0674951
+</td>
+<td style="text-align:right;">
+1.2385409
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.1707276
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STMN3
+</td>
+<td style="text-align:right;">
+0.0420588
+</td>
+<td style="text-align:right;">
+0.8972007
+</td>
+<td style="text-align:left;">
+CA1
+</td>
+<td style="text-align:right;">
+1.3761427
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EPHB6
+</td>
+<td style="text-align:right;">
+0.0123581
+</td>
+<td style="text-align:right;">
+1.1619187
+</td>
+<td style="text-align:left;">
+CA1
+</td>
+<td style="text-align:right;">
+1.9080475
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+VGF
+</td>
+<td style="text-align:right;">
+0.0005636
+</td>
+<td style="text-align:right;">
+1.8462365
+</td>
+<td style="text-align:left;">
+CA1
+</td>
+<td style="text-align:right;">
+3.2490660
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SLC6A7
+</td>
+<td style="text-align:right;">
+0.0000019
+</td>
+<td style="text-align:right;">
+2.8665161
+</td>
+<td style="text-align:left;">
+CA1
+</td>
+<td style="text-align:right;">
+5.7256174
+</td>
+<td style="text-align:left;">
+CA1-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+</tbody>
+</table>
+
+    summary(CA1DG_CA4$direction)
+
+    ##     CA1 neither 
+    ##       4      23
+
+    CA1CA3_CA4 <- marker_expression(CA1CA3, "CA4", CA4_markers)
+    kable(CA1CA3_CA4)
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+gene
+</th>
+<th style="text-align:right;">
+pvalue
+</th>
+<th style="text-align:right;">
+lfc
+</th>
+<th style="text-align:left;">
+direction
+</th>
+<th style="text-align:right;">
+logp
+</th>
+<th style="text-align:left;">
+comparison
+</th>
+<th style="text-align:left;">
+marker
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+CHCHD2
+</td>
+<td style="text-align:right;">
+0.9393319
+</td>
+<td style="text-align:right;">
+0.0638881
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0271809
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RPL23
+</td>
+<td style="text-align:right;">
+0.8476304
+</td>
+<td style="text-align:right;">
+-0.1585312
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0717935
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EPHB6
+</td>
+<td style="text-align:right;">
+0.7611097
+</td>
+<td style="text-align:right;">
+0.2075323
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1185528
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RAC3
+</td>
+<td style="text-align:right;">
+0.7403064
+</td>
+<td style="text-align:right;">
+0.5358988
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1305885
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STMN3
+</td>
+<td style="text-align:right;">
+0.7217624
+</td>
+<td style="text-align:right;">
+-0.2209464
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1416057
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATP6V1F
+</td>
+<td style="text-align:right;">
+0.6518695
+</td>
+<td style="text-align:right;">
+-0.4202827
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1858393
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CTHRC1
+</td>
+<td style="text-align:right;">
+0.5920074
+</td>
+<td style="text-align:right;">
+-1.8381969
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2276728
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AI413582
+</td>
+<td style="text-align:right;">
+0.5901141
+</td>
+<td style="text-align:right;">
+-0.6813268
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2290640
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CALB2
+</td>
+<td style="text-align:right;">
+0.5815606
+</td>
+<td style="text-align:right;">
+2.2993757
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2354050
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PSMB10
+</td>
+<td style="text-align:right;">
+0.5695382
+</td>
+<td style="text-align:right;">
+-0.6935677
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2444771
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FXYD6
+</td>
+<td style="text-align:right;">
+0.5509566
+</td>
+<td style="text-align:right;">
+-1.0528350
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2588826
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RABAC1
+</td>
+<td style="text-align:right;">
+0.5042349
+</td>
+<td style="text-align:right;">
+-0.5801328
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2973671
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PMP22
+</td>
+<td style="text-align:right;">
+0.4841101
+</td>
+<td style="text-align:right;">
+-1.5807953
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3150558
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EMID1
+</td>
+<td style="text-align:right;">
+0.4643576
+</td>
+<td style="text-align:right;">
+1.8677291
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3331475
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HCFC1R1
+</td>
+<td style="text-align:right;">
+0.4193288
+</td>
+<td style="text-align:right;">
+-0.6804480
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3774453
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SLC41A3
+</td>
+<td style="text-align:right;">
+0.3937564
+</td>
+<td style="text-align:right;">
+-3.0953645
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4047724
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEMA6B
+</td>
+<td style="text-align:right;">
+0.3593979
+</td>
+<td style="text-align:right;">
+-0.4576484
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4444244
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+VGF
+</td>
+<td style="text-align:right;">
+0.3305754
+</td>
+<td style="text-align:right;">
+-0.6776760
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4807295
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SERPINF1
+</td>
+<td style="text-align:right;">
+0.2742661
+</td>
+<td style="text-align:right;">
+-2.3078238
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.5618279
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PGP
+</td>
+<td style="text-align:right;">
+0.1527525
+</td>
+<td style="text-align:right;">
+-1.1639475
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8160118
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H2-D1
+</td>
+<td style="text-align:right;">
+0.1447892
+</td>
+<td style="text-align:right;">
+1.0814829
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8392637
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+G0S2
+</td>
+<td style="text-align:right;">
+0.1414124
+</td>
+<td style="text-align:right;">
+-4.1569204
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8495125
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RGS12
+</td>
+<td style="text-align:right;">
+0.1289808
+</td>
+<td style="text-align:right;">
+-2.2823272
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8894750
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CAMK2N2
+</td>
+<td style="text-align:right;">
+0.1046044
+</td>
+<td style="text-align:right;">
+-1.4660077
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.9804501
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SLC6A7
+</td>
+<td style="text-align:right;">
+0.0922762
+</td>
+<td style="text-align:right;">
+-1.2031784
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.0349102
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AP2S1
+</td>
+<td style="text-align:right;">
+0.0744151
+</td>
+<td style="text-align:right;">
+-0.9393780
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.1283390
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RASL11A
+</td>
+<td style="text-align:right;">
+0.0539059
+</td>
+<td style="text-align:right;">
+-2.5692005
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.2683639
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ACHE
+</td>
+<td style="text-align:right;">
+0.0055102
+</td>
+<td style="text-align:right;">
+-2.0049108
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.2588358
+</td>
+<td style="text-align:left;">
+CA1-CA3
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+</tbody>
+</table>
+
+    summary(CA1CA3_CA4$direction)
+
+    ##     CA3 neither 
+    ##       1      27
+
+    CA3DG_CA4 <- marker_expression(CA3DG, "CA4", CA4_markers)
+    kable(CA3DG_CA4)
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+gene
+</th>
+<th style="text-align:right;">
+pvalue
+</th>
+<th style="text-align:right;">
+lfc
+</th>
+<th style="text-align:left;">
+direction
+</th>
+<th style="text-align:right;">
+logp
+</th>
+<th style="text-align:left;">
+comparison
+</th>
+<th style="text-align:left;">
+marker
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+RBPMS2
+</td>
+<td style="text-align:right;">
+0.9817130
+</td>
+<td style="text-align:right;">
+-0.0943706
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0080155
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATP6V1F
+</td>
+<td style="text-align:right;">
+0.9138559
+</td>
+<td style="text-align:right;">
+0.1068304
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0391223
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H2-D1
+</td>
+<td style="text-align:right;">
+0.8664988
+</td>
+<td style="text-align:right;">
+0.1570580
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0622320
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RPL23
+</td>
+<td style="text-align:right;">
+0.8579207
+</td>
+<td style="text-align:right;">
+-0.1347459
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0665529
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RAC3
+</td>
+<td style="text-align:right;">
+0.8156012
+</td>
+<td style="text-align:right;">
+0.3618010
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.0885221
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GAL
+</td>
+<td style="text-align:right;">
+0.7029866
+</td>
+<td style="text-align:right;">
+-3.8001751
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1530530
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FXYD6
+</td>
+<td style="text-align:right;">
+0.6342407
+</td>
+<td style="text-align:right;">
+0.7511671
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.1977459
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EMID1
+</td>
+<td style="text-align:right;">
+0.5234747
+</td>
+<td style="text-align:right;">
+1.5252333
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.2811043
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PMP22
+</td>
+<td style="text-align:right;">
+0.4256317
+</td>
+<td style="text-align:right;">
+1.4267304
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.3709661
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HCFC1R1
+</td>
+<td style="text-align:right;">
+0.3700061
+</td>
+<td style="text-align:right;">
+0.5833267
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.4317911
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CHCHD2
+</td>
+<td style="text-align:right;">
+0.2877634
+</td>
+<td style="text-align:right;">
+0.5364694
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.5409645
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+G0S2
+</td>
+<td style="text-align:right;">
+0.2613628
+</td>
+<td style="text-align:right;">
+1.9895986
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.5827562
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SLC41A3
+</td>
+<td style="text-align:right;">
+0.2089284
+</td>
+<td style="text-align:right;">
+3.0685938
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.6800025
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PSMB10
+</td>
+<td style="text-align:right;">
+0.1355751
+</td>
+<td style="text-align:right;">
+1.2316003
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.8678201
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RABAC1
+</td>
+<td style="text-align:right;">
+0.1057687
+</td>
+<td style="text-align:right;">
+0.9868989
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+0.9756430
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CTHRC1
+</td>
+<td style="text-align:right;">
+0.0911670
+</td>
+<td style="text-align:right;">
+3.7941569
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.0401622
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AI413582
+</td>
+<td style="text-align:right;">
+0.0796733
+</td>
+<td style="text-align:right;">
+1.4374087
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.0986871
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CAMK2N2
+</td>
+<td style="text-align:right;">
+0.0565054
+</td>
+<td style="text-align:right;">
+1.3120554
+</td>
+<td style="text-align:left;">
+neither
+</td>
+<td style="text-align:right;">
+1.2479103
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RGS12
+</td>
+<td style="text-align:right;">
+0.0292995
+</td>
+<td style="text-align:right;">
+2.3165026
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.5331398
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+EPHB6
+</td>
+<td style="text-align:right;">
+0.0143680
+</td>
+<td style="text-align:right;">
+0.9543864
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.8426050
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PGP
+</td>
+<td style="text-align:right;">
+0.0106790
+</td>
+<td style="text-align:right;">
+1.4338826
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+1.9714701
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SERPINF1
+</td>
+<td style="text-align:right;">
+0.0048095
+</td>
+<td style="text-align:right;">
+3.7072599
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.3179017
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CALB2
+</td>
+<td style="text-align:right;">
+0.0028917
+</td>
+<td style="text-align:right;">
+-6.6080490
+</td>
+<td style="text-align:left;">
+DG
+</td>
+<td style="text-align:right;">
+2.5388517
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEMA6B
+</td>
+<td style="text-align:right;">
+0.0012700
+</td>
+<td style="text-align:right;">
+1.0292975
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.8962102
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STMN3
+</td>
+<td style="text-align:right;">
+0.0012435
+</td>
+<td style="text-align:right;">
+1.1181471
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+2.9053499
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AP2S1
+</td>
+<td style="text-align:right;">
+0.0001549
+</td>
+<td style="text-align:right;">
+1.3366990
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+3.8100753
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RASL11A
+</td>
+<td style="text-align:right;">
+0.0000751
+</td>
+<td style="text-align:right;">
+2.9170584
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+4.1245857
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ACHE
+</td>
+<td style="text-align:right;">
+0.0000040
+</td>
+<td style="text-align:right;">
+2.2619114
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+5.4028463
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+VGF
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+2.5239125
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+8.6435045
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SLC6A7
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+4.0696945
+</td>
+<td style="text-align:left;">
+CA3
+</td>
+<td style="text-align:right;">
+17.2559538
+</td>
+<td style="text-align:left;">
+CA3-DG
+</td>
+<td style="text-align:left;">
+CA4
+</td>
+</tr>
+</tbody>
+</table>
+
+    summary(CA3DG_CA4$direction)
+
+    ##     CA3      DG neither 
+    ##      11       1      18
