@@ -11,22 +11,9 @@ library(kableExtra) # for pretty tables
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r subfieldpvals}
-pvals <- read.csv("../data/02a_rldpadjs.csv", header = T)
-colnames(pvals)[1] <- "gene"
-pvals$gene <- str_to_upper(pvals$gene)
-
-names(pvals)
-
-CA1DG <- pvals %>% dplyr::select(gene, padjPunchCA1DG) %>% dplyr::filter(padjPunchCA1DG < 0.01)
-CA1CA3 <- pvals %>% dplyr::select(gene, padjPunchCA1CA3) %>% dplyr::filter(padjPunchCA1CA3 < 0.01)
-CA3DG <- pvals %>% dplyr::select(gene, padjPunchCA3DG)  %>% dplyr::filter(padjPunchCA3DG < 0.01)
-```
-
 Genes from Cembrowski sublement file 1 <https://elifesciences.org/articles/14997/figures>
 
 ```{r markergenes}
-
 # import cembrowski markers
 cembrowskisupp <- read.table("../data/cembrowksi_markers/elife-14997-supp1-v1_dendrogram.txt", sep="\t", header = T)
 
@@ -65,22 +52,65 @@ marker_expression <- function(mydf, subfield, markers){
     dplyr::filter(gene %in% c(MARKERS)) %>%
     dplyr::mutate(marker = subfield) %>%
     droplevels()
-    print(df)
+    return(df)
+}
+```
+
+
+```{r subfieldpvals}
+# import subfield specific data
+wrangledata <- function(filename, mycomparison){
+  mydata <- read.csv(filename, header = T)
+  mydata$gene <- str_to_upper(mydata$gene)
+  mydata$comparison <- mycomparison
+  return(mydata)
 }
 
-CA1a <- marker_expression(CA1DG, "CA1", CA1_markers)
+CA1DG <- wrangledata("../data/DGvCA1.csv", "CA1-DG")
+CA1CA3 <- wrangledata("../data/CA3vCA1.csv", "CA1-CA3")
+CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3-DG")
+```
+
+```{r}
+#look for markers in each supfield
+
+#CA1 markers
+CA1DG_CA1 <- marker_expression(CA1DG, "CA1", CA1_markers)
+kable(CA1DG_CA1)
+summary(CA1DG_CA1$direction)
+
+CA1CA3_CA1 <- marker_expression(CA1CA3, "CA1", CA1_markers)
+kable(CA1CA3_CA1)
+summary(CA1CA3_CA1$direction)
+
+CA3DG_CA1 <- marker_expression(CA3DG, "CA1", CA1_markers)
+kable(CA3DG_CA1)
+summary(CA3DG_CA1$direction)
+
+#CA3 markers
+CA1DG_CA3 <- marker_expression(CA1DG, "CA3", CA3_markers)
+kable(CA1DG_CA3)
+summary(CA1DG_CA3$direction)
+
+CA1CA3_CA3 <- marker_expression(CA1CA3, "CA3", CA3_markers)
+kable(CA1CA3_CA3)
+summary(CA1CA3_CA3$direction)
+
+CA3DG_CA3 <- marker_expression(CA3DG, "CA3", CA3_markers)
+kable(CA3DG_CA3)
+summary(CA3DG_CA3$direction)
 
 
-oligodendrocyte <- marker_expression("oligodendrocyte", oligodendrocyte_markers)
-microglia <- marker_expression("microglia", microglia_markers)
-neuron <- marker_expression("neuron", neuron_markers)
+#DG markers
+CA1DG_DG <- marker_expression(CA1DG, "DG", DG_markers)
+kable(CA1DG_DG)
+summary(CA1DG_DG$direction)
 
-# combine four small data frames into one and sort
-marker_df <- rbind.data.frame(astrocyte, oligodendrocyte, 
-                 microglia, neuron)
-marker_df <- marker_df %>% select(marker, gene, lfc, padj, direction) 
-marker_df$direction <- as.character(marker_df$direction)
-marker_df <- arrange(marker_df, marker, direction)
-kable(marker_df) 
-head(marker_df)
+CA1CA3_DG <- marker_expression(CA1CA3, "DG", DG_markers)
+kable(CA1CA3_DG)
+summary(CA1CA3_DG$direction)
+
+CA3DG_DG <- marker_expression(CA3DG, "DG", DG_markers)
+kable(CA3DG_DG)
+summary(CA3DG_DG$direction)
 ```
