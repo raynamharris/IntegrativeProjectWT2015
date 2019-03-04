@@ -64,7 +64,7 @@ CA1CA3 <- wrangledata("../data/CA3vCA1.csv", "CA1-CA3")
 CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3-DG")
 ```
 
-```{r}
+```{r enrichementvalidation}
 #look for markers in each supfield
 # make data frames of genes expression results for markers 
 
