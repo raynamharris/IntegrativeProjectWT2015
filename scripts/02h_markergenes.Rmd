@@ -117,6 +117,6 @@ Then, I checked to see how many of the markers that Cembrowski found to be enric
 | CA1 | CA1 v DG | 0.83 | 0.00 | 0.17 |
 | CA1 | CA1 v CA3 | 0.83 | 0.06 | 0.11 |
 | CA3 | CA3 v DG | 0.60 | 0.00 | 0.40 |
-| CA3 | CA1 v CA3 | 0.70 | 0.00 | 0.30 |
-| DG | CA1 v DG | 0.68 | 0.00 | 0.32 |
-| DG | CA3 v DG | 0.69 | 0.00 | 0.31 |
+| CA3 | CA3 v CA1 | 0.70 | 0.00 | 0.30 |
+| DG | DG v CA1 | 0.68 | 0.00 | 0.32 |
+| DG | DG vCA3 | 0.69 | 0.00 | 0.31 |

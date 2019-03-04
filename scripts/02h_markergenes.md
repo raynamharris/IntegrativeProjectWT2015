@@ -181,21 +181,21 @@ are the results:
 </tr>
 <tr class="even">
 <td>CA3</td>
-<td>CA1 v CA3</td>
+<td>CA3 v CA1</td>
 <td>0.70</td>
 <td>0.00</td>
 <td>0.30</td>
 </tr>
 <tr class="odd">
 <td>DG</td>
-<td>CA1 v DG</td>
+<td>DG v CA1</td>
 <td>0.68</td>
 <td>0.00</td>
 <td>0.32</td>
 </tr>
 <tr class="even">
 <td>DG</td>
-<td>CA3 v DG</td>
+<td>DG vCA3</td>
 <td>0.69</td>
 <td>0.00</td>
 <td>0.31</td>
