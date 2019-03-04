@@ -1,0 +1,86 @@
+---
+title: "candidate genes"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(stringr) # for sentence to upper case conversion
+library(kableExtra) # for pretty tables
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r subfieldpvals}
+pvals <- read.csv("../data/02a_rldpadjs.csv", header = T)
+colnames(pvals)[1] <- "gene"
+pvals$gene <- str_to_upper(pvals$gene)
+
+names(pvals)
+
+CA1DG <- pvals %>% dplyr::select(gene, padjPunchCA1DG) %>% dplyr::filter(padjPunchCA1DG < 0.01)
+CA1CA3 <- pvals %>% dplyr::select(gene, padjPunchCA1CA3) %>% dplyr::filter(padjPunchCA1CA3 < 0.01)
+CA3DG <- pvals %>% dplyr::select(gene, padjPunchCA3DG)  %>% dplyr::filter(padjPunchCA3DG < 0.01)
+```
+
+Genes from Cembrowski sublement file 1 <https://elifesciences.org/articles/14997/figures>
+
+```{r markergenes}
+
+# import cembrowski markers
+cembrowskisupp <- read.table("../data/cembrowksi_markers/elife-14997-supp1-v1_dendrogram.txt", sep="\t", header = T)
+
+# select just columns with gene symbol and enriched column
+# then rename gene column and convert to uppercase
+cembrowskisupp <- cembrowskisupp %>% dplyr::select(gene_short_name, enriched) 
+colnames(cembrowskisupp)[1] <- "gene"
+cembrowskisupp$gene <- str_to_upper(cembrowskisupp$gene)
+head(cembrowskisupp)
+
+# subset my maker
+
+cembrowksimarkers <- function(subfields){
+  mydf <- cembrowskisupp %>% 
+  dplyr::filter(enriched %in% subfields) %>% 
+  select(gene)
+  names(mydf) <- NULL
+  mylist <- as.list(mydf[,1])
+  return(mylist)
+}
+
+levels(cembrowskisupp$enriched)
+
+CA1_markers <- cembrowksimarkers(c("ca1_d", "ca1_v", "ca1_d-ca1_v"))
+DG_markers <- cembrowksimarkers(c("dg_d", "dg_v", "dg_d-dg_v"))
+CA3_markers <- cembrowksimarkers(c("ca3_d", "ca3_v", "ca3_d-ca3_v-ca2-ca1_d-ca1_v"))
+CA2_markers <- cembrowksimarkers(c("ca2"))
+CA4_markers <- cembrowksimarkers(c("ca4"))
+
+
+
+# make data frames of genes expression results for markers 
+marker_expression <- function(mydf, subfield, markers){
+    MARKERS <- str_to_upper(markers)
+    df <- mydf %>%
+    dplyr::filter(gene %in% c(MARKERS)) %>%
+    dplyr::mutate(marker = subfield) %>%
+    droplevels()
+    print(df)
+}
+
+CA1a <- marker_expression(CA1DG, "CA1", CA1_markers)
+
+
+oligodendrocyte <- marker_expression("oligodendrocyte", oligodendrocyte_markers)
+microglia <- marker_expression("microglia", microglia_markers)
+neuron <- marker_expression("neuron", neuron_markers)
+
+# combine four small data frames into one and sort
+marker_df <- rbind.data.frame(astrocyte, oligodendrocyte, 
+                 microglia, neuron)
+marker_df <- marker_df %>% select(marker, gene, lfc, padj, direction) 
+marker_df$direction <- as.character(marker_df$direction)
+marker_df <- arrange(marker_df, marker, direction)
+kable(marker_df) 
+head(marker_df)
+```

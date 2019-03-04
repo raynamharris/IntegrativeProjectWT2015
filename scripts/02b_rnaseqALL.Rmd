@@ -73,11 +73,6 @@ write.csv(vsd, file = "../data/02b_vsd.csv", row.names = T)
 res <- results(dds, contrast =c("Punch", "CA1", "DG"), independentFiltering = T)
 summary(res)
 head((res[order(res$padj),]), 10)
-
-## Order by adjusted p-value
-res <- res[order(res$padj),]
-resdata <- as.data.frame(res)
-head(resdata,30)
 ```
 
 
@@ -95,13 +90,12 @@ head((res[order(res$padj),]), 10)
 res <- results(dds, contrast =c("Punch", "CA3", "DG"), independentFiltering = T)
 summary(res)
 head((res[order(res$padj),]), 10)
-head((res[order(res$log2FoldChange),]), 10)
 ```
 
 ## this is for consistent yoked-consistent
 
 ```{r}
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T)
 summary(res)
 head((res[order(res$padj),]), 10)
 ```
@@ -109,25 +103,17 @@ head((res[order(res$padj),]), 10)
 ## this is for consistent yoked-conflict yoked-consistent DG
 
 ```{r}
-res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
+res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T)
 summary(res)
-table(res$padj<0.05)
 head((res[order(res$padj),]), 10)
-
-## Order by adjusted p-value
-res <- res[order(res$padj),]
-resdata <- as.data.frame(res)
-head(resdata,30)
 ```
 
 ## this is for consistent-conflict vs yoked-conflict 
 
 ```{r}
-res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
+res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T)
 summary(res)
 head((res[order(res$padj),]), 10)
-table(res$padj<0.05)
-table(res$padj<0.1)
 ```
 
 ## this is for consistent conflict yoked-conflict
@@ -136,9 +122,6 @@ table(res$padj<0.1)
 res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T)
 summary(res)
 head((res[order(res$padj),]), 10)
-head((res[order(res$log2FoldChange),]), 10)
-table(res$padj<0.05)
-table(res$padj<0.1)
 ```
 
 ```{r heatmap_prep}
@@ -442,82 +425,6 @@ dev.off()
 
 ```
 
-
-### consistent yoked_consistent
-
-```{r volcanoconsistentyoked_consistent}
-res <- results(dds, contrast =c("APA2",  "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.05)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-data <- data.frame(gene = row.names(res),
-                   pvalue = -log10(res$padj), 
-                   lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "consistent", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "yoked_consistent", 
-                                    no = "none")))
-top_labelled <- top_n(data, n = 5, wt = lfc)
-
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
-  theme_bw(base_size = 8) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = volcano2) + 
-  theme(panel.grid.minor=element_blank(),
-           panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (consistent/yoked_consistent)",
-                     limits=c(-10, 10)) +
-  scale_y_continuous(name="-log10 (adjusted p-value")  +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
-colored
-
-pdf(file="../figures/02b_RNAseqAll/Allconsistentyoked_consistent.pdf", width=1.5, height=1.75)
-plot(colored)
-dev.off()
-```
-
-
-#### consistent yoked-consistent
-
-```{r volcanoconsistentconflict}
-res <- results(dds, contrast =c("APA2",  "conflict", "consistent"), independentFiltering = T, alpha = 0.05)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-data <- data.frame(gene = row.names(res),
-                   pvalue = -log10(res$padj), 
-                   lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(color = ifelse(data$lfc > 0 & data$pvalue > 1.3, 
-                        yes = "conflict", 
-                        no = ifelse(data$lfc < 0 & data$pvalue > 1.3, 
-                                    yes = "consistent", 
-                                    no = "none")))
-top_labelled <- top_n(data, n = 5, wt = lfc)
-
-colored <- ggplot(data, aes(x = lfc, y = pvalue)) + 
-  geom_point(aes(color = factor(color)), size = 0.25, alpha = 0.5, na.rm = T) + # add gene points
-  theme_bw(base_size = 8) + # clean up theme
-  theme(legend.position = "none") + # remove legend 
-  scale_color_manual(values = volcano2) + 
-  theme(panel.grid.minor=element_blank(),
-           panel.grid.major=element_blank()) + 
-  scale_x_continuous(name="log2 (conflict/consistent)",
-                     limits=c(-10, 10)) +
-  scale_y_continuous(name="-log10 (adjusted p-value")  +
-  geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2 ) 
-colored
-
-pdf(file="../figures/02b_RNAseqAll/Allconsistentconflict.pdf", width=1.5, height=1.75)
-plot(colored)
-dev.off()
-
-```
 
 ## plot single gene counts
 
