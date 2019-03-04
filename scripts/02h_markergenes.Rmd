@@ -63,14 +63,6 @@ CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3-DG")
 ```{r}
 #look for markers in each supfield
 # make data frames of genes expression results for markers 
-marker_expression <- function(mydf, subfield, markers){
-    MARKERS <- str_to_upper(markers)
-    df <- mydf %>%
-    dplyr::filter(gene %in% c(MARKERS)) %>%
-    dplyr::mutate(marker = subfield) %>%
-    droplevels()
-    return(kable(head(df)))
-}
 
 marker_summary <- function(mydf, subfield, markers){
     MARKERS <- str_to_upper(markers)
@@ -78,55 +70,36 @@ marker_summary <- function(mydf, subfield, markers){
     dplyr::filter(gene %in% c(MARKERS)) %>%
     dplyr::mutate(marker = subfield) %>%
     droplevels()
+    #return(kable(head(df)))
     return(summary(df$direction))
 }
 
 
 #CA1 markers
-marker_expression(CA1DG, "CA1", CA1_markers)
-marker_expression(CA1CA3, "CA1", CA1_markers)
-marker_expression(CA3DG, "CA1", CA1_markers)
-
 marker_summary(CA1DG, "CA1", CA1_markers)
 marker_summary(CA1CA3, "CA1", CA1_markers)
 marker_summary(CA3DG, "CA1", CA1_markers)
 
 
 #CA3 markers
-marker_expression(CA1DG, "CA3", CA3_markers)
-marker_expression(CA1CA3, "CA3", CA3_markers)
-marker_expression(CA3DG, "CA3", CA3_markers)
-
 marker_summary(CA1DG, "CA3", CA3_markers)
 marker_summary(CA1CA3, "CA3", CA3_markers)
 marker_summary(CA3DG, "CA3", CA3_markers)
 
 
 #DG markers
-marker_expression(CA1DG, "DG", DG_markers)
-marker_expression(CA1CA3, "DG", DG_markers)
-marker_expression(CA3DG, "DG", DG_markers)
-
 marker_summary(CA1DG, "DG", DG_markers)
 marker_summary(CA1CA3, "DG", DG_markers)
 marker_summary(CA3DG, "DG", DG_markers)
 
 
 #CA2 markers
-marker_expression(CA1DG, "CA2", CA2_markers)
-marker_expression(CA1CA3, "CA2", CA2_markers)
-marker_expression(CA3DG, "CA2", CA2_markers)
-
 marker_summary(CA1DG, "CA2", CA2_markers)
 marker_summary(CA1CA3, "CA2", CA2_markers)
 marker_summary(CA3DG, "CA2", CA2_markers)
 
 
 #CA4 markers
-marker_expression(CA1DG, "CA4", CA4_markers)
-marker_expression(CA1CA3, "CA4", CA4_markers)
-marker_expression(CA3DG, "CA4", CA4_markers)
-
 marker_summary(CA1DG, "CA4", CA4_markers)
 marker_summary(CA1CA3, "CA4", CA4_markers)
 marker_summary(CA3DG, "CA4", CA4_markers)
