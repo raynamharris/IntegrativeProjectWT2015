@@ -26,6 +26,7 @@ knitr::opts_chunk$set(fig.path = '../figures/04_integration/')
 ```
 
 ## Import Data
+
 ```{r importdata}
 # behavior
 behavior <- read.csv("../data/01a_behavior.csv", header = T)
