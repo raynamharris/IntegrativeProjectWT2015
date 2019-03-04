@@ -43,17 +43,6 @@ CA3_markers <- cembrowksimarkers(c("ca3_d", "ca3_v", "ca3_d-ca3_v-ca2-ca1_d-ca1_
 CA2_markers <- cembrowksimarkers(c("ca2"))
 CA4_markers <- cembrowksimarkers(c("ca4"))
 
-
-
-# make data frames of genes expression results for markers 
-marker_expression <- function(mydf, subfield, markers){
-    MARKERS <- str_to_upper(markers)
-    df <- mydf %>%
-    dplyr::filter(gene %in% c(MARKERS)) %>%
-    dplyr::mutate(marker = subfield) %>%
-    droplevels()
-    return(df)
-}
 ```
 
 
@@ -73,70 +62,73 @@ CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3-DG")
 
 ```{r}
 #look for markers in each supfield
+# make data frames of genes expression results for markers 
+marker_expression <- function(mydf, subfield, markers){
+    MARKERS <- str_to_upper(markers)
+    df <- mydf %>%
+    dplyr::filter(gene %in% c(MARKERS)) %>%
+    dplyr::mutate(marker = subfield) %>%
+    droplevels()
+    return(kable(head(df)))
+}
+
+marker_summary <- function(mydf, subfield, markers){
+    MARKERS <- str_to_upper(markers)
+    df <- mydf %>%
+    dplyr::filter(gene %in% c(MARKERS)) %>%
+    dplyr::mutate(marker = subfield) %>%
+    droplevels()
+    return(summary(df$direction))
+}
+
 
 #CA1 markers
-CA1DG_CA1 <- marker_expression(CA1DG, "CA1", CA1_markers)
-kable(CA1DG_CA1)
-summary(CA1DG_CA1$direction)
+marker_expression(CA1DG, "CA1", CA1_markers)
+marker_expression(CA1CA3, "CA1", CA1_markers)
+marker_expression(CA3DG, "CA1", CA1_markers)
 
-CA1CA3_CA1 <- marker_expression(CA1CA3, "CA1", CA1_markers)
-kable(CA1CA3_CA1)
-summary(CA1CA3_CA1$direction)
+marker_summary(CA1DG, "CA1", CA1_markers)
+marker_summary(CA1CA3, "CA1", CA1_markers)
+marker_summary(CA3DG, "CA1", CA1_markers)
 
-CA3DG_CA1 <- marker_expression(CA3DG, "CA1", CA1_markers)
-kable(CA3DG_CA1)
-summary(CA3DG_CA1$direction)
 
 #CA3 markers
-CA1DG_CA3 <- marker_expression(CA1DG, "CA3", CA3_markers)
-kable(CA1DG_CA3)
-summary(CA1DG_CA3$direction)
+marker_expression(CA1DG, "CA3", CA3_markers)
+marker_expression(CA1CA3, "CA3", CA3_markers)
+marker_expression(CA3DG, "CA3", CA3_markers)
 
-CA1CA3_CA3 <- marker_expression(CA1CA3, "CA3", CA3_markers)
-kable(CA1CA3_CA3)
-summary(CA1CA3_CA3$direction)
-
-CA3DG_CA3 <- marker_expression(CA3DG, "CA3", CA3_markers)
-kable(CA3DG_CA3)
-summary(CA3DG_CA3$direction)
+marker_summary(CA1DG, "CA3", CA3_markers)
+marker_summary(CA1CA3, "CA3", CA3_markers)
+marker_summary(CA3DG, "CA3", CA3_markers)
 
 
 #DG markers
-CA1DG_DG <- marker_expression(CA1DG, "DG", DG_markers)
-kable(CA1DG_DG)
-summary(CA1DG_DG$direction)
+marker_expression(CA1DG, "DG", DG_markers)
+marker_expression(CA1CA3, "DG", DG_markers)
+marker_expression(CA3DG, "DG", DG_markers)
 
-CA1CA3_DG <- marker_expression(CA1CA3, "DG", DG_markers)
-kable(CA1CA3_DG)
-summary(CA1CA3_DG$direction)
+marker_summary(CA1DG, "DG", DG_markers)
+marker_summary(CA1CA3, "DG", DG_markers)
+marker_summary(CA3DG, "DG", DG_markers)
 
-CA3DG_DG <- marker_expression(CA3DG, "DG", DG_markers)
-kable(CA3DG_DG)
-summary(CA3DG_DG$direction)
 
 #CA2 markers
-CA1DG_CA2 <- marker_expression(CA1DG, "CA2", CA2_markers)
-kable(CA1DG_CA2)
-summary(CA1DG_CA2$direction)
+marker_expression(CA1DG, "CA2", CA2_markers)
+marker_expression(CA1CA3, "CA2", CA2_markers)
+marker_expression(CA3DG, "CA2", CA2_markers)
 
-CA1CA3_CA2 <- marker_expression(CA1CA3, "CA2", CA2_markers)
-kable(CA1CA3_CA2)
-summary(CA1CA3_CA2$direction)
+marker_summary(CA1DG, "CA2", CA2_markers)
+marker_summary(CA1CA3, "CA2", CA2_markers)
+marker_summary(CA3DG, "CA2", CA2_markers)
 
-CA3DG_CA2 <- marker_expression(CA3DG, "CA2", CA2_markers)
-kable(CA3DG_CA2)
-summary(CA3DG_CA2$direction)
 
 #CA4 markers
-CA1DG_CA4 <- marker_expression(CA1DG, "CA4", CA4_markers)
-kable(CA1DG_CA4)
-summary(CA1DG_CA4$direction)
+marker_expression(CA1DG, "CA4", CA4_markers)
+marker_expression(CA1CA3, "CA4", CA4_markers)
+marker_expression(CA3DG, "CA4", CA4_markers)
 
-CA1CA3_CA4 <- marker_expression(CA1CA3, "CA4", CA4_markers)
-kable(CA1CA3_CA4)
-summary(CA1CA3_CA4$direction)
+marker_summary(CA1DG, "CA4", CA4_markers)
+marker_summary(CA1CA3, "CA4", CA4_markers)
+marker_summary(CA3DG, "CA4", CA4_markers)
 
-CA3DG_CA4 <- marker_expression(CA3DG, "CA4", CA4_markers)
-kable(CA3DG_CA4)
-summary(CA3DG_CA4$direction)
 ```
