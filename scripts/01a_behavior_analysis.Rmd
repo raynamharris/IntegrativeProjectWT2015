@@ -149,10 +149,10 @@ To make the point and line graphs, I must create and merge some data frames
 
 ```{r twobehaviors}
 ## number of entrances
-behaviorsummaryNumAPA2 <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
-behaviorsummaryNumAPA2$APA2 <- factor(behaviorsummaryNumAPA2$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+meannumentr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+meannumentr$APA2 <- factor(meannumentr$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
 
-numentr <- ggplot(behaviorsummaryNumAPA2, 
+numentr <- ggplot(meannumentr, 
                   aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 2) +
@@ -288,40 +288,17 @@ ggplot(perc_data, aes(x=PC, y=percent)) +
   geom_text(aes(label=round(percent, 2)), size=4, vjust=-.5) + 
   xlim(0, 10)
 
-## statistics
-aov1 <- aov(PC1 ~ APA2, data=scoresdf)
-summary(aov1) # p = 1.01e-13
-TukeyHSD(aov1, which = "APA2") # p<< 0.001 for both control comparisions
 
-aov2 <- aov(PC2 ~ APA2, data=scoresdf)
-summary(aov2) # p = 0.0295 *
-TukeyHSD(aov2, which = "APA2") # p > 0.05
+## print anova and TukeyHSD stats for first 6 PCs
+j <- 0
+for (i in (scoresdf[,c(1:6)])){
+  j <- j+1
+  print(paste("PC", j, sep = " "))
+  myaov <- aov(i ~ APA2, data=scoresdf)
+  print(summary(myaov))
+  print(TukeyHSD(myaov, which = "APA2"))
+}
 
-summary(aov(PC3 ~ APA2, data=scoresdf)) # p = 0.117
-TukeyHSD((aov(PC3 ~ APA2, data=scoresdf)), which = "APA2") 
-
-summary(aov(PC4 ~ APA2, data=scoresdf))
-TukeyHSD((aov(PC4 ~ APA2, data=scoresdf)), which = "APA2") 
-
-summary(aov(PC5 ~ APA2, data=scoresdf))
-TukeyHSD((aov(PC5 ~ APA2, data=scoresdf)), which = "APA2") 
-
-summary(aov(PC6 ~ APA2, data=scoresdf))
-TukeyHSD((aov(PC6 ~ APA2, data=scoresdf)), which = "APA2") # p > 0.05
-
-
-pca12 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
-    geom_point(size=3, alpha = 0.7) +
-    xlab(paste0("PC 1: ", percent[1],"% variance")) +
-    ylab(paste0("PC 2: ", percent[2],"% variance")) +
-    scale_colour_manual(values=c(colorvalAPA00)) + 
-    theme_cowplot(font_size = 8, line_size = 0.25) +
-      theme(legend.position="none") 
-pca12
-
-pdf(file="../figures/01_behavior/pca12.pdf",  width=1.5, height=1.5)
-plot(pca12)
-dev.off()
 
 pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
     geom_point(size=3, alpha = 0.7) +
@@ -344,12 +321,12 @@ fviz_pca_var(res.pca,
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = TRUE,     # Avoid text overlapping
              select.var = list(contrib = 10))
-fviz_pca_biplot(res.pca, label ="var")
 ```
 
 ```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
-write.csv(twoplots, file = "../data/01a_twoplots.csv", row.names = FALSE)
+write.csv(meannumentr, file = "../data/01a_meannumentr.csv", row.names = FALSE)
+write.csv(Time1Entr, file = "../data/01a_Time1Entr.csv", row.names = FALSE)
 write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
 write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
 write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
