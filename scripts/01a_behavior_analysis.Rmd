@@ -323,6 +323,46 @@ fviz_pca_var(res.pca,
              select.var = list(contrib = 10))
 ```
 
+Now let's look at how much time they spend in each proportion
+
+```{r proptime}
+proptime <- behavior_slim %>%
+  dplyr::select(APA2, TrainSessionCombo, pTimeOPP, pTimeTarget, pTimeCCW, pTimeCW) %>%
+  tidyr::gather(quadrant, proportion, -APA2, -TrainSessionCombo)
+
+proptime$quadrant <- as.factor(proptime$quadrant)
+proptime$quadrant <- factor(proptime$quadrant, levels = c("pTimeTarget", "pTimeCCW", "pTimeOPP", "pTimeCW"))
+proptime$TrainSessionCombo <- factor(proptime$TrainSessionCombo, 
+                                     levels = c("Hab" ,"T1", "T2", "T3", "Retest", 
+                                                "T4_C1", "T5_C2", "T6_C3","Retention"))
+
+timespent1 <- proptime %>%
+  ggplot(aes(x = TrainSessionCombo, y = proportion, fill = quadrant)) + 
+  geom_bar(position = "fill",stat = "identity")  +
+  facet_wrap(~APA2, nrow=1) +
+  theme_cowplot(font_size = 8, line_size = 0.25) +  
+  theme(legend.title=element_blank()) +
+  theme(legend.position="bottom") +
+  scale_y_continuous(name= "Proportion of Time Spent",
+                     breaks = c(0.25,0.50, 0.75)) +
+  scale_x_discrete(name="Training Session", 
+                     labels = c( "P", "T1", "T2", "T3",
+                                   "Rt", "C1", "C2","C3", 
+                                   "Rn")) +
+  scale_fill_manual(values = c("#f03b20", "#e5f5e0" ,"#a1d99b", "#31a354")) + 
+  geom_hline(yintercept=c(0.25,0.50, 0.75), color="black" , linetype="dashed") 
+timespent1
+
+meanprop <- proptime %>%
+  filter(TrainSessionCombo != "Hab") %>%
+  group_by(APA2, quadrant) %>%
+  summarize(mean_prop = mean(proportion)) 
+meanprop$mean_prop <- round(meanprop$mean_prop,2)
+meanprop <- spread(meanprop, quadrant, mean_prop)
+head(meanprop)
+```
+
+
 ```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
 write.csv(meannumentr, file = "../data/01a_meannumentr.csv", row.names = FALSE)
