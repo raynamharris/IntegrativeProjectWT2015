@@ -54,14 +54,302 @@ behavior_slim <- behavior[,c(15,16,14,20:58)]
 ```
 
 
-## Summary statistics comparing all groups across sessions
+# Vizualizing Mean and Standard error for num entrace and time 1st entrance
 
-Steps
-1. Filter by session 
-1. Create some new datasets with just the quantitiave variables and just the relevant catagorical factors
-1. Use for loops to run statistical tests for all quantitive variables
-1. Make a box plot for all variables
+To make the point and line graphs, I must create and merge some data frames
 
+```{r twobehaviors}
+## number of entrances
+meannumentr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+meannumentr$APA2 <- factor(meannumentr$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+
+numentr <- ggplot(meannumentr, 
+                  aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+    geom_point(size = 2) +
+   geom_line() +
+  labs(subtitle = "A. Number of target zone entrances") +
+   scale_y_continuous(name= "Counts") +
+    scale_x_continuous(name= NULL, 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels = NULL) +
+  theme_cowplot(font_size = 7, line_size = 0.25) +
+  background_grid(major = "y", minor = "y") +
+  scale_color_manual(values = colorvalAPA00)  +
+  theme(legend.title=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=7)) 
+numentr
+
+pdf(file="../figures/01_behavior/numentr.pdf", width=2.75, height=2)
+plot(numentr)
+dev.off()
+
+# time spent in target
+target <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(pTimeTarget), se = sd(pTimeTarget)/sqrt(length(pTimeTarget)))
+target$APA2 <- factor(target$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+
+tagetplot <- ggplot(target, 
+                  aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+    geom_point(size = 2) +
+   geom_line() +
+  labs(subtitle = "B. Proportion of time spent in the target zone") +
+   scale_y_continuous(name= "Proportion",
+                      breaks = c(0, .12, .25, .37)) +
+    scale_x_continuous(name= NULL, 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels = NULL) +
+  theme_cowplot(font_size = 7, line_size = 0.25) +
+  background_grid(major = "y", minor = "y") +
+  scale_color_manual(values = colorvalAPA00)  +
+  theme(legend.title=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=7)) 
+tagetplot
+
+pdf(file="../figures/01_behavior/tagetplot.pdf", width=2.75, height=2)
+plot(tagetplot)
+dev.off()
+
+
+## time first entrance
+Time1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
+Time1Entr$APA2 <- factor(Time1Entr$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+
+
+timeentr <- ggplot(Time1Entr, 
+                  aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+    geom_point(size = 2) +
+   geom_line() +
+  labs(subtitle = "C. Time to first entrance into the target zone") +
+   scale_y_continuous(name= "Time (s)") +
+    scale_x_continuous(name= "Training session", 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels = c( "P", "T1", "T2", "T3",
+                                   "Rt", "T4", "T5", "T6", "Rn")) +
+  theme_cowplot(font_size = 7, line_size = 0.25) +
+  background_grid(major = "y", minor = "y") +
+  scale_color_manual(values = colorvalAPA00)  +
+  theme(legend.title=element_blank(),
+        legend.position="bottom", 
+        legend.text=element_text(size=5)) 
+
+timeentr
+
+pdf(file="../figures/01_behavior/timeentr.pdf", width=2.75, height=2.5)
+plot(timeentr)
+dev.off()
+
+### Propostion of time in opposite zone
+timeopp <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(pTimeOPP), se = sd(pTimeOPP)/sqrt(length(pTimeOPP)))
+timeopp$APA2 <- factor(timeopp$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+
+
+timeoppplot <- ggplot(timeopp, 
+                  aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+    geom_point(size = 2) +
+   geom_line() +
+  labs(subtitle = "D. Proportion of time spent opposite the target zone") +
+   scale_y_continuous(name= "Proportion",
+                     breaks = c(0, .25, .5, .75),
+                     limits = c(0,.75)) +
+    scale_x_continuous(name= "Training session", 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels = c( "P", "T1", "T2", "T3",
+                                   "Rt", "T4", "T5", "T6", "Rn")) +
+  theme_cowplot(font_size = 7, line_size = 0.25) +
+  background_grid(major = "y", minor = "y") +
+  scale_color_manual(values = colorvalAPA00)  +
+  theme(legend.title=element_blank(),
+        legend.position="bottom", 
+        legend.text=element_text(size=5)) 
+timeoppplot
+
+pdf(file="../figures/01_behavior/timeoppplot.pdf", width=2.75, height=2.5)
+plot(timeoppplot)
+dev.off()
+```
+
+
+## Proportion of time spent
+
+Now let's look at how much time they spend in each proportion
+
+```{r proptime}
+proptime <- behavior_slim %>%
+  dplyr::select(APA2, TrainSessionCombo, pTimeOPP, pTimeTarget, pTimeCCW, pTimeCW) %>%
+  tidyr::gather(quadrant, proportion, -APA2, -TrainSessionCombo)
+
+proptime$quadrant <- as.factor(proptime$quadrant)
+proptime$quadrant <- factor(proptime$quadrant, levels = c("pTimeTarget", "pTimeCCW", "pTimeOPP", "pTimeCW"))
+proptime$TrainSessionCombo <- factor(proptime$TrainSessionCombo, 
+                                     levels = c("Hab" ,"T1", "T2", "T3", "Retest", 
+                                                "T4_C1", "T5_C2", "T6_C3","Retention"))
+
+timespent1 <- proptime %>%
+  ggplot(aes(x = TrainSessionCombo, y = proportion, fill = quadrant)) + 
+  geom_bar(position = "fill",stat = "identity")  +
+  facet_wrap(~APA2, nrow=2) +
+  theme_cowplot(font_size = 7, line_size = 0.25) +  
+  theme(legend.title=element_blank(),
+        legend.position="bottom",
+        legend.text=element_text(size=7),
+        strip.background = element_blank(),
+        strip.text = element_text(face = "bold")) +
+  scale_y_continuous(name= "Proportion",
+                     breaks = c(0.25,0.50, 0.75)) +
+  scale_x_discrete(name="Training Session", 
+                     labels = c( "P", "T1", "T2", "T3",
+                                   "Rt", "C1", "C2","C3", 
+                                   "Rn")) +
+  scale_fill_manual(values = c("#f03b20", "#e5f5e0" ,"#a1d99b", "#31a354"),
+                     labels=c("Target zone", "Counter-clockwise zone", "Opposite zone", "Clockwise zone")) + 
+  geom_hline(yintercept=c(0.25,0.50, 0.75), color="black" , 
+             linetype="dashed",line_size = 0.25) +
+  labs(subtitle = "Propotion of time spent in each quadrant") 
+timespent1
+
+pdf(file="../figures/01_behavior/timespent1.pdf",  width=4.25, height=4)
+plot(timespent1)
+dev.off()
+
+meanproplong <- proptime %>%
+  filter(TrainSessionCombo != "Hab") %>%
+  group_by(APA2, quadrant) %>%
+  summarize(mean_prop = mean(proportion)) 
+meanproplong$mean_prop <- round(meanproplong$mean_prop,2)
+head(meanproplong)
+
+summary(aov(data = meanproplong, mean_prop ~ APA2*quadrant))
+
+meanpropwide <- spread(meanproplong, quadrant, mean_prop)
+kable(meanpropwide)
+```
+
+## Hierarchical clusering of time series behavioral data
+
+Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed. 
+
+```{r pheatmap2,  message=FALSE}
+## create scaled data frame
+behavior_slim_heat <- behavior_slim
+behavior_slim_heat$RayleigAngle <- NULL
+behavior_slim_heat$PolarMinBin <- NULL
+scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
+
+## make annotation df and ann_colors for pheatmap
+ann_cols <- as.data.frame(makecolumnannotations(scaledaveragedata))
+ann_colors = ann_colors_APA2
+
+# set color breaks
+paletteLength <- 30
+myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
+
+## pheatmap for markdown
+pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
+         annotation_col=ann_cols, 
+         annotation_colors = ann_colors,
+         treeheight_row = 0, treeheight_col = 50,
+         border_color = "grey60" ,
+         color = viridis(30),
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation" ,
+         clustering_distance_rows = "correlation"
+         )
+
+# pheatmapfor adobe
+pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
+         annotation_col=ann_cols, annotation_colors = ann_colors,
+         annotation_names_col = F,
+         treeheight_row = 0, treeheight_col = 15,
+         fontsize = 6, 
+         border_color = "grey60" ,
+         color = viridis(30),
+          width = 4, height = 4,
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="correlation",
+         filename = "../figures/01_behavior/pheatmap2.pdf",
+         legend = TRUE,
+         annotation_legend = FALSE
+         )
+
+```
+
+
+### Principle component analysis 
+
+Next, I next reduced the dimentionality of the data with a PCA anlaysis. 
+
+```{r PCA}
+longdata <- makelongdata(behavior)
+Z <- longdata[,3:362]
+Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
+pc = prcomp(Z, scale.=TRUE)
+loadings <- pc$rotation
+scores <- pc$x
+
+scoresdf <- makepcadf(behavior) #create the df of pcas
+rotationdf <- mkrotationdf(behavior) #loadings for specific factors
+behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
+scoresdf$PC1 <- scoresdf$PC1 * -1
+scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+
+
+## data wraningly for pca anlysis
+behaviormatrix %>% 
+  scale() %>%                 # scale to 0 mean and unit variance
+  prcomp() ->                 # do PCA
+  pca                         # store result as `pca`
+percent <- round(100*pca$sdev^2/sum(pca$sdev^2),2)
+perc_data <- data.frame(percent=percent, PC=1:length(percent))
+res.pca <- prcomp(behaviormatrix,  scale = TRUE)
+
+# plot of percent contribution
+ggplot(perc_data, aes(x=PC, y=percent)) + 
+  geom_bar(stat="identity") + 
+  geom_text(aes(label=round(percent, 2)), size=4, vjust=-.5) + 
+  xlim(0, 10)
+
+
+## print anova and TukeyHSD stats for first 6 PCs
+j <- 0
+for (i in (scoresdf[,c(1:6)])){
+  j <- j+1
+  print(paste("PC", j, sep = " "))
+  myaov <- aov(i ~ APA2, data=scoresdf)
+  print(summary(myaov))
+  print(TukeyHSD(myaov, which = "APA2"))
+}
+
+pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
+    geom_point(size=2.5, alpha = 0.7) +
+    xlab(paste0("PC 1: ", percent[1],"% variance")) +
+    ylab(paste0("PC 2: ", percent[2],"% variance")) +
+    stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
+    scale_colour_manual(values=c(colorvalAPA00)) + 
+    theme_cowplot(font_size = 7, line_size = 0.25) +
+    theme(legend.position="none") +
+    ylim(-22,20)
+pca12elipse
+
+pdf(file="../figures/01_behavior/pca12elipse.pdf",  width=2, height=2)
+plot(pca12elipse)
+dev.off()
+
+# PCA with contributions
+res.pca <- prcomp(behaviormatrix, scale = TRUE)
+fviz_pca_var(res.pca,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE,     # Avoid text overlapping
+             select.var = list(contrib = 10))
+```
 
 ### Comparing Consistent and Conflict behaviors during the T4/C1 training session
 
@@ -143,233 +431,6 @@ for(y in names(exp_nums)){
                xlab = "T6/C3")
 }
 ```
-
-# Vizualizing Mean and Standard error for num entrace and time 1st entrance
-
-To make the point and line graphs, I must create and merge some data frames
-
-```{r twobehaviors}
-## number of entrances
-meannumentr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
-meannumentr$APA2 <- factor(meannumentr$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
-
-numentr <- ggplot(meannumentr, 
-                  aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 2) +
-   geom_line() +
-  labs(subtitle = "Number of entrances") +
-   scale_y_continuous(name= "Counts") +
-    scale_x_continuous(name= NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels = NULL) +
-  theme_cowplot(font_size = 7, line_size = 0.25) +
-  background_grid(major = "y", minor = "y") +
-  scale_color_manual(values = colorvalAPA00)  +
-  theme(legend.title=element_blank(),
-        legend.position="none",
-        plot.title = element_text(face = "bold")) 
-numentr
-
-pdf(file="../figures/01_behavior/numentr.pdf", width=3.25, height=2)
-plot(numentr)
-dev.off()
-
-## time first entrance
-Time1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
-Time1Entr$APA2 <- factor(Time1Entr$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
-
-
-timeentr <- ggplot(Time1Entr, 
-                  aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 2) +
-   geom_line() +
-  labs(subtitle = "Time to first entrance") +
-   scale_y_continuous(name= "Time (s)") +
-    scale_x_continuous(name= NULL, 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels = c( "P", "T1", "T2", "T3",
-                                   "Rt", "T4", "T5", "T6", "Rn")) +
-  theme_cowplot(font_size = 7, line_size = 0.25) +
-  background_grid(major = "y", minor = "y") +
-  scale_color_manual(values = colorvalAPA00)  +
-  theme(legend.title=element_blank(),
-        legend.position="bottom", 
-        legend.text=element_text(size=7)) 
-
-timeentr
-
-pdf(file="../figures/01_behavior/timeentr.pdf", width=3.25, height=2.5)
-plot(timeentr)
-dev.off()
-```
-
-## Hierarchical clusering of time series behavioral data
-
-Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed. 
-
-```{r pheatmap2,  message=FALSE}
-## create scaled data frame
-behavior_slim_heat <- behavior_slim
-behavior_slim_heat$RayleigAngle <- NULL
-behavior_slim_heat$PolarMinBin <- NULL
-scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
-
-## make annotation df and ann_colors for pheatmap
-ann_cols <- as.data.frame(makecolumnannotations(scaledaveragedata))
-ann_colors = ann_colors_APA2
-
-# set color breaks
-paletteLength <- 30
-myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
-              seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
-
-## pheatmap for markdown
-pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
-         annotation_col=ann_cols, 
-         annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 50,
-         border_color = "grey60" ,
-         color = viridis(30),
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation" ,
-         clustering_distance_rows = "correlation"
-         )
-
-# pheatmapfor adobe
-pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
-         annotation_col=ann_cols, annotation_colors = ann_colors,
-         annotation_names_col = F,
-         treeheight_row = 0, treeheight_col = 15,
-         fontsize = 6, 
-         border_color = "grey60" ,
-         color = viridis(30),
-          width = 4, height = 4,
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation",
-         filename = "../figures/01_behavior/pheatmap2.pdf",
-         legend = TRUE,
-         annotation_legend = FALSE
-         )
-
-```
-
-### Principle component analysis 
-
-Next, I next reduced the dimentionality of the data with a PCA anlaysis. 
-
-```{r PCA}
-longdata <- makelongdata(behavior)
-Z <- longdata[,3:362]
-Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
-pc = prcomp(Z, scale.=TRUE)
-loadings <- pc$rotation
-scores <- pc$x
-
-scoresdf <- makepcadf(behavior) #create the df of pcas
-rotationdf <- mkrotationdf(behavior) #loadings for specific factors
-behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
-scoresdf$PC1 <- scoresdf$PC1 * -1
-scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
-
-
-## data wraningly for pca anlysis
-behaviormatrix %>% 
-  scale() %>%                 # scale to 0 mean and unit variance
-  prcomp() ->                 # do PCA
-  pca                         # store result as `pca`
-percent <- round(100*pca$sdev^2/sum(pca$sdev^2),2)
-perc_data <- data.frame(percent=percent, PC=1:length(percent))
-res.pca <- prcomp(behaviormatrix,  scale = TRUE)
-
-# plot of percent contribution
-ggplot(perc_data, aes(x=PC, y=percent)) + 
-  geom_bar(stat="identity") + 
-  geom_text(aes(label=round(percent, 2)), size=4, vjust=-.5) + 
-  xlim(0, 10)
-
-
-## print anova and TukeyHSD stats for first 6 PCs
-j <- 0
-for (i in (scoresdf[,c(1:6)])){
-  j <- j+1
-  print(paste("PC", j, sep = " "))
-  myaov <- aov(i ~ APA2, data=scoresdf)
-  print(summary(myaov))
-  print(TukeyHSD(myaov, which = "APA2"))
-}
-
-pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
-    geom_point(size=2.5, alpha = 0.7) +
-    xlab(paste0("PC 1: ", percent[1],"% variance")) +
-    ylab(paste0("PC 2: ", percent[2],"% variance")) +
-    stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
-    scale_colour_manual(values=c(colorvalAPA00)) + 
-    theme_cowplot(font_size = 7, line_size = 0.25) +
-    theme(legend.position="none") +
-    ylim(-22,20)
-pca12elipse
-
-pdf(file="../figures/01_behavior/pca12elipse.pdf",  width=2, height=2)
-plot(pca12elipse)
-dev.off()
-
-# PCA with contributions
-res.pca <- prcomp(behaviormatrix, scale = TRUE)
-fviz_pca_var(res.pca,
-             col.var = "contrib", # Color by contributions to the PC
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE,     # Avoid text overlapping
-             select.var = list(contrib = 10))
-```
-
-Now let's look at how much time they spend in each proportion
-
-```{r proptime}
-proptime <- behavior_slim %>%
-  dplyr::select(APA2, TrainSessionCombo, pTimeOPP, pTimeTarget, pTimeCCW, pTimeCW) %>%
-  tidyr::gather(quadrant, proportion, -APA2, -TrainSessionCombo)
-
-proptime$quadrant <- as.factor(proptime$quadrant)
-proptime$quadrant <- factor(proptime$quadrant, levels = c("pTimeTarget", "pTimeCCW", "pTimeOPP", "pTimeCW"))
-proptime$TrainSessionCombo <- factor(proptime$TrainSessionCombo, 
-                                     levels = c("Hab" ,"T1", "T2", "T3", "Retest", 
-                                                "T4_C1", "T5_C2", "T6_C3","Retention"))
-
-timespent1 <- proptime %>%
-  ggplot(aes(x = TrainSessionCombo, y = proportion, fill = quadrant)) + 
-  geom_bar(position = "fill",stat = "identity")  +
-  facet_wrap(~APA2, nrow=1) +
-  theme_cowplot(font_size = 7, line_size = 0.25) +  
-  theme(legend.title=element_blank(),
-        legend.position="bottom",
-        legend.text=element_text(size=7)) +
-  scale_y_continuous(name= "Proportion of Time Spent",
-                     breaks = c(0.25,0.50, 0.75)) +
-  scale_x_discrete(name="Training Session", 
-                     labels = c( "P", "T1", "T2", "T3",
-                                   "Rt", "C1", "C2","C3", 
-                                   "Rn")) +
-  scale_fill_manual(values = c("#f03b20", "#e5f5e0" ,"#a1d99b", "#31a354")) + 
-  geom_hline(yintercept=c(0.25,0.50, 0.75), color="black" , linetype="dashed") 
-timespent1
-
-meanproplong <- proptime %>%
-  filter(TrainSessionCombo != "Hab") %>%
-  group_by(APA2, quadrant) %>%
-  summarize(mean_prop = mean(proportion)) 
-meanproplong$mean_prop <- round(meanproplong$mean_prop,2)
-head(meanproplong)
-
-summary(aov(data = meanproplong, mean_prop ~ APA2*quadrant))
-
-meanpropwide <- spread(meanproplong, quadrant, mean_prop)
-kable(meanpropwide)
-```
-
 
 ```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
