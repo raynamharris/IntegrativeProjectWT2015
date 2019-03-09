@@ -2,7 +2,7 @@ RNAseq gene expression analysis with DESeq2
 -------------------------------------------
 
 This workflow was modified from the DESeq2 tutorial found at:
-<https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf>
+<a href="https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf" class="uri">https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf</a>
 
 First I load a handful of packages for data wrangling, gene expression
 analysis, data visualization, and statistics.
@@ -20,7 +20,7 @@ analysis, data visualization, and statistics.
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
+    knitr::opts_chunk$set(fig.path = '../figures/02a_makedfs/')
 
 Now, I create data frames from three csv files - count: Contains counts
 for all transcripts generated from the program Kallisto. This data can
@@ -139,4 +139,4 @@ this could say something about data before normalization
       scale_x_continuous(name = "Millions of Gene Counts per Sample") +
       scale_y_continuous(name = "Number of Samples")
 
-![](../figures/02_RNAseq/totalRNAseqcounts-1.png)
+![](../figures/02a_makedfs/totalRNAseqcounts-1.png)

@@ -25,7 +25,7 @@ library(ggplot2)
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02_RNAseq/')
+knitr::opts_chunk$set(fig.path = '../figures/02a_makedfs/')
 ```
 
 Now, I create data frames from three csv files
