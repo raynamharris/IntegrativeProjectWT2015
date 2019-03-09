@@ -300,8 +300,8 @@ pc = prcomp(Z, scale.=TRUE)
 loadings <- pc$rotation
 scores <- pc$x
 
-scoresdf <- makepcadf(behavior) #create the df of pcas
-rotationdf <- mkrotationdf(behavior) #loadings for specific factors
+scoresdf <- makepcadf(dataforpca) #create the df of pcas
+rotationdf <- mkrotationdf(dataforpca) #loadings for specific factors
 
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 scoresdf$PC1 <- scoresdf$PC1 * -1

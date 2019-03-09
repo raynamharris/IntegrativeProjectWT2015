@@ -438,8 +438,8 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     loadings <- pc$rotation
     scores <- pc$x
 
-    scoresdf <- makepcadf(behavior) #create the df of pcas
-    rotationdf <- mkrotationdf(behavior) #loadings for specific factors
+    scoresdf <- makepcadf(dataforpca) #create the df of pcas
+    rotationdf <- mkrotationdf(dataforpca) #loadings for specific factors
 
     behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
     scoresdf$PC1 <- scoresdf$PC1 * -1
@@ -478,9 +478,9 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     }
 
     ## [1] "PC 1"
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## APA2         3   3195  1065.0   73.05 6.84e-14 ***
-    ## Residuals   30    437    14.6                     
+    ##             Df Sum Sq Mean Sq F value  Pr(>F)    
+    ## APA2         3 3132.3  1044.1   73.25 6.6e-14 ***
+    ## Residuals   30  427.6    14.3                    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ##   Tukey multiple comparisons of means
@@ -490,24 +490,24 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## 
     ## $APA2
     ##                                        diff        lwr        upr
-    ## consistent-yoked-consistent      20.9070831  15.716020  26.098146
-    ## yoked-conflict-yoked-consistent   2.8124017  -2.232405   7.857208
-    ## conflict-yoked-consistent        20.6555262  15.610720  25.700333
-    ## yoked-conflict-consistent       -18.0946814 -23.139488 -13.049875
-    ## conflict-consistent              -0.2515569  -5.296364   4.793250
-    ## conflict-yoked-conflict          17.8431245  12.948943  22.737306
+    ## consistent-yoked-consistent      20.7446753  15.611690  25.877661
+    ## yoked-conflict-yoked-consistent   2.7420788  -2.246286   7.730444
+    ## conflict-yoked-consistent        20.3744685  15.386103  25.362833
+    ## yoked-conflict-consistent       -18.0025965 -22.990961 -13.014232
+    ## conflict-consistent              -0.3702068  -5.358572   4.618158
+    ## conflict-yoked-conflict          17.6323896  12.792965  22.471815
     ##                                     p adj
     ## consistent-yoked-consistent     0.0000000
-    ## yoked-conflict-yoked-consistent 0.4409343
+    ## yoked-conflict-yoked-consistent 0.4531408
     ## conflict-yoked-consistent       0.0000000
     ## yoked-conflict-consistent       0.0000000
-    ## conflict-consistent             0.9990895
+    ## conflict-consistent             0.9970257
     ## conflict-yoked-conflict         0.0000000
     ## 
     ## [1] "PC 2"
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA2         3  171.6   57.20   3.091 0.0419 *
-    ## Residuals   30  555.2   18.51                 
+    ## APA2         3  169.1   56.35   3.448 0.0289 *
+    ## Residuals   30  490.3   16.34                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ##   Tukey multiple comparisons of means
@@ -516,36 +516,36 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## Fit: aov(formula = i ~ APA2, data = scoresdf)
     ## 
     ## $APA2
-    ##                                       diff        lwr       upr     p adj
-    ## consistent-yoked-consistent     -0.8999943 -6.7486749  4.948686 0.9748977
-    ## yoked-conflict-yoked-consistent  4.4517329 -1.2321630 10.135629 0.1669142
-    ## conflict-yoked-consistent        3.4421998 -2.2416961  9.126096 0.3688648
-    ## yoked-conflict-consistent        5.3517272 -0.3321688 11.035623 0.0707214
-    ## conflict-consistent              4.3421941 -1.3417018 10.026090 0.1836316
-    ## conflict-yoked-conflict         -1.0095331 -6.5237221  4.504656 0.9589440
+    ##                                      diff        lwr         upr     p adj
+    ## consistent-yoked-consistent      0.796763  -4.699718  6.29324383 0.9788474
+    ## yoked-conflict-yoked-consistent -4.589406  -9.931025  0.75221345 0.1123180
+    ## conflict-yoked-consistent       -3.270434  -8.612053  2.07118532 0.3594132
+    ## yoked-conflict-consistent       -5.386169 -10.727788 -0.04454954 0.0475311
+    ## conflict-consistent             -4.067197  -9.408816  1.27442233 0.1859178
+    ## conflict-yoked-conflict          1.318972  -3.863160  6.50110370 0.8993116
     ## 
     ## [1] "PC 3"
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   94.9   31.64   2.001  0.135
-    ## Residuals   30  474.3   15.81               
+    ## APA2         3   98.1   32.71   2.217  0.107
+    ## Residuals   30  442.7   14.76               
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
     ## Fit: aov(formula = i ~ APA2, data = scoresdf)
     ## 
     ## $APA2
-    ##                                      diff        lwr      upr     p adj
-    ## consistent-yoked-consistent     -2.477541 -7.8832385 2.928157 0.6031763
-    ## yoked-conflict-yoked-consistent -1.147686 -6.4010795 4.105708 0.9330967
-    ## conflict-yoked-consistent        2.053796 -3.1995983 7.307190 0.7141711
-    ## yoked-conflict-consistent        1.329855 -3.9235387 6.583249 0.9007412
-    ## conflict-consistent              4.531336 -0.7220575 9.784730 0.1102806
-    ## conflict-yoked-conflict          3.201481 -1.8950595 8.298022 0.3373455
+    ##                                       diff       lwr       upr     p adj
+    ## consistent-yoked-consistent      2.1604100 -3.062095 7.3829153 0.6773668
+    ## yoked-conflict-yoked-consistent  1.1861085 -3.889254 6.2614714 0.9197309
+    ## conflict-yoked-consistent       -2.3456865 -7.421049 2.7296764 0.5967281
+    ## yoked-conflict-consistent       -0.9743015 -6.049664 4.1010614 0.9531340
+    ## conflict-consistent             -4.5060965 -9.581459 0.5692665 0.0959758
+    ## conflict-yoked-conflict         -3.5317950 -8.455620 1.3920303 0.2292910
     ## 
     ## [1] "PC 4"
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   60.0   20.00   1.305  0.291
-    ## Residuals   30  459.9   15.33               
+    ## APA2         3   48.1   16.03    1.17  0.338
+    ## Residuals   30  411.2   13.71               
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
@@ -553,35 +553,35 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## 
     ## $APA2
     ##                                       diff       lwr      upr     p adj
-    ## consistent-yoked-consistent      1.3080022 -4.015060 6.631065 0.9082391
-    ## yoked-conflict-yoked-consistent -2.3451756 -7.518263 2.827911 0.6115099
-    ## conflict-yoked-consistent       -0.8791771 -6.052264 4.293910 0.9667025
-    ## yoked-conflict-consistent       -3.6531778 -8.826265 1.519909 0.2412559
-    ## conflict-consistent             -2.1871792 -7.360266 2.985908 0.6623510
-    ## conflict-yoked-conflict          1.4659986 -3.552633 6.484630 0.8564632
+    ## consistent-yoked-consistent     -2.6638939 -7.697074 2.369287 0.4857398
+    ## yoked-conflict-yoked-consistent -0.3698065 -5.261179 4.521566 0.9968574
+    ## conflict-yoked-consistent        0.4885682 -4.402804 5.379940 0.9928462
+    ## yoked-conflict-consistent        2.2940874 -2.597285 7.185460 0.5852830
+    ## conflict-consistent              3.1524621 -1.738910 8.043834 0.3155405
+    ## conflict-yoked-conflict          0.8583747 -3.886953 5.603703 0.9603067
     ## 
     ## [1] "PC 5"
     ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   10.5   3.496   0.233  0.873
-    ## Residuals   30  450.8  15.027               
+    ## APA2         3   13.2   4.414    0.35  0.789
+    ## Residuals   30  378.4  12.612               
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
     ## Fit: aov(formula = i ~ APA2, data = scoresdf)
     ## 
     ## $APA2
-    ##                                       diff       lwr      upr     p adj
-    ## consistent-yoked-consistent     -0.6565012 -5.926822 4.613819 0.9863545
-    ## yoked-conflict-yoked-consistent -1.4904797 -6.612311 3.631351 0.8578281
-    ## conflict-yoked-consistent       -0.3613765 -5.483207 4.760454 0.9974400
-    ## yoked-conflict-consistent       -0.8339785 -5.955809 4.287852 0.9705093
-    ## conflict-consistent              0.2951246 -4.826706 5.416956 0.9985986
-    ## conflict-yoked-conflict          1.1291031 -3.839803 6.098009 0.9255676
+    ##                                        diff       lwr      upr     p adj
+    ## consistent-yoked-consistent     -0.32992433 -5.158137 4.498289 0.9976723
+    ## yoked-conflict-yoked-consistent  1.27203715 -3.420142 5.964217 0.8813372
+    ## conflict-yoked-consistent       -0.01866219 -4.710842 4.673517 0.9999995
+    ## yoked-conflict-consistent        1.60196148 -3.090218 6.294141 0.7899669
+    ## conflict-consistent              0.31126214 -4.380917 5.003442 0.9978687
+    ## conflict-yoked-conflict         -1.29069934 -5.842782 3.261384 0.8668811
     ## 
     ## [1] "PC 6"
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA2         3  123.5   41.18    4.13 0.0145 *
-    ## Residuals   30  299.1    9.97                 
+    ##             Df Sum Sq Mean Sq F value Pr(>F)   
+    ## APA2         3  128.3   42.77    5.26 0.0049 **
+    ## Residuals   30  243.9    8.13                  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ##   Tukey multiple comparisons of means
@@ -590,13 +590,13 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## Fit: aov(formula = i ~ APA2, data = scoresdf)
     ## 
     ## $APA2
-    ##                                       diff        lwr       upr     p adj
-    ## consistent-yoked-consistent     -3.6169924 -7.9100582 0.6760735 0.1228341
-    ## yoked-conflict-yoked-consistent -3.2507693 -7.4228793 0.9213408 0.1703278
-    ## conflict-yoked-consistent        0.6641045 -3.5080056 4.8362146 0.9723522
-    ## yoked-conflict-consistent        0.3662231 -3.8058870 4.5383331 0.9951112
-    ## conflict-consistent              4.2810969  0.1089868 8.4532069 0.0426272
-    ## conflict-yoked-conflict          3.9148738 -0.1326675 7.9624151 0.0608419
+    ##                                       diff        lwr        upr     p adj
+    ## consistent-yoked-consistent      3.1159850 -0.7607393  6.9927092 0.1504139
+    ## yoked-conflict-yoked-consistent  2.7136161 -1.0538826  6.4811149 0.2261477
+    ## conflict-yoked-consistent       -1.5414934 -5.3089922  2.2260053 0.6847551
+    ## yoked-conflict-consistent       -0.4023688 -4.1698676  3.3651299 0.9912926
+    ## conflict-consistent             -4.6574784 -8.4249771 -0.8899797 0.0108422
+    ## conflict-yoked-conflict         -4.2551096 -7.9101202 -0.6000989 0.0176085
 
     pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
         geom_point(size=2.5, alpha = 0.7) +

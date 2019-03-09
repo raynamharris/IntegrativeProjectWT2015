@@ -67,7 +67,7 @@ makepcadf <- function(data){
   longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
   longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
   # calculate and save PCs
-  Z <- longdata[,3:362]
+  Z <- longdata[,3:322]
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
   loadings <- pc$rotation
@@ -87,7 +87,7 @@ makepcaloadingsdf <- function(data){
   longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
   longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
   # calculate and save PCs
-  Z <- longdata[,3:371]
+  Z <- longdata[,3:322]
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
   loadings <- pc$rotation
@@ -101,7 +101,7 @@ mkrotationdf <- function(data){
   longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
   longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
   # calculate and save PCs
-  Z <- longdata[,3:362]
+  Z <- longdata[,3:322]
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
   rotationdf <- data.frame(pc$rotation, variable=row.names(pc$rotation))
