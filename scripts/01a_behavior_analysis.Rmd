@@ -81,7 +81,7 @@ numentr <- ggplot(meannumentr,
         legend.text=element_text(size=7)) 
 numentr
 
-pdf(file="../figures/01_behavior/numentr.pdf", width=2.75, height=2)
+pdf(file="../figures/01_behavior/numentr.pdf", width=2.55, height=2)
 plot(numentr)
 dev.off()
 
@@ -94,7 +94,7 @@ tagetplot <- ggplot(target,
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 2) +
    geom_line() +
-  labs(subtitle = "B. Proportion of time spent in the target zone") +
+  labs(subtitle = "B. Time spent in the target zone") +
    scale_y_continuous(name= "Proportion",
                       breaks = c(0, .12, .25, .37)) +
     scale_x_continuous(name= NULL, 
@@ -108,7 +108,7 @@ tagetplot <- ggplot(target,
         legend.text=element_text(size=7)) 
 tagetplot
 
-pdf(file="../figures/01_behavior/tagetplot.pdf", width=2.75, height=2)
+pdf(file="../figures/01_behavior/tagetplot.pdf", width=2.55, height=2)
 plot(tagetplot)
 dev.off()
 
@@ -133,12 +133,12 @@ timeentr <- ggplot(Time1Entr,
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA00)  +
   theme(legend.title=element_blank(),
-        legend.position="bottom", 
+        legend.position="none", 
         legend.text=element_text(size=5)) 
 
 timeentr
 
-pdf(file="../figures/01_behavior/timeentr.pdf", width=2.75, height=2.5)
+pdf(file="../figures/01_behavior/time1entr.pdf", width=2.55, height=2.25)
 plot(timeentr)
 dev.off()
 
@@ -152,7 +152,7 @@ timeoppplot <- ggplot(timeopp,
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 2) +
    geom_line() +
-  labs(subtitle = "D. Proportion of time spent opposite the target zone") +
+  labs(subtitle = "D. Time spent opposite the target zone") +
    scale_y_continuous(name= "Proportion",
                      breaks = c(0, .25, .5, .75),
                      limits = c(0,.75)) +
@@ -164,11 +164,11 @@ timeoppplot <- ggplot(timeopp,
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA00)  +
   theme(legend.title=element_blank(),
-        legend.position="bottom", 
+        legend.position="none", 
         legend.text=element_text(size=5)) 
 timeoppplot
 
-pdf(file="../figures/01_behavior/timeoppplot.pdf", width=2.75, height=2.5)
+pdf(file="../figures/01_behavior/timeoppplot.pdf", width=2.55, height=2.25)
 plot(timeoppplot)
 dev.off()
 ```
