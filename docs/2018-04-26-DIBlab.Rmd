@@ -83,7 +83,7 @@ Using RNA sequencing to understanding how the hippocampus remembers things in sp
 
 ![](../../DissociationTest/figures/06_readcounts/after.png){width=75%}
 
-![](../../IntegrativeProjectWT2015/figures/02a_multiqc/multiqc_report_02.png){width=75%}
+![](../../IntegrativeProjectWT2015/figures/02g_MultiQC/multiqc_report_02.png){width=75%}
 
 [^m]: http://multiqc.info/
 

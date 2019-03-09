@@ -95,7 +95,7 @@ multiqc .
 ~~~
 
 The results of the MutliQC analysis of quality are here:
-![](../figures/02a_multiqc/multiqc_report_04.png)
+![](../figures/02g_MultiQC/multiqc_report_04.png)
 
 You can see that I have less than 1 million mapped reads for each sample. Not good. Thus...
 
@@ -130,7 +130,7 @@ multiqc .
 ~~~
 
 The results of the MutliQC analysis of quality are here:
-![](../figures/02a_multiqc/multiqc_report_02.png)
+![](../figures/02g_MultiQC/multiqc_report_02.png)
 
 You can see that most samples have more than 1 million reads mapped. 
 
