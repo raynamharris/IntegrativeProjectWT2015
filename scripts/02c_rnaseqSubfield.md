@@ -171,21 +171,13 @@ yoked-consistent.
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) + 
-      geom_text_repel(data = subset(data, logpadj > 5), aes(label = gene),
-                      colour = "black", min.segment.length = 0,
-                      box.padding = 0.5, size = 2)
+            panel.grid.major=element_blank()) 
     DGvolcano
-
-    ## Warning: Removed 3 rows containing missing values (geom_text_repel).
 
 ![](../figures/02c_rnaseqSubfield/DG-1.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
     plot(DGvolcano)
-
-    ## Warning: Removed 3 rows containing missing values (geom_text_repel).
-
     dev.off()
 
     ## quartz_off_screen 
@@ -744,10 +736,7 @@ Two comparisons within CA1 are noteable
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) + 
-      geom_text_repel(data = subset(data, logpadj > 3.5), aes(label = gene),
-                      colour = "black", min.segment.length = 0,
-                      box.padding = 0.5, size = 2)
+            panel.grid.major=element_blank()) 
     CA1volcano
 
 ![](../figures/02c_rnaseqSubfield/CA1-2.png)
@@ -907,10 +896,7 @@ Two comparisons within CA1 are noteable
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) + 
-      geom_text_repel(data = subset(data, logpadj > 3.5), aes(label = gene),
-                      colour = "black", min.segment.length = 0,
-                      box.padding = 0.5, size = 2)
+            panel.grid.major=element_blank()) 
     CA1volcano2
 
 ![](../figures/02c_rnaseqSubfield/CA1-4.png)
