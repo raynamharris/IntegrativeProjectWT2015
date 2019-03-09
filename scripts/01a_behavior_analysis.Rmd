@@ -235,7 +235,9 @@ Here I use heirarhical cluster to identify patterns in the behavioral data. On t
 
 ```{r pheatmap2,  message=FALSE}
 ## create scaled data frame
-behavior_slim_heat <- behavior_slim
+behavior_slim_heat <- behavior_slim %>%
+  filter(TrainSessionCombo != "Hab")
+
 behavior_slim_heat$RayleigAngle <- NULL
 behavior_slim_heat$PolarMinBin <- NULL
 scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
@@ -263,14 +265,14 @@ pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
          )
 
 # pheatmapfor adobe
-pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
+pheatmap(scaledaveragedata, show_colnames=F, show_rownames = F,
          annotation_col=ann_cols, annotation_colors = ann_colors,
          annotation_names_col = F,
          treeheight_row = 0, treeheight_col = 15,
          fontsize = 6, 
          border_color = "grey60" ,
          color = viridis(30),
-          width = 4, height = 4,
+          width = 3, height = 2,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation",

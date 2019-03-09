@@ -88,7 +88,7 @@ frames
 
 ![](../figures/01_behavior/twobehaviors-1.png)
 
-    pdf(file="../figures/01_behavior/numentr.pdf", width=2.75, height=2)
+    pdf(file="../figures/01_behavior/numentr.pdf", width=2.55, height=2)
     plot(numentr)
     dev.off()
 
@@ -104,7 +104,7 @@ frames
         geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
         geom_point(size = 2) +
        geom_line() +
-      labs(subtitle = "B. Proportion of time spent in the target zone") +
+      labs(subtitle = "B. Time spent in the target zone") +
        scale_y_continuous(name= "Proportion",
                           breaks = c(0, .12, .25, .37)) +
         scale_x_continuous(name= NULL, 
@@ -120,7 +120,7 @@ frames
 
 ![](../figures/01_behavior/twobehaviors-2.png)
 
-    pdf(file="../figures/01_behavior/tagetplot.pdf", width=2.75, height=2)
+    pdf(file="../figures/01_behavior/tagetplot.pdf", width=2.55, height=2)
     plot(tagetplot)
     dev.off()
 
@@ -147,14 +147,14 @@ frames
       background_grid(major = "y", minor = "y") +
       scale_color_manual(values = colorvalAPA00)  +
       theme(legend.title=element_blank(),
-            legend.position="bottom", 
+            legend.position="none", 
             legend.text=element_text(size=5)) 
 
     timeentr
 
 ![](../figures/01_behavior/twobehaviors-3.png)
 
-    pdf(file="../figures/01_behavior/timeentr.pdf", width=2.75, height=2.5)
+    pdf(file="../figures/01_behavior/time1entr.pdf", width=2.55, height=2.25)
     plot(timeentr)
     dev.off()
 
@@ -171,7 +171,7 @@ frames
         geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
         geom_point(size = 2) +
        geom_line() +
-      labs(subtitle = "D. Proportion of time spent opposite the target zone") +
+      labs(subtitle = "D. Time spent opposite the target zone") +
        scale_y_continuous(name= "Proportion",
                          breaks = c(0, .25, .5, .75),
                          limits = c(0,.75)) +
@@ -183,13 +183,13 @@ frames
       background_grid(major = "y", minor = "y") +
       scale_color_manual(values = colorvalAPA00)  +
       theme(legend.title=element_blank(),
-            legend.position="bottom", 
+            legend.position="none", 
             legend.text=element_text(size=5)) 
     timeoppplot
 
 ![](../figures/01_behavior/twobehaviors-4.png)
 
-    pdf(file="../figures/01_behavior/timeoppplot.pdf", width=2.75, height=2.5)
+    pdf(file="../figures/01_behavior/timeoppplot.pdf", width=2.55, height=2.25)
     plot(timeoppplot)
     dev.off()
 
@@ -375,7 +375,9 @@ higher in trained animals, 2) higher in yoked animals, and 3) measures
 of speed.
 
     ## create scaled data frame
-    behavior_slim_heat <- behavior_slim
+    behavior_slim_heat <- behavior_slim %>%
+      filter(TrainSessionCombo != "Hab")
+
     behavior_slim_heat$RayleigAngle <- NULL
     behavior_slim_heat$PolarMinBin <- NULL
     scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
@@ -405,14 +407,14 @@ of speed.
 ![](../figures/01_behavior/pheatmap2-1.png)
 
     # pheatmapfor adobe
-    pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
+    pheatmap(scaledaveragedata, show_colnames=F, show_rownames = F,
              annotation_col=ann_cols, annotation_colors = ann_colors,
              annotation_names_col = F,
              treeheight_row = 0, treeheight_col = 15,
              fontsize = 6, 
              border_color = "grey60" ,
              color = viridis(30),
-              width = 4, height = 4,
+              width = 3, height = 2,
              clustering_method="average",
              breaks=myBreaks,
              clustering_distance_cols="correlation",
