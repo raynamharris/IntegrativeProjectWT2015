@@ -427,8 +427,12 @@ of speed.
 
 Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
-    longdata <- makelongdata(behavior)
-    Z <- longdata[,3:362]
+    dataforpca <- behavior %>%
+      filter(TrainSessionCombo != "Hab")
+
+    longdata <- makelongdata(dataforpca)
+
+    Z <- longdata[,3:322]
     Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
     pc = prcomp(Z, scale.=TRUE)
     loadings <- pc$rotation
@@ -436,6 +440,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
     scoresdf <- makepcadf(behavior) #create the df of pcas
     rotationdf <- mkrotationdf(behavior) #loadings for specific factors
+
     behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
     scoresdf$PC1 <- scoresdf$PC1 * -1
     scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
@@ -619,7 +624,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
                  col.var = "contrib", # Color by contributions to the PC
                  gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
                  repel = TRUE,     # Avoid text overlapping
-                 select.var = list(contrib = 10))
+                 select.var = list(contrib = 8))
 
 ![](../figures/01_behavior/PCA-3.png)
 
