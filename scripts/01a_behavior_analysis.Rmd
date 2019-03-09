@@ -21,6 +21,7 @@ library(factoextra)  ##pca with vectors
 library(car) ## stats
 library(pheatmap)  # for pretty heatmap
 library(viridis) # for awesome color pallette
+library(kableExtra) # for better markdown tables
 
 ## load user-written functions 
 source("functions_behavior.R")
@@ -188,13 +189,15 @@ timeentr <- ggplot(Time1Entr,
    scale_y_continuous(name= "Time (s)") +
     scale_x_continuous(name= NULL, 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels = c( "Pre.", "T1", "T2", "T3",
-                                   "Retest", "T4", "T5", "T6", "Reten.")) +
+                       labels = c( "P", "T1", "T2", "T3",
+                                   "Rt", "T4", "T5", "T6", "Rn")) +
   theme_cowplot(font_size = 7, line_size = 0.25) +
   background_grid(major = "y", minor = "y") +
   scale_color_manual(values = colorvalAPA00)  +
   theme(legend.title=element_blank(),
-        legend.position="bottom") 
+        legend.position="bottom", 
+        legend.text=element_text(size=7)) 
+
 timeentr
 
 pdf(file="../figures/01_behavior/timeentr.pdf", width=3.25, height=2.5)
@@ -340,9 +343,10 @@ timespent1 <- proptime %>%
   ggplot(aes(x = TrainSessionCombo, y = proportion, fill = quadrant)) + 
   geom_bar(position = "fill",stat = "identity")  +
   facet_wrap(~APA2, nrow=1) +
-  theme_cowplot(font_size = 8, line_size = 0.25) +  
-  theme(legend.title=element_blank()) +
-  theme(legend.position="bottom") +
+  theme_cowplot(font_size = 7, line_size = 0.25) +  
+  theme(legend.title=element_blank(),
+        legend.position="bottom",
+        legend.text=element_text(size=7)) +
   scale_y_continuous(name= "Proportion of Time Spent",
                      breaks = c(0.25,0.50, 0.75)) +
   scale_x_discrete(name="Training Session", 
@@ -353,13 +357,17 @@ timespent1 <- proptime %>%
   geom_hline(yintercept=c(0.25,0.50, 0.75), color="black" , linetype="dashed") 
 timespent1
 
-meanprop <- proptime %>%
+meanproplong <- proptime %>%
   filter(TrainSessionCombo != "Hab") %>%
   group_by(APA2, quadrant) %>%
   summarize(mean_prop = mean(proportion)) 
-meanprop$mean_prop <- round(meanprop$mean_prop,2)
-meanprop <- spread(meanprop, quadrant, mean_prop)
-head(meanprop)
+meanproplong$mean_prop <- round(meanproplong$mean_prop,2)
+head(meanproplong)
+
+summary(aov(data = meanproplong, mean_prop ~ APA2*quadrant))
+
+meanpropwide <- spread(meanproplong, quadrant, mean_prop)
+kable(meanpropwide)
 ```
 
 

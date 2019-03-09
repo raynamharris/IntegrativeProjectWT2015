@@ -4,7 +4,7 @@ assembled into this multi-panel plot using Adobe Illustrator. Files used
 to create the individual figures are saved in the data subdirectory with
 the prefix 01a.
 
-<img src="../figures/figures-01.png" width="1370" />
+<img src="../figures/figure_2.png" width="1370" />
 
 Setup
 -----
@@ -13,9 +13,6 @@ Setup
     library(tidyr) ## for respahing data
     library(plyr) ## for renmaing factors
     library(dplyr) ## for filtering and selecting rows
-
-    ## Warning: package 'dplyr' was built under R version 3.5.1
-
     library(reshape2) ## for melting dataframe
     library(ggplot2) ## for awesome plots!
     library(cowplot) ## for some easy to use themes
@@ -23,6 +20,7 @@ Setup
     library(car) ## stats
     library(pheatmap)  # for pretty heatmap
     library(viridis) # for awesome color pallette
+    library(kableExtra) # for better markdown tables
 
     ## load user-written functions 
     source("functions_behavior.R")
@@ -1005,67 +1003,65 @@ To make the point and line graphs, I must create and merge some data
 frames
 
     ## number of entrances
-    behaviorsummaryNumAPA2 <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+    meannumentr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
+    meannumentr$APA2 <- factor(meannumentr$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
 
-    ## speed
-    speedsummary <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Speed2), se = sd(Speed2)/sqrt(length(Speed2)))
-
-    ## time second entrance
-    Time2ndEntr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time2ndEntr), se = sd(Time2ndEntr)/sqrt(length(Time2ndEntr)))
-
-    ## time second entrance
-    Time1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
-
-    ## create the column for faceting
-    behaviorsummaryNumAPA2$measure <- "Number of Entrances"
-    speedsummary$measure <- "Speed"
-    Time1Entr$measure <- "Time to 1st Entrance"
-
-    # rbind
-    twoplots <- rbind(behaviorsummaryNumAPA2,Time1Entr)
-
-    # set factors
-    twoplots$APA2 <- factor(twoplots$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
-    twoplots$measure <- factor(twoplots$measure, levels = c("Number of Entrances" ,   "Time to 1st Entrance", "Speed"))
-    summary(twoplots)
-
-    ##                APA2    TrainSessionComboNum       m          
-    ##  yoked-consistent:18   Min.   :1            Min.   :  2.222  
-    ##  consistent      :18   1st Qu.:3            1st Qu.:  8.248  
-    ##  yoked-conflict  :18   Median :5            Median : 16.324  
-    ##  conflict        :18   Mean   :5            Mean   : 54.776  
-    ##                        3rd Qu.:7            3rd Qu.: 35.314  
-    ##                        Max.   :9            Max.   :359.216  
-    ##        se                          measure  
-    ##  Min.   :  0.294   Number of Entrances :36  
-    ##  1st Qu.:  1.498   Time to 1st Entrance:36  
-    ##  Median :  2.295   Speed               : 0  
-    ##  Mean   : 16.256                            
-    ##  3rd Qu.:  9.080                            
-    ##  Max.   :106.742
-
-    behaviorwrap <- ggplot(twoplots, aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    numentr <- ggplot(meannumentr, 
+                      aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
         geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
         geom_point(size = 2) +
        geom_line() +
-       scale_y_continuous(name= "Value") +
-        scale_x_continuous(name="Training Session", 
+      labs(subtitle = "Number of entrances") +
+       scale_y_continuous(name= "Counts") +
+        scale_x_continuous(name= NULL, 
                            breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = c( "Pre.", "T1", "T2", "T3",
-                                       "Retest", "T4", "T5", "T6", "Reten.")) +
-      theme_cowplot(font_size = 8, line_size = 0.25) +
-      #background_grid(major = "y", minor = "y") +
+                           labels = NULL) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
+      background_grid(major = "y", minor = "y") +
       scale_color_manual(values = colorvalAPA00)  +
-      theme(legend.position=c(0.7, 0.8))  +
-      theme(legend.title=element_blank()) +
-      theme(legend.position="none") +
-      facet_wrap(~measure, ncol=1, scales = "free_y")
-    behaviorwrap
+      theme(legend.title=element_blank(),
+            legend.position="none",
+            plot.title = element_text(face = "bold")) 
+    numentr
 
 ![](../figures/01_behavior/twobehaviors-1.png)
 
-    pdf(file="../figures/01_behavior/twobehaviors.pdf", width=3.25, height=3)
-    plot(behaviorwrap)
+    pdf(file="../figures/01_behavior/numentr.pdf", width=3.25, height=2)
+    plot(numentr)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    ## time first entrance
+    Time1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
+    Time1Entr$APA2 <- factor(Time1Entr$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+
+
+    timeentr <- ggplot(Time1Entr, 
+                      aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+        geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+        geom_point(size = 2) +
+       geom_line() +
+      labs(subtitle = "Time to first entrance") +
+       scale_y_continuous(name= "Time (s)") +
+        scale_x_continuous(name= NULL, 
+                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                           labels = c( "P", "T1", "T2", "T3",
+                                       "Rt", "T4", "T5", "T6", "Rn")) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
+      background_grid(major = "y", minor = "y") +
+      scale_color_manual(values = colorvalAPA00)  +
+      theme(legend.title=element_blank(),
+            legend.position="bottom", 
+            legend.text=element_text(size=7)) 
+
+    timeentr
+
+![](../figures/01_behavior/twobehaviors-2.png)
+
+    pdf(file="../figures/01_behavior/timeentr.pdf", width=3.25, height=2.5)
+    plot(timeentr)
     dev.off()
 
     ## quartz_off_screen 
@@ -1165,22 +1161,26 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
 ![](../figures/01_behavior/PCA-1.png)
 
-    ## statistics
-    aov1 <- aov(PC1 ~ APA2, data=scoresdf)
-    summary(aov1) # p = 1.01e-13
+    ## print anova and TukeyHSD stats for first 6 PCs
+    j <- 0
+    for (i in (scoresdf[,c(1:6)])){
+      j <- j+1
+      print(paste("PC", j, sep = " "))
+      myaov <- aov(i ~ APA2, data=scoresdf)
+      print(summary(myaov))
+      print(TukeyHSD(myaov, which = "APA2"))
+    }
 
+    ## [1] "PC 1"
     ##             Df Sum Sq Mean Sq F value   Pr(>F)    
     ## APA2         3   3195  1065.0   73.05 6.84e-14 ***
     ## Residuals   30    437    14.6                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    TukeyHSD(aov1, which = "APA2") # p<< 0.001 for both control comparisions
-
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC1 ~ APA2, data = scoresdf)
+    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
     ## 
     ## $APA2
     ##                                        diff        lwr        upr
@@ -1197,22 +1197,17 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## yoked-conflict-consistent       0.0000000
     ## conflict-consistent             0.9990895
     ## conflict-yoked-conflict         0.0000000
-
-    aov2 <- aov(PC2 ~ APA2, data=scoresdf)
-    summary(aov2) # p = 0.0295 *
-
+    ## 
+    ## [1] "PC 2"
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
     ## APA2         3  171.6   57.20   3.091 0.0419 *
     ## Residuals   30  555.2   18.51                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    TukeyHSD(aov2, which = "APA2") # p > 0.05
-
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC2 ~ APA2, data = scoresdf)
+    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
     ## 
     ## $APA2
     ##                                       diff        lwr       upr     p adj
@@ -1222,19 +1217,15 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## yoked-conflict-consistent        5.3517272 -0.3321688 11.035623 0.0707214
     ## conflict-consistent              4.3421941 -1.3417018 10.026090 0.1836316
     ## conflict-yoked-conflict         -1.0095331 -6.5237221  4.504656 0.9589440
-
-    summary(aov(PC3 ~ APA2, data=scoresdf)) # p = 0.117
-
+    ## 
+    ## [1] "PC 3"
     ##             Df Sum Sq Mean Sq F value Pr(>F)
     ## APA2         3   94.9   31.64   2.001  0.135
-    ## Residuals   30  474.3   15.81
-
-    TukeyHSD((aov(PC3 ~ APA2, data=scoresdf)), which = "APA2") 
-
+    ## Residuals   30  474.3   15.81               
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC3 ~ APA2, data = scoresdf)
+    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
     ## 
     ## $APA2
     ##                                      diff        lwr      upr     p adj
@@ -1244,19 +1235,15 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## yoked-conflict-consistent        1.329855 -3.9235387 6.583249 0.9007412
     ## conflict-consistent              4.531336 -0.7220575 9.784730 0.1102806
     ## conflict-yoked-conflict          3.201481 -1.8950595 8.298022 0.3373455
-
-    summary(aov(PC4 ~ APA2, data=scoresdf))
-
+    ## 
+    ## [1] "PC 4"
     ##             Df Sum Sq Mean Sq F value Pr(>F)
     ## APA2         3   60.0   20.00   1.305  0.291
-    ## Residuals   30  459.9   15.33
-
-    TukeyHSD((aov(PC4 ~ APA2, data=scoresdf)), which = "APA2") 
-
+    ## Residuals   30  459.9   15.33               
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC4 ~ APA2, data = scoresdf)
+    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
     ## 
     ## $APA2
     ##                                       diff       lwr      upr     p adj
@@ -1266,19 +1253,15 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## yoked-conflict-consistent       -3.6531778 -8.826265 1.519909 0.2412559
     ## conflict-consistent             -2.1871792 -7.360266 2.985908 0.6623510
     ## conflict-yoked-conflict          1.4659986 -3.552633 6.484630 0.8564632
-
-    summary(aov(PC5 ~ APA2, data=scoresdf))
-
+    ## 
+    ## [1] "PC 5"
     ##             Df Sum Sq Mean Sq F value Pr(>F)
     ## APA2         3   10.5   3.496   0.233  0.873
-    ## Residuals   30  450.8  15.027
-
-    TukeyHSD((aov(PC5 ~ APA2, data=scoresdf)), which = "APA2") 
-
+    ## Residuals   30  450.8  15.027               
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC5 ~ APA2, data = scoresdf)
+    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
     ## 
     ## $APA2
     ##                                       diff       lwr      upr     p adj
@@ -1288,21 +1271,17 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## yoked-conflict-consistent       -0.8339785 -5.955809 4.287852 0.9705093
     ## conflict-consistent              0.2951246 -4.826706 5.416956 0.9985986
     ## conflict-yoked-conflict          1.1291031 -3.839803 6.098009 0.9255676
-
-    summary(aov(PC6 ~ APA2, data=scoresdf))
-
+    ## 
+    ## [1] "PC 6"
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
     ## APA2         3  123.5   41.18    4.13 0.0145 *
     ## Residuals   30  299.1    9.97                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    TukeyHSD((aov(PC6 ~ APA2, data=scoresdf)), which = "APA2") # p > 0.05
-
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC6 ~ APA2, data = scoresdf)
+    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
     ## 
     ## $APA2
     ##                                       diff        lwr       upr     p adj
@@ -1313,62 +1292,191 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## conflict-consistent              4.2810969  0.1089868 8.4532069 0.0426272
     ## conflict-yoked-conflict          3.9148738 -0.1326675 7.9624151 0.0608419
 
-    pca12 <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
-        geom_point(size=3, alpha = 0.7) +
-        xlab(paste0("PC 1: ", percent[1],"% variance")) +
-        ylab(paste0("PC 2: ", percent[2],"% variance")) +
-        scale_colour_manual(values=c(colorvalAPA00)) + 
-        theme_cowplot(font_size = 8, line_size = 0.25) +
-          theme(legend.position="none") 
-    pca12
-
-![](../figures/01_behavior/PCA-2.png)
-
-    pdf(file="../figures/01_behavior/pca12.pdf",  width=1.5, height=1.5)
-    plot(pca12)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
     pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
-        geom_point(size=3, alpha = 0.7) +
+        geom_point(size=2.5, alpha = 0.7) +
         xlab(paste0("PC 1: ", percent[1],"% variance")) +
         ylab(paste0("PC 2: ", percent[2],"% variance")) +
         stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
         scale_colour_manual(values=c(colorvalAPA00)) + 
-        theme_cowplot(font_size = 8, line_size = 0.25) +
-          theme(legend.position="none") 
+        theme_cowplot(font_size = 7, line_size = 0.25) +
+        theme(legend.position="none") +
+        ylim(-22,20)
     pca12elipse
 
-![](../figures/01_behavior/PCA-3.png)
+![](../figures/01_behavior/PCA-2.png)
 
-    pdf(file="../figures/01_behavior/pca12elipse.pdf",  width=3.25, height=2.25)
+    pdf(file="../figures/01_behavior/pca12elipse.pdf",  width=2, height=2)
     plot(pca12elipse)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
+    # PCA with contributions
     res.pca <- prcomp(behaviormatrix, scale = TRUE)
-    fviz_eig(res.pca)
-
-![](../figures/01_behavior/PCA-4.png)
-
     fviz_pca_var(res.pca,
                  col.var = "contrib", # Color by contributions to the PC
                  gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
                  repel = TRUE,     # Avoid text overlapping
                  select.var = list(contrib = 10))
 
-![](../figures/01_behavior/PCA-5.png)
+![](../figures/01_behavior/PCA-3.png)
 
-    fviz_pca_biplot(res.pca, label ="var")
+Now let’s look at how much time they spend in each proportion
 
-![](../figures/01_behavior/PCA-6.png)
+    proptime <- behavior_slim %>%
+      dplyr::select(APA2, TrainSessionCombo, pTimeOPP, pTimeTarget, pTimeCCW, pTimeCW) %>%
+      tidyr::gather(quadrant, proportion, -APA2, -TrainSessionCombo)
+
+    proptime$quadrant <- as.factor(proptime$quadrant)
+    proptime$quadrant <- factor(proptime$quadrant, levels = c("pTimeTarget", "pTimeCCW", "pTimeOPP", "pTimeCW"))
+    proptime$TrainSessionCombo <- factor(proptime$TrainSessionCombo, 
+                                         levels = c("Hab" ,"T1", "T2", "T3", "Retest", 
+                                                    "T4_C1", "T5_C2", "T6_C3","Retention"))
+
+    timespent1 <- proptime %>%
+      ggplot(aes(x = TrainSessionCombo, y = proportion, fill = quadrant)) + 
+      geom_bar(position = "fill",stat = "identity")  +
+      facet_wrap(~APA2, nrow=1) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +  
+      theme(legend.title=element_blank(),
+            legend.position="bottom",
+            legend.text=element_text(size=7)) +
+      scale_y_continuous(name= "Proportion of Time Spent",
+                         breaks = c(0.25,0.50, 0.75)) +
+      scale_x_discrete(name="Training Session", 
+                         labels = c( "P", "T1", "T2", "T3",
+                                       "Rt", "C1", "C2","C3", 
+                                       "Rn")) +
+      scale_fill_manual(values = c("#f03b20", "#e5f5e0" ,"#a1d99b", "#31a354")) + 
+      geom_hline(yintercept=c(0.25,0.50, 0.75), color="black" , linetype="dashed") 
+    timespent1
+
+![](../figures/01_behavior/proptime-1.png)
+
+    meanproplong <- proptime %>%
+      filter(TrainSessionCombo != "Hab") %>%
+      group_by(APA2, quadrant) %>%
+      summarize(mean_prop = mean(proportion)) 
+    meanproplong$mean_prop <- round(meanproplong$mean_prop,2)
+    head(meanproplong)
+
+    ## # A tibble: 6 x 3
+    ## # Groups:   APA2 [2]
+    ##   APA2             quadrant    mean_prop
+    ##   <fct>            <fct>           <dbl>
+    ## 1 yoked-consistent pTimeTarget      0.27
+    ## 2 yoked-consistent pTimeCCW         0.27
+    ## 3 yoked-consistent pTimeOPP         0.24
+    ## 4 yoked-consistent pTimeCW          0.22
+    ## 5 consistent       pTimeTarget      0.01
+    ## 6 consistent       pTimeCCW         0.36
+
+    summary(aov(data = meanproplong, mean_prop ~ APA2*quadrant))
+
+    ##               Df Sum Sq Mean Sq
+    ## APA2           3 0.0000 0.00000
+    ## quadrant       3 0.1384 0.04612
+    ## APA2:quadrant  9 0.1447 0.01607
+
+    meanpropwide <- spread(meanproplong, quadrant, mean_prop)
+    kable(meanpropwide)
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+APA2
+</th>
+<th style="text-align:right;">
+pTimeTarget
+</th>
+<th style="text-align:right;">
+pTimeCCW
+</th>
+<th style="text-align:right;">
+pTimeOPP
+</th>
+<th style="text-align:right;">
+pTimeCW
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+yoked-consistent
+</td>
+<td style="text-align:right;">
+0.27
+</td>
+<td style="text-align:right;">
+0.27
+</td>
+<td style="text-align:right;">
+0.24
+</td>
+<td style="text-align:right;">
+0.22
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+consistent
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:right;">
+0.36
+</td>
+<td style="text-align:right;">
+0.52
+</td>
+<td style="text-align:right;">
+0.11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+yoked-conflict
+</td>
+<td style="text-align:right;">
+0.24
+</td>
+<td style="text-align:right;">
+0.22
+</td>
+<td style="text-align:right;">
+0.27
+</td>
+<td style="text-align:right;">
+0.27
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+conflict
+</td>
+<td style="text-align:right;">
+0.02
+</td>
+<td style="text-align:right;">
+0.36
+</td>
+<td style="text-align:right;">
+0.46
+</td>
+<td style="text-align:right;">
+0.16
+</td>
+</tr>
+</tbody>
+</table>
 
     write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
-    write.csv(twoplots, file = "../data/01a_twoplots.csv", row.names = FALSE)
+    write.csv(meannumentr, file = "../data/01a_meannumentr.csv", row.names = FALSE)
+    write.csv(Time1Entr, file = "../data/01a_Time1Entr.csv", row.names = FALSE)
     write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
     write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
     write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
