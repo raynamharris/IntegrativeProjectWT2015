@@ -55,142 +55,107 @@ mice.
     ##  yoked-conflict  :9  
     ##  conflict        :9
 
-    # keep only relevant columns
+    # keep subset of columns for downstream vizuals
     behavior_slim <- behavior[,c(15,16,14,20:58)] 
 
 Vizualizing Mean and Standard error for num entrace and time 1st entrance
 =========================================================================
 
-To make the point and line graphs, I must create and merge some data
-frames
+To make the point and line graphs, I must create and join some data
+frames, then I have a function that makes four plots with specific
+titles, y labels and limits.
 
-    ## number of entrances
-    meannumentr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(NumEntrances), se = sd(NumEntrances)/sqrt(length(NumEntrances)))
-    meannumentr$APA2 <- factor(meannumentr$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+    a <- behavior %>%
+      dplyr::group_by(APA2, TrainSessionComboNum) %>%
+      dplyr::summarise(m = mean(NumEntrances), 
+                       se = sd(NumEntrances)/sqrt(length(NumEntrances))) %>%
+      dplyr::mutate(measure = "Number of target zone entrances")
 
-    numentr <- ggplot(meannumentr, 
+    b <- behavior %>%
+      dplyr::group_by(APA2, TrainSessionComboNum) %>%
+      dplyr::summarise(m = mean(pTimeTarget), 
+                       se = sd(pTimeTarget)/sqrt(length(pTimeTarget))) %>%
+      dplyr::mutate(measure = "Proportion of time in target zone")
+
+    c <- behavior %>%
+      dplyr::group_by(APA2, TrainSessionComboNum) %>%
+      dplyr::mutate(minutes = Time1stEntr/60) %>%
+      dplyr::summarise(m = mean(minutes), 
+                       se = sd(minutes)/sqrt(length(minutes))) %>%
+      dplyr::mutate(measure = "Time to 1st target zone entrance (min)")
+
+    d <- behavior %>%
+      dplyr::group_by(APA2, TrainSessionComboNum) %>%
+      dplyr::summarise(m = mean(pTimeOPP), 
+                       se = sd(pTimeOPP)/sqrt(length(pTimeOPP))) %>%
+      dplyr::mutate(measure = "Proportion of time opposite the target zone")
+
+    fourmeasures <- rbind(a,b,c,d)
+    head(fourmeasures)
+
+    ## # A tibble: 6 x 5
+    ## # Groups:   APA2 [1]
+    ##   APA2           TrainSessionComboN…     m    se measure                  
+    ##   <fct>                        <int> <dbl> <dbl> <chr>                    
+    ## 1 yoked-consist…                   1  31.4 2.32  Number of target zone en…
+    ## 2 yoked-consist…                   2  21.4 2.02  Number of target zone en…
+    ## 3 yoked-consist…                   3  15.4 1.40  Number of target zone en…
+    ## 4 yoked-consist…                   4  14.5 2.01  Number of target zone en…
+    ## 5 yoked-consist…                   5  16.9 0.875 Number of target zone en…
+    ## 6 yoked-consist…                   6  15   1.56  Number of target zone en…
+
+    fourmeasures$APA2 <- factor(fourmeasures$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+
+    # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
+
+    meansdplots <- function(df, mytitle, myylab, ybreaks, ylims){
+      myplot <- ggplot(df, 
                       aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
         geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-        geom_point(size = 2) +
-       geom_line() +
-      labs(subtitle = "A. Number of target zone entrances") +
-       scale_y_continuous(name= "Counts") +
-        scale_x_continuous(name= NULL, 
-                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = NULL) +
-      theme_cowplot(font_size = 7, line_size = 0.25) +
-      background_grid(major = "y", minor = "y") +
-      scale_color_manual(values = colorvalAPA00)  +
-      theme(legend.title=element_blank(),
-            legend.position="none",
-            legend.text=element_text(size=7)) 
-    numentr
-
-![](../figures/01_behavior/twobehaviors-1.png)
-
-    pdf(file="../figures/01_behavior/numentr.pdf", width=2.55, height=2)
-    plot(numentr)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    # time spent in target
-    target <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(pTimeTarget), se = sd(pTimeTarget)/sqrt(length(pTimeTarget)))
-    target$APA2 <- factor(target$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
-
-    tagetplot <- ggplot(target, 
-                      aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-        geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-        geom_point(size = 2) +
-       geom_line() +
-      labs(subtitle = "B. Time spent in the target zone") +
-       scale_y_continuous(name= "Proportion",
-                          breaks = c(0, .12, .25, .37)) +
-        scale_x_continuous(name= NULL, 
-                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = NULL) +
-      theme_cowplot(font_size = 7, line_size = 0.25) +
-      background_grid(major = "y", minor = "y") +
-      scale_color_manual(values = colorvalAPA00)  +
-      theme(legend.title=element_blank(),
-            legend.position="none",
-            legend.text=element_text(size=7)) 
-    tagetplot
-
-![](../figures/01_behavior/twobehaviors-2.png)
-
-    pdf(file="../figures/01_behavior/tagetplot.pdf", width=2.55, height=2)
-    plot(tagetplot)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    ## time first entrance
-    Time1Entr <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(Time1stEntr), se = sd(Time1stEntr)/sqrt(length(Time1stEntr)))
-    Time1Entr$APA2 <- factor(Time1Entr$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
-
-
-    timeentr <- ggplot(Time1Entr, 
-                      aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-        geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-        geom_point(size = 2) +
-       geom_line() +
-      labs(subtitle = "C. Time to first entrance into the target zone") +
-       scale_y_continuous(name= "Time (s)") +
+        geom_point(size = 1.5) +
+        geom_line() +
+        labs(title = mytitle) +
+        scale_y_continuous(name= myylab,
+                           breaks = ybreaks,
+                           limits = ylims) +
         scale_x_continuous(name= "Training session", 
                            breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                            labels = c( "P", "T1", "T2", "T3",
                                        "Rt", "T4", "T5", "T6", "Rn")) +
-      theme_cowplot(font_size = 7, line_size = 0.25) +
-      background_grid(major = "y", minor = "y") +
-      scale_color_manual(values = colorvalAPA00)  +
-      theme(legend.title=element_blank(),
-            legend.position="none", 
-            legend.text=element_text(size=5)) 
+        theme_cowplot(font_size = 7, line_size = 0.25) +
+        background_grid(major = "y", minor = "y") +
+        scale_color_manual(values = colorvalAPA00,
+                           name  ="Legend")  +
+        theme(legend.position = "bottom",
+              legend.justification=c(0,0),
+            legend.text=element_text(size=5))
+      return(myplot)
+    }  
 
-    timeentr
-
-![](../figures/01_behavior/twobehaviors-3.png)
-
-    pdf(file="../figures/01_behavior/time1entr.pdf", width=2.55, height=2.25)
-    plot(timeentr)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    ### Propostion of time in opposite zone
-    timeopp <- dplyr::summarise(group_by(behavior, APA2, TrainSessionComboNum), m = mean(pTimeOPP), se = sd(pTimeOPP)/sqrt(length(pTimeOPP)))
-    timeopp$APA2 <- factor(timeopp$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+    A <- meansdplots(a, "Number of entrances" , "Counts", c(0,10,20,30), c(0, 35))
+    B <- meansdplots(b, "Proportion of time in target zone", "Proportion", c(0,.12,.25,.37), c(0, .37 ))
+    C <- meansdplots(c, "Time to 1st target zone entrance", "Time (min)", c(0,2,4,6,8), c(0, 8))
+    D <- meansdplots(d, "Proportion of time opposite the target zone", "Proportion", c(0.25, .5, .75), c(0.1, .75))
 
 
-    timeoppplot <- ggplot(timeopp, 
-                      aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-        geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-        geom_point(size = 2) +
-       geom_line() +
-      labs(subtitle = "D. Time spent opposite the target zone") +
-       scale_y_continuous(name= "Proportion",
-                         breaks = c(0, .25, .5, .75),
-                         limits = c(0,.75)) +
-        scale_x_continuous(name= "Training session", 
-                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = c( "P", "T1", "T2", "T3",
-                                       "Rt", "T4", "T5", "T6", "Rn")) +
-      theme_cowplot(font_size = 7, line_size = 0.25) +
-      background_grid(major = "y", minor = "y") +
-      scale_color_manual(values = colorvalAPA00)  +
-      theme(legend.title=element_blank(),
-            legend.position="none", 
-            legend.text=element_text(size=5)) 
-    timeoppplot
+    plotnolegend <- plot_grid(A + theme(legend.position="none"),
+               B + theme(legend.position="none"),
+               C + theme(legend.position="none"),
+               D + theme(legend.position="none"),
+               #align = 'vh',
+               labels = "AUTO",
+               nrow = 2,
+               label_size = 8
+               )
+    legend <- get_legend(A)
 
-![](../figures/01_behavior/twobehaviors-4.png)
+    fourplots <- plot_grid(plotnolegend, legend, ncol = 1, rel_heights = c(1, .1))
+    fourplots
 
-    pdf(file="../figures/01_behavior/timeoppplot.pdf", width=2.55, height=2.25)
-    plot(timeoppplot)
+![](../figures/01_behavior/fourmeasures-1.png)
+
+    pdf(file="../figures/01_behavior/fourmeasures.pdf", width=5.1, height=4.1)
+    plot(fourplots)
     dev.off()
 
     ## quartz_off_screen 
@@ -605,14 +570,33 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
         stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
         scale_colour_manual(values=c(colorvalAPA00)) + 
         theme_cowplot(font_size = 7, line_size = 0.25) +
-        theme(legend.position="none") +
-        ylim(-22,20)
+        theme(legend.position="none") 
     pca12elipse
 
 ![](../figures/01_behavior/PCA-2.png)
 
     pdf(file="../figures/01_behavior/pca12elipse.pdf",  width=2, height=2)
     plot(pca12elipse)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    pcalegend <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
+        geom_point(size=2.5, alpha = 0.7) +
+        xlab(paste0("PC 1: ", percent[1],"% variance")) +
+        ylab(paste0("PC 2: ", percent[2],"% variance")) +
+        stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
+        scale_colour_manual(values=c(colorvalAPA00)) + 
+        theme_cowplot(font_size = 7, line_size = 0.25) +
+        theme(legend.position="bottom",
+              legend.title=element_blank()) 
+    pcalegend
+
+![](../figures/01_behavior/PCA-3.png)
+
+    pdf(file="../figures/01_behavior/pcalegend.pdf",  width=4, height=2)
+    plot(pcalegend)
     dev.off()
 
     ## quartz_off_screen 
@@ -626,7 +610,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
                  repel = TRUE,     # Avoid text overlapping
                  select.var = list(contrib = 8))
 
-![](../figures/01_behavior/PCA-3.png)
+![](../figures/01_behavior/PCA-4.png)
 
 ### Comparing Consistent and Conflict behaviors during the T4/C1 training session
 
@@ -1559,8 +1543,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 ![](../figures/01_behavior/T6consistentconflict-1.png)![](../figures/01_behavior/T6consistentconflict-2.png)![](../figures/01_behavior/T6consistentconflict-3.png)![](../figures/01_behavior/T6consistentconflict-4.png)![](../figures/01_behavior/T6consistentconflict-5.png)
 
     write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
-    write.csv(meannumentr, file = "../data/01a_meannumentr.csv", row.names = FALSE)
-    write.csv(Time1Entr, file = "../data/01a_Time1Entr.csv", row.names = FALSE)
+    write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
     write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
     write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
     write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
