@@ -21,6 +21,7 @@ library(edgeR)  ## for basic read counts status
 library(magrittr) ## to use the weird pipe
 library(genefilter)  ## for PCA fuction
 library(ggrepel) ## for labeling volcano plot
+library(stringr) ## for uppercase gene names
 
 ## load functions 
 source("figureoptions.R")
@@ -109,8 +110,9 @@ DEGes <- assay(vsd)
 DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
 DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA2conflictconsistent, padjAPA2yoked_conflictyoked_consistent,padjAPA2conflictyoked_conflict, padjAPA2consistentyoked_consistent)) 
-DEGes <- DEGes %>% filter(padjmin < 0.000000001)
+DEGes <- DEGes %>% filter(padjmin < 0.00000000000000000001)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
@@ -126,11 +128,11 @@ paletteLength <- 30
 myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
 
-pheatmap(DEGes, show_colnames=T, show_rownames = F,
+pheatmap(DEGes, show_colnames=F, show_rownames = T,
          annotation_col=df, annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 25,
          annotation_row = NA, 
-         annotation_legend = FALSE,
+         #annotation_legend = FALSE,
          annotation_names_row = FALSE, annotation_names_col = FALSE,
          fontsize = 8, 
          border_color = "grey60" ,
@@ -141,18 +143,18 @@ pheatmap(DEGes, show_colnames=T, show_rownames = F,
          clustering_distance_cols="correlation" 
          )
 
-pheatmap(DEGes, show_colnames=F, show_rownames = F,
+pheatmap(DEGes, show_colnames=F, show_rownames = T,
          annotation_col=df, annotation_colors = ann_colors, 
          annotation_row = NA, 
          annotation_legend = FALSE,
          annotation_names_row = FALSE, 
          annotation_names_col = FALSE,
-         treeheight_row = 0, treeheight_col = 25,
-         fontsize = 8, 
-         border_color = "grey60" ,
+         treeheight_row = 10, treeheight_col = 10,
+         fontsize = 6, 
+         border_color = NA ,
          color = viridis(30),
-         height = 3.75, 
-         width = 3.5,
+         height = 2.25, 
+         width = 3.3,
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation", 
@@ -170,6 +172,9 @@ percentVar <- round(100 * attr(pcadata, "percentVar"))
 pcadata$PunchAPA <- as.factor(paste(pcadata$Punch, pcadata$APA2, sep="_"))
 pcadata$Punch <- factor(pcadata$Punch, levels=c("DG","CA3", "CA1"))
 pcadata$APA2 <- factor(pcadata$APA2, levels=c("yoked_consistent","consistent",  "yoked_conflict","conflict"))
+
+levels(pcadata$APA2) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+
 pcadata$wrap <- "Principal Component Analyses of Hippocampal Samples"
 
 
@@ -188,42 +193,51 @@ summary(aov(PC6 ~ Punch * APA2, data=pcadata))
 
 
 PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=Punch)) +
-    geom_point(size=3, aes(shape=APA2), alpha = 0.8) +
-    xlab(paste0("PC1:", percentVar[1],"% variance")) +
-    ylab(paste0("PC2:", percentVar[2],"% variance")) +
+    geom_point(size=1.5, aes(shape=APA2), alpha = 0.8) +
+    xlab(paste0("PC1: ", percentVar[1],"%")) +
+    ylab(paste0("PC2: ", percentVar[2],"%")) +
     #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
     scale_colour_manual(values=c(colorvalPunch))+ 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") +
+    theme_cowplot(font_size = 6, line_size = 0.25)  +
+    theme(legend.title=element_blank()) +
+    scale_x_continuous(limits=c(-15, 25)) +
+      scale_y_continuous(limits=c(-15, 15)) +
     scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalPunch))
 PCA12
 
-pdf(file="../figures/02b_RNAseqAll/PCA12.pdf", width=1.75, height=2.25)
-plot(PCA12)
-dev.off()
 
-PCA42region <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2, color=Punch)) +
-    geom_point(size=3, aes(shape=APA2), alpha = 0.8) +
-    xlab(paste0("PC4:", percentVar[4],"% variance")) +
-    ylab(paste0("PC2:", percentVar[2],"% variance")) +
+PCA42 <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2)) +
+    geom_point(size=1.5, aes(color=Punch, shape=APA2), alpha = 0.8) +
+    xlab(paste0("PC4: ", percentVar[4],"%")) +
+    ylab(paste0("PC2: ", percentVar[2],"%")) +
     #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
     scale_colour_manual(values=c(colorvalPunch))+ 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="bottom",
-          legend.title=element_blank()) +
-    scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalPunch))
-PCA42region
+    theme_cowplot(font_size = 6, line_size = 0.25)  +
+    theme(legend.title=element_blank()) +
+  scale_x_continuous(limits=c(-10, 15)) +
+        scale_y_continuous(limits=c(-15, 15)) +
+    scale_shape_manual(aes(color=colorvalPunch), values=c(1, 16, 0, 15)) +
+  guides(color = guide_legend(order=1),
+         shape = guide_legend(order=2))
+PCA42
 
-PCA42APA <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2, color=APA2)) +
-    geom_point(size=3, aes(shape=Punch), alpha = 0.8) +
-    xlab(paste0("PC4:", percentVar[4],"% variance")) +
-    ylab(paste0("PC2:", percentVar[2],"% variance")) +
-    #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
-    scale_colour_manual(values=c(colorvalAPA00))+ 
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="bottom",
-          legend.title=element_blank()) 
-PCA42APA
+
+plotnolegend <- plot_grid(PCA12 + theme(legend.position="none"),
+           PCA42 + theme(legend.position="none"),
+           labels = c("B", "C"),
+           nrow = 2,
+           label_size = 7
+           )
+
+plotnolegend
+legend <- get_legend(PCA42)
+
+pcaplots <- plot_grid(plotnolegend, legend, ncol = 2, rel_widths  = c(1, .3))
+pcaplots
+
+pdf(file="../figures/02b_RNAseqALL/pcaplots.pdf", width=3.3, height=2.5)
+plot(pcaplots)
+dev.off()
 
 ```
 
@@ -281,6 +295,8 @@ dev.off()
 volcanoplot(DGvCA3, volcanoDGvCA3, "Up in DG <-> Up in CA3", myfilename = "../figures/02b_RNAseqAll/AllDGCA3.pdf")  
 volcanoplot(DGvCA1, volcanoDGvCA1, "Up in DG <-> Up in CA1", "../figures/02b_RNAseqAll/AllCA1DG.pdf")  
 volcanoplot(CA3vCA1, volcanoCA3vCA1, "Up in CA3 <-> Up in CA1", "../figures/02b_RNAseqAll/AllCA1CA3.pdf") 
+
+
 volcanoplot(CsYcs, volcano1, "Up in yoked <-> Up in consistent", "../figures/02b_RNAseqAll/AllCsYcs.pdf") 
 
 ```
