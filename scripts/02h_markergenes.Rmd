@@ -47,6 +47,12 @@ CA1_ventral <- cembrowksimarkers(c("ca1_v" ))
 DG_ventral <- cembrowksimarkers(c("dg_v"))
 CA3_ventral <- cembrowksimarkers(c("ca3_v"))
 
+# dorsal-only markers 
+CA1_dorsal <- cembrowksimarkers(c("ca1_d" ))
+DG_dorsal <- cembrowksimarkers(c("dg_d"))
+CA3_dorsal <- cembrowksimarkers(c("ca3_d"))
+
+
 ```
 
 
