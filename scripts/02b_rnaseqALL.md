@@ -144,6 +144,9 @@ The two two catagorical variables are
 Summary 2 way contrasts
 -----------------------
 
+This first function shows the total number of up and down regulated
+genes and the top 3 most significant genes.
+
     res_summary <- function(mycontrast){
       res <- results(dds, contrast = mycontrast, independentFiltering = T)
       print(mycontrast)
@@ -355,6 +358,11 @@ Summary 2 way contrasts
     ## 0610009B22Rik  -1.13248083408091 0.257432337627188 0.999821112533798
     ## 0610009L18Rik  0.456841889684776 0.647784694333414 0.999821112533798
 
+This second function only prints the total number of DEGs, but it saves
+lots of useful info to a df for downstream dataviz.
+
+    # note: see resvals fucntion in `functions_RNAseq.R`
+
     contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2765
 
     ## [1] 2765
@@ -539,9 +547,9 @@ Volcanos plots and and gene lists
       data <- na.omit(data)
 
       data <- data %>%
-      mutate(direction = ifelse(data$lfc > 0 & data$pvalue < 0.05, 
+      mutate(direction = ifelse(data$lfc > 1 & data$pvalue < 0.05, 
                             yes = myup, 
-                            no = ifelse(data$lfc < 0 & data$pvalue < 0.05, 
+                            no = ifelse(data$lfc < 1 & data$pvalue < 0.05, 
                                         yes = mydown, 
                                         no = "neither")))
       data$logp <- -log10(data$pvalue)
@@ -554,12 +562,18 @@ Volcanos plots and and gene lists
     DGvCA1 <- makevolcanodf(c("Punch", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
     CA3vCA1 <- makevolcanodf(c("Punch", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
 
-    volcanoplot <- function(mydata, mycolors, xlabname, filename){
+
+    CsYcs <- makevolcanodf(c("APA2", "consistent", "yoked_consistent"),"consistent", "yoked_consistent", "../data/CsYcs.csv")
+    YcsYcn <- makevolcanodf(c("APA2", "yoked_conflict", "yoked_consistent"), "yoked_conflict", "yoked_consistent", "../data/YcsYcn.csv")
+    CnYcn <- makevolcanodf(c("APA2", "conflict", "yoked_conflict"),"conflict", "yoked_conflict", "../data/CnYcn.csv")
+
+
+    volcanoplot <- function(mydata, mycolors, xlabname, myfilename){
       
       myvolcano <- ggplot(mydata, aes(x = lfc, y = logp)) + 
       geom_point(aes(color = direction), size = 0.5, alpha = 0.5, na.rm = T) + 
       scale_color_manual(values = mycolors) + 
-      theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
       geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
       scale_y_continuous(limits=c(0, 60)) +
       scale_x_continuous( limits=c(-10, 10)) +
@@ -568,25 +582,40 @@ Volcanos plots and and gene lists
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
             panel.grid.major=element_blank())
-    myvolcano
-    return(myvolcano)
+    print(myvolcano)
 
-    pdf(file=filename, width=1.75, height=2.25)
+    pdf(file=myfilename, width=1.75, height=2.25)
     plot(myvolcano)
     dev.off()
     }
       
-    volcanoplot(DGvCA3, volcanoDGvCA3, "CA3 / DG", "../figures/02b_RNAseqAll/AllDGCA3.pdf")  
+    volcanoplot(DGvCA3, volcanoDGvCA3, "Up in DG <-> Up in CA3", myfilename = "../figures/02b_RNAseqAll/AllDGCA3.pdf")  
 
 ![](../figures/02b_RNAseqAll/volcanos-1.png)
 
-    volcanoplot(DGvCA1, volcanoDGvCA1, "CA1 / DG", "../figures/02b_RNAseqAll/AllCA1DG.pdf")  
+    ## quartz_off_screen 
+    ##                 2
+
+    volcanoplot(DGvCA1, volcanoDGvCA1, "Up in DG <-> Up in CA1", "../figures/02b_RNAseqAll/AllCA1DG.pdf")  
 
 ![](../figures/02b_RNAseqAll/volcanos-2.png)
 
-    volcanoplot(CA3vCA1, volcanoCA3vCA1, "CA1 / CA3", "../figures/02b_RNAseqAll/AllCA1CA3.pdf") 
+    ## quartz_off_screen 
+    ##                 2
+
+    volcanoplot(CA3vCA1, volcanoCA3vCA1, "Up in CA3 <-> Up in CA1", "../figures/02b_RNAseqAll/AllCA1CA3.pdf") 
 
 ![](../figures/02b_RNAseqAll/volcanos-3.png)
+
+    ## quartz_off_screen 
+    ##                 2
+
+    volcanoplot(CsYcs, volcano1, "Up in yoked <-> Up in consistent", "../figures/02b_RNAseqAll/AllCsYcs.pdf") 
+
+![](../figures/02b_RNAseqAll/volcanos-4.png)
+
+    ## quartz_off_screen 
+    ##                 2
 
 plot single gene counts
 -----------------------

@@ -237,9 +237,9 @@ makevolcanodf <- function(mycontrast, myup, mydown, filename){
   data <- na.omit(data)
 
   data <- data %>%
-  mutate(direction = ifelse(data$lfc > 0 & data$pvalue < 0.05, 
+  mutate(direction = ifelse(data$lfc > 1 & data$pvalue < 0.05, 
                         yes = myup, 
-                        no = ifelse(data$lfc < 0 & data$pvalue < 0.05, 
+                        no = ifelse(data$lfc < 1 & data$pvalue < 0.05, 
                                     yes = mydown, 
                                     no = "neither")))
   data$logp <- -log10(data$pvalue)
@@ -252,12 +252,15 @@ DGvCA3 <- makevolcanodf(c("Punch", "CA3", "DG"), "CA3", "DG", "../data/DGvCA3.cs
 DGvCA1 <- makevolcanodf(c("Punch", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
 CA3vCA1 <- makevolcanodf(c("Punch", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
 
-volcanoplot <- function(mydata, mycolors, xlabname, filename){
+
+CsYcs <- makevolcanodf(c("APA2", "consistent", "yoked_consistent"),"consistent", "yoked_consistent", "../data/CsYcs.csv")
+
+volcanoplot <- function(mydata, mycolors, xlabname, myfilename){
   
   myvolcano <- ggplot(mydata, aes(x = lfc, y = logp)) + 
   geom_point(aes(color = direction), size = 0.5, alpha = 0.5, na.rm = T) + 
   scale_color_manual(values = mycolors) + 
-  theme_cowplot(font_size = 8, line_size = 0.25) +
+  theme_cowplot(font_size = 7, line_size = 0.25) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
   scale_y_continuous(limits=c(0, 60)) +
   scale_x_continuous( limits=c(-10, 10)) +
@@ -266,17 +269,18 @@ volcanoplot <- function(mydata, mycolors, xlabname, filename){
   theme(panel.grid.minor=element_blank(),
         legend.position = "none", # remove legend 
         panel.grid.major=element_blank())
-myvolcano
-return(myvolcano)
+print(myvolcano)
 
-pdf(file=filename, width=1.75, height=2.25)
+pdf(file=myfilename, width=1.75, height=2.25)
 plot(myvolcano)
 dev.off()
 }
   
-volcanoplot(DGvCA3, volcanoDGvCA3, "CA3 / DG", "../figures/02b_RNAseqAll/AllDGCA3.pdf")  
-volcanoplot(DGvCA1, volcanoDGvCA1, "CA1 / DG", "../figures/02b_RNAseqAll/AllCA1DG.pdf")  
-volcanoplot(CA3vCA1, volcanoCA3vCA1, "CA1 / CA3", "../figures/02b_RNAseqAll/AllCA1CA3.pdf") 
+volcanoplot(DGvCA3, volcanoDGvCA3, "Up in DG <-> Up in CA3", myfilename = "../figures/02b_RNAseqAll/AllDGCA3.pdf")  
+volcanoplot(DGvCA1, volcanoDGvCA1, "Up in DG <-> Up in CA1", "../figures/02b_RNAseqAll/AllCA1DG.pdf")  
+volcanoplot(CA3vCA1, volcanoCA3vCA1, "Up in CA3 <-> Up in CA1", "../figures/02b_RNAseqAll/AllCA1CA3.pdf") 
+volcanoplot(CsYcs, volcano1, "Up in yoked <-> Up in consistent", "../figures/02b_RNAseqAll/AllCsYcs.pdf") 
+
 ```
 
 
