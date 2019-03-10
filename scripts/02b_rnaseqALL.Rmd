@@ -135,7 +135,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = T,
          #annotation_legend = FALSE,
          annotation_names_row = FALSE, annotation_names_col = FALSE,
          fontsize = 8, 
-         border_color = "grey60" ,
+         border_color = NA ,
          color = viridis(30),
          cellwidth = 6, 
          clustering_method="average",
@@ -198,7 +198,7 @@ PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=Punch)) +
     ylab(paste0("PC2: ", percentVar[2],"%")) +
     #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
     scale_colour_manual(values=c(colorvalPunch))+ 
-    theme_cowplot(font_size = 6, line_size = 0.25)  +
+    theme_cowplot(font_size = 7, line_size = 0.25)  +
     theme(legend.title=element_blank()) +
     scale_x_continuous(limits=c(-15, 25)) +
       scale_y_continuous(limits=c(-15, 15)) +
@@ -212,7 +212,7 @@ PCA42 <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2)) +
     ylab(paste0("PC2: ", percentVar[2],"%")) +
     #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
     scale_colour_manual(values=c(colorvalPunch))+ 
-    theme_cowplot(font_size = 6, line_size = 0.25)  +
+    theme_cowplot(font_size = 7, line_size = 0.25)  +
     theme(legend.title=element_blank()) +
   scale_x_continuous(limits=c(-10, 15)) +
         scale_y_continuous(limits=c(-15, 15)) +
@@ -232,7 +232,7 @@ plotnolegend <- plot_grid(PCA12 + theme(legend.position="none"),
 plotnolegend
 legend <- get_legend(PCA42)
 
-pcaplots <- plot_grid(plotnolegend, legend, ncol = 2, rel_widths  = c(1, .3))
+pcaplots <- plot_grid(plotnolegend, legend, ncol = 2, rel_widths  = c(1, .4))
 pcaplots
 
 pdf(file="../figures/02b_RNAseqALL/pcaplots.pdf", width=3.3, height=2.5)
@@ -267,13 +267,13 @@ makevolcanodf <- function(mycontrast, myup, mydown, filename){
 DGvCA3 <- makevolcanodf(c("Punch", "CA3", "DG"), "CA3", "DG", "../data/DGvCA3.csv")
 DGvCA1 <- makevolcanodf(c("Punch", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
 CA3vCA1 <- makevolcanodf(c("Punch", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
-
-
 CsYcs <- makevolcanodf(c("APA2", "consistent", "yoked_consistent"),"consistent", "yoked_consistent", "../data/CsYcs.csv")
 
-volcanoplot <- function(mydata, mycolors, xlabname, myfilename){
+volcanoplot <- function(mydata, mycolors, xlabname){
   
-  myvolcano <- ggplot(mydata, aes(x = lfc, y = logp)) + 
+  myvolcano <- mydata %>%
+    dplyr::filter(direction != "neither") %>%
+    ggplot(aes(x = lfc, y = logp)) + 
   geom_point(aes(color = direction), size = 0.5, alpha = 0.5, na.rm = T) + 
   scale_color_manual(values = mycolors) + 
   theme_cowplot(font_size = 7, line_size = 0.25) +
@@ -285,19 +285,24 @@ volcanoplot <- function(mydata, mycolors, xlabname, myfilename){
   theme(panel.grid.minor=element_blank(),
         legend.position = "none", # remove legend 
         panel.grid.major=element_blank())
-print(myvolcano)
-
-pdf(file=myfilename, width=1.75, height=2.25)
-plot(myvolcano)
-dev.off()
+return(myvolcano)
 }
   
-volcanoplot(DGvCA3, volcanoDGvCA3, "Up in DG <-> Up in CA3", myfilename = "../figures/02b_RNAseqAll/AllDGCA3.pdf")  
-volcanoplot(DGvCA1, volcanoDGvCA1, "Up in DG <-> Up in CA1", "../figures/02b_RNAseqAll/AllCA1DG.pdf")  
-volcanoplot(CA3vCA1, volcanoCA3vCA1, "Up in CA3 <-> Up in CA1", "../figures/02b_RNAseqAll/AllCA1CA3.pdf") 
+d <- volcanoplot(DGvCA3, volcanoDGvCA3, "DG <-> CA3")  
+e <- volcanoplot(DGvCA1, volcanoDGvCA1, "DG <-> CA1")  
+f <- volcanoplot(CA3vCA1, volcanoCA3vCA1, "CA3 <-> CA1") 
+g <- volcanoplot(CsYcs, volcano1, "yoked consistent <-> consistent") 
 
+myvolcanoplots <- plot_grid(d,e,f,g,
+           labels = c("D", "E", "F", "G"),
+           nrow = 1,
+           label_size = 7
+           )
+myvolcanoplots
 
-volcanoplot(CsYcs, volcano1, "Up in yoked <-> Up in consistent", "../figures/02b_RNAseqAll/AllCsYcs.pdf") 
+pdf(file="../figures/02b_RNAseqALL/myvolcanoplots.pdf", width=6.6, height=2)
+plot(myvolcanoplots)
+dev.off()
 
 ```
 

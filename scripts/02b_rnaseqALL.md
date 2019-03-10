@@ -15,6 +15,7 @@ The figures made from this script were compiled in Adobe.
     library(magrittr) ## to use the weird pipe
     library(genefilter)  ## for PCA fuction
     library(ggrepel) ## for labeling volcano plot
+    library(stringr) ## for uppercase gene names
 
     ## load functions 
     source("figureoptions.R")
@@ -395,8 +396,9 @@ lots of useful info to a df for downstream dataviz.
     DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
     DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
     DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+    DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
     DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA2conflictconsistent, padjAPA2yoked_conflictyoked_consistent,padjAPA2conflictyoked_conflict, padjAPA2consistentyoked_consistent)) 
-    DEGes <- DEGes %>% filter(padjmin < 0.000000001)
+    DEGes <- DEGes %>% filter(padjmin < 0.00000000000000000001)
     rownames(DEGes) <- DEGes$rownames
     drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
     DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
@@ -412,14 +414,14 @@ lots of useful info to a df for downstream dataviz.
     myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
                   seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
 
-    pheatmap(DEGes, show_colnames=T, show_rownames = F,
+    pheatmap(DEGes, show_colnames=F, show_rownames = T,
              annotation_col=df, annotation_colors = ann_colors,
              treeheight_row = 0, treeheight_col = 25,
              annotation_row = NA, 
-             annotation_legend = FALSE,
+             #annotation_legend = FALSE,
              annotation_names_row = FALSE, annotation_names_col = FALSE,
              fontsize = 8, 
-             border_color = "grey60" ,
+             border_color = NA ,
              color = viridis(30),
              cellwidth = 6, 
              clustering_method="average",
@@ -429,18 +431,18 @@ lots of useful info to a df for downstream dataviz.
 
 ![](../figures/02b_RNAseqAll/heatmap-1.png)
 
-    pheatmap(DEGes, show_colnames=F, show_rownames = F,
+    pheatmap(DEGes, show_colnames=F, show_rownames = T,
              annotation_col=df, annotation_colors = ann_colors, 
              annotation_row = NA, 
              annotation_legend = FALSE,
              annotation_names_row = FALSE, 
              annotation_names_col = FALSE,
-             treeheight_row = 0, treeheight_col = 25,
-             fontsize = 8, 
-             border_color = "grey60" ,
+             treeheight_row = 10, treeheight_col = 10,
+             fontsize = 6, 
+             border_color = NA ,
              color = viridis(30),
-             height = 3.75, 
-             width = 3.5,
+             height = 2.25, 
+             width = 3.3,
              clustering_method="average",
              breaks=myBreaks,
              clustering_distance_cols="correlation", 
@@ -529,12 +531,10 @@ Principle component analysis
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-![](../figures/02b_RNAseqAll/pca-1.png)
+![](../figures/02b_RNAseqAll/pca-1.png)![](../figures/02b_RNAseqAll/pca-2.png)![](../figures/02b_RNAseqAll/pca-3.png)![](../figures/02b_RNAseqAll/pca-4.png)
 
     ## quartz_off_screen 
     ##                 2
-
-![](../figures/02b_RNAseqAll/pca-2.png)![](../figures/02b_RNAseqAll/pca-3.png)
 
 Volcanos plots and and gene lists
 ---------------------------------
@@ -561,16 +561,13 @@ Volcanos plots and and gene lists
     DGvCA3 <- makevolcanodf(c("Punch", "CA3", "DG"), "CA3", "DG", "../data/DGvCA3.csv")
     DGvCA1 <- makevolcanodf(c("Punch", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
     CA3vCA1 <- makevolcanodf(c("Punch", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
-
-
     CsYcs <- makevolcanodf(c("APA2", "consistent", "yoked_consistent"),"consistent", "yoked_consistent", "../data/CsYcs.csv")
-    YcsYcn <- makevolcanodf(c("APA2", "yoked_conflict", "yoked_consistent"), "yoked_conflict", "yoked_consistent", "../data/YcsYcn.csv")
-    CnYcn <- makevolcanodf(c("APA2", "conflict", "yoked_conflict"),"conflict", "yoked_conflict", "../data/CnYcn.csv")
 
-
-    volcanoplot <- function(mydata, mycolors, xlabname, myfilename){
+    volcanoplot <- function(mydata, mycolors, xlabname){
       
-      myvolcano <- ggplot(mydata, aes(x = lfc, y = logp)) + 
+      myvolcano <- mydata %>%
+        dplyr::filter(direction != "neither") %>%
+        ggplot(aes(x = lfc, y = logp)) + 
       geom_point(aes(color = direction), size = 0.5, alpha = 0.5, na.rm = T) + 
       scale_color_manual(values = mycolors) + 
       theme_cowplot(font_size = 7, line_size = 0.25) +
@@ -582,37 +579,26 @@ Volcanos plots and and gene lists
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
             panel.grid.major=element_blank())
-    print(myvolcano)
-
-    pdf(file=myfilename, width=1.75, height=2.25)
-    plot(myvolcano)
-    dev.off()
+    return(myvolcano)
     }
       
-    volcanoplot(DGvCA3, volcanoDGvCA3, "Up in DG <-> Up in CA3", myfilename = "../figures/02b_RNAseqAll/AllDGCA3.pdf")  
+    d <- volcanoplot(DGvCA3, volcanoDGvCA3, "DG <-> CA3")  
+    e <- volcanoplot(DGvCA1, volcanoDGvCA1, "DG <-> CA1")  
+    f <- volcanoplot(CA3vCA1, volcanoCA3vCA1, "CA3 <-> CA1") 
+    g <- volcanoplot(CsYcs, volcano1, "yoked consistent <-> consistent") 
+
+    myvolcanoplots <- plot_grid(d,e,f,g,
+               labels = c("D", "E", "F", "G"),
+               nrow = 1,
+               label_size = 7
+               )
+    myvolcanoplots
 
 ![](../figures/02b_RNAseqAll/volcanos-1.png)
 
-    ## quartz_off_screen 
-    ##                 2
-
-    volcanoplot(DGvCA1, volcanoDGvCA1, "Up in DG <-> Up in CA1", "../figures/02b_RNAseqAll/AllCA1DG.pdf")  
-
-![](../figures/02b_RNAseqAll/volcanos-2.png)
-
-    ## quartz_off_screen 
-    ##                 2
-
-    volcanoplot(CA3vCA1, volcanoCA3vCA1, "Up in CA3 <-> Up in CA1", "../figures/02b_RNAseqAll/AllCA1CA3.pdf") 
-
-![](../figures/02b_RNAseqAll/volcanos-3.png)
-
-    ## quartz_off_screen 
-    ##                 2
-
-    volcanoplot(CsYcs, volcano1, "Up in yoked <-> Up in consistent", "../figures/02b_RNAseqAll/AllCsYcs.pdf") 
-
-![](../figures/02b_RNAseqAll/volcanos-4.png)
+    pdf(file="../figures/02b_RNAseqALL/myvolcanoplots.pdf", width=6.6, height=2)
+    plot(myvolcanoplots)
+    dev.off()
 
     ## quartz_off_screen 
     ##                 2
