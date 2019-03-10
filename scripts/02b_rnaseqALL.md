@@ -98,9 +98,75 @@ The two two catagorical variables are
     ## colData names(8): RNAseqID Mouse ... ID APA2
 
     dds <- DESeq(dds) # Differential expression analysis
-    rld <- rlog(dds, blind=FALSE) ## log transformed data
-    vsd <- getVarianceStabilizedData(dds)
-    write.csv(vsd, file = "../data/02b_vsd.csv", row.names = T)
+    #rld <- rlog(dds, blind=FALSE) ## log transformed data
+    vsd <- vst(dds, blind=FALSE) ## variance stabilized
+    head(assay(vsd))
+
+    ##               143A-CA3-1 143A-DG-1 143B-CA1-1 143B-DG-1 143C-CA1-1
+    ## 0610007P14Rik   6.808251  6.668454   7.024113  6.694369   6.554406
+    ## 0610009B22Rik   6.178959  6.123766   6.400739  6.017979   6.232975
+    ## 0610009L18Rik   5.734496  5.786087   6.104311  5.955899   5.688810
+    ## 0610009O20Rik   6.808251  6.994955   6.811358  6.957619   6.986729
+    ## 0610010F05Rik   7.173654  6.872373   6.948970  7.330760   6.792488
+    ## 0610010K14Rik   6.178959  6.445534   6.226252  6.278773   6.311804
+    ##               143D-CA1-3 143D-DG-3 144A-CA1-2 144A-CA3-2 144A-DG-2
+    ## 0610007P14Rik   6.807051  7.087486   6.817352   7.388850  6.787693
+    ## 0610009B22Rik   5.422896  5.690676   6.297021   6.763118  5.895804
+    ## 0610009L18Rik   5.422896  5.801054   5.906760   6.437132  5.422896
+    ## 0610009O20Rik   6.735770  6.996760   6.932498   7.347482  6.803468
+    ## 0610010F05Rik   7.034702  7.366886   7.095362   7.214452  7.173591
+    ## 0610010K14Rik   6.632384  6.336503   6.324803   6.830467  6.124104
+    ##               144B-CA1-1 144B-CA3-1 144C-CA1-2 144C-CA3-2 144C-DG-2
+    ## 0610007P14Rik   6.856466   6.998749   6.613775   6.772989  6.687065
+    ## 0610009B22Rik   6.075785   6.262671   6.016429   6.678908  6.160550
+    ## 0610009L18Rik   5.598772   5.987081   5.640948   5.949087  5.877667
+    ## 0610009O20Rik   6.620138   6.764788   6.823244   7.150675  7.053498
+    ## 0610010F05Rik   6.883753   6.790572   6.866199   7.316178  7.153387
+    ## 0610010K14Rik   6.522908   6.348508   6.357821   6.394319  6.321606
+    ##               144D-CA3-2 144D-DG-2 145A-CA1-2 145A-CA3-2 145A-DG-2
+    ## 0610007P14Rik   6.648731  6.907274   6.874057   6.559847  6.841020
+    ## 0610009B22Rik   6.110834  6.025730   6.200666   6.662371  6.272990
+    ## 0610009L18Rik   5.996939  5.877533   6.019879   5.422896  5.653150
+    ## 0610009O20Rik   6.688303  6.911818   6.669299   7.129017  7.004625
+    ## 0610010F05Rik   7.313891  6.860782   7.084850   6.444836  7.004625
+    ## 0610010K14Rik   6.207358  6.401030   6.179247   5.941814  6.525101
+    ##               145B-CA1-1 145B-DG-1 146A-CA1-2 146A-CA3-2 146A-DG-2
+    ## 0610007P14Rik   6.823920  6.443947   6.558629   7.040970  6.600217
+    ## 0610009B22Rik   6.203366  6.135034   6.249608   5.967787  6.036409
+    ## 0610009L18Rik   5.775328  5.422896   6.030436   5.967787  6.036409
+    ## 0610009O20Rik   7.508062  6.900395   7.109570   7.161133  7.014840
+    ## 0610010F05Rik   6.513968  6.823853   7.120677   7.006737  7.031178
+    ## 0610010K14Rik   6.460325  6.511370   6.630398   6.050860  6.600217
+    ##               146B-CA1-2 146B-CA3-2 146B-DG-2 146C-CA1-4 146C-DG-4
+    ## 0610007P14Rik   6.404439   6.514077  6.336254   6.879112  7.177891
+    ## 0610009B22Rik   6.096523   6.660123  6.336254   6.069351  6.379364
+    ## 0610009L18Rik   5.422896   5.697560  5.422896   6.154200  5.422896
+    ## 0610009O20Rik   6.507239   6.700019  6.694678   6.747678  6.643681
+    ## 0610010F05Rik   7.306540   7.322671  7.352441   6.930938  7.490812
+    ## 0610010K14Rik   6.328364   6.062756  7.510696   6.069351  6.298601
+    ##               146D-CA1-3 146D-CA3-3 146D-DG-3 147C-CA1-3 147C-CA3-3
+    ## 0610007P14Rik   6.945981   6.903613  7.654305   6.705502   6.940845
+    ## 0610009B22Rik   6.244605   6.208354  5.422896   6.075140   6.096355
+    ## 0610009L18Rik   5.422896   5.859914  5.422896   5.648295   5.833026
+    ## 0610009O20Rik   5.901550   6.871826  7.071596   6.604626   7.050033
+    ## 0610010F05Rik   6.880673   7.303954  6.791601   7.246514   7.488887
+    ## 0610010K14Rik   6.880673   5.944388  5.422896   6.481089   6.107284
+    ##               147C-DG-3 147D-CA3-1 147D-DG-1 148A-CA1-3 148A-CA3-3
+    ## 0610007P14Rik  6.590743   6.594036  6.763024   6.781988   6.695079
+    ## 0610009B22Rik  6.239520   6.277406  6.227316   6.339476   6.278186
+    ## 0610009L18Rik  5.652181   5.827799  6.068431   5.906018   5.889562
+    ## 0610009O20Rik  6.946778   6.655348  6.901420   6.901769   6.798452
+    ## 0610010F05Rik  7.124894   7.304299  7.019598   7.043775   7.421607
+    ## 0610010K14Rik  6.105102   5.422896  6.447223   6.346958   6.516910
+    ##               148A-DG-3 148B-CA1-4 148B-CA3-4 148B-DG-4
+    ## 0610007P14Rik  6.770632   6.623311   7.052911  6.640997
+    ## 0610009B22Rik  5.950604   5.422896   6.444857  5.864737
+    ## 0610009L18Rik  5.875464   5.422896   5.936087  5.735933
+    ## 0610009O20Rik  7.338763   5.422896   6.683805  6.710449
+    ## 0610010F05Rik  7.137833   6.502457   7.346635  6.866173
+    ## 0610010K14Rik  5.984273   5.422896   6.376833  6.396187
+
+    write.csv(assay(vsd), file = "../data/02b_vsd.csv", row.names = T)
 
 this is for CA1 DG
 ------------------
@@ -459,7 +525,7 @@ this is for consistent conflict yoked-conflict
 
     ## [1] 40
 
-    DEGes <- assay(rld)
+    DEGes <- assay(vsd)
     DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
     DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
     DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
@@ -519,10 +585,10 @@ Principle component analysis
 ----------------------------
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2  18619    9309 315.688 <2e-16 ***
-    ## APA2         3    167      56   1.885  0.152    
-    ## Punch:APA2   6    217      36   1.225  0.320    
-    ## Residuals   32    944      29                   
+    ## Punch        2   8985    4493 648.658 <2e-16 ***
+    ## APA2         3     70      23   3.345 0.0312 *  
+    ## Punch:APA2   6     86      14   2.059 0.0862 .  
+    ## Residuals   32    222       7                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -532,16 +598,16 @@ Principle component analysis
     ## Fit: aov(formula = PC1 ~ Punch, data = pcadata)
     ## 
     ## $Punch
-    ##               diff       lwr       upr     p adj
-    ## CA3-DG  -42.063885 -47.22958 -36.89819 0.0000000
-    ## CA1-DG  -43.343230 -48.31529 -38.37117 0.0000000
-    ## CA1-CA3  -1.279345  -6.52166   3.96297 0.8244072
+    ##               diff        lwr        upr     p adj
+    ## CA3-DG  -30.416493 -33.168694 -27.664291 0.0000000
+    ## CA1-DG  -29.051106 -31.700143 -26.402068 0.0000000
+    ## CA1-CA3   1.365387  -1.427636   4.158411 0.4665421
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2   8050    4025 984.797 <2e-16 ***
-    ## APA2         3     14       5   1.157  0.341    
-    ## Punch:APA2   6     12       2   0.500  0.803    
-    ## Residuals   32    131       4                   
+    ##             Df Sum Sq Mean Sq  F value Pr(>F)    
+    ## Punch        2   4260  2130.0 1338.086 <2e-16 ***
+    ## APA2         3      8     2.6    1.614 0.2055    
+    ## Punch:APA2   6     22     3.7    2.299 0.0586 .  
+    ## Residuals   32     51     1.6                    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -552,15 +618,17 @@ Principle component analysis
     ## 
     ## $Punch
     ##              diff       lwr       upr p adj
-    ## CA3-DG  -18.71023 -20.48834 -16.93211     0
-    ## CA1-DG   15.28271  13.57125  16.99418     0
-    ## CA1-CA3  33.99294  32.18845  35.79743     0
+    ## CA3-DG  -12.22169 -13.49481 -10.94857     0
+    ## CA1-DG   12.48060  11.25520  13.70600     0
+    ## CA1-CA3  24.70229  23.41029  25.99430     0
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## Punch        2   26.5   13.24   0.329  0.722
-    ## APA2         3  250.8   83.60   2.079  0.123
-    ## Punch:APA2   6  237.0   39.49   0.982  0.453
-    ## Residuals   32 1286.8   40.21
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## Punch        2   19.9    9.95   0.274 0.7618  
+    ## APA2         3  374.6  124.86   3.445 0.0281 *
+    ## Punch:APA2   6  173.3   28.88   0.797 0.5794  
+    ## Residuals   32 1159.9   36.25                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
@@ -569,31 +637,29 @@ Principle component analysis
     ## 
     ## $Punch
     ##               diff       lwr      upr     p adj
-    ## CA3-DG  -1.5452815 -7.518690 4.428126 0.8050705
-    ## CA1-DG  -1.6651830 -7.414683 4.084317 0.7623489
-    ## CA1-CA3 -0.1199015 -6.181910 5.942107 0.9987255
+    ## CA3-DG  -1.6102498 -7.470189 4.249689 0.7831311
+    ## CA1-DG  -1.0834889 -6.723773 4.556796 0.8870184
+    ## CA1-CA3  0.5267609 -5.420096 6.473618 0.9747645
 
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## Punch        2    3.2    1.61   0.128    0.880    
-    ## APA2         3  454.2  151.41  12.051 1.93e-05 ***
-    ## Punch:APA2   6   84.2   14.03   1.116    0.375    
-    ## Residuals   32  402.1   12.56                     
+    ##             Df Sum Sq Mean Sq F value Pr(>F)   
+    ## Punch        2    1.9    0.95   0.087 0.9167   
+    ## APA2         3  156.8   52.28   4.780 0.0073 **
+    ## Punch:APA2   6  150.9   25.16   2.300 0.0586 . 
+    ## Residuals   32  350.0   10.94                  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## Punch        2   0.83   0.416   0.043  0.958
+    ## APA2         3  64.30  21.432   2.202  0.107
+    ## Punch:APA2   6  46.84   7.806   0.802  0.576
+    ## Residuals   32 311.42   9.732
 
     ##             Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## Punch        2    0.4    0.18   0.018 0.98205   
-    ## APA2         3   10.3    3.43   0.347 0.79172   
-    ## Punch:APA2   6  229.2   38.21   3.857 0.00524 **
-    ## Residuals   32  316.9    9.90                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## Punch        2   5.91   2.954   0.381 0.6861  
-    ## APA2         3  23.89   7.963   1.028 0.3934  
-    ## Punch:APA2   6 151.16  25.193   3.251 0.0131 *
-    ## Residuals   32 247.97   7.749                 
+    ## Punch        2   2.31   1.154   0.173 0.84179   
+    ## APA2         3  27.88   9.293   1.395 0.26232   
+    ## Punch:APA2   6 147.14  24.524   3.681 0.00682 **
+    ## Residuals   32 213.22   6.663                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -603,55 +669,6 @@ Principle component analysis
     ##                 2
 
 ![](../figures/02b_RNAseqAll/pca-2.png)![](../figures/02b_RNAseqAll/pca-3.png)
-
-Number of differentially expressed genes per two-way contrast
-=============================================================
-
-venn diagrams
--------------
-
-    # uses contrast 1-6 from heat map prep
-
-    rldpadjs <- assay(rld)
-    rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6)
-    rldpadjs <- as.data.frame(rldpadjs)
-    rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
-
-    venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) 
-    venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) 
-    venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) 
-    venn4 <- row.names(rldpadjs[rldpadjs[4] <0.05 & !is.na(rldpadjs[4]),]) 
-    venn5 <- row.names(rldpadjs[rldpadjs[5] <0.05 & !is.na(rldpadjs[5]),]) 
-    venn6 <- row.names(rldpadjs[rldpadjs[6] <0.05 & !is.na(rldpadjs[6]),]) 
-
-    candidates1 <- list("CA1-DG" = venn1, "CA3-DG" = venn3, "CA1-CA3" = venn2) 
-    candidates2 <- list("Yoked-Consistent" = venn4, "Yoked-Conflict" = venn5, "Yoked-Yoked" = venn6)
-
-    prettyvenn <- venn.diagram(
-      scaled=T,
-      x = candidates1, filename=NULL, 
-      col = "black",
-      alpha = 0.5,
-      cex = 1, fontfamily = "sans", #fontface = "bold",
-      cat.default.pos = "text",
-      cat.cex = 1, cat.fontfamily = "sans")
-    #dev.off()
-    grid.draw(prettyvenn)
-
-![](../figures/02b_RNAseqAll/venndiagram_prep-1.png)
-
-    prettyvenn <- venn.diagram(
-      scaled=T,
-      x = candidates2, filename=NULL, 
-      col = "black",
-      alpha = 0.5,
-      cex = 1, fontfamily = "sans", #fontface = "bold",
-      cat.default.pos = "text",
-      cat.cex = 1, cat.fontfamily = "sans")
-    #dev.off()
-    grid.draw(prettyvenn)
-
-![](../figures/02b_RNAseqAll/venndiagram-1.png)
 
 Volcanos plots and and gene lists
 ---------------------------------
