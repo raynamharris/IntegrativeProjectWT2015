@@ -195,7 +195,7 @@ PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=Punch)) +
     scale_colour_manual(values=c(colorvalPunch))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
     theme(legend.position="none") +
-    scale_shape_manual(values=c(16, 1, 15, 0), aes(color=colorvalPunch))
+    scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalPunch))
 PCA12
 
 pdf(file="../figures/02b_RNAseqAll/PCA12.pdf", width=1.75, height=2.25)
@@ -209,8 +209,9 @@ PCA42region <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2, color=Punch)) +
     #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
     scale_colour_manual(values=c(colorvalPunch))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") +
-    scale_shape_manual(values=c(16, 1, 15, 0), aes(color=colorvalPunch))
+    theme(legend.position="bottom",
+          legend.title=element_blank()) +
+    scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalPunch))
 PCA42region
 
 PCA42APA <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2, color=APA2)) +
@@ -220,7 +221,8 @@ PCA42APA <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2, color=APA2)) +
     #stat_ellipse(level = 0.95, (aes(color=Punch)),size=0.25) + 
     scale_colour_manual(values=c(colorvalAPA00))+ 
     theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="bottom") 
+    theme(legend.position="bottom",
+          legend.title=element_blank()) 
 PCA42APA
 
 ```
