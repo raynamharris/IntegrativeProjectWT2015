@@ -93,18 +93,7 @@ res_summary(c("APA2", "conflict", "consistent"))
 This second function only prints the total number of DEGs, but it saves lots of useful info to a df for downstream dataviz.
 
 ```{r heatmap_prep}
-resvals <- function(contrastvector, mypval){
-  res <- results(dds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = T)
-  sumpvalue <- sum(res$pvalue < mypval, na.rm = TRUE)
-  #print(sumpvalue)
-  sumpadj <- sum(res$padj < mypval, na.rm = TRUE)
-  print(sumpadj)
-  vals <- cbind(res$pvalue, res$padj)
-  pvalcolname <- as.character(paste("pval",contrastvector[1],contrastvector[2],contrastvector[3], sep=""))
-  padjcolname <- as.character(paste("padj",contrastvector[1],contrastvector[2],contrastvector[3], sep=""))
-  colnames(vals) <- c(pvalcolname, padjcolname)
-  return(vals)
-}
+# note: see resvals fucntion in `functions_RNAseq.R`
 
 contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2765
 contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2165
