@@ -36,9 +36,10 @@ The two two catagorical variables are
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-    colData %>% select(APA2,Punch)  %>%  summary()
+    colData <- colData %>% dplyr::rename(treatment = APA2, subfield = Punch)
+    colData %>% select(treatment, subfield)  %>%  summary()
 
-    ##                APA2    Punch   
+    ##             treatment  subfield
     ##  conflict        :14   CA1:15  
     ##  consistent      : 9   CA3:13  
     ##  yoked_conflict  :12   DG :16  
@@ -46,14 +47,14 @@ The two two catagorical variables are
 
     head(colData)
 
-    ##     RNAseqID   Mouse Punch      Group   Conflict Treatment     ID
-    ## 1 143A-CA3-1 15-143A   CA3   conflict   Conflict  conflict 15143A
-    ## 2  143A-DG-1 15-143A    DG   conflict   Conflict  conflict 15143A
-    ## 3 143B-CA1-1 15-143B   CA1    control   Conflict   shocked 15143B
-    ## 4  143B-DG-1 15-143B    DG    control   Conflict   shocked 15143B
-    ## 5 143C-CA1-1 15-143C   CA1 consistent NoConflict   trained 15143C
-    ## 6 143D-CA1-3 15-143D   CA1    control NoConflict     yoked 15143D
-    ##               APA2
+    ##     RNAseqID   Mouse subfield      Group   Conflict Treatment     ID
+    ## 1 143A-CA3-1 15-143A      CA3   conflict   Conflict  conflict 15143A
+    ## 2  143A-DG-1 15-143A       DG   conflict   Conflict  conflict 15143A
+    ## 3 143B-CA1-1 15-143B      CA1    control   Conflict   shocked 15143B
+    ## 4  143B-DG-1 15-143B       DG    control   Conflict   shocked 15143B
+    ## 5 143C-CA1-1 15-143C      CA1 consistent NoConflict   trained 15143C
+    ## 6 143D-CA1-3 15-143D      CA1    control NoConflict     yoked 15143D
+    ##          treatment
     ## 1         conflict
     ## 2         conflict
     ## 3   yoked_conflict
@@ -70,10 +71,11 @@ The two two catagorical variables are
 
     dds <- DESeqDataSetFromMatrix(countData = countData,
                                   colData = colData,
-                                  design = ~ Punch + APA2 + Punch*APA2)
+                                  design = ~ subfield + treatment + subfield*treatment)
 
-    dds$Punch <- factor(dds$Punch, levels=c("DG","CA3", "CA1")) ## specify the factor levels
-    dds$APA2 <- factor(dds$APA2, levels=c("yoked_consistent", "consistent", "yoked_conflict" , "conflict")) ## specify the factor levels
+    dds$subfield <- factor(dds$subfield, levels=c("DG","CA3", "CA1")) ## specify the factor levels
+    dds$treatment <- factor(dds$treatment, levels=c("yoked_consistent", "consistent", "yoked_conflict" , "conflict")) ## specify the factor levels
+
 
     dds # view the DESeq object - note numnber of genes
 
@@ -84,7 +86,7 @@ The two two catagorical variables are
     ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
-    ## colData names(8): RNAseqID Mouse ... ID APA2
+    ## colData names(8): RNAseqID Mouse ... ID treatment
 
     dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
     dds # view number of genes afternormalization and the number of samples
@@ -96,7 +98,7 @@ The two two catagorical variables are
     ## rownames(17929): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
-    ## colData names(8): RNAseqID Mouse ... ID APA2
+    ## colData names(8): RNAseqID Mouse ... ID treatment
 
     dds <- DESeq(dds) # Differential expression analysis
     #rld <- rlog(dds, blind=FALSE) ## log transformed data
@@ -156,9 +158,9 @@ genes and the top 3 most significant genes.
       cat("\n")
     }
 
-    res_summary(c("Punch", "CA1", "DG"))
+    res_summary(c("subfield", "CA1", "DG"))
 
-    ## [1] "Punch" "CA1"   "DG"   
+    ## [1] "subfield" "CA1"      "DG"      
     ## 
     ## out of 17929 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -171,8 +173,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): Punch CA1 vs DG 
-    ## Wald test p-value: Punch CA1 vs DG 
+    ## log2 fold change (MLE): subfield CA1 vs DG 
+    ## Wald test p-value: subfield CA1 vs DG 
     ## DataFrame with 3 rows and 6 columns
     ##                baseMean   log2FoldChange             lfcSE
     ##               <numeric>        <numeric>         <numeric>
@@ -185,9 +187,9 @@ genes and the top 3 most significant genes.
     ## Prkcg  10.4409940864944 1.61114601446348e-25 1.02396384949226e-21
     ## Wfs1   10.1301481185992 4.06033915011148e-24 1.72036569790223e-20
 
-    res_summary(c("Punch", "CA1", "CA3"))
+    res_summary(c("subfield", "CA1", "CA3"))
 
-    ## [1] "Punch" "CA1"   "CA3"  
+    ## [1] "subfield" "CA1"      "CA3"     
     ## 
     ## out of 17929 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -200,8 +202,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): Punch CA1 vs CA3 
-    ## Wald test p-value: Punch CA1 vs CA3 
+    ## log2 fold change (MLE): subfield CA1 vs CA3 
+    ## Wald test p-value: subfield CA1 vs CA3 
     ## DataFrame with 3 rows and 6 columns
     ##                baseMean   log2FoldChange             lfcSE
     ##               <numeric>        <numeric>         <numeric>
@@ -214,9 +216,9 @@ genes and the top 3 most significant genes.
     ## Itpka  13.3240473536895 1.67760521698626e-40 1.09530844617033e-36
     ## Pou3f1 11.8922701573495 1.29829032027963e-32 5.65102500073714e-29
 
-    res_summary(c("Punch", "CA3", "DG"))
+    res_summary(c("subfield", "CA3", "DG"))
 
-    ## [1] "Punch" "CA3"   "DG"   
+    ## [1] "subfield" "CA3"      "DG"      
     ## 
     ## out of 17929 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -229,8 +231,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): Punch CA3 vs DG 
-    ## Wald test p-value: Punch CA3 vs DG 
+    ## log2 fold change (MLE): subfield CA3 vs DG 
+    ## Wald test p-value: subfield CA3 vs DG 
     ## DataFrame with 3 rows and 6 columns
     ##                 baseMean    log2FoldChange             lfcSE
     ##                <numeric>         <numeric>         <numeric>
@@ -243,9 +245,9 @@ genes and the top 3 most significant genes.
     ## Doc2b   -15.8327360164986 1.84998786056728e-56 1.30396394352084e-52
     ## C1ql3   -14.6555751046548 1.24101383873535e-48 5.83152402821739e-45
 
-    res_summary(c("APA2", "consistent", "yoked_consistent"))
+    res_summary(c("treatment", "consistent", "yoked_consistent"))
 
-    ## [1] "APA2"             "consistent"       "yoked_consistent"
+    ## [1] "treatment"        "consistent"       "yoked_consistent"
     ## 
     ## out of 17929 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -258,8 +260,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): APA2 consistent vs yoked_consistent 
-    ## Wald test p-value: APA2 consistent vs yoked consistent 
+    ## log2 fold change (MLE): treatment consistent vs yoked_consistent 
+    ## Wald test p-value: treatment consistent vs yoked consistent 
     ## DataFrame with 3 rows and 6 columns
     ##               baseMean   log2FoldChange             lfcSE             stat
     ##              <numeric>        <numeric>         <numeric>        <numeric>
@@ -272,9 +274,9 @@ genes and the top 3 most significant genes.
     ## Frmd6 9.51980996986564e-13 3.10774196466264e-09
     ## Sgk1  9.16650670302539e-13 3.10774196466264e-09
 
-    res_summary(c("APA2", "yoked_conflict", "yoked_consistent"))
+    res_summary(c("treatment", "yoked_conflict", "yoked_consistent"))
 
-    ## [1] "APA2"             "yoked_conflict"   "yoked_consistent"
+    ## [1] "treatment"        "yoked_conflict"   "yoked_consistent"
     ## 
     ## out of 17929 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -287,8 +289,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): APA2 yoked_conflict vs yoked_consistent 
-    ## Wald test p-value: APA2 yoked conflict vs yoked consistent 
+    ## log2 fold change (MLE): treatment yoked_conflict vs yoked_consistent 
+    ## Wald test p-value: treatment yoked conflict vs yoked consistent 
     ## DataFrame with 3 rows and 6 columns
     ##                 baseMean   log2FoldChange             lfcSE
     ##                <numeric>        <numeric>         <numeric>
@@ -301,9 +303,9 @@ genes and the top 3 most significant genes.
     ## St8sia5 5.62202672044894 1.88730063642428e-08 0.000146143124781514
     ## Gm2115  5.28632755240888 1.24796350258549e-07  0.00064424035881805
 
-    res_summary(c("APA2", "conflict", "yoked_conflict"))
+    res_summary(c("treatment", "conflict", "yoked_conflict"))
 
-    ## [1] "APA2"           "conflict"       "yoked_conflict"
+    ## [1] "treatment"      "conflict"       "yoked_conflict"
     ## 
     ## out of 17929 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -316,8 +318,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): APA2 conflict vs yoked_conflict 
-    ## Wald test p-value: APA2 conflict vs yoked_conflict 
+    ## log2 fold change (MLE): treatment conflict vs yoked_conflict 
+    ## Wald test p-value: treatment conflict vs yoked_conflict 
     ## DataFrame with 3 rows and 6 columns
     ##                baseMean    log2FoldChange             lfcSE
     ##               <numeric>         <numeric>         <numeric>
@@ -330,9 +332,9 @@ genes and the top 3 most significant genes.
     ## Insm1  -5.50006712424552 3.79646693599839e-08  0.00022562516339638
     ## Kcnc2   -5.3536425761431 8.62010539514554e-08 0.000315380922723725
 
-    res_summary(c("APA2", "conflict", "consistent"))
+    res_summary(c("treatment", "conflict", "consistent"))
 
-    ## [1] "APA2"       "conflict"   "consistent"
+    ## [1] "treatment"  "conflict"   "consistent"
     ## 
     ## out of 17929 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -345,8 +347,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): APA2 conflict vs consistent 
-    ## Wald test p-value: APA2 conflict vs consistent 
+    ## log2 fold change (MLE): treatment conflict vs consistent 
+    ## Wald test p-value: treatment conflict vs consistent 
     ## DataFrame with 3 rows and 6 columns
     ##                       baseMean     log2FoldChange             lfcSE
     ##                      <numeric>          <numeric>         <numeric>
@@ -364,40 +366,41 @@ lots of useful info to a df for downstream dataviz.
 
     # note: see resvals fucntion in `functions_RNAseq.R`
 
-    contrast1 <- resvals(contrastvector = c("Punch", "CA1", "DG"), mypval = 0.1) # 2765
+    contrast1 <- resvals(contrastvector = c("subfield", "CA1", "DG"), mypval = 0.1) # 2765
 
     ## [1] 2765
 
-    contrast2 <- resvals(contrastvector = c("Punch", "CA1", "CA3"), mypval = 0.1) # 2165
+    contrast2 <- resvals(contrastvector = c("subfield", "CA1", "CA3"), mypval = 0.1) # 2165
 
     ## [1] 2165
 
-    contrast3 <- resvals(contrastvector = c("Punch", "CA3", "DG"), mypval = 0.1) # 2948
+    contrast3 <- resvals(contrastvector = c("subfield", "CA3", "DG"), mypval = 0.1) # 2948
 
     ## [1] 2948
 
-    contrast4 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) #  114
+    contrast4 <- resvals(contrastvector = c("treatment", "consistent", "yoked_consistent"), mypval = 0.1) #  114
 
     ## [1] 114
 
-    contrast5 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1) # 61
+    contrast5 <- resvals(contrastvector = c("treatment", "conflict", "yoked_conflict"), mypval = 0.1) # 61
 
     ## [1] 61
 
-    contrast6 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) # 1 or 0
+    contrast6 <- resvals(contrastvector = c("treatment", "conflict", "consistent"), mypval = 0.1) #  0
 
     ## [1] 0
 
-    contrast7 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 40
+    contrast7 <- resvals(contrastvector = c("treatment", "yoked_conflict", "yoked_consistent"), mypval = 0.1) # 40
 
     ## [1] 40
 
+    # heatmap with all DEGs
     DEGes <- assay(vsd)
     DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
     DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
     DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
     DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
-    DEGes$padjmin <- with(DEGes, pmin(padjPunchCA1DG, padjPunchCA1CA3, padjPunchCA3DG, padjAPA2conflictconsistent, padjAPA2yoked_conflictyoked_consistent,padjAPA2conflictyoked_conflict, padjAPA2consistentyoked_consistent)) 
+    DEGes$padjmin <- with(DEGes, pmin(padjsubfieldCA1DG, padjsubfieldCA1CA3, padjsubfieldCA3DG, padjtreatmentconflictconsistent, padjtreatmentyoked_conflictyoked_consistent,padjtreatmentconflictyoked_conflict, padjtreatmentconsistentyoked_consistent)) 
     DEGes <- DEGes %>% filter(padjmin < 0.00000000000000000001)
     rownames(DEGes) <- DEGes$rownames
     drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -405,20 +408,21 @@ lots of useful info to a df for downstream dataviz.
     DEGes <- as.matrix(DEGes)
     DEGes <- DEGes - rowMeans(DEGes)
 
-
-    df <- as.data.frame(colData(dds)[,c("APA2", "Punch")]) ## matrix to df
+    df <- as.data.frame(colData(dds)[,c("treatment", "subfield")]) ## matrix to df
     rownames(df) <- names(countData)
-    ann_colors <- ann_colors4 # see color options 
+    levels(df$treatment) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+
+
     DEGes <- as.matrix(DEGes) 
     paletteLength <- 30
     myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
                   seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
 
     pheatmap(DEGes, show_colnames=F, show_rownames = T,
-             annotation_col=df, annotation_colors = ann_colors,
+             annotation_col=df, annotation_colors = pheatmapcolors,
              treeheight_row = 0, treeheight_col = 25,
              annotation_row = NA, 
-             #annotation_legend = FALSE,
+             annotation_legend = TRUE,
              annotation_names_row = FALSE, annotation_names_col = FALSE,
              fontsize = 8, 
              border_color = NA ,
@@ -432,16 +436,16 @@ lots of useful info to a df for downstream dataviz.
 ![](../figures/02b_RNAseqAll/heatmap-1.png)
 
     pheatmap(DEGes, show_colnames=F, show_rownames = T,
-             annotation_col=df, annotation_colors = ann_colors, 
+             annotation_col=df, annotation_colors = pheatmapcolors, 
              annotation_row = NA, 
-             annotation_legend = FALSE,
+             annotation_legend = TRUE,
              annotation_names_row = FALSE, 
              annotation_names_col = FALSE,
              treeheight_row = 10, treeheight_col = 10,
              fontsize = 6, 
              border_color = NA ,
              color = viridis(30),
-             height = 2.25, 
+             height = 2.5, 
              width = 3.3,
              clustering_method="average",
              breaks=myBreaks,
@@ -449,85 +453,143 @@ lots of useful info to a df for downstream dataviz.
              filename = "../figures/02b_RNAseqALL/pheatmap1.pdf"
              )
 
+    ### heatmap with only treatment DEGs
+
+    # heatmap with all DEGs
+    DEGes <- assay(vsd)
+    DEGes <- cbind(DEGes, contrast4, contrast5, contrast7)
+    DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
+    DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+    DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
+    DEGes$padjmin <- with(DEGes, pmin(padjtreatmentyoked_conflictyoked_consistent,padjtreatmentconflictyoked_conflict, padjtreatmentconsistentyoked_consistent)) 
+    DEGes <- DEGes %>% filter(padjmin < 0.001)
+    rownames(DEGes) <- DEGes$rownames
+    drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
+    DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
+    DEGes <- as.matrix(DEGes)
+    DEGes <- DEGes - rowMeans(DEGes)
+
+    df <- as.data.frame(colData(dds)[,c("treatment", "subfield")]) ## matrix to df
+    rownames(df) <- names(countData)
+    levels(df$treatment) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+
+    DEGes <- as.matrix(DEGes) 
+    paletteLength <- 30
+    myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+                  seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+
+    pheatmap(DEGes, show_colnames=F, show_rownames = T,
+             annotation_col=df, annotation_colors = pheatmapcolors,
+             treeheight_row = 0, treeheight_col = 25,
+             annotation_row = NA, 
+             annotation_legend = TRUE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             fontsize = 7, 
+             border_color = NA ,
+             color = viridis(30),
+             cellwidth = 6, 
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation" 
+             )
+
+    pheatmap(DEGes, show_colnames=F, show_rownames = T,
+             annotation_col=df, annotation_colors = pheatmapcolors, 
+             annotation_row = NA, 
+             annotation_legend = TRUE,
+             annotation_names_row = FALSE, 
+             annotation_names_col = FALSE,
+             treeheight_row = 10, treeheight_col = 10,
+             fontsize = 6, 
+             border_color = NA ,
+             color = viridis(30),
+             height = 5, 
+             width = 4,
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation", 
+             filename = "../figures/02b_RNAseqALL/pheatmap2.pdf"
+             )
+
 Principle component analysis
 ----------------------------
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)    
-    ## Punch        2   8985    4493 648.658 <2e-16 ***
-    ## APA2         3     70      23   3.345 0.0312 *  
-    ## Punch:APA2   6     86      14   2.059 0.0862 .  
-    ## Residuals   32    222       7                   
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)    
+    ## subfield            2   8985    4493 648.658 <2e-16 ***
+    ## treatment           3     70      23   3.345 0.0312 *  
+    ## subfield:treatment  6     86      14   2.059 0.0862 .  
+    ## Residuals          32    222       7                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC1 ~ Punch, data = pcadata)
+    ## Fit: aov(formula = PC1 ~ subfield, data = pcadata)
     ## 
-    ## $Punch
+    ## $subfield
     ##               diff        lwr        upr     p adj
     ## CA3-DG  -30.416493 -33.168694 -27.664291 0.0000000
     ## CA1-DG  -29.051106 -31.700143 -26.402068 0.0000000
     ## CA1-CA3   1.365387  -1.427636   4.158411 0.4665421
 
-    ##             Df Sum Sq Mean Sq  F value Pr(>F)    
-    ## Punch        2   4260  2130.0 1338.086 <2e-16 ***
-    ## APA2         3      8     2.6    1.614 0.2055    
-    ## Punch:APA2   6     22     3.7    2.299 0.0586 .  
-    ## Residuals   32     51     1.6                    
+    ##                    Df Sum Sq Mean Sq  F value Pr(>F)    
+    ## subfield            2   4260  2130.0 1338.086 <2e-16 ***
+    ## treatment           3      8     2.6    1.614 0.2055    
+    ## subfield:treatment  6     22     3.7    2.299 0.0586 .  
+    ## Residuals          32     51     1.6                    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC2 ~ Punch, data = pcadata)
+    ## Fit: aov(formula = PC2 ~ subfield, data = pcadata)
     ## 
-    ## $Punch
+    ## $subfield
     ##              diff       lwr       upr p adj
     ## CA3-DG  -12.22169 -13.49481 -10.94857     0
     ## CA1-DG   12.48060  11.25520  13.70600     0
     ## CA1-CA3  24.70229  23.41029  25.99430     0
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## Punch        2   19.9    9.95   0.274 0.7618  
-    ## APA2         3  374.6  124.86   3.445 0.0281 *
-    ## Punch:APA2   6  173.3   28.88   0.797 0.5794  
-    ## Residuals   32 1159.9   36.25                 
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)  
+    ## subfield            2   19.9    9.95   0.274 0.7618  
+    ## treatment           3  374.6  124.86   3.445 0.0281 *
+    ## subfield:treatment  6  173.3   28.88   0.797 0.5794  
+    ## Residuals          32 1159.9   36.25                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC3 ~ Punch, data = pcadata)
+    ## Fit: aov(formula = PC3 ~ subfield, data = pcadata)
     ## 
-    ## $Punch
+    ## $subfield
     ##               diff       lwr      upr     p adj
     ## CA3-DG  -1.6102498 -7.470189 4.249689 0.7831311
     ## CA1-DG  -1.0834889 -6.723773 4.556796 0.8870184
     ## CA1-CA3  0.5267609 -5.420096 6.473618 0.9747645
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)   
-    ## Punch        2    1.9    0.95   0.087 0.9167   
-    ## APA2         3  156.8   52.28   4.780 0.0073 **
-    ## Punch:APA2   6  150.9   25.16   2.300 0.0586 . 
-    ## Residuals   32  350.0   10.94                  
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)   
+    ## subfield            2    1.9    0.95   0.087 0.9167   
+    ## treatment           3  156.8   52.28   4.780 0.0073 **
+    ## subfield:treatment  6  150.9   25.16   2.300 0.0586 . 
+    ## Residuals          32  350.0   10.94                  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## Punch        2   0.83   0.416   0.043  0.958
-    ## APA2         3  64.30  21.432   2.202  0.107
-    ## Punch:APA2   6  46.84   7.806   0.802  0.576
-    ## Residuals   32 311.42   9.732
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)
+    ## subfield            2   0.83   0.416   0.043  0.958
+    ## treatment           3  64.30  21.432   2.202  0.107
+    ## subfield:treatment  6  46.84   7.806   0.802  0.576
+    ## Residuals          32 311.42   9.732
 
-    ##             Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## Punch        2   2.31   1.154   0.173 0.84179   
-    ## APA2         3  27.88   9.293   1.395 0.26232   
-    ## Punch:APA2   6 147.14  24.524   3.681 0.00682 **
-    ## Residuals   32 213.22   6.663                   
+    ##                    Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## subfield            2   2.31   1.154   0.173 0.84179   
+    ## treatment           3  27.88   9.293   1.395 0.26232   
+    ## subfield:treatment  6 147.14  24.524   3.681 0.00682 **
+    ## Residuals          32 213.22   6.663                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -547,9 +609,9 @@ Volcanos plots and and gene lists
       data <- na.omit(data)
 
       data <- data %>%
-      mutate(direction = ifelse(data$lfc > 1 & data$pvalue < 0.05, 
+      mutate(direction = ifelse(data$lfc > 0 & data$pvalue < 0.05, 
                             yes = myup, 
-                            no = ifelse(data$lfc < 1 & data$pvalue < 0.05, 
+                            no = ifelse(data$lfc < 0 & data$pvalue < 0.05, 
                                         yes = mydown, 
                                         no = "neither")))
       data$logp <- -log10(data$pvalue)
@@ -558,34 +620,38 @@ Volcanos plots and and gene lists
       return(data)
     }
 
-    DGvCA3 <- makevolcanodf(c("Punch", "CA3", "DG"), "CA3", "DG", "../data/DGvCA3.csv")
-    DGvCA1 <- makevolcanodf(c("Punch", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
-    CA3vCA1 <- makevolcanodf(c("Punch", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
-    CsYcs <- makevolcanodf(c("APA2", "consistent", "yoked_consistent"),"consistent", "yoked_consistent", "../data/CsYcs.csv")
+    DGvCA3 <- makevolcanodf(c("subfield", "CA3", "DG"), "CA3", "DG", "../data/DGvCA3.csv")
+    DGvCA1 <- makevolcanodf(c("subfield", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
+    CA3vCA1 <- makevolcanodf(c("subfield", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
+    CsYcs <- makevolcanodf(c("treatment", "consistent", "yoked_consistent"),"consistent", "yoked_consistent", "../data/CsYcs.csv")
 
-    volcanoplot <- function(mydata, mycolors, xlabname){
+    volcanoplot <- function(mydata, mycolors, mybreaks){
       
       myvolcano <- mydata %>%
         dplyr::filter(direction != "neither") %>%
         ggplot(aes(x = lfc, y = logp)) + 
       geom_point(aes(color = direction), size = 0.5, alpha = 0.5, na.rm = T) + 
-      scale_color_manual(values = mycolors) + 
+      scale_color_manual(values = mycolors,
+                         breaks = mybreaks) + 
       theme_cowplot(font_size = 7, line_size = 0.25) +
       geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
       scale_y_continuous(limits=c(0, 60)) +
       scale_x_continuous( limits=c(-10, 10)) +
-      xlab(paste0(xlabname)) +
+      xlab(paste0("log fold difference")) +
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
-            legend.position = "none", # remove legend 
-            panel.grid.major=element_blank())
+            legend.title = element_blank(),
+            legend.position = "bottom", # remove legend 
+            panel.grid.major=element_blank(),
+            legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"))
+
     return(myvolcano)
     }
       
-    d <- volcanoplot(DGvCA3, volcanoDGvCA3, "DG <-> CA3")  
-    e <- volcanoplot(DGvCA1, volcanoDGvCA1, "DG <-> CA1")  
-    f <- volcanoplot(CA3vCA1, volcanoCA3vCA1, "CA3 <-> CA1") 
-    g <- volcanoplot(CsYcs, volcano1, "yoked consistent <-> consistent") 
+    d <- volcanoplot(DGvCA3, volcanoDGvCA3, c("DG", "CA3"))  
+    e <- volcanoplot(DGvCA1, volcanoDGvCA1, c("DG", "CA1"))  
+    f <- volcanoplot(CA3vCA1, volcanoCA3vCA1, c("CA3", "CA1")) 
+    g <- volcanoplot(CsYcs, volcano1, c("yoked_consistent", "consistent")) 
 
     myvolcanoplots <- plot_grid(d,e,f,g,
                labels = c("D", "E", "F", "G"),
@@ -606,11 +672,11 @@ Volcanos plots and and gene lists
 plot single gene counts
 -----------------------
 
-    plotCounts(dds, "Prkcz", intgroup = "Punch", normalized = TRUE)
+    plotCounts(dds, "Prkcz", intgroup = "subfield", normalized = TRUE)
 
 ![](../figures/02b_RNAseqAll/Prkcz-1.png)
 
-    plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE)
+    plotCounts(dds, "Prkcz", intgroup = "treatment", normalized = TRUE)
 
 ![](../figures/02b_RNAseqAll/Prkcz-2.png)
 

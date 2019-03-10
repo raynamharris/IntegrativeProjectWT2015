@@ -17,14 +17,14 @@ colorvalAPA00 <-  c( "#404040","#ca0020", "#bababa", "#f4a582")
 #f4a582 ## pink - Trained_Conflict
 
 
-
-
 # for all data included RNA-seq plots
 
 colorvalPunch <- c("#d95f02","#1b9e77", "#7570b3")
 ## DG  "#d95f02"
 ## CA3 "#1b9e77"
 ## CA1 "#7570b3")
+
+colorvalsubfield <- c("#d95f02","#1b9e77", "#7570b3")
 
 volcanoDGvCA3 <- c("CA3" = "#1b9e77",
                    "DG" = "#d95f02", 
@@ -39,14 +39,14 @@ volcanoCA3vCA1 <-  c("CA1" = "#7570b3",
                      "neither" = "#d9d9d9")
 
 
-ann_colors4 = list(
-  Punch = c(CA1 = (values=c("#7570b3")),
-            CA3 = (values=c("#1b9e77")), 
-            DG = (values=c("#d95f02"))),
-  APA2 =  c('yoked_conflict' = (values=c("#bababa")),
-            'yoked_consistent' = (values=c("#404040")), 
-            'conflict' = (values=c("#f4a582")),
-            'consistent' = (values=c("#ca0020"))))
+pheatmapcolors = list(
+  subfield = c(DG = (values=c("#d95f02")),
+              CA3 = (values=c("#1b9e77")),
+              CA1 = (values=c("#7570b3"))),
+  treatment = c('yoked consistent' = (values=c("#404040")), 
+            'consistent' = (values=c("#ca0020")),
+              'yoked conflict' = (values=c("#bababa")),
+            'conflict' = (values=c("#f4a582"))))
 
 
 
