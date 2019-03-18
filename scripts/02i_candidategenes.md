@@ -6,6 +6,7 @@ Lichtman 1999.
 
     # prep sanes data
     sanesLichtman <- read.csv("../data/02i_sanesLichtman.csv", header = T, stringsAsFactors = F)
+    sanes_forupset <- sanesLichtman
     sanesLichtman <- as.list(sanesLichtman$genes)
     length(sanesLichtman)
 
@@ -19,9 +20,9 @@ Lichtman 1999.
       return(mydata)
     }
 
-    DG_Cons_YCons <- wrangledata("../data/DG-consistent-yokedconsistent.csv", "DG_Cons_YCons")
-    CA1_YConf_YCons <- wrangledata("../data/CA1-yokedconflict-yokedconsistent.csv", "CA1_YConf_YCons")
-    CA1_Cons_YCons <- wrangledata("../data/CA1-consistent-yokedconsistent.csv", "CA1_Cons_YCons")
+    DG_Cons_YCons <- wrangledata("../data/DG-consistent-yokedconsistent.csv", "DG_Learning")
+    CA1_YConf_YCons <- wrangledata("../data/CA1-yokedconflict-yokedconsistent.csv", "CA1_Stress")
+    CA1_Cons_YCons <- wrangledata("../data/CA1-consistent-yokedconsistent.csv", "CA1_Learning")
     CA1DG <- wrangledata("../data/DGvCA1.csv", "CA1_DG")
     CA1CA3 <- wrangledata("../data/CA3vCA1.csv", "CA1_CA3")
     CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3_DG")
@@ -41,52 +42,52 @@ training?**
 
     candidate_summary(DG_Cons_YCons)
 
-    ##     gene         padj  logpadj      lfc  direction    comparison
-    ## 1   BDNF 0.0057204622 2.242569 1.574212 consistent DG_Cons_YCons
-    ## 2   EGR1 0.0001773022 3.751286 2.420881 consistent DG_Cons_YCons
-    ## 3 HOMER1 0.0001590272 3.798529 2.755226 consistent DG_Cons_YCons
+    ##     gene         padj  logpadj      lfc  direction  comparison
+    ## 1   BDNF 0.0057204622 2.242569 1.574212 consistent DG_Learning
+    ## 2   EGR1 0.0001773022 3.751286 2.420881 consistent DG_Learning
+    ## 3 HOMER1 0.0001590272 3.798529 2.755226 consistent DG_Learning
 
     candidate_summary(CA1_Cons_YCons)
 
-    ##       gene        padj  logpadj       lfc        direction     comparison
-    ## 1    ADRB1 0.097473286 1.011114  1.678144       consistent CA1_Cons_YCons
-    ## 2   CAPN10 0.047560292 1.322755  1.992656       consistent CA1_Cons_YCons
-    ## 3    CAPN5 0.057638166 1.239290 -1.466403 yoked_consistent CA1_Cons_YCons
-    ## 4    CHRM3 0.066233796 1.178920  1.050353       consistent CA1_Cons_YCons
-    ## 5     CNR1 0.021870047 1.660150  1.637913       consistent CA1_Cons_YCons
-    ## 6    ERBB4 0.014925827 1.826062  2.682360       consistent CA1_Cons_YCons
-    ## 7     GRM1 0.052012170 1.283895  1.566786       consistent CA1_Cons_YCons
-    ## 8  GUCY1A2 0.075888087 1.119826  2.408653       consistent CA1_Cons_YCons
-    ## 9   GUCY2E 0.089917206 1.046157 -2.966315 yoked_consistent CA1_Cons_YCons
-    ## 10   ITGA3 0.061321606 1.212386  5.161191       consistent CA1_Cons_YCons
-    ## 11   ITGB1 0.040649863 1.390941  2.461197       consistent CA1_Cons_YCons
-    ## 12   NCAM2 0.051236109 1.290424  3.381420       consistent CA1_Cons_YCons
-    ## 13    NOS1 0.005556383 2.255208  2.082285       consistent CA1_Cons_YCons
-    ## 14   OPRD1 0.052829739 1.277122 -1.834692 yoked_consistent CA1_Cons_YCons
-    ## 15 PLA2G15 0.093031168 1.031372  2.383691       consistent CA1_Cons_YCons
-    ## 16   STMN4 0.049991290 1.301106  1.043329       consistent CA1_Cons_YCons
+    ##       gene        padj  logpadj       lfc        direction   comparison
+    ## 1    ADRB1 0.097473286 1.011114  1.678144       consistent CA1_Learning
+    ## 2   CAPN10 0.047560292 1.322755  1.992656       consistent CA1_Learning
+    ## 3    CAPN5 0.057638166 1.239290 -1.466403 yoked_consistent CA1_Learning
+    ## 4    CHRM3 0.066233796 1.178920  1.050353       consistent CA1_Learning
+    ## 5     CNR1 0.021870047 1.660150  1.637913       consistent CA1_Learning
+    ## 6    ERBB4 0.014925827 1.826062  2.682360       consistent CA1_Learning
+    ## 7     GRM1 0.052012170 1.283895  1.566786       consistent CA1_Learning
+    ## 8  GUCY1A2 0.075888087 1.119826  2.408653       consistent CA1_Learning
+    ## 9   GUCY2E 0.089917206 1.046157 -2.966315 yoked_consistent CA1_Learning
+    ## 10   ITGA3 0.061321606 1.212386  5.161191       consistent CA1_Learning
+    ## 11   ITGB1 0.040649863 1.390941  2.461197       consistent CA1_Learning
+    ## 12   NCAM2 0.051236109 1.290424  3.381420       consistent CA1_Learning
+    ## 13    NOS1 0.005556383 2.255208  2.082285       consistent CA1_Learning
+    ## 14   OPRD1 0.052829739 1.277122 -1.834692 yoked_consistent CA1_Learning
+    ## 15 PLA2G15 0.093031168 1.031372  2.383691       consistent CA1_Learning
+    ## 16   STMN4 0.049991290 1.301106  1.043329       consistent CA1_Learning
 
 Which genes from the Sanes and Licthemn 1999 essay are differntially
 expressed in **the CA1 response to increased punishment?**
 
     candidate_summary(CA1_YConf_YCons)
 
-    ##       gene        padj  logpadj       lfc        direction      comparison
-    ## 1     ACHE 0.099660863 1.001475  1.452986   yoked_conflict CA1_YConf_YCons
-    ## 2    ADRB1 0.075287423 1.123278  1.777537   yoked_conflict CA1_YConf_YCons
-    ## 3  CACNA1C 0.058409341 1.233518 -1.189623 yoked_consistent CA1_YConf_YCons
-    ## 4    CAPN5 0.029211697 1.534443 -1.661924 yoked_consistent CA1_YConf_YCons
-    ## 5    CHRM3 0.041797592 1.378849  1.141176   yoked_conflict CA1_YConf_YCons
-    ## 6     CNR1 0.002523184 2.598051  1.950913   yoked_conflict CA1_YConf_YCons
-    ## 7    ERBB4 0.024161473 1.616877  2.413647   yoked_conflict CA1_YConf_YCons
-    ## 8   HOMER3 0.058303918 1.234302  1.742975   yoked_conflict CA1_YConf_YCons
-    ## 9    ITGA3 0.095764023 1.018798  4.546426   yoked_conflict CA1_YConf_YCons
-    ## 10   ITGB1 0.061919886 1.208170  2.207548   yoked_conflict CA1_YConf_YCons
-    ## 11   NCAM2 0.075580891 1.121588  3.038347   yoked_conflict CA1_YConf_YCons
-    ## 12    NOS1 0.017622475 1.753933  1.805458   yoked_conflict CA1_YConf_YCons
-    ## 13   OPRD1 0.023273580 1.633137 -2.152028 yoked_consistent CA1_YConf_YCons
-    ## 14 PLA2G15 0.056237885 1.249971  2.682525   yoked_conflict CA1_YConf_YCons
-    ## 15  PLA2G7 0.067103028 1.173258  1.576937   yoked_conflict CA1_YConf_YCons
+    ##       gene        padj  logpadj       lfc        direction comparison
+    ## 1     ACHE 0.099660863 1.001475  1.452986   yoked_conflict CA1_Stress
+    ## 2    ADRB1 0.075287423 1.123278  1.777537   yoked_conflict CA1_Stress
+    ## 3  CACNA1C 0.058409341 1.233518 -1.189623 yoked_consistent CA1_Stress
+    ## 4    CAPN5 0.029211697 1.534443 -1.661924 yoked_consistent CA1_Stress
+    ## 5    CHRM3 0.041797592 1.378849  1.141176   yoked_conflict CA1_Stress
+    ## 6     CNR1 0.002523184 2.598051  1.950913   yoked_conflict CA1_Stress
+    ## 7    ERBB4 0.024161473 1.616877  2.413647   yoked_conflict CA1_Stress
+    ## 8   HOMER3 0.058303918 1.234302  1.742975   yoked_conflict CA1_Stress
+    ## 9    ITGA3 0.095764023 1.018798  4.546426   yoked_conflict CA1_Stress
+    ## 10   ITGB1 0.061919886 1.208170  2.207548   yoked_conflict CA1_Stress
+    ## 11   NCAM2 0.075580891 1.121588  3.038347   yoked_conflict CA1_Stress
+    ## 12    NOS1 0.017622475 1.753933  1.805458   yoked_conflict CA1_Stress
+    ## 13   OPRD1 0.023273580 1.633137 -2.152028 yoked_consistent CA1_Stress
+    ## 14 PLA2G15 0.056237885 1.249971  2.682525   yoked_conflict CA1_Stress
+    ## 15  PLA2G7 0.067103028 1.173258  1.576937   yoked_conflict CA1_Stress
 
 Which of the genes are differentially expressed **between subfields,
 ignoring treatment effects?**
@@ -261,3 +262,99 @@ ignoring treatment effects?**
     ## 65     THY1 5.040710e-03  0.7867198       CA3  2.297508     CA3_DG
     ## 66    VAMP1 5.878633e-07  1.7204515       CA3  6.230724     CA3_DG
     ## 67    VAMP2 6.253968e-08  0.9083347       CA3  7.203844     CA3_DG
+
+Hmm. I wonder what the overlap is. Let’s examine it with Upset
+
+    library(UpSetR)
+
+    makeupsetlist <- function(mydf){
+        df <- mydf %>%
+          dplyr::filter(gene %in% sanesLichtman) %>%
+          dplyr::arrange(gene) %>%
+          dplyr::filter(direction != "neither") %>%
+          dplyr::select(gene,direction,comparison)
+        return(df)
+    }
+
+    a <- makeupsetlist(DG_Cons_YCons)
+    b <- makeupsetlist(CA1_Cons_YCons)
+    c <- makeupsetlist(CA1_YConf_YCons)
+    d <- makeupsetlist(CA1DG)
+    e <- makeupsetlist(CA1CA3)
+    f <- makeupsetlist(CA3DG)
+
+    names(sanes_forupset)[1]<-"gene"
+    sanes_forupset$direction <- 1
+    sanes_forupset$comparison <- "candidate_genes"
+
+    mydfs <- rbind(a,b,c,d,e,f, sanes_forupset)
+
+    ## Warning in `[<-.factor`(`*tmp*`, ri, value = c(1, 1, 1, 1, 1, 1, 1, 1, 1, :
+    ## invalid factor level, NA generated
+
+    # replace direcational values with 1 for present and make it numeric
+    mydfs$direction <- 1
+    mydfs$direction <- as.numeric(mydfs$direction)
+
+    data_wide <- spread(mydfs, comparison, direction)
+    str(data_wide)
+
+    ## 'data.frame':    237 obs. of  8 variables:
+    ##  $ gene           : chr  "ACHE" "ADCY1" "ADRA2A" "ADRA2B" ...
+    ##  $ CA1_CA3        : num  1 1 NA NA NA NA NA NA 1 NA ...
+    ##  $ CA1_DG         : num  NA 1 NA NA NA NA NA NA 1 NA ...
+    ##  $ CA1_Learning   : num  NA NA NA NA NA 1 NA NA NA NA ...
+    ##  $ CA1_Stress     : num  1 NA NA NA NA 1 NA NA NA NA ...
+    ##  $ CA3_DG         : num  1 1 NA NA NA NA NA NA NA 1 ...
+    ##  $ candidate_genes: num  1 1 1 1 1 1 1 1 1 1 ...
+    ##  $ DG_Learning    : num  NA NA NA NA NA NA NA NA 1 NA ...
+
+    data_wide[is.na(data_wide)] <- 0
+    head(data_wide)
+
+    ##     gene CA1_CA3 CA1_DG CA1_Learning CA1_Stress CA3_DG candidate_genes
+    ## 1   ACHE       1      0            0          1      1               1
+    ## 2  ADCY1       1      1            0          0      1               1
+    ## 3 ADRA2A       0      0            0          0      0               1
+    ## 4 ADRA2B       0      0            0          0      0               1
+    ## 5 ADRA2C       0      0            0          0      0               1
+    ## 6  ADRB1       0      0            1          1      0               1
+    ##   DG_Learning
+    ## 1           0
+    ## 2           0
+    ## 3           0
+    ## 4           0
+    ## 5           0
+    ## 6           0
+
+    upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes", 
+          nsets = 7, keep.order = T,  order.by = "freq",
+          sets = c("DG_Learning","CA1_Learning", "CA1_Stress","CA1_CA3", "CA1_DG",  "CA3_DG",   "candidate_genes"),
+          scale.intersections = "log2",
+          sets.x.label = "No. DE Candidate Genes", 
+          sets.bar.color=c("#ca0020","#ca0020",  "#bababa", "black", "black", "black", "black"),
+          queries = list(# learning related
+                         list(query = intersects, params = list("candidate_genes", "DG_Learning"), color = "#ca0020", active = T),
+                         list(query = intersects, params = list("candidate_genes", "DG_Learning", "CA1_CA3",  "CA1_DG"), color = "#ca0020", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning"), color = "#ca0020", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_CA3",  "CA1_DG"), color = "#ca0020", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress"), color = "#ca0020", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_DG"), color = "#ca0020", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3" ), color = "#ca0020", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_DG" ), color = "#ca0020", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3", "CA3_DG" ), color = "#ca0020", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_DG", "CA3_DG" ), color = "#ca0020", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3", "CA1_DG" ), color = "#ca0020", active = T),
+                         # stress only
+                         list(query = intersects, params = list("candidate_genes","CA1_Stress" ), color = "#bababa", active = T),
+                          list(query = intersects, params = list("candidate_genes","CA1_Stress", "CA1_CA3", "CA1_DG",  "CA3_DG" ), color = "#bababa", active = T)))
+
+![](../figures/02i_candidategenes/upset-1.png)
+
+    upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes", 
+          nsets = 3, keep.order = T,  order.by = "freq",
+          sets = c("DG_Learning","CA1_Learning", "CA1_Stress"),
+          scale.intersections = "log2",
+          sets.x.label = "No. DE Candidate Genes")
+
+![](../figures/02i_candidategenes/upset-2.png)

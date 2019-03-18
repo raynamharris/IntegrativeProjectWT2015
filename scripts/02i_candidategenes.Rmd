@@ -9,6 +9,9 @@ library(stringr) # for sentence to upper case conversion
 library(kableExtra) # for pretty tables
 
 knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(fig.path = '../figures/02i_candidategenes/')
+
 ```
 
 I want to examine the extent to which know learning and memory genes are found to be differentially expressed in this analysis. Do ask that question, I need to do a little data wrangling first. To address this questions, I will use a list of 237 candidate genes from Sanes and Lichtman 1999.
@@ -16,6 +19,7 @@ I want to examine the extent to which know learning and memory genes are found t
 ```{r sanes}
 # prep sanes data
 sanesLichtman <- read.csv("../data/02i_sanesLichtman.csv", header = T, stringsAsFactors = F)
+sanes_forupset <- sanesLichtman
 sanesLichtman <- as.list(sanesLichtman$genes)
 length(sanesLichtman)
 
@@ -27,9 +31,9 @@ wrangledata <- function(filename, mycomparison){
   return(mydata)
 }
 
-DG_Cons_YCons <- wrangledata("../data/DG-consistent-yokedconsistent.csv", "DG_Cons_YCons")
-CA1_YConf_YCons <- wrangledata("../data/CA1-yokedconflict-yokedconsistent.csv", "CA1_YConf_YCons")
-CA1_Cons_YCons <- wrangledata("../data/CA1-consistent-yokedconsistent.csv", "CA1_Cons_YCons")
+DG_Cons_YCons <- wrangledata("../data/DG-consistent-yokedconsistent.csv", "DG_Learning")
+CA1_YConf_YCons <- wrangledata("../data/CA1-yokedconflict-yokedconsistent.csv", "CA1_Stress")
+CA1_Cons_YCons <- wrangledata("../data/CA1-consistent-yokedconsistent.csv", "CA1_Learning")
 CA1DG <- wrangledata("../data/DGvCA1.csv", "CA1_DG")
 CA1CA3 <- wrangledata("../data/CA3vCA1.csv", "CA1_CA3")
 CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3_DG")
@@ -63,4 +67,72 @@ Which of the genes are differentially expressed **between subfields, ignoring tr
 candidate_summary(CA1DG)
 candidate_summary(CA1CA3)
 candidate_summary(CA3DG)
+```
+
+Hmm.  I wonder what the overlap is. Let's examine it with Upset
+
+```{r upset}
+library(UpSetR)
+
+makeupsetlist <- function(mydf){
+    df <- mydf %>%
+      dplyr::filter(gene %in% sanesLichtman) %>%
+      dplyr::arrange(gene) %>%
+      dplyr::filter(direction != "neither") %>%
+      dplyr::select(gene,direction,comparison)
+    return(df)
+}
+
+a <- makeupsetlist(DG_Cons_YCons)
+b <- makeupsetlist(CA1_Cons_YCons)
+c <- makeupsetlist(CA1_YConf_YCons)
+d <- makeupsetlist(CA1DG)
+e <- makeupsetlist(CA1CA3)
+f <- makeupsetlist(CA3DG)
+
+names(sanes_forupset)[1]<-"gene"
+sanes_forupset$direction <- 1
+sanes_forupset$comparison <- "candidate_genes"
+
+mydfs <- rbind(a,b,c,d,e,f, sanes_forupset)
+
+# replace direcational values with 1 for present and make it numeric
+mydfs$direction <- 1
+mydfs$direction <- as.numeric(mydfs$direction)
+
+data_wide <- spread(mydfs, comparison, direction)
+str(data_wide)
+data_wide[is.na(data_wide)] <- 0
+head(data_wide)
+
+upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes", 
+      nsets = 7, keep.order = T,  order.by = "freq",
+      sets = c("DG_Learning","CA1_Learning", "CA1_Stress","CA1_CA3", "CA1_DG",  "CA3_DG",   "candidate_genes"),
+      scale.intersections = "log2",
+      sets.x.label = "No. DE Candidate Genes", 
+      sets.bar.color=c("#ca0020","#ca0020",  "#bababa", "black", "black", "black", "black"),
+      queries = list(# learning related
+                     list(query = intersects, params = list("candidate_genes", "DG_Learning"), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("candidate_genes", "DG_Learning", "CA1_CA3",  "CA1_DG"), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("candidate_genes", "CA1_Learning"), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_CA3",  "CA1_DG"), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress"), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_DG"), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3" ), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_DG" ), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3", "CA3_DG" ), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_DG", "CA3_DG" ), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3", "CA1_DG" ), color = "#ca0020", active = T),
+                     # stress only
+                     list(query = intersects, params = list("candidate_genes","CA1_Stress" ), color = "#bababa", active = T),
+                      list(query = intersects, params = list("candidate_genes","CA1_Stress", "CA1_CA3", "CA1_DG",  "CA3_DG" ), color = "#bababa", active = T)))
+
+
+upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes", 
+      nsets = 3, keep.order = T,  order.by = "freq",
+      sets = c("DG_Learning","CA1_Learning", "CA1_Stress"),
+      scale.intersections = "log2",
+      sets.x.label = "No. DE Candidate Genes")
+
+  
 ```
