@@ -1,5 +1,5 @@
 ---
-title: "candidate genes"
+title: "marker genes"
 output: md_document
 ---
 
