@@ -1,0 +1,160 @@
+---
+title: "candidate genes"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(stringr) # for sentence to upper case conversion
+library(kableExtra) # for pretty tables
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r sanes}
+sanesLichtman <- c("Gria1", "Gria2", 
+       "Grm1", "Grm4", "Grm5", "Grm7",
+       "Grin1", "Grin2a", "Grin2d", 
+       "Th", "Drd1",
+       "Adrb1", "Adrb2", "Adrb3",
+       "Adra2a", "Adra2b", "Adra2c",
+       "Oprm1", "Oprd1",
+       "Chrm1", "Chrm2", "Chrm3", "Chrm4", "Chrm5",
+       "Chrna1", "Chrna7", "Chrna3", 
+       "Chrnb1", "Chrnb2", "Chrnb3",
+       "Gabra1", "Gabra2",  "Gabra3", "Gabra5", "Gabra6",
+       "Gabrb1", "Gabrb2", "Gabrb3",  
+       "Gabrr1",  "Gabbr1",
+       "Cnr1", "Cnr2",
+       "Pnoc", "Oprl1",
+       "Htr1a", "Htr1b", "Htr1f",
+       "Htr2a", "Htr2c", "Htr2b",
+       "Htr3a", "Htr3b", "Htr5a", "Htr5b",
+       "Htr7", "Htr6", "Htr4", 
+       "Edn1", "Egf", "Fgf2",
+       "Nrg1", "Nrg2", "Nrg3",
+       "Erbb4", "Ngf", "Bdnf", "Ntrk2",
+       "Nos1", "Nos3",
+       "Il1b",
+       "Inhba", "Calm1", "Calm2", "Calm3",
+       "Nrgn", "Calb1", "Calb2", "Gap43", "S100b",
+       "Cacna1c", "Cacna1d", "Cacna1s", "Cacna1f",
+       "Cacna1b", "Cacna1a", "Cacna1e",
+       "Cnga2", "Syp", "Napa",
+       "Vamp1", "Vamp2", "Vamp3", "Vamp4", "Vamp5", "Vamp8",
+       "Rab3a", "Stx1b", "Syn1", "Snap25",
+       "Dlg4", "Rarb", "Creb1",
+       "Egr1", "Egr2", "Epha5", "Efna5", "Ncam1", "Ncam2",
+       "Cdh1", "Cdh2", "Thy1", "Icam5",
+       "L1cam", "Ptn", 
+       "Itga1", "Itga10","Itga11", "Itga2",  "Itga2b",
+       "Itga3",  "Itga4", "Itga5",  "Itga6",  "Itga7",  
+       "Itga8",  "Itga9",  "Itgad",  "Itgae", "Itgal",  
+       "Itgam",  "Itgav",  "Itgax",  "Itgb1",  "Itgb1bp1",
+       "Itgb2",  "Itgb2l", "Itgb3",  "Itgb3bp",  "Itgb4",
+       "Itgb5",  "Itgb6", "Itgb7",  "Itgb8",  "Itgbl1",
+       "Cd47", "Tnc",
+       "Itpka", "Itpkb", "Itpkc", 
+       "Mapk1", "Mapk10", "Mapk11", "Mapk12", "Mapk14", 
+       "Mapk3", "Mapk4", "Mapk6", "Mapk7", "Mapk8", "Mapk9",
+       "Src", "Fyn", 
+       "Prkacb", "Prkar1b",
+       "Prkcg", "Prkg1", "Prkcz", 
+       "Camk1",  "Camk2",  "Camk4",
+       "Capn1", "Capn10", "Capn11", "Capn12", "Capn13",
+       "Capn15", "Capn2", "Capn3", "Capn5", "Capn6", 
+       "Capn7", "Capn8", "Capn9",
+       "Cast", "Serpine2", "Plat", "Plg", "Ube3a",
+       "Pla2g10", "Pla2g12a", "Pla2g12b", "Pla2g15",
+       "Pla2g16", "Pla2g1b", "Pla2g2a", "Pla2g2c", "Pla2g2d",
+       "Pla2g2e", "Pla2g2f", "Pla2g3",  "Pla2g4a", "Pla2g4b",
+       "Pla2g4e", "Pla2g4f", "Pla2g5", "Pla2g6", "Pla2g7",
+       "Plcb1", "Plcb2", "Plcb3", "Plcb4",
+       "Plcg1", "Plcg2",
+       "Parp1", "Ppp3ca", "Ppp3cb", "Ppp3cc",
+       "Phpt1", "Ache",
+       "Adcy1", 
+       "Gucy1a2", "Gucy1a3", "Gucy1b2", "Gucy1b3",
+       "Gucy2c", "Gucy2d", "Gucy2e", "Gucy2g",
+       "Sptan1", "Sptbn1", "Gfap", "Stmn4",
+       "Ccr7", "Mas1",
+       "Homer1", "Homer2", "Homer3" )
+sanesLichtman <- str_to_upper(sanesLichtman)
+genes <- sanesLichtman[order(sanesLichtman)] # print list alphabetically
+genes <- as.data.frame(genes)
+write.csv(genes, "../data/02i_sanesLichtman.csv", row.names = F)
+
+```
+
+
+```{r subfieldpvals}
+# import subfield specific data
+wrangledata <- function(filename, mycomparison){
+  mydata <- read.csv(filename, header = T)
+  mydata$gene <- str_to_upper(mydata$gene)
+  mydata$comparison <- mycomparison
+  return(mydata)
+}
+
+CA1DG <- wrangledata("../data/DGvCA1.csv", "CA1-DG")
+CA1CA3 <- wrangledata("../data/CA3vCA1.csv", "CA1-CA3")
+CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3-DG")
+```
+
+```{r enrichementvalidation}
+#look for markers in each supfield
+# make data frames of genes expression results for markers 
+
+marker_summary <- function(mydf, markers){
+    MARKERS <- str_to_upper(markers)
+    df <- mydf %>%
+    dplyr::filter(gene %in% c(MARKERS)) 
+    #return((head(df)))
+    return(summary(df$direction))
+}
+
+# dorsal markers (expected to be high since we sample dorsal populations)
+for(i in list(CA1DG, CA1CA3)){
+  j <- marker_summary(i, CA1_markers)
+  print(i[1, 6])
+  print(j)
+}
+
+for(i in list(CA1CA3, CA3DG)){
+  j <- marker_summary(i, CA3_markers)
+  print(i[1, 6])
+  print(j)
+}
+
+for(i in list(CA1DG, CA3DG)){
+  j <- marker_summary(i, DG_markers)
+  print(i[1, 6])
+  print(j)
+}
+
+# ventral-only makers (expected to be low since we don't sample ventral populations)
+for(i in list(CA1DG, CA1CA3)){
+  j <- marker_summary(i, CA1_ventral)
+  print(i[1, 6])
+  print(j)
+}
+
+
+for(i in list(CA1DG, CA3DG)){
+  j <- marker_summary(i, DG_ventral)
+  print(i[1, 6])
+  print(j)
+}
+```
+
+Then, I checked to see how many of the markers that Cembrowski found to be enriched in discrete dorsal cell populations were also enriched in my comparisons. The enriched coloumn is what percent were confirmed, the depleted column means that the marker was experssed in the opposite direction, and neither means that the Cembrowski marker was not significantly different in expression between the two cell types. Here are the results:
+
+| Maker | Comparison | Enriched | Depleted | Neither |
+|-------|------------|----------|----------|---------|
+| CA1 | CA1 v DG | 0.83 | 0.00 | 0.17 |
+| CA1 | CA1 v CA3 | 0.83 | 0.06 | 0.11 |
+| CA3 | CA3 v DG | 0.60 | 0.00 | 0.40 |
+| CA3 | CA3 v CA1 | 0.70 | 0.00 | 0.30 |
+| DG | DG v CA1 | 0.68 | 0.00 | 0.32 |
+| DG | DG vCA3 | 0.69 | 0.00 | 0.31 |
