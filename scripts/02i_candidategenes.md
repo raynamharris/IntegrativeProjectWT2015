@@ -338,7 +338,7 @@ expressed between the three subfields of the hippocampus.
                           list(query = intersects, params = list("CA1_Learning"), color = "#ca0020", active = T),
                         # stress related
                          list(query = intersects, params = list("CA1_Stress" ), color = "#404040", active = T),
-                          list(query = intersects, params = list("CA1_Learning","CA1_Stress"), color = "#404040", active = T)))
+                          list(query = intersects, params = list("CA1_Learning","CA1_Stress"), color = "#854247", active = T)))
 
 ![](../figures/02i_candidategenes/upset-1.png)
 
@@ -348,21 +348,23 @@ expressed between the three subfields of the hippocampus.
           sets = c("DG_Learning","CA1_Learning", "CA1_Stress","CA1_CA3", "CA1_DG",  "CA3_DG",   "candidate_genes"),
           scale.intersections = "log2",
           sets.x.label = "No. DE Candidate Genes", 
-          sets.bar.color=c("#ca0020","#ca0020",  "#bababa", "black", "black", "black", "black"),
-          queries = list(# learning related
+          sets.bar.color=c("#ca0020","#ca0020",  "#737373", "black", "black", "black", "black"),
+          queries = list(# learning only
                          list(query = intersects, params = list("candidate_genes", "DG_Learning"), color = "#ca0020", active = T),
                          list(query = intersects, params = list("candidate_genes", "DG_Learning", "CA1_CA3",  "CA1_DG"), color = "#ca0020", active = T),
                          list(query = intersects, params = list("candidate_genes", "CA1_Learning"), color = "#ca0020", active = T),
                          list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_CA3",  "CA1_DG"), color = "#ca0020", active = T),
-                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress"), color = "#ca0020", active = T),
                          list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_DG"), color = "#ca0020", active = T),
-                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3" ), color = "#ca0020", active = T),
-                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_DG" ), color = "#ca0020", active = T),
-                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3", "CA3_DG" ), color = "#ca0020", active = T),
-                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_DG", "CA3_DG" ), color = "#ca0020", active = T),
-                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3", "CA1_DG" ), color = "#ca0020", active = T),
+
+                         # learning and stress
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress"), color = "#854247", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3" ), color = "#854247", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_DG" ), color = "#854247", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3", "CA3_DG" ), color = "#854247", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_DG", "CA3_DG" ), color = "#854247", active = T),
+                         list(query = intersects, params = list("candidate_genes", "CA1_Learning", "CA1_Stress", "CA1_CA3", "CA1_DG" ), color = "#854247", active = T),
                          # stress only
-                         list(query = intersects, params = list("candidate_genes","CA1_Stress" ), color = "#bababa", active = T),
-                          list(query = intersects, params = list("candidate_genes","CA1_Stress", "CA1_CA3", "CA1_DG",  "CA3_DG" ), color = "#bababa", active = T)))
+                         list(query = intersects, params = list("candidate_genes","CA1_Stress" ), color = "#737373", active = T),
+                          list(query = intersects, params = list("candidate_genes","CA1_Stress", "CA1_CA3", "CA1_DG",  "CA3_DG" ), color = "#737373", active = T)))
 
 ![](../figures/02i_candidategenes/upset-2.png)
