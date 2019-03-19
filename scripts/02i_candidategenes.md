@@ -331,7 +331,14 @@ expressed between the three subfields of the hippocampus.
           nsets = 3, keep.order = T,  order.by = "freq",
           sets = c("DG_Learning","CA1_Learning", "CA1_Stress"),
           scale.intersections = "log2",
-          sets.x.label = "No. DE Candidate Genes")
+          sets.x.label = "No. DE Candidate Genes",
+          sets.bar.color=c("#ca0020","#ca0020",  "#404040"),
+          queries = list(# learning related
+                         list(query = intersects, params = list("DG_Learning"), color = "#ca0020", active = T),
+                          list(query = intersects, params = list("CA1_Learning"), color = "#ca0020", active = T),
+                        # stress related
+                         list(query = intersects, params = list("CA1_Stress" ), color = "#404040", active = T),
+                          list(query = intersects, params = list("CA1_Learning","CA1_Stress"), color = "#404040", active = T)))
 
 ![](../figures/02i_candidategenes/upset-1.png)
 
