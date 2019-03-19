@@ -44,11 +44,6 @@ Genes from Cembrowski sublement file 1
     DG_markers <- cembrowksimarkers(c("dg_d", "dg_d-dg_v"))
     CA3_markers <- cembrowksimarkers(c("ca3_d",  "ca3_d-ca3_v-ca2-ca1_d-ca1_v"))
 
-    # ventral-only markers 
-    CA1_ventral <- cembrowksimarkers(c("ca1_v" ))
-    DG_ventral <- cembrowksimarkers(c("dg_v"))
-    CA3_ventral <- cembrowksimarkers(c("ca3_v"))
-
     # import subfield specific data
     wrangledata <- function(filename, mycomparison){
       mydata <- read.csv(filename, header = T)
@@ -65,14 +60,13 @@ Genes from Cembrowski sublement file 1
     # make data frames of genes expression results for markers 
 
     marker_summary <- function(mydf, markers){
-        MARKERS <- str_to_upper(markers)
         df <- mydf %>%
-        dplyr::filter(gene %in% c(MARKERS)) 
+        dplyr::filter(gene %in% c(markers)) 
         #return((head(df)))
         return(summary(df$direction))
     }
 
-    # dorsal markers (expected to be high since we sample dorsal populations)
+    # comparing all lists with a given brain region
     for(i in list(CA1DG, CA1CA3)){
       j <- marker_summary(i, CA1_markers)
       print(i[1, 6])
@@ -112,32 +106,48 @@ Genes from Cembrowski sublement file 1
     ##     CA3      DG neither 
     ##       0      49      22
 
-    # ventral-only makers (expected to be low since we don't sample ventral populations)
-    for(i in list(CA1DG, CA1CA3)){
-      j <- marker_summary(i, CA1_ventral)
-      print(i[1, 6])
-      print(j)
+    ## working on a new function that will calculate the percentages with dplyr but still not there... :(
+
+    marker_percents <- function(mydf, markers){
+        df <- mydf %>%
+          dplyr::filter(gene %in% c(markers)) %>% 
+          group_by(direction)  %>% tally() #%>%
+          #spread(key = direction, value = n)
+        return(df)
     }
 
-    ## [1] "CA1-DG"
-    ##     CA1      DG neither 
-    ##       3       0       5 
-    ## [1] "CA1-CA3"
-    ##     CA1     CA3 neither 
-    ##       2       1       5
+    marker_percents(CA1CA3, CA1_markers)
 
-    for(i in list(CA1DG, CA3DG)){
-      j <- marker_summary(i, DG_ventral)
-      print(i[1, 6])
-      print(j)
-    }
+    ## # A tibble: 3 x 2
+    ##   direction     n
+    ##   <fct>     <int>
+    ## 1 CA1          15
+    ## 2 CA3           1
+    ## 3 neither       2
 
-    ## [1] "CA1-DG"
-    ##     CA1      DG neither 
-    ##       0       2      15 
-    ## [1] "CA3-DG"
-    ##     CA3      DG neither 
-    ##       3       1      14
+    marker_percents(CA1DG, CA1_markers)
+
+    ## # A tibble: 2 x 2
+    ##   direction     n
+    ##   <fct>     <int>
+    ## 1 CA1          15
+    ## 2 neither       3
+
+    marker_percents(CA1CA3, CA3_markers)
+
+    ## # A tibble: 2 x 2
+    ##   direction     n
+    ##   <fct>     <int>
+    ## 1 CA3           6
+    ## 2 neither       4
+
+    marker_percents(CA3DG, CA3_markers)
+
+    ## # A tibble: 2 x 2
+    ##   direction     n
+    ##   <fct>     <int>
+    ## 1 CA3           7
+    ## 2 neither       3
 
 Then, I checked to see how many of the markers that Cembrowski found to
 be enriched in discrete dorsal cell populations were also enriched in my
@@ -195,7 +205,7 @@ are the results:
 </tr>
 <tr class="even">
 <td>DG</td>
-<td>DG vCA3</td>
+<td>DG v CA3</td>
 <td>0.69</td>
 <td>0.00</td>
 <td>0.31</td>
