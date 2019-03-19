@@ -6,7 +6,7 @@ output: md_document
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(stringr) # for sentence to upper case conversion
-library(kableExtra) # for pretty tables
+library(UpSetR) # for upset plots
 
 knitr::opts_chunk$set(echo = TRUE)
 
@@ -69,11 +69,9 @@ candidate_summary(CA1CA3)
 candidate_summary(CA3DG)
 ```
 
-Hmm.  I wonder what the overlap is. Let's examine it with Upset
+Hmm.  I wonder what the overlap is. Let's examine it with Upset. But first, a little data wranling.
 
-```{r upset}
-library(UpSetR)
-
+```{r upsetprep}
 makeupsetlist <- function(mydf){
     df <- mydf %>%
       dplyr::filter(gene %in% sanesLichtman) %>%
@@ -89,9 +87,10 @@ c <- makeupsetlist(CA1_YConf_YCons)
 d <- makeupsetlist(CA1DG)
 e <- makeupsetlist(CA1CA3)
 f <- makeupsetlist(CA3DG)
+str(a)
 
-names(sanes_forupset)[1]<-"gene"
-sanes_forupset$direction <- 1
+names(sanes_forupset)[1] <- "gene"
+sanes_forupset$direction <- "1"
 sanes_forupset$comparison <- "candidate_genes"
 
 mydfs <- rbind(a,b,c,d,e,f, sanes_forupset)
@@ -101,10 +100,25 @@ mydfs$direction <- 1
 mydfs$direction <- as.numeric(mydfs$direction)
 
 data_wide <- spread(mydfs, comparison, direction)
-str(data_wide)
 data_wide[is.na(data_wide)] <- 0
-head(data_wide)
+str(data_wide)
+```
 
+These two upset plots show that relatively few of the Sanes Lichtman genes are differntially expresed between consistnely trained and their yoked controls in the CA1 and DG. 
+
+The first plot showsthat 11 genes are differentailly epxressed in the CA1 in both the stress and the leaning paradigms. 4 more are only implicated in stress response while 5 and 3 are specific to learning-induced gene expression in the CA1 and DG, respectively.
+
+The second plot shows that about 133 of the of the Sanes Lichman were not differentially expressed in any of my two way comparisons, but > 50 show some sort of spacital specificity, being differentially expressed between the three subfields of the hippocampus. 
+
+```{r upset}
+# small upset plot, only regoin specific stress and learning
+upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes", 
+      nsets = 3, keep.order = T,  order.by = "freq",
+      sets = c("DG_Learning","CA1_Learning", "CA1_Stress"),
+      scale.intersections = "log2",
+      sets.x.label = "No. DE Candidate Genes")
+
+# big upset plot with stress, learning, and spatial specifity
 upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes", 
       nsets = 7, keep.order = T,  order.by = "freq",
       sets = c("DG_Learning","CA1_Learning", "CA1_Stress","CA1_CA3", "CA1_DG",  "CA3_DG",   "candidate_genes"),
@@ -128,11 +142,4 @@ upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes",
                       list(query = intersects, params = list("candidate_genes","CA1_Stress", "CA1_CA3", "CA1_DG",  "CA3_DG" ), color = "#bababa", active = T)))
 
 
-upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes", 
-      nsets = 3, keep.order = T,  order.by = "freq",
-      sets = c("DG_Learning","CA1_Learning", "CA1_Stress"),
-      scale.intersections = "log2",
-      sets.x.label = "No. DE Candidate Genes")
-
-  
 ```

@@ -263,9 +263,8 @@ ignoring treatment effects?**
     ## 66    VAMP1 5.878633e-07  1.7204515       CA3  6.230724     CA3_DG
     ## 67    VAMP2 6.253968e-08  0.9083347       CA3  7.203844     CA3_DG
 
-Hmm. I wonder what the overlap is. Let’s examine it with Upset
-
-    library(UpSetR)
+Hmm. I wonder what the overlap is. Let’s examine it with Upset. But
+first, a little data wranling.
 
     makeupsetlist <- function(mydf){
         df <- mydf %>%
@@ -282,51 +281,61 @@ Hmm. I wonder what the overlap is. Let’s examine it with Upset
     d <- makeupsetlist(CA1DG)
     e <- makeupsetlist(CA1CA3)
     f <- makeupsetlist(CA3DG)
+    str(a)
 
-    names(sanes_forupset)[1]<-"gene"
-    sanes_forupset$direction <- 1
+    ## 'data.frame':    3 obs. of  3 variables:
+    ##  $ gene      : chr  "BDNF" "EGR1" "HOMER1"
+    ##  $ direction : Factor w/ 2 levels "consistent","yoked_consistent": 1 1 1
+    ##  $ comparison: chr  "DG_Learning" "DG_Learning" "DG_Learning"
+
+    names(sanes_forupset)[1] <- "gene"
+    sanes_forupset$direction <- "1"
     sanes_forupset$comparison <- "candidate_genes"
 
     mydfs <- rbind(a,b,c,d,e,f, sanes_forupset)
-
-    ## Warning in `[<-.factor`(`*tmp*`, ri, value = c(1, 1, 1, 1, 1, 1, 1, 1, 1, :
-    ## invalid factor level, NA generated
 
     # replace direcational values with 1 for present and make it numeric
     mydfs$direction <- 1
     mydfs$direction <- as.numeric(mydfs$direction)
 
     data_wide <- spread(mydfs, comparison, direction)
+    data_wide[is.na(data_wide)] <- 0
     str(data_wide)
 
     ## 'data.frame':    237 obs. of  8 variables:
     ##  $ gene           : chr  "ACHE" "ADCY1" "ADRA2A" "ADRA2B" ...
-    ##  $ CA1_CA3        : num  1 1 NA NA NA NA NA NA 1 NA ...
-    ##  $ CA1_DG         : num  NA 1 NA NA NA NA NA NA 1 NA ...
-    ##  $ CA1_Learning   : num  NA NA NA NA NA 1 NA NA NA NA ...
-    ##  $ CA1_Stress     : num  1 NA NA NA NA 1 NA NA NA NA ...
-    ##  $ CA3_DG         : num  1 1 NA NA NA NA NA NA NA 1 ...
+    ##  $ CA1_CA3        : num  1 1 0 0 0 0 0 0 1 0 ...
+    ##  $ CA1_DG         : num  0 1 0 0 0 0 0 0 1 0 ...
+    ##  $ CA1_Learning   : num  0 0 0 0 0 1 0 0 0 0 ...
+    ##  $ CA1_Stress     : num  1 0 0 0 0 1 0 0 0 0 ...
+    ##  $ CA3_DG         : num  1 1 0 0 0 0 0 0 0 1 ...
     ##  $ candidate_genes: num  1 1 1 1 1 1 1 1 1 1 ...
-    ##  $ DG_Learning    : num  NA NA NA NA NA NA NA NA 1 NA ...
+    ##  $ DG_Learning    : num  0 0 0 0 0 0 0 0 1 0 ...
 
-    data_wide[is.na(data_wide)] <- 0
-    head(data_wide)
+These two upset plots show that relatively few of the Sanes Lichtman
+genes are differntially expresed between consistnely trained and their
+yoked controls in the CA1 and DG.
 
-    ##     gene CA1_CA3 CA1_DG CA1_Learning CA1_Stress CA3_DG candidate_genes
-    ## 1   ACHE       1      0            0          1      1               1
-    ## 2  ADCY1       1      1            0          0      1               1
-    ## 3 ADRA2A       0      0            0          0      0               1
-    ## 4 ADRA2B       0      0            0          0      0               1
-    ## 5 ADRA2C       0      0            0          0      0               1
-    ## 6  ADRB1       0      0            1          1      0               1
-    ##   DG_Learning
-    ## 1           0
-    ## 2           0
-    ## 3           0
-    ## 4           0
-    ## 5           0
-    ## 6           0
+The first plot showsthat 11 genes are differentailly epxressed in the
+CA1 in both the stress and the leaning paradigms. 4 more are only
+implicated in stress response while 5 and 3 are specific to
+learning-induced gene expression in the CA1 and DG, respectively.
 
+The second plot shows that about 133 of the of the Sanes Lichman were
+not differentially expressed in any of my two way comparisons, but &gt;
+50 show some sort of spacital specificity, being differentially
+expressed between the three subfields of the hippocampus.
+
+    # small upset plot, only regoin specific stress and learning
+    upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes", 
+          nsets = 3, keep.order = T,  order.by = "freq",
+          sets = c("DG_Learning","CA1_Learning", "CA1_Stress"),
+          scale.intersections = "log2",
+          sets.x.label = "No. DE Candidate Genes")
+
+![](../figures/02i_candidategenes/upset-1.png)
+
+    # big upset plot with stress, learning, and spatial specifity
     upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes", 
           nsets = 7, keep.order = T,  order.by = "freq",
           sets = c("DG_Learning","CA1_Learning", "CA1_Stress","CA1_CA3", "CA1_DG",  "CA3_DG",   "candidate_genes"),
@@ -348,13 +357,5 @@ Hmm. I wonder what the overlap is. Let’s examine it with Upset
                          # stress only
                          list(query = intersects, params = list("candidate_genes","CA1_Stress" ), color = "#bababa", active = T),
                           list(query = intersects, params = list("candidate_genes","CA1_Stress", "CA1_CA3", "CA1_DG",  "CA3_DG" ), color = "#bababa", active = T)))
-
-![](../figures/02i_candidategenes/upset-1.png)
-
-    upset(data_wide,mainbar.y.label = "No Shared DE Candidate Genes", 
-          nsets = 3, keep.order = T,  order.by = "freq",
-          sets = c("DG_Learning","CA1_Learning", "CA1_Stress"),
-          scale.intersections = "log2",
-          sets.x.label = "No. DE Candidate Genes")
 
 ![](../figures/02i_candidategenes/upset-2.png)
