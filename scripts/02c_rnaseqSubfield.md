@@ -33,8 +33,6 @@ DG
 The most notable comparison within DG is the consistent verses
 yoked-consistent.
 
-![fig4](../figures/figures2-01.png)
-
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -522,7 +520,8 @@ yoked-consistent.
       labs(fill = "# of DEGs",
            subtitle = "DG") +
       guides(fill=FALSE) + 
-      theme_cowplot(font_size = 8, line_size = 0.25) 
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
     DGheat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsDG-1.png)
@@ -722,7 +721,8 @@ for the manuscript.
       labs(fill = "# of DEGs",
            subtitle = "CA3") +
       guides(fill=FALSE) + 
-      theme_cowplot(font_size = 8, line_size = 0.25)  
+      theme_cowplot(font_size = 8, line_size = 0.25)  +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
     CA3heat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsCA3-1.png)
@@ -1124,7 +1124,8 @@ CA1
       labs(fill = "# of DEGs",
            subtitle = "CA1") +
       guides(fill=FALSE) + 
-      theme_cowplot(font_size = 8, line_size = 0.25) 
+      theme_cowplot(font_size = 7, line_size = 0.25) +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
     CA1heat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsCA1-1.png)
@@ -1141,9 +1142,16 @@ CA1
 
     # three plots no lengend
     allplots <- plot_grid(DGheat, CA3heat, CA1heat, nrow = 1)
-
+     
     legend <- get_legend(CA1heat2 + theme(legend.position="bottom"))
     p <- plot_grid(allplots, legend, ncol = 1, rel_heights = c(1, .2))
     p 
 
 ![](../figures/02c_rnaseqSubfield/totalDEGs-1.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/totalDEGs.pdf", width=6, height=3)
+    plot(p)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
