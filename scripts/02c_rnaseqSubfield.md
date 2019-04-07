@@ -1149,7 +1149,7 @@ CA1
 
 ![](../figures/02c_rnaseqSubfield/totalDEGs-1.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/totalDEGs.pdf", width=6, height=3)
+    pdf(file="../figures/02c_rnaseqSubfield/totalDEGs.pdf", width=6, height=2.5)
     plot(p)
     dev.off()
 
