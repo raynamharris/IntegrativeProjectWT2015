@@ -516,10 +516,12 @@ yoked-consistent.
 
     DGheat <- ggplot(dat, aes(V1, V2)) +
       geom_tile(aes(fill = V3)) +
-      scale_fill_viridis(na.value="#FFFFFF00") + 
+      scale_fill_viridis(na.value="#FFFFFF00",
+                         limits = c(0,1000)) + 
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "DG") +
+      guides(fill=FALSE) + 
       theme_cowplot(font_size = 8, line_size = 0.25) 
     DGheat
 
@@ -714,10 +716,12 @@ for the manuscript.
 
     CA3heat <- ggplot(dat, aes(V1, V2)) +
       geom_tile(aes(fill = V3)) +
-      scale_fill_viridis(na.value="#FFFFFF00") + 
+      scale_fill_viridis(na.value="#FFFFFF00",
+                         limits = c(0,1000)) + 
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "CA3") +
+      guides(fill=FALSE) + 
       theme_cowplot(font_size = 8, line_size = 0.25) 
     CA3heat
 
@@ -1008,7 +1012,7 @@ CA1
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) + 
+            panel.grid.major=element_blank()) +
       geom_text_repel(data = subset(data, logpadj > 3.5), aes(label = gene),
                       colour = "black", min.segment.length = 0,
                       box.padding = 0.5, size = 2)
@@ -1114,25 +1118,35 @@ CA1
 
     CA1heat <- ggplot(dat, aes(V1, V2)) +
       geom_tile(aes(fill = V3)) +
-      scale_fill_viridis(na.value="#FFFFFF00") + 
+      scale_fill_viridis(na.value="#FFFFFF00",
+                         limits = c(0,1000)) + 
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "CA1") +
+      guides(fill=FALSE) + 
       theme_cowplot(font_size = 8, line_size = 0.25) 
     CA1heat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsCA1-1.png)
 
-    # combined heat plot
+    CA1heat2 <- ggplot(dat, aes(V1, V2)) +
+      geom_tile(aes(fill = V3)) +
+      scale_fill_viridis(na.value="#FFFFFF00",
+                         limits = c(0,1000)) + 
+      ylab(" ") + xlab("Active Place Avoidance") +
+      labs(fill = "# of DEGs",
+           subtitle = "CA1") +
+      theme_cowplot(font_size = 8, line_size = 0.25) 
 
-    legend <- get_legend(CA1heat + theme(legend.position="bottom"))
-
+    # three plots no lengend
     allplots <- plot_grid(DGheat, CA3heat, CA1heat, nrow = 1)
-    allplots
+    allplots  
 
 ![](../figures/02c_rnaseqSubfield/totalDEGs-1.png)
 
+    #three plots with legend 
+    legend <- get_legend(CA1heat2 + theme(legend.position="bottom"))
     p <- plot_grid(allplots, legend, ncol = 1, rel_heights = c(1, .2))
-    p
+    p 
 
 ![](../figures/02c_rnaseqSubfield/totalDEGs-2.png)
