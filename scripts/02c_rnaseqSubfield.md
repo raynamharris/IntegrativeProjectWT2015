@@ -520,8 +520,7 @@ yoked-consistent.
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "DG") +
-      theme_cowplot(font_size = 8, line_size = 0.25) +  
-      theme(legend.position = "bottom") 
+      theme_cowplot(font_size = 8, line_size = 0.25) 
     DGheat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsDG-1.png)
@@ -719,8 +718,7 @@ for the manuscript.
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "CA3") +
-      theme_cowplot(font_size = 8, line_size = 0.25) +  
-      theme(legend.position = "bottom") 
+      theme_cowplot(font_size = 8, line_size = 0.25) 
     CA3heat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsCA3-1.png)
@@ -1120,8 +1118,7 @@ CA1
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "CA1") +
-      theme_cowplot(font_size = 8, line_size = 0.25) +
-      theme(legend.position = "bottom") 
+      theme_cowplot(font_size = 8, line_size = 0.25) 
     CA1heat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsCA1-1.png)
@@ -1129,8 +1126,13 @@ CA1
     # combined heat plot
 
     legend <- get_legend(CA1heat + theme(legend.position="bottom"))
-    allplots <- plot_grid(CA1heat, CA1heat, CA1heat, nrow = 1)
-    p <- plot_grid( allplots, legend, ncol = 1, rel_heights = c(1, .2))
-    p
+
+    allplots <- plot_grid(DGheat, CA3heat, CA1heat, nrow = 1)
+    allplots
 
 ![](../figures/02c_rnaseqSubfield/totalDEGs-1.png)
+
+    p <- plot_grid(allplots, legend, ncol = 1, rel_heights = c(1, .2))
+    p
+
+![](../figures/02c_rnaseqSubfield/totalDEGs-2.png)
