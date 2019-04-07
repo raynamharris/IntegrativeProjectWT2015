@@ -1123,7 +1123,8 @@ CA1
       labs(fill = "# of DEGs",
            subtitle = "CA1") +
       #guides(fill=FALSE) + 
-      theme_cowplot(font_size = 8, line_size = 0.25) 
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme(legend.position="bottom")
     CA1heat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsCA1-1.png)
@@ -1140,11 +1141,6 @@ CA1
 
     # three plots no lengend
     allplots <- plot_grid(DGheat, CA3heat, CA1heat, nrow = 1)
-    allplots 
+    allplots  
 
 ![](../figures/02c_rnaseqSubfield/totalDEGs-1.png)
-
-    #three plots with legend 
-    #legend <- get_legend(CA1heat2 + theme(legend.position="bottom"))
-    #p <- plot_grid(allplots, legend, ncol = 1, rel_heights = c(1, .2))
-    #p
