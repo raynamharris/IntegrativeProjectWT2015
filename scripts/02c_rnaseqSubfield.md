@@ -516,13 +516,13 @@ yoked-consistent.
 
     DGheat <- ggplot(dat, aes(V1, V2)) +
       geom_tile(aes(fill = V3)) +
-      scale_fill_viridis(na.value="#FFFFFF00",
-                         limits = c(0,1000)) + 
+      scale_fill_viridis(na.value="#FFFFFF00") + 
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "DG") +
-      guides(fill=FALSE) + 
-      theme_cowplot(font_size = 8, line_size = 0.25) 
+      #guides(fill=FALSE) + 
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme(legend.position="bottom")
     DGheat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsDG-1.png)
@@ -716,13 +716,13 @@ for the manuscript.
 
     CA3heat <- ggplot(dat, aes(V1, V2)) +
       geom_tile(aes(fill = V3)) +
-      scale_fill_viridis(na.value="#FFFFFF00",
-                         limits = c(0,1000)) + 
+      scale_fill_viridis(na.value="#FFFFFF00") + 
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "CA3") +
-      guides(fill=FALSE) + 
-      theme_cowplot(font_size = 8, line_size = 0.25) 
+      #guides(fill=FALSE) + 
+      theme_cowplot(font_size = 8, line_size = 0.25)  +
+      theme(legend.position="bottom")
     CA3heat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsCA3-1.png)
@@ -1118,12 +1118,11 @@ CA1
 
     CA1heat <- ggplot(dat, aes(V1, V2)) +
       geom_tile(aes(fill = V3)) +
-      scale_fill_viridis(na.value="#FFFFFF00",
-                         limits = c(0,1000)) + 
+      scale_fill_viridis(na.value="#FFFFFF00") + 
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "CA1") +
-      guides(fill=FALSE) + 
+      #guides(fill=FALSE) + 
       theme_cowplot(font_size = 8, line_size = 0.25) 
     CA1heat
 
@@ -1136,17 +1135,16 @@ CA1
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "CA1") +
-      theme_cowplot(font_size = 8, line_size = 0.25) 
+      theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme(legend.position="bottom")
 
     # three plots no lengend
     allplots <- plot_grid(DGheat, CA3heat, CA1heat, nrow = 1)
-    allplots  
+    allplots 
 
 ![](../figures/02c_rnaseqSubfield/totalDEGs-1.png)
 
     #three plots with legend 
-    legend <- get_legend(CA1heat2 + theme(legend.position="bottom"))
-    p <- plot_grid(allplots, legend, ncol = 1, rel_heights = c(1, .2))
-    p 
-
-![](../figures/02c_rnaseqSubfield/totalDEGs-2.png)
+    #legend <- get_legend(CA1heat2 + theme(legend.position="bottom"))
+    #p <- plot_grid(allplots, legend, ncol = 1, rel_heights = c(1, .2))
+    #p
