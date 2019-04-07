@@ -509,11 +509,20 @@ yoked-consistent.
     dat$V2 <- factor(dat$V2, levels = 
                                   c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 
-    ggplot(dat, aes(V1, V2)) +
-        geom_tile(aes(fill = V3)) +
-        scale_fill_viridis(na.value="#FFFFFF00") + 
-        xlab(" ") + ylab("Timepoint") +
-        labs(fill = "# of DEGs")
+    # rename levels
+    levels(dat$V1) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
+    levels(dat$V2) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
+
+
+    DGheat <- ggplot(dat, aes(V1, V2)) +
+      geom_tile(aes(fill = V3)) +
+      scale_fill_viridis(na.value="#FFFFFF00") + 
+      xlab(" ") + ylab("Active Place Avoidance") +
+      labs(fill = "# of DEGs",
+           subtitle = "DG") +
+      theme_cowplot(font_size = 8, line_size = 0.25) +  
+      theme(legend.position = "none") 
+    DGheat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsDG-1.png)
 
@@ -699,22 +708,25 @@ for the manuscript.
     dat$V2 <- factor(dat$V2, levels = 
                                   c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 
-    ggplot(dat, aes(V1, V2)) +
-        geom_tile(aes(fill = V3)) +
-        scale_fill_viridis(na.value="#FFFFFF00") + 
-        xlab(" ") + ylab("Timepoint") +
-        labs(fill = "# of DEGs")
+    # rename levels
+    levels(dat$V1) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
+    levels(dat$V2) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
+
+
+    CA3heat <- ggplot(dat, aes(V1, V2)) +
+      geom_tile(aes(fill = V3)) +
+      scale_fill_viridis(na.value="#FFFFFF00") + 
+      xlab(" ") + ylab("Active Place Avoidance") +
+      labs(fill = "# of DEGs",
+           subtitle = "CA3") +
+      theme_cowplot(font_size = 8, line_size = 0.25) +  
+      theme(legend.position = "none") 
+    CA3heat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsCA3-1.png)
 
 CA1
 ---
-
-Two comparisons within CA1 are noteable
-
-![fig5](../figures/figures2-02.png)
-
-![fig6](../figures/figures2-03.png)
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
@@ -1051,6 +1063,10 @@ Two comparisons within CA1 are noteable
 
 ![](../figures/02c_rnaseqSubfield/CA1-5.png)
 
+    # order levels
+    colData$APA2 <- factor(colData$APA2, 
+                              levels = c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+
     #create list of groups
     a <- levels(colData$APA2)
     b <- levels(colData$APA2)
@@ -1070,13 +1086,13 @@ Two comparisons within CA1 are noteable
 
     head(dat)
 
-    ##                                    V1               V2  V3
-    ## conflictconsistent           conflict       consistent   0
-    ## conflictyoked_conflict       conflict   yoked_conflict   4
-    ## conflictyoked_consistent     conflict yoked_consistent 447
-    ## consistentconflict         consistent         conflict   0
-    ## consistentyoked_conflict   consistent   yoked_conflict   1
-    ## consistentyoked_consistent consistent yoked_consistent 882
+    ##                                              V1               V2  V3
+    ## yoked_consistentconsistent     yoked_consistent       consistent 882
+    ## yoked_consistentyoked_conflict yoked_consistent   yoked_conflict 917
+    ## yoked_consistentconflict       yoked_consistent         conflict 447
+    ## consistentyoked_consistent           consistent yoked_consistent 882
+    ## consistentyoked_conflict             consistent   yoked_conflict   1
+    ## consistentconflict                   consistent         conflict   0
 
     rownames(dat) <- NULL #remove row names
     data_wide <- spread(dat, V2, V3)
@@ -1093,10 +1109,24 @@ Two comparisons within CA1 are noteable
     dat$V2 <- factor(dat$V2, levels = 
                                   c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 
-    ggplot(dat, aes(V1, V2)) +
-        geom_tile(aes(fill = V3)) +
-        scale_fill_viridis(na.value="#FFFFFF00") + 
-        xlab(" ") + ylab("Timepoint") +
-        labs(fill = "# of DEGs")
+    # rename levels
+    levels(dat$V1) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
+    levels(dat$V2) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
+
+
+    CA1heat <- ggplot(dat, aes(V1, V2)) +
+      geom_tile(aes(fill = V3)) +
+      scale_fill_viridis(na.value="#FFFFFF00") + 
+      xlab(" ") + ylab("Active Place Avoidance") +
+      labs(fill = "# of DEGs",
+           subtitle = "CA1") +
+      theme_cowplot(font_size = 8, line_size = 0.25) +  
+      theme(legend.position = "none") 
+    CA1heat
 
 ![](../figures/02c_rnaseqSubfield/heatmapsCA1-1.png)
+
+    # combined heat plot
+    plot_grid(DGheat, CA3heat, CA1heat)
+
+![](../figures/02c_rnaseqSubfield/totalDEGs-1.png)
