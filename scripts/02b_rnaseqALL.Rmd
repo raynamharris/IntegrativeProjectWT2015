@@ -28,7 +28,8 @@ source("figureoptions.R")
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/')
+knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/',
+                      cache = T)
 ```
 
 ## Design
@@ -366,7 +367,6 @@ myvolcanoplots
 pdf(file="../figures/02b_RNAseqALL/myvolcanoplots.pdf", width=6.6, height=2)
 plot(myvolcanoplots)
 dev.off()
-
 ```
 
 
