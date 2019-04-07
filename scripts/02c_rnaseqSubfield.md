@@ -156,6 +156,7 @@ yoked-consistent.
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
                                         yes = "yoked_consistent", 
                                         no = "neither")))
+
     DGvolcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
       geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
       theme_cowplot(font_size = 8, line_size = 0.25) +
@@ -849,10 +850,7 @@ CA1
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) + 
-      geom_text_repel(data = subset(data, logpadj > 3.5), aes(label = gene),
-                      colour = "black", min.segment.length = 0,
-                      box.padding = 0.5, size = 2)
+            panel.grid.major=element_blank()) 
     CA1volcano
 
 ![](../figures/02c_rnaseqSubfield/CA1-2.png)
@@ -1012,10 +1010,7 @@ CA1
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) +
-      geom_text_repel(data = subset(data, logpadj > 3.5), aes(label = gene),
-                      colour = "black", min.segment.length = 0,
-                      box.padding = 0.5, size = 2)
+            panel.grid.major=element_blank()) 
     CA1volcano2
 
 ![](../figures/02c_rnaseqSubfield/CA1-4.png)
