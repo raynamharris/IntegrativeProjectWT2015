@@ -1,3 +1,10 @@
+numDEGs <- function(group1, group2){
+  res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
+  sumpadj <- sum(res$padj < 0.1, na.rm = TRUE)
+  return(sumpadj)
+}
+
+
 resvals <- function(contrastvector, mypval){
   res <- results(dds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = T)
   sumpvalue <- sum(res$pvalue < mypval, na.rm = TRUE)

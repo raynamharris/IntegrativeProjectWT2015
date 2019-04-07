@@ -6,9 +6,8 @@ subfield, generate volcano plots, venn diagrams, and tables for
 subsequent GO analyses. The final mutlipanel figures for the manuscript
 have been inserted just below the subheadings.
 
-    library(ggplot2) ## for awesome plots!
+    library(tidyverse)
     library(cowplot) ## for some easy to use themes
-    library(dplyr) ## for filtering and selecting rows
     library(car) ## stats
     library(VennDiagram) ## venn diagrams
     library(pheatmap) ## awesome heatmaps
@@ -26,7 +25,7 @@ have been inserted just below the subheadings.
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/')
+    knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = T)
 
 DG
 --
@@ -97,7 +96,6 @@ yoked-consistent.
 
     ## fitting model and testing
 
-    rld <- rlog(dds, blind=FALSE) ## log transformed data
     vsd <- getVarianceStabilizedData(dds)
 
     write.csv(colData, file = "../data/02c_DGcolData.csv", row.names = T)
@@ -126,28 +124,28 @@ yoked-consistent.
     ## DataFrame with 10 rows and 6 columns
     ##                baseMean   log2FoldChange             lfcSE
     ##               <numeric>        <numeric>         <numeric>
-    ## Smad7  171.392871064045 3.53587630546276 0.418085263001235
-    ## Sgk1   341.089572273562 2.52942417594796 0.361917138618265
-    ## Lmna   127.261228543472 2.38190944527576 0.360880330414225
-    ## Tiparp 146.843901753813 3.00078251228731 0.456274430076876
-    ## Fzd5   26.8401177227407 4.05654356592169 0.655253175606779
-    ## Acan   50.8597490321187 2.45912773236628 0.428543544588545
+    ## Smad7  171.392871064045 3.53587630546888 0.418085263019867
+    ## Sgk1   341.089572273562  2.5294241759539 0.361917138632088
+    ## Lmna   127.261228543472 2.38190944527502 0.360880330410336
+    ## Tiparp 146.843901753813 3.00078251228906 0.456274430110097
+    ## Fzd5   26.8401177227407 4.05654356592019 0.655253175616987
+    ## Acan   50.8597490321187 2.45912773237262 0.428543544565433
     ## Egr4   683.770839985962 3.23264668960927 0.562954537617405
-    ## Errfi1  196.30327794802 2.16723775140178 0.378461151913533
-    ## Rasd1  72.8100929443534 3.11825818416375 0.542898092373717
-    ## Per1   512.774508684412 1.82273176771818 0.322402773641593
+    ## Errfi1  196.30327794802 2.16723775140599 0.378461151926573
+    ## Rasd1  72.8100929443534   3.118258184161 0.542898092408939
+    ## Per1   512.774508684412 1.82273176771816 0.322402773647012
     ##                    stat               pvalue                 padj
     ##               <numeric>            <numeric>            <numeric>
-    ## Smad7  8.45730911460593 2.73617917722616e-17 3.38821067515915e-13
-    ## Sgk1      6.98895936679 2.76932604930945e-12 1.71462822342994e-08
-    ## Lmna   6.60027506221178 4.10395627378058e-11 1.48901359411528e-07
-    ## Tiparp 6.57670540902702 4.80986382658575e-11 1.48901359411528e-07
-    ## Fzd5    6.1908033672103 5.98583433033886e-10 1.48245173025172e-06
-    ## Acan    5.7383380602019 9.56101231319715e-09 1.41105309237205e-05
-    ## Egr4   5.74228729604137 9.34061706254104e-09 1.41105309237205e-05
-    ## Errfi1 5.72644706185573 1.02555744418545e-08 1.41105309237205e-05
-    ## Rasd1  5.74372654457076 9.26153120045455e-09 1.41105309237205e-05
-    ## Per1   5.65358587685248 1.57134545200805e-08 1.94579707322157e-05
+    ## Smad7  8.45730911424366 2.73617918572357e-17 3.38821068568149e-13
+    ## Sgk1    6.9889593665395 2.76932605425327e-12 1.71462822649091e-08
+    ## Lmna   6.60027506228086 4.10395627186822e-11 1.48901359887003e-07
+    ## Tiparp 6.57670540855201 4.80986384194471e-11 1.48901359887003e-07
+    ## Fzd5   6.19080336711157 5.98583433408844e-10 1.48245173118034e-06
+    ## Acan   5.73833806052617 9.56101229489454e-09 1.41105309391996e-05
+    ## Egr4   5.74228729604137 9.34061706254104e-09 1.41105309391996e-05
+    ## Errfi1 5.72644706166954 1.02555744531048e-08 1.41105309391996e-05
+    ## Rasd1  5.74372654419306 9.26153122112375e-09 1.41105309391996e-05
+    ## Per1   5.65358587675741 1.57134545287761e-08 1.94579707429835e-05
 
     data <- data.frame(gene = row.names(res),
                        padj = res$padj, 
@@ -207,16 +205,16 @@ yoked-consistent.
     pkcs <- data[grep("Prkc", data$gene), ]
     pkcs # no pkcs are differentially expressed
 
-    ##         gene      padj      logpadj         lfc direction
-    ## 8139   Prkca 0.9999357 2.793108e-05 -0.06147923   neither
-    ## 8140   Prkcb 0.9999357 2.793108e-05 -0.23086376   neither
-    ## 8141   Prkcd 0.9999357 2.793108e-05 -1.74799258   neither
-    ## 8142 Prkcdbp 0.9999357 2.793108e-05  0.89326487   neither
-    ## 8143   Prkce 0.9999357 2.793108e-05 -0.08024100   neither
-    ## 8144   Prkcg 0.9999357 2.793108e-05 -0.35258124   neither
-    ## 8145   Prkci 0.9999357 2.793108e-05  0.14227925   neither
-    ## 8146  Prkcsh 0.9999357 2.793108e-05 -0.12210803   neither
-    ## 8147   Prkcz 0.9999357 2.793108e-05 -0.07894751   neither
+    ##         gene padj logpadj         lfc direction
+    ## 8139   Prkca    1       0 -0.06147923   neither
+    ## 8140   Prkcb    1       0 -0.23086376   neither
+    ## 8141   Prkcd    1       0 -1.74799258   neither
+    ## 8142 Prkcdbp    1       0  0.89326487   neither
+    ## 8143   Prkce    1       0 -0.08024100   neither
+    ## 8144   Prkcg    1       0 -0.35258124   neither
+    ## 8145   Prkci    1       0  0.14227925   neither
+    ## 8146  Prkcsh    1       0 -0.12210803   neither
+    ## 8147   Prkcz    1       0 -0.07894751   neither
 
     ## go setup
     table(res$padj<0.1)
@@ -233,7 +231,7 @@ yoked-consistent.
 
     ## sign
     ##   -1    1 
-    ## 8853 8158
+    ## 8514 8497
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/DGconsistentyoked.csv", row.names = F)
@@ -261,28 +259,28 @@ yoked-consistent.
     ## DataFrame with 10 rows and 6 columns
     ##                baseMean   log2FoldChange             lfcSE
     ##               <numeric>        <numeric>         <numeric>
-    ## Nlrp3  20.9424446578681 4.09843296366574  0.77923374127775
-    ## Kcnc2  22.0989714545398  4.0853572173812 0.828862390929107
-    ## Gm2115 18.9055674115327 3.48302773153726 0.740349228112595
-    ## Rnase4 15.5820343950564 3.55390988651979 0.842613820491949
-    ## Cxcl14 58.4698286328215 1.83345102740602 0.452447198842891
-    ## Sst    5.79777379074028 6.11617852820523  1.54412893086366
+    ## Nlrp3  20.9424446578681 4.09843296364912 0.779233741303161
+    ## Kcnc2  22.0989714545398 4.08535721742376 0.828862390992367
+    ## Gm2115 18.9055674115327  3.4830277315384 0.740349228132784
+    ## Rnase4 15.5820343950564 3.55390988654223 0.842613820515981
+    ## Cxcl14 58.4698286328215 1.83345102740851 0.452447198848122
+    ## Sst    5.79777379074028 6.11617852816079  1.54412893097199
     ## Cnr1   121.554806190537 3.88279836743752  1.00562221165236
-    ## Dner    48.134823231393 1.78996353992257 0.466270200246526
-    ## Itga5  18.4196792457967   2.978384440916 0.770052016771093
-    ## Myb    6.92940033536349 5.85347258329016  1.53376995782851
+    ## Dner    48.134823231393 1.78996353992317 0.466270200248008
+    ## Itga5  18.4196792457967 2.97838444092414 0.770052016789924
+    ## Myb    6.92940033536349 5.85347258332179  1.53376995799632
     ##                    stat               pvalue                padj
     ##               <numeric>            <numeric>           <numeric>
-    ## Nlrp3  5.25956814568287 1.44394111343109e-07 0.00245340034583077
-    ## Kcnc2    4.928872708052 8.27054357503709e-07 0.00702624029417276
-    ## Gm2115 4.70457400275367 2.54396579921199e-06  0.0144081742981369
-    ## Rnase4 4.21772085870238 2.46784058046291e-05   0.104827698256613
-    ## Cxcl14 4.05229832805898 5.07169366376427e-05   0.172346294082037
-    ## Sst    3.96092476862301 7.46600544114441e-05   0.211424830750808
-    ## Cnr1   3.86109049944074 0.000112882079380255   0.228300316931863
-    ## Dner   3.83889757264389 0.000123587970402978   0.228300316931863
-    ## Itga5  3.86777045712401 0.000109834980276631   0.228300316931863
-    ## Myb     3.8163953814674 0.000135415452559867   0.228300316931863
+    ## Nlrp3  5.25956814549002 1.44394111494543e-07 0.00245340034840377
+    ## Kcnc2  4.92887270772716 8.27054358878605e-07 0.00702624030585319
+    ## Gm2115 4.70457400262692  2.5439658007924e-06  0.0144081743070879
+    ## Rnase4 4.21772085860871 2.46784058148773e-05   0.104827698300145
+    ## Cxcl14 4.05229832801763  5.0716936646609e-05   0.172346294112507
+    ## Sst    3.96092476831634 7.46600545073424e-05   0.211424831022376
+    ## Cnr1   3.86109049944073 0.000112882079380257   0.228300316978926
+    ## Dner   3.83889757263298 0.000123587970408467   0.228300316978926
+    ## Itga5     3.86777045704 0.000109834980314461   0.228300316978926
+    ## Myb    3.81639538107046 0.000135415452777609   0.228300316978926
 
     ## go setup
     table(res$padj<0.1)
@@ -329,27 +327,27 @@ yoked-consistent.
     ##                  baseMean    log2FoldChange             lfcSE
     ##                 <numeric>         <numeric>         <numeric>
     ## Rps12    18.1519752295379 -21.4660372235101  3.98668946399401
-    ## Smad7    171.392871064045  1.75395877649941 0.367789349169671
-    ## Dbpht2   179.735977990203  1.43077032426827  0.32133350449148
-    ## Insm1    9.54062645923209 -4.64275029977526  1.03675452742903
-    ## Slc16a1  51.2786850104172  1.93718965194453 0.446154808676806
-    ## Ankrd33b  209.87162559181  1.14655990310839 0.276132373178601
-    ## Nptx2    287.767100019705  1.36387651791528 0.326912129485928
-    ## Sgk1     341.089572273562  1.32296838420707  0.31899157276228
-    ## Fzd5     26.8401177227407  2.51256156493201 0.616467582890519
-    ## Acan     50.8597490321187  1.57030753918313 0.390249971345474
+    ## Smad7    171.392871064045  1.75395877649455 0.367789349185405
+    ## Dbpht2   179.735977990203  1.43077032426937 0.321333504493694
+    ## Insm1    9.54062645923209 -4.64275029978039  1.03675452747997
+    ## Slc16a1  51.2786850104172  1.93718965194518  0.44615480867931
+    ## Ankrd33b  209.87162559181  1.14655990310545 0.276132373170068
+    ## Nptx2    287.767100019705   1.3638765179225 0.326912129498613
+    ## Sgk1     341.089572273562  1.32296838420772 0.318991572774191
+    ## Fzd5     26.8401177227407  2.51256156493636 0.616467582899093
+    ## Acan     50.8597490321187  1.57030753918143 0.390249971326104
     ##                       stat               pvalue               padj
     ##                  <numeric>            <numeric>          <numeric>
     ## Rps12    -5.38442670726719 7.26759094316345e-08 0.0012348363771529
-    ## Smad7     4.76892215736857 1.85214205533671e-06 0.0157348728311131
-    ## Dbpht2    4.45260237189555 8.48357704857436e-06 0.0360361144080817
-    ## Insm1    -4.47815772870406  7.5289965568597e-06 0.0360361144080817
-    ## Slc16a1     4.341967438813 1.41212464833709e-05  0.047986819799791
-    ## Ankrd33b  4.15221109321652 3.29278313316402e-05 0.0714369056620668
-    ## Nptx2     4.17199728887387 3.01941230562506e-05 0.0714369056620668
-    ## Sgk1      4.14734587735638 3.36351742273282e-05 0.0714369056620668
-    ## Fzd5       4.0757399653539 4.58682534733302e-05 0.0865941660850393
-    ## Acan        4.023850491953 5.72542716941817e-05 0.0972807330355842
+    ## Smad7     4.76892215715134 1.85214205733359e-06 0.0157348728480775
+    ## Dbpht2     4.4526023718683 8.48357704965123e-06  0.036036114412656
+    ## Insm1    -4.47815772848902 7.52899656444231e-06  0.036036114412656
+    ## Slc16a1   4.34196743879007  1.4121246484845e-05 0.0479868198048004
+    ## Ankrd33b  4.15221109333418 3.29278313147062e-05 0.0714369057097393
+    ## Nptx2      4.1719972887341 3.01941230747777e-05 0.0714369057097393
+    ## Sgk1      4.14734587720354 3.36351742497743e-05 0.0714369057097393
+    ## Fzd5      4.07573996530428 4.58682534831127e-05 0.0865941661035076
+    ## Acan      4.02385049214837 5.72542716466592e-05 0.0972807329548386
 
     ## go setup
     table(res$padj<0.1)
@@ -366,7 +364,7 @@ yoked-consistent.
 
     ## sign
     ##   -1    1 
-    ## 9674 7337
+    ## 9161 7850
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/DGconflictyoked.csv", row.names = F)
@@ -395,27 +393,27 @@ yoked-consistent.
     ##                       baseMean      log2FoldChange             lfcSE
     ##                      <numeric>           <numeric>         <numeric>
     ## Rps12         18.1519752295379   -20.9602515412509  4.31657511842665
-    ## 0610007P14Rik 41.0311096797814  -0.147853585358429 0.401936989088285
-    ## 0610009B22Rik 8.74131849081542  -0.757911677387021 0.749958107311731
-    ## 0610009L18Rik 2.61860548764425   0.604880308193334  1.47685825843458
-    ## 0610009O20Rik 48.3693444464377   0.245771257518523 0.338998927574654
-    ## 0610010F05Rik 60.2560857800178  -0.366265579236547 0.337328940633006
-    ## 0610010K14Rik 21.0476159827708   0.408843299351544 0.633957053036292
-    ## 0610012G03Rik 54.2812123171702   0.107773629510678 0.399888012498432
-    ## 0610030E20Rik 44.9946840589216 -0.0960001442131723 0.418155894506165
-    ## 0610037L13Rik  88.714181322051   0.113994422485766 0.427197151641241
+    ## 0610007P14Rik 41.0311096797814  -0.147853585345479 0.401936989061582
+    ## 0610009B22Rik 8.74131849081542  -0.757911677384719 0.749958107259618
+    ## 0610009L18Rik 2.61860548764425   0.604880308182448  1.47685825837305
+    ## 0610009O20Rik 48.3693444464377   0.245771257508901 0.338998927531247
+    ## 0610010F05Rik 60.2560857800178  -0.366265579229739 0.337328940603637
+    ## 0610010K14Rik 21.0476159827708   0.408843299351539 0.633957053040539
+    ## 0610012G03Rik 54.2812123171702   0.107773629512783  0.39988801248596
+    ## 0610030E20Rik 44.9946840589216 -0.0960001442093612 0.418155894492029
+    ## 0610037L13Rik  88.714181322051   0.113994422486644  0.42719715165959
     ##                             stat               pvalue               padj
     ##                        <numeric>            <numeric>          <numeric>
     ## Rps12          -4.85575970907479 1.19926058988033e-06 0.0203766366826567
-    ## 0610007P14Rik -0.367852646987792    0.712983110459147  0.999877921572714
-    ## 0610009B22Rik  -1.01060535248269    0.312205353000397  0.999877921572714
-    ## 0610009L18Rik  0.409572350453244    0.682119683062293  0.999877921572714
-    ## 0610009O20Rik  0.724991253738995    0.468457396118792  0.999877921572714
-    ## 0610010F05Rik  -1.08578166625502    0.277575599518543  0.999877921572714
-    ## 0610010K14Rik  0.644906933984594    0.518987497960177  0.999877921572714
-    ## 0610012G03Rik  0.269509528023425    0.787537611086085  0.999877921572714
-    ## 0610030E20Rik -0.229579794221355    0.818418309399155  0.999877921572714
-    ## 0610037L13Rik  0.266842655780387    0.789590310071293  0.999877921572714
+    ## 0610007P14Rik -0.367852646980013    0.712983110464947                  1
+    ## 0610009B22Rik  -1.01060535254984    0.312205352968242                  1
+    ## 0610009L18Rik  0.409572350462935    0.682119683055183                  1
+    ## 0610009O20Rik  0.724991253803443    0.468457396079254                  1
+    ## 0610010F05Rik  -1.08578166632937    0.277575599485643                  1
+    ## 0610010K14Rik  0.644906933980266    0.518987497962982                  1
+    ## 0610012G03Rik  0.269509528037096    0.787537611075567                  1
+    ## 0610030E20Rik -0.229579794220003    0.818418309400207                  1
+    ## 0610037L13Rik  0.266842655770982    0.789590310078535                  1
 
     ## go setup
     table(res$padj<0.1)
@@ -432,7 +430,7 @@ yoked-consistent.
 
     ## sign
     ##   -1    1 
-    ## 8670 8341
+    ## 8383 8628
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
@@ -457,21 +455,67 @@ yoked-consistent.
     ## 0610010F05Rik 60.256086     -0.3662656 0.3373289 -1.0857817 2.775756e-01
     ##                     padj      sig
     ## Rps12         0.02037664 FDR<0.05
-    ## 0610007P14Rik 0.99987792  Not Sig
-    ## 0610009B22Rik 0.99987792  Not Sig
-    ## 0610009L18Rik 0.99987792  Not Sig
-    ## 0610009O20Rik 0.99987792  Not Sig
-    ## 0610010F05Rik 0.99987792  Not Sig
+    ## 0610007P14Rik 1.00000000  Not Sig
+    ## 0610009B22Rik 1.00000000  Not Sig
+    ## 0610009L18Rik 1.00000000  Not Sig
+    ## 0610009O20Rik 1.00000000  Not Sig
+    ## 0610010F05Rik 1.00000000  Not Sig
 
-    ## [1] 125
+    numDEGs <- function(group1, group2){
+      res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
+      sumpadj <- sum(res$padj < 0.1, na.rm = TRUE)
+      return(sumpadj)
+    }
 
-    ## [1] 10
+    #create list of groups
+    a <- levels(colData$APA2)
+    b <- levels(colData$APA2)
 
-    ## [1] 1
+    # comapre all contrasts, save to datafrmes
+    dat=data.frame()
+    for (i in a){
+      for (j in b){
+        if (i != j) {
+          k <- paste(i,j, sep = "") #assigns usique rownames
+          dat[k,1]<-i               
+          dat[k,2]<-j
+          dat[k,3]<- numDEGs(i,j) #caluculates number of DEGs
+        }
+      }
+    }
 
-    ## [1] 3
+    head(dat)
 
-![](../figures/02c_rnaseqSubfield/DGvenndiagrams-1.png)
+    ##                                    V1               V2  V3
+    ## conflictconsistent           conflict       consistent   1
+    ## conflictyoked_conflict       conflict   yoked_conflict  10
+    ## conflictyoked_consistent     conflict yoked_consistent  76
+    ## consistentconflict         consistent         conflict   1
+    ## consistentyoked_conflict   consistent   yoked_conflict  83
+    ## consistentyoked_consistent consistent yoked_consistent 125
+
+    rownames(dat) <- NULL #remove row names
+    data_wide <- spread(dat, V2, V3)
+    data_wide
+
+    ##                 V1 conflict consistent yoked_conflict yoked_consistent
+    ## 1         conflict       NA          1             10               76
+    ## 2       consistent        1         NA             83              125
+    ## 3   yoked_conflict       10         83             NA                3
+    ## 4 yoked_consistent       76        125              3               NA
+
+    dat$V1 <- factor(dat$V1, levels = 
+                                  c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+    dat$V2 <- factor(dat$V2, levels = 
+                                  c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+
+    ggplot(dat, aes(V1, V2)) +
+        geom_tile(aes(fill = V3)) +
+        scale_fill_viridis(na.value="#FFFFFF00") + 
+        xlab(" ") + ylab("Timepoint") +
+        labs(fill = "# of DEGs")
+
+![](../figures/02c_rnaseqSubfield/heatmapsDG-1.png)
 
 CA3
 ---
@@ -525,7 +569,7 @@ for the manuscript.
     ## colData names(8): RNAseqID Mouse ... ID APA2
 
     dds <- DESeq(dds) # Differential expression analysis
-    rld <- rlog(dds, blind=FALSE) ## log transformed data
+    vsd <- getVarianceStabilizedData(dds)
 
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -607,6 +651,62 @@ for the manuscript.
 
 ![](../figures/02c_rnaseqSubfield/CA3-1.png)
 
+    numDEGs <- function(group1, group2){
+      res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
+      sumpadj <- sum(res$padj < 0.1, na.rm = TRUE)
+      return(sumpadj)
+    }
+
+    #create list of groups
+    a <- levels(colData$APA2)
+    b <- levels(colData$APA2)
+
+    # comapre all contrasts, save to datafrmes
+    dat=data.frame()
+    for (i in a){
+      for (j in b){
+        if (i != j) {
+          k <- paste(i,j, sep = "") #assigns usique rownames
+          dat[k,1]<-i               
+          dat[k,2]<-j
+          dat[k,3]<- numDEGs(i,j) #caluculates number of DEGs
+        }
+      }
+    }
+
+    head(dat)
+
+    ##                                    V1               V2 V3
+    ## conflictconsistent           conflict       consistent  0
+    ## conflictyoked_conflict       conflict   yoked_conflict  0
+    ## conflictyoked_consistent     conflict yoked_consistent  4
+    ## consistentconflict         consistent         conflict  0
+    ## consistentyoked_conflict   consistent   yoked_conflict  1
+    ## consistentyoked_consistent consistent yoked_consistent  1
+
+    rownames(dat) <- NULL #remove row names
+    data_wide <- spread(dat, V2, V3)
+    data_wide
+
+    ##                 V1 conflict consistent yoked_conflict yoked_consistent
+    ## 1         conflict       NA          0              0                4
+    ## 2       consistent        0         NA              1                1
+    ## 3   yoked_conflict        0          1             NA                2
+    ## 4 yoked_consistent        4          1              2               NA
+
+    dat$V1 <- factor(dat$V1, levels = 
+                                  c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+    dat$V2 <- factor(dat$V2, levels = 
+                                  c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+
+    ggplot(dat, aes(V1, V2)) +
+        geom_tile(aes(fill = V3)) +
+        scale_fill_viridis(na.value="#FFFFFF00") + 
+        xlab(" ") + ylab("Timepoint") +
+        labs(fill = "# of DEGs")
+
+![](../figures/02c_rnaseqSubfield/heatmapsCA3-1.png)
+
 CA1
 ---
 
@@ -660,8 +760,7 @@ Two comparisons within CA1 are noteable
     ## colData names(8): RNAseqID Mouse ... ID APA2
 
     dds <- DESeq(dds) # Differential expression analysis
-    rld <- rlog(dds, blind=FALSE) ## log transformed data
-
+    vsd <- getVarianceStabilizedData(dds)
 
     res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
     summary(res)
@@ -685,28 +784,28 @@ Two comparisons within CA1 are noteable
     ## DataFrame with 10 rows and 6 columns
     ##                 baseMean    log2FoldChange             lfcSE
     ##                <numeric>         <numeric>         <numeric>
-    ## Agap1   141.608762023137  2.77875046323028 0.429199296190091
-    ## Mga     103.422400328703  2.88512466619299 0.476961395194488
-    ## Adamts1  114.05510912055  3.03089016770375 0.542440999554141
-    ## Gpd1    249.757427758137 -1.22793747874702 0.227810028910739
-    ## Sdhaf2  77.6262495970029 -1.88444201930518 0.348951742801298
-    ## Scn4b   126.513273389751  2.75983601093444  0.53291136892103
-    ## Lhfpl4  214.234684832542  1.68458658679185 0.339420793178537
-    ## Ncoa4   101.428981706278  2.35081948916179 0.479986115716983
-    ## Lats2   79.0118946108766  2.50181097858582 0.521225803364738
-    ## Gad2    132.201113296669  2.85189408073533 0.598342010017182
+    ## Agap1   141.608762023137  2.77875046323113 0.429199296188875
+    ## Mga     103.422400328703  2.88512466619264 0.476961395193359
+    ## Adamts1  114.05510912055  3.03089016770407 0.542440999553538
+    ## Gpd1    249.757427758137 -1.22793747874627 0.227810028908553
+    ## Sdhaf2  77.6262495970029 -1.88444201930465 0.348951742799771
+    ## Scn4b   126.513273389751  2.75983601093414 0.532911368920647
+    ## Lhfpl4  214.234684832542  1.68458658679064 0.339420793176825
+    ## Ncoa4   101.428981706278  2.35081948916118 0.479986115715859
+    ## Lats2   79.0118946108766  2.50181097858729 0.521225803363559
+    ## Gad2    132.201113296669  2.85189408073539 0.598342010017458
     ##                      stat               pvalue                 padj
     ##                 <numeric>            <numeric>            <numeric>
-    ## Agap1    6.47426612274679 9.52738560798276e-11 1.13642655532018e-06
-    ## Mga      6.04896894226951 1.45775755684507e-09 8.69406606902402e-06
-    ## Adamts1   5.5875019959682 2.30359111553791e-08 9.15907827537872e-05
-    ## Gpd1    -5.39018183096829 7.03864293094537e-08 0.000167913865760633
-    ## Sdhaf2  -5.40029404689985 6.65317533489317e-08 0.000167913865760633
-    ## Scn4b    5.17878989243971 2.23329823700518e-07 0.000443979689516631
-    ## Lhfpl4   4.96312135451805 6.93692079381607e-07  0.00118205130326626
-    ## Ncoa4    4.89768227076785 9.69736686637254e-07  0.00144587739977615
-    ## Lats2    4.79986018043532 1.58776440997872e-06  0.00210431709802513
-    ## Gad2     4.76632767378883 1.87614050241445e-06  0.00223786039127996
+    ## Agap1    6.47426612276713 9.52738560669965e-11 1.13642655516713e-06
+    ## Mga       6.0489689422831 1.45775755672213e-09 8.69406606829079e-06
+    ## Adamts1    5.587501995975 2.30359111544776e-08 9.15907827502029e-05
+    ## Gpd1    -5.39018183101669 7.03864292904973e-08  0.00016791386571541
+    ## Sdhaf2  -5.40029404692198 6.65317533407242e-08  0.00016791386571541
+    ## Scn4b    5.17878989244286 2.23329823696753e-07 0.000443979689509145
+    ## Lhfpl4    4.9631213545395 6.93692079304959e-07  0.00118205130313565
+    ## Ncoa4    4.89768227077803 9.69736686587007e-07  0.00144587739970123
+    ## Lats2    4.79986018044902 1.58776440987012e-06   0.0021043170978812
+    ## Gad2     4.76632767378674 1.87614050243395e-06  0.00223786039130321
 
     topGene <- rownames(res)[which.min(res$padj)]
     plotCounts(dds, gene = topGene, intgroup=c("APA2"))
@@ -736,7 +835,10 @@ Two comparisons within CA1 are noteable
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) 
+            panel.grid.major=element_blank()) + 
+      geom_text_repel(data = subset(data, logpadj > 3.5), aes(label = gene),
+                      colour = "black", min.segment.length = 0,
+                      box.padding = 0.5, size = 2)
     CA1volcano
 
 ![](../figures/02c_rnaseqSubfield/CA1-2.png)
@@ -783,7 +885,7 @@ Two comparisons within CA1 are noteable
 
     ## sign
     ##   -1    1 
-    ## 7694 9158
+    ## 7087 9765
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
@@ -812,13 +914,13 @@ Two comparisons within CA1 are noteable
     ## DataFrame with 3 rows and 6 columns
     ##                 baseMean    log2FoldChange             lfcSE
     ##                <numeric>         <numeric>         <numeric>
-    ## Gm20390  47.871821328339  3.00058138879586 0.573131448872674
-    ## Il4ra   21.8885208760384 -5.08358235078372  1.03917819120446
+    ## Gm20390  47.871821328339  3.00058138879651 0.573131448874277
+    ## Il4ra   21.8885208760384 -5.08358235078517  1.03917819120914
     ## Gm21949 21.1841188999619 -17.0604245457745  3.93136294526155
     ##                      stat               pvalue                padj
     ##                 <numeric>            <numeric>           <numeric>
-    ## Gm20390  5.23541570559054  1.6461394013611e-07 0.00276880647308937
-    ## Il4ra   -4.89192555599306 9.98542153556464e-07 0.00839773951140986
+    ## Gm20390  5.23541570557704 1.64613940148141e-07 0.00276880647329174
+    ## Il4ra   -4.89192555597239 9.98542153661337e-07 0.00839773951229184
     ## Gm21949 -4.33956996169416 1.42761812252115e-05  0.0800417894026856
 
     # volcano plots
@@ -845,28 +947,28 @@ Two comparisons within CA1 are noteable
     ## DataFrame with 10 rows and 6 columns
     ##                 baseMean    log2FoldChange             lfcSE
     ##                <numeric>         <numeric>         <numeric>
-    ## Agap1   141.608762023137  2.68968384470947 0.425950937249105
-    ## Pcdhb12  28.059174402023 -4.44059921537497 0.793522420606138
-    ## Sdc3    215.373472922264  1.85322249231914 0.337204018822692
-    ## Gm20390  47.871821328339 -3.80408224976329 0.702192890495312
-    ## Adamts1  114.05510912055  2.88221063805472 0.537733929661711
-    ## Ncoa4   101.428981706278   2.4713781982471 0.475325965110602
-    ## Lats2   79.0118946108766   2.6661801320419 0.517454551359232
-    ## Scn4b   126.513273389751  2.63717217475313 0.525235880320185
-    ## Tgoln1  253.956891941181  1.57640904952372 0.317332343314282
-    ## Mga     103.422400328703  2.31524201605359   0.4748411371402
+    ## Agap1   141.608762023137  2.68968384471022 0.425950937247951
+    ## Pcdhb12  28.059174402023 -4.44059921537509 0.793522420608043
+    ## Sdc3    215.373472922264  1.85322249231845 0.337204018821326
+    ## Gm20390  47.871821328339  -3.8040822497641  0.70219289049731
+    ## Adamts1  114.05510912055  2.88221063805508 0.537733929661138
+    ## Ncoa4   101.428981706278  2.47137819824673 0.475325965109527
+    ## Lats2   79.0118946108766   2.6661801320435 0.517454551358115
+    ## Scn4b   126.513273389751   2.6371721747529 0.525235880319819
+    ## Tgoln1  253.956891941181  1.57640904952285 0.317332343312882
+    ## Mga     103.422400328703  2.31524201605301 0.474841137139125
     ##                      stat               pvalue                 padj
     ##                 <numeric>            <numeric>            <numeric>
-    ## Agap1    6.31453909241308 2.70967824020662e-10 3.23210420491846e-06
-    ## Pcdhb12  -5.5960601743086 2.19277621297338e-08 0.000130777173341732
-    ## Sdc3      5.4958493638049 3.88834321833904e-08  0.00015460052636116
-    ## Gm20390 -5.41743202082261 6.04611256628736e-08 0.000180295076726689
-    ## Adamts1  5.35991961650611 8.32589898656502e-08 0.000198622646223495
-    ## Ncoa4    5.19933346723872 2.00004427353209e-07 0.000397608801578179
-    ## Lats2    5.15249141212203 2.57048392342877e-07 0.000438010460552263
-    ## Scn4b     5.0209292121199 5.14221090642523e-07 0.000766703646148002
-    ## Tgoln1   4.96769107447225  6.7754785642546e-07 0.000897976759049209
-    ## Mga      4.87582442834981 1.08354951670463e-06  0.00129245786352528
+    ## Agap1    6.31453909243198 2.70967823987554e-10 3.23210420452355e-06
+    ## Pcdhb12 -5.59606017429532 2.19277621314123e-08 0.000130777173351743
+    ## Sdc3      5.4958493638251 3.88834321789396e-08 0.000154600526343464
+    ## Gm20390 -5.41743202080835 6.04611256676931e-08 0.000180295076741061
+    ## Adamts1  5.35991961651249 8.32589898627116e-08 0.000198622646216485
+    ## Ncoa4     5.1993334672497 2.00004427341394e-07  0.00039760880155469
+    ## Lats2    5.15249141213624 2.57048392323391e-07 0.000438010460519058
+    ## Scn4b    5.02092921212296 5.14221090634331e-07 0.000766703646135787
+    ## Tgoln1   4.96769107449142 6.77547856358508e-07 0.000897976758960476
+    ## Mga      4.87582442835962 1.08354951665075e-06  0.00129245786346101
 
     topGene <- rownames(res)[which.min(res$padj)]
     plotCounts(dds, gene = topGene, intgroup=c("APA2"))
@@ -896,7 +998,10 @@ Two comparisons within CA1 are noteable
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
             legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) 
+            panel.grid.major=element_blank()) + 
+      geom_text_repel(data = subset(data, logpadj > 3.5), aes(label = gene),
+                      colour = "black", min.segment.length = 0,
+                      box.padding = 0.5, size = 2)
     CA1volcano2
 
 ![](../figures/02c_rnaseqSubfield/CA1-4.png)
@@ -945,3 +1050,53 @@ Two comparisons within CA1 are noteable
     plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
 
 ![](../figures/02c_rnaseqSubfield/CA1-5.png)
+
+    #create list of groups
+    a <- levels(colData$APA2)
+    b <- levels(colData$APA2)
+
+    # comapre all contrasts, save to datafrmes
+    dat=data.frame()
+    for (i in a){
+      for (j in b){
+        if (i != j) {
+          k <- paste(i,j, sep = "") #assigns usique rownames
+          dat[k,1]<-i               
+          dat[k,2]<-j
+          dat[k,3]<- numDEGs(i,j) #caluculates number of DEGs
+        }
+      }
+    }
+
+    head(dat)
+
+    ##                                    V1               V2  V3
+    ## conflictconsistent           conflict       consistent   0
+    ## conflictyoked_conflict       conflict   yoked_conflict   4
+    ## conflictyoked_consistent     conflict yoked_consistent 447
+    ## consistentconflict         consistent         conflict   0
+    ## consistentyoked_conflict   consistent   yoked_conflict   1
+    ## consistentyoked_consistent consistent yoked_consistent 882
+
+    rownames(dat) <- NULL #remove row names
+    data_wide <- spread(dat, V2, V3)
+    data_wide
+
+    ##                 V1 conflict consistent yoked_conflict yoked_consistent
+    ## 1         conflict       NA          0              4              447
+    ## 2       consistent        0         NA              1              882
+    ## 3   yoked_conflict        4          1             NA              917
+    ## 4 yoked_consistent      447        882            917               NA
+
+    dat$V1 <- factor(dat$V1, levels = 
+                                  c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+    dat$V2 <- factor(dat$V2, levels = 
+                                  c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+
+    ggplot(dat, aes(V1, V2)) +
+        geom_tile(aes(fill = V3)) +
+        scale_fill_viridis(na.value="#FFFFFF00") + 
+        xlab(" ") + ylab("Timepoint") +
+        labs(fill = "# of DEGs")
+
+![](../figures/02c_rnaseqSubfield/heatmapsCA1-1.png)

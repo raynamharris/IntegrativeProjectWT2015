@@ -10,9 +10,8 @@ output: md_document
 This script is used to identify treatement differences within each subfield, generate volcano plots, venn diagrams, and tables for subsequent GO analyses. The final mutlipanel figures for the manuscript have been inserted just below the subheadings. 
 
 ```{r setup, message=F, warning=F}
-library(ggplot2) ## for awesome plots!
+library(tidyverse)
 library(cowplot) ## for some easy to use themes
-library(dplyr) ## for filtering and selecting rows
 library(car) ## stats
 library(VennDiagram) ## venn diagrams
 library(pheatmap) ## awesome heatmaps
@@ -30,7 +29,7 @@ source("figureoptions.R")
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/')
+knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = T)
 ```
 
 ## DG
@@ -63,7 +62,6 @@ dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
-rld <- rlog(dds, blind=FALSE) ## log transformed data
 vsd <- getVarianceStabilizedData(dds)
 
 write.csv(colData, file = "../data/02c_DGcolData.csv", row.names = T)
@@ -192,40 +190,52 @@ head(results)
 ```
 
 
+```{r heatmapsDG}
+numDEGs <- function(group1, group2){
+  res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
+  sumpadj <- sum(res$padj < 0.1, na.rm = TRUE)
+  return(sumpadj)
+}
 
+#create list of groups
+a <- levels(colData$APA2)
+b <- levels(colData$APA2)
 
+# comapre all contrasts, save to datafrmes
+dat=data.frame()
+for (i in a){
+  for (j in b){
+    if (i != j) {
+      k <- paste(i,j, sep = "") #assigns usique rownames
+      dat[k,1]<-i               
+      dat[k,2]<-j
+      dat[k,3]<- numDEGs(i,j) #caluculates number of DEGs
+    }
+  }
+}
 
+head(dat)
 
+rownames(dat) <- NULL #remove row names
+data_wide <- spread(dat, V2, V3)
+data_wide
 
-```{r DGvenndiagrams, echo=F}
-contrast1 <- resvals(contrastvector = c("APA2", "consistent", "yoked_consistent"), mypval = 0.1) 
-contrast2 <- resvals(contrastvector = c("APA2", "conflict", "yoked_conflict"), mypval = 0.1)
-contrast3 <- resvals(contrastvector = c("APA2", "conflict", "consistent"), mypval = 0.1) 
-contrast4 <- resvals(contrastvector = c("APA2", "yoked_conflict", "yoked_consistent"), mypval = 0.1)
+dat$V1 <- factor(dat$V1, levels = 
+                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+dat$V2 <- factor(dat$V2, levels = 
+                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
 
-rldpadjs <- assay(rld)
-rldpadjs <- cbind(rldpadjs, contrast1, contrast2, contrast4)
-rldpadjs <- as.data.frame(rldpadjs)
-rldpadjs <- rldpadjs[ , grepl( "padj" , names( rldpadjs ) ) ]
-
-venn1 <- row.names(rldpadjs[rldpadjs[1] <0.05 & !is.na(rldpadjs[1]),]) 
-venn2 <- row.names(rldpadjs[rldpadjs[2] <0.05 & !is.na(rldpadjs[2]),]) 
-venn3 <- row.names(rldpadjs[rldpadjs[3] <0.05 & !is.na(rldpadjs[3]),]) 
-
-candidates <- list("consistent vs yoked" = venn1 , "conflict vs yoked" = venn2,  "yoked vs yoked" = venn3)
-
-prettyvenn <- venn.diagram(
-  scaled=T,
-  x = candidates, filename=NULL, 
-  col = "black",
-  fill = c( "white", "white", "white"),
-  alpha = 0.5,
-  cex = 1, fontfamily = "sans", #fontface = "bold",
-  cat.default.pos = "text",
-  cat.dist = c(0.03, 0.03, 0.02), cat.pos = 1,
-  cat.cex = 1, cat.fontfamily = "sans")
-grid.draw(prettyvenn)
+ggplot(dat, aes(V1, V2)) +
+    geom_tile(aes(fill = V3)) +
+    scale_fill_viridis(na.value="#FFFFFF00") + 
+    xlab(" ") + ylab("Timepoint") +
+    labs(fill = "# of DEGs")
 ```
+
+
+
+
+
 
 
 ## CA3
@@ -253,7 +263,7 @@ dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
-rld <- rlog(dds, blind=FALSE) ## log transformed data
+vsd <- getVarianceStabilizedData(dds)
 
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
@@ -278,6 +288,49 @@ logs$logP <- logs$logP*sign
 write.csv(logs, file = "./02e_GO_MWU/CA3conflictconsistent.csv", row.names = F)
 
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA3")
+```
+
+
+```{r heatmapsCA3}
+numDEGs <- function(group1, group2){
+  res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
+  sumpadj <- sum(res$padj < 0.1, na.rm = TRUE)
+  return(sumpadj)
+}
+
+#create list of groups
+a <- levels(colData$APA2)
+b <- levels(colData$APA2)
+
+# comapre all contrasts, save to datafrmes
+dat=data.frame()
+for (i in a){
+  for (j in b){
+    if (i != j) {
+      k <- paste(i,j, sep = "") #assigns usique rownames
+      dat[k,1]<-i               
+      dat[k,2]<-j
+      dat[k,3]<- numDEGs(i,j) #caluculates number of DEGs
+    }
+  }
+}
+
+head(dat)
+
+rownames(dat) <- NULL #remove row names
+data_wide <- spread(dat, V2, V3)
+data_wide
+
+dat$V1 <- factor(dat$V1, levels = 
+                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+dat$V2 <- factor(dat$V2, levels = 
+                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+
+ggplot(dat, aes(V1, V2)) +
+    geom_tile(aes(fill = V3)) +
+    scale_fill_viridis(na.value="#FFFFFF00") + 
+    xlab(" ") + ylab("Timepoint") +
+    labs(fill = "# of DEGs")
 ```
 
 
@@ -309,8 +362,7 @@ dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds) # Differential expression analysis
-rld <- rlog(dds, blind=FALSE) ## log transformed data
-
+vsd <- getVarianceStabilizedData(dds)
 
 res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
 summary(res)
@@ -431,4 +483,41 @@ res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFi
 summary(res)
 
 plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
+```
+
+
+```{r heatmapsCA1}
+#create list of groups
+a <- levels(colData$APA2)
+b <- levels(colData$APA2)
+
+# comapre all contrasts, save to datafrmes
+dat=data.frame()
+for (i in a){
+  for (j in b){
+    if (i != j) {
+      k <- paste(i,j, sep = "") #assigns usique rownames
+      dat[k,1]<-i               
+      dat[k,2]<-j
+      dat[k,3]<- numDEGs(i,j) #caluculates number of DEGs
+    }
+  }
+}
+
+head(dat)
+
+rownames(dat) <- NULL #remove row names
+data_wide <- spread(dat, V2, V3)
+data_wide
+
+dat$V1 <- factor(dat$V1, levels = 
+                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+dat$V2 <- factor(dat$V2, levels = 
+                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
+
+ggplot(dat, aes(V1, V2)) +
+    geom_tile(aes(fill = V3)) +
+    scale_fill_viridis(na.value="#FFFFFF00") + 
+    xlab(" ") + ylab("Timepoint") +
+    labs(fill = "# of DEGs")
 ```
