@@ -336,7 +336,8 @@ volcanoplot <- function(mydata, mycolors, mybreaks){
     ggplot(aes(x = lfc, y = logp)) + 
   geom_point(aes(color = direction), size = 0.5, alpha = 0.5, na.rm = T) + 
   scale_color_manual(values = mycolors,
-                     breaks = mybreaks) + 
+                     breaks = mybreaks,
+                     name = "higher in") + 
   theme_cowplot(font_size = 7, line_size = 0.25) +
   geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
   scale_y_continuous(limits=c(0, 60)) +
@@ -344,10 +345,11 @@ volcanoplot <- function(mydata, mycolors, mybreaks){
   xlab(paste0("log fold difference")) +
   ylab(paste0("log10 p-value")) +       
   theme(panel.grid.minor=element_blank(),
-        legend.title = element_blank(),
-        legend.position = "bottom", # remove legend 
+        #legend.title = element_blank(),
+        legend.position = "bottom",
+        legend.spacing.x = unit(-0.1, 'cm'),
         panel.grid.major=element_blank(),
-        legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"))
+        legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
 
 return(myvolcano)
 }
@@ -355,7 +357,8 @@ return(myvolcano)
 d <- volcanoplot(DGvCA3, volcanoDGvCA3, c("DG", "CA3"))  
 e <- volcanoplot(DGvCA1, volcanoDGvCA1, c("DG", "CA1"))  
 f <- volcanoplot(CA3vCA1, volcanoCA3vCA1, c("CA3", "CA1")) 
-g <- volcanoplot(CsYcs, volcano1, c("yoked_consistent", "consistent")) 
+g <- volcanoplot(CsYcs, volcano1, c("yoked_consistent", "consistent")) +
+  theme(legend.title = element_blank())
 
 myvolcanoplots <- plot_grid(d,e,f,g,
            labels = c("D", "E", "F", "G"),
