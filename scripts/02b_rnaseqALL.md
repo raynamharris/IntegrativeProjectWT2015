@@ -657,8 +657,8 @@ Volcanos plots and and gene lists
     g <- volcanoplot(CsYcs, volcano1, c("yoked_consistent", "consistent")) +
       theme(legend.title = element_blank())
 
-    myvolcanoplots <- plot_grid(d,e,f,g,
-               labels = c("D", "E", "F", "G"),
+    myvolcanoplots <- plot_grid(d,e,f,
+               labels = c("A", "B", "C"),
                nrow = 1,
                label_size = 7
                )
@@ -666,24 +666,8 @@ Volcanos plots and and gene lists
 
 ![](../figures/02b_RNAseqAll/volcanos-1.png)
 
-    pdf(file="../figures/02b_RNAseqALL/myvolcanoplots.pdf", width=6.6, height=2)
+    pdf(file="../figures/02b_RNAseqALL/myvolcanoplots.pdf", width=5, height=2)
     plot(myvolcanoplots)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    volcano2 <- plot_grid(d,e,
-               labels = c("D", "E"),
-               nrow = 1,
-               label_size = 7
-               )
-    volcano2
-
-![](../figures/02b_RNAseqAll/volcanos-2.png)
-
-    pdf(file="../figures/02b_RNAseqALL/volcanoplots.pdf", width=3, height=2)
-    plot(volcano2)
     dev.off()
 
     ## quartz_off_screen 
