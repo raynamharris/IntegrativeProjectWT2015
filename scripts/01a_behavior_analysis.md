@@ -10,11 +10,9 @@ Setup
 -----
 
     ## load libraries 
-    library(tidyr) ## for respahing data
+    library(tidyverse) ## for respahing data
     library(plyr) ## for renmaing factors
-    library(dplyr) ## for filtering and selecting rows
     library(reshape2) ## for melting dataframe
-    library(ggplot2) ## for awesome plots!
     library(cowplot) ## for some easy to use themes
     library(factoextra)  ##pca with vectors
     library(car) ## stats
@@ -95,14 +93,14 @@ titles, y labels and limits.
 
     ## # A tibble: 6 x 5
     ## # Groups:   APA2 [1]
-    ##   APA2           TrainSessionComboN…     m    se measure                  
-    ##   <fct>                        <int> <dbl> <dbl> <chr>                    
-    ## 1 yoked-consist…                   1  31.4 2.32  Number of target zone en…
-    ## 2 yoked-consist…                   2  21.4 2.02  Number of target zone en…
-    ## 3 yoked-consist…                   3  15.4 1.40  Number of target zone en…
-    ## 4 yoked-consist…                   4  14.5 2.01  Number of target zone en…
-    ## 5 yoked-consist…                   5  16.9 0.875 Number of target zone en…
-    ## 6 yoked-consist…                   6  15   1.56  Number of target zone en…
+    ##   APA2           TrainSessionComboN…     m    se measure                   
+    ##   <fct>                        <int> <dbl> <dbl> <chr>                     
+    ## 1 yoked-consist…                   1  31.4 2.32  Number of target zone ent…
+    ## 2 yoked-consist…                   2  21.4 2.02  Number of target zone ent…
+    ## 3 yoked-consist…                   3  15.4 1.40  Number of target zone ent…
+    ## 4 yoked-consist…                   4  14.5 2.01  Number of target zone ent…
+    ## 5 yoked-consist…                   5  16.9 0.875 Number of target zone ent…
+    ## 6 yoked-consist…                   6  15   1.56  Number of target zone ent…
 
     fourmeasures$APA2 <- factor(fourmeasures$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
 
@@ -114,7 +112,7 @@ titles, y labels and limits.
         geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
         geom_point(size = 1.5) +
         geom_line() +
-        labs(title = mytitle) +
+        labs(subtitle = mytitle) +
         scale_y_continuous(name= myylab,
                            breaks = ybreaks,
                            limits = ylims) +
@@ -125,7 +123,7 @@ titles, y labels and limits.
         theme_cowplot(font_size = 7, line_size = 0.25) +
         background_grid(major = "y", minor = "y") +
         scale_color_manual(values = colorvalAPA00,
-                           name  ="Legend")  +
+                           name  = NULL)  +
         theme(legend.position = "bottom",
               legend.justification=c(0,0),
             legend.text=element_text(size=5))
@@ -156,6 +154,34 @@ titles, y labels and limits.
 
     pdf(file="../figures/01_behavior/fourmeasures.pdf", width=5.1, height=4.1)
     plot(fourplots)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    plotone <- plot_grid(A + theme(legend.position="none"),
+               C + theme(legend.position="none"),
+               labels = c("A","C"),
+               nrow = 2,
+               label_size = 7
+               )
+
+    plottwo <- plot_grid(B + theme(legend.position="none"),
+               D + theme(legend.position="none"),
+               labels = c("B","D"),
+               nrow = 2,
+               label_size = 7
+               )
+
+    pdf(file="../figures/01_behavior/twomeasuresAC.pdf", width=2.3, height=3)
+    plot(plotone)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    pdf(file="../figures/01_behavior/twomeasuresBD.pdf", width=2.3, height=3)
+    plot(plottwo)
     dev.off()
 
     ## quartz_off_screen 
@@ -257,6 +283,8 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
       xlim(0, 10)
 
     ## Warning: Removed 29 rows containing missing values (position_stack).
+
+    ## Warning: Removed 1 rows containing missing values (geom_bar).
 
     ## Warning: Removed 29 rows containing missing values (geom_text).
 

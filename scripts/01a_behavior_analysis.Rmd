@@ -11,11 +11,9 @@ This markdown file is used for behavioral data wrangling, statistical analysis, 
 
 ```{r setup, message=F}
 ## load libraries 
-library(tidyr) ## for respahing data
+library(tidyverse) ## for respahing data
 library(plyr) ## for renmaing factors
-library(dplyr) ## for filtering and selecting rows
 library(reshape2) ## for melting dataframe
-library(ggplot2) ## for awesome plots!
 library(cowplot) ## for some easy to use themes
 library(factoextra)  ##pca with vectors
 library(car) ## stats
@@ -98,7 +96,7 @@ meansdplots <- function(df, mytitle, myylab, ybreaks, ylims){
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 1.5) +
     geom_line() +
-    labs(title = mytitle) +
+    labs(subtitle = mytitle) +
     scale_y_continuous(name= myylab,
                        breaks = ybreaks,
                        limits = ylims) +
@@ -109,7 +107,7 @@ meansdplots <- function(df, mytitle, myylab, ybreaks, ylims){
     theme_cowplot(font_size = 7, line_size = 0.25) +
     background_grid(major = "y", minor = "y") +
     scale_color_manual(values = colorvalAPA00,
-                       name  ="Legend")  +
+                       name  = NULL)  +
     theme(legend.position = "bottom",
           legend.justification=c(0,0),
         legend.text=element_text(size=5))
@@ -139,6 +137,30 @@ fourplots
 pdf(file="../figures/01_behavior/fourmeasures.pdf", width=5.1, height=4.1)
 plot(fourplots)
 dev.off()
+
+
+plotone <- plot_grid(A + theme(legend.position="none"),
+           C + theme(legend.position="none"),
+           labels = c("A","C"),
+           nrow = 2,
+           label_size = 7
+           )
+
+plottwo <- plot_grid(B + theme(legend.position="none"),
+           D + theme(legend.position="none"),
+           labels = c("B","D"),
+           nrow = 2,
+           label_size = 7
+           )
+
+pdf(file="../figures/01_behavior/twomeasuresAC.pdf", width=2.3, height=3)
+plot(plotone)
+dev.off()
+
+pdf(file="../figures/01_behavior/twomeasuresBD.pdf", width=2.3, height=3)
+plot(plottwo)
+dev.off()
+
 
 ```
 
