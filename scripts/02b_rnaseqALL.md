@@ -673,6 +673,22 @@ Volcanos plots and and gene lists
     ## quartz_off_screen 
     ##                 2
 
+    volcano2 <- plot_grid(d,e,
+               labels = c("D", "E"),
+               nrow = 1,
+               label_size = 7
+               )
+    volcano2
+
+![](../figures/02b_RNAseqAll/volcanos-2.png)
+
+    pdf(file="../figures/02b_RNAseqALL/volcanoplots.pdf", width=3, height=2)
+    plot(volcano2)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
 plot single gene counts
 -----------------------
 

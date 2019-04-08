@@ -370,6 +370,17 @@ myvolcanoplots
 pdf(file="../figures/02b_RNAseqALL/myvolcanoplots.pdf", width=6.6, height=2)
 plot(myvolcanoplots)
 dev.off()
+
+volcano2 <- plot_grid(d,e,
+           labels = c("D", "E"),
+           nrow = 1,
+           label_size = 7
+           )
+volcano2
+
+pdf(file="../figures/02b_RNAseqALL/volcanoplots.pdf", width=3, height=2)
+plot(volcano2)
+dev.off()
 ```
 
 

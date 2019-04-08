@@ -44,7 +44,7 @@ yoked-consistent.
     savecols <- as.vector(savecols) 
     countData <- countData %>% dplyr::select(one_of(savecols)) 
 
-    colData %>% select(APA2,Punch)  %>%  summary()
+    colData %>% dplyr::select(APA2,Punch)  %>%  summary()
 
     ##                APA2   Punch  
     ##  conflict        :5   DG:16  
@@ -94,7 +94,7 @@ yoked-consistent.
 
     ## fitting model and testing
 
-    vsd <- getVarianceStabilizedData(dds)
+    vsd <- getVarianceStabilizedData(dds) 
 
     write.csv(colData, file = "../data/02c_DGcolData.csv", row.names = T)
     write.csv(vsd, file = "../data/02c_DGvsd.csv", row.names = T)
@@ -151,24 +151,27 @@ yoked-consistent.
                        lfc = res$log2FoldChange)
     data <- na.omit(data)
     data <- data %>%
-      mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
+      dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
                             yes = "consistent", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
                                         yes = "yoked_consistent", 
-                                        no = "neither")))
+                                        no = "NS")))
 
     DGvolcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-      geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-      theme_cowplot(font_size = 8, line_size = 0.25) +
+      geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
+      theme_cowplot(font_size = 7, line_size = 0.25) +
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-      scale_color_manual(values = volcano1)  + 
+      scale_color_manual(values = volcano1,
+                         name = NULL)  + 
       scale_y_continuous(limits=c(0, 8)) +
       scale_x_continuous( limits=c(-3, 3),
                           name="Log fold change")+
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
-            legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) 
+            legend.position = "bottom",
+            legend.spacing.x = unit(-0.1, 'cm'),
+            panel.grid.major=element_blank(),
+            legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
     DGvolcano
 
 ![](../figures/02c_rnaseqSubfield/DG-1.png)
@@ -182,21 +185,21 @@ yoked-consistent.
 
     # save DEGs
     DGvolcanoDEGs <- data %>%
-      filter(direction != "neither") %>%
-      arrange(desc(lfc))
+      dplyr::filter(direction != "neither") %>%
+      dplyr::arrange(desc(lfc))
     head(DGvolcanoDEGs,10)
 
     ##       gene         padj   logpadj      lfc  direction
-    ## 1  Col10a1 2.958539e-04  3.528923 6.862672 consistent
-    ## 2   Lrrc32 9.769907e-03  2.010110 6.049415 consistent
-    ## 3    Thbs1 3.275529e-04  3.484719 5.491177 consistent
-    ## 4     Fzd5 1.482452e-06  5.829019 4.056544 consistent
-    ## 5    Nlrp3 9.260166e-04  3.033381 3.762818 consistent
-    ## 6     Ier3 1.588050e-02  1.799136 3.758436 consistent
-    ## 7    Npas4 2.205531e-04  3.656487 3.537464 consistent
-    ## 8    Smad7 3.388211e-13 12.470030 3.535876 consistent
-    ## 9    Nr4a3 1.114124e-02  1.953066 3.372927 consistent
-    ## 10    Rfx2 2.636311e-04  3.579003 3.356056 consistent
+    ## 1  Col10a1 2.958539e-04 3.5289227 6.862672 consistent
+    ## 2   Lrrc32 9.769907e-03 2.0101096 6.049415 consistent
+    ## 3    Thbs1 3.275529e-04 3.4847186 5.491177 consistent
+    ## 4  Gm28048 1.000000e+00 0.0000000 4.672468         NS
+    ## 5    Pthlh 3.236515e-01 0.4899223 4.230945         NS
+    ## 6      Itk 5.661192e-01 0.2470921 4.203401         NS
+    ## 7     Fzd5 1.482452e-06 5.8290194 4.056544 consistent
+    ## 8    Runx1 1.387768e-01 0.8576830 3.789569         NS
+    ## 9    Nlrp3 9.260166e-04 3.0333812 3.762818 consistent
+    ## 10    Ier3 1.588050e-02 1.7991357 3.758436 consistent
 
     write.csv(DGvolcanoDEGs, "../data/DG-consistent-yokedconsistent.csv", row.names = F)
 
@@ -205,15 +208,15 @@ yoked-consistent.
     pkcs # no pkcs are differentially expressed
 
     ##         gene padj logpadj         lfc direction
-    ## 8139   Prkca    1       0 -0.06147923   neither
-    ## 8140   Prkcb    1       0 -0.23086376   neither
-    ## 8141   Prkcd    1       0 -1.74799258   neither
-    ## 8142 Prkcdbp    1       0  0.89326487   neither
-    ## 8143   Prkce    1       0 -0.08024100   neither
-    ## 8144   Prkcg    1       0 -0.35258124   neither
-    ## 8145   Prkci    1       0  0.14227925   neither
-    ## 8146  Prkcsh    1       0 -0.12210803   neither
-    ## 8147   Prkcz    1       0 -0.07894751   neither
+    ## 8139   Prkca    1       0 -0.06147923        NS
+    ## 8140   Prkcb    1       0 -0.23086376        NS
+    ## 8141   Prkcd    1       0 -1.74799258        NS
+    ## 8142 Prkcdbp    1       0  0.89326487        NS
+    ## 8143   Prkce    1       0 -0.08024100        NS
+    ## 8144   Prkcg    1       0 -0.35258124        NS
+    ## 8145   Prkci    1       0  0.14227925        NS
+    ## 8146  Prkcsh    1       0 -0.12210803        NS
+    ## 8147   Prkcz    1       0 -0.07894751        NS
 
     ## go setup
     table(res$padj<0.1)
@@ -521,7 +524,7 @@ yoked-consistent.
       labs(fill = "# of DEGs",
            subtitle = "DG") +
       guides(fill=FALSE) + 
-      theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
     DGheat
 
@@ -722,7 +725,7 @@ for the manuscript.
       labs(fill = "# of DEGs",
            subtitle = "CA3") +
       guides(fill=FALSE) + 
-      theme_cowplot(font_size = 8, line_size = 0.25)  +
+      theme_cowplot(font_size = 7, line_size = 0.25)  +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
     CA3heat
 
@@ -739,7 +742,7 @@ CA1
     savecols <- as.character(colData$RNAseqID) 
     savecols <- as.vector(savecols) 
     countData <- countData %>% dplyr::select(one_of(savecols)) 
-    colData %>% select(APA2,Punch)  %>%  summary()
+    colData %>% dplyr::select(APA2,Punch)  %>%  summary()
 
     ##                APA2   Punch   
     ##  conflict        :4   CA1:15  
@@ -837,20 +840,25 @@ CA1
                             yes = "consistent", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
                                         yes = "yoked_consistent", 
-                                        no = "neither")))
+                                        no = "NS")))
+
+    data <- data %>%dplyr::filter(direction != "neither")
 
     CA1volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-      geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-        theme_cowplot(font_size = 8, line_size = 0.25) +
-      scale_color_manual(values = volcano1)  + 
+      geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + # add gene points
+        theme_cowplot(font_size = 7, line_size = 0.25) +
+      scale_color_manual(values = volcano1,
+                         name = NULL)  + 
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_y_continuous(limits=c(0, 8)) +
-      scale_x_continuous( limits=c(-3, 3),
-                          name="Log fold change")+
+      scale_x_continuous( limits=c(-3, 3))+
+      xlab(paste0("log fold difference")) +
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
-            legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) 
+            legend.position = "bottom",
+            legend.spacing.x = unit(-0.1, 'cm'),
+            panel.grid.major=element_blank(),
+            legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
     CA1volcano
 
 ![](../figures/02c_rnaseqSubfield/CA1-2.png)
@@ -901,6 +909,8 @@ CA1
 
     logs$logP <- logs$logP*sign
     write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
+
+
 
     #conflict yoked conflict
 
@@ -997,20 +1007,23 @@ CA1
                             yes = "yoked_conflict", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
                                         yes = "yoked_consistent", 
-                                        no = "neither")))
+                                        no = "NS")))
 
     CA1volcano2 <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-      geom_point(aes(color = factor(direction)), size = 1, alpha = 0.5, na.rm = T) + # add gene points
-      theme_cowplot(font_size = 8, line_size = 0.25) +
-      scale_color_manual(values = volcano3)  + 
+      geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + # add gene points
+      theme_cowplot(font_size = 7, line_size = 0.25) +
+      scale_color_manual(values = volcano3,
+                         name = NULL)  + 
       geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
       scale_y_continuous(limits=c(0, 8)) +
       scale_x_continuous( limits=c(-3, 3),
                           name="Log fold change")+
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
-            legend.position = "none", # remove legend 
-            panel.grid.major=element_blank()) 
+            legend.position = "bottom",
+            legend.spacing.x = unit(-0.1, 'cm'),
+            panel.grid.major=element_blank(),
+            legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
     CA1volcano2
 
 ![](../figures/02c_rnaseqSubfield/CA1-4.png)
@@ -1028,17 +1041,17 @@ CA1
       arrange(desc(lfc))
     head(CA1volcano2DEGs,10)
 
-    ##       gene        padj  logpadj      lfc      direction
-    ## 1    Srprb 0.002523184 2.598051 6.962723 yoked_conflict
-    ## 2   Adgrf5 0.014393982 1.841819 6.323867 yoked_conflict
-    ## 3    Ahnak 0.014393982 1.841819 6.288004 yoked_conflict
-    ## 4   Fndc10 0.014393982 1.841819 6.187727 yoked_conflict
-    ## 5  Slco1a4 0.017582699 1.754914 6.093251 yoked_conflict
-    ## 6  Ppfibp1 0.031682073 1.499186 6.031033 yoked_conflict
-    ## 7     Optn 0.041595475 1.380954 6.025644 yoked_conflict
-    ## 8   Rnf207 0.039413555 1.404354 5.934581 yoked_conflict
-    ## 9     Mdc1 0.020331763 1.691825 5.901609 yoked_conflict
-    ## 10    Epyc 0.040773654 1.389620 5.895348 yoked_conflict
+    ##       gene        padj   logpadj      lfc      direction
+    ## 1  Gm45234 0.189251830 0.7229599 7.266593             NS
+    ## 2    Srprb 0.002523184 2.5980510 6.962723 yoked_conflict
+    ## 3   Adgrf5 0.014393982 1.8418190 6.323867 yoked_conflict
+    ## 4    Ahnak 0.014393982 1.8418190 6.288004 yoked_conflict
+    ## 5   Fndc10 0.014393982 1.8418190 6.187727 yoked_conflict
+    ## 6  Slco1a4 0.017582699 1.7549145 6.093251 yoked_conflict
+    ## 7  Ppfibp1 0.031682073 1.4991864 6.031033 yoked_conflict
+    ## 8     Optn 0.041595475 1.3809539 6.025644 yoked_conflict
+    ## 9  Gm14440 0.119431905 0.9228796 6.014893             NS
+    ## 10  Rnf207 0.039413555 1.4043544 5.934581 yoked_conflict
 
     write.csv(CA1volcano2DEGs, "../data/CA1-yokedconflict-yokedconsistent.csv", row.names = F)
 
@@ -1132,7 +1145,7 @@ CA1
       ylab(" ") + xlab("Active Place Avoidance") +
       labs(fill = "# of DEGs",
            subtitle = "CA1") +
-      theme_cowplot(font_size = 8, line_size = 0.25) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
       theme(legend.position="bottom")
 
     # three plots no lengend
@@ -1145,8 +1158,18 @@ CA1
 ![](../figures/02c_rnaseqSubfield/totalDEGs-1.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/totalDEGs.pdf", width=6, height=2.5)
-    plot(p)
-    dev.off()
+    plot(p) 
+    dev.off() 
+
+    ## quartz_off_screen 
+    ##                 2
+
+    volcano2 <- plot_grid(DGvolcano, CA1volcano, 
+                          labels = c("F", "G"),
+                          nrow = 1,label_size = 7)
+    pdf(file="../figures/02c_rnaseqSubfield/volcano2.pdf", width=3, height=2) 
+    plot(volcano2)  
+    dev.off()  
 
     ## quartz_off_screen 
     ##                 2

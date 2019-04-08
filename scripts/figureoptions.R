@@ -54,11 +54,11 @@ pheatmapcolors = list(
 
 volcano1 <-  c("consistent" = "#ca0020",
            "yoked_consistent" = "#404040", 
-           "neither" = "#d9d9d9")
+           "NS" = "#d9d9d9")
 
 volcano3 <-  c("yoked_consistent" = "#404040",
                "yoked_conflict" = "#bababa", 
-               "neither" = "#d9d9d9")
+               "NS" = "#d9d9d9")
 
 # for avoidance volcano plots and heatmaps
 
