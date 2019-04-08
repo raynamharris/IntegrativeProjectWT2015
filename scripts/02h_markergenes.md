@@ -24,7 +24,7 @@ Genes from Cembrowski sublement file 1
     cembrowksimarkers <- function(subfields){
       mydf <- cembrowskisupp %>% 
       dplyr::filter(enriched %in% subfields) %>% 
-      select(gene)
+      dplyr::select(gene)
       names(mydf) <- NULL
       mylist <- as.list(mydf[,1])
       return(mylist)
@@ -62,7 +62,7 @@ Genes from Cembrowski sublement file 1
     marker_summary <- function(mydf, markers){
         df <- mydf %>%
         dplyr::filter(gene %in% c(markers)) 
-        #return((head(df)))
+        #return((df))
         return(summary(df$direction))
     }
 
@@ -80,6 +80,14 @@ Genes from Cembrowski sublement file 1
     ##     CA1     CA3 neither 
     ##      15       1       2
 
+    15/(15+3)
+
+    ## [1] 0.8333333
+
+    15/(15+3)
+
+    ## [1] 0.8333333
+
     for(i in list(CA1CA3, CA3DG)){
       j <- marker_summary(i, CA3_markers)
       print(i[1, 6])
@@ -92,6 +100,14 @@ Genes from Cembrowski sublement file 1
     ## [1] "CA3-DG"
     ##     CA3      DG neither 
     ##       7       0       3
+
+    6/10
+
+    ## [1] 0.6
+
+    7/10
+
+    ## [1] 0.7
 
     for(i in list(CA1DG, CA3DG)){
       j <- marker_summary(i, DG_markers)
@@ -106,48 +122,13 @@ Genes from Cembrowski sublement file 1
     ##     CA3      DG neither 
     ##       0      49      22
 
-    ## working on a new function that will calculate the percentages with dplyr but still not there... :(
+    48/(48+23)
 
-    marker_percents <- function(mydf, markers){
-        df <- mydf %>%
-          dplyr::filter(gene %in% c(markers)) %>% 
-          group_by(direction)  %>% tally() #%>%
-          #spread(key = direction, value = n)
-        return(df)
-    }
+    ## [1] 0.6760563
 
-    marker_percents(CA1CA3, CA1_markers)
+    49/(49+22)
 
-    ## # A tibble: 3 x 2
-    ##   direction     n
-    ##   <fct>     <int>
-    ## 1 CA1          15
-    ## 2 CA3           1
-    ## 3 neither       2
-
-    marker_percents(CA1DG, CA1_markers)
-
-    ## # A tibble: 2 x 2
-    ##   direction     n
-    ##   <fct>     <int>
-    ## 1 CA1          15
-    ## 2 neither       3
-
-    marker_percents(CA1CA3, CA3_markers)
-
-    ## # A tibble: 2 x 2
-    ##   direction     n
-    ##   <fct>     <int>
-    ## 1 CA3           6
-    ## 2 neither       4
-
-    marker_percents(CA3DG, CA3_markers)
-
-    ## # A tibble: 2 x 2
-    ##   direction     n
-    ##   <fct>     <int>
-    ## 1 CA3           7
-    ## 2 neither       3
+    ## [1] 0.6901408
 
 Then, I checked to see how many of the markers that Cembrowski found to
 be enriched in discrete dorsal cell populations were also enriched in my
@@ -212,3 +193,48 @@ are the results:
 </tr>
 </tbody>
 </table>
+
+    mybarplot <- read.csv("../data/02h_markers.csv")
+    head(mybarplot)
+
+    ##   comparison marker correct
+    ## 1     CA1vDG    CA1    0.83
+    ## 2    CA1vCA3    CA1    0.83
+    ## 3    CA1vCA3    CA3    0.60
+    ## 4     CA3vDG    CA3    0.70
+    ## 5     CA1vDG     DG    0.68
+    ## 6     CA3vDG     DG    0.69
+
+    p <- ggplot(data=mybarplot, aes(x=comparison, y=correct, fill = marker)) +
+      geom_bar(stat="identity", position=position_dodge()) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
+      scale_fill_manual(values = c( "#7570b3","#1b9e77",  "#d95f02"),
+                        name = "marker\ngenes") +
+      ylab("% marker genes recovered") +
+      xlab("subfields compared") +
+      theme(panel.grid.minor=element_blank(),
+            panel.grid.major=element_blank(),
+            legend.key.width =  unit(0.2, "cm"),
+            legend.key.height =  unit(0.1, "cm"),
+            axis.text.x = element_text(angle = 45, hjust = 1)) +
+      scale_y_continuous(labels = scales::percent,
+                         limits = c(0,1))
+    p
+
+![](../figures/02h_markergenes/barplot-1.png)
+
+    pbetter <- plot_grid(p,
+               labels = c("D"),
+               nrow = 1,
+               label_size = 7
+               )
+    pbetter
+
+![](../figures/02h_markergenes/barplot-2.png)
+
+    pdf(file="../figures/02h_markergenes/barplot.pdf", width=1.75, height=2)
+    plot(pbetter)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2

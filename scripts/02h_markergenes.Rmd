@@ -1,14 +1,17 @@
 ---
 title: "marker genes"
-output: html_document
+output: md_document
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(cowplot)
 library(stringr) # for sentence to upper case conversion
 library(kableExtra) # for pretty tables
 
-knitr::opts_chunk$set(echo = TRUE)
+source("figureoptions.R")
+
+knitr::opts_chunk$set(echo = TRUE, fig.path = '../figures/02h_markergenes/')
 ```
 
 Genes from Cembrowski sublement file 1 <https://elifesciences.org/articles/14997/figures>
@@ -65,7 +68,7 @@ CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3-DG")
 marker_summary <- function(mydf, markers){
     df <- mydf %>%
     dplyr::filter(gene %in% c(markers)) 
-    #return((head(df)))
+    #return((df))
     return(summary(df$direction))
 }
 
@@ -73,25 +76,30 @@ marker_summary <- function(mydf, markers){
 for(i in list(CA1DG, CA1CA3)){
   j <- marker_summary(i, CA1_markers)
   print(i[1, 6])
-  returnValue(j)
-  
+  print(j)
 }
 
+15/(15+3)
+15/(15+3)
+
 for(i in list(CA1CA3, CA3DG)){
-  for(j in list(CA1_markers, CA3_markers)){
-  j <- marker_summary(i, j)
+  j <- marker_summary(i, CA3_markers)
   print(i[1, 6])
   print(j)
-  str(j)
-  correct <- (j[1])/ (j[1] + j[2] + j[3])
-  neither <- (j[3])/ (j[1] + j[2] + j[3])
-  opposite <- (j[2])/ (j[1] + j[2] + j[3])
-  #print(correct)
-  #print(neither)
-  #print(opposite)
 }
+
+6/10
+7/10
+
+for(i in list(CA1DG, CA3DG)){
+  j <- marker_summary(i, DG_markers)
+  print(i[1, 6])
+  print(j)
 }
-  
+
+48/(48+23)
+49/(49+22)
+
 ```
 
 Then, I checked to see how many of the markers that Cembrowski found to be enriched in discrete dorsal cell populations were also enriched in my comparisons. The enriched coloumn is what percent were confirmed, the depleted column means that the marker was experssed in the opposite direction, and neither means that the Cembrowski marker was not significantly different in expression between the two cell types. Here are the results:
@@ -104,3 +112,35 @@ Then, I checked to see how many of the markers that Cembrowski found to be enric
 | CA3 | CA3 v CA1 | 0.70 | 0.00 | 0.30 |
 | DG | DG v CA1 | 0.68 | 0.00 | 0.32 |
 | DG | DG v CA3 | 0.69 | 0.00 | 0.31 |
+
+```{r barplot}
+mybarplot <- read.csv("../data/02h_markers.csv")
+head(mybarplot)
+
+p <- ggplot(data=mybarplot, aes(x=comparison, y=correct, fill = marker)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  theme_cowplot(font_size = 7, line_size = 0.25) +
+  scale_fill_manual(values = c( "#7570b3","#1b9e77",  "#d95f02"),
+                    name = "marker\ngenes") +
+  ylab("% marker genes recovered") +
+  xlab("subfields compared") +
+  theme(panel.grid.minor=element_blank(),
+        panel.grid.major=element_blank(),
+        legend.key.width =  unit(0.2, "cm"),
+        legend.key.height =  unit(0.1, "cm"),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = scales::percent,
+                     limits = c(0,1))
+p
+
+pbetter <- plot_grid(p,
+           labels = c("D"),
+           nrow = 1,
+           label_size = 7
+           )
+pbetter
+
+pdf(file="../figures/02h_markergenes/barplot.pdf", width=1.75, height=2)
+plot(pbetter)
+dev.off()
+```
