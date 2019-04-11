@@ -251,7 +251,6 @@ summary(aov(PC4 ~ subfield * treatment, data=pcadata))
 summary(aov(PC5 ~ subfield * treatment, data=pcadata)) 
 summary(aov(PC6 ~ subfield * treatment, data=pcadata)) 
 
-
 PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=subfield)) +
     geom_point(size=1.5, aes(shape=treatment), alpha = 0.8) +
     xlab(paste0("PC1: ", percentVar[1],"%")) +
@@ -259,45 +258,42 @@ PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=subfield)) +
     #stat_ellipse(level = 0.95, (aes(color=subfield)),size=0.25) + 
     scale_colour_manual(values=c(colorvalsubfield))+ 
     theme_cowplot(font_size = 7, line_size = 0.25)  +
-    theme(legend.title=element_blank(),
-          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) +
+    #theme(legend.title=element_blank()) +
     scale_x_continuous(limits=c(-15, 25)) +
       scale_y_continuous(limits=c(-15, 15)) +
-    scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield))+
-  guides(col = guide_legend(nrow = 4))
+    scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield))
 PCA12
 
-
 PCA42 <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2)) +
-    geom_point(size=1.5, aes(shape=subfield, color=treatment), alpha = 0.8) +
+    geom_point(size=1.5, aes(color=subfield, shape=treatment), alpha = 0.8) +
     xlab(paste0("PC4: ", percentVar[4],"%")) +
     ylab(paste0("PC2: ", percentVar[2],"%")) +
     #stat_ellipse(level = 0.95, (aes(color=subfield)),size=0.25) + 
-    scale_colour_manual(values=c(colorvalAPA00))+ 
+    scale_colour_manual(values=c(colorvalsubfield))+ 
     theme_cowplot(font_size = 7, line_size = 0.25)  +
-    theme(legend.title=element_blank(),
-          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) +
+    theme(legend.title=element_blank()) +
   scale_x_continuous(limits=c(-10, 15)) +
         scale_y_continuous(limits=c(-15, 15)) +
-    scale_shape_manual(aes(color=colorvalAPA00), values=c(1, 16, 0, 15)) +
+    scale_shape_manual(aes(color=colorvalsubfield), values=c(1, 16, 0, 15)) +
   guides(color = guide_legend(order=1),
-         shape = guide_legend(order=2)) +
-  guides(col = guide_legend(nrow = 2))
+         shape = guide_legend(order=2)) 
 PCA42
 
-
-plotnolegend <- plot_grid(PCA12 + theme(legend.position = "bottom"), 
-                          PCA42 + theme(legend.position = "bottom"),
+plotnolegend <- plot_grid(PCA12 + theme(legend.position="none"),
+           PCA42 + theme(legend.position="none"),
            labels = c("B", "C"),
-           nrow = 1,
+           nrow = 2,
            label_size = 7
            )
-
 plotnolegend
 
+legend <- get_legend(PCA42)
+
+pcaplots <- plot_grid(plotnolegend, legend, ncol = 2, rel_widths  = c(1, .4))
+pcaplots
 
 pdf(file="../figures/02b_RNAseqALL/pcaplots.pdf", width=3.3, height=2.5)
-plot(plotnolegend)
+plot(pcaplots)
 dev.off()
 
 ```
