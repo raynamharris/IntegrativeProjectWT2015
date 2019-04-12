@@ -10,17 +10,8 @@ This script is used to identify treatement differences within each subfield, gen
 ```{r setup, message=F, warning=F}
 library(tidyverse)
 library(cowplot) ## for some easy to use themes
-library(car) ## stats
 library(VennDiagram) ## venn diagrams
-library(pheatmap) ## awesome heatmaps
-library(viridis) # for awesome color pallette
-library(reshape2) ## for melting dataframe
 library(DESeq2) ## for gene expression analysis
-library(edgeR)  ## for basic read counts status
-library(magrittr) ## to use the weird pipe
-library(genefilter)  ## for PCA fuction
-library(xtable) # for latex or html tables
-library(ggrepel) # for labeling points
 library(UpSetR)
 
 ## load functions 
