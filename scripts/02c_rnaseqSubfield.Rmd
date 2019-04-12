@@ -1,7 +1,5 @@
 ---
 title: "02c_rnaseqSubfield"
-author: "Rayna M Harris"
-date: "02/13/19"
 output: md_document
 ---
 
@@ -34,564 +32,220 @@ knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = T)
 ```
 
 
-
-## DG
-
-The most notable comparison within DG is the consistent verses yoked-consistent.
-
+## Get varience stabilized gene expression for each tissue
 
 ```{r DGdeseq}
-colData <- read.csv("../data/02a_colData.csv", header = T)
-countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+a.colData <- read.csv("../data/02a_colData.csv", header = T)
+a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
-colData <- colData %>% 
-  filter(Punch %in% c("DG"))  %>% 
+returndds <- function(mytissue){
+  print(mytissue)
+  colData <- a.colData %>% 
+    filter(Punch %in% c(mytissue))  %>% 
   droplevels()
+  
+  savecols <- as.character(colData$RNAseqID) 
+  savecols <- as.vector(savecols) 
+  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
 
-savecols <- as.character(colData$RNAseqID) 
-savecols <- as.vector(savecols) 
-countData <- countData %>% dplyr::select(one_of(savecols)) 
-
-colData %>% dplyr::select(APA2,Punch)  %>%  summary()
-
-
-## create DESeq object using the factors Punch and APA
-dds <- DESeqDataSetFromMatrix(countData = countData,
+  ## create DESeq object using the factors Punch and APA
+  dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ APA2)
 
-dds # view the DESeq object - note numnber of genes
-dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-dds # view number of genes afternormalization and the number of samples
-dds <- DESeq(dds) # Differential expression analysis
-vsd <- getVarianceStabilizedData(dds) 
+  dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+   # Differential expression analysis
+  return(DESeq(dds))
+}
 
-write.csv(colData, file = "../data/02c_DGcolData.csv", row.names = T)
-write.csv(vsd, file = "../data/02c_DGvsd.csv", row.names = T)
+DGdds <- returndds("DG") 
+CA1dds <- returndds("CA1") 
+CA3dds <- returndds("CA3") 
 ```
 
+## Consistent versus yoked-consistent
 
-```{r DG}
-###  "consistent", "yoked_consistent"
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
+```{r consyokcons}
+plot.cons.yokcons <- function(mydds, mytissue){
+  print(mytissue)
+  
+  res <- results(mydds, contrast =c("APA2", "consistent", "yoked_consistent"),
+                 independentFiltering = T, alpha = 0.1)
+  print(summary(res))
 
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-      
-
-data <- data.frame(gene = row.names(res),
+  data <- data.frame(gene = row.names(res),
                    padj = res$padj, 
                    logpadj = -log10(res$padj),
                    lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
+  data <- na.omit(data)
+  data <- data %>%
+    dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
                         yes = "consistent", 
                         no = ifelse(data$lfc < -1 & data$padj < 0.1, 
                                     yes = "yoked_consistent", 
                                     no = "NS")))
 
-DGvolcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-  geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
-  theme_cowplot(font_size = 7, line_size = 0.25) +
-  geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-  scale_color_manual(values = volcano1,
-                     name = NULL)  + 
-  scale_y_continuous(limits=c(0, 8)) +
-  scale_x_continuous( limits=c(-3, 3),
-                      name="Log fold change")+
-  ylab(paste0("log10 p-value")) +       
-  theme(panel.grid.minor=element_blank(),
-        legend.position = "bottom",
-        legend.spacing.x = unit(-0.1, 'cm'),
-        panel.grid.major=element_blank(),
-        legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
-DGvolcano
-
-
-pdf(file="../figures/02c_rnaseqSubfield/DGvolcano.pdf", width=1.5, height=2)
-plot(DGvolcano)
-dev.off()
-
-# save DEGs
-DGvolcanoDEGs <- data %>%
-  dplyr::filter(direction != "neither") %>%
-  dplyr::arrange(desc(lfc))
-head(DGvolcanoDEGs,10)
-write.csv(DGvolcanoDEGs, "../data/DG-consistent-yokedconsistent.csv", row.names = F)
-
-# are any protein kinases differentially expressed?
-pkcs <- data[grep("Prkc", data$gene), ]
-pkcs # no pkcs are differentially expressed
-
-## go setup
-table(res$padj<0.1)
-logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
-logs$logP=as.numeric(as.character(logs$logP))
-sign <- rep(1,nrow(logs))
-sign[res$log2FoldChange<0]=-1  ##change to correct model
-table(sign)
-logs$logP <- logs$logP*sign
-write.csv(logs, file = "./02e_GO_MWU/DGconsistentyoked.csv", row.names = F)
-
-## yoked yoked
-res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-
-## go setup
-table(res$padj<0.1)
-logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
-logs$logP=as.numeric(as.character(logs$logP))
-sign <- rep(1,nrow(logs))
-sign[res$log2FoldChange<0]=-1  ##change to correct model
-table(sign)
-logs$logP <- logs$logP*sign
-write.csv(logs, file = "./02e_GO_MWU/DGyokedyoked.csv", row.names = F)
-
-
-##  "conflict", "yoked_conflict"
-res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-
-## go setup
-table(res$padj<0.1)
-logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
-logs$logP=as.numeric(as.character(logs$logP))
-sign <- rep(1,nrow(logs))
-sign[res$log2FoldChange<0]=-1  ##change to correct model
-table(sign)
-logs$logP <- logs$logP*sign
-write.csv(logs, file = "./02e_GO_MWU/DGconflictyoked.csv", row.names = F)
-
-#### "conflict", "consistent"
-res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-## go setup
-table(res$padj<0.1)
-logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
-logs$logP=as.numeric(as.character(logs$logP))
-sign <- rep(1,nrow(logs))
-sign[res$log2FoldChange<0]=-1  ##change to correct model
-table(sign)
-logs$logP <- logs$logP*sign
-write.csv(logs, file = "./02e_GO_MWU/DGconflictconsistent.csv", row.names = F)
-
-## plot of pkmz
-plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
-
-# order results table by the smallest adjusted p value:
-res <- res[order(res$padj),]
-
-results = as.data.frame(dplyr::mutate(as.data.frame(res), sig=ifelse(res$padj<0.05, "FDR<0.05", "Not Sig")), row.names=rownames(res))
-head(results)
-```
-
-
-```{r heatmapsDG}
-numDEGs <- function(group1, group2){
-  res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
-  sumpadj <- sum(res$padj < 0.1, na.rm = TRUE)
-  return(sumpadj)
-}
-
-#create list of groups
-a <- levels(colData$APA2)
-b <- levels(colData$APA2)
-
-# comapre all contrasts, save to datafrmes
-dat=data.frame()
-for (i in a){
-  for (j in b){
-    if (i != j) {
-      k <- paste(i,j, sep = "") #assigns usique rownames
-      dat[k,1]<-i               
-      dat[k,2]<-j
-      dat[k,3]<- numDEGs(i,j) #caluculates number of DEGs
-    }
-  }
-}
-
-head(dat)
-
-rownames(dat) <- NULL #remove row names
-data_wide <- spread(dat, V2, V3)
-data_wide
-
-dat$V1 <- factor(dat$V1, levels = 
-                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-dat$V2 <- factor(dat$V2, levels = 
-                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-
-# rename levels
-levels(dat$V1) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
-levels(dat$V2) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
-
-
-DGheat <- ggplot(dat, aes(V1, V2)) +
-  geom_tile(aes(fill = V3)) +
-  scale_fill_viridis(na.value="#FFFFFF00",
-                     limits = c(0,1000)) + 
-  ylab(" ") + xlab("Active Place Avoidance") +
-  labs(fill = "# of DEGs",
-       subtitle = "DG") +
-  guides(fill=FALSE) + 
-  theme_cowplot(font_size = 7, line_size = 0.25) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-DGheat
-```
-
-## CA3
-
-There are so few differences in the CA3 that I don't make any figures for the manuscript.
-
-```{r CA3, message=F, warning=F}
-colData <- read.csv("../data/02a_colData.csv", header = T)
-countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-
-colData <- colData %>% 
-  filter(Punch %in% c("CA3"))  %>% 
-  droplevels()
-savecols <- as.character(colData$RNAseqID) 
-savecols <- as.vector(savecols) 
-countData <- countData %>% dplyr::select(one_of(savecols)) 
-colData %>% select(APA2,Punch)  %>%  summary()
-
-## create DESeq object using the factors Punch and APA
-dds <- DESeqDataSetFromMatrix(countData = countData,
-                              colData = colData,
-                              design = ~ APA2)
-
-dds # view the DESeq object - note numnber of genes
-dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-dds # view number of genes afternormalization and the number of samples
-dds <- DESeq(dds) # Differential expression analysis
-vsd <- getVarianceStabilizedData(dds)
-
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
-
-res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
-summary(res)
-
-res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
-
-res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
-
-## go setup
-table(res$padj<0.1)
-logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
-logs$logP=as.numeric(as.character(logs$logP))
-sign <- rep(1,nrow(logs))
-sign[res$log2FoldChange<0]=-1  ##change to correct model
-table(sign)
-logs$logP <- logs$logP*sign
-write.csv(logs, file = "./02e_GO_MWU/CA3conflictconsistent.csv", row.names = F)
-
-plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA3")
-```
-
-
-```{r heatmapsCA3}
-numDEGs <- function(group1, group2){
-  res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
-  sumpadj <- sum(res$padj < 0.1, na.rm = TRUE)
-  return(sumpadj)
-}
-
-#create list of groups
-a <- levels(colData$APA2)
-b <- levels(colData$APA2)
-
-# comapre all contrasts, save to datafrmes
-dat=data.frame()
-for (i in a){
-  for (j in b){
-    if (i != j) {
-      k <- paste(i,j, sep = "") #assigns usique rownames
-      dat[k,1]<-i               
-      dat[k,2]<-j
-      dat[k,3]<- numDEGs(i,j) #caluculates number of DEGs
-    }
-  }
-}
-
-head(dat)
-
-rownames(dat) <- NULL #remove row names
-data_wide <- spread(dat, V2, V3)
-data_wide
-
-dat$V1 <- factor(dat$V1, levels = 
-                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-dat$V2 <- factor(dat$V2, levels = 
-                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-
-# rename levels
-levels(dat$V1) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
-levels(dat$V2) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
-
-
-CA3heat <- ggplot(dat, aes(V1, V2)) +
-  geom_tile(aes(fill = V3)) +
-  scale_fill_viridis(na.value="#FFFFFF00",
-                     limits = c(0,1000)) + 
-  ylab(" ") + xlab("Active Place Avoidance") +
-  labs(fill = "# of DEGs",
-       subtitle = "CA3") +
-  guides(fill=FALSE) + 
-  theme_cowplot(font_size = 7, line_size = 0.25)  +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-CA3heat
-
-```
-
-
-## CA1
-
-```{r CA1, message=F, warning=F}
-colData <- read.csv("../data/02a_colData.csv", header = T)
-countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-colData <- colData %>% 
-  filter(Punch %in% c("CA1"))  %>% 
-  droplevels()
-savecols <- as.character(colData$RNAseqID) 
-savecols <- as.vector(savecols) 
-countData <- countData %>% dplyr::select(one_of(savecols)) 
-colData %>% dplyr::select(APA2,Punch)  %>%  summary()
-dds <- DESeqDataSetFromMatrix(countData = countData,
-                              colData = colData,
-                              design = ~ APA2)
-
-dds # view the DESeq object - note numnber of genes
-dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-dds # view number of genes afternormalization and the number of samples
-dds <- DESeq(dds) # Differential expression analysis
-vsd <- getVarianceStabilizedData(dds)
-
-res <- results(dds, contrast =c("APA2", "consistent", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-topGene <- rownames(res)[which.min(res$padj)]
-plotCounts(dds, gene = topGene, intgroup=c("APA2"))
-
-data <- data.frame(gene = row.names(res),
-                   padj = res$padj, 
-                   logpadj = -log10(res$padj),
-                   lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                        yes = "consistent", 
-                        no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                    yes = "yoked_consistent", 
-                                    no = "NS")))
-
-data <- data %>%dplyr::filter(direction != "neither")
-
-CA1volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-  geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + # add gene points
+  write.csv(data, file = paste0("../data/02c_", mytissue, "_consyokcons.csv", sep = ""))
+  
+  volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
+    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
     theme_cowplot(font_size = 7, line_size = 0.25) +
-  scale_color_manual(values = volcano1,
-                     name = NULL)  + 
-  geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-  scale_y_continuous(limits=c(0, 8)) +
-  scale_x_continuous( limits=c(-3, 3))+
-  xlab(paste0("log fold difference")) +
-  ylab(paste0("log10 p-value")) +       
-  theme(panel.grid.minor=element_blank(),
-        legend.position = "bottom",
-        legend.spacing.x = unit(-0.1, 'cm'),
-        panel.grid.major=element_blank(),
-        legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
-CA1volcano
+    geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+    scale_color_manual(values = volcano1,
+                      name = "Higher expression in",
+                      breaks = c("yoked_consistent", "NS", "consistent"))  + 
+    scale_y_continuous(limits=c(0, 12.5)) +
+    scale_x_continuous(limits=c(-10, 10),
+                        name="Log fold difference")+
+    ylab(paste0("log10 p-value")) +  
+    labs(subtitle = mytissue) +
+    theme(legend.position = "bottom",
+          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
+  plot(volcano)
+}
 
 
+DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG") + theme(legend.position = "none")
+CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3") + theme(legend.position = "none")
+CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1") + theme(legend.position = "none")
 
+training <- plot_grid(DGconsyokcons, CA3consyokcons, CA1consyokcons, nrow = 1,
+                      labels = "AUTO",
+                      label_size = 7)
+legend <- get_legend(plot.cons.yokcons(DGdds, "DG"))
 
-pdf(file="../figures/02c_rnaseqSubfield/CA1volcano.pdf",  width=1.5, height=2)
-plot(CA1volcano)
+p <- plot_grid(training, legend, nrow = 2, rel_heights = c(3, .3))
+p
+
+pdf(file="../figures/02c_rnaseqSubfield/volcano-consyokcons.pdf", width=5, height=2)
+plot(p)
 dev.off()
+```
 
-# save DEGs
-CA1volcanoDEGs <- data %>%
-  filter(direction != "neither") %>%
-  arrange(desc(lfc))
-head(CA1volcanoDEGs,10)
-write.csv(CA1volcanoDEGs, "../data/CA1-consistent-yokedconsistent.csv", row.names = F)
+## Confict versus Consistent
 
-## go setup
-table(res$padj<0.1)
-logs <- data.frame(cbind("gene"=row.names(res),"logP"=round(-log(res$pvalue+1e-10,10),1)))
-logs$logP=as.numeric(as.character(logs$logP))
-sign <- rep(1,nrow(logs))
-sign[res$log2FoldChange<0]=-1  ##change to correct model
-table(sign)
-logs$logP <- logs$logP*sign
-write.csv(logs, file = "./02e_GO_MWU/CA1consistentyoked.csv", row.names = F)
+```{r confcons}
+plot.conf.cons <- function(mydds, mytissue){
+  
+  print(mytissue)
+  
+  res <- results(mydds, contrast =c("APA2", "conflict", "consistent"),
+                 independentFiltering = T, alpha = 0.1)
+  print(summary(res))
 
-
-
-#conflict yoked conflict
-
-res <- results(dds, contrast =c("APA2", "conflict", "yoked_conflict"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 3)
-
-# volcano plots
-
-res <- results(dds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
-resOrdered <- res[order(res$padj),]
-head(resOrdered, 10)
-
-topGene <- rownames(res)[which.min(res$padj)]
-plotCounts(dds, gene = topGene, intgroup=c("APA2"))
-
-data <- data.frame(gene = row.names(res),
+  data <- data.frame(gene = row.names(res),
                    padj = res$padj, 
                    logpadj = -log10(res$padj),
                    lfc = res$log2FoldChange)
-data <- na.omit(data)
-data <- data %>%
-  mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
+  data <- na.omit(data)
+  
+  data <- data %>%
+    dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
+                        yes = "conflict", 
+                        no = ifelse(data$lfc < -1 & data$padj < 0.1, 
+                                    yes = "consistent", 
+                                    no = "NS")))
+  
+  write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""))
+  
+  volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
+    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
+    theme_cowplot(font_size = 7, line_size = 0.25) +
+    geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+    scale_color_manual(values = volcano2,
+                       breaks = c("consistent", "NS", "conflict"),
+                      name = NULL)  + 
+    scale_y_continuous(limits=c(0, 12.5)) +
+    scale_x_continuous(limits=c(-22, 22),
+                        name="Log fold difference")+
+    ylab(paste0("log10 p-value")) +  
+    labs(subtitle = mytissue) +
+    theme(panel.grid.minor=element_blank(),
+          legend.position = "bottom",
+          legend.spacing.x = unit(-0.1, 'cm'),
+          panel.grid.major=element_blank(),
+          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
+  plot(volcano)
+}
+
+
+DGconflict <-  plot.conf.cons(DGdds, "DG")
+CA3conflict <-  plot.conf.cons(CA3dds, "CA3")
+CA1conflict <-  plot.conf.cons(CA1dds, "CA1")
+
+plot_grid(DGconflict, CA3conflict, CA1conflict, nrow = 1)
+```
+
+
+## Yoked confict versus yoked consistent
+
+```{r yokeconfyokcons}
+plot.yokconf.yokcons <- function(mydds, mytissue){
+  
+  print(mytissue)
+  
+  res <- results(mydds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"),
+                 independentFiltering = T, alpha = 0.1)
+  print(summary(res))
+
+  data <- data.frame(gene = row.names(res),
+                   padj = res$padj, 
+                   logpadj = -log10(res$padj),
+                   lfc = res$log2FoldChange)
+  data <- na.omit(data)
+  data <- data %>%
+    dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
                         yes = "yoked_conflict", 
                         no = ifelse(data$lfc < -1 & data$padj < 0.1, 
                                     yes = "yoked_consistent", 
                                     no = "NS")))
-
-CA1volcano2 <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-  geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + # add gene points
-  theme_cowplot(font_size = 7, line_size = 0.25) +
-  scale_color_manual(values = volcano3,
-                     name = NULL)  + 
-  geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-  scale_y_continuous(limits=c(0, 8)) +
-  scale_x_continuous( limits=c(-3, 3),
-                      name="Log fold change")+
-  ylab(paste0("log10 p-value")) +       
-  theme(panel.grid.minor=element_blank(),
-        legend.position = "bottom",
-        legend.spacing.x = unit(-0.1, 'cm'),
-        panel.grid.major=element_blank(),
-        legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
-CA1volcano2
-
-pdf(file="../figures/02c_rnaseqSubfield/CA1volcano2.pdf",  width=1.5, height=2)
-plot(CA1volcano2)
-dev.off()
-
-# save DEGs
-CA1volcano2DEGs <- data %>%
-  filter(direction != "neither") %>%
-  arrange(desc(lfc))
-head(CA1volcano2DEGs,10)
-write.csv(CA1volcano2DEGs, "../data/CA1-yokedconflict-yokedconsistent.csv", row.names = F)
-
-res <- results(dds, contrast =c("APA2", "conflict", "consistent"), independentFiltering = T, alpha = 0.1)
-summary(res)
-
-plotCounts(dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
-```
-
-
-```{r heatmapsCA1}
-# order levels
-colData$APA2 <- factor(colData$APA2, 
-                          levels = c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-
-#create list of groups
-a <- levels(colData$APA2)
-b <- levels(colData$APA2)
-
-# comapre all contrasts, save to datafrmes
-dat=data.frame()
-for (i in a){
-  for (j in b){
-    if (i != j) {
-      k <- paste(i,j, sep = "") #assigns usique rownames
-      dat[k,1]<-i               
-      dat[k,2]<-j
-      dat[k,3]<- numDEGs(i,j) #caluculates number of DEGs
-    }
-  }
+  
+  write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""))
+  
+  volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
+    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
+    theme_cowplot(font_size = 7, line_size = 0.25) +
+    geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+    scale_color_manual(values = volcano3,
+                       breaks = c("yoked_consistent", "NS", "yoked_conflict"),
+                      name = NULL)  + 
+    scale_y_continuous(limits=c(0, 12.5)) +
+    scale_x_continuous(limits=c(-22, 22),
+                        name="Log fold difference")+
+    ylab(paste0("log10 p-value")) +  
+    labs(subtitle = mytissue) +
+    theme(panel.grid.minor=element_blank(),
+          legend.position = "bottom",
+          legend.spacing.x = unit(1.0, 'cm'),
+          panel.grid.major=element_blank(),
+          legend.margin=margin(t=-0.25, r=2, b=0, l=0, unit="cm")) 
+  plot(volcano)
 }
 
-head(dat)
 
-rownames(dat) <- NULL #remove row names
-data_wide <- spread(dat, V2, V3)
-data_wide
+DGyoked <-  plot.yokconf.yokcons(DGdds, "DG")
+CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3")
+CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1")
 
-dat$V1 <- factor(dat$V1, levels = 
-                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-dat$V2 <- factor(dat$V2, levels = 
-                              c("yoked_consistent", "consistent", "yoked_conflict", "conflict"))
-
-# rename levels
-levels(dat$V1) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
-levels(dat$V2) <- c("yoked\nconsistent","consistent",  "yoked\nconflict","conflict")
-
-
-CA1heat <- ggplot(dat, aes(V1, V2)) +
-  geom_tile(aes(fill = V3)) +
-  scale_fill_viridis(na.value="#FFFFFF00",
-                     limits = c(0,1000)) + 
-  ylab(" ") + xlab("Active Place Avoidance") +
-  labs(fill = "# of DEGs",
-       subtitle = "CA1") +
-  guides(fill=FALSE) + 
-  theme_cowplot(font_size = 7, line_size = 0.25) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-CA1heat
-
-CA1heat2 <- ggplot(dat, aes(V1, V2)) +
-  geom_tile(aes(fill = V3)) +
-  scale_fill_viridis(na.value="#FFFFFF00",
-                     limits = c(0,1000)) + 
-  ylab(" ") + xlab("Active Place Avoidance") +
-  labs(fill = "# of DEGs",
-       subtitle = "CA1") +
-  theme_cowplot(font_size = 7, line_size = 0.25) +
-  theme(legend.position="bottom")
+plot_grid(DGyoked, CA3yoked, CA1yoked, nrow = 1)
 ```
 
-```{r totalDEGs}
-# three plots no lengend
-allplots <- plot_grid(DGheat, CA3heat, CA1heat, nrow = 1)
- 
-legend <- get_legend(CA1heat2 + theme(legend.position="bottom"))
-p <- plot_grid(allplots, legend, ncol = 1, rel_heights = c(1, .2))
-p 
+# pkmzz
 
-pdf(file="../figures/02c_rnaseqSubfield/totalDEGs.pdf", width=6, height=2.5)
-plot(p) 
-dev.off() 
+
+```{r pkmz}
+plotCounts(DGdds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
+plotCounts(CA3dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA3")
+plotCounts(CA1dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
 ```
 
-```{r volcano3}
-volcano2 <- plot_grid(DGvolcano, CA1volcano, 
-                      labels = c("F", "G"),
-                      nrow = 1,label_size = 7)
-pdf(file="../figures/02c_rnaseqSubfield/volcano2.pdf", width=3, height=2) 
-plot(volcano2)  
-dev.off()  
-```
 
+
+
+
+## Upset plots
+
+What genes overlap within cetain comparisons?
 
 ```{r upsetplotprep}
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
@@ -602,6 +256,7 @@ eachsubfield <- levels(a.colData$Punch)
 listofDEGs <- function(group1, group2){
   res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
   data <- data.frame(gene = row.names(res),
+                     lfc = res$log2FoldChange,
                      padj = res$padj,
                      tissue = i,
                      comparison = paste(group1, group2, sep = "-"))
@@ -637,7 +292,7 @@ D <- listofDEGs("yoked_conflict","yoked_consistent")
 
 all <- rbind(A,B,C,D)
 
-write.csv(all, file = paste("../data/02c_",i,"forupset.csv", sep = ""))
+write.csv(all, file = paste("../data/02c_",i,"forupset.csv", sep = ""), row.names = F)
 }
 
 DG <- read.csv("../data/02c_DGforupset.csv")  
@@ -663,33 +318,36 @@ myupsetdf <- all %>%
 
 write.csv(myupsetdf, "../data/02c_upsetdf.csv")
 
-names(myupsetdf)
 ```
 
 ```{r upsetplot}
-upset(myupsetdf)
-upset(myupsetdf, keep.order = T,
-      sets = c( "CA1-conf-yconf","CA1-cons-ycons", "CA1-yconf-ycons",
-                "CA3-cons-ycons", "CA3-yconf-ycons",
-                "DG-conf-cons", "DG-conf-yconf", "DG-cons-ycons","DG-yconf-ycons"
-                )
-      )
 
-upset(myupsetdf, keep.order = T,
-      sets = c("CA1-yconf-ycons", "CA1-cons-ycons", "DG-cons-ycons"),
-      sets.bar.color=c("#7570b3","#7570b3", "#d95f02")
+upset(myupsetdf, keep.order = T)
+
+names(myupsetdf)
+
+trained <- myupsetdf %>%
+  select(gene, 'DG-cons-ycons', 'CA3-cons-ycons', 'CA1-cons-ycons')
+
+colnames(trained) <- c("gene", "DG", "CA3", "CA1")
+
+
+pdf(file="../figures/02c_rnaseqSubfield/upsettraining.pdf",  onefile=FALSE) # or other device
+upset(trained, keep.order = T,
+      sets = c("CA1", "CA3", "DG"),
+      sets.bar.color=c("#7570b3","#1b9e77", "#d95f02"),
+      queries = list(list(query = intersects, params = list("CA1"), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("DG"), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("CA3"), color = "#ca0020", active = T),
+                     list(query = intersects, params = list("CA1", "DG"), 
+                          color = "#ca0020", active = T)),
+      text.scale = 2,
+      sets.x.label = NULL,
+      #point.size = 1, line.size = 1,
+      mb.ratio = c(0.6, 0.4)
 )
+dev.off()
 
-
-upset(myupsetdf, keep.order = T,
-      sets = c("CA1-yconf-ycons", "CA1-cons-ycons", "DG-cons-ycons"),
-      sets.bar.color=c("#7570b3","#7570b3", "#d95f02"),
-      queries = list(list(query = intersects, params = list("CA1-cons-ycons"), color = "#ca0020", active = T),
-                     list(query = intersects, params = list("DG-cons-ycons"), color = "#ca0020", active = T),
-                     list(query = intersects, params = list("CA1-cons-ycons", "DG-cons-ycons"), color = "#ca0020", active = T))
-)
-
-head(myupsetdf)
 
 shared <- myupsetdf %>%
   select(gene, "CA1-yconf-ycons", "CA1-cons-ycons", "DG-cons-ycons")
@@ -707,4 +365,5 @@ shared %>% filter(CA1learn == 0 & CA1stress == 1)
 # stress only CA1 and DG
 shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 0)
 ```
+
 

@@ -56,6 +56,10 @@ volcano1 <-  c("consistent" = "#ca0020",
            "yoked_consistent" = "#404040", 
            "NS" = "#d9d9d9")
 
+volcano2 <-  c("consistent" = "#ca0020",
+               "conflict" = "#f4a582", 
+               "NS" = "#d9d9d9")
+
 volcano3 <-  c("yoked_consistent" = "#404040",
                "yoked_conflict" = "#bababa", 
                "NS" = "#d9d9d9")
