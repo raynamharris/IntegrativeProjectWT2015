@@ -353,7 +353,11 @@ shared <- myupsetdf %>%
   select(gene, "CA1-yconf-ycons", "CA1-cons-ycons", "DG-cons-ycons")
 colnames(shared) <- c("gene", "CA1stress", "CA1learn", "DGlearn")
 
-# learning only CA1 and DG
+# ca1 DG learning
+shared %>% filter(CA1learn == 1 & DGlearn == 1)
+
+
+# CA1 and DG learning only (none in stress)
 shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0)
 
 # learning only CA1
@@ -366,4 +370,43 @@ shared %>% filter(CA1learn == 0 & CA1stress == 1)
 shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 0)
 ```
 
+Heat map of 11 DG and CA1 learning response genes
 
+```{r heatmap}
+vsd <- read.csv("../data/02b_vsd.csv", check.names = F)
+names(vsd)[1]<-"gene"
+head(vsd)
+
+ca1dg <- shared %>% filter(CA1learn == 1 & DGlearn == 1) %>%
+  select(gene)
+vsdca1cg <- left_join(ca1dg, vsd)
+row.names(vsdca1cg) <- vsdca1cg$gene
+vsdca1cg$gene <- NULL
+vsdca1cg
+
+DEGes <- as.matrix(vsdca1cg)
+DEGes <- DEGes - rowMeans(DEGes)
+
+paletteLength <- 30
+myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+
+df <- a.colData %>% select(Punch, Treatment) ## matrix to df
+rownames(df) <- names(a.countData)
+levels(df$Treatment) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+
+pheatmap(DEGes, show_colnames=F, show_rownames = T,
+         annotation_col=df, annotation_colors = pheatmapcolors2,
+         treeheight_row = 0, treeheight_col = 25,
+         annotation_row = NA, 
+         annotation_legend = TRUE,
+         annotation_names_row = FALSE, annotation_names_col = FALSE,
+         fontsize = 8, 
+         border_color = NA ,
+         color = viridis(30),
+         cellwidth = 6, 
+         clustering_method="average",
+         breaks=myBreaks,
+         clustering_distance_cols="euclidean" 
+         )
+```

@@ -48,6 +48,15 @@ pheatmapcolors = list(
               'yoked conflict' = (values=c("#bababa")),
             'conflict' = (values=c("#f4a582"))))
 
+pheatmapcolors2 = list(
+  Punch = c(DG = (values=c("#d95f02")),
+               CA3 = (values=c("#1b9e77")),
+               CA1 = (values=c("#7570b3"))),
+  Treatment = c('yoked consistent' = (values=c("#404040")), 
+                'consistent' = (values=c("#ca0020")),
+                'yoked conflict' = (values=c("#bababa")),
+                'conflict' = (values=c("#f4a582"))))
+
 
 
 # for subfield volcano plots
