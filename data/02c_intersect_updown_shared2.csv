@@ -1,15 +1,15 @@
-set,setsize,direction,subfield,comparison,treatment
-CA1learn,168,decreased,CA1,CA1 learn,yoked_consistent
-CA1learn,181,increased,CA1,CA1 learn,consistent
-CA1stress,179,decreased,CA1,CA1 learn,yoked_consistent
-CA1stress,206,increased,CA1,CA1 stress,yoked_conflict
-DGlearn,6,decreased,DG,DG learn,yoked_consistent
-DGlearn,103,increased,DG,DG learn,consistent
-CA1learn,330,increased,CA1,CA1 stress,consistent
-CA1stress,330,increased,CA1,CA1 learn,yoked_consistent
-CA1learn,192,decreased,CA1,CA1 stress,yoked_consistent
-CA1stress,192,decreased,CA1,CA1 learn,yoked_consistent
-DGlearn,11,increased,DG,CA1 learn,consistent
-CA1learn,11,increased,CA1,DG learn,consistent
-DGlearn,5,increased,DG,CA1 stress,consistent
-CA1stress,5,increased,CA1,DG learn,yoked_conflict
+set,setsize,direction,subfield,status
+CA1train,168,yoked_consistent,CA1,unique
+CA1train,181,consistent,CA1,unique
+CA1stress,179,yoked_consistent,CA1,unique
+CA1stress,206,yoked_conflict,CA1,unique
+DGtrain,6,yoked_consistent,DG,unique
+DGtrain,103,consistent,DG,unique
+CA1train,330,consistent,CA1,stress
+CA1stress,330,yoked_conflict,CA1,train
+CA1train,192,yoked_consistent,CA1,stress
+CA1stress,192,yoked_consistent,CA1,train
+DGtrain,11,consistent,DG,train
+CA1train,11,consistent,CA1,train
+DGtrain,5,consistent,DG,stress
+CA1stress,5,yoked_conflict,CA1,train

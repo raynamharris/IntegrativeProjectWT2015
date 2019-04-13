@@ -1,7 +1,0 @@
-set,setsize,direction,subfield
-CA1learn,168,yoked_consistent,CA1
-CA1learn,181,consistent,CA1
-CA1stress,179,yoked_consistent,CA1
-CA1stress,206,yoked_conflict,CA1
-DGlearn,6,yoked_consistent,DG
-DGlearn,103,consistent,DG

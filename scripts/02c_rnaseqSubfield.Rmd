@@ -200,54 +200,25 @@ plot.yokconf.yokcons <- function(mydds, mytissue){
     geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
     scale_color_manual(values = volcano3,
                        breaks = c("yoked_consistent", "NS", "yoked_conflict"),
-                      name = "Higher expression in")  + 
+                       name = NULL,
+                       labels = c("yoked cons.", "NS", "yoked conf."),)  + 
     scale_y_continuous(limits=c(0, 12.5)) +
     scale_x_continuous(limits=c(-10, 10),
                         name="Log fold difference")+
     ylab(paste0("log10 p-value")) +  
     labs(subtitle = mytissue) +
-    theme(panel.grid.minor=element_blank(),
-          legend.position = "bottom",
+    theme(legend.position = "bottom",
           legend.spacing.x = unit(-0.1, 'cm'),
-          panel.grid.major=element_blank(),
           legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
   plot(volcano)  
 }
 
 
-DGyoked <-  plot.yokconf.yokcons(DGdds, "DG") + theme(legend.position = "none")
-CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3") + theme(legend.position = "none")
-CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1") + theme(legend.position = "none")  
+DGyoked <-  plot.yokconf.yokcons(DGdds, "DG")
+CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3")
+CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1")  
 
 plot_grid(DGyoked, CA3yoked, CA1yoked, nrow = 1)
-```
-
-
-## combo figure
-
-```{r combo}
-topplots <- plot_grid(CA1consyokcons, DGconsyokcons, nrow = 1,
-                      labels = "AUTO",
-                      label_size = 7)
-toplegend <- get_legend(plot.cons.yokcons(DGdds, "DG"))
-
-top <- plot_grid(topplots, toplegend, nrow = 2, rel_heights = c(3, .3))
-
-bottomplots <- plot_grid(CA1yoked, NULL,
-                    labels = c("C", "D"),
-                    label_size = 7)
-
-bottomlegend <- get_legend(plot.yokconf.yokcons(CA1dds, "CA1"))
-
-bottom <- plot_grid(bottomplots, bottomlegend, nrow = 2, rel_heights = c(3, .3))
-
-volcanos <- plot_grid(top, bottom, nrow = 2) 
-volcanos
-
-pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=3.15, height=4)
-plot(volcanos)  
-dev.off()
-
 ```
 
 
@@ -259,9 +230,6 @@ plotCounts(DGdds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in 
 plotCounts(CA3dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA3")
 plotCounts(CA1dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
 ```
-
-
-
 
 
 ## Upset plots
@@ -341,7 +309,6 @@ head(myupsetdf)
 write.csv(myupsetdf, "../data/02c_upsetdf.csv")
 
 
-
 # upset plot with direction, only CA1learn, CA1 stress, and DGlearn
 head(all) 
 all$direction <- ifelse(all$lfc > 0, "up", "down")
@@ -363,7 +330,6 @@ myupsetslim$gene <- row.names(myupsetslim)
 
 ```{r upsetplot}
 upset(myupsetdf, keep.order = T)
-
 
 trained <- myupsetdf %>%
   select(gene, 'DG-cons-ycons', 'CA3-cons-ycons', 'CA1-cons-ycons')
@@ -394,7 +360,6 @@ colnames(shared) <- c("gene", "CA1stress", "CA1learn", "DGlearn")
 # ca1 DG learning
 shared %>% filter(CA1learn == 1 & DGlearn == 1)
 
-
 # CA1 and DG learning only (none in stress)
 shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0)
 
@@ -406,74 +371,89 @@ shared %>% filter(CA1learn == 0 & CA1stress == 1)
 
 # stress only CA1 and DG
 shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 0)
-
-
-
-names(myupsetslim)
-upset(myupsetslim, keep.order = T, nsets = 6)
-
 ```
-
-
 
 
 ```{r myupset}
-
 # All degs
 updown <- read.csv("../data/02c_setsize_updown.csv") 
 updown$direction <- factor(updown$direction,  levels = c("yoked_consistent", "yoked_conflict", "consistent"))
-updown$set <- factor(updown$set,  levels = c("DGlearn", "CA1learn", "CA1stress"))
+updown$set <- factor(updown$set,  levels = c("DGtrain", "CA1train", "CA1stress"))
+updown$status <- factor(updown$status,  levels = c("train", "stress"))
 
-
-ggplot(updown, aes(x=set, y=setsize, fill = direction)) +
+a <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
   geom_bar(stat="identity", position=position_dodge()) +
+  theme_cowplot(font_size = 6, line_size = 0.25) +
   scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"))  +
-  labs(x = NULL, y = "Differentially expressed genes") +
-  geom_text(aes(label = setsize), position=position_dodge(width=0.9),  vjust=-0.25)
-
-# overlapping, ignores directions
-setinterset <- read.csv("../data/02c_setsize.csv")
-  geom_text(aes(label = setsize), position=position_dodge(width=0.9),  vjust=-0.25)
-
-ggplot(setinterset, aes(x=set, y=setsize)) +
-  geom_bar(stat="identity",position=position_dodge()) +
-  labs(x = "Intersection", y = "Differentially expressed genes") +
-  geom_text(aes(label = setsize), position=position_dodge(width=0.9),  vjust=-0.25)
-
-
-# unique DEGS (takes direction into account)
-updownunique <- read.csv("../data/02c_intersect_updown_unique.csv") 
-levels(updownunique$direction)
-
-updownunique$direction <- factor(updownunique$direction,  levels = c("yoked_consistent", "yoked_conflict", "consistent"))
-updownunique$set <- factor(updownunique$set,  levels = c("DGlearn", "CA1learn", "CA1stress"))
-
-ggplot(updownunique, aes(x=set, y=setsize, fill = direction)) +
-  geom_bar(stat="identity", position=position_dodge()) +
-  scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"))  +
-  labs(x = NULL, y = "Differentially expressed genes") +
-  geom_text(aes(label = setsize), position=position_dodge(width=0.9),  vjust=-0.25)
+  labs(x = NULL, y = "Total DEGs") +
+  scale_y_continuous(limits = c(0, 560),
+                     breaks = c(0,250,500)) +
+    facet_wrap(~set, scales = "free_x") +
+    theme(axis.text.x = element_blank(),
+          legend.position = "none",
+          legend.spacing.x = unit(-0.1, 'cm'),
+          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
+          legend.text=element_text(size=6),
+          strip.text.x = element_text(size = 0),
+          strip.background = element_rect(colour=NA, fill=NA),
+        panel.border = element_rect(fill = NA, color = "black"))
+a
 
 
-updowninteresect <- read.csv("../data/02c_intersect_updown_shared.csv") 
-levels(updowninteresect$direction)
-ggplot(updowninteresect, aes(x=subfield, y=setsize, fill = direction)) +
-  geom_bar(stat="identity", position=position_dodge()) +
-  #scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"))  +
-  labs(x = NULL, y = "Differentially expressed genes") +
-  geom_text(aes(label = setsize), position=position_dodge(width=0.9),  vjust=-0.25)
-
+# unique and shared
 shared2 <- read.csv("../data/02c_intersect_updown_shared2.csv") 
-shared2$group <- paste(shared2$comparison, shared2$direction, sep = " ")
-shared2$set <- factor(shared2$set,  levels = c("DGlearn", "CA1learn", "CA1stress"))
-shared2$treatment <- factor(shared2$treatment,  levels = c("yoked_consistent", "yoked_conflict", "consistent"))
+shared2$group <- paste(shared2$set, shared2$direction, sep = " ")
+shared2$set <- factor(shared2$set,  levels = c("DGtrain", "CA1train", "CA1stress"))
+shared2$direction <- factor(shared2$direction,  
+                            levels = c("yoked_consistent", "yoked_conflict", "consistent"))
+shared2$group <-factor(shared2$group,  
+                       levels = c("DGtrain yoked_consistent", "DGtrain consistent", 
+                                  "CA1train yoked_consistent","CA1train consistent",
+                                  "CA1stress yoked_consistent", "CA1stress yoked_conflict" ))
+shared2$status <- factor(shared2$status,  levels = c(  "stress","train","unique"))
 
+b <- ggplot(shared2, aes(x=direction, y=setsize, fill = status)) +
+  geom_bar(stat="identity") +
+  theme_cowplot(font_size = 6, line_size = 0.25) +
+  scale_fill_manual(values = c( "#c7e9b4", "#41b6c4", "#253494"),
+                    name = NULL)  +
+  labs(x = NULL, y = "Shared DEGs") +
+    scale_y_continuous(limits = c(0, 560),
+                     breaks = c(0,250,500)) +
+  theme(axis.text.x = element_blank(),
+        legend.position = "bottom",
+        legend.text=element_text(size=6),
+        legend.key.size = unit(0.2, "cm"),
+        strip.text.x = element_text(size = 0),
+        #axis.text=element_text(size=7),
+        strip.background = element_rect(colour=NA, fill=NA),
+        panel.border = element_rect(fill = NA, color = "black")) +
+  facet_wrap(~set, scales = "free_x") 
+b
 
-ggplot(shared2, aes(x=set, y=setsize, color = treatment, fill = group)) +
-  geom_bar(stat="identity", position=position_dodge()) +
-  scale_color_manual(values = c("#404040", "#bababa", "#ca0020"))  +
-  labs(x = NULL, y = "Differentially expressed genes") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12)) +
-  facet_wrap(~set, scales = "free")
-
+barplots <- plot_grid(a,b, nrow = 2, rel_heights = c(.45,.55))
+barplots 
 ```
+
+```{r combo, cache=FALSE}
+topplots <- plot_grid(DGconsyokcons, CA1consyokcons, nrow = 1,
+                      labels = "AUTO",
+                      label_size = 7)
+toplegend <- get_legend(plot.cons.yokcons(DGdds, "DG"))
+top <- plot_grid(topplots, toplegend, nrow = 2, rel_heights = c(3, .3))
+ 
+bottomplots <- plot_grid(CA1yoked, barplots,
+                    labels = c("C", "D"),
+                    label_size = 7)
+
+volcanos <- plot_grid(top, bottomplots, nrow = 2) 
+volcanos
+
+#althought this technically now contains volcanos and bar plots
+
+pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=3.15, height=4)
+plot(volcanos)    
+dev.off()     
+```
+
+
