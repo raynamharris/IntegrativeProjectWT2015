@@ -1,0 +1,7 @@
+set,setsize,direction,subfield
+CA1stress,545,yoked_conflict,CA1
+CA1stress,372,yoked_consistent,CA1
+CA1learn,522,consistent,CA1
+CA1learn,360,yoked_consistent,CA1
+DGlearn,119,consistent,DG
+DGlearn,6,yoked_consistent,DG

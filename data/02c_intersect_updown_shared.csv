@@ -1,0 +1,5 @@
+set,setsize,direction,subfield,shared
+CA1stressCA1learn,330,up-stress-learn,CA1,shared
+CA1stressCA1learn,192,down-stress-learn,CA1,shared
+CA1learnDGlearn,6,up-learn,CA1-DG,shared
+CA1stressCA1learnDGlearn,9,up-stress-learn,CA1-DG,shared
