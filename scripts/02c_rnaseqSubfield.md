@@ -359,7 +359,7 @@ Yoked confict versus yoked consistent
         scale_color_manual(values = volcano3,
                            breaks = c("yoked_consistent", "NS", "yoked_conflict"),
                            name = NULL,
-                           labels = c("yoked cons.", "NS", "yoked conf."),)  + 
+                           labels = c("yoked cons.", "NS", "yoked conf."))  + 
         scale_y_continuous(limits=c(0, 12.5)) +
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
