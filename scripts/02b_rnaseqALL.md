@@ -594,7 +594,19 @@ Principle component analysis
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-![](../figures/02b_RNAseqAll/pca-1.png)![](../figures/02b_RNAseqAll/pca-2.png)![](../figures/02b_RNAseqAll/pca-3.png)![](../figures/02b_RNAseqAll/pca-4.png)
+![](../figures/02b_RNAseqAll/pca-1.png)
+
+    ## Warning: Removed 1 rows containing missing values (geom_point).
+
+![](../figures/02b_RNAseqAll/pca-2.png)
+
+    ## Warning: Removed 1 rows containing missing values (geom_point).
+
+![](../figures/02b_RNAseqAll/pca-3.png)
+
+    ## Warning: Removed 1 rows containing missing values (geom_point).
+
+![](../figures/02b_RNAseqAll/pca-4.png)
 
     ## quartz_off_screen 
     ##                 2

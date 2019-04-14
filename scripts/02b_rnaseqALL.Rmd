@@ -264,7 +264,7 @@ PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=subfield)) +
     scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield))
 PCA12
 
-PCA42 <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2)) +
+PCA42 <- ggplot(pcadata, aes(pcadata$PC4, pcadata$PC2)) +
     geom_point(size=1.5, aes(color=subfield, shape=treatment), alpha = 0.8) +
     xlab(paste0("PC4: ", percentVar[4],"%")) +
     ylab(paste0("PC2: ", percentVar[2],"%")) +
@@ -295,7 +295,6 @@ pcaplots
 pdf(file="../figures/02b_RNAseqALL/pcaplots.pdf", width=3.3, height=2.5)
 plot(pcaplots)
 dev.off()
-
 ```
 
 ## Volcanos plots and and gene lists
