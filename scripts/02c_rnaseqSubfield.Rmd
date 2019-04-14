@@ -435,6 +435,70 @@ barplots <- plot_grid(a,b, nrow = 2, rel_heights = c(.45,.55))
 barplots 
 ```
 
+```{r newbarplot}
+
+levels(updown$set)[levels(updown$set)=="DGtrain"] <- "DG train"
+levels(updown$set)[levels(updown$set)=="CA1train"]   <- "CA1 train"
+levels(updown$set)[levels(updown$set)=="CA1stress"]   <- "CA1 stress"
+levels(updown$direction)[levels(updown$direction)=="yoked_consistent"] <- "yoked\nconsistent"
+levels(updown$direction)[levels(updown$direction)=="yoked_conflict"]   <- "yoked\nconflict"
+
+
+c <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  theme_cowplot(font_size = 6, line_size = 0.25) +
+  scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"),
+                    name = NULL)  +
+  labs(x = NULL, y = "Total DEGs") +
+  scale_y_continuous(limits = c(0, 560),
+                     breaks = c(0,125,250,375,500)) +
+    facet_wrap(~set, scales = "free_x") +
+    theme(axis.text.x = element_blank(),
+          legend.position = "bottom",
+          #legend.text=element_text(size=6),
+          legend.key.size = unit(0.2, "cm"),
+          #legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
+          strip.text.x = element_text(size = 6),
+          strip.background = element_rect(colour=NA, fill=NA),
+        panel.border = element_rect(fill = NA, color = "black"),
+        legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0, unit="cm"))
+
+levels(shared2$direction)[levels(shared2$direction)=="yoked_consistent"] <- "yoked\nconsistent"
+levels(shared2$direction)[levels(shared2$direction)=="yoked_conflict"]   <- "yoked\nconflict"
+levels(shared2$status)[levels(shared2$status)=="stress"]   <- "shared"
+levels(shared2$status)[levels(shared2$status)=="train"]   <- "shared"
+
+
+d <- ggplot(shared2, aes(x=direction, y=setsize, fill = status)) +
+  geom_bar(stat="identity") +
+  theme_cowplot(font_size = 6, line_size = 0.25) +
+  scale_fill_manual(values = c( "#c7e9b4", "#41b6c4"),
+                    name = NULL)  +
+  labs(x = "subfield * treatment", y = "Shared DEGs") +
+    scale_y_continuous(limits = c(0, 560),
+                     breaks = c(0,125,250,375,500)) +
+  theme(axis.text.x=element_text(angle=45, hjust=1),
+        legend.position = "top",
+        #legend.text=element_text(size=6),
+        legend.key.size = unit(0.2, "cm"),
+        strip.text.x = element_text(size = 0),
+        #axis.text=element_text(size=7),
+        strip.background = element_rect(colour=NA, fill=NA),
+        panel.border = element_rect(fill = NA, color = "black"),
+        legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0, unit="cm")) +
+  facet_wrap(~set, scales = "free_x") 
+
+
+newbarplots <- plot_grid(c,d, nrow = 2, rel_heights =c(0.41,0.59))
+newbarplots
+
+pdf(file="../figures/02c_rnaseqSubfield/barplots.pdf", width=1.9, height=2.15)
+plot(newbarplots)    
+dev.off() 
+
+
+```
+
 ```{r combo, cache=FALSE}
 topplots <- plot_grid(DGconsyokcons, CA1consyokcons, nrow = 1,
                       labels = "AUTO",
