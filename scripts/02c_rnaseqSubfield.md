@@ -11,6 +11,9 @@ have been inserted just below the subheadings.
     library(VennDiagram) ## venn diagrams
     library(DESeq2) ## for gene expression analysis
     library(UpSetR)
+    #devtools::install_github("clauswilke/ggtextures")
+    library(ggtextures)
+    library(magick)
 
     ## load functions 
     source("figureoptions.R")
@@ -96,7 +99,7 @@ Get varience stabilized gene expression for each tissue
 Consistent versus yoked-consistent
 ----------------------------------
 
-    plot.cons.yokcons <- function(mydds, mytissue){
+    plot.cons.yokcons <- function(mydds, mytissue, mytitle){
       print(mytissue)
       
       res <- results(mydds, contrast =c("APA2", "consistent", "yoked_consistent"),
@@ -112,30 +115,35 @@ Consistent versus yoked-consistent
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
                             yes = "consistent", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "yoked_consistent", 
+                                        yes = "yoked\nconsistent", 
                                         no = "NS")))
+
 
       write.csv(data, file = paste0("../data/02c_", mytissue, "_consyokcons.csv", sep = ""))
       
       volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-        geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
+        geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
         theme_cowplot(font_size = 7, line_size = 0.25) +
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
         scale_color_manual(values = volcano1,
-                          name = "Higher expression in",
-                          breaks = c("yoked_consistent", "NS", "consistent"))  + 
+                          name = "higher in",
+                          breaks = c("yoked\nconsistent", "NS", "consistent"))  + 
         scale_y_continuous(limits=c(0, 12.5)) +
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
         ylab(paste0("log10 p-value")) +  
-        labs(subtitle = mytissue) +
+        labs(subtitle = mytitle) +
         theme(legend.position = "bottom",
-              legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
+              legend.spacing.x = unit(0.1, 'cm'),
+              #legend.text=element_text(size=4),
+              legend.title = element_text(size=6),
+              legend.key.size = unit(0.2, "cm"),
+              legend.margin=margin(t=-0.1, r=0, b=0, l=-0.1, unit="cm")) 
       plot(volcano)
     }
 
 
-    DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG") + theme(legend.position = "none")
+    DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DG train") + theme(legend.position = "none")  
 
     ## [1] "DG"
     ## 
@@ -153,7 +161,7 @@ Consistent versus yoked-consistent
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-1.png)
 
-    CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3") + theme(legend.position = "none")
+    CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3", "CA3 train")  
 
     ## [1] "CA3"
     ## 
@@ -171,7 +179,7 @@ Consistent versus yoked-consistent
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-2.png)
 
-    CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1") + theme(legend.position = "none")
+    CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "CA1 train")  + theme(legend.position = c(0.6,0.9))  
 
     ## [1] "CA1"
     ## 
@@ -189,38 +197,13 @@ Consistent versus yoked-consistent
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-3.png)
 
-    training <- plot_grid(DGconsyokcons, CA3consyokcons, CA1consyokcons, nrow = 1,
+    training <- plot_grid(DGconsyokcons,CA1consyokcons, nrow = 1,
                           labels = "AUTO",
-                          label_size = 7)
-    legend <- get_legend(plot.cons.yokcons(DGdds, "DG"))
-
-    ## [1] "DG"
-    ## 
-    ## out of 17011 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 119, 0.7%
-    ## LFC < 0 (down)     : 6, 0.035%
-    ## outliers [1]       : 20, 0.12%
-    ## low counts [2]     : 4608, 27%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
+                          label_size = 7,
+                          rel_widths = c(0.5,0.5))
+    training
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-4.png)
-
-    p3 <- plot_grid(training, legend, nrow = 2, rel_heights = c(3, .3))
-    p3
-
-![](../figures/02c_rnaseqSubfield/consyokcons-5.png)
-
-    pdf(file="../figures/02c_rnaseqSubfield/volcano-consyokcons.pdf", width=5, height=2)
-    plot(p3)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
 
 Confict versus Consistent
 -------------------------
@@ -249,12 +232,12 @@ Confict versus Consistent
       write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""))
       
       volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-        geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
+        geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
         theme_cowplot(font_size = 7, line_size = 0.25) +
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
         scale_color_manual(values = volcano2,
                            breaks = c("consistent", "NS", "conflict"),
-                          name = "Higher expression in")  + 
+                          name = "higher in")  + 
         scale_y_continuous(limits=c(0, 12.5)) +
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
@@ -330,7 +313,7 @@ Confict versus Consistent
 Yoked confict versus yoked consistent
 -------------------------------------
 
-    plot.yokconf.yokcons <- function(mydds, mytissue){
+    plot.yokconf.yokcons <- function(mydds, mytissue, mytitle){
       
       print(mytissue)
       
@@ -345,34 +328,35 @@ Yoked confict versus yoked consistent
       data <- na.omit(data)
       data <- data %>%
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                            yes = "yoked_conflict", 
+                            yes = "yoked\nconsistent", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "yoked_consistent", 
+                                        yes = "yoked\nconflict", 
                                         no = "NS")))
+      
+      data$direction <- factor(data$direction, levels = c("yoked\nconsistent", "NS", "yoked\nconflict"))
       
       write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""))
       
-      volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-        geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
+      volcano <- ggplot(data, aes(x = lfc, y = logpadj, color = direction)) + 
+        geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
         theme_cowplot(font_size = 7, line_size = 0.25) +
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
         scale_color_manual(values = volcano3,
-                           breaks = c("yoked_consistent", "NS", "yoked_conflict"),
-                           name = NULL,
-                           labels = c("yoked cons.", "NS", "yoked conf."))  + 
+                           name = "higher in")  + 
         scale_y_continuous(limits=c(0, 12.5)) +
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
         ylab(paste0("log10 p-value")) +  
-        labs(subtitle = mytissue) +
+        labs(subtitle = mytitle) +
         theme(legend.position = "bottom",
-              legend.spacing.x = unit(-0.1, 'cm'),
-              legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
+              legend.spacing.x = unit(0.1, 'cm'),
+              #legend.text=element_text(size=4),
+              legend.key.size = unit(0.2, "cm"),
+              legend.margin=margin(t=-0.1, r=0, b=0, l=-0.1, unit="cm")) 
       plot(volcano)  
     }
 
-
-    DGyoked <-  plot.yokconf.yokcons(DGdds, "DG")
+    DGyoked <-  plot.yokconf.yokcons(DGdds, "DG", "DG stress")
 
     ## [1] "DG"
     ## 
@@ -390,7 +374,7 @@ Yoked confict versus yoked consistent
 
 ![](../figures/02c_rnaseqSubfield/yokeconfyokcons-1.png)
 
-    CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3")
+    CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3", "CA3 stress")
 
     ## [1] "CA3"
     ## 
@@ -408,7 +392,7 @@ Yoked confict versus yoked consistent
 
 ![](../figures/02c_rnaseqSubfield/yokeconfyokcons-2.png)
 
-    CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1")  
+    CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1", "CA1 stress")  
 
     ## [1] "CA1"
     ## 
@@ -668,1176 +652,785 @@ What genes overlap within cetain comparisons?
     colnames(shared) <- c("gene", "CA1stress", "CA1learn", "DGlearn")
 
     # ca1 DG learning
-    shared %>% filter(CA1learn == 1 & DGlearn == 1)
+    shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
+      select(gene)  
 
-    ##       gene CA1stress CA1learn DGlearn
-    ## 1  Adamts1         1        1       1
-    ## 2     Fosb         0        1       1
-    ## 3  Gm13889         0        1       1
-    ## 4     Irs1         0        1       1
-    ## 5    Lemd3         0        1       1
-    ## 6      Mn1         1        1       1
-    ## 7    Npas4         0        1       1
-    ## 8    Nptx2         1        1       1
-    ## 9     Rgs2         0        1       1
-    ## 10  Tiparp         1        1       1
-    ## 11   Zdbf2         1        1       1
+    ##      gene
+    ## 1    Fosb
+    ## 2 Gm13889
+    ## 3    Irs1
+    ## 4   Lemd3
+    ## 5   Npas4
+    ## 6    Rgs2
 
     # CA1 and DG learning only (none in stress)
-    shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0)
+    shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
+      select(gene) 
 
-    ##      gene CA1stress CA1learn DGlearn
-    ## 1    Fosb         0        1       1
-    ## 2 Gm13889         0        1       1
-    ## 3    Irs1         0        1       1
-    ## 4   Lemd3         0        1       1
-    ## 5   Npas4         0        1       1
-    ## 6    Rgs2         0        1       1
+    ##      gene
+    ## 1    Fosb
+    ## 2 Gm13889
+    ## 3    Irs1
+    ## 4   Lemd3
+    ## 5   Npas4
+    ## 6    Rgs2
 
     # learning only CA1
-    shared %>% filter(CA1learn == 1 & CA1stress == 0)
+    shared %>% filter(CA1learn == 1 & CA1stress == 0 & DGlearn == 0) %>%
+      select(gene)
 
-    ##              gene CA1stress CA1learn DGlearn
-    ## 1            Fosb         0        1       1
-    ## 2         Gm13889         0        1       1
-    ## 3            Irs1         0        1       1
-    ## 4           Kcnc2         0        1       0
-    ## 5           Lemd3         0        1       1
-    ## 6           Npas4         0        1       1
-    ## 7            Rgs2         0        1       1
-    ## 8   1810022K09Rik         0        1       0
-    ## 9   3110035E14Rik         0        1       0
-    ## 10  9430015G10Rik         0        1       0
-    ## 11          Aagab         0        1       0
-    ## 12           Abl1         0        1       0
-    ## 13            Abr         0        1       0
-    ## 14          Acad8         0        1       0
-    ## 15          Acads         0        1       0
-    ## 16          Acot9         0        1       0
-    ## 17          Acta1         0        1       0
-    ## 18         Actl6b         0        1       0
-    ## 19          Adam8         0        1       0
-    ## 20          Adat1         0        1       0
-    ## 21         Afg3l2         0        1       0
-    ## 22          Aftph         0        1       0
-    ## 23          Agfg2         0        1       0
-    ## 24          Ahdc1         0        1       0
-    ## 25            Aip         0        1       0
-    ## 26          Akap9         0        1       0
-    ## 27          Aldoa         0        1       0
-    ## 28          Alg11         0        1       0
-    ## 29          Alms1         0        1       0
-    ## 30         Amigo1         0        1       0
-    ## 31         Amigo3         0        1       0
-    ## 32         Ankfy1         0        1       0
-    ## 33        Ankrd12         0        1       0
-    ## 34          Ap1s1         0        1       0
-    ## 35           Apln         0        1       0
-    ## 36          Apol8         0        1       0
-    ## 37           Aptx         0        1       0
-    ## 38           Arf5         0        1       0
-    ## 39        Arfgef3         0        1       0
-    ## 40         Arglu1         0        1       0
-    ## 41         Arl13b         0        1       0
-    ## 42          Arl5a         0        1       0
-    ## 43         Arntl2         0        1       0
-    ## 44         Arrdc3         0        1       0
-    ## 45          Asap1         0        1       0
-    ## 46          Asxl3         0        1       0
-    ## 47           Atf5         0        1       0
-    ## 48          Atf6b         0        1       0
-    ## 49         Atp2b2         0        1       0
-    ## 50          Atp5e         0        1       0
-    ## 51       Atp6v1g2         0        1       0
-    ## 52         Atpaf2         0        1       0
-    ## 53        Atxn7l3         0        1       0
-    ## 54          Baz2a         0        1       0
-    ## 55          Baz2b         0        1       0
-    ## 56       BC030500         0        1       0
-    ## 57        Bloc1s5         0        1       0
-    ## 58           Bop1         0        1       0
-    ## 59         Btbd10         0        1       0
-    ## 60          C2cd3         0        1       0
-    ## 61          Cabp1         0        1       0
-    ## 62         Camkk2         0        1       0
-    ## 63        Camsap1         0        1       0
-    ## 64         Capn10         0        1       0
-    ## 65           Cbx3         0        1       0
-    ## 66           Cbx4         0        1       0
-    ## 67        Ccdc190         0        1       0
-    ## 68         Ccdc43         0        1       0
-    ## 69           Ccny         0        1       0
-    ## 70           Ccr5         0        1       0
-    ## 71           Cct7         0        1       0
-    ## 72          Cdh20         0        1       0
-    ## 73           Cdh7         0        1       0
-    ## 74          Cdk15         0        1       0
-    ## 75          Cend1         0        1       0
-    ## 76         Cep131         0        1       0
-    ## 77         Cfap20         0        1       0
-    ## 78           Chpf         0        1       0
-    ## 79           Chrd         0        1       0
-    ## 80           Chuk         0        1       0
-    ## 81          Clock         0        1       0
-    ## 82          Cntrl         0        1       0
-    ## 83       Colgalt2         0        1       0
-    ## 84           Coq2         0        1       0
-    ## 85            Cpq         0        1       0
-    ## 86           Crem         0        1       0
-    ## 87          Crim1         0        1       0
-    ## 88          Cstf1         0        1       0
-    ## 89          Ctcfl         0        1       0
-    ## 90          Cyb5b         0        1       0
-    ## 91     D1Ertd622e         0        1       0
-    ## 92            Dbt         0        1       0
-    ## 93         Ddx19b         0        1       0
-    ## 94          Ddx31         0        1       0
-    ## 95        Dennd1b         0        1       0
-    ## 96         Dnajb6         0        1       0
-    ## 97           Dner         0        1       0
-    ## 98           Dok6         0        1       0
-    ## 99           Dpf1         0        1       0
-    ## 100          Drp2         0        1       0
-    ## 101        Dusp19         0        1       0
-    ## 102        Eif2s1         0        1       0
-    ## 103        Eif4a1         0        1       0
-    ## 104        Eif4a2         0        1       0
-    ## 105          Emc4         0        1       0
-    ## 106          Eml2         0        1       0
-    ## 107         Enkd1         0        1       0
-    ## 108          Eri3         0        1       0
-    ## 109         Esrrg         0        1       0
-    ## 110         Esyt1         0        1       0
-    ## 111        Exoc6b         0        1       0
-    ## 112          Ext1         0        1       0
-    ## 113       Fam110b         0        1       0
-    ## 114       Fam131a         0        1       0
-    ## 115       Fam19a2         0        1       0
-    ## 116        Fam63a         0        1       0
-    ## 117        Fam63b         0        1       0
-    ## 118         Fanci         0        1       0
-    ## 119          Fbn1         0        1       0
-    ## 120         Fbxl6         0        1       0
-    ## 121          Fgd4         0        1       0
-    ## 122          Fgd5         0        1       0
-    ## 123        Filip1         0        1       0
-    ## 124          Flt1         0        1       0
-    ## 125          Fmn1         0        1       0
-    ## 126        Fn3krp         0        1       0
-    ## 127        Fndc3a         0        1       0
-    ## 128         Foxj3         0        1       0
-    ## 129        Frmpd3         0        1       0
-    ## 130           Fry         0        1       0
-    ## 131          Fzd3         0        1       0
-    ## 132          Get4         0        1       0
-    ## 133        Glcci1         0        1       0
-    ## 134       Gm10053         0        1       0
-    ## 135       Gm21887         0        1       0
-    ## 136        Gm4631         0        1       0
-    ## 137         Gm527         0        1       0
-    ## 138        Gm9821         0        1       0
-    ## 139        Gpr161         0        1       0
-    ## 140        Gpr180         0        1       0
-    ## 141         Grem2         0        1       0
-    ## 142         Grik3         0        1       0
-    ## 143          Grm1         0        1       0
-    ## 144         Gstt3         0        1       0
-    ## 145       Gucy1a2         0        1       0
-    ## 146        Gucy2e         0        1       0
-    ## 147          Guk1         0        1       0
-    ## 148         Hcfc1         0        1       0
-    ## 149         Hdac6         0        1       0
-    ## 150         Hecw2         0        1       0
-    ## 151          Helz         0        1       0
-    ## 152         Herc3         0        1       0
-    ## 153       Herpud2         0        1       0
-    ## 154          Hexb         0        1       0
-    ## 155         Hmox2         0        1       0
-    ## 156        Hspa1b         0        1       0
-    ## 157         Hspa2         0        1       0
-    ## 158        Hspbp1         0        1       0
-    ## 159         Igbp1         0        1       0
-    ## 160       Igf2bp2         0        1       0
-    ## 161         Impa1         0        1       0
-    ## 162         Inhbb         0        1       0
-    ## 163         Ino80         0        1       0
-    ## 164        Inpp4b         0        1       0
-    ## 165          Jag2         0        1       0
-    ## 166          Jak2         0        1       0
-    ## 167         Josd1         0        1       0
-    ## 168         Kat6a         0        1       0
-    ## 169        Kbtbd3         0        1       0
-    ## 170         Kcna1         0        1       0
-    ## 171         Kcna4         0        1       0
-    ## 172         Kcnc1         0        1       0
-    ## 173         Kcnd3         0        1       0
-    ## 174         Kctd5         0        1       0
-    ## 175         Kdm5d         0        1       0
-    ## 176         Khnyn         0        1       0
-    ## 177         Kif1a         0        1       0
-    ## 178        Kif26b         0        1       0
-    ## 179         Klkb1         0        1       0
-    ## 180         Kmt2e         0        1       0
-    ## 181         Kmt5a         0        1       0
-    ## 182          Kri1         0        1       0
-    ## 183        Lefty1         0        1       0
-    ## 184         Letm2         0        1       0
-    ## 185         Lnpep         0        1       0
-    ## 186        Lpcat4         0        1       0
-    ## 187         Lrfn4         0        1       0
-    ## 188        Lrrc58         0        1       0
-    ## 189         Lsamp         0        1       0
-    ## 190          Ltv1         0        1       0
-    ## 191         Lzts3         0        1       0
-    ## 192        Man1a2         0        1       0
-    ## 193         Manba         0        1       0
-    ## 194       Map3k12         0        1       0
-    ## 195      Mapkapk2         0        1       0
-    ## 196         Marf1         0        1       0
-    ## 197         Mark3         0        1       0
-    ## 198          Mbd5         0        1       0
-    ## 199           Mcc         0        1       0
-    ## 200          Med8         0        1       0
-    ## 201       Mettl16         0        1       0
-    ## 202      Mettl21e         0        1       0
-    ## 203       Mfsd13a         0        1       0
-    ## 204        Mmadhc         0        1       0
-    ## 205      Mphosph9         0        1       0
-    ## 206        Mpped1         0        1       0
-    ## 207        Mrgpre         0        1       0
-    ## 208        Mrpl28         0        1       0
-    ## 209        Mrpl48         0        1       0
-    ## 210        Msl3l2         0        1       0
-    ## 211         Mtfmt         0        1       0
-    ## 212         Myo5a         0        1       0
-    ## 213          Nat9         0        1       0
-    ## 214         Ncoa1         0        1       0
-    ## 215        Ndufs7         0        1       0
-    ## 216          Nefm         0        1       0
-    ## 217         Neto2         0        1       0
-    ## 218           Nf2         0        1       0
-    ## 219          Ngef         0        1       0
-    ## 220          Nkrf         0        1       0
-    ## 221          Nle1         0        1       0
-    ## 222          Nme1         0        1       0
-    ## 223         Nolc1         0        1       0
-    ## 224           Nov         0        1       0
-    ## 225          Nrgn         0        1       0
-    ## 226         Ntng1         0        1       0
-    ## 227         Ntpcr         0        1       0
-    ## 228        Nudt19         0        1       0
-    ## 229         Nudt6         0        1       0
-    ## 230          Nxt2         0        1       0
-    ## 231         Olfm3         0        1       0
-    ## 232         Ovca2         0        1       0
-    ## 233         Patz1         0        1       0
-    ## 234        Pcdh17         0        1       0
-    ## 235         Pde6a         0        1       0
-    ## 236         Pebp1         0        1       0
-    ## 237          Pgk1         0        1       0
-    ## 238         Phka1         0        1       0
-    ## 239         Pias4         0        1       0
-    ## 240        Plagl2         0        1       0
-    ## 241          Plau         0        1       0
-    ## 242        Podxl2         0        1       0
-    ## 243        Polr2h         0        1       0
-    ## 244        Polrmt         0        1       0
-    ## 245       Ppp1r3f         0        1       0
-    ## 246        Ppp3r1         0        1       0
-    ## 247         Ppp5c         0        1       0
-    ## 248         Prpf8         0        1       0
-    ## 249         Psg28         0        1       0
-    ## 250         Psmc4         0        1       0
-    ## 251         Psmg2         0        1       0
-    ## 252        Ptpn11         0        1       0
-    ## 253         Ptpn4         0        1       0
-    ## 254         Ptprm         0        1       0
-    ## 255        Ptprn2         0        1       0
-    ## 256         Pygo1         0        1       0
-    ## 257         Rab3c         0        1       0
-    ## 258          Rbak         0        1       0
-    ## 259         Rbbp4         0        1       0
-    ## 260         Rcan2         0        1       0
-    ## 261          Rdh1         0        1       0
-    ## 262          Rest         0        1       0
-    ## 263         Rfesd         0        1       0
-    ## 264         Rfwd3         0        1       0
-    ## 265        Rhbdl3         0        1       0
-    ## 266       Rnaseh1         0        1       0
-    ## 267        Rnf165         0        1       0
-    ## 268        Rnf180         0        1       0
-    ## 269        Rnf216         0        1       0
-    ## 270         Rnf25         0        1       0
-    ## 271         Rpl10         0        1       0
-    ## 272         Rpl36         0        1       0
-    ## 273         Rplp2         0        1       0
-    ## 274          Rps6         0        1       0
-    ## 275        Rsc1a1         0        1       0
-    ## 276        Rsph3a         0        1       0
-    ## 277        S100a1         0        1       0
-    ## 278        Samhd1         0        1       0
-    ## 279        Sema4a         0        1       0
-    ## 280         Sf3b2         0        1       0
-    ## 281         Sgms2         0        1       0
-    ## 282         Shoc2         0        1       0
-    ## 283       Slc24a2         0        1       0
-    ## 284      Slc25a38         0        1       0
-    ## 285      Slc25a46         0        1       0
-    ## 286       Slc26a2         0        1       0
-    ## 287       Slc2a13         0        1       0
-    ## 288       Slc35b4         0        1       0
-    ## 289       Slc44a1         0        1       0
-    ## 290        Slc4a3         0        1       0
-    ## 291        Slc8a1         0        1       0
-    ## 292         Slx1b         0        1       0
-    ## 293         Smek2         0        1       0
-    ## 294         Smim3         0        1       0
-    ## 295        Snap29         0        1       0
-    ## 296          Snx2         0        1       0
-    ## 297         Snx24         0        1       0
-    ## 298        Sorcs1         0        1       0
-    ## 299         Sox10         0        1       0
-    ## 300          Sox5         0        1       0
-    ## 301         Spast         0        1       0
-    ## 302       Specc1l         0        1       0
-    ## 303        Sptbn1         0        1       0
-    ## 304         Srek1         0        1       0
-    ## 305           Srr         0        1       0
-    ## 306          Srrd         0        1       0
-    ## 307    St6galnac4         0        1       0
-    ## 308       St8sia4         0        1       0
-    ## 309       Stard13         0        1       0
-    ## 310         Stk25         0        1       0
-    ## 311          Stk3         0        1       0
-    ## 312         Stox2         0        1       0
-    ## 313        Strip1         0        1       0
-    ## 314          Stx3         0        1       0
-    ## 315       Tbc1d30         0        1       0
-    ## 316        Tbc1d9         0        1       0
-    ## 317         Tdrd7         0        1       0
-    ## 318          Tet3         0        1       0
-    ## 319          Tfrc         0        1       0
-    ## 320          Thra         0        1       0
-    ## 321       Tmem50b         0        1       0
-    ## 322        Tmem57         0        1       0
-    ## 323        Tmem65         0        1       0
-    ## 324       Tmem88b         0        1       0
-    ## 325        Tmem8b         0        1       0
-    ## 326          Tns2         0        1       0
-    ## 327          Tox2         0        1       0
-    ## 328         Traf6         0        1       0
-    ## 329           Ttn         0        1       0
-    ## 330        Tuba4a         0        1       0
-    ## 331        Tvp23a         0        1       0
-    ## 332         Uckl1         0        1       0
-    ## 333         Uqcrh         0        1       0
-    ## 334         Usmg5         0        1       0
-    ## 335         Usp45         0        1       0
-    ## 336        Usp6nl         0        1       0
-    ## 337         Xrcc3         0        1       0
-    ## 338         Xrcc6         0        1       0
-    ## 339         Ylpm1         0        1       0
-    ## 340           Zak         0        1       0
-    ## 341       Zc3h12a         0        1       0
-    ## 342        Zc3h13         0        1       0
-    ## 343        Zfp114         0        1       0
-    ## 344        Zfp395         0        1       0
-    ## 345        Zfp414         0        1       0
-    ## 346        Zfp446         0        1       0
-    ## 347        Zfp580         0        1       0
-    ## 348        Zfp617         0        1       0
-    ## 349        Zfp711         0        1       0
-    ## 350        Zfp738         0        1       0
-    ## 351        Zfp821         0        1       0
-    ## 352        Zfp831         0        1       0
-    ## 353       Zfyve16         0        1       0
-    ## 354         Zmym4         0        1       0
-    ## 355         Znrd1         0        1       0
+    ##              gene
+    ## 1           Kcnc2
+    ## 2   1810022K09Rik
+    ## 3   3110035E14Rik
+    ## 4   9430015G10Rik
+    ## 5           Aagab
+    ## 6            Abl1
+    ## 7             Abr
+    ## 8           Acad8
+    ## 9           Acads
+    ## 10          Acot9
+    ## 11          Acta1
+    ## 12         Actl6b
+    ## 13          Adam8
+    ## 14          Adat1
+    ## 15         Afg3l2
+    ## 16          Aftph
+    ## 17          Agfg2
+    ## 18          Ahdc1
+    ## 19            Aip
+    ## 20          Akap9
+    ## 21          Aldoa
+    ## 22          Alg11
+    ## 23          Alms1
+    ## 24         Amigo1
+    ## 25         Amigo3
+    ## 26         Ankfy1
+    ## 27        Ankrd12
+    ## 28          Ap1s1
+    ## 29           Apln
+    ## 30          Apol8
+    ## 31           Aptx
+    ## 32           Arf5
+    ## 33        Arfgef3
+    ## 34         Arglu1
+    ## 35         Arl13b
+    ## 36          Arl5a
+    ## 37         Arntl2
+    ## 38         Arrdc3
+    ## 39          Asap1
+    ## 40          Asxl3
+    ## 41           Atf5
+    ## 42          Atf6b
+    ## 43         Atp2b2
+    ## 44          Atp5e
+    ## 45       Atp6v1g2
+    ## 46         Atpaf2
+    ## 47        Atxn7l3
+    ## 48          Baz2a
+    ## 49          Baz2b
+    ## 50       BC030500
+    ## 51        Bloc1s5
+    ## 52           Bop1
+    ## 53         Btbd10
+    ## 54          C2cd3
+    ## 55          Cabp1
+    ## 56         Camkk2
+    ## 57        Camsap1
+    ## 58         Capn10
+    ## 59           Cbx3
+    ## 60           Cbx4
+    ## 61        Ccdc190
+    ## 62         Ccdc43
+    ## 63           Ccny
+    ## 64           Ccr5
+    ## 65           Cct7
+    ## 66          Cdh20
+    ## 67           Cdh7
+    ## 68          Cdk15
+    ## 69          Cend1
+    ## 70         Cep131
+    ## 71         Cfap20
+    ## 72           Chpf
+    ## 73           Chrd
+    ## 74           Chuk
+    ## 75          Clock
+    ## 76          Cntrl
+    ## 77       Colgalt2
+    ## 78           Coq2
+    ## 79            Cpq
+    ## 80           Crem
+    ## 81          Crim1
+    ## 82          Cstf1
+    ## 83          Ctcfl
+    ## 84          Cyb5b
+    ## 85     D1Ertd622e
+    ## 86            Dbt
+    ## 87         Ddx19b
+    ## 88          Ddx31
+    ## 89        Dennd1b
+    ## 90         Dnajb6
+    ## 91           Dner
+    ## 92           Dok6
+    ## 93           Dpf1
+    ## 94           Drp2
+    ## 95         Dusp19
+    ## 96         Eif2s1
+    ## 97         Eif4a1
+    ## 98         Eif4a2
+    ## 99           Emc4
+    ## 100          Eml2
+    ## 101         Enkd1
+    ## 102          Eri3
+    ## 103         Esrrg
+    ## 104         Esyt1
+    ## 105        Exoc6b
+    ## 106          Ext1
+    ## 107       Fam110b
+    ## 108       Fam131a
+    ## 109       Fam19a2
+    ## 110        Fam63a
+    ## 111        Fam63b
+    ## 112         Fanci
+    ## 113          Fbn1
+    ## 114         Fbxl6
+    ## 115          Fgd4
+    ## 116          Fgd5
+    ## 117        Filip1
+    ## 118          Flt1
+    ## 119          Fmn1
+    ## 120        Fn3krp
+    ## 121        Fndc3a
+    ## 122         Foxj3
+    ## 123        Frmpd3
+    ## 124           Fry
+    ## 125          Fzd3
+    ## 126          Get4
+    ## 127        Glcci1
+    ## 128       Gm10053
+    ## 129       Gm21887
+    ## 130        Gm4631
+    ## 131         Gm527
+    ## 132        Gm9821
+    ## 133        Gpr161
+    ## 134        Gpr180
+    ## 135         Grem2
+    ## 136         Grik3
+    ## 137          Grm1
+    ## 138         Gstt3
+    ## 139       Gucy1a2
+    ## 140        Gucy2e
+    ## 141          Guk1
+    ## 142         Hcfc1
+    ## 143         Hdac6
+    ## 144         Hecw2
+    ## 145          Helz
+    ## 146         Herc3
+    ## 147       Herpud2
+    ## 148          Hexb
+    ## 149         Hmox2
+    ## 150        Hspa1b
+    ## 151         Hspa2
+    ## 152        Hspbp1
+    ## 153         Igbp1
+    ## 154       Igf2bp2
+    ## 155         Impa1
+    ## 156         Inhbb
+    ## 157         Ino80
+    ## 158        Inpp4b
+    ## 159          Jag2
+    ## 160          Jak2
+    ## 161         Josd1
+    ## 162         Kat6a
+    ## 163        Kbtbd3
+    ## 164         Kcna1
+    ## 165         Kcna4
+    ## 166         Kcnc1
+    ## 167         Kcnd3
+    ## 168         Kctd5
+    ## 169         Kdm5d
+    ## 170         Khnyn
+    ## 171         Kif1a
+    ## 172        Kif26b
+    ## 173         Klkb1
+    ## 174         Kmt2e
+    ## 175         Kmt5a
+    ## 176          Kri1
+    ## 177        Lefty1
+    ## 178         Letm2
+    ## 179         Lnpep
+    ## 180        Lpcat4
+    ## 181         Lrfn4
+    ## 182        Lrrc58
+    ## 183         Lsamp
+    ## 184          Ltv1
+    ## 185         Lzts3
+    ## 186        Man1a2
+    ## 187         Manba
+    ## 188       Map3k12
+    ## 189      Mapkapk2
+    ## 190         Marf1
+    ## 191         Mark3
+    ## 192          Mbd5
+    ## 193           Mcc
+    ## 194          Med8
+    ## 195       Mettl16
+    ## 196      Mettl21e
+    ## 197       Mfsd13a
+    ## 198        Mmadhc
+    ## 199      Mphosph9
+    ## 200        Mpped1
+    ## 201        Mrgpre
+    ## 202        Mrpl28
+    ## 203        Mrpl48
+    ## 204        Msl3l2
+    ## 205         Mtfmt
+    ## 206         Myo5a
+    ## 207          Nat9
+    ## 208         Ncoa1
+    ## 209        Ndufs7
+    ## 210          Nefm
+    ## 211         Neto2
+    ## 212           Nf2
+    ## 213          Ngef
+    ## 214          Nkrf
+    ## 215          Nle1
+    ## 216          Nme1
+    ## 217         Nolc1
+    ## 218           Nov
+    ## 219          Nrgn
+    ## 220         Ntng1
+    ## 221         Ntpcr
+    ## 222        Nudt19
+    ## 223         Nudt6
+    ## 224          Nxt2
+    ## 225         Olfm3
+    ## 226         Ovca2
+    ## 227         Patz1
+    ## 228        Pcdh17
+    ## 229         Pde6a
+    ## 230         Pebp1
+    ## 231          Pgk1
+    ## 232         Phka1
+    ## 233         Pias4
+    ## 234        Plagl2
+    ## 235          Plau
+    ## 236        Podxl2
+    ## 237        Polr2h
+    ## 238        Polrmt
+    ## 239       Ppp1r3f
+    ## 240        Ppp3r1
+    ## 241         Ppp5c
+    ## 242         Prpf8
+    ## 243         Psg28
+    ## 244         Psmc4
+    ## 245         Psmg2
+    ## 246        Ptpn11
+    ## 247         Ptpn4
+    ## 248         Ptprm
+    ## 249        Ptprn2
+    ## 250         Pygo1
+    ## 251         Rab3c
+    ## 252          Rbak
+    ## 253         Rbbp4
+    ## 254         Rcan2
+    ## 255          Rdh1
+    ## 256          Rest
+    ## 257         Rfesd
+    ## 258         Rfwd3
+    ## 259        Rhbdl3
+    ## 260       Rnaseh1
+    ## 261        Rnf165
+    ## 262        Rnf180
+    ## 263        Rnf216
+    ## 264         Rnf25
+    ## 265         Rpl10
+    ## 266         Rpl36
+    ## 267         Rplp2
+    ## 268          Rps6
+    ## 269        Rsc1a1
+    ## 270        Rsph3a
+    ## 271        S100a1
+    ## 272        Samhd1
+    ## 273        Sema4a
+    ## 274         Sf3b2
+    ## 275         Sgms2
+    ## 276         Shoc2
+    ## 277       Slc24a2
+    ## 278      Slc25a38
+    ## 279      Slc25a46
+    ## 280       Slc26a2
+    ## 281       Slc2a13
+    ## 282       Slc35b4
+    ## 283       Slc44a1
+    ## 284        Slc4a3
+    ## 285        Slc8a1
+    ## 286         Slx1b
+    ## 287         Smek2
+    ## 288         Smim3
+    ## 289        Snap29
+    ## 290          Snx2
+    ## 291         Snx24
+    ## 292        Sorcs1
+    ## 293         Sox10
+    ## 294          Sox5
+    ## 295         Spast
+    ## 296       Specc1l
+    ## 297        Sptbn1
+    ## 298         Srek1
+    ## 299           Srr
+    ## 300          Srrd
+    ## 301    St6galnac4
+    ## 302       St8sia4
+    ## 303       Stard13
+    ## 304         Stk25
+    ## 305          Stk3
+    ## 306         Stox2
+    ## 307        Strip1
+    ## 308          Stx3
+    ## 309       Tbc1d30
+    ## 310        Tbc1d9
+    ## 311         Tdrd7
+    ## 312          Tet3
+    ## 313          Tfrc
+    ## 314          Thra
+    ## 315       Tmem50b
+    ## 316        Tmem57
+    ## 317        Tmem65
+    ## 318       Tmem88b
+    ## 319        Tmem8b
+    ## 320          Tns2
+    ## 321          Tox2
+    ## 322         Traf6
+    ## 323           Ttn
+    ## 324        Tuba4a
+    ## 325        Tvp23a
+    ## 326         Uckl1
+    ## 327         Uqcrh
+    ## 328         Usmg5
+    ## 329         Usp45
+    ## 330        Usp6nl
+    ## 331         Xrcc3
+    ## 332         Xrcc6
+    ## 333         Ylpm1
+    ## 334           Zak
+    ## 335       Zc3h12a
+    ## 336        Zc3h13
+    ## 337        Zfp114
+    ## 338        Zfp395
+    ## 339        Zfp414
+    ## 340        Zfp446
+    ## 341        Zfp580
+    ## 342        Zfp617
+    ## 343        Zfp711
+    ## 344        Zfp738
+    ## 345        Zfp821
+    ## 346        Zfp831
+    ## 347       Zfyve16
+    ## 348         Zmym4
+    ## 349         Znrd1
 
     # stress only CA1
-    shared %>% filter(CA1learn == 0 & CA1stress == 1)
+    shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 0) %>%
+      select(gene)
 
-    ##              gene CA1stress CA1learn DGlearn
-    ## 1          Dusp16         1        0       1
-    ## 2          Entpd1         1        0       1
-    ## 3            Ier3         1        0       1
-    ## 4            Mest         1        0       1
-    ## 5         Rasl11b         1        0       1
-    ## 6   1110032F04Rik         1        0       0
-    ## 7   1600002K03Rik         1        0       0
-    ## 8   2010107G23Rik         1        0       0
-    ## 9   2210013O21Rik         1        0       0
-    ## 10  2210016L21Rik         1        0       0
-    ## 11  2310009B15Rik         1        0       0
-    ## 12  5730409E04Rik         1        0       0
-    ## 13          Abcc4         1        0       0
-    ## 14          Abhd4         1        0       0
-    ## 15           Ache         1        0       0
-    ## 16          Adcy5         1        0       0
-    ## 17          Adcy6         1        0       0
-    ## 18         Adgrb3         1        0       0
-    ## 19          Adpgk         1        0       0
-    ## 20         Afg3l1         1        0       0
-    ## 21           Alg9         1        0       0
-    ## 22            Ank         1        0       0
-    ## 23        Ankrd40         1        0       0
-    ## 24         Apcdd1         1        0       0
-    ## 25        Arfgap3         1        0       0
-    ## 26        Arhgap4         1        0       0
-    ## 27      Arhgef10l         1        0       0
-    ## 28         Arid3b         1        0       0
-    ## 29          Armt1         1        0       0
-    ## 30          Arvcf         1        0       0
-    ## 31           Asph         1        0       0
-    ## 32          Astn1         1        0       0
-    ## 33          Atg4b         1        0       0
-    ## 34         Atp1a2         1        0       0
-    ## 35         Atp2a2         1        0       0
-    ## 36          Atp5d         1        0       0
-    ## 37            Axl         1        0       0
-    ## 38        B4galt7         1        0       0
-    ## 39          Bbof1         1        0       0
-    ## 40           Bbs9         1        0       0
-    ## 41           Bcl6         1        0       0
-    ## 42         Bhlhb9         1        0       0
-    ## 43           Bin3         1        0       0
-    ## 44          Bnip2         1        0       0
-    ## 45           Bod1         1        0       0
-    ## 46            Bok         1        0       0
-    ## 47           Braf         1        0       0
-    ## 48  C130074G19Rik         1        0       0
-    ## 49          C1ql3         1        0       0
-    ## 50        C1qtnf6         1        0       0
-    ## 51         C77370         1        0       0
-    ## 52         Cacfd1         1        0       0
-    ## 53        Cacna1c         1        0       0
-    ## 54         Cacnb1         1        0       0
-    ## 55         Camk1g         1        0       0
-    ## 56          Carm1         1        0       0
-    ## 57        Carnmt1         1        0       0
-    ## 58         Ccdc53         1        0       0
-    ## 59         Ccdc59         1        0       0
-    ## 60          Ccng1         1        0       0
-    ## 61           Ccr2         1        0       0
-    ## 62           Cd63         1        0       0
-    ## 63         Cdadc1         1        0       0
-    ## 64         Cdc123         1        0       0
-    ## 65       Cdc42bpg         1        0       0
-    ## 66           Cdk8         1        0       0
-    ## 67         Cdkal1         1        0       0
-    ## 68         Cep135         1        0       0
-    ## 69          Cers1         1        0       0
-    ## 70          Ces2b         1        0       0
-    ## 71            Cfp         1        0       0
-    ## 72           Chd6         1        0       0
-    ## 73          Chmp7         1        0       0
-    ## 74          Ciao1         1        0       0
-    ## 75         Cirh1a         1        0       0
-    ## 76          Clcn7         1        0       0
-    ## 77        Clec11a         1        0       0
-    ## 78          Cnbd2         1        0       0
-    ## 79         Cntrob         1        0       0
-    ## 80         Commd9         1        0       0
-    ## 81          Crocc         1        0       0
-    ## 82          Csmd3         1        0       0
-    ## 83           Ctsh         1        0       0
-    ## 84         Cuedc1         1        0       0
-    ## 85          Cxcl9         1        0       0
-    ## 86         Cyb561         1        0       0
-    ## 87       Cyb561d2         1        0       0
-    ## 88         Cyp4v3         1        0       0
-    ## 89          Daglb         1        0       0
-    ## 90        Dclre1b         1        0       0
-    ## 91          Ddx24         1        0       0
-    ## 92          Ddx47         1        0       0
-    ## 93          Ddx51         1        0       0
-    ## 94          Decr2         1        0       0
-    ## 95           Det1         1        0       0
-    ## 96         Dhtkd1         1        0       0
-    ## 97       Dnase1l2         1        0       0
-    ## 98           Dnlz         1        0       0
-    ## 99          Dock8         1        0       0
-    ## 100       Dpy19l3         1        0       0
-    ## 101         Dscr3         1        0       0
-    ## 102          Dus2         1        0       0
-    ## 103         Dus3l         1        0       0
-    ## 104      Dync1li1         1        0       0
-    ## 105 E130309D02Rik         1        0       0
-    ## 106          Ece1         1        0       0
-    ## 107          Edc3         1        0       0
-    ## 108        Efcab6         1        0       0
-    ## 109        Elmod1         1        0       0
-    ## 110          Elp2         1        0       0
-    ## 111          Eml4         1        0       0
-    ## 112          Eno4         1        0       0
-    ## 113        Entpd2         1        0       0
-    ## 114          Eny2         1        0       0
-    ## 115         Ep300         1        0       0
-    ## 116          Eps8         1        0       0
-    ## 117          Epyc         1        0       0
-    ## 118        Ero1lb         1        0       0
-    ## 119         Ethe1         1        0       0
-    ## 120         Extl2         1        0       0
-    ## 121            F3         1        0       0
-    ## 122       Fam133b         1        0       0
-    ## 123       Fam134a         1        0       0
-    ## 124       Fam219b         1        0       0
-    ## 125        Fam60a         1        0       0
-    ## 126         Farp1         1        0       0
-    ## 127       Fastkd2         1        0       0
-    ## 128         Fbln1         1        0       0
-    ## 129         Fbxl4         1        0       0
-    ## 130        Fbxo25         1        0       0
-    ## 131         Fcgr3         1        0       0
-    ## 132          Fgd1         1        0       0
-    ## 133          Fgd3         1        0       0
-    ## 134        Fkbp14         1        0       0
-    ## 135         Fkbpl         1        0       0
-    ## 136         Flrt3         1        0       0
-    ## 137         Fstl4         1        0       0
-    ## 138       Galnt10         1        0       0
-    ## 139         Garem         1        0       0
-    ## 140          Gcc2         1        0       0
-    ## 141         Gdpd2         1        0       0
-    ## 142        Gemin4         1        0       0
-    ## 143         Gfpt2         1        0       0
-    ## 144        Glyctk         1        0       0
-    ## 145       Gm10146         1        0       0
-    ## 146       Gm20715         1        0       0
-    ## 147       Gm38393         1        0       0
-    ## 148       Gm43796         1        0       0
-    ## 149        Gm6741         1        0       0
-    ## 150        Gm9803         1        0       0
-    ## 151         Gmpr2         1        0       0
-    ## 152         Gosr2         1        0       0
-    ## 153        Gpank1         1        0       0
-    ## 154         Gpm6a         1        0       0
-    ## 155        Gpr158         1        0       0
-    ## 156         Grid1         1        0       0
-    ## 157        Grin2c         1        0       0
-    ## 158          Guf1         1        0       0
-    ## 159          Gys1         1        0       0
-    ## 160        H2-Ke6         1        0       0
-    ## 161          Heg1         1        0       0
-    ## 162         Hmgcl         1        0       0
-    ## 163         Hmgn2         1        0       0
-    ## 164        Homer3         1        0       0
-    ## 165        Hrasls         1        0       0
-    ## 166         Htr1a         1        0       0
-    ## 167           Id4         1        0       0
-    ## 168            Ik         1        0       0
-    ## 169        Ikbkap         1        0       0
-    ## 170          Ipo5         1        0       0
-    ## 171      Irak1bp1         1        0       0
-    ## 172       Irf2bp1         1        0       0
-    ## 173         Jade1         1        0       0
-    ## 174         Jmjd6         1        0       0
-    ## 175         Jmjd8         1        0       0
-    ## 176         Kat2b         1        0       0
-    ## 177        Katnb1         1        0       0
-    ## 178        Kcnj12         1        0       0
-    ## 179         Kcnn1         1        0       0
-    ## 180         Kcnu1         1        0       0
-    ## 181        Kctd15         1        0       0
-    ## 182        Kdelr2         1        0       0
-    ## 183       Laptm4a         1        0       0
-    ## 184          Ldah         1        0       0
-    ## 185         Lnpk1         1        0       0
-    ## 186          Lrp5         1        0       0
-    ## 187         Lypd1         1        0       0
-    ## 188          Mafk         1        0       0
-    ## 189        Map3k2         1        0       0
-    ## 190        March9         1        0       0
-    ## 191          Mcl1         1        0       0
-    ## 192          Mdp1         1        0       0
-    ## 193         Mgrn1         1        0       0
-    ## 194        Mif4gd         1        0       0
-    ## 195        Mrpl16         1        0       0
-    ## 196        Mrpl53         1        0       0
-    ## 197          Msl2         1        0       0
-    ## 198         Mtmr7         1        0       0
-    ## 199         Mtmr9         1        0       0
-    ## 200        Mtrf1l         1        0       0
-    ## 201          Mtx1         1        0       0
-    ## 202           Mut         1        0       0
-    ## 203         Myo10         1        0       0
-    ## 204         Naa20         1        0       0
-    ## 205         Naglu         1        0       0
-    ## 206         Nalcn         1        0       0
-    ## 207        Nanos1         1        0       0
-    ## 208          Nans         1        0       0
-    ## 209         Ndst2         1        0       0
-    ## 210         Nedd9         1        0       0
-    ## 211         Nell1         1        0       0
-    ## 212        Nfkbia         1        0       0
-    ## 213          Npc1         1        0       0
-    ## 214        Nploc4         1        0       0
-    ## 215       Nr2c2ap         1        0       0
-    ## 216          Nrf1         1        0       0
-    ## 217        Nudt11         1        0       0
-    ## 218         Nup85         1        0       0
-    ## 219         Nxph3         1        0       0
-    ## 220         Oas1b         1        0       0
-    ## 221          Ogg1         1        0       0
-    ## 222          Optn         1        0       0
-    ## 223          Orc6         1        0       0
-    ## 224          P3h4         1        0       0
-    ## 225         Padi2         1        0       0
-    ## 226       Pcdhb16         1        0       0
-    ## 227        Pcdhb6         1        0       0
-    ## 228        Pcp4l1         1        0       0
-    ## 229          Pdcl         1        0       0
-    ## 230         Pdia4         1        0       0
-    ## 231          Pdpn         1        0       0
-    ## 232          Pdpr         1        0       0
-    ## 233         Pds5a         1        0       0
-    ## 234          Pecr         1        0       0
-    ## 235        Pgrmc1         1        0       0
-    ## 236        Pla2g7         1        0       0
-    ## 237         Plaur         1        0       0
-    ## 238       Plekha1         1        0       0
-    ## 239         Plin2         1        0       0
-    ## 240        Pnpla8         1        0       0
-    ## 241        Polr2d         1        0       0
-    ## 242       Polr3gl         1        0       0
-    ## 243         Ppdpf         1        0       0
-    ## 244        Ppp1cb         1        0       0
-    ## 245      Ppp1r13l         1        0       0
-    ## 246        Ppp6r2         1        0       0
-    ## 247          Ppt2         1        0       0
-    ## 248         Pqlc2         1        0       0
-    ## 249          Prcp         1        0       0
-    ## 250         Prkdc         1        0       0
-    ## 251       Prkrip1         1        0       0
-    ## 252         Prmt2         1        0       0
-    ## 253         Prmt3         1        0       0
-    ## 254         Prpf3         1        0       0
-    ## 255         Prpf4         1        0       0
-    ## 256         Psmc5         1        0       0
-    ## 257          Pwp2         1        0       0
-    ## 258         Rab13         1        0       0
-    ## 259         Rab31         1        0       0
-    ## 260         Rab43         1        0       0
-    ## 261       Rabgap1         1        0       0
-    ## 262         Rabif         1        0       0
-    ## 263         Ramp2         1        0       0
-    ## 264        Rangrf         1        0       0
-    ## 265         Rap2b         1        0       0
-    ## 266         Rccd1         1        0       0
-    ## 267          Rem2         1        0       0
-    ## 268          Rfc1         1        0       0
-    ## 269         Rftn2         1        0       0
-    ## 270         Rgs16         1        0       0
-    ## 271          Rgs6         1        0       0
-    ## 272          Rin2         1        0       0
-    ## 273        Rnf166         1        0       0
-    ## 274        Rnf207         1        0       0
-    ## 275          Rnls         1        0       0
-    ## 276         Rnpc3         1        0       0
-    ## 277 RP23-220F20.2         1        0       0
-    ## 278         Rpap3         1        0       0
-    ## 279          Rrp1         1        0       0
-    ## 280          Rtn4         1        0       0
-    ## 281         Rufy3         1        0       0
-    ## 282        Sacm1l         1        0       0
-    ## 283         Sars2         1        0       0
-    ## 284          Sbsn         1        0       0
-    ## 285         Sdad1         1        0       0
-    ## 286       Sec23ip         1        0       0
-    ## 287         Senp2         1        0       0
-    ## 288         Senp8         1        0       0
-    ## 289         Serf1         1        0       0
-    ## 290         Sesn3         1        0       0
-    ## 291           Sf1         1        0       0
-    ## 292        Sfmbt1         1        0       0
-    ## 293           Sfn         1        0       0
-    ## 294         Sfxn5         1        0       0
-    ## 295        Shisa5         1        0       0
-    ## 296       Shroom4         1        0       0
-    ## 297         Shtn1         1        0       0
-    ## 298        Slain1         1        0       0
-    ## 299       Slc12a2         1        0       0
-    ## 300       Slc24a3         1        0       0
-    ## 301      Slc25a35         1        0       0
-    ## 302       Slc38a9         1        0       0
-    ## 303        Slc4a2         1        0       0
-    ## 304       Slitrk1         1        0       0
-    ## 305         Smad5         1        0       0
-    ## 306         Smdt1         1        0       0
-    ## 307          Smg6         1        0       0
-    ## 308        Smim17         1        0       0
-    ## 309        Snrpd2         1        0       0
-    ## 310          Snx8         1        0       0
-    ## 311         Soat1         1        0       0
-    ## 312         Socs4         1        0       0
-    ## 313         Spag7         1        0       0
-    ## 314         Spag9         1        0       0
-    ## 315          Spi1         1        0       0
-    ## 316         Ssna1         1        0       0
-    ## 317          Ssr1         1        0       0
-    ## 318    St6galnac3         1        0       0
-    ## 319         Sugp1         1        0       0
-    ## 320         Supt3         1        0       0
-    ## 321        Swsap1         1        0       0
-    ## 322       Syndig1         1        0       0
-    ## 323         Synpo         1        0       0
-    ## 324         Syvn1         1        0       0
-    ## 325           Tbp         1        0       0
-    ## 326        Tceal3         1        0       0
-    ## 327          Tcta         1        0       0
-    ## 328         Tdrd3         1        0       0
-    ## 329         Thap4         1        0       0
-    ## 330       Timm10b         1        0       0
-    ## 331        Timm44         1        0       0
-    ## 332         Tmco3         1        0       0
-    ## 333       Tmem119         1        0       0
-    ## 334       Tmem121         1        0       0
-    ## 335      Tmem132e         1        0       0
-    ## 336       Tmem143         1        0       0
-    ## 337       Tmem186         1        0       0
-    ## 338      Tmem229b         1        0       0
-    ## 339      Tmem254a         1        0       0
-    ## 340      Tmem254b         1        0       0
-    ## 341       Tmem266         1        0       0
-    ## 342       Tmem87b         1        0       0
-    ## 343        Tmem94         1        0       0
-    ## 344          Tmx3         1        0       0
-    ## 345       Tomm40l         1        0       0
-    ## 346      Tor1aip2         1        0       0
-    ## 347         Trhde         1        0       0
-    ## 348        Trim45         1        0       0
-    ## 349         Tshz3         1        0       0
-    ## 350       Tspan14         1        0       0
-    ## 351         Tubb6         1        0       0
-    ## 352       Twistnb         1        0       0
-    ## 353          Tyw5         1        0       0
-    ## 354         Ubac2         1        0       0
-    ## 355       Ubash3a         1        0       0
-    ## 356         Ube3c         1        0       0
-    ## 357          Ubn2         1        0       0
-    ## 358          Ulk2         1        0       0
-    ## 359        Unc13c         1        0       0
-    ## 360          Urb1         1        0       0
-    ## 361          Use1         1        0       0
-    ## 362         Usp36         1        0       0
-    ## 363       Vipas39         1        0       0
-    ## 364         Vipr1         1        0       0
-    ## 365         Vma21         1        0       0
-    ## 366        Vstm2b         1        0       0
-    ## 367         Vti1a         1        0       0
-    ## 368         Wash1         1        0       0
-    ## 369         Wbp11         1        0       0
-    ## 370         Wdfy2         1        0       0
-    ## 371         Wdpcp         1        0       0
-    ## 372         Whsc1         1        0       0
-    ## 373           Wls         1        0       0
-    ## 374          Zfat         1        0       0
-    ## 375        Zfp146         1        0       0
-    ## 376        Zfp184         1        0       0
-    ## 377       Zfp385a         1        0       0
-    ## 378        Zfp420         1        0       0
-    ## 379        Zfp493         1        0       0
-    ## 380        Zfp512         1        0       0
-    ## 381       Zfp518a         1        0       0
-    ## 382        Zfp526         1        0       0
-    ## 383        Zfp644         1        0       0
-    ## 384        Zfp707         1        0       0
-    ## 385        Zfp746         1        0       0
-    ## 386         Zfp84         1        0       0
-    ## 387        Zfp937         1        0       0
-    ## 388          Zic3         1        0       0
-    ## 389       Zkscan3         1        0       0
-    ## 390         Znfx1         1        0       0
+    ##              gene
+    ## 1   1110032F04Rik
+    ## 2   1600002K03Rik
+    ## 3   2010107G23Rik
+    ## 4   2210013O21Rik
+    ## 5   2210016L21Rik
+    ## 6   2310009B15Rik
+    ## 7   5730409E04Rik
+    ## 8           Abcc4
+    ## 9           Abhd4
+    ## 10           Ache
+    ## 11          Adcy5
+    ## 12          Adcy6
+    ## 13         Adgrb3
+    ## 14          Adpgk
+    ## 15         Afg3l1
+    ## 16           Alg9
+    ## 17            Ank
+    ## 18        Ankrd40
+    ## 19         Apcdd1
+    ## 20        Arfgap3
+    ## 21        Arhgap4
+    ## 22      Arhgef10l
+    ## 23         Arid3b
+    ## 24          Armt1
+    ## 25          Arvcf
+    ## 26           Asph
+    ## 27          Astn1
+    ## 28          Atg4b
+    ## 29         Atp1a2
+    ## 30         Atp2a2
+    ## 31          Atp5d
+    ## 32            Axl
+    ## 33        B4galt7
+    ## 34          Bbof1
+    ## 35           Bbs9
+    ## 36           Bcl6
+    ## 37         Bhlhb9
+    ## 38           Bin3
+    ## 39          Bnip2
+    ## 40           Bod1
+    ## 41            Bok
+    ## 42           Braf
+    ## 43  C130074G19Rik
+    ## 44          C1ql3
+    ## 45        C1qtnf6
+    ## 46         C77370
+    ## 47         Cacfd1
+    ## 48        Cacna1c
+    ## 49         Cacnb1
+    ## 50         Camk1g
+    ## 51          Carm1
+    ## 52        Carnmt1
+    ## 53         Ccdc53
+    ## 54         Ccdc59
+    ## 55          Ccng1
+    ## 56           Ccr2
+    ## 57           Cd63
+    ## 58         Cdadc1
+    ## 59         Cdc123
+    ## 60       Cdc42bpg
+    ## 61           Cdk8
+    ## 62         Cdkal1
+    ## 63         Cep135
+    ## 64          Cers1
+    ## 65          Ces2b
+    ## 66            Cfp
+    ## 67           Chd6
+    ## 68          Chmp7
+    ## 69          Ciao1
+    ## 70         Cirh1a
+    ## 71          Clcn7
+    ## 72        Clec11a
+    ## 73          Cnbd2
+    ## 74         Cntrob
+    ## 75         Commd9
+    ## 76          Crocc
+    ## 77          Csmd3
+    ## 78           Ctsh
+    ## 79         Cuedc1
+    ## 80          Cxcl9
+    ## 81         Cyb561
+    ## 82       Cyb561d2
+    ## 83         Cyp4v3
+    ## 84          Daglb
+    ## 85        Dclre1b
+    ## 86          Ddx24
+    ## 87          Ddx47
+    ## 88          Ddx51
+    ## 89          Decr2
+    ## 90           Det1
+    ## 91         Dhtkd1
+    ## 92       Dnase1l2
+    ## 93           Dnlz
+    ## 94          Dock8
+    ## 95        Dpy19l3
+    ## 96          Dscr3
+    ## 97           Dus2
+    ## 98          Dus3l
+    ## 99       Dync1li1
+    ## 100 E130309D02Rik
+    ## 101          Ece1
+    ## 102          Edc3
+    ## 103        Efcab6
+    ## 104        Elmod1
+    ## 105          Elp2
+    ## 106          Eml4
+    ## 107          Eno4
+    ## 108        Entpd2
+    ## 109          Eny2
+    ## 110         Ep300
+    ## 111          Eps8
+    ## 112          Epyc
+    ## 113        Ero1lb
+    ## 114         Ethe1
+    ## 115         Extl2
+    ## 116            F3
+    ## 117       Fam133b
+    ## 118       Fam134a
+    ## 119       Fam219b
+    ## 120        Fam60a
+    ## 121         Farp1
+    ## 122       Fastkd2
+    ## 123         Fbln1
+    ## 124         Fbxl4
+    ## 125        Fbxo25
+    ## 126         Fcgr3
+    ## 127          Fgd1
+    ## 128          Fgd3
+    ## 129        Fkbp14
+    ## 130         Fkbpl
+    ## 131         Flrt3
+    ## 132         Fstl4
+    ## 133       Galnt10
+    ## 134         Garem
+    ## 135          Gcc2
+    ## 136         Gdpd2
+    ## 137        Gemin4
+    ## 138         Gfpt2
+    ## 139        Glyctk
+    ## 140       Gm10146
+    ## 141       Gm20715
+    ## 142       Gm38393
+    ## 143       Gm43796
+    ## 144        Gm6741
+    ## 145        Gm9803
+    ## 146         Gmpr2
+    ## 147         Gosr2
+    ## 148        Gpank1
+    ## 149         Gpm6a
+    ## 150        Gpr158
+    ## 151         Grid1
+    ## 152        Grin2c
+    ## 153          Guf1
+    ## 154          Gys1
+    ## 155        H2-Ke6
+    ## 156          Heg1
+    ## 157         Hmgcl
+    ## 158         Hmgn2
+    ## 159        Homer3
+    ## 160        Hrasls
+    ## 161         Htr1a
+    ## 162           Id4
+    ## 163            Ik
+    ## 164        Ikbkap
+    ## 165          Ipo5
+    ## 166      Irak1bp1
+    ## 167       Irf2bp1
+    ## 168         Jade1
+    ## 169         Jmjd6
+    ## 170         Jmjd8
+    ## 171         Kat2b
+    ## 172        Katnb1
+    ## 173        Kcnj12
+    ## 174         Kcnn1
+    ## 175         Kcnu1
+    ## 176        Kctd15
+    ## 177        Kdelr2
+    ## 178       Laptm4a
+    ## 179          Ldah
+    ## 180         Lnpk1
+    ## 181          Lrp5
+    ## 182         Lypd1
+    ## 183          Mafk
+    ## 184        Map3k2
+    ## 185        March9
+    ## 186          Mcl1
+    ## 187          Mdp1
+    ## 188         Mgrn1
+    ## 189        Mif4gd
+    ## 190        Mrpl16
+    ## 191        Mrpl53
+    ## 192          Msl2
+    ## 193         Mtmr7
+    ## 194         Mtmr9
+    ## 195        Mtrf1l
+    ## 196          Mtx1
+    ## 197           Mut
+    ## 198         Myo10
+    ## 199         Naa20
+    ## 200         Naglu
+    ## 201         Nalcn
+    ## 202        Nanos1
+    ## 203          Nans
+    ## 204         Ndst2
+    ## 205         Nedd9
+    ## 206         Nell1
+    ## 207        Nfkbia
+    ## 208          Npc1
+    ## 209        Nploc4
+    ## 210       Nr2c2ap
+    ## 211          Nrf1
+    ## 212        Nudt11
+    ## 213         Nup85
+    ## 214         Nxph3
+    ## 215         Oas1b
+    ## 216          Ogg1
+    ## 217          Optn
+    ## 218          Orc6
+    ## 219          P3h4
+    ## 220         Padi2
+    ## 221       Pcdhb16
+    ## 222        Pcdhb6
+    ## 223        Pcp4l1
+    ## 224          Pdcl
+    ## 225         Pdia4
+    ## 226          Pdpn
+    ## 227          Pdpr
+    ## 228         Pds5a
+    ## 229          Pecr
+    ## 230        Pgrmc1
+    ## 231        Pla2g7
+    ## 232         Plaur
+    ## 233       Plekha1
+    ## 234         Plin2
+    ## 235        Pnpla8
+    ## 236        Polr2d
+    ## 237       Polr3gl
+    ## 238         Ppdpf
+    ## 239        Ppp1cb
+    ## 240      Ppp1r13l
+    ## 241        Ppp6r2
+    ## 242          Ppt2
+    ## 243         Pqlc2
+    ## 244          Prcp
+    ## 245         Prkdc
+    ## 246       Prkrip1
+    ## 247         Prmt2
+    ## 248         Prmt3
+    ## 249         Prpf3
+    ## 250         Prpf4
+    ## 251         Psmc5
+    ## 252          Pwp2
+    ## 253         Rab13
+    ## 254         Rab31
+    ## 255         Rab43
+    ## 256       Rabgap1
+    ## 257         Rabif
+    ## 258         Ramp2
+    ## 259        Rangrf
+    ## 260         Rap2b
+    ## 261         Rccd1
+    ## 262          Rem2
+    ## 263          Rfc1
+    ## 264         Rftn2
+    ## 265         Rgs16
+    ## 266          Rgs6
+    ## 267          Rin2
+    ## 268        Rnf166
+    ## 269        Rnf207
+    ## 270          Rnls
+    ## 271         Rnpc3
+    ## 272 RP23-220F20.2
+    ## 273         Rpap3
+    ## 274          Rrp1
+    ## 275          Rtn4
+    ## 276         Rufy3
+    ## 277        Sacm1l
+    ## 278         Sars2
+    ## 279          Sbsn
+    ## 280         Sdad1
+    ## 281       Sec23ip
+    ## 282         Senp2
+    ## 283         Senp8
+    ## 284         Serf1
+    ## 285         Sesn3
+    ## 286           Sf1
+    ## 287        Sfmbt1
+    ## 288           Sfn
+    ## 289         Sfxn5
+    ## 290        Shisa5
+    ## 291       Shroom4
+    ## 292         Shtn1
+    ## 293        Slain1
+    ## 294       Slc12a2
+    ## 295       Slc24a3
+    ## 296      Slc25a35
+    ## 297       Slc38a9
+    ## 298        Slc4a2
+    ## 299       Slitrk1
+    ## 300         Smad5
+    ## 301         Smdt1
+    ## 302          Smg6
+    ## 303        Smim17
+    ## 304        Snrpd2
+    ## 305          Snx8
+    ## 306         Soat1
+    ## 307         Socs4
+    ## 308         Spag7
+    ## 309         Spag9
+    ## 310          Spi1
+    ## 311         Ssna1
+    ## 312          Ssr1
+    ## 313    St6galnac3
+    ## 314         Sugp1
+    ## 315         Supt3
+    ## 316        Swsap1
+    ## 317       Syndig1
+    ## 318         Synpo
+    ## 319         Syvn1
+    ## 320           Tbp
+    ## 321        Tceal3
+    ## 322          Tcta
+    ## 323         Tdrd3
+    ## 324         Thap4
+    ## 325       Timm10b
+    ## 326        Timm44
+    ## 327         Tmco3
+    ## 328       Tmem119
+    ## 329       Tmem121
+    ## 330      Tmem132e
+    ## 331       Tmem143
+    ## 332       Tmem186
+    ## 333      Tmem229b
+    ## 334      Tmem254a
+    ## 335      Tmem254b
+    ## 336       Tmem266
+    ## 337       Tmem87b
+    ## 338        Tmem94
+    ## 339          Tmx3
+    ## 340       Tomm40l
+    ## 341      Tor1aip2
+    ## 342         Trhde
+    ## 343        Trim45
+    ## 344         Tshz3
+    ## 345       Tspan14
+    ## 346         Tubb6
+    ## 347       Twistnb
+    ## 348          Tyw5
+    ## 349         Ubac2
+    ## 350       Ubash3a
+    ## 351         Ube3c
+    ## 352          Ubn2
+    ## 353          Ulk2
+    ## 354        Unc13c
+    ## 355          Urb1
+    ## 356          Use1
+    ## 357         Usp36
+    ## 358       Vipas39
+    ## 359         Vipr1
+    ## 360         Vma21
+    ## 361        Vstm2b
+    ## 362         Vti1a
+    ## 363         Wash1
+    ## 364         Wbp11
+    ## 365         Wdfy2
+    ## 366         Wdpcp
+    ## 367         Whsc1
+    ## 368           Wls
+    ## 369          Zfat
+    ## 370        Zfp146
+    ## 371        Zfp184
+    ## 372       Zfp385a
+    ## 373        Zfp420
+    ## 374        Zfp493
+    ## 375        Zfp512
+    ## 376       Zfp518a
+    ## 377        Zfp526
+    ## 378        Zfp644
+    ## 379        Zfp707
+    ## 380        Zfp746
+    ## 381         Zfp84
+    ## 382        Zfp937
+    ## 383          Zic3
+    ## 384       Zkscan3
+    ## 385         Znfx1
 
     # stress only CA1 and DG
-    shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 0)
+    shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 1) %>%
+      select(gene)
 
-    ##              gene CA1stress CA1learn DGlearn
-    ## 1   1110032F04Rik         1        0       0
-    ## 2   1600002K03Rik         1        0       0
-    ## 3   2010107G23Rik         1        0       0
-    ## 4   2210013O21Rik         1        0       0
-    ## 5   2210016L21Rik         1        0       0
-    ## 6   2310009B15Rik         1        0       0
-    ## 7   5730409E04Rik         1        0       0
-    ## 8           Abcc4         1        0       0
-    ## 9           Abhd4         1        0       0
-    ## 10           Ache         1        0       0
-    ## 11          Adcy5         1        0       0
-    ## 12          Adcy6         1        0       0
-    ## 13         Adgrb3         1        0       0
-    ## 14          Adpgk         1        0       0
-    ## 15         Afg3l1         1        0       0
-    ## 16           Alg9         1        0       0
-    ## 17            Ank         1        0       0
-    ## 18        Ankrd40         1        0       0
-    ## 19         Apcdd1         1        0       0
-    ## 20        Arfgap3         1        0       0
-    ## 21        Arhgap4         1        0       0
-    ## 22      Arhgef10l         1        0       0
-    ## 23         Arid3b         1        0       0
-    ## 24          Armt1         1        0       0
-    ## 25          Arvcf         1        0       0
-    ## 26           Asph         1        0       0
-    ## 27          Astn1         1        0       0
-    ## 28          Atg4b         1        0       0
-    ## 29         Atp1a2         1        0       0
-    ## 30         Atp2a2         1        0       0
-    ## 31          Atp5d         1        0       0
-    ## 32            Axl         1        0       0
-    ## 33        B4galt7         1        0       0
-    ## 34          Bbof1         1        0       0
-    ## 35           Bbs9         1        0       0
-    ## 36           Bcl6         1        0       0
-    ## 37         Bhlhb9         1        0       0
-    ## 38           Bin3         1        0       0
-    ## 39          Bnip2         1        0       0
-    ## 40           Bod1         1        0       0
-    ## 41            Bok         1        0       0
-    ## 42           Braf         1        0       0
-    ## 43  C130074G19Rik         1        0       0
-    ## 44          C1ql3         1        0       0
-    ## 45        C1qtnf6         1        0       0
-    ## 46         C77370         1        0       0
-    ## 47         Cacfd1         1        0       0
-    ## 48        Cacna1c         1        0       0
-    ## 49         Cacnb1         1        0       0
-    ## 50         Camk1g         1        0       0
-    ## 51          Carm1         1        0       0
-    ## 52        Carnmt1         1        0       0
-    ## 53         Ccdc53         1        0       0
-    ## 54         Ccdc59         1        0       0
-    ## 55          Ccng1         1        0       0
-    ## 56           Ccr2         1        0       0
-    ## 57           Cd63         1        0       0
-    ## 58         Cdadc1         1        0       0
-    ## 59         Cdc123         1        0       0
-    ## 60       Cdc42bpg         1        0       0
-    ## 61           Cdk8         1        0       0
-    ## 62         Cdkal1         1        0       0
-    ## 63         Cep135         1        0       0
-    ## 64          Cers1         1        0       0
-    ## 65          Ces2b         1        0       0
-    ## 66            Cfp         1        0       0
-    ## 67           Chd6         1        0       0
-    ## 68          Chmp7         1        0       0
-    ## 69          Ciao1         1        0       0
-    ## 70         Cirh1a         1        0       0
-    ## 71          Clcn7         1        0       0
-    ## 72        Clec11a         1        0       0
-    ## 73          Cnbd2         1        0       0
-    ## 74         Cntrob         1        0       0
-    ## 75         Commd9         1        0       0
-    ## 76          Crocc         1        0       0
-    ## 77          Csmd3         1        0       0
-    ## 78           Ctsh         1        0       0
-    ## 79         Cuedc1         1        0       0
-    ## 80          Cxcl9         1        0       0
-    ## 81         Cyb561         1        0       0
-    ## 82       Cyb561d2         1        0       0
-    ## 83         Cyp4v3         1        0       0
-    ## 84          Daglb         1        0       0
-    ## 85        Dclre1b         1        0       0
-    ## 86          Ddx24         1        0       0
-    ## 87          Ddx47         1        0       0
-    ## 88          Ddx51         1        0       0
-    ## 89          Decr2         1        0       0
-    ## 90           Det1         1        0       0
-    ## 91         Dhtkd1         1        0       0
-    ## 92       Dnase1l2         1        0       0
-    ## 93           Dnlz         1        0       0
-    ## 94          Dock8         1        0       0
-    ## 95        Dpy19l3         1        0       0
-    ## 96          Dscr3         1        0       0
-    ## 97           Dus2         1        0       0
-    ## 98          Dus3l         1        0       0
-    ## 99       Dync1li1         1        0       0
-    ## 100 E130309D02Rik         1        0       0
-    ## 101          Ece1         1        0       0
-    ## 102          Edc3         1        0       0
-    ## 103        Efcab6         1        0       0
-    ## 104        Elmod1         1        0       0
-    ## 105          Elp2         1        0       0
-    ## 106          Eml4         1        0       0
-    ## 107          Eno4         1        0       0
-    ## 108        Entpd2         1        0       0
-    ## 109          Eny2         1        0       0
-    ## 110         Ep300         1        0       0
-    ## 111          Eps8         1        0       0
-    ## 112          Epyc         1        0       0
-    ## 113        Ero1lb         1        0       0
-    ## 114         Ethe1         1        0       0
-    ## 115         Extl2         1        0       0
-    ## 116            F3         1        0       0
-    ## 117       Fam133b         1        0       0
-    ## 118       Fam134a         1        0       0
-    ## 119       Fam219b         1        0       0
-    ## 120        Fam60a         1        0       0
-    ## 121         Farp1         1        0       0
-    ## 122       Fastkd2         1        0       0
-    ## 123         Fbln1         1        0       0
-    ## 124         Fbxl4         1        0       0
-    ## 125        Fbxo25         1        0       0
-    ## 126         Fcgr3         1        0       0
-    ## 127          Fgd1         1        0       0
-    ## 128          Fgd3         1        0       0
-    ## 129        Fkbp14         1        0       0
-    ## 130         Fkbpl         1        0       0
-    ## 131         Flrt3         1        0       0
-    ## 132         Fstl4         1        0       0
-    ## 133       Galnt10         1        0       0
-    ## 134         Garem         1        0       0
-    ## 135          Gcc2         1        0       0
-    ## 136         Gdpd2         1        0       0
-    ## 137        Gemin4         1        0       0
-    ## 138         Gfpt2         1        0       0
-    ## 139        Glyctk         1        0       0
-    ## 140       Gm10146         1        0       0
-    ## 141       Gm20715         1        0       0
-    ## 142       Gm38393         1        0       0
-    ## 143       Gm43796         1        0       0
-    ## 144        Gm6741         1        0       0
-    ## 145        Gm9803         1        0       0
-    ## 146         Gmpr2         1        0       0
-    ## 147         Gosr2         1        0       0
-    ## 148        Gpank1         1        0       0
-    ## 149         Gpm6a         1        0       0
-    ## 150        Gpr158         1        0       0
-    ## 151         Grid1         1        0       0
-    ## 152        Grin2c         1        0       0
-    ## 153          Guf1         1        0       0
-    ## 154          Gys1         1        0       0
-    ## 155        H2-Ke6         1        0       0
-    ## 156          Heg1         1        0       0
-    ## 157         Hmgcl         1        0       0
-    ## 158         Hmgn2         1        0       0
-    ## 159        Homer3         1        0       0
-    ## 160        Hrasls         1        0       0
-    ## 161         Htr1a         1        0       0
-    ## 162           Id4         1        0       0
-    ## 163            Ik         1        0       0
-    ## 164        Ikbkap         1        0       0
-    ## 165          Ipo5         1        0       0
-    ## 166      Irak1bp1         1        0       0
-    ## 167       Irf2bp1         1        0       0
-    ## 168         Jade1         1        0       0
-    ## 169         Jmjd6         1        0       0
-    ## 170         Jmjd8         1        0       0
-    ## 171         Kat2b         1        0       0
-    ## 172        Katnb1         1        0       0
-    ## 173        Kcnj12         1        0       0
-    ## 174         Kcnn1         1        0       0
-    ## 175         Kcnu1         1        0       0
-    ## 176        Kctd15         1        0       0
-    ## 177        Kdelr2         1        0       0
-    ## 178       Laptm4a         1        0       0
-    ## 179          Ldah         1        0       0
-    ## 180         Lnpk1         1        0       0
-    ## 181          Lrp5         1        0       0
-    ## 182         Lypd1         1        0       0
-    ## 183          Mafk         1        0       0
-    ## 184        Map3k2         1        0       0
-    ## 185        March9         1        0       0
-    ## 186          Mcl1         1        0       0
-    ## 187          Mdp1         1        0       0
-    ## 188         Mgrn1         1        0       0
-    ## 189        Mif4gd         1        0       0
-    ## 190        Mrpl16         1        0       0
-    ## 191        Mrpl53         1        0       0
-    ## 192          Msl2         1        0       0
-    ## 193         Mtmr7         1        0       0
-    ## 194         Mtmr9         1        0       0
-    ## 195        Mtrf1l         1        0       0
-    ## 196          Mtx1         1        0       0
-    ## 197           Mut         1        0       0
-    ## 198         Myo10         1        0       0
-    ## 199         Naa20         1        0       0
-    ## 200         Naglu         1        0       0
-    ## 201         Nalcn         1        0       0
-    ## 202        Nanos1         1        0       0
-    ## 203          Nans         1        0       0
-    ## 204         Ndst2         1        0       0
-    ## 205         Nedd9         1        0       0
-    ## 206         Nell1         1        0       0
-    ## 207        Nfkbia         1        0       0
-    ## 208          Npc1         1        0       0
-    ## 209        Nploc4         1        0       0
-    ## 210       Nr2c2ap         1        0       0
-    ## 211          Nrf1         1        0       0
-    ## 212        Nudt11         1        0       0
-    ## 213         Nup85         1        0       0
-    ## 214         Nxph3         1        0       0
-    ## 215         Oas1b         1        0       0
-    ## 216          Ogg1         1        0       0
-    ## 217          Optn         1        0       0
-    ## 218          Orc6         1        0       0
-    ## 219          P3h4         1        0       0
-    ## 220         Padi2         1        0       0
-    ## 221       Pcdhb16         1        0       0
-    ## 222        Pcdhb6         1        0       0
-    ## 223        Pcp4l1         1        0       0
-    ## 224          Pdcl         1        0       0
-    ## 225         Pdia4         1        0       0
-    ## 226          Pdpn         1        0       0
-    ## 227          Pdpr         1        0       0
-    ## 228         Pds5a         1        0       0
-    ## 229          Pecr         1        0       0
-    ## 230        Pgrmc1         1        0       0
-    ## 231        Pla2g7         1        0       0
-    ## 232         Plaur         1        0       0
-    ## 233       Plekha1         1        0       0
-    ## 234         Plin2         1        0       0
-    ## 235        Pnpla8         1        0       0
-    ## 236        Polr2d         1        0       0
-    ## 237       Polr3gl         1        0       0
-    ## 238         Ppdpf         1        0       0
-    ## 239        Ppp1cb         1        0       0
-    ## 240      Ppp1r13l         1        0       0
-    ## 241        Ppp6r2         1        0       0
-    ## 242          Ppt2         1        0       0
-    ## 243         Pqlc2         1        0       0
-    ## 244          Prcp         1        0       0
-    ## 245         Prkdc         1        0       0
-    ## 246       Prkrip1         1        0       0
-    ## 247         Prmt2         1        0       0
-    ## 248         Prmt3         1        0       0
-    ## 249         Prpf3         1        0       0
-    ## 250         Prpf4         1        0       0
-    ## 251         Psmc5         1        0       0
-    ## 252          Pwp2         1        0       0
-    ## 253         Rab13         1        0       0
-    ## 254         Rab31         1        0       0
-    ## 255         Rab43         1        0       0
-    ## 256       Rabgap1         1        0       0
-    ## 257         Rabif         1        0       0
-    ## 258         Ramp2         1        0       0
-    ## 259        Rangrf         1        0       0
-    ## 260         Rap2b         1        0       0
-    ## 261         Rccd1         1        0       0
-    ## 262          Rem2         1        0       0
-    ## 263          Rfc1         1        0       0
-    ## 264         Rftn2         1        0       0
-    ## 265         Rgs16         1        0       0
-    ## 266          Rgs6         1        0       0
-    ## 267          Rin2         1        0       0
-    ## 268        Rnf166         1        0       0
-    ## 269        Rnf207         1        0       0
-    ## 270          Rnls         1        0       0
-    ## 271         Rnpc3         1        0       0
-    ## 272 RP23-220F20.2         1        0       0
-    ## 273         Rpap3         1        0       0
-    ## 274          Rrp1         1        0       0
-    ## 275          Rtn4         1        0       0
-    ## 276         Rufy3         1        0       0
-    ## 277        Sacm1l         1        0       0
-    ## 278         Sars2         1        0       0
-    ## 279          Sbsn         1        0       0
-    ## 280         Sdad1         1        0       0
-    ## 281       Sec23ip         1        0       0
-    ## 282         Senp2         1        0       0
-    ## 283         Senp8         1        0       0
-    ## 284         Serf1         1        0       0
-    ## 285         Sesn3         1        0       0
-    ## 286           Sf1         1        0       0
-    ## 287        Sfmbt1         1        0       0
-    ## 288           Sfn         1        0       0
-    ## 289         Sfxn5         1        0       0
-    ## 290        Shisa5         1        0       0
-    ## 291       Shroom4         1        0       0
-    ## 292         Shtn1         1        0       0
-    ## 293        Slain1         1        0       0
-    ## 294       Slc12a2         1        0       0
-    ## 295       Slc24a3         1        0       0
-    ## 296      Slc25a35         1        0       0
-    ## 297       Slc38a9         1        0       0
-    ## 298        Slc4a2         1        0       0
-    ## 299       Slitrk1         1        0       0
-    ## 300         Smad5         1        0       0
-    ## 301         Smdt1         1        0       0
-    ## 302          Smg6         1        0       0
-    ## 303        Smim17         1        0       0
-    ## 304        Snrpd2         1        0       0
-    ## 305          Snx8         1        0       0
-    ## 306         Soat1         1        0       0
-    ## 307         Socs4         1        0       0
-    ## 308         Spag7         1        0       0
-    ## 309         Spag9         1        0       0
-    ## 310          Spi1         1        0       0
-    ## 311         Ssna1         1        0       0
-    ## 312          Ssr1         1        0       0
-    ## 313    St6galnac3         1        0       0
-    ## 314         Sugp1         1        0       0
-    ## 315         Supt3         1        0       0
-    ## 316        Swsap1         1        0       0
-    ## 317       Syndig1         1        0       0
-    ## 318         Synpo         1        0       0
-    ## 319         Syvn1         1        0       0
-    ## 320           Tbp         1        0       0
-    ## 321        Tceal3         1        0       0
-    ## 322          Tcta         1        0       0
-    ## 323         Tdrd3         1        0       0
-    ## 324         Thap4         1        0       0
-    ## 325       Timm10b         1        0       0
-    ## 326        Timm44         1        0       0
-    ## 327         Tmco3         1        0       0
-    ## 328       Tmem119         1        0       0
-    ## 329       Tmem121         1        0       0
-    ## 330      Tmem132e         1        0       0
-    ## 331       Tmem143         1        0       0
-    ## 332       Tmem186         1        0       0
-    ## 333      Tmem229b         1        0       0
-    ## 334      Tmem254a         1        0       0
-    ## 335      Tmem254b         1        0       0
-    ## 336       Tmem266         1        0       0
-    ## 337       Tmem87b         1        0       0
-    ## 338        Tmem94         1        0       0
-    ## 339          Tmx3         1        0       0
-    ## 340       Tomm40l         1        0       0
-    ## 341      Tor1aip2         1        0       0
-    ## 342         Trhde         1        0       0
-    ## 343        Trim45         1        0       0
-    ## 344         Tshz3         1        0       0
-    ## 345       Tspan14         1        0       0
-    ## 346         Tubb6         1        0       0
-    ## 347       Twistnb         1        0       0
-    ## 348          Tyw5         1        0       0
-    ## 349         Ubac2         1        0       0
-    ## 350       Ubash3a         1        0       0
-    ## 351         Ube3c         1        0       0
-    ## 352          Ubn2         1        0       0
-    ## 353          Ulk2         1        0       0
-    ## 354        Unc13c         1        0       0
-    ## 355          Urb1         1        0       0
-    ## 356          Use1         1        0       0
-    ## 357         Usp36         1        0       0
-    ## 358       Vipas39         1        0       0
-    ## 359         Vipr1         1        0       0
-    ## 360         Vma21         1        0       0
-    ## 361        Vstm2b         1        0       0
-    ## 362         Vti1a         1        0       0
-    ## 363         Wash1         1        0       0
-    ## 364         Wbp11         1        0       0
-    ## 365         Wdfy2         1        0       0
-    ## 366         Wdpcp         1        0       0
-    ## 367         Whsc1         1        0       0
-    ## 368           Wls         1        0       0
-    ## 369          Zfat         1        0       0
-    ## 370        Zfp146         1        0       0
-    ## 371        Zfp184         1        0       0
-    ## 372       Zfp385a         1        0       0
-    ## 373        Zfp420         1        0       0
-    ## 374        Zfp493         1        0       0
-    ## 375        Zfp512         1        0       0
-    ## 376       Zfp518a         1        0       0
-    ## 377        Zfp526         1        0       0
-    ## 378        Zfp644         1        0       0
-    ## 379        Zfp707         1        0       0
-    ## 380        Zfp746         1        0       0
-    ## 381         Zfp84         1        0       0
-    ## 382        Zfp937         1        0       0
-    ## 383          Zic3         1        0       0
-    ## 384       Zkscan3         1        0       0
-    ## 385         Znfx1         1        0       0
+    ##      gene
+    ## 1  Dusp16
+    ## 2  Entpd1
+    ## 3    Ier3
+    ## 4    Mest
+    ## 5 Rasl11b
 
     # All degs
     updown <- read.csv("../data/02c_setsize_updown.csv") 
@@ -1845,25 +1438,11 @@ What genes overlap within cetain comparisons?
     updown$set <- factor(updown$set,  levels = c("DGtrain", "CA1train", "CA1stress"))
     updown$status <- factor(updown$status,  levels = c("train", "stress"))
 
-    a <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
-      geom_bar(stat="identity", position=position_dodge()) +
-      theme_cowplot(font_size = 6, line_size = 0.25) +
-      scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"))  +
-      labs(x = NULL, y = "Total DEGs") +
-      scale_y_continuous(limits = c(0, 560),
-                         breaks = c(0,250,500)) +
-        facet_wrap(~set, scales = "free_x") +
-        theme(axis.text.x = element_blank(),
-              legend.position = "none",
-              legend.spacing.x = unit(-0.1, 'cm'),
-              legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
-              legend.text=element_text(size=6),
-              strip.text.x = element_text(size = 0),
-              strip.background = element_rect(colour=NA, fill=NA),
-            panel.border = element_rect(fill = NA, color = "black"))
-    a
-
-![](../figures/02c_rnaseqSubfield/myupset-1.png)
+    levels(updown$set)[levels(updown$set)=="DGtrain"] <- "DG train"
+    levels(updown$set)[levels(updown$set)=="CA1train"]   <- "CA1 train"
+    levels(updown$set)[levels(updown$set)=="CA1stress"]   <- "CA1 stress"
+    levels(updown$direction)[levels(updown$direction)=="yoked_consistent"] <- "yoked\nconsistent"
+    levels(updown$direction)[levels(updown$direction)=="yoked_conflict"]   <- "yoked\nconflict"
 
     # unique and shared
     shared2 <- read.csv("../data/02c_intersect_updown_shared2.csv") 
@@ -1877,40 +1456,12 @@ What genes overlap within cetain comparisons?
                                       "CA1stress yoked_consistent", "CA1stress yoked_conflict" ))
     shared2$status <- factor(shared2$status,  levels = c(  "stress","train","unique"))
 
-    b <- ggplot(shared2, aes(x=direction, y=setsize, fill = status)) +
-      geom_bar(stat="identity") +
-      theme_cowplot(font_size = 6, line_size = 0.25) +
-      scale_fill_manual(values = c( "#c7e9b4", "#41b6c4", "#253494"),
-                        name = NULL)  +
-      labs(x = NULL, y = "Shared DEGs") +
-        scale_y_continuous(limits = c(0, 560),
-                         breaks = c(0,250,500)) +
-      theme(axis.text.x = element_blank(),
-            legend.position = "bottom",
-            legend.text=element_text(size=6),
-            legend.key.size = unit(0.2, "cm"),
-            strip.text.x = element_text(size = 0),
-            #axis.text=element_text(size=7),
-            strip.background = element_rect(colour=NA, fill=NA),
-            panel.border = element_rect(fill = NA, color = "black")) +
-      facet_wrap(~set, scales = "free_x") 
-    b
+    levels(shared2$direction)[levels(shared2$direction)=="yoked_consistent"] <- "yoked\nconsistent"
+    levels(shared2$direction)[levels(shared2$direction)=="yoked_conflict"]   <- "yoked\nconflict"
+    levels(shared2$status)[levels(shared2$status)=="stress"]   <- "shared"
+    levels(shared2$status)[levels(shared2$status)=="train"]   <- "shared"
 
-![](../figures/02c_rnaseqSubfield/myupset-2.png)
-
-    barplots <- plot_grid(a,b, nrow = 2, rel_heights = c(.45,.55))
-    barplots 
-
-![](../figures/02c_rnaseqSubfield/myupset-3.png)
-
-    levels(updown$set)[levels(updown$set)=="DGtrain"] <- "DG train"
-    levels(updown$set)[levels(updown$set)=="CA1train"]   <- "CA1 train"
-    levels(updown$set)[levels(updown$set)=="CA1stress"]   <- "CA1 stress"
-    levels(updown$direction)[levels(updown$direction)=="yoked_consistent"] <- "yoked\nconsistent"
-    levels(updown$direction)[levels(updown$direction)=="yoked_conflict"]   <- "yoked\nconflict"
-
-
-    c <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
+    d1 <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
       geom_bar(stat="identity", position=position_dodge()) +
       theme_cowplot(font_size = 6, line_size = 0.25) +
       scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"),
@@ -1920,45 +1471,70 @@ What genes overlap within cetain comparisons?
                          breaks = c(0,125,250,375,500)) +
         facet_wrap(~set, scales = "free_x") +
         theme(axis.text.x = element_blank(),
-              legend.position = "bottom",
-              #legend.text=element_text(size=6),
+              legend.position = "none",
+              legend.text=element_text(size=4),
               legend.key.size = unit(0.2, "cm"),
               #legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
-              strip.text.x = element_text(size = 6),
+              strip.text.x = element_text(size = 5),
               strip.background = element_rect(colour=NA, fill=NA),
             panel.border = element_rect(fill = NA, color = "black"),
             legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0, unit="cm"))
 
-    levels(shared2$direction)[levels(shared2$direction)=="yoked_consistent"] <- "yoked\nconsistent"
-    levels(shared2$direction)[levels(shared2$direction)=="yoked_conflict"]   <- "yoked\nconflict"
-    levels(shared2$status)[levels(shared2$status)=="stress"]   <- "shared"
-    levels(shared2$status)[levels(shared2$status)=="train"]   <- "shared"
 
 
-    d <- ggplot(shared2, aes(x=direction, y=setsize, fill = status)) +
-      geom_bar(stat="identity") +
+    images = c(
+      unique = "../figures/00_schematics/patterns_blank.png",
+      shared = "../figures/00_schematics/patterns_crosed-lines.png")
+    images
+
+    ##                                               unique 
+    ##        "../figures/00_schematics/patterns_blank.png" 
+    ##                                               shared 
+    ## "../figures/00_schematics/patterns_crosed-lines.png"
+
+    head(shared2)
+
+    ##         set setsize         direction subfield status
+    ## 1  CA1train     168 yoked\nconsistent      CA1 unique
+    ## 2  CA1train     181        consistent      CA1 unique
+    ## 3 CA1stress     179 yoked\nconsistent      CA1 unique
+    ## 4 CA1stress     206   yoked\nconflict      CA1 unique
+    ## 5   DGtrain       6 yoked\nconsistent       DG unique
+    ## 6   DGtrain     103        consistent       DG unique
+    ##                        group
+    ## 1  CA1train yoked_consistent
+    ## 2        CA1train consistent
+    ## 3 CA1stress yoked_consistent
+    ## 4   CA1stress yoked_conflict
+    ## 5   DGtrain yoked_consistent
+    ## 6         DGtrain consistent
+
+    d2 <- ggplot(shared2, aes(x=direction, y=setsize, image = status)) +
+      geom_textured_bar(stat = "identity") +
       theme_cowplot(font_size = 6, line_size = 0.25) +
-      scale_fill_manual(values = c( "#c7e9b4", "#41b6c4"),
-                        name = NULL)  +
+      scale_image_manual(values = images,
+                         name = NULL) +
       labs(x = "subfield * treatment", y = "Shared DEGs") +
         scale_y_continuous(limits = c(0, 560),
                          breaks = c(0,125,250,375,500)) +
-      theme(axis.text.x=element_text(angle=45, hjust=1),
-            legend.position = "top",
-            #legend.text=element_text(size=6),
+      theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
+            legend.position = c(0.05, 0.9),
+            legend.text=element_text(size=4),
             legend.key.size = unit(0.2, "cm"),
             strip.text.x = element_text(size = 0),
             #axis.text=element_text(size=7),
             strip.background = element_rect(colour=NA, fill=NA),
             panel.border = element_rect(fill = NA, color = "black"),
-            legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0, unit="cm")) +
+            legend.margin=margin(t=-0.1, r=0, b=-0.1, l=-0.1, unit="cm")) +
       facet_wrap(~set, scales = "free_x") 
-
-
-    newbarplots <- plot_grid(c,d, nrow = 2, rel_heights =c(0.41,0.59))
-    newbarplots
+    d2
 
 ![](../figures/02c_rnaseqSubfield/newbarplot-1.png)
+
+    newbarplots <- plot_grid(d1,d2, nrow = 2, rel_heights =c(0.4,0.6))
+    newbarplots
+
+![](../figures/02c_rnaseqSubfield/newbarplot-2.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/barplots.pdf", width=1.9, height=2.15)
     plot(newbarplots)    
@@ -1967,37 +1543,15 @@ What genes overlap within cetain comparisons?
     ## quartz_off_screen 
     ##                 2
 
-    topplots <- plot_grid(DGconsyokcons, CA1consyokcons, nrow = 1,
-                          labels = "AUTO",
-                          label_size = 7)
-    toplegend <- get_legend(plot.cons.yokcons(DGdds, "DG"))
-
-    ## [1] "DG"
-    ## 
-    ## out of 17011 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 119, 0.7%
-    ## LFC < 0 (down)     : 6, 0.035%
-    ## outliers [1]       : 20, 0.12%
-    ## low counts [2]     : 4608, 27%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/02c_rnaseqSubfield/combo-1.png)
-
-    top <- plot_grid(topplots, toplegend, nrow = 2, rel_heights = c(3, .3))
-     
-    bottomplots <- plot_grid(CA1yoked, barplots,
+    bottomplots <- plot_grid(CA1yoked, newbarplots,
                         labels = c("C", "D"),
                         label_size = 7)
 
-    volcanos <- plot_grid(top, bottomplots, nrow = 2) 
+    volcanos <- plot_grid(training, bottomplots, nrow = 2,
+                          rel_heights = c(0.475,0.525)) 
     volcanos
 
-![](../figures/02c_rnaseqSubfield/combo-2.png)
+![](../figures/02c_rnaseqSubfield/combo-1.png)
 
     #althought this technically now contains volcanos and bar plots
 

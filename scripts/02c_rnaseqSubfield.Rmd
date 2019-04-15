@@ -13,6 +13,9 @@ library(cowplot) ## for some easy to use themes
 library(VennDiagram) ## venn diagrams
 library(DESeq2) ## for gene expression analysis
 library(UpSetR)
+#devtools::install_github("clauswilke/ggtextures")
+library(ggtextures)
+library(magick)
 
 ## load functions 
 source("figureoptions.R")
@@ -57,7 +60,7 @@ CA3dds <- returndds("CA3")
 ## Consistent versus yoked-consistent
 
 ```{r consyokcons}
-plot.cons.yokcons <- function(mydds, mytissue){
+plot.cons.yokcons <- function(mydds, mytissue, mytitle){
   print(mytissue)
   
   res <- results(mydds, contrast =c("APA2", "consistent", "yoked_consistent"),
@@ -73,45 +76,43 @@ plot.cons.yokcons <- function(mydds, mytissue){
     dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
                         yes = "consistent", 
                         no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                    yes = "yoked_consistent", 
+                                    yes = "yoked\nconsistent", 
                                     no = "NS")))
+
 
   write.csv(data, file = paste0("../data/02c_", mytissue, "_consyokcons.csv", sep = ""))
   
   volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
+    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
     theme_cowplot(font_size = 7, line_size = 0.25) +
     geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
     scale_color_manual(values = volcano1,
-                      name = "Higher expression in",
-                      breaks = c("yoked_consistent", "NS", "consistent"))  + 
+                      name = "higher in",
+                      breaks = c("yoked\nconsistent", "NS", "consistent"))  + 
     scale_y_continuous(limits=c(0, 12.5)) +
     scale_x_continuous(limits=c(-10, 10),
                         name="Log fold difference")+
     ylab(paste0("log10 p-value")) +  
-    labs(subtitle = mytissue) +
+    labs(subtitle = mytitle) +
     theme(legend.position = "bottom",
-          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
+          legend.spacing.x = unit(0.1, 'cm'),
+          #legend.text=element_text(size=4),
+          legend.title = element_text(size=6),
+          legend.key.size = unit(0.2, "cm"),
+          legend.margin=margin(t=-0.1, r=0, b=0, l=-0.1, unit="cm")) 
   plot(volcano)
 }
 
 
-DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG") + theme(legend.position = "none")
-CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3") + theme(legend.position = "none")
-CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1") + theme(legend.position = "none")
+DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DG train") + theme(legend.position = "none")  
+CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3", "CA3 train")  
+CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "CA1 train")  + theme(legend.position = c(0.6,0.9))  
 
-training <- plot_grid(DGconsyokcons, CA3consyokcons, CA1consyokcons, nrow = 1,
+training <- plot_grid(DGconsyokcons,CA1consyokcons, nrow = 1,
                       labels = "AUTO",
-                      label_size = 7)
-legend <- get_legend(plot.cons.yokcons(DGdds, "DG"))
-
-p3 <- plot_grid(training, legend, nrow = 2, rel_heights = c(3, .3))
-p3
-
-
-pdf(file="../figures/02c_rnaseqSubfield/volcano-consyokcons.pdf", width=5, height=2)
-plot(p3)
-dev.off()
+                      label_size = 7,
+                      rel_widths = c(0.5,0.5))
+training
 ```
 
 ## Confict versus Consistent
@@ -141,12 +142,12 @@ plot.conf.cons <- function(mydds, mytissue){
   write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""))
   
   volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
+    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
     theme_cowplot(font_size = 7, line_size = 0.25) +
     geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
     scale_color_manual(values = volcano2,
                        breaks = c("consistent", "NS", "conflict"),
-                      name = "Higher expression in")  + 
+                      name = "higher in")  + 
     scale_y_continuous(limits=c(0, 12.5)) +
     scale_x_continuous(limits=c(-10, 10),
                         name="Log fold difference")+
@@ -172,7 +173,7 @@ plot_grid(DGconflict, CA3conflict, CA1conflict, nrow = 1)
 ## Yoked confict versus yoked consistent
 
 ```{r yokeconfyokcons}
-plot.yokconf.yokcons <- function(mydds, mytissue){
+plot.yokconf.yokcons <- function(mydds, mytissue, mytitle){
   
   print(mytissue)
   
@@ -187,36 +188,37 @@ plot.yokconf.yokcons <- function(mydds, mytissue){
   data <- na.omit(data)
   data <- data %>%
     dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                        yes = "yoked_conflict", 
+                        yes = "yoked\nconsistent", 
                         no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                    yes = "yoked_consistent", 
+                                    yes = "yoked\nconflict", 
                                     no = "NS")))
+  
+  data$direction <- factor(data$direction, levels = c("yoked\nconsistent", "NS", "yoked\nconflict"))
   
   write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""))
   
-  volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.5, na.rm = T) + 
+  volcano <- ggplot(data, aes(x = lfc, y = logpadj, color = direction)) + 
+    geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
     theme_cowplot(font_size = 7, line_size = 0.25) +
     geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
     scale_color_manual(values = volcano3,
-                       breaks = c("yoked_consistent", "NS", "yoked_conflict"),
-                       name = NULL,
-                       labels = c("yoked cons.", "NS", "yoked conf."))  + 
+                       name = "higher in")  + 
     scale_y_continuous(limits=c(0, 12.5)) +
     scale_x_continuous(limits=c(-10, 10),
                         name="Log fold difference")+
     ylab(paste0("log10 p-value")) +  
-    labs(subtitle = mytissue) +
+    labs(subtitle = mytitle) +
     theme(legend.position = "bottom",
-          legend.spacing.x = unit(-0.1, 'cm'),
-          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
+          legend.spacing.x = unit(0.1, 'cm'),
+          #legend.text=element_text(size=4),
+          legend.key.size = unit(0.2, "cm"),
+          legend.margin=margin(t=-0.1, r=0, b=0, l=-0.1, unit="cm")) 
   plot(volcano)  
 }
 
-
-DGyoked <-  plot.yokconf.yokcons(DGdds, "DG")
-CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3")
-CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1")  
+DGyoked <-  plot.yokconf.yokcons(DGdds, "DG", "DG stress")
+CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3", "CA3 stress")
+CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1", "CA1 stress")  
 
 plot_grid(DGyoked, CA3yoked, CA1yoked, nrow = 1)
 ```
@@ -358,19 +360,24 @@ shared <- myupsetdf %>%
 colnames(shared) <- c("gene", "CA1stress", "CA1learn", "DGlearn")
 
 # ca1 DG learning
-shared %>% filter(CA1learn == 1 & DGlearn == 1)
+shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
+  select(gene)  
 
 # CA1 and DG learning only (none in stress)
-shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0)
+shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
+  select(gene) 
 
 # learning only CA1
-shared %>% filter(CA1learn == 1 & CA1stress == 0)
+shared %>% filter(CA1learn == 1 & CA1stress == 0 & DGlearn == 0) %>%
+  select(gene)
 
 # stress only CA1
-shared %>% filter(CA1learn == 0 & CA1stress == 1)
+shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 0) %>%
+  select(gene)
 
 # stress only CA1 and DG
-shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 0)
+shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 1) %>%
+  select(gene)
 ```
 
 
@@ -381,24 +388,11 @@ updown$direction <- factor(updown$direction,  levels = c("yoked_consistent", "yo
 updown$set <- factor(updown$set,  levels = c("DGtrain", "CA1train", "CA1stress"))
 updown$status <- factor(updown$status,  levels = c("train", "stress"))
 
-a <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
-  geom_bar(stat="identity", position=position_dodge()) +
-  theme_cowplot(font_size = 6, line_size = 0.25) +
-  scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"))  +
-  labs(x = NULL, y = "Total DEGs") +
-  scale_y_continuous(limits = c(0, 560),
-                     breaks = c(0,250,500)) +
-    facet_wrap(~set, scales = "free_x") +
-    theme(axis.text.x = element_blank(),
-          legend.position = "none",
-          legend.spacing.x = unit(-0.1, 'cm'),
-          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
-          legend.text=element_text(size=6),
-          strip.text.x = element_text(size = 0),
-          strip.background = element_rect(colour=NA, fill=NA),
-        panel.border = element_rect(fill = NA, color = "black"))
-a
-
+levels(updown$set)[levels(updown$set)=="DGtrain"] <- "DG train"
+levels(updown$set)[levels(updown$set)=="CA1train"]   <- "CA1 train"
+levels(updown$set)[levels(updown$set)=="CA1stress"]   <- "CA1 stress"
+levels(updown$direction)[levels(updown$direction)=="yoked_consistent"] <- "yoked\nconsistent"
+levels(updown$direction)[levels(updown$direction)=="yoked_conflict"]   <- "yoked\nconflict"
 
 # unique and shared
 shared2 <- read.csv("../data/02c_intersect_updown_shared2.csv") 
@@ -412,39 +406,15 @@ shared2$group <-factor(shared2$group,
                                   "CA1stress yoked_consistent", "CA1stress yoked_conflict" ))
 shared2$status <- factor(shared2$status,  levels = c(  "stress","train","unique"))
 
-b <- ggplot(shared2, aes(x=direction, y=setsize, fill = status)) +
-  geom_bar(stat="identity") +
-  theme_cowplot(font_size = 6, line_size = 0.25) +
-  scale_fill_manual(values = c( "#c7e9b4", "#41b6c4", "#253494"),
-                    name = NULL)  +
-  labs(x = NULL, y = "Shared DEGs") +
-    scale_y_continuous(limits = c(0, 560),
-                     breaks = c(0,250,500)) +
-  theme(axis.text.x = element_blank(),
-        legend.position = "bottom",
-        legend.text=element_text(size=6),
-        legend.key.size = unit(0.2, "cm"),
-        strip.text.x = element_text(size = 0),
-        #axis.text=element_text(size=7),
-        strip.background = element_rect(colour=NA, fill=NA),
-        panel.border = element_rect(fill = NA, color = "black")) +
-  facet_wrap(~set, scales = "free_x") 
-b
-
-barplots <- plot_grid(a,b, nrow = 2, rel_heights = c(.45,.55))
-barplots 
+levels(shared2$direction)[levels(shared2$direction)=="yoked_consistent"] <- "yoked\nconsistent"
+levels(shared2$direction)[levels(shared2$direction)=="yoked_conflict"]   <- "yoked\nconflict"
+levels(shared2$status)[levels(shared2$status)=="stress"]   <- "shared"
+levels(shared2$status)[levels(shared2$status)=="train"]   <- "shared"
 ```
 
 ```{r newbarplot}
 
-levels(updown$set)[levels(updown$set)=="DGtrain"] <- "DG train"
-levels(updown$set)[levels(updown$set)=="CA1train"]   <- "CA1 train"
-levels(updown$set)[levels(updown$set)=="CA1stress"]   <- "CA1 stress"
-levels(updown$direction)[levels(updown$direction)=="yoked_consistent"] <- "yoked\nconsistent"
-levels(updown$direction)[levels(updown$direction)=="yoked_conflict"]   <- "yoked\nconflict"
-
-
-c <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
+d1 <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
   geom_bar(stat="identity", position=position_dodge()) +
   theme_cowplot(font_size = 6, line_size = 0.25) +
   scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"),
@@ -454,63 +424,60 @@ c <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
                      breaks = c(0,125,250,375,500)) +
     facet_wrap(~set, scales = "free_x") +
     theme(axis.text.x = element_blank(),
-          legend.position = "bottom",
-          #legend.text=element_text(size=6),
+          legend.position = "none",
+          legend.text=element_text(size=4),
           legend.key.size = unit(0.2, "cm"),
           #legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
-          strip.text.x = element_text(size = 6),
+          strip.text.x = element_text(size = 5),
           strip.background = element_rect(colour=NA, fill=NA),
         panel.border = element_rect(fill = NA, color = "black"),
         legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0, unit="cm"))
 
-levels(shared2$direction)[levels(shared2$direction)=="yoked_consistent"] <- "yoked\nconsistent"
-levels(shared2$direction)[levels(shared2$direction)=="yoked_conflict"]   <- "yoked\nconflict"
-levels(shared2$status)[levels(shared2$status)=="stress"]   <- "shared"
-levels(shared2$status)[levels(shared2$status)=="train"]   <- "shared"
 
 
-d <- ggplot(shared2, aes(x=direction, y=setsize, fill = status)) +
-  geom_bar(stat="identity") +
+images = c(
+  unique = "../figures/00_schematics/patterns_blank.png",
+  shared = "../figures/00_schematics/patterns_crosed-lines.png")
+images
+
+head(shared2)
+
+d2 <- ggplot(shared2, aes(x=direction, y=setsize, image = status)) +
+  geom_textured_bar(stat = "identity") +
   theme_cowplot(font_size = 6, line_size = 0.25) +
-  scale_fill_manual(values = c( "#c7e9b4", "#41b6c4"),
-                    name = NULL)  +
+  scale_image_manual(values = images,
+                     name = NULL) +
   labs(x = "subfield * treatment", y = "Shared DEGs") +
     scale_y_continuous(limits = c(0, 560),
                      breaks = c(0,125,250,375,500)) +
-  theme(axis.text.x=element_text(angle=45, hjust=1),
-        legend.position = "top",
-        #legend.text=element_text(size=6),
+  theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
+        legend.position = c(0.05, 0.9),
+        legend.text=element_text(size=4),
         legend.key.size = unit(0.2, "cm"),
         strip.text.x = element_text(size = 0),
         #axis.text=element_text(size=7),
         strip.background = element_rect(colour=NA, fill=NA),
         panel.border = element_rect(fill = NA, color = "black"),
-        legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0, unit="cm")) +
+        legend.margin=margin(t=-0.1, r=0, b=-0.1, l=-0.1, unit="cm")) +
   facet_wrap(~set, scales = "free_x") 
+d2
 
-
-newbarplots <- plot_grid(c,d, nrow = 2, rel_heights =c(0.41,0.59))
+newbarplots <- plot_grid(d1,d2, nrow = 2, rel_heights =c(0.4,0.6))
 newbarplots
 
 pdf(file="../figures/02c_rnaseqSubfield/barplots.pdf", width=1.9, height=2.15)
 plot(newbarplots)    
 dev.off() 
 
-
 ```
 
 ```{r combo, cache=FALSE}
-topplots <- plot_grid(DGconsyokcons, CA1consyokcons, nrow = 1,
-                      labels = "AUTO",
-                      label_size = 7)
-toplegend <- get_legend(plot.cons.yokcons(DGdds, "DG"))
-top <- plot_grid(topplots, toplegend, nrow = 2, rel_heights = c(3, .3))
- 
-bottomplots <- plot_grid(CA1yoked, barplots,
+bottomplots <- plot_grid(CA1yoked, newbarplots,
                     labels = c("C", "D"),
                     label_size = 7)
 
-volcanos <- plot_grid(top, bottomplots, nrow = 2) 
+volcanos <- plot_grid(training, bottomplots, nrow = 2,
+                      rel_heights = c(0.475,0.525)) 
 volcanos
 
 #althought this technically now contains volcanos and bar plots
@@ -519,12 +486,4 @@ pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=3.15, height=4)
 plot(volcanos)    
 dev.off()     
 ```
-
-
-```{r venn}
-
-
-
-```
-
 
