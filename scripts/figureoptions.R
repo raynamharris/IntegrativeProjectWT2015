@@ -64,21 +64,6 @@ volcano3 <-  c("yoked\nconsistent" = "#404040",
                "NS" = "#d9d9d9")
 
 
-# for avoidance volcano plots and heatmaps
-
-volcano5 <-  c("yes" = "red",
-               "no" = "black", 
-               "none" = "#d9d9d9")
-               
-colorvalavoidance <- c("black","red")
-
-ann_colors8 = list(
-  avoidance =  c('yes' = (values=c("red")), 
-                 'no' = (values=c("black"))),
-  Punch = c(CA1 = (values=c("#7570b3")),
-            CA3 = (values=c("#1b9e77")), 
-            DG = (values=c("#d95f02"))))
-
 
 # for integrative correlation anaylsis
 
