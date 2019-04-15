@@ -1,7 +1,5 @@
 ---
 title: "Electrophysiology"
-author: "Rayna M Harris"
-date: "Feb 14, 2019"
 output: md_document
 ---
 
@@ -44,7 +42,7 @@ ephys3 <- left_join(ephys, colData, by = "Mouse")
 ephys3 <- na.omit(ephys3)
 
 ephys3$APA2 <- factor(ephys3$APA2, levels = c("yoked_consistent", "consistent",  "yoked_conflict", "conflict"))
-levels(ephys3$APA2) <- c("yoked-consistent", "consistent",  "yoked-conflict", "conflict")
+levels(ephys3$APA2) <- c("yoked consistent", "consistent",  "yoked conflict", "conflict")
 
 ephys3$pre <- "Pre-Potentiation"
 ephys3$early <- "Early Potentiation"
@@ -57,71 +55,41 @@ head(ephys3)
 ## Data Viz
 
 
-```{r dataviz, fig.width=5.1}
+```{r grid, fig.width=5.1}
 plotpotentiation <- function(ycol, mysubtitle){ephys3 %>%
   ggplot(aes(x=APA2, y=ycol, fill=APA2)) +  
-  geom_violin() + 
+  geom_boxplot() + 
   scale_fill_manual(values = colorvalAPA00) + 
   scale_y_continuous(limits = c(100, 300)) + 
-  theme_cowplot(font_size = 8, line_size = 0.25)   + 
+  theme_cowplot(font_size = 7, line_size = 0.25)   + 
   theme(axis.title.x = element_blank(), 
-        #axis.text.x = element_blank(),
         axis.text.x = element_text(angle = 50, hjust = 1),
         legend.position="none") +
-  labs(y = mysubtitle) 
+  labs(subtitle = mysubtitle, y = "fEPSP (%)") 
 }
 
-A <- plotpotentiation(ycol = ephys3$PTP_3_10, mysubtitle = "Pre-Potentiation")
-B <- plotpotentiation(ycol = ephys3$EarlyPotentiation_11_20, mysubtitle = "Early Potentiation")
+A <- plotpotentiation(ycol = ephys3$PTP_3_10, mysubtitle = "Pre-Potentiation") + theme(axis.text.x = element_blank())
+B <- plotpotentiation(ycol = ephys3$EarlyPotentiation_11_20, mysubtitle = "Early Potentiation") + theme(axis.text.x = element_blank())
 C <- plotpotentiation(ycol = ephys3$LatePotentiation_26_end, mysubtitle = "Late Potentiation")
 
 D <- ephys3 %>%
   ggplot(aes(x=APA2, y=MaxfEPSP, fill=APA2)) +  
-  geom_violin() +
+  geom_boxplot() +
   scale_fill_manual(values = colorvalAPA00) + 
   scale_y_continuous(trans = "reverse",
                      limits = c(-0.001 , -0.008)) + 
-  theme_cowplot(font_size = 8, line_size = 0.25)   + 
+  theme_cowplot(font_size = 7, line_size = 0.25)   + 
   theme(axis.title.x = element_blank(), 
         #axis.text.x = element_blank(),
         axis.text.x = element_text(angle = 50, hjust = 1),
         legend.position="none") +
-  labs(y = "Max fEPSP")
+  labs(subtitle = "Max fEPSP", y = "?")
 
-E <- ephys2long %>% 
-  ggplot(aes(x=variablenumeric, y=value, color=APA2 )) + 
-  stat_smooth(alpha=0.2, size=1) +
-  geom_jitter(size=2, width = 0.5) +
-  background_grid(major = "xy", minor = "none") + 
-  theme_cowplot(font_size = 8, line_size = 0.25) + 
-  scale_y_continuous(trans = "reverse") + 
-  scale_x_continuous(breaks=c(1,2,3,4,5,6,7),
-                     labels=c("0", "10", "15", "20", "30", "40", "50")) +
-  scale_color_manual(values = colorvalAPA00) + 
-  labs(x = "Stimulus Strenght (V)", y = "fEPSP Slope") + 
-  theme(legend.position="none") 
+grid <- plot_grid(A, B, C, D, labels="AUTO", nrow = 2, label_size = 7, rel_heights = c(0.4, 0.6))
+grid
 
-
-top <- plot_grid(A, B, C, labels="AUTO", nrow = 1, label_size = 8)
-bottom <- plot_grid(D, E, labels= c("D", "E"), nrow = 1, label_size = 8,
-          rel_widths = c(0.33,0.66))
-plot_grid(top, bottom, nrow = 2)
-
-
-pdf(file="../figures/03_ephys/1pre.pdf", width=1.75, height=2)
-plot(A)
-dev.off()
-
-pdf(file="../figures/03_ephys/2early.pdf", width=1.75, height=2)
-plot(B)
-dev.off()
-
-pdf(file="../figures/03_ephys/3late.pdf", width=1.75, height=2)
-plot(C)
-dev.off()
-
-pdf(file="../figures/03_ephys/4max.pdf", width=1.75, height=2)
-plot(D)
+pdf(file="../figures/03_ephys/grid.pdf", width=3.15, height=4)
+plot(grid)
 dev.off()
 ```
 
