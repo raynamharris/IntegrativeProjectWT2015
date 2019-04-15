@@ -10,7 +10,6 @@ This script is used to identify treatement differences within each subfield, gen
 ```{r setup, message=F, warning=F}
 library(tidyverse)
 library(cowplot) ## for some easy to use themes
-library(VennDiagram) ## venn diagrams
 library(DESeq2) ## for gene expression analysis
 library(UpSetR)
 #devtools::install_github("clauswilke/ggtextures")

@@ -1,8 +1,6 @@
+install.packages("tidyverse")
 install.packages("knitr")
 install.packages("rmarkdown")
-install.packages("ggplot2")
-install.packages("dplyr")
-install.packages("tidyr")
 
 install.packages("plyr")  
 install.packages("reshape2")  
@@ -15,24 +13,27 @@ install.packages("viridis")
 install.packages("magrittr") 
 install.packages("genefilter")  
 
-install.packages("VennDiagram")  
 install.packages("ggrepel")  
 install.packages("colorblindr")  
 
 install.packages("xtable")
 
-install.packages("WGCNA")
-install.packages("flashClust")
-
-library("Hmisc")
-library("corrplot")
+install.packages("Hmisc")
+install.packages("corrplot")
 
 install.packages("magick")
 
+install.packages("ggrepel")
 install.packages("stringr")
 install.packages("kableExtra")
 
-source("http://www.bioconductor.org/biocLite.R")
-biocLite("DESeq2")
-biocLite("edgeR")
+install.packages("BiocManager") 
+BiocManager::install("DESeq2")
+BiocManager::install("edgeR")
+
+install.packages("devtools")
+devtools::install_github("clauswilke/ggtextures")
+
+install.packages("UpSetR")
+
 
