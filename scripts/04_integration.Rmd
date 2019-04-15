@@ -1,10 +1,6 @@
 ---
 title: "Integration"
-author: "Rayna M Harris"
-date: "March 23, 2017"
-output:
-  md_document:
-    variant: markdown_github
+output: md_document
 ---
 
 ## Setup
@@ -13,8 +9,8 @@ output:
 library(plyr)
 library(dplyr)
 library(reshape2)
-library("Hmisc")
-library("corrplot")
+library(Hmisc)
+library(corrplot)
 library(viridis)
 library(cowplot)
 library(pheatmap)
@@ -22,7 +18,6 @@ library(pheatmap)
 source("figureoptions.R")
 
 knitr::opts_chunk$set(fig.path = '../figures/04_integration/')
-
 ```
 
 ## Import Data
@@ -50,15 +45,7 @@ rossetta$R2filename <- rossetta$R1filename
 rossetta$R2filename <- gsub("R1", "R2", rossetta$R2filename)
 head(rossetta)
 
-## previously used for the Dissocation Test. No longer functional
-#rossetta$Mouse <- gsub("15-101", "15-100", rossetta$Mouse)
-#write.csv(rossetta, "../../DissociationTest/data/00_metadata.csv")
-colData <- read.csv("../data/02a_colData.csv", header = T) # for better group names
-#colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_CA1" = "142C-CA1-S")) 
-#colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_DG" = "142C-DG-S")) 
-#colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_CA1" = "143C-CA1-S")) 
-#colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_DG" = "143C-DG-S"))
-
+colData <- read.csv("../data/02a_colData.csv", header = T) 
 metadata <- full_join(colData, rossetta)
 names(metadata)[1] <- "samplename"
 metadata$title <- as.factor(paste(metadata$ID,metadata$Region, metadata$Group, sep=" "))
@@ -74,7 +61,6 @@ str(metadata)
 metadata <- dplyr::select(metadata, samplename, title, sourcename, organism, char1, char2, mol, des, processes, R1filename, R2filename, process2)
 
 #write.csv(metadata, "../data/00_metadata.csv")
-
 
 # clearnup the rosetts data and filter extraneous samples
 names(rossetta)[1] <- "Mouse"
@@ -103,7 +89,6 @@ pcadata$Punch <- ifelse(grepl("DG", pcadata$group), "DG",
                                         ifelse(grepl("CA3", pcadata$group), "CA3","CA1"))
 names(pcadata)[names(pcadata)=="name"] <- "RNAseqID"
 pcadata <- pcadata[c(11:17,2:10)]
-
 ```
 
 
@@ -211,8 +196,6 @@ behavDG
 pdf(file="../figures/04_integration/behavDG.pdf", width=1.75, height=2)
 plot(behavDG)
 dev.off()
-
-
 ```
 
 
@@ -281,7 +264,49 @@ pheatmap(cormat$r, show_colnames=F, show_rownames = T,
          filename = "../figures/04_integration/corrYoked.pdf",
          main="All Yoked"
          )
+```
 
+Significant genes
 
+```{r significantgenes}
+CA1train <- read.csv("../data/02c_CA1_consyokcons.csv", stringsAsFactors = F) 
+CA1stress <- read.csv("../data/02c_CA1_yokeconfyokcons.csv", stringsAsFactors = F)
+DGtrain <- read.csv("../data/02c_DG_consyokcons.csv", stringsAsFactors = F)
+
+samplecorrelationplot <- function(mydf, mytitle){
+  mydf <-   mydf %>% filter(direction != "NS")
+  DGvsd <- read.csv("../data/02c_DGvsd.csv", check.names = F)
+  colnames(DGvsd)[1] <- "gene"
+  mydf <- left_join(mydf, DGvsd)
+  row.names(mydf) <- mydf$gene
+  mydf <- mydf[-c(1:6)]
+  mydf <- as.data.frame(t(mydf))
+  mydf$sample <-  row.names(mydf)
+  mydf$mouse <- sapply(strsplit(as.character(mydf$sample),'-'), "[", 1)
+  mydf$ID <- paste("15", mydf$mouse, sep = "")
+
+  retention <- behavior %>% 
+    filter(TrainSession == "Retention")
+  retention
+
+  retention <- retention[-c(2:14,16:19)]
+
+  mydf <- left_join(mydf, retention)
+  mydf <- mydf[,c(120:123,1:119,124:162)]
+  row.names(mydf) <- mydf$ID
+  mydfMatrix <- mydf[-c(1:4)]
+
+  mydfMatrixSlim <- mydfMatrix[sample(1:ncol(mydfMatrix), 20,
+   replace=FALSE)]
+
+  mydfcor = cor(mydfMatrixSlim)
+  corrplot(mydfcor, method = "circle", title = mytitle)
+}
+
+samplecorrelationplot(CA1stress, "CA1 stress")
+samplecorrelationplot(CA1train, "CA1 train")
+samplecorrelationplot(DGtrain, "DG train")
 
 ```
+
+

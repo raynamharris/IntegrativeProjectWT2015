@@ -1,52 +1,43 @@
 Setup
 -----
 
-``` r
-library(plyr)
-library(dplyr)
-```
+    library(plyr)
+    library(dplyr)
+    library(reshape2)
+    library(Hmisc)
+    library(corrplot)
+    library(viridis)
+    library(cowplot)
+    library(pheatmap)
 
-    ## Warning: package 'dplyr' was built under R version 3.5.1
+    source("figureoptions.R")
 
-``` r
-library(reshape2)
-library("Hmisc")
-library("corrplot")
-library(viridis)
-library(cowplot)
-library(pheatmap)
-
-source("figureoptions.R")
-
-knitr::opts_chunk$set(fig.path = '../figures/04_integration/')
-```
+    knitr::opts_chunk$set(fig.path = '../figures/04_integration/')
 
 Import Data
 -----------
 
-``` r
-# behavior
-behavior <- read.csv("../data/01a_behavior.csv", header = T)
+    # behavior
+    behavior <- read.csv("../data/01a_behavior.csv", header = T)
 
-# physiology
-ephys3 <- read.csv("../data/03_ephys.csv", header = T)
-ephys3 <- ephys3[,(c(1:6))]
-names(ephys3)[3] <- "Pre_Potentiation"
-names(ephys3)[4] <- "Early_Potentiation"
-names(ephys3)[5] <- "Late_Potentiation"
-names(ephys3)[6] <- "Max_fEPSP"
+    # physiology
+    ephys3 <- read.csv("../data/03_ephys.csv", header = T)
+    ephys3 <- ephys3[,(c(1:6))]
+    names(ephys3)[3] <- "Pre_Potentiation"
+    names(ephys3)[4] <- "Early_Potentiation"
+    names(ephys3)[5] <- "Late_Potentiation"
+    names(ephys3)[6] <- "Max_fEPSP"
 
-# clearnup the rosetts data and filter extraneous samples
-rossetta <- read.csv("../data/00_rossettastone.csv", header = F)
-names(rossetta)[1] <- "organism"
-names(rossetta)[2] <- "ID"
-names(rossetta)[3] <- "Region"
-names(rossetta)[4] <- "RNAseqID"
-names(rossetta)[5] <- "R1filename"
-rossetta$R2filename <- rossetta$R1filename
-rossetta$R2filename <- gsub("R1", "R2", rossetta$R2filename)
-head(rossetta)
-```
+    # clearnup the rosetts data and filter extraneous samples
+    rossetta <- read.csv("../data/00_rossettastone.csv", header = F)
+    names(rossetta)[1] <- "organism"
+    names(rossetta)[2] <- "ID"
+    names(rossetta)[3] <- "Region"
+    names(rossetta)[4] <- "RNAseqID"
+    names(rossetta)[5] <- "R1filename"
+    rossetta$R2filename <- rossetta$R1filename
+    rossetta$R2filename <- gsub("R1", "R2", rossetta$R2filename)
+    head(rossetta)
 
     ##   organism     ID Region   RNAseqID                          R1filename
     ## 1  15-142C 15142C    CA1 142C-CA1-S 142C_CA1_S_S19_L003_R1_001.fastq.gz
@@ -63,18 +54,8 @@ head(rossetta)
     ## 5 143B_CA1_1_S37_L002_R2_001.fastq.gz
     ## 6  143B_DG_1_S38_L002_R2_001.fastq.gz
 
-``` r
-## previously used for the Dissocation Test. No longer functional
-#rossetta$Mouse <- gsub("15-101", "15-100", rossetta$Mouse)
-#write.csv(rossetta, "../../DissociationTest/data/00_metadata.csv")
-colData <- read.csv("../data/02a_colData.csv", header = T) # for better group names
-#colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_CA1" = "142C-CA1-S")) 
-#colData$RNAseqID <- revalue(colData$RNAseqID, c("142C_DG" = "142C-DG-S")) 
-#colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_CA1" = "143C-CA1-S")) 
-#colData$RNAseqID <- revalue(colData$RNAseqID, c("143C_DG" = "143C-DG-S"))
-
-metadata <- full_join(colData, rossetta)
-```
+    colData <- read.csv("../data/02a_colData.csv", header = T) 
+    metadata <- full_join(colData, rossetta)
 
     ## Joining, by = c("RNAseqID", "ID")
 
@@ -84,18 +65,16 @@ metadata <- full_join(colData, rossetta)
     ## Warning: Column `ID` joining factors with different levels, coercing to
     ## character vector
 
-``` r
-names(metadata)[1] <- "samplename"
-metadata$title <- as.factor(paste(metadata$ID,metadata$Region, metadata$Group, sep=" "))
-names(metadata)[6] <- "sourcename"
-metadata$char1 <- "Mus musculus"
-metadata$char2 <- "C57BL/6"
-metadata$mol <- "RNA"
-metadata$des <- " "
-metadata$processes <- as.factor(paste(metadata$samplename,"/abundance.txt"))
-metadata$process2 <- "IntegrativeWT2015ColData.csv"
-str(metadata)
-```
+    names(metadata)[1] <- "samplename"
+    metadata$title <- as.factor(paste(metadata$ID,metadata$Region, metadata$Group, sep=" "))
+    names(metadata)[6] <- "sourcename"
+    metadata$char1 <- "Mus musculus"
+    metadata$char2 <- "C57BL/6"
+    metadata$mol <- "RNA"
+    metadata$des <- " "
+    metadata$processes <- as.factor(paste(metadata$samplename,"/abundance.txt"))
+    metadata$process2 <- "IntegrativeWT2015ColData.csv"
+    str(metadata)
 
     ## 'data.frame':    54 obs. of  19 variables:
     ##  $ samplename: chr  "143A-CA3-1" "143A-DG-1" "143B-CA1-1" "143B-DG-1" ...
@@ -118,44 +97,39 @@ str(metadata)
     ##  $ processes : Factor w/ 54 levels "142C-CA1-S /abundance.txt",..: 3 4 5 6 7 10 11 12 13 14 ...
     ##  $ process2  : chr  "IntegrativeWT2015ColData.csv" "IntegrativeWT2015ColData.csv" "IntegrativeWT2015ColData.csv" "IntegrativeWT2015ColData.csv" ...
 
-``` r
-metadata <- dplyr::select(metadata, samplename, title, sourcename, organism, char1, char2, mol, des, processes, R1filename, R2filename, process2)
+    metadata <- dplyr::select(metadata, samplename, title, sourcename, organism, char1, char2, mol, des, processes, R1filename, R2filename, process2)
 
-#write.csv(metadata, "../data/00_metadata.csv")
+    #write.csv(metadata, "../data/00_metadata.csv")
 
+    # clearnup the rosetts data and filter extraneous samples
+    names(rossetta)[1] <- "Mouse"
+    names(rossetta)[2] <- "ID"
+    names(rossetta)[3] <- "Region"
+    names(rossetta)[4] <- "RNAseqID"
+    names(rossetta)[5] <- "R1filename"
+    rossetta$R1filename <- NULL
+    rossetta <- rossetta %>% dplyr::filter(Mouse != "15-100", Mouse != "15-101", Mouse != "15-147")
+    rossetta <- unique(rossetta[ , c(1:2,4) ]) # for joining keop only
 
-# clearnup the rosetts data and filter extraneous samples
-names(rossetta)[1] <- "Mouse"
-names(rossetta)[2] <- "ID"
-names(rossetta)[3] <- "Region"
-names(rossetta)[4] <- "RNAseqID"
-names(rossetta)[5] <- "R1filename"
-rossetta$R1filename <- NULL
-rossetta <- rossetta %>% dplyr::filter(Mouse != "15-100", Mouse != "15-101", Mouse != "15-147")
-rossetta <- unique(rossetta[ , c(1:2,4) ]) # for joining keop only
+    ## slim behavior ephy to top 5 pcs and rename the columsn
+    behaviorpca <- read.csv("../data/01a_scoresdf.csv", header = T)
+    behaviorpca <- behaviorpca[(c(1:4,6,35:36))]
+    names(behaviorpca)[names(behaviorpca)=="PC1"] <- "Behavior_PC1"
+    names(behaviorpca)[names(behaviorpca)=="PC2"] <- "Behavior_PC2"
+    names(behaviorpca)[names(behaviorpca)=="PC3"] <- "Behavior_PC3"
+    names(behaviorpca)[names(behaviorpca)=="PC4"] <- "Behavior_PC4"
+    names(behaviorpca)[names(behaviorpca)=="PC6"] <- "Behavior_PC6"
 
-## slim behavior ephy to top 5 pcs and rename the columsn
-behaviorpca <- read.csv("../data/01a_scoresdf.csv", header = T)
-behaviorpca <- behaviorpca[(c(1:4,6,35:36))]
-names(behaviorpca)[names(behaviorpca)=="PC1"] <- "Behavior_PC1"
-names(behaviorpca)[names(behaviorpca)=="PC2"] <- "Behavior_PC2"
-names(behaviorpca)[names(behaviorpca)=="PC3"] <- "Behavior_PC3"
-names(behaviorpca)[names(behaviorpca)=="PC4"] <- "Behavior_PC4"
-names(behaviorpca)[names(behaviorpca)=="PC6"] <- "Behavior_PC6"
-
-behaviorpca <- behaviorpca %>% dplyr::filter(ID != "15148", ID !=  "15140A", ID !=  "15140B", ID !=  "15140C", ID !=  "15140D", ID !=  "15141C", ID !=  "15141D", ID !=  "15142C", ID !=  "15142D", ID !=  "15142A", ID !=  "15142B", ID !=  "15145C", ID !=  "15145C", ID !=  "15145D", ID !=  "15147A", ID !=  "15147B", ID !=  "15148C", ID !=  "15148D")
+    behaviorpca <- behaviorpca %>% dplyr::filter(ID != "15148", ID !=  "15140A", ID !=  "15140B", ID !=  "15140C", ID !=  "15140D", ID !=  "15141C", ID !=  "15141D", ID !=  "15142C", ID !=  "15142D", ID !=  "15142A", ID !=  "15142B", ID !=  "15145C", ID !=  "15145C", ID !=  "15145D", ID !=  "15147A", ID !=  "15147B", ID !=  "15148C", ID !=  "15148D")
 
 
-pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
-pcadata$Punch <- ifelse(grepl("DG", pcadata$group), "DG", 
-                                        ifelse(grepl("CA3", pcadata$group), "CA3","CA1"))
-names(pcadata)[names(pcadata)=="name"] <- "RNAseqID"
-pcadata <- pcadata[c(11:17,2:10)]
-```
+    pcadata <- read.csv("../data/02a_pcadata.csv", header = T)
+    pcadata$Punch <- ifelse(grepl("DG", pcadata$group), "DG", 
+                                            ifelse(grepl("CA3", pcadata$group), "CA3","CA1"))
+    names(pcadata)[names(pcadata)=="name"] <- "RNAseqID"
+    pcadata <- pcadata[c(11:17,2:10)]
 
-``` r
-head(rossetta)
-```
+    head(rossetta)
 
     ##     Mouse     ID   RNAseqID
     ## 1 15-142C 15142C 142C-CA1-S
@@ -165,49 +139,39 @@ head(rossetta)
     ## 5 15-143B 15143B 143B-CA1-1
     ## 6 15-143B 15143B  143B-DG-1
 
-``` r
-#widen then length RNAseq data so each row is an animals
-pcadatabyregion <- dplyr::left_join(pcadata, rossetta, by = "RNAseqID")
-```
+    #widen then length RNAseq data so each row is an animals
+    pcadatabyregion <- dplyr::left_join(pcadata, rossetta, by = "RNAseqID")
 
     ## Warning: Column `RNAseqID` joining factors with different levels, coercing
     ## to character vector
 
-``` r
-names(pcadatabyregion)
-```
+    names(pcadatabyregion)
 
     ##  [1] "group"     "Punch"     "avoidance" "RNAseqID"  "wrap"     
     ##  [6] "PunchAPA"  "APA2"      "PC1"       "PC2"       "PC3"      
     ## [11] "PC4"       "PC5"       "PC6"       "PC7"       "PC8"      
     ## [16] "PC9"       "Mouse"     "ID"
 
-``` r
-pcadatabyregion <- pcadatabyregion[(c(1:7,17:18,8:16))]
+    pcadatabyregion <- pcadatabyregion[(c(1:7,17:18,8:16))]
 
-pcadatabyregion <- melt(pcadatabyregion, id = c(1:9))
-pcadatabyregion$RegionPC <- as.factor(paste(pcadatabyregion$Punch, pcadatabyregion$variable, sep="_"))
-pcadatabyregion <- dcast(pcadatabyregion, Mouse ~ RegionPC)
+    pcadatabyregion <- melt(pcadatabyregion, id = c(1:9))
+    pcadatabyregion$RegionPC <- as.factor(paste(pcadatabyregion$Punch, pcadatabyregion$variable, sep="_"))
+    pcadatabyregion <- dcast(pcadatabyregion, Mouse ~ RegionPC)
 
-alldata <- left_join(pcadatabyregion, rossetta , by="Mouse")
-alldata <- left_join(alldata, behaviorpca, by="ID")
-```
+    alldata <- left_join(pcadatabyregion, rossetta , by="Mouse")
+    alldata <- left_join(alldata, behaviorpca, by="ID")
 
     ## Warning: Column `ID` joining factors with different levels, coercing to
     ## character vector
 
-``` r
-alldata <- left_join(alldata, ephys3, by="Mouse")
-```
+    alldata <- left_join(alldata, ephys3, by="Mouse")
 
     ## Warning: Column `Mouse` joining factors with different levels, coercing to
     ## character vector
 
-``` r
-alldataslim <- dplyr::filter(alldata, APA2 %in% c("conflict","consistent"))
+    alldataslim <- dplyr::filter(alldata, APA2 %in% c("conflict","consistent"))
 
-names(alldataslim)
-```
+    names(alldataslim)
 
     ##  [1] "Mouse"              "CA1_PC1"            "CA1_PC2"           
     ##  [4] "CA1_PC3"            "CA1_PC4"            "CA1_PC5"           
@@ -224,79 +188,71 @@ names(alldataslim)
     ## [37] "Group"              "Pre_Potentiation"   "Early_Potentiation"
     ## [40] "Late_Potentiation"  "Max_fEPSP"
 
-``` r
-alldataslim <- alldataslim[,-c(1,5:10,14:19,23:28,29:30,36:37)]
-alldataslim <- sapply( alldataslim, as.numeric )
+    alldataslim <- alldataslim[,-c(1,5:10,14:19,23:28,29:30,36:37)]
+    alldataslim <- sapply( alldataslim, as.numeric )
 
-cormat <- rcorr(as.matrix(alldataslim))
-res2 <- rcorr(as.matrix(alldataslim))
+    cormat <- rcorr(as.matrix(alldataslim))
+    res2 <- rcorr(as.matrix(alldataslim))
 
-corrplot(res2$r, type = "lower", order = "hclust", 
-        tl.col = "black", tl.srt = 45)
-```
+    corrplot(res2$r, type = "lower", order = "hclust", 
+            tl.col = "black", tl.srt = 45)
 
 ![](../figures/04_integration/correlationsAvoidance-1.png)
 
-``` r
-corrplot(res2$r, type="lower", order="hclust",  tl.col = "black", 
-        p.mat = res2$P, sig.level = 0.05, insig = "blank")
-```
+    corrplot(res2$r, type="lower", order="hclust",  tl.col = "black", 
+            p.mat = res2$P, sig.level = 0.05, insig = "blank")
 
 ![](../figures/04_integration/correlationsAvoidance-2.png)
 
-``` r
-DEGes <- as.data.frame(cormat$r)
-DEGes$group <- c("CA1","CA1","CA1","CA3","CA3","CA3","DG","DG","DG","Behavior","Behavior","Behavior","Behavior","Behavior","Physiology","Physiology","Physiology","Physiology")
-df <- as.data.frame(DEGes$group)
-names(df)[1] <- "Level"
-row.names(df) <- row.names(DEGes)
-DEGes$group <- NULL
+    DEGes <- as.data.frame(cormat$r)
+    DEGes$group <- c("CA1","CA1","CA1","CA3","CA3","CA3","DG","DG","DG","Behavior","Behavior","Behavior","Behavior","Behavior","Physiology","Physiology","Physiology","Physiology")
+    df <- as.data.frame(DEGes$group)
+    names(df)[1] <- "Level"
+    row.names(df) <- row.names(DEGes)
+    DEGes$group <- NULL
 
-paletteLength <- 30
-myBreaks <- c(seq(min(cormat$r), 0, length.out=ceiling(paletteLength/2) + 1),
-              seq(max(cormat$r)/paletteLength, max(cormat$r), length.out=floor(paletteLength/2)))
+    paletteLength <- 30
+    myBreaks <- c(seq(min(cormat$r), 0, length.out=ceiling(paletteLength/2) + 1),
+                  seq(max(cormat$r)/paletteLength, max(cormat$r), length.out=floor(paletteLength/2)))
 
-pheatmap(DEGes, show_colnames=T, show_rownames = T,
-         annotation_col = df, annotation_colors = ann_colorsLevel,
-         annotation_row = df, 
-         #annotation_legend = FALSE,
-         annotation_names_row = FALSE, annotation_names_col = FALSE,
-         treeheight_row = 10, treeheight_col = 10,
-         fontsize = 8, 
-         width=2.5, height=2,
-         border_color = "grey60" ,
-         color = viridis(30),
-         #cellwidth = 10, 
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation",
-         clustering_distance_rows="correlation" ,
-         main="Cognitively Trainied"
-         )
-```
+    pheatmap(DEGes, show_colnames=T, show_rownames = T,
+             annotation_col = df, annotation_colors = ann_colorsLevel,
+             annotation_row = df, 
+             #annotation_legend = FALSE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             treeheight_row = 10, treeheight_col = 10,
+             fontsize = 8, 
+             width=2.5, height=2,
+             border_color = "grey60" ,
+             color = viridis(30),
+             #cellwidth = 10, 
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation",
+             clustering_distance_rows="correlation" ,
+             main="Cognitively Trainied"
+             )
 
 ![](../figures/04_integration/correlationsAvoidance-3.png)
 
-``` r
-pheatmap(cormat$r, show_colnames=F, show_rownames = T,
-         annotation_col = df, annotation_colors = ann_colorsLevel,
-         annotation_row = df, 
-         #annotation_legend = FALSE,
-         annotation_names_row = FALSE, annotation_names_col = FALSE,
-         treeheight_row = 10, treeheight_col = 10,
-         fontsize = 8, 
-         width=4, height=2.25,
-         border_color = "grey60" ,
-         color = viridis(30),
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation",
-         clustering_distance_rows="correlation",
-         filename = "../figures/04_integration/corrTrained.pdf"
-         )
+    pheatmap(cormat$r, show_colnames=F, show_rownames = T,
+             annotation_col = df, annotation_colors = ann_colorsLevel,
+             annotation_row = df, 
+             #annotation_legend = FALSE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             treeheight_row = 10, treeheight_col = 10,
+             fontsize = 8, 
+             width=4, height=2.25,
+             border_color = "grey60" ,
+             color = viridis(30),
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation",
+             clustering_distance_rows="correlation",
+             filename = "../figures/04_integration/corrTrained.pdf"
+             )
 
-head(alldata)
-```
+    head(alldata)
 
     ##     Mouse   CA1_PC1  CA1_PC2   CA1_PC3   CA1_PC4    CA1_PC5    CA1_PC6
     ## 1 15-143A        NA       NA        NA        NA         NA         NA
@@ -327,19 +283,19 @@ head(alldata)
     ## 5         NA        NA        NA          NA        NA        NA
     ## 6         NA        NA        NA          NA        NA        NA
     ##       DG_PC8    DG_PC9     ID   RNAseqID Behavior_PC1 Behavior_PC2
-    ## 1 -0.6829819 0.7056409 15143A 143A-CA3-1     9.013673     3.642287
-    ## 2 -0.6829819 0.7056409 15143A  143A-DG-1     9.013673     3.642287
-    ## 3  1.6244657 3.8663534 15143B 143B-CA1-1    -7.898468     2.755012
-    ## 4  1.6244657 3.8663534 15143B  143B-DG-1    -7.898468     2.755012
-    ## 5         NA        NA 15143C 143C-CA1-1    12.076409    -4.937202
-    ## 6         NA        NA 15143C 143C-CA1-S    12.076409    -4.937202
+    ## 1 -0.6829819 0.7056409 15143A 143A-CA3-1     8.979881    -3.205040
+    ## 2 -0.6829819 0.7056409 15143A  143A-DG-1     8.979881    -3.205040
+    ## 3  1.6244657 3.8663534 15143B 143B-CA1-1    -7.986703    -4.867634
+    ## 4  1.6244657 3.8663534 15143B  143B-DG-1    -7.986703    -4.867634
+    ## 5         NA        NA 15143C 143C-CA1-1    12.252855     3.106723
+    ## 6         NA        NA 15143C 143C-CA1-S    12.252855     3.106723
     ##   Behavior_PC3 Behavior_PC4 Behavior_PC6           APA2    Group
-    ## 1    -3.596817   -0.4147028     5.692802       conflict     <NA>
-    ## 2    -3.596817   -0.4147028     5.692802       conflict     <NA>
-    ## 3     2.094312   -7.3446799    -7.113559 yoked-conflict  control
-    ## 4     2.094312   -7.3446799    -7.113559 yoked-conflict  control
-    ## 5    -7.514289    1.0751628    -3.413626     consistent conflict
-    ## 6    -7.514289    1.0751628    -3.413626     consistent conflict
+    ## 1   2.67546000    0.8503198    -6.280920       conflict     <NA>
+    ## 2   2.67546000    0.8503198    -6.280920       conflict     <NA>
+    ## 3  -0.03632236    2.3240220     8.613456 yoked-conflict  control
+    ## 4  -0.03632236    2.3240220     8.613456 yoked-conflict  control
+    ## 5   6.88945052   -2.8341330     2.997247     consistent conflict
+    ## 6   6.88945052   -2.8341330     2.997247     consistent conflict
     ##   Pre_Potentiation Early_Potentiation Late_Potentiation  Max_fEPSP
     ## 1               NA                 NA                NA         NA
     ## 2               NA                 NA                NA         NA
@@ -348,108 +304,176 @@ head(alldata)
     ## 5           130.98             199.54            195.64 -0.0077112
     ## 6           130.98             199.54            195.64 -0.0077112
 
-``` r
-alldata$APA2 <- factor(alldata$APA2, levels = c("yoked-consistent", "consistent",  "yoked-conflict", "conflict"))
+    alldata$APA2 <- factor(alldata$APA2, levels = c("yoked-consistent", "consistent",  "yoked-conflict", "conflict"))
 
-alldata$avoidance <-  ifelse(grepl("yoked", alldata$APA), "no", "yes")
+    alldata$avoidance <-  ifelse(grepl("yoked", alldata$APA), "no", "yes")
 
-alldata$wrap <- "All Cognitively Trained" 
+    alldata$wrap <- "All Cognitively Trained" 
 
-behavDG <- alldata %>%
-  filter(avoidance == "yes") %>%
-  ggplot(aes(Behavior_PC1,as.numeric(DG_PC2))) + 
-  geom_point(size = 2, alpha = 0.75, aes(color=APA2)) +
-  scale_color_manual(values = colorvalAPA6) +
-    theme_cowplot(font_size = 8, line_size = 0.25)  +
-    theme(legend.position="none") +
-    stat_smooth(method = "lm", color="red") + 
-    ylab(paste0("DG PC1")) +
-    xlab(paste0("Behavior PC1"))  +
-  facet_wrap(~wrap)
-behavDG
+    behavDG <- alldata %>%
+      filter(avoidance == "yes") %>%
+      ggplot(aes(Behavior_PC1,as.numeric(DG_PC2))) + 
+      geom_point(size = 2, alpha = 0.75, aes(color=APA2)) +
+      scale_color_manual(values = colorvalAPA6) +
+        theme_cowplot(font_size = 8, line_size = 0.25)  +
+        theme(legend.position="none") +
+        stat_smooth(method = "lm", color="red") + 
+        ylab(paste0("DG PC1")) +
+        xlab(paste0("Behavior PC1"))  +
+      facet_wrap(~wrap)
+    behavDG
 
-pdf(file="../figures/04_integration/behavDG.pdf", width=1.75, height=2)
-plot(behavDG)
-dev.off()
-```
+    pdf(file="../figures/04_integration/behavDG.pdf", width=1.75, height=2)
+    plot(behavDG)
+    dev.off()
 
     ## pdf 
     ##   3
 
-``` r
-alldata <- left_join(pcadatabyregion, rossetta , by="Mouse")
-alldata <- left_join(alldata, behaviorpca, by="ID")
-alldata <- left_join(alldata, ephys3, by="Mouse")
+    alldata <- left_join(pcadatabyregion, rossetta , by="Mouse")
+    alldata <- left_join(alldata, behaviorpca, by="ID")
+    alldata <- left_join(alldata, ephys3, by="Mouse")
 
-alldataslim <- dplyr::filter(alldata, APA2 %in% c("yoked-conflict","yoked-consistent"))
+    alldataslim <- dplyr::filter(alldata, APA2 %in% c("yoked-conflict","yoked-consistent"))
 
-alldataslim <- alldataslim[,-c(1,5:10,14:19,23:28,29:30,36:37)]
-alldataslim <- sapply( alldataslim, as.numeric )
+    alldataslim <- alldataslim[,-c(1,5:10,14:19,23:28,29:30,36:37)]
+    alldataslim <- sapply( alldataslim, as.numeric )
 
-cormat <- rcorr(as.matrix(alldataslim))
-res2 <- rcorr(as.matrix(alldataslim))
+    cormat <- rcorr(as.matrix(alldataslim))
+    res2 <- rcorr(as.matrix(alldataslim))
 
-corrplot(res2$r, type = "lower", order = "hclust", 
-        tl.col = "black", tl.srt = 45)
-```
+    corrplot(res2$r, type = "lower", order = "hclust", 
+            tl.col = "black", tl.srt = 45)
 
 ![](../figures/04_integration/correlationsYoked-1.png)
 
-``` r
-corrplot(res2$r, type="lower", order="hclust",  tl.col = "black", 
-        p.mat = res2$P, sig.level = 0.05, insig = "blank")
-```
+    corrplot(res2$r, type="lower", order="hclust",  tl.col = "black", 
+            p.mat = res2$P, sig.level = 0.05, insig = "blank")
 
 ![](../figures/04_integration/correlationsYoked-2.png)
 
-``` r
-DEGes <- as.data.frame(cormat$r)
-DEGes$group <- c("CA1","CA1","CA1","CA3","CA3","CA3","DG","DG","DG","Behavior","Behavior","Behavior","Behavior","Behavior","Physiology","Physiology","Physiology","Physiology")
-df <- as.data.frame(DEGes$group)
-names(df)[1] <- "Level"
-row.names(df) <- row.names(DEGes)
-DEGes$group <- NULL
+    DEGes <- as.data.frame(cormat$r)
+    DEGes$group <- c("CA1","CA1","CA1","CA3","CA3","CA3","DG","DG","DG","Behavior","Behavior","Behavior","Behavior","Behavior","Physiology","Physiology","Physiology","Physiology")
+    df <- as.data.frame(DEGes$group)
+    names(df)[1] <- "Level"
+    row.names(df) <- row.names(DEGes)
+    DEGes$group <- NULL
 
-paletteLength <- 30
-myBreaks <- c(seq(min(cormat$r), 0, length.out=ceiling(paletteLength/2) + 1),
-              seq(max(cormat$r)/paletteLength, max(cormat$r), length.out=floor(paletteLength/2)))
-pheatmap(DEGes, show_colnames=T, show_rownames = T,
-         annotation_col = df, annotation_colors = ann_colorsLevel,
-         annotation_row = df, 
-         #annotation_legend = FALSE,
-         annotation_names_row = FALSE, annotation_names_col = FALSE,
-         treeheight_row = 10, treeheight_col = 10,
-         fontsize = 8, 
-         width=2.5, height=2,
-         border_color = "grey60" ,
-         color = viridis(30),
-         #cellwidth = 10, 
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation",
-         clustering_distance_rows="correlation" ,
-         main="All Yoked"
-         )
-```
+    paletteLength <- 30
+    myBreaks <- c(seq(min(cormat$r), 0, length.out=ceiling(paletteLength/2) + 1),
+                  seq(max(cormat$r)/paletteLength, max(cormat$r), length.out=floor(paletteLength/2)))
+    pheatmap(DEGes, show_colnames=T, show_rownames = T,
+             annotation_col = df, annotation_colors = ann_colorsLevel,
+             annotation_row = df, 
+             #annotation_legend = FALSE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             treeheight_row = 10, treeheight_col = 10,
+             fontsize = 8, 
+             width=2.5, height=2,
+             border_color = "grey60" ,
+             color = viridis(30),
+             #cellwidth = 10, 
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation",
+             clustering_distance_rows="correlation" ,
+             main="All Yoked"
+             )
 
 ![](../figures/04_integration/correlationsYoked-3.png)
 
-``` r
-pheatmap(cormat$r, show_colnames=F, show_rownames = T,
-         annotation_col = df, annotation_colors = ann_colorsLevel,
-         annotation_row = df, 
-         #annotation_legend = FALSE,
-         annotation_names_row = FALSE, annotation_names_col = FALSE,
-         treeheight_row = 10, treeheight_col = 10,
-         fontsize = 8, 
-         width=4, height=2.25,
-         border_color = "grey60" ,
-         color = viridis(30),
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation",
-         clustering_distance_rows="correlation",
-         filename = "../figures/04_integration/corrYoked.pdf",
-         main="All Yoked"
-         )
-```
+    pheatmap(cormat$r, show_colnames=F, show_rownames = T,
+             annotation_col = df, annotation_colors = ann_colorsLevel,
+             annotation_row = df, 
+             #annotation_legend = FALSE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             treeheight_row = 10, treeheight_col = 10,
+             fontsize = 8, 
+             width=4, height=2.25,
+             border_color = "grey60" ,
+             color = viridis(30),
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation",
+             clustering_distance_rows="correlation",
+             filename = "../figures/04_integration/corrYoked.pdf",
+             main="All Yoked"
+             )
+
+Significant genes
+
+    CA1train <- read.csv("../data/02c_CA1_consyokcons.csv", stringsAsFactors = F) 
+    CA1stress <- read.csv("../data/02c_CA1_yokeconfyokcons.csv", stringsAsFactors = F)
+    DGtrain <- read.csv("../data/02c_DG_consyokcons.csv", stringsAsFactors = F)
+
+    samplecorrelationplot <- function(mydf, mytitle){
+      mydf <-   mydf %>% filter(direction != "NS")
+      DGvsd <- read.csv("../data/02c_DGvsd.csv", check.names = F)
+      colnames(DGvsd)[1] <- "gene"
+      mydf <- left_join(mydf, DGvsd)
+      row.names(mydf) <- mydf$gene
+      mydf <- mydf[-c(1:6)]
+      mydf <- as.data.frame(t(mydf))
+      mydf$sample <-  row.names(mydf)
+      mydf$mouse <- sapply(strsplit(as.character(mydf$sample),'-'), "[", 1)
+      mydf$ID <- paste("15", mydf$mouse, sep = "")
+
+      retention <- behavior %>% 
+        filter(TrainSession == "Retention")
+      retention
+
+      retention <- retention[-c(2:14,16:19)]
+
+      mydf <- left_join(mydf, retention)
+      mydf <- mydf[,c(120:123,1:119,124:162)]
+      row.names(mydf) <- mydf$ID
+      mydfMatrix <- mydf[-c(1:4)]
+
+      mydfMatrixSlim <- mydfMatrix[sample(1:ncol(mydfMatrix), 20,
+       replace=FALSE)]
+
+      mydfcor = cor(mydfMatrixSlim)
+      corrplot(mydfcor, method = "circle", title = mytitle)
+    }
+
+    samplecorrelationplot(CA1stress, "CA1 stress")
+
+    ## Joining, by = "gene"
+
+    ## Warning: Column `gene` joining character vector and factor, coercing into
+    ## character vector
+
+    ## Joining, by = "ID"
+
+    ## Warning: Column `ID` joining character vector and factor, coercing into
+    ## character vector
+
+![](../figures/04_integration/significantgenes-1.png)
+
+    samplecorrelationplot(CA1train, "CA1 train")
+
+    ## Joining, by = "gene"
+
+    ## Warning: Column `gene` joining character vector and factor, coercing into
+    ## character vector
+
+    ## Joining, by = "ID"
+
+    ## Warning: Column `ID` joining character vector and factor, coercing into
+    ## character vector
+
+![](../figures/04_integration/significantgenes-2.png)
+
+    samplecorrelationplot(DGtrain, "DG train")
+
+    ## Joining, by = "gene"
+
+    ## Warning: Column `gene` joining character vector and factor, coercing into
+    ## character vector
+
+    ## Joining, by = "ID"
+
+    ## Warning: Column `ID` joining character vector and factor, coercing into
+    ## character vector
+
+![](../figures/04_integration/significantgenes-3.png)
