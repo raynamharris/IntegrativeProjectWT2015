@@ -77,10 +77,7 @@ This workflow below describes the order in which scripts are used to process and
 
 ![](./figures/figure_4.png)
 
-**Figure about recovering subfield specific markers**
 
-
-![](./figures/figure_abstract.png)
 
 **Figure with top GO results**
 

@@ -196,7 +196,7 @@ Consistent versus yoked-consistent
     }
 
 
-    DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DG train") + theme(legend.position = "none")  
+    DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DEGs - DG train") + theme(legend.position = "none")  
 
     ## [1] "DG"
     ## 
@@ -214,7 +214,7 @@ Consistent versus yoked-consistent
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-1.png)
 
-    CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3", "CA3 train")  
+    CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3", "DEGs - CA3 train")  
 
     ## [1] "CA3"
     ## 
@@ -232,7 +232,7 @@ Consistent versus yoked-consistent
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-2.png)
 
-    CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "CA1 train")  + theme(legend.position = c(0.6,0.9))  
+    CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "DEGs - CA1 train")  + theme(legend.position = c(0.6,0.9))  
 
     ## [1] "CA1"
     ## 
@@ -411,7 +411,7 @@ Yoked confict versus yoked consistent
       plot(volcano)  
     }
 
-    DGyoked <-  plot.yokconf.yokcons(DGdds, "DG", "DG stress")
+    DGyoked <-  plot.yokconf.yokcons(DGdds, "DG", "DEGs - DG stress")
 
     ## [1] "DG"
     ## 
@@ -429,7 +429,7 @@ Yoked confict versus yoked consistent
 
 ![](../figures/02c_rnaseqSubfield/yokeconfyokcons-1.png)
 
-    CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3", "CA3 stress")
+    CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3", "DEGs - CA3 stress")
 
     ## [1] "CA3"
     ## 
@@ -447,7 +447,7 @@ Yoked confict versus yoked consistent
 
 ![](../figures/02c_rnaseqSubfield/yokeconfyokcons-2.png)
 
-    CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1", "CA1 stress")  
+    CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1", "DEGs - CA1 stress")  
 
     ## [1] "CA1"
     ## 
@@ -807,7 +807,7 @@ filter out nonspecific gene expression responses
 
     d1 <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
       geom_bar(stat="identity", position=position_dodge()) +
-      theme_cowplot(font_size = 6, line_size = 0.25) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
       scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"),
                         name = NULL)  +
       labs(x = NULL, y = "Total DEGs") +
@@ -819,7 +819,7 @@ filter out nonspecific gene expression responses
               legend.text=element_text(size=4),
               legend.key.size = unit(0.2, "cm"),
               #legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
-              strip.text.x = element_text(size = 5),
+              #strip.text.x = element_text(size = 5),
               strip.background = element_rect(colour=NA, fill=NA),
             panel.border = element_rect(fill = NA, color = "black"),
             legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0, unit="cm"))
@@ -855,18 +855,17 @@ filter out nonspecific gene expression responses
 
     d2 <- ggplot(shared2, aes(x=direction, y=setsize, image = status)) +
       geom_textured_bar(stat = "identity") +
-      theme_cowplot(font_size = 6, line_size = 0.25) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
       scale_image_manual(values = images,
                          name = NULL) +
-      labs(x = "subfield * treatment", y = "Shared DEGs") +
+      labs(x = "subfield * treatment", y = "Unique DEGs") +
         scale_y_continuous(limits = c(0, 560),
                          breaks = c(0,125,250,375,500)) +
       theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-            legend.position = c(0.05, 0.9),
-            legend.text=element_text(size=4),
+            legend.position = c(0.05, 0.8),
+            #legend.text=element_text(size=4),
             legend.key.size = unit(0.2, "cm"),
-              strip.text.x = element_text(size = 5),
-            #axis.text=element_text(size=7),
+            #strip.text.x = element_text(size = 5),
             strip.background = element_rect(colour=NA, fill=NA),
             panel.border = element_rect(fill = NA, color = "black"),
             legend.margin=margin(t=-0.1, r=0, b=-0.1, l=-0.1, unit="cm")) +
@@ -892,14 +891,13 @@ filter out nonspecific gene expression responses
       filter(status != "shared") %>%
       ggplot(aes(x=direction, y=setsize, fill = direction)) +
       geom_bar(stat = "identity", position=position_dodge()) +
-      theme_cowplot(font_size = 6, line_size = 0.25) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
       labs(x = NULL, y = "Genes for GO") +
       theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
             legend.position = "none",
-            legend.text=element_text(size=4),
+            #legend.text=element_text(size=4),
             legend.key.size = unit(0.2, "cm"),
             strip.text.x = element_text(size = 0),
-            #axis.text=element_text(size=7),
             strip.background = element_rect(colour=NA, fill=NA),
             panel.border = element_rect(fill = NA, color = "black"),
             legend.margin=margin(t=-0.1, r=0, b=-0.1, l=-0.1, unit="cm")) +
@@ -919,6 +917,7 @@ filter out nonspecific gene expression responses
     ## quartz_off_screen 
     ##                 2
 
+    # 3 volcanos and a bar plots in a grid
     bottomplots <- plot_grid(CA1yoked, newbarplots,
                         labels = c("C", NULL),
                         label_size = 7)
@@ -929,11 +928,29 @@ filter out nonspecific gene expression responses
 
 ![](../figures/02c_rnaseqSubfield/combo-1.png)
 
-    #althought this technically now contains volcanos and bar plots
-
     pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=3.15, height=4)
     plot(volcanos)    
-    dev.off()     
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    # 3 volcanos, 2 bar plots, space for 3 GOs
+    spaceforgo <- plot_grid(d1 + labs(x = NULL) + theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1)), 
+                            d2 + labs(x = NULL),
+              DGconsyokcons + theme(legend.position = c(0.8,0.9)), NULL,
+              CA1consyokcons + theme(legend.position = c(0.8,0.9)), NULL,
+              CA1yoked + theme(legend.position = c(0.8,0.9)), NULL,
+              labels="AUTO",
+              label_size = 7,
+              ncol = 2)
+    spaceforgo
+
+![](../figures/02c_rnaseqSubfield/combo-2.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/spaceforgo.pdf", width=5, height=5)
+    plot(spaceforgo)    
+    dev.off()
 
     ## quartz_off_screen 
     ##                 2
