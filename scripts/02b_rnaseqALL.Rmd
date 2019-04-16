@@ -228,7 +228,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = T,
 
 ## Principle component analysis
 
-```{r pca, echo=F, message=F}
+```{r pca}
 # create the dataframe using my function pcadataframe
 pcadata <- pcadataframe(vsd, intgroup=c("subfield","treatment"), returnData=TRUE)
 percentVar <- round(100 * attr(pcadata, "percentVar"))
@@ -264,10 +264,10 @@ PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=subfield)) +
     scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield))
 PCA12
 
-PCA42 <- ggplot(pcadata, aes(pcadata$PC4, pcadata$PC2)) +
+PCA42 <- ggplot(pcadata, aes(pcadata$PC3, pcadata$PC4)) +
     geom_point(size=1.5, aes(color=subfield, shape=treatment), alpha = 0.8) +
-    xlab(paste0("PC4: ", percentVar[4],"%")) +
-    ylab(paste0("PC2: ", percentVar[2],"%")) +
+    xlab(paste0("PC3: ", percentVar[3],"%")) +
+    ylab(paste0("PC4: ", percentVar[4],"%")) +
     #stat_ellipse(level = 0.95, (aes(color=subfield)),size=0.25) + 
     scale_colour_manual(values=c(colorvalsubfield))+ 
     theme_cowplot(font_size = 7, line_size = 0.25)  +
@@ -282,17 +282,20 @@ PCA42
 plotnolegend <- plot_grid(PCA12 + theme(legend.position="none"),
            PCA42 + theme(legend.position="none"),
            labels = c("B", "C"),
-           nrow = 2,
+           ncol = 1,
            label_size = 7
            )
 plotnolegend
 
-legend <- get_legend(PCA42)
+legend <- get_legend(PCA42 + theme(legend.position = "bottom",
+                                   legend.direction = "vertical",
+                                   legend.key.size = unit(0.2, "cm"),
+                                   legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0.5, unit="cm")))
 
-pcaplots <- plot_grid(plotnolegend, legend, ncol = 2, rel_widths  = c(1, .4))
+pcaplots <- plot_grid(plotnolegend, legend, ncol = 1, rel_heights  = c(1, .2))
 pcaplots
 
-pdf(file="../figures/02b_RNAseqALL/pcaplots.pdf", width=3.3, height=2.5)
+pdf(file="../figures/02b_RNAseqALL/pcaplots.pdf", width=2.5, height=3.15)
 plot(pcaplots)
 dev.off()
 ```

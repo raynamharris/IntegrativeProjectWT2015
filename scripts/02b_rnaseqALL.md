@@ -515,6 +515,17 @@ lots of useful info to a df for downstream dataviz.
 Principle component analysis
 ----------------------------
 
+    # create the dataframe using my function pcadataframe
+    pcadata <- pcadataframe(vsd, intgroup=c("subfield","treatment"), returnData=TRUE)
+    percentVar <- round(100 * attr(pcadata, "percentVar"))
+    pcadata$subfieldAPA <- as.factor(paste(pcadata$subfield, pcadata$treatment, sep="_"))
+    pcadata$subfield <- factor(pcadata$subfield, levels=c("DG","CA3", "CA1"))
+    pcadata$treatment <- factor(pcadata$treatment, levels=c("yoked_consistent","consistent",  "yoked_conflict","conflict"))
+
+    levels(pcadata$treatment) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+
+    summary(aov(PC1 ~ subfield * treatment, data=pcadata)) 
+
     ##                    Df Sum Sq Mean Sq F value Pr(>F)    
     ## subfield            2   8985    4493 648.658 <2e-16 ***
     ## treatment           3     70      23   3.345 0.0312 *  
@@ -522,6 +533,8 @@ Principle component analysis
     ## Residuals          32    222       7                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    TukeyHSD((aov(PC1 ~ subfield, data=pcadata)), which = "subfield") 
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
@@ -534,6 +547,8 @@ Principle component analysis
     ## CA1-DG  -29.051106 -31.700143 -26.402068 0.0000000
     ## CA1-CA3   1.365387  -1.427636   4.158411 0.4665421
 
+    summary(aov(PC2 ~ subfield * treatment, data=pcadata)) 
+
     ##                    Df Sum Sq Mean Sq  F value Pr(>F)    
     ## subfield            2   4260  2130.0 1338.086 <2e-16 ***
     ## treatment           3      8     2.6    1.614 0.2055    
@@ -541,6 +556,8 @@ Principle component analysis
     ## Residuals          32     51     1.6                    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    TukeyHSD((aov(PC2 ~ subfield, data=pcadata)), which = "subfield") 
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
@@ -553,6 +570,8 @@ Principle component analysis
     ## CA1-DG   12.48060  11.25520  13.70600     0
     ## CA1-CA3  24.70229  23.41029  25.99430     0
 
+    summary(aov(PC3 ~ subfield * treatment, data=pcadata)) 
+
     ##                    Df Sum Sq Mean Sq F value Pr(>F)  
     ## subfield            2   19.9    9.95   0.274 0.7618  
     ## treatment           3  374.6  124.86   3.445 0.0281 *
@@ -560,6 +579,8 @@ Principle component analysis
     ## Residuals          32 1159.9   36.25                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    TukeyHSD((aov(PC3 ~ subfield, data=pcadata)), which = "subfield") 
 
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
@@ -572,6 +593,8 @@ Principle component analysis
     ## CA1-DG  -1.0834889 -6.723773 4.556796 0.8870184
     ## CA1-CA3  0.5267609 -5.420096 6.473618 0.9747645
 
+    summary(aov(PC4 ~ subfield * treatment, data=pcadata)) 
+
     ##                    Df Sum Sq Mean Sq F value Pr(>F)   
     ## subfield            2    1.9    0.95   0.087 0.9167   
     ## treatment           3  156.8   52.28   4.780 0.0073 **
@@ -580,11 +603,15 @@ Principle component analysis
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
+    summary(aov(PC5 ~ subfield * treatment, data=pcadata)) 
+
     ##                    Df Sum Sq Mean Sq F value Pr(>F)
     ## subfield            2   0.83   0.416   0.043  0.958
     ## treatment           3  64.30  21.432   2.202  0.107
     ## subfield:treatment  6  46.84   7.806   0.802  0.576
     ## Residuals          32 311.42   9.732
+
+    summary(aov(PC6 ~ subfield * treatment, data=pcadata)) 
 
     ##                    Df Sum Sq Mean Sq F value  Pr(>F)   
     ## subfield            2   2.31   1.154   0.173 0.84179   
@@ -594,19 +621,68 @@ Principle component analysis
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
+    PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=subfield)) +
+        geom_point(size=1.5, aes(shape=treatment), alpha = 0.8) +
+        xlab(paste0("PC1: ", percentVar[1],"%")) +
+        ylab(paste0("PC2: ", percentVar[2],"%")) +
+        #stat_ellipse(level = 0.95, (aes(color=subfield)),size=0.25) + 
+        scale_colour_manual(values=c(colorvalsubfield))+ 
+        theme_cowplot(font_size = 7, line_size = 0.25)  +
+        #theme(legend.title=element_blank()) +
+        scale_x_continuous(limits=c(-15, 25)) +
+          scale_y_continuous(limits=c(-15, 15)) +
+        scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield))
+    PCA12
+
 ![](../figures/02b_RNAseqAll/pca-1.png)
 
-    ## Warning: Removed 1 rows containing missing values (geom_point).
+    PCA42 <- ggplot(pcadata, aes(pcadata$PC3, pcadata$PC4)) +
+        geom_point(size=1.5, aes(color=subfield, shape=treatment), alpha = 0.8) +
+        xlab(paste0("PC3: ", percentVar[3],"%")) +
+        ylab(paste0("PC4: ", percentVar[4],"%")) +
+        #stat_ellipse(level = 0.95, (aes(color=subfield)),size=0.25) + 
+        scale_colour_manual(values=c(colorvalsubfield))+ 
+        theme_cowplot(font_size = 7, line_size = 0.25)  +
+        theme(legend.title=element_blank()) +
+      scale_x_continuous(limits=c(-10, 15)) +
+            scale_y_continuous(limits=c(-15, 15)) +
+        scale_shape_manual(aes(color=colorvalsubfield), values=c(1, 16, 0, 15)) +
+      guides(color = guide_legend(order=1),
+             shape = guide_legend(order=2)) 
+    PCA42
+
+    ## Warning: Removed 2 rows containing missing values (geom_point).
 
 ![](../figures/02b_RNAseqAll/pca-2.png)
 
-    ## Warning: Removed 1 rows containing missing values (geom_point).
+    plotnolegend <- plot_grid(PCA12 + theme(legend.position="none"),
+               PCA42 + theme(legend.position="none"),
+               labels = c("B", "C"),
+               ncol = 1,
+               label_size = 7
+               )
+
+    ## Warning: Removed 2 rows containing missing values (geom_point).
+
+    plotnolegend
 
 ![](../figures/02b_RNAseqAll/pca-3.png)
 
-    ## Warning: Removed 1 rows containing missing values (geom_point).
+    legend <- get_legend(PCA42 + theme(legend.position = "bottom",
+                                       legend.direction = "vertical",
+                                       legend.key.size = unit(0.2, "cm"),
+                                       legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0.5, unit="cm")))
+
+    ## Warning: Removed 2 rows containing missing values (geom_point).
+
+    pcaplots <- plot_grid(plotnolegend, legend, ncol = 1, rel_heights  = c(1, .2))
+    pcaplots
 
 ![](../figures/02b_RNAseqAll/pca-4.png)
+
+    pdf(file="../figures/02b_RNAseqALL/pcaplots.pdf", width=2.5, height=3.15)
+    plot(pcaplots)
+    dev.off()
 
     ## quartz_off_screen 
     ##                 2
