@@ -54,6 +54,18 @@ returndds <- function(mytissue){
 DGdds <- returndds("DG") 
 CA1dds <- returndds("CA1") 
 CA3dds <- returndds("CA3") 
+
+
+returnvsds <- function(mydds, vsdfilename){
+  dds <- mydds
+  vsd <- vst(dds, blind=FALSE) ## variance stabilized
+  print(head(assay(vsd),3))
+  return(write.csv(assay(vsd), file = vsdfilename, row.names = T))
+}
+
+returnvsds(DGdds, "../data/02c_DGvsd.csv")
+returnvsds(CA1dds, "../data/02c_CA1vsd.csv")
+returnvsds(CA3dds, "../data/02c_CA3vsd.csv")
 ```
 
 ## Consistent versus yoked-consistent
@@ -79,7 +91,7 @@ plot.cons.yokcons <- function(mydds, mytissue, mytitle){
                                     no = "NS")))
 
 
-  write.csv(data, file = paste0("../data/02c_", mytissue, "_consyokcons.csv", sep = ""))
+  write.csv(data, file = paste0("../data/02c_", mytissue, "_consyokcons.csv", sep = ""), row.names = F)
   
   volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
     geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
@@ -138,7 +150,7 @@ plot.conf.cons <- function(mydds, mytissue){
                                     yes = "consistent", 
                                     no = "NS")))
   
-  write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""))
+  write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""), row.names = F)
   
   volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
     geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
@@ -194,7 +206,7 @@ plot.yokconf.yokcons <- function(mydds, mytissue, mytitle){
   
   data$direction <- factor(data$direction, levels = c("yoked\nconsistent", "NS", "yoked\nconflict"))
   
-  write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""))
+  write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""), row.names = F)
   
   volcano <- ggplot(data, aes(x = lfc, y = logpadj, color = direction)) + 
     geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
@@ -225,11 +237,24 @@ plot_grid(DGyoked, CA3yoked, CA1yoked, nrow = 1)
 
 # pkmz
 
-
 ```{r pkmz}
 plotCounts(DGdds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
 plotCounts(CA3dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA3")
 plotCounts(CA1dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
+
+```
+
+## genes that are correlated with number of entrances 
+
+Requires anlaysis of `04_integration.Rmd` first.
+
+```{r DGcorrelations}
+plotCounts(DGdds, "Acan", intgroup = "APA2", normalized = TRUE, main="Acan in DG")
+plotCounts(DGdds, "Amigo2", intgroup = "APA2", normalized = TRUE, main="Amigo2 in DG")
+plotCounts(DGdds, "Armcx5", intgroup = "APA2", normalized = TRUE, main="Armcx5 in DG")
+plotCounts(DGdds, "Ptgs2", intgroup = "APA2", normalized = TRUE, main="Ptgs2 in DG")
+plotCounts(DGdds, "Rgs2", intgroup = "APA2", normalized = TRUE, main="Rgs2 in DG")
+plotCounts(DGdds, "Syt4", intgroup = "APA2", normalized = TRUE, main="Syt4 in DG")
 ```
 
 
@@ -353,30 +378,26 @@ upset(trained, keep.order = T,
       mb.ratio = c(0.6, 0.4)
 )
 dev.off()
+```
 
+Create a list of genes afected by stress and learning. Save. THen use to filter out nonspecific gene expression responses
+
+```{r listofDEGs}
 shared <- myupsetdf %>%
   select(gene, "CA1-yconf-ycons", "CA1-cons-ycons", "DG-cons-ycons")
 colnames(shared) <- c("gene", "CA1stress", "CA1learn", "DGlearn")
 
-# ca1 DG learning
-shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
-  select(gene)  
 
 # CA1 and DG learning only (none in stress)
 shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
   select(gene) 
 
-# learning only CA1
-shared %>% filter(CA1learn == 1 & CA1stress == 0 & DGlearn == 0) %>%
+# learning and stress CA1
+CA1learnstress <- shared %>% filter(CA1learn == 1 & CA1stress == 1) %>%
   select(gene)
+head(CA1learnstress)
 
-# stress only CA1
-shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 0) %>%
-  select(gene)
-
-# stress only CA1 and DG
-shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 1) %>%
-  select(gene)
+write.csv(CA1learnstress, "../data/02_CA1learningstressgenes.csv", row.names = F)
 ```
 
 

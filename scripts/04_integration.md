@@ -402,78 +402,177 @@ Import Data
 
 Significant genes
 
-    CA1train <- read.csv("../data/02c_CA1_consyokcons.csv", stringsAsFactors = F) 
-    CA1stress <- read.csv("../data/02c_CA1_yokeconfyokcons.csv", stringsAsFactors = F)
-    DGtrain <- read.csv("../data/02c_DG_consyokcons.csv", stringsAsFactors = F)
+    # read files with pvalues
+    CA1stresspvals <- read.csv("../data/02c_CA1_consyokcons.csv", stringsAsFactors = F, row.names = NULL) 
+    CA1trainpvals <- read.csv("../data/02c_CA1_yokeconfyokcons.csv", stringsAsFactors = F, row.names = NULL)
+    DGtrainpvals <- read.csv("../data/02c_DG_consyokcons.csv", stringsAsFactors = F)
 
-    samplecorrelationplot <- function(mydf, mytitle){
-      mydf <-   mydf %>% filter(direction != "NS")
-      DGvsd <- read.csv("../data/02c_DGvsd.csv", check.names = F)
-      colnames(DGvsd)[1] <- "gene"
-      mydf <- left_join(mydf, DGvsd)
+    # remove non-significant genes and genes affected by learning and stresss
+    CA1learnstress <- read.csv("../data/02_CA1learningstressgenes.csv", stringsAsFactors = F)
+    CA1learnstress <- as.vector(CA1learnstress$gene)
+
+    CA1trainpvals <- CA1trainpvals %>% filter(!gene %in% CA1learnstress,
+                                              direction != "NS")
+    CA1stresspvals <- CA1stresspvals %>% filter(!gene %in% CA1learnstress,
+                                              direction != "NS")
+    DGtrainpvals <- DGtrainpvals %>% filter(!gene %in% CA1learnstress,
+                                              direction != "NS")
+
+    # read variance stabilized count data
+    DGvsd <- read.csv("../data/02c_DGvsd.csv", stringsAsFactors = F, check.names = F) 
+    CA1vsd <- read.csv("../data/02c_CA1vsd.csv", stringsAsFactors = F, check.names = F)
+
+    # function to calculate and plot correlations between gene expression and behaivor
+    correlationdf <- function(pvalues, vsds){
+      
+      # add gene to df for joining
+      colnames(vsds)[1] <- "gene"
+      
+      mydf <- left_join(pvalues, vsds)
       row.names(mydf) <- mydf$gene
       mydf <- mydf[-c(1:6)]
       mydf <- as.data.frame(t(mydf))
+      
+      # create an ID column to join lists of DEGs with their experssion values and the behavior of the animal 
       mydf$sample <-  row.names(mydf)
       mydf$mouse <- sapply(strsplit(as.character(mydf$sample),'-'), "[", 1)
       mydf$ID <- paste("15", mydf$mouse, sep = "")
-
-      retention <- behavior %>% 
-        filter(TrainSession == "Retention")
-      retention
-
-      retention <- retention[-c(2:14,16:19)]
-
-      mydf <- left_join(mydf, retention)
-      mydf <- mydf[,c(120:123,1:119,124:162)]
+      mydf$sample <-  NULL
+      mydf$mouse <- NULL
       row.names(mydf) <- mydf$ID
-      mydfMatrix <- mydf[-c(1:4)]
+      
+      # randomely select 15 genes and add ID column back for joining
+      mydfrandom <- mydf
+      #mydfrandom <- mydfrandom[sample(1:ncol(mydfrandom), 15,replace=FALSE)]
+      
+      mydfrandom$ID <- row.names(mydfrandom)
+      
+      # subset the beahvior data to the last time point and only values shows in figure 2
+      favbehav <- behavior %>% 
+        filter(TrainSession == "Retention") %>%
+        select(ID, NumEntrances, Time1stEntr)
+        
+      favbehavgenes <- left_join(mydfrandom, favbehav)
+      favbehavgenes$ID <- NULL
+      
+      mycordf = cor(favbehavgenes)
+      #corrplot(mycordf, method = "circle", title = mytitle, tl.col = "black", tl.cex = 0.8)
+      mycordf <- as.data.frame(mycordf)
+      mycordf$gene <- row.names(mycordf)
+      return(mycordf)
+    }  
 
-      mydfMatrixSlim <- mydfMatrix[sample(1:ncol(mydfMatrix), 20,
-       replace=FALSE)]
-
-      mydfcor = cor(mydfMatrixSlim)
-      corrplot(mydfcor, method = "circle", title = mytitle)
-    }
-
-    samplecorrelationplot(CA1stress, "CA1 stress")
+    corCA1stress <- correlationdf(CA1stresspvals, CA1vsd)
 
     ## Joining, by = "gene"
-
-    ## Warning: Column `gene` joining character vector and factor, coercing into
-    ## character vector
 
     ## Joining, by = "ID"
 
     ## Warning: Column `ID` joining character vector and factor, coercing into
     ## character vector
+
+    corCA1train <- correlationdf(CA1trainpvals, CA1vsd)
+
+    ## Joining, by = "gene"
+    ## Joining, by = "ID"
+
+    ## Warning: Column `ID` joining character vector and factor, coercing into
+    ## character vector
+
+    corDGtrain <- correlationdf(DGtrainpvals, DGvsd) 
+
+    ## Joining, by = "gene"
+    ## Joining, by = "ID"
+
+    ## Warning: Column `ID` joining character vector and factor, coercing into
+    ## character vector
+
+    corpointplot <- function(mycordf, mytitle){
+
+      # remove self corelations
+      mycordf <- mycordf %>%
+        filter(!gene %in% c("NumEntrances", "Time1stEntr"))
+      
+      p1 <- mycordf %>%
+        select(-Time1stEntr) %>% # remove corelations with other behavior
+        ggplot(aes(x = reorder(gene, -NumEntrances), y = NumEntrances, color = NumEntrances)) +
+        geom_point(stat = "identity") +
+        theme_minimal(base_size = 7) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 2),
+              panel.grid.major.x = element_blank(),
+              panel.grid.minor.x = element_blank(),
+              legend.position = "none")   +
+        labs(subtitle = mytitle, x = "signficant genes", y = "Correlation to\nNumber of Entrances")  +
+        ylim(-1, 1) +
+        scale_color_viridis(limits=c(-1,1))
+      
+      p2 <- mycordf %>%
+        select(-NumEntrances) %>% # remove corelations with other behavior
+        ggplot(aes(x =  reorder(gene, Time1stEntr), y = Time1stEntr, color = Time1stEntr)) +
+        geom_point(stat = "identity") +
+        theme_minimal(base_size = 7) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 2),
+              panel.grid.major.x = element_blank(),
+              panel.grid.minor.x = element_blank(),
+              legend.position = "none",
+              legend.title = element_blank())   +
+        labs(subtitle = mytitle, x = "signficant genes", y = "Correlation to\nTime to 1st Entrances")  +
+        ylim(-1, 1) +
+        scale_color_viridis(limits=c(-1,1)) 
+        
+      
+      p12 <- plot_grid(p2,p1, nrow = 2)
+        
+      print(p12)
+    }
+
+    a <- corpointplot(corCA1train, "CA1 training-responsive genes") 
 
 ![](../figures/04_integration/significantgenes-1.png)
 
-    samplecorrelationplot(CA1train, "CA1 train")
-
-    ## Joining, by = "gene"
-
-    ## Warning: Column `gene` joining character vector and factor, coercing into
-    ## character vector
-
-    ## Joining, by = "ID"
-
-    ## Warning: Column `ID` joining character vector and factor, coercing into
-    ## character vector
+    b <- corpointplot(corDGtrain, "DG training-responsive genes")
 
 ![](../figures/04_integration/significantgenes-2.png)
 
-    samplecorrelationplot(DGtrain, "DG train")
-
-    ## Joining, by = "gene"
-
-    ## Warning: Column `gene` joining character vector and factor, coercing into
-    ## character vector
-
-    ## Joining, by = "ID"
-
-    ## Warning: Column `ID` joining character vector and factor, coercing into
-    ## character vector
+    ab <- plot_grid(b,a, nrow = 1)
+    ab 
 
 ![](../figures/04_integration/significantgenes-3.png)
+
+    pdf(file="../figures/04_integration/correlationpointplots.pdf", width=5, height=4)
+    plot(ab)    
+    dev.off() 
+
+    ## quartz_off_screen 
+    ##                 2
+
+    corDGtrain %>%
+      filter(Time1stEntr > 0.75 | NumEntrances < -.75 |  Time1stEntr < -.75 | NumEntrances > 0.75,
+             !gene %in% c("Time1stEntr", "NumEntrances")) %>%
+      select(gene, Time1stEntr, NumEntrances)
+
+    ##       gene Time1stEntr NumEntrances
+    ## 1     Acan   0.7270032   -0.7757527
+    ## 2   Amigo2   0.7301423   -0.7621433
+    ## 3      Arc   0.7550063   -0.7613195
+    ## 4   Armcx5   0.7372492   -0.8373150
+    ## 5     Fzd5   0.7954120   -0.6875919
+    ## 6    Npas4   0.7686581   -0.7123179
+    ## 7    Ptgs2   0.7818914   -0.7566271
+    ## 8     Rgs2   0.7664609   -0.7638017
+    ## 9  Slc16a1   0.7613746   -0.6036242
+    ## 10    Syt4   0.6248840   -0.7540978
+
+    corCA1train %>%
+      filter(Time1stEntr > 0.5 | NumEntrances < -.5 |  Time1stEntr < -.5 | NumEntrances > 0.5,
+             !gene %in% c("Time1stEntr", "NumEntrances")) %>%
+      select(gene, Time1stEntr, NumEntrances)
+
+    ##       gene Time1stEntr NumEntrances
+    ## 1   Apcdd1   0.5747051   -0.4286220
+    ## 2     Dus2   0.5446638   -0.4347349
+    ## 3  Gm10146   0.5391813   -0.5062042
+    ## 4   Gm6741   0.5519054   -0.3576612
+    ## 5 Irak1bp1   0.5327331   -0.3336685
+    ## 6     Orc6   0.5020997   -0.5185818
+    ## 7  Tmem143   0.5219493   -0.3079609

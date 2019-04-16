@@ -8,7 +8,6 @@ have been inserted just below the subheadings.
 
     library(tidyverse)
     library(cowplot) ## for some easy to use themes
-    library(VennDiagram) ## venn diagrams
     library(DESeq2) ## for gene expression analysis
     library(UpSetR)
     #devtools::install_github("clauswilke/ggtextures")
@@ -96,6 +95,58 @@ Get varience stabilized gene expression for each tissue
 
     ## fitting model and testing
 
+    returnvsds <- function(mydds, vsdfilename){
+      dds <- mydds
+      vsd <- vst(dds, blind=FALSE) ## variance stabilized
+      print(head(assay(vsd),3))
+      return(write.csv(assay(vsd), file = vsdfilename, row.names = T))
+    }
+
+    returnvsds(DGdds, "../data/02c_DGvsd.csv")
+
+    ##               143A-DG-1 143B-DG-1 143D-DG-3 144A-DG-2 144C-DG-2 144D-DG-2
+    ## 0610007P14Rik  6.381145  6.405587  6.834813  6.513173  6.401366  6.637581
+    ## 0610009B22Rik  5.781124  5.661825  5.299160  5.528657  5.821796  5.670620
+    ## 0610009L18Rik  5.405848  5.593055  5.422004  5.000789  5.507750  5.506319
+    ##               145A-DG-2 145B-DG-1 146A-DG-2 146B-DG-2 146C-DG-4 146D-DG-3
+    ## 0610007P14Rik  6.562833  6.126760  6.298333  5.996243  6.929322  7.411893
+    ## 0610009B22Rik  5.942028  5.787857  5.679794  5.996243  6.060620  5.000789
+    ## 0610009L18Rik  5.256496  5.000789  5.679794  5.000789  5.000789  5.000789
+    ##               147C-DG-3 147D-DG-1 148A-DG-3 148B-DG-4
+    ## 0610007P14Rik  6.298159  6.481476  6.493581  6.349976
+    ## 0610009B22Rik  5.910805  5.893873  5.589261  5.492981
+    ## 0610009L18Rik  5.257050  5.718223  5.505647  5.349661
+
+    returnvsds(CA1dds, "../data/02c_CA1vsd.csv")
+
+    ##               143B-CA1-1 143C-CA1-1 143D-CA1-3 144A-CA1-2 144B-CA1-1
+    ## 0610007P14Rik   7.520142   7.151097   7.348321   7.355004   7.389284
+    ## 0610009B22Rik   7.035970   6.906418   6.301096   6.955307   6.790054
+    ## 0610009L18Rik   6.811049   6.498778   6.301096   6.661562   6.432357
+    ##               144C-CA1-2 145A-CA1-2 145B-CA1-1 146A-CA1-2 146B-CA1-2
+    ## 0610007P14Rik   7.197450   7.402112   7.364954   7.156319   7.035597
+    ## 0610009B22Rik   6.743802   6.883948   6.887177   6.920446   6.802964
+    ## 0610009L18Rik   6.463299   6.747507   6.564639   6.755012   6.301096
+    ##               146C-CA1-4 146D-CA1-3 147C-CA1-3 148A-CA1-3 148B-CA1-4
+    ## 0610007P14Rik   7.401377   7.464466   7.267392   7.328133   7.190380
+    ## 0610009B22Rik   6.782624   6.920474   6.787440   6.987979   6.301096
+    ## 0610009L18Rik   6.846384   6.301096   6.468607   6.661247   6.301096
+
+    returnvsds(CA3dds, "../data/02c_CA3vsd.csv")
+
+    ##               143A-CA3-1 144A-CA3-2 144B-CA3-1 144C-CA3-2 144D-CA3-2
+    ## 0610007P14Rik   7.090155   7.589689   7.267022   7.034300   6.919678
+    ## 0610009B22Rik   6.500788   7.011651   6.577337   6.947298   6.425407
+    ## 0610009L18Rik   6.087226   6.714029   6.321004   6.277450   6.321271
+    ##               145A-CA3-2 146A-CA3-2 146B-CA3-2 146D-CA3-3 147C-CA3-3
+    ## 0610007P14Rik   6.825848   7.267048   6.799319   7.157725   7.172640
+    ## 0610009B22Rik   6.919473   6.288754   6.934486   6.515827   6.403921
+    ## 0610009L18Rik   5.797921   6.288754   6.049110   6.196801   6.166572
+    ##               147D-CA3-1 148A-CA3-3 148B-CA3-4
+    ## 0610007P14Rik   6.881145   6.962549   7.295192
+    ## 0610009B22Rik   6.586876   6.578744   6.732213
+    ## 0610009L18Rik   6.171145   6.223238   6.265907
+
 Consistent versus yoked-consistent
 ----------------------------------
 
@@ -119,7 +170,7 @@ Consistent versus yoked-consistent
                                         no = "NS")))
 
 
-      write.csv(data, file = paste0("../data/02c_", mytissue, "_consyokcons.csv", sep = ""))
+      write.csv(data, file = paste0("../data/02c_", mytissue, "_consyokcons.csv", sep = ""), row.names = F)
       
       volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
         geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
@@ -229,7 +280,7 @@ Confict versus Consistent
                                         yes = "consistent", 
                                         no = "NS")))
       
-      write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""))
+      write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""), row.names = F)
       
       volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
         geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
@@ -335,7 +386,7 @@ Yoked confict versus yoked consistent
       
       data$direction <- factor(data$direction, levels = c("yoked\nconsistent", "NS", "yoked\nconflict"))
       
-      write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""))
+      write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""), row.names = F)
       
       volcano <- ggplot(data, aes(x = lfc, y = logpadj, color = direction)) + 
         geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
@@ -428,6 +479,35 @@ pkmz
     plotCounts(CA1dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
 
 ![](../figures/02c_rnaseqSubfield/pkmz-3.png)
+
+genes that are correlated with number of entrances
+--------------------------------------------------
+
+Requires anlaysis of `04_integration.Rmd` first.
+
+    plotCounts(DGdds, "Acan", intgroup = "APA2", normalized = TRUE, main="Acan in DG")
+
+![](../figures/02c_rnaseqSubfield/DGcorrelations-1.png)
+
+    plotCounts(DGdds, "Amigo2", intgroup = "APA2", normalized = TRUE, main="Amigo2 in DG")
+
+![](../figures/02c_rnaseqSubfield/DGcorrelations-2.png)
+
+    plotCounts(DGdds, "Armcx5", intgroup = "APA2", normalized = TRUE, main="Armcx5 in DG")
+
+![](../figures/02c_rnaseqSubfield/DGcorrelations-3.png)
+
+    plotCounts(DGdds, "Ptgs2", intgroup = "APA2", normalized = TRUE, main="Ptgs2 in DG")
+
+![](../figures/02c_rnaseqSubfield/DGcorrelations-4.png)
+
+    plotCounts(DGdds, "Rgs2", intgroup = "APA2", normalized = TRUE, main="Rgs2 in DG")
+
+![](../figures/02c_rnaseqSubfield/DGcorrelations-5.png)
+
+    plotCounts(DGdds, "Syt4", intgroup = "APA2", normalized = TRUE, main="Syt4 in DG")
+
+![](../figures/02c_rnaseqSubfield/DGcorrelations-6.png)
 
 Upset plots
 -----------
@@ -647,21 +727,13 @@ What genes overlap within cetain comparisons?
     ## quartz_off_screen 
     ##                 2
 
+Create a list of genes afected by stress and learning. Save. THen use to
+filter out nonspecific gene expression responses
+
     shared <- myupsetdf %>%
       select(gene, "CA1-yconf-ycons", "CA1-cons-ycons", "DG-cons-ycons")
     colnames(shared) <- c("gene", "CA1stress", "CA1learn", "DGlearn")
 
-    # ca1 DG learning
-    shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
-      select(gene)  
-
-    ##      gene
-    ## 1    Fosb
-    ## 2 Gm13889
-    ## 3    Irs1
-    ## 4   Lemd3
-    ## 5   Npas4
-    ## 6    Rgs2
 
     # CA1 and DG learning only (none in stress)
     shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
@@ -675,762 +747,20 @@ What genes overlap within cetain comparisons?
     ## 5   Npas4
     ## 6    Rgs2
 
-    # learning only CA1
-    shared %>% filter(CA1learn == 1 & CA1stress == 0 & DGlearn == 0) %>%
+    # learning and stress CA1
+    CA1learnstress <- shared %>% filter(CA1learn == 1 & CA1stress == 1) %>%
       select(gene)
+    head(CA1learnstress)
 
-    ##              gene
-    ## 1           Kcnc2
-    ## 2   1810022K09Rik
-    ## 3   3110035E14Rik
-    ## 4   9430015G10Rik
-    ## 5           Aagab
-    ## 6            Abl1
-    ## 7             Abr
-    ## 8           Acad8
-    ## 9           Acads
-    ## 10          Acot9
-    ## 11          Acta1
-    ## 12         Actl6b
-    ## 13          Adam8
-    ## 14          Adat1
-    ## 15         Afg3l2
-    ## 16          Aftph
-    ## 17          Agfg2
-    ## 18          Ahdc1
-    ## 19            Aip
-    ## 20          Akap9
-    ## 21          Aldoa
-    ## 22          Alg11
-    ## 23          Alms1
-    ## 24         Amigo1
-    ## 25         Amigo3
-    ## 26         Ankfy1
-    ## 27        Ankrd12
-    ## 28          Ap1s1
-    ## 29           Apln
-    ## 30          Apol8
-    ## 31           Aptx
-    ## 32           Arf5
-    ## 33        Arfgef3
-    ## 34         Arglu1
-    ## 35         Arl13b
-    ## 36          Arl5a
-    ## 37         Arntl2
-    ## 38         Arrdc3
-    ## 39          Asap1
-    ## 40          Asxl3
-    ## 41           Atf5
-    ## 42          Atf6b
-    ## 43         Atp2b2
-    ## 44          Atp5e
-    ## 45       Atp6v1g2
-    ## 46         Atpaf2
-    ## 47        Atxn7l3
-    ## 48          Baz2a
-    ## 49          Baz2b
-    ## 50       BC030500
-    ## 51        Bloc1s5
-    ## 52           Bop1
-    ## 53         Btbd10
-    ## 54          C2cd3
-    ## 55          Cabp1
-    ## 56         Camkk2
-    ## 57        Camsap1
-    ## 58         Capn10
-    ## 59           Cbx3
-    ## 60           Cbx4
-    ## 61        Ccdc190
-    ## 62         Ccdc43
-    ## 63           Ccny
-    ## 64           Ccr5
-    ## 65           Cct7
-    ## 66          Cdh20
-    ## 67           Cdh7
-    ## 68          Cdk15
-    ## 69          Cend1
-    ## 70         Cep131
-    ## 71         Cfap20
-    ## 72           Chpf
-    ## 73           Chrd
-    ## 74           Chuk
-    ## 75          Clock
-    ## 76          Cntrl
-    ## 77       Colgalt2
-    ## 78           Coq2
-    ## 79            Cpq
-    ## 80           Crem
-    ## 81          Crim1
-    ## 82          Cstf1
-    ## 83          Ctcfl
-    ## 84          Cyb5b
-    ## 85     D1Ertd622e
-    ## 86            Dbt
-    ## 87         Ddx19b
-    ## 88          Ddx31
-    ## 89        Dennd1b
-    ## 90         Dnajb6
-    ## 91           Dner
-    ## 92           Dok6
-    ## 93           Dpf1
-    ## 94           Drp2
-    ## 95         Dusp19
-    ## 96         Eif2s1
-    ## 97         Eif4a1
-    ## 98         Eif4a2
-    ## 99           Emc4
-    ## 100          Eml2
-    ## 101         Enkd1
-    ## 102          Eri3
-    ## 103         Esrrg
-    ## 104         Esyt1
-    ## 105        Exoc6b
-    ## 106          Ext1
-    ## 107       Fam110b
-    ## 108       Fam131a
-    ## 109       Fam19a2
-    ## 110        Fam63a
-    ## 111        Fam63b
-    ## 112         Fanci
-    ## 113          Fbn1
-    ## 114         Fbxl6
-    ## 115          Fgd4
-    ## 116          Fgd5
-    ## 117        Filip1
-    ## 118          Flt1
-    ## 119          Fmn1
-    ## 120        Fn3krp
-    ## 121        Fndc3a
-    ## 122         Foxj3
-    ## 123        Frmpd3
-    ## 124           Fry
-    ## 125          Fzd3
-    ## 126          Get4
-    ## 127        Glcci1
-    ## 128       Gm10053
-    ## 129       Gm21887
-    ## 130        Gm4631
-    ## 131         Gm527
-    ## 132        Gm9821
-    ## 133        Gpr161
-    ## 134        Gpr180
-    ## 135         Grem2
-    ## 136         Grik3
-    ## 137          Grm1
-    ## 138         Gstt3
-    ## 139       Gucy1a2
-    ## 140        Gucy2e
-    ## 141          Guk1
-    ## 142         Hcfc1
-    ## 143         Hdac6
-    ## 144         Hecw2
-    ## 145          Helz
-    ## 146         Herc3
-    ## 147       Herpud2
-    ## 148          Hexb
-    ## 149         Hmox2
-    ## 150        Hspa1b
-    ## 151         Hspa2
-    ## 152        Hspbp1
-    ## 153         Igbp1
-    ## 154       Igf2bp2
-    ## 155         Impa1
-    ## 156         Inhbb
-    ## 157         Ino80
-    ## 158        Inpp4b
-    ## 159          Jag2
-    ## 160          Jak2
-    ## 161         Josd1
-    ## 162         Kat6a
-    ## 163        Kbtbd3
-    ## 164         Kcna1
-    ## 165         Kcna4
-    ## 166         Kcnc1
-    ## 167         Kcnd3
-    ## 168         Kctd5
-    ## 169         Kdm5d
-    ## 170         Khnyn
-    ## 171         Kif1a
-    ## 172        Kif26b
-    ## 173         Klkb1
-    ## 174         Kmt2e
-    ## 175         Kmt5a
-    ## 176          Kri1
-    ## 177        Lefty1
-    ## 178         Letm2
-    ## 179         Lnpep
-    ## 180        Lpcat4
-    ## 181         Lrfn4
-    ## 182        Lrrc58
-    ## 183         Lsamp
-    ## 184          Ltv1
-    ## 185         Lzts3
-    ## 186        Man1a2
-    ## 187         Manba
-    ## 188       Map3k12
-    ## 189      Mapkapk2
-    ## 190         Marf1
-    ## 191         Mark3
-    ## 192          Mbd5
-    ## 193           Mcc
-    ## 194          Med8
-    ## 195       Mettl16
-    ## 196      Mettl21e
-    ## 197       Mfsd13a
-    ## 198        Mmadhc
-    ## 199      Mphosph9
-    ## 200        Mpped1
-    ## 201        Mrgpre
-    ## 202        Mrpl28
-    ## 203        Mrpl48
-    ## 204        Msl3l2
-    ## 205         Mtfmt
-    ## 206         Myo5a
-    ## 207          Nat9
-    ## 208         Ncoa1
-    ## 209        Ndufs7
-    ## 210          Nefm
-    ## 211         Neto2
-    ## 212           Nf2
-    ## 213          Ngef
-    ## 214          Nkrf
-    ## 215          Nle1
-    ## 216          Nme1
-    ## 217         Nolc1
-    ## 218           Nov
-    ## 219          Nrgn
-    ## 220         Ntng1
-    ## 221         Ntpcr
-    ## 222        Nudt19
-    ## 223         Nudt6
-    ## 224          Nxt2
-    ## 225         Olfm3
-    ## 226         Ovca2
-    ## 227         Patz1
-    ## 228        Pcdh17
-    ## 229         Pde6a
-    ## 230         Pebp1
-    ## 231          Pgk1
-    ## 232         Phka1
-    ## 233         Pias4
-    ## 234        Plagl2
-    ## 235          Plau
-    ## 236        Podxl2
-    ## 237        Polr2h
-    ## 238        Polrmt
-    ## 239       Ppp1r3f
-    ## 240        Ppp3r1
-    ## 241         Ppp5c
-    ## 242         Prpf8
-    ## 243         Psg28
-    ## 244         Psmc4
-    ## 245         Psmg2
-    ## 246        Ptpn11
-    ## 247         Ptpn4
-    ## 248         Ptprm
-    ## 249        Ptprn2
-    ## 250         Pygo1
-    ## 251         Rab3c
-    ## 252          Rbak
-    ## 253         Rbbp4
-    ## 254         Rcan2
-    ## 255          Rdh1
-    ## 256          Rest
-    ## 257         Rfesd
-    ## 258         Rfwd3
-    ## 259        Rhbdl3
-    ## 260       Rnaseh1
-    ## 261        Rnf165
-    ## 262        Rnf180
-    ## 263        Rnf216
-    ## 264         Rnf25
-    ## 265         Rpl10
-    ## 266         Rpl36
-    ## 267         Rplp2
-    ## 268          Rps6
-    ## 269        Rsc1a1
-    ## 270        Rsph3a
-    ## 271        S100a1
-    ## 272        Samhd1
-    ## 273        Sema4a
-    ## 274         Sf3b2
-    ## 275         Sgms2
-    ## 276         Shoc2
-    ## 277       Slc24a2
-    ## 278      Slc25a38
-    ## 279      Slc25a46
-    ## 280       Slc26a2
-    ## 281       Slc2a13
-    ## 282       Slc35b4
-    ## 283       Slc44a1
-    ## 284        Slc4a3
-    ## 285        Slc8a1
-    ## 286         Slx1b
-    ## 287         Smek2
-    ## 288         Smim3
-    ## 289        Snap29
-    ## 290          Snx2
-    ## 291         Snx24
-    ## 292        Sorcs1
-    ## 293         Sox10
-    ## 294          Sox5
-    ## 295         Spast
-    ## 296       Specc1l
-    ## 297        Sptbn1
-    ## 298         Srek1
-    ## 299           Srr
-    ## 300          Srrd
-    ## 301    St6galnac4
-    ## 302       St8sia4
-    ## 303       Stard13
-    ## 304         Stk25
-    ## 305          Stk3
-    ## 306         Stox2
-    ## 307        Strip1
-    ## 308          Stx3
-    ## 309       Tbc1d30
-    ## 310        Tbc1d9
-    ## 311         Tdrd7
-    ## 312          Tet3
-    ## 313          Tfrc
-    ## 314          Thra
-    ## 315       Tmem50b
-    ## 316        Tmem57
-    ## 317        Tmem65
-    ## 318       Tmem88b
-    ## 319        Tmem8b
-    ## 320          Tns2
-    ## 321          Tox2
-    ## 322         Traf6
-    ## 323           Ttn
-    ## 324        Tuba4a
-    ## 325        Tvp23a
-    ## 326         Uckl1
-    ## 327         Uqcrh
-    ## 328         Usmg5
-    ## 329         Usp45
-    ## 330        Usp6nl
-    ## 331         Xrcc3
-    ## 332         Xrcc6
-    ## 333         Ylpm1
-    ## 334           Zak
-    ## 335       Zc3h12a
-    ## 336        Zc3h13
-    ## 337        Zfp114
-    ## 338        Zfp395
-    ## 339        Zfp414
-    ## 340        Zfp446
-    ## 341        Zfp580
-    ## 342        Zfp617
-    ## 343        Zfp711
-    ## 344        Zfp738
-    ## 345        Zfp821
-    ## 346        Zfp831
-    ## 347       Zfyve16
-    ## 348         Zmym4
-    ## 349         Znrd1
+    ##            gene
+    ## 1       Adamts1
+    ## 2           Mn1
+    ## 3         Nptx2
+    ## 4        Tiparp
+    ## 5         Zdbf2
+    ## 6 1810030O07Rik
 
-    # stress only CA1
-    shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 0) %>%
-      select(gene)
-
-    ##              gene
-    ## 1   1110032F04Rik
-    ## 2   1600002K03Rik
-    ## 3   2010107G23Rik
-    ## 4   2210013O21Rik
-    ## 5   2210016L21Rik
-    ## 6   2310009B15Rik
-    ## 7   5730409E04Rik
-    ## 8           Abcc4
-    ## 9           Abhd4
-    ## 10           Ache
-    ## 11          Adcy5
-    ## 12          Adcy6
-    ## 13         Adgrb3
-    ## 14          Adpgk
-    ## 15         Afg3l1
-    ## 16           Alg9
-    ## 17            Ank
-    ## 18        Ankrd40
-    ## 19         Apcdd1
-    ## 20        Arfgap3
-    ## 21        Arhgap4
-    ## 22      Arhgef10l
-    ## 23         Arid3b
-    ## 24          Armt1
-    ## 25          Arvcf
-    ## 26           Asph
-    ## 27          Astn1
-    ## 28          Atg4b
-    ## 29         Atp1a2
-    ## 30         Atp2a2
-    ## 31          Atp5d
-    ## 32            Axl
-    ## 33        B4galt7
-    ## 34          Bbof1
-    ## 35           Bbs9
-    ## 36           Bcl6
-    ## 37         Bhlhb9
-    ## 38           Bin3
-    ## 39          Bnip2
-    ## 40           Bod1
-    ## 41            Bok
-    ## 42           Braf
-    ## 43  C130074G19Rik
-    ## 44          C1ql3
-    ## 45        C1qtnf6
-    ## 46         C77370
-    ## 47         Cacfd1
-    ## 48        Cacna1c
-    ## 49         Cacnb1
-    ## 50         Camk1g
-    ## 51          Carm1
-    ## 52        Carnmt1
-    ## 53         Ccdc53
-    ## 54         Ccdc59
-    ## 55          Ccng1
-    ## 56           Ccr2
-    ## 57           Cd63
-    ## 58         Cdadc1
-    ## 59         Cdc123
-    ## 60       Cdc42bpg
-    ## 61           Cdk8
-    ## 62         Cdkal1
-    ## 63         Cep135
-    ## 64          Cers1
-    ## 65          Ces2b
-    ## 66            Cfp
-    ## 67           Chd6
-    ## 68          Chmp7
-    ## 69          Ciao1
-    ## 70         Cirh1a
-    ## 71          Clcn7
-    ## 72        Clec11a
-    ## 73          Cnbd2
-    ## 74         Cntrob
-    ## 75         Commd9
-    ## 76          Crocc
-    ## 77          Csmd3
-    ## 78           Ctsh
-    ## 79         Cuedc1
-    ## 80          Cxcl9
-    ## 81         Cyb561
-    ## 82       Cyb561d2
-    ## 83         Cyp4v3
-    ## 84          Daglb
-    ## 85        Dclre1b
-    ## 86          Ddx24
-    ## 87          Ddx47
-    ## 88          Ddx51
-    ## 89          Decr2
-    ## 90           Det1
-    ## 91         Dhtkd1
-    ## 92       Dnase1l2
-    ## 93           Dnlz
-    ## 94          Dock8
-    ## 95        Dpy19l3
-    ## 96          Dscr3
-    ## 97           Dus2
-    ## 98          Dus3l
-    ## 99       Dync1li1
-    ## 100 E130309D02Rik
-    ## 101          Ece1
-    ## 102          Edc3
-    ## 103        Efcab6
-    ## 104        Elmod1
-    ## 105          Elp2
-    ## 106          Eml4
-    ## 107          Eno4
-    ## 108        Entpd2
-    ## 109          Eny2
-    ## 110         Ep300
-    ## 111          Eps8
-    ## 112          Epyc
-    ## 113        Ero1lb
-    ## 114         Ethe1
-    ## 115         Extl2
-    ## 116            F3
-    ## 117       Fam133b
-    ## 118       Fam134a
-    ## 119       Fam219b
-    ## 120        Fam60a
-    ## 121         Farp1
-    ## 122       Fastkd2
-    ## 123         Fbln1
-    ## 124         Fbxl4
-    ## 125        Fbxo25
-    ## 126         Fcgr3
-    ## 127          Fgd1
-    ## 128          Fgd3
-    ## 129        Fkbp14
-    ## 130         Fkbpl
-    ## 131         Flrt3
-    ## 132         Fstl4
-    ## 133       Galnt10
-    ## 134         Garem
-    ## 135          Gcc2
-    ## 136         Gdpd2
-    ## 137        Gemin4
-    ## 138         Gfpt2
-    ## 139        Glyctk
-    ## 140       Gm10146
-    ## 141       Gm20715
-    ## 142       Gm38393
-    ## 143       Gm43796
-    ## 144        Gm6741
-    ## 145        Gm9803
-    ## 146         Gmpr2
-    ## 147         Gosr2
-    ## 148        Gpank1
-    ## 149         Gpm6a
-    ## 150        Gpr158
-    ## 151         Grid1
-    ## 152        Grin2c
-    ## 153          Guf1
-    ## 154          Gys1
-    ## 155        H2-Ke6
-    ## 156          Heg1
-    ## 157         Hmgcl
-    ## 158         Hmgn2
-    ## 159        Homer3
-    ## 160        Hrasls
-    ## 161         Htr1a
-    ## 162           Id4
-    ## 163            Ik
-    ## 164        Ikbkap
-    ## 165          Ipo5
-    ## 166      Irak1bp1
-    ## 167       Irf2bp1
-    ## 168         Jade1
-    ## 169         Jmjd6
-    ## 170         Jmjd8
-    ## 171         Kat2b
-    ## 172        Katnb1
-    ## 173        Kcnj12
-    ## 174         Kcnn1
-    ## 175         Kcnu1
-    ## 176        Kctd15
-    ## 177        Kdelr2
-    ## 178       Laptm4a
-    ## 179          Ldah
-    ## 180         Lnpk1
-    ## 181          Lrp5
-    ## 182         Lypd1
-    ## 183          Mafk
-    ## 184        Map3k2
-    ## 185        March9
-    ## 186          Mcl1
-    ## 187          Mdp1
-    ## 188         Mgrn1
-    ## 189        Mif4gd
-    ## 190        Mrpl16
-    ## 191        Mrpl53
-    ## 192          Msl2
-    ## 193         Mtmr7
-    ## 194         Mtmr9
-    ## 195        Mtrf1l
-    ## 196          Mtx1
-    ## 197           Mut
-    ## 198         Myo10
-    ## 199         Naa20
-    ## 200         Naglu
-    ## 201         Nalcn
-    ## 202        Nanos1
-    ## 203          Nans
-    ## 204         Ndst2
-    ## 205         Nedd9
-    ## 206         Nell1
-    ## 207        Nfkbia
-    ## 208          Npc1
-    ## 209        Nploc4
-    ## 210       Nr2c2ap
-    ## 211          Nrf1
-    ## 212        Nudt11
-    ## 213         Nup85
-    ## 214         Nxph3
-    ## 215         Oas1b
-    ## 216          Ogg1
-    ## 217          Optn
-    ## 218          Orc6
-    ## 219          P3h4
-    ## 220         Padi2
-    ## 221       Pcdhb16
-    ## 222        Pcdhb6
-    ## 223        Pcp4l1
-    ## 224          Pdcl
-    ## 225         Pdia4
-    ## 226          Pdpn
-    ## 227          Pdpr
-    ## 228         Pds5a
-    ## 229          Pecr
-    ## 230        Pgrmc1
-    ## 231        Pla2g7
-    ## 232         Plaur
-    ## 233       Plekha1
-    ## 234         Plin2
-    ## 235        Pnpla8
-    ## 236        Polr2d
-    ## 237       Polr3gl
-    ## 238         Ppdpf
-    ## 239        Ppp1cb
-    ## 240      Ppp1r13l
-    ## 241        Ppp6r2
-    ## 242          Ppt2
-    ## 243         Pqlc2
-    ## 244          Prcp
-    ## 245         Prkdc
-    ## 246       Prkrip1
-    ## 247         Prmt2
-    ## 248         Prmt3
-    ## 249         Prpf3
-    ## 250         Prpf4
-    ## 251         Psmc5
-    ## 252          Pwp2
-    ## 253         Rab13
-    ## 254         Rab31
-    ## 255         Rab43
-    ## 256       Rabgap1
-    ## 257         Rabif
-    ## 258         Ramp2
-    ## 259        Rangrf
-    ## 260         Rap2b
-    ## 261         Rccd1
-    ## 262          Rem2
-    ## 263          Rfc1
-    ## 264         Rftn2
-    ## 265         Rgs16
-    ## 266          Rgs6
-    ## 267          Rin2
-    ## 268        Rnf166
-    ## 269        Rnf207
-    ## 270          Rnls
-    ## 271         Rnpc3
-    ## 272 RP23-220F20.2
-    ## 273         Rpap3
-    ## 274          Rrp1
-    ## 275          Rtn4
-    ## 276         Rufy3
-    ## 277        Sacm1l
-    ## 278         Sars2
-    ## 279          Sbsn
-    ## 280         Sdad1
-    ## 281       Sec23ip
-    ## 282         Senp2
-    ## 283         Senp8
-    ## 284         Serf1
-    ## 285         Sesn3
-    ## 286           Sf1
-    ## 287        Sfmbt1
-    ## 288           Sfn
-    ## 289         Sfxn5
-    ## 290        Shisa5
-    ## 291       Shroom4
-    ## 292         Shtn1
-    ## 293        Slain1
-    ## 294       Slc12a2
-    ## 295       Slc24a3
-    ## 296      Slc25a35
-    ## 297       Slc38a9
-    ## 298        Slc4a2
-    ## 299       Slitrk1
-    ## 300         Smad5
-    ## 301         Smdt1
-    ## 302          Smg6
-    ## 303        Smim17
-    ## 304        Snrpd2
-    ## 305          Snx8
-    ## 306         Soat1
-    ## 307         Socs4
-    ## 308         Spag7
-    ## 309         Spag9
-    ## 310          Spi1
-    ## 311         Ssna1
-    ## 312          Ssr1
-    ## 313    St6galnac3
-    ## 314         Sugp1
-    ## 315         Supt3
-    ## 316        Swsap1
-    ## 317       Syndig1
-    ## 318         Synpo
-    ## 319         Syvn1
-    ## 320           Tbp
-    ## 321        Tceal3
-    ## 322          Tcta
-    ## 323         Tdrd3
-    ## 324         Thap4
-    ## 325       Timm10b
-    ## 326        Timm44
-    ## 327         Tmco3
-    ## 328       Tmem119
-    ## 329       Tmem121
-    ## 330      Tmem132e
-    ## 331       Tmem143
-    ## 332       Tmem186
-    ## 333      Tmem229b
-    ## 334      Tmem254a
-    ## 335      Tmem254b
-    ## 336       Tmem266
-    ## 337       Tmem87b
-    ## 338        Tmem94
-    ## 339          Tmx3
-    ## 340       Tomm40l
-    ## 341      Tor1aip2
-    ## 342         Trhde
-    ## 343        Trim45
-    ## 344         Tshz3
-    ## 345       Tspan14
-    ## 346         Tubb6
-    ## 347       Twistnb
-    ## 348          Tyw5
-    ## 349         Ubac2
-    ## 350       Ubash3a
-    ## 351         Ube3c
-    ## 352          Ubn2
-    ## 353          Ulk2
-    ## 354        Unc13c
-    ## 355          Urb1
-    ## 356          Use1
-    ## 357         Usp36
-    ## 358       Vipas39
-    ## 359         Vipr1
-    ## 360         Vma21
-    ## 361        Vstm2b
-    ## 362         Vti1a
-    ## 363         Wash1
-    ## 364         Wbp11
-    ## 365         Wdfy2
-    ## 366         Wdpcp
-    ## 367         Whsc1
-    ## 368           Wls
-    ## 369          Zfat
-    ## 370        Zfp146
-    ## 371        Zfp184
-    ## 372       Zfp385a
-    ## 373        Zfp420
-    ## 374        Zfp493
-    ## 375        Zfp512
-    ## 376       Zfp518a
-    ## 377        Zfp526
-    ## 378        Zfp644
-    ## 379        Zfp707
-    ## 380        Zfp746
-    ## 381         Zfp84
-    ## 382        Zfp937
-    ## 383          Zic3
-    ## 384       Zkscan3
-    ## 385         Znfx1
-
-    # stress only CA1 and DG
-    shared %>% filter(CA1learn == 0 & CA1stress == 1 & DGlearn == 1) %>%
-      select(gene)
-
-    ##      gene
-    ## 1  Dusp16
-    ## 2  Entpd1
-    ## 3    Ier3
-    ## 4    Mest
-    ## 5 Rasl11b
+    write.csv(CA1learnstress, "../data/02_CA1learningstressgenes.csv", row.names = F)
 
     # All degs
     updown <- read.csv("../data/02c_setsize_updown.csv") 

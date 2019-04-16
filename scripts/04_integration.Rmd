@@ -269,43 +269,129 @@ pheatmap(cormat$r, show_colnames=F, show_rownames = T,
 Significant genes
 
 ```{r significantgenes}
-CA1train <- read.csv("../data/02c_CA1_consyokcons.csv", stringsAsFactors = F) 
-CA1stress <- read.csv("../data/02c_CA1_yokeconfyokcons.csv", stringsAsFactors = F)
-DGtrain <- read.csv("../data/02c_DG_consyokcons.csv", stringsAsFactors = F)
 
-samplecorrelationplot <- function(mydf, mytitle){
-  mydf <-   mydf %>% filter(direction != "NS")
-  DGvsd <- read.csv("../data/02c_DGvsd.csv", check.names = F)
-  colnames(DGvsd)[1] <- "gene"
-  mydf <- left_join(mydf, DGvsd)
+# read files with pvalues
+CA1stresspvals <- read.csv("../data/02c_CA1_consyokcons.csv", stringsAsFactors = F, row.names = NULL) 
+CA1trainpvals <- read.csv("../data/02c_CA1_yokeconfyokcons.csv", stringsAsFactors = F, row.names = NULL)
+DGtrainpvals <- read.csv("../data/02c_DG_consyokcons.csv", stringsAsFactors = F)
+
+# remove non-significant genes and genes affected by learning and stresss
+CA1learnstress <- read.csv("../data/02_CA1learningstressgenes.csv", stringsAsFactors = F)
+CA1learnstress <- as.vector(CA1learnstress$gene)
+
+CA1trainpvals <- CA1trainpvals %>% filter(!gene %in% CA1learnstress,
+                                          direction != "NS")
+CA1stresspvals <- CA1stresspvals %>% filter(!gene %in% CA1learnstress,
+                                          direction != "NS")
+DGtrainpvals <- DGtrainpvals %>% filter(!gene %in% CA1learnstress,
+                                          direction != "NS")
+
+# read variance stabilized count data
+DGvsd <- read.csv("../data/02c_DGvsd.csv", stringsAsFactors = F, check.names = F) 
+CA1vsd <- read.csv("../data/02c_CA1vsd.csv", stringsAsFactors = F, check.names = F)
+
+# function to calculate and plot correlations between gene expression and behaivor
+correlationdf <- function(pvalues, vsds){
+  
+  # add gene to df for joining
+  colnames(vsds)[1] <- "gene"
+  
+  mydf <- left_join(pvalues, vsds)
   row.names(mydf) <- mydf$gene
   mydf <- mydf[-c(1:6)]
   mydf <- as.data.frame(t(mydf))
+  
+  # create an ID column to join lists of DEGs with their experssion values and the behavior of the animal 
   mydf$sample <-  row.names(mydf)
   mydf$mouse <- sapply(strsplit(as.character(mydf$sample),'-'), "[", 1)
   mydf$ID <- paste("15", mydf$mouse, sep = "")
-
-  retention <- behavior %>% 
-    filter(TrainSession == "Retention")
-  retention
-
-  retention <- retention[-c(2:14,16:19)]
-
-  mydf <- left_join(mydf, retention)
-  mydf <- mydf[,c(120:123,1:119,124:162)]
+  mydf$sample <-  NULL
+  mydf$mouse <- NULL
   row.names(mydf) <- mydf$ID
-  mydfMatrix <- mydf[-c(1:4)]
+  
+  # randomely select 15 genes and add ID column back for joining
+  mydfrandom <- mydf
+  #mydfrandom <- mydfrandom[sample(1:ncol(mydfrandom), 15,replace=FALSE)]
+  
+  mydfrandom$ID <- row.names(mydfrandom)
+  
+  # subset the beahvior data to the last time point and only values shows in figure 2
+  favbehav <- behavior %>% 
+    filter(TrainSession == "Retention") %>%
+    select(ID, NumEntrances, Time1stEntr)
+    
+  favbehavgenes <- left_join(mydfrandom, favbehav)
+  favbehavgenes$ID <- NULL
+  
+  mycordf = cor(favbehavgenes)
+  #corrplot(mycordf, method = "circle", title = mytitle, tl.col = "black", tl.cex = 0.8)
+  mycordf <- as.data.frame(mycordf)
+  mycordf$gene <- row.names(mycordf)
+  return(mycordf)
+}  
 
-  mydfMatrixSlim <- mydfMatrix[sample(1:ncol(mydfMatrix), 20,
-   replace=FALSE)]
+corCA1stress <- correlationdf(CA1stresspvals, CA1vsd)
+corCA1train <- correlationdf(CA1trainpvals, CA1vsd)
+corDGtrain <- correlationdf(DGtrainpvals, DGvsd) 
 
-  mydfcor = cor(mydfMatrixSlim)
-  corrplot(mydfcor, method = "circle", title = mytitle)
+corpointplot <- function(mycordf, mytitle){
+
+  # remove self corelations
+  mycordf <- mycordf %>%
+    filter(!gene %in% c("NumEntrances", "Time1stEntr"))
+  
+  p1 <- mycordf %>%
+    select(-Time1stEntr) %>% # remove corelations with other behavior
+    ggplot(aes(x = reorder(gene, -NumEntrances), y = NumEntrances, color = NumEntrances)) +
+    geom_point(stat = "identity") +
+    theme_minimal(base_size = 7) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 2),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank(),
+          legend.position = "none")   +
+    labs(subtitle = mytitle, x = "signficant genes", y = "Correlation to\nNumber of Entrances")  +
+    ylim(-1, 1) +
+    scale_color_viridis(limits=c(-1,1))
+  
+  p2 <- mycordf %>%
+    select(-NumEntrances) %>% # remove corelations with other behavior
+    ggplot(aes(x =  reorder(gene, Time1stEntr), y = Time1stEntr, color = Time1stEntr)) +
+    geom_point(stat = "identity") +
+    theme_minimal(base_size = 7) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 2),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank(),
+          legend.position = "none",
+          legend.title = element_blank())   +
+    labs(subtitle = mytitle, x = "signficant genes", y = "Correlation to\nTime to 1st Entrances")  +
+    ylim(-1, 1) +
+    scale_color_viridis(limits=c(-1,1)) 
+    
+  
+  p12 <- plot_grid(p2,p1, nrow = 2)
+    
+  print(p12)
 }
 
-samplecorrelationplot(CA1stress, "CA1 stress")
-samplecorrelationplot(CA1train, "CA1 train")
-samplecorrelationplot(DGtrain, "DG train")
+a <- corpointplot(corCA1train, "CA1 training-responsive genes") 
+b <- corpointplot(corDGtrain, "DG training-responsive genes")
+
+ab <- plot_grid(b,a, nrow = 1)
+ab 
+
+pdf(file="../figures/04_integration/correlationpointplots.pdf", width=5, height=4)
+plot(ab)    
+dev.off() 
+
+corDGtrain %>%
+  filter(Time1stEntr > 0.75 | NumEntrances < -.75 |  Time1stEntr < -.75 | NumEntrances > 0.75,
+         !gene %in% c("Time1stEntr", "NumEntrances")) %>%
+  select(gene, Time1stEntr, NumEntrances)
+
+corCA1train %>%
+  filter(Time1stEntr > 0.5 | NumEntrances < -.5 |  Time1stEntr < -.5 | NumEntrances > 0.5,
+         !gene %in% c("Time1stEntr", "NumEntrances")) %>%
+  select(gene, Time1stEntr, NumEntrances)
 
 ```
 
