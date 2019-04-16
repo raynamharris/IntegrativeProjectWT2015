@@ -403,8 +403,8 @@ Import Data
 Significant genes
 
     # read files with pvalues
-    CA1stresspvals <- read.csv("../data/02c_CA1_consyokcons.csv", stringsAsFactors = F, row.names = NULL) 
-    CA1trainpvals <- read.csv("../data/02c_CA1_yokeconfyokcons.csv", stringsAsFactors = F, row.names = NULL)
+    CA1trainpvals <- read.csv("../data/02c_CA1_consyokcons.csv", stringsAsFactors = F, row.names = NULL) 
+    CA1stresspvals <- read.csv("../data/02c_CA1_yokeconfyokcons.csv", stringsAsFactors = F, row.names = NULL)
     DGtrainpvals <- read.csv("../data/02c_DG_consyokcons.csv", stringsAsFactors = F)
 
     # remove non-significant genes and genes affected by learning and stresss
@@ -448,6 +448,7 @@ Significant genes
       mydfrandom$ID <- row.names(mydfrandom)
       
       # subset the beahvior data to the last time point and only values shows in figure 2
+      behavior <- read.csv("../data/01a_behavior.csv", header = T)
       favbehav <- behavior %>% 
         filter(TrainSession == "Retention") %>%
         select(ID, NumEntrances, Time1stEntr)
@@ -568,11 +569,686 @@ Significant genes
              !gene %in% c("Time1stEntr", "NumEntrances")) %>%
       select(gene, Time1stEntr, NumEntrances)
 
-    ##       gene Time1stEntr NumEntrances
-    ## 1   Apcdd1   0.5747051   -0.4286220
-    ## 2     Dus2   0.5446638   -0.4347349
-    ## 3  Gm10146   0.5391813   -0.5062042
-    ## 4   Gm6741   0.5519054   -0.3576612
-    ## 5 Irak1bp1   0.5327331   -0.3336685
-    ## 6     Orc6   0.5020997   -0.5185818
-    ## 7  Tmem143   0.5219493   -0.3079609
+    ##        gene Time1stEntr NumEntrances
+    ## 1     Acad8   0.2212761   -0.5189565
+    ## 2     Ahdc1  -0.6498533    0.4807087
+    ## 3     Alms1   0.3317366   -0.5903613
+    ## 4      Apln   0.6912757   -0.6768894
+    ## 5      Aptx   0.5011229   -0.5020300
+    ## 6    Arrdc3   0.3842883   -0.6024845
+    ## 7    Atpaf2   0.6336303   -0.6909063
+    ## 8   Bloc1s5   0.6123718   -0.6593602
+    ## 9    Capn10   0.3990502   -0.6733059
+    ## 10  Ccdc190   0.5263474   -0.5887538
+    ## 11     Cdh7   0.4069231   -0.5462141
+    ## 12   Cfap20  -0.5295420    0.3721191
+    ## 13     Chuk  -0.5261919    0.5031008
+    ## 14 Colgalt2  -0.3676015    0.5855128
+    ## 15    Ctcfl  -0.6362308    0.4263709
+    ## 16      Dbt   0.3746872   -0.5351618
+    ## 17     Dner   0.7111875   -0.5810722
+    ## 18    Esyt1   0.4632121   -0.5166430
+    ## 19  Fam110b   0.5085691   -0.3963534
+    ## 20  Fam19a2   0.6055048   -0.6704304
+    ## 21   Fam63b   0.4389843   -0.7527619
+    ## 22    Fanci   0.2495205   -0.5278318
+    ## 23     Fbn1   0.6268982   -0.5418373
+    ## 24     Fgd5   0.3047857   -0.5324103
+    ## 25   Filip1   0.6122806   -0.5460707
+    ## 26     Flt1   0.3163125   -0.5325390
+    ## 27   Glcci1   0.5773992   -0.6595865
+    ## 28  Gm21887  -0.3775421    0.5255329
+    ## 29   Gm4631   0.5543307   -0.6905110
+    ## 30   Gm9821  -0.5657761    0.6178466
+    ## 31    Grem2   0.6740555   -0.6294663
+    ## 32    Hecw2   0.5761573   -0.6882464
+    ## 33    Igbp1   0.6660945   -0.5249595
+    ## 34  Igf2bp2  -0.7300574    0.5766138
+    ## 35    Inhbb  -0.4958727    0.5084745
+    ## 36   Inpp4b   0.3541333   -0.5070030
+    ## 37    Kcna4   0.5178216   -0.5925663
+    ## 38    Kcnd3   0.5167999   -0.4040270
+    ## 39    Kdm5d  -0.5099970    0.5253640
+    ## 40    Klkb1  -0.5990080    0.4479896
+    ## 41     Kri1  -0.2566445    0.5235254
+    ## 42 Mapkapk2   0.4868547   -0.7024112
+    ## 43    Marf1  -0.6246670    0.3996785
+    ## 44      Mcc   0.4840093   -0.5455392
+    ## 45     Med8  -0.3243889    0.5654744
+    ## 46     Nat9   0.3625147   -0.6160515
+    ## 47    Neto2   0.4211430   -0.6731647
+    ## 48    Ntng1   0.2848668   -0.5579322
+    ## 49    Ovca2  -0.5373988    0.5294857
+    ## 50    Pde6a  -0.7391394    0.5982401
+    ## 51    Pias4  -0.5077882    0.5889152
+    ## 52  Ppp1r3f   0.6201177   -0.5472079
+    ## 53    Ptprm   0.3825078   -0.5491678
+    ## 54    Rcan2   0.4660109   -0.5137531
+    ## 55     Rdh1   0.3588774   -0.5204037
+    ## 56    Rfesd   0.5333210   -0.5376000
+    ## 57    Rfwd3   0.4724059   -0.6524796
+    ## 58     Rgs2   0.4751647   -0.5122033
+    ## 59   Rsc1a1  -0.5193059    0.6224766
+    ## 60    Shoc2   0.2692746   -0.5699276
+    ## 61 Slc25a38  -0.1698548    0.5691872
+    ## 62  Slc2a13   0.3511989   -0.5725884
+    ## 63   Slc4a3   0.5608161   -0.7344899
+    ## 64    Slx1b  -0.5457649    0.3301103
+    ## 65   Snap29  -0.3559440    0.5278961
+    ## 66    Snx24   0.6703670   -0.5677200
+    ## 67    Sox10   0.5813646   -0.6210244
+    ## 68     Sox5   0.2115937   -0.5163476
+    ## 69  St8sia4   0.1249904   -0.5032398
+    ## 70  Stard13   0.2474957   -0.5596036
+    ## 71     Stk3   0.5448689   -0.4969145
+    ## 72    Stox2  -0.6174573    0.4853552
+    ## 73  Tbc1d30   0.6462628   -0.6726156
+    ## 74   Tbc1d9   0.5358903   -0.4989014
+    ## 75     Tet3   0.2322443   -0.5865108
+    ## 76     Tns2   0.6988295   -0.4519199
+    ## 77      Ttn   0.4298739   -0.5784336
+    ## 78   Tvp23a   0.4377234   -0.5311110
+    ## 79    Uckl1  -0.3703443    0.7326685
+    ## 80   Zc3h13   0.4759109   -0.5401196
+    ## 81   Zfp446   0.4422391   -0.5452128
+    ## 82   Zfp617  -0.2295565    0.5454083
+    ## 83   Zfp738  -0.5145745    0.3693506
+    ## 84   Zfp831   0.3255999   -0.5092313
+    ## 85    Znrd1   0.3535553   -0.6145544
+
+    CA1learn <- read.csv( "../data/02_CA1learninggenes.csv", stringsAsFactors = F)
+    head(CA1learn)
+
+    ##      gene
+    ## 1    Fosb
+    ## 2 Gm13889
+    ## 3    Irs1
+    ## 4   Kcnc2
+    ## 5   Lemd3
+    ## 6   Npas4
+
+    head(CA1trainpvals)
+
+    ##            gene       padj  logpadj       lfc         direction
+    ## 1 1810022K09Rik 0.08822746 1.054396 -2.103747 yoked\nconsistent
+    ## 2 9430015G10Rik 0.05480315 1.261195 -1.942464 yoked\nconsistent
+    ## 3         Aagab 0.08737294 1.058623 -1.129414 yoked\nconsistent
+    ## 4          Abl1 0.04756029 1.322755  1.540018        consistent
+    ## 5         Acad8 0.09923614 1.003330  1.777297        consistent
+    ## 6         Acads 0.01979073 1.703538 -4.336036 yoked\nconsistent
+
+    CA1forGO <- left_join(CA1trainpvals,CA1learn)
+
+    ## Joining, by = "gene"
+
+    CA1forGO
+
+    ##              gene        padj  logpadj       lfc         direction
+    ## 1   1810022K09Rik 0.088227456 1.054396 -2.103747 yoked\nconsistent
+    ## 2   9430015G10Rik 0.054803146 1.261195 -1.942464 yoked\nconsistent
+    ## 3           Aagab 0.087372943 1.058623 -1.129414 yoked\nconsistent
+    ## 4            Abl1 0.047560292 1.322755  1.540018        consistent
+    ## 5           Acad8 0.099236138 1.003330  1.777297        consistent
+    ## 6           Acads 0.019790733 1.703538 -4.336036 yoked\nconsistent
+    ## 7           Acot9 0.096286699 1.016434 -1.782720 yoked\nconsistent
+    ## 8           Acta1 0.061321606 1.212386  4.198198        consistent
+    ## 9           Adam8 0.075039640 1.124709 -2.813243 yoked\nconsistent
+    ## 10          Adat1 0.079398573 1.100187  4.687065        consistent
+    ## 11         Afg3l2 0.082914792 1.081368  1.156923        consistent
+    ## 12          Ahdc1 0.095844557 1.018433 -1.890135 yoked\nconsistent
+    ## 13            Aip 0.082783987 1.082054 -1.115433 yoked\nconsistent
+    ## 14          Akap9 0.035396074 1.451045  1.252930        consistent
+    ## 15          Alg11 0.060863185 1.215645 -1.162234 yoked\nconsistent
+    ## 16          Alms1 0.050806429 1.294081  5.364739        consistent
+    ## 17         Amigo1 0.077753552 1.109280  1.670131        consistent
+    ## 18         Amigo3 0.082305651 1.084570 -2.444226 yoked\nconsistent
+    ## 19         Ankfy1 0.093565087 1.028886  1.127166        consistent
+    ## 20        Ankrd12 0.087372943 1.058623  1.107307        consistent
+    ## 21           Apln 0.059369676 1.226435  5.070182        consistent
+    ## 22          Apol8 0.081959305 1.086402 -1.928941 yoked\nconsistent
+    ## 23           Aptx 0.089956243 1.045969  1.878595        consistent
+    ## 24        Arfgef3 0.089917206 1.046157  1.509322        consistent
+    ## 25         Arl13b 0.097862636 1.009383  3.405766        consistent
+    ## 26          Arl5a 0.067391414 1.171395  1.144549        consistent
+    ## 27         Arntl2 0.090232749 1.044636 -2.648957 yoked\nconsistent
+    ## 28         Arrdc3 0.090232749 1.044636  2.406740        consistent
+    ## 29          Asxl3 0.052873146 1.276765  3.865796        consistent
+    ## 30           Atf5 0.096482969 1.015549 -1.642500 yoked\nconsistent
+    ## 31          Atf6b 0.040411491 1.393495 -1.225260 yoked\nconsistent
+    ## 32          Atp5e 0.066358213 1.178105 -1.489385 yoked\nconsistent
+    ## 33         Atpaf2 0.089917206 1.046157  3.233725        consistent
+    ## 34          Baz2a 0.096795675 1.014144  1.089441        consistent
+    ## 35          Baz2b 0.090852311 1.041664  2.163200        consistent
+    ## 36       BC030500 0.090298624 1.044319 -1.187449 yoked\nconsistent
+    ## 37        Bloc1s5 0.082783987 1.082054  4.632711        consistent
+    ## 38           Bop1 0.077048887 1.113234 -1.234956 yoked\nconsistent
+    ## 39         Btbd10 0.088000145 1.055517  1.252840        consistent
+    ## 40          C2cd3 0.067391414 1.171395  1.508586        consistent
+    ## 41         Capn10 0.047560292 1.322755  1.992656        consistent
+    ## 42        Ccdc190 0.081574331 1.088446  4.719891        consistent
+    ## 43         Ccdc43 0.089832225 1.046568 -1.312444 yoked\nconsistent
+    ## 44           Ccr5 0.087372943 1.058623 -2.856566 yoked\nconsistent
+    ## 45          Cdh20 0.051433838 1.288751  5.358163        consistent
+    ## 46           Cdh7 0.038825245 1.410886  5.755961        consistent
+    ## 47          Cdk15 0.088083664 1.055105  5.403692        consistent
+    ## 48         Cep131 0.067391414 1.171395 -1.608290 yoked\nconsistent
+    ## 49         Cfap20 0.075888087 1.119826 -1.244613 yoked\nconsistent
+    ## 50           Chuk 0.077048887 1.113234 -1.161201 yoked\nconsistent
+    ## 51          Clock 0.075917692 1.119657  1.301507        consistent
+    ## 52          Cntrl 0.088083664 1.055105  2.152049        consistent
+    ## 53       Colgalt2 0.035396074 1.451045 -2.859570 yoked\nconsistent
+    ## 54            Cpq 0.066691534 1.175929 -3.218289 yoked\nconsistent
+    ## 55           Crem 0.087372943 1.058623 -2.143971 yoked\nconsistent
+    ## 56          Crim1 0.090848135 1.041684  1.086726        consistent
+    ## 57          Cstf1 0.081560857 1.088518  1.858374        consistent
+    ## 58          Ctcfl 0.088083664 1.055105 -2.887153 yoked\nconsistent
+    ## 59     D1Ertd622e 0.050619598 1.295681  1.649572        consistent
+    ## 60            Dbt 0.074745860 1.126413  2.516856        consistent
+    ## 61         Ddx19b 0.071099580 1.148133  1.678328        consistent
+    ## 62          Ddx31 0.075888087 1.119826  4.790523        consistent
+    ## 63        Dennd1b 0.095844557 1.018433  2.583597        consistent
+    ## 64           Dner 0.019268528 1.715151  1.117948        consistent
+    ## 65           Dok6 0.089956243 1.045969  2.097135        consistent
+    ## 66           Dpf1 0.050806429 1.294081 -1.152038 yoked\nconsistent
+    ## 67         Dusp19 0.094831372 1.023048 -2.064674 yoked\nconsistent
+    ## 68         Eif2s1 0.086294718 1.064016 -1.575040 yoked\nconsistent
+    ## 69           Emc4 0.023924907 1.621150 -1.419306 yoked\nconsistent
+    ## 70          Enkd1 0.045945672 1.337755 -2.992738 yoked\nconsistent
+    ## 71          Esrrg 0.089613002 1.047629  2.691423        consistent
+    ## 72          Esyt1 0.093565087 1.028886  4.963608        consistent
+    ## 73           Ext1 0.079834230 1.097811  1.132101        consistent
+    ## 74        Fam110b 0.066775644 1.175382  2.004312        consistent
+    ## 75        Fam19a2 0.038825245 1.410886  5.671638        consistent
+    ## 76         Fam63a 0.098399309 1.007008  2.575974        consistent
+    ## 77         Fam63b 0.091274774 1.039649  1.116486        consistent
+    ## 78          Fanci 0.056885301 1.245000  5.231147        consistent
+    ## 79           Fbn1 0.071124207 1.147983  2.457364        consistent
+    ## 80          Fbxl6 0.099772651 1.000988 -1.239693 yoked\nconsistent
+    ## 81           Fgd4 0.061475547 1.211298  1.980883        consistent
+    ## 82           Fgd5 0.072409094 1.140207  4.953602        consistent
+    ## 83         Filip1 0.064290908 1.191850  4.947799        consistent
+    ## 84           Flt1 0.048061879 1.318199  1.570229        consistent
+    ## 85           Fmn1 0.053664604 1.270312  2.269599        consistent
+    ## 86         Fn3krp 0.099236138 1.003330 -1.919983 yoked\nconsistent
+    ## 87         Fndc3a 0.043730707 1.359214  1.499059        consistent
+    ## 88          Foxj3 0.047560292 1.322755  1.364845        consistent
+    ## 89         Frmpd3 0.088887213 1.051161  1.638085        consistent
+    ## 90           Fzd3 0.085048392 1.070334  1.928208        consistent
+    ## 91           Get4 0.060926364 1.215195 -1.333426 yoked\nconsistent
+    ## 92         Glcci1 0.081560857 1.088518  2.032681        consistent
+    ## 93        Gm10053 0.036827325 1.433830 -1.177339 yoked\nconsistent
+    ## 94        Gm13889 0.061393493 1.211878  2.432572        consistent
+    ## 95        Gm21887 0.043955846 1.356983 -3.630310 yoked\nconsistent
+    ## 96         Gm4631 0.030758294 1.512038  1.070944        consistent
+    ## 97          Gm527 0.082305651 1.084570 -3.498094 yoked\nconsistent
+    ## 98         Gm9821 0.035396074 1.451045 -2.229978 yoked\nconsistent
+    ## 99         Gpr161 0.078677396 1.104150  1.069548        consistent
+    ## 100        Gpr180 0.051433838 1.288751  2.761881        consistent
+    ## 101         Grem2 0.089308034 1.049109  4.761767        consistent
+    ## 102         Grik3 0.045066602 1.346145  3.337036        consistent
+    ## 103          Grm1 0.052012170 1.283895  1.566786        consistent
+    ## 104         Gstt3 0.092552012 1.033614  4.965727        consistent
+    ## 105       Gucy1a2 0.075888087 1.119826  2.408653        consistent
+    ## 106        Gucy2e 0.089917206 1.046157 -2.966315 yoked\nconsistent
+    ## 107          Guk1 0.087297939 1.058996 -1.300820 yoked\nconsistent
+    ## 108         Hdac6 0.082783987 1.082054 -1.160096 yoked\nconsistent
+    ## 109         Hecw2 0.060863185 1.215645  1.950303        consistent
+    ## 110          Helz 0.055649748 1.254537  1.366751        consistent
+    ## 111       Herpud2 0.077221657 1.112261  1.230543        consistent
+    ## 112          Hexb 0.070044490 1.154626 -1.153432 yoked\nconsistent
+    ## 113         Hmox2 0.093506776 1.029157 -1.063294 yoked\nconsistent
+    ## 114        Hspa1b 0.035677918 1.447600  1.568311        consistent
+    ## 115         Hspa2 0.096927716 1.013552  1.099304        consistent
+    ## 116         Igbp1 0.066775644 1.175382  4.435456        consistent
+    ## 117       Igf2bp2 0.064309040 1.191728 -4.033622 yoked\nconsistent
+    ## 118         Inhbb 0.003540332 2.450956 -3.822015 yoked\nconsistent
+    ## 119         Ino80 0.074841461 1.125858 -1.368529 yoked\nconsistent
+    ## 120        Inpp4b 0.098321929 1.007350  4.672146        consistent
+    ## 121          Irs1 0.089917206 1.046157  2.197218        consistent
+    ## 122          Jag2 0.081599684 1.088312  1.445742        consistent
+    ## 123          Jak2 0.077800374 1.109018  1.456565        consistent
+    ## 124         Josd1 0.077753552 1.109280 -1.290114 yoked\nconsistent
+    ## 125         Kat6a 0.053844145 1.268862  1.408021        consistent
+    ## 126        Kbtbd3 0.085703922 1.066999  5.112558        consistent
+    ## 127         Kcna1 0.075090449 1.124415  1.700055        consistent
+    ## 128         Kcna4 0.035677918 1.447600  2.117451        consistent
+    ## 129         Kcnc1 0.091949134 1.036452  1.149074        consistent
+    ## 130         Kcnc2 0.075888087 1.119826  1.094556        consistent
+    ## 131         Kcnd3 0.074745860 1.126413  3.723883        consistent
+    ## 132         Kctd5 0.057439505 1.240789 -1.555371 yoked\nconsistent
+    ## 133         Kdm5d 0.022055009 1.656493 -1.586114 yoked\nconsistent
+    ## 134         Khnyn 0.026827664 1.571417 -2.695515 yoked\nconsistent
+    ## 135        Kif26b 0.082305651 1.084570  4.948583        consistent
+    ## 136         Klkb1 0.018683187 1.728549 -3.519986 yoked\nconsistent
+    ## 137         Kmt5a 0.032866115 1.483252 -1.477646 yoked\nconsistent
+    ## 138          Kri1 0.009269714 2.032934 -1.700187 yoked\nconsistent
+    ## 139         Lemd3 0.050806429 1.294081  1.598017        consistent
+    ## 140         Letm2 0.072367199 1.140458  3.355435        consistent
+    ## 141         Lnpep 0.066691534 1.175929  1.773609        consistent
+    ## 142         Lrfn4 0.081574331 1.088446 -1.243356 yoked\nconsistent
+    ## 143        Lrrc58 0.088083664 1.055105  1.115617        consistent
+    ## 144          Ltv1 0.065813600 1.181684 -1.828609 yoked\nconsistent
+    ## 145        Man1a2 0.095844557 1.018433  1.049128        consistent
+    ## 146         Manba 0.099236138 1.003330  4.491903        consistent
+    ## 147      Mapkapk2 0.098399309 1.007008  1.445756        consistent
+    ## 148         Marf1 0.045945672 1.337755 -1.401831 yoked\nconsistent
+    ## 149          Mbd5 0.090852311 1.041664  1.067662        consistent
+    ## 150           Mcc 0.047560292 1.322755  3.327820        consistent
+    ## 151          Med8 0.062421003 1.204669 -1.461357 yoked\nconsistent
+    ## 152       Mettl16 0.056885301 1.245000  2.210106        consistent
+    ## 153      Mettl21e 0.043911797 1.357419 -4.031179 yoked\nconsistent
+    ## 154       Mfsd13a 0.071099580 1.148133 -1.286223 yoked\nconsistent
+    ## 155        Mmadhc 0.082914792 1.081368 -1.410850 yoked\nconsistent
+    ## 156      Mphosph9 0.066039594 1.180196 -1.177832 yoked\nconsistent
+    ## 157        Mrgpre 0.089917206 1.046157  4.799626        consistent
+    ## 158        Mrpl28 0.071033673 1.148536 -1.277171 yoked\nconsistent
+    ## 159        Mrpl48 0.061475547 1.211298 -1.650438 yoked\nconsistent
+    ## 160        Msl3l2 0.061475547 1.211298 -1.737967 yoked\nconsistent
+    ## 161         Mtfmt 0.064195393 1.192496 -1.990499 yoked\nconsistent
+    ## 162          Nat9 0.075888087 1.119826  4.830314        consistent
+    ## 163        Ndufs7 0.083011642 1.080861 -1.267415 yoked\nconsistent
+    ## 164          Nefm 0.061475547 1.211298  1.074088        consistent
+    ## 165         Neto2 0.057596674 1.239603  1.257996        consistent
+    ## 166          Nkrf 0.099688753 1.001354  1.756114        consistent
+    ## 167          Nle1 0.090852311 1.041664  2.900664        consistent
+    ## 168          Nme1 0.077800374 1.109018 -1.386883 yoked\nconsistent
+    ## 169           Nov 0.070911743 1.149282 -1.016098 yoked\nconsistent
+    ## 170         Npas4 0.072260561 1.141099  2.342853        consistent
+    ## 171         Ntng1 0.097012447 1.013173  4.843551        consistent
+    ## 172         Ntpcr 0.030758294 1.512038 -2.103366 yoked\nconsistent
+    ## 173        Nudt19 0.084452734 1.073386 -1.203811 yoked\nconsistent
+    ## 174         Nudt6 0.070354119 1.152710 -4.264652 yoked\nconsistent
+    ## 175          Nxt2 0.036827325 1.433830 -1.910268 yoked\nconsistent
+    ## 176         Olfm3 0.044213137 1.354449  1.974534        consistent
+    ## 177         Ovca2 0.025320503 1.596528 -1.888529 yoked\nconsistent
+    ## 178         Patz1 0.081959305 1.086402  1.398037        consistent
+    ## 179        Pcdh17 0.049991290 1.301106  1.568507        consistent
+    ## 180         Pde6a 0.049487332 1.305506 -3.718742 yoked\nconsistent
+    ## 181         Phka1 0.077048887 1.113234  2.975156        consistent
+    ## 182         Pias4 0.088154509 1.054755 -1.392803 yoked\nconsistent
+    ## 183        Plagl2 0.079596747 1.099105  4.392761        consistent
+    ## 184          Plau 0.066755149 1.175515 -2.132120 yoked\nconsistent
+    ## 185        Polr2h 0.087372943 1.058623 -1.871598 yoked\nconsistent
+    ## 186        Polrmt 0.088083664 1.055105 -1.060275 yoked\nconsistent
+    ## 187       Ppp1r3f 0.061475547 1.211298  1.776499        consistent
+    ## 188         Psg28 0.081959305 1.086402 -4.158935 yoked\nconsistent
+    ## 189         Psmg2 0.057596674 1.239603 -2.399810 yoked\nconsistent
+    ## 190         Ptpn4 0.092944106 1.031778  1.284176        consistent
+    ## 191         Ptprm 0.086294718 1.064016  2.701829        consistent
+    ## 192         Pygo1 0.082783987 1.082054  1.016283        consistent
+    ## 193          Rbak 0.057439505 1.240789  4.453020        consistent
+    ## 194         Rbbp4 0.027845581 1.555244 -1.325689 yoked\nconsistent
+    ## 195         Rcan2 0.079752393 1.098256  1.334951        consistent
+    ## 196          Rdh1 0.054803146 1.261195  4.353353        consistent
+    ## 197          Rest 0.086294718 1.064016  4.923687        consistent
+    ## 198         Rfesd 0.092995319 1.031539  4.377184        consistent
+    ## 199         Rfwd3 0.055834943 1.253094  2.668277        consistent
+    ## 200          Rgs2 0.050618806 1.295688  1.741528        consistent
+    ## 201        Rhbdl3 0.079714765 1.098461 -1.382995 yoked\nconsistent
+    ## 202       Rnaseh1 0.025320503 1.596528 -3.119018 yoked\nconsistent
+    ## 203        Rnf165 0.079408520 1.100133  1.608227        consistent
+    ## 204        Rnf180 0.098533612 1.006416  4.646787        consistent
+    ## 205        Rnf216 0.098399309 1.007008 -1.073959 yoked\nconsistent
+    ## 206         Rnf25 0.028332466 1.547716 -1.872594 yoked\nconsistent
+    ## 207         Rpl10 0.025963596 1.585635 -2.250149 yoked\nconsistent
+    ## 208         Rpl36 0.050806429 1.294081 -1.359802 yoked\nconsistent
+    ## 209        Rsc1a1 0.049991290 1.301106 -6.696627 yoked\nconsistent
+    ## 210        Rsph3a 0.075888087 1.119826 -1.836296 yoked\nconsistent
+    ## 211        S100a1 0.090506687 1.043319  4.176658        consistent
+    ## 212        Samhd1 0.052247414 1.281935  2.555701        consistent
+    ## 213        Sema4a 0.055697684 1.254163  2.290312        consistent
+    ## 214         Sgms2 0.090232749 1.044636  5.086672        consistent
+    ## 215         Shoc2 0.040649863 1.390941  1.326581        consistent
+    ## 216       Slc24a2 0.040888161 1.388402  1.140005        consistent
+    ## 217      Slc25a38 0.079049015 1.102104 -1.674412 yoked\nconsistent
+    ## 218      Slc25a46 0.035396074 1.451045  1.158403        consistent
+    ## 219       Slc26a2 0.081959305 1.086402  3.718625        consistent
+    ## 220       Slc2a13 0.095844557 1.018433  1.118219        consistent
+    ## 221       Slc35b4 0.049487332 1.305506 -1.323510 yoked\nconsistent
+    ## 222       Slc44a1 0.053664604 1.270312  1.364285        consistent
+    ## 223        Slc4a3 0.047296750 1.325169  1.015137        consistent
+    ## 224        Slc8a1 0.077847562 1.108755  1.535193        consistent
+    ## 225         Slx1b 0.064297173 1.191808 -2.154254 yoked\nconsistent
+    ## 226         Smek2 0.094182143 1.026031  1.475515        consistent
+    ## 227         Smim3 0.073184046 1.135584 -2.173538 yoked\nconsistent
+    ## 228        Snap29 0.032289995 1.490932 -1.667227 yoked\nconsistent
+    ## 229          Snx2 0.071033673 1.148536 -1.157842 yoked\nconsistent
+    ## 230         Snx24 0.089917206 1.046157  4.639860        consistent
+    ## 231        Sorcs1 0.087372943 1.058623 -2.851229 yoked\nconsistent
+    ## 232         Sox10 0.056487180 1.248050  3.604220        consistent
+    ## 233          Sox5 0.062452817 1.204448  4.161665        consistent
+    ## 234         Spast 0.090232749 1.044636  1.120841        consistent
+    ## 235       Specc1l 0.070201017 1.153657  1.353570        consistent
+    ## 236          Srrd 0.047560292 1.322755 -2.740428 yoked\nconsistent
+    ## 237    St6galnac4 0.095844557 1.018433  2.278950        consistent
+    ## 238       St8sia4 0.070004366 1.154875  4.554064        consistent
+    ## 239       Stard13 0.061475547 1.211298  4.597528        consistent
+    ## 240          Stk3 0.097871277 1.009345  2.907311        consistent
+    ## 241         Stox2 0.069073318 1.160690 -4.228689 yoked\nconsistent
+    ## 242          Stx3 0.063703756 1.195835 -1.331315 yoked\nconsistent
+    ## 243       Tbc1d30 0.030758294 1.512038  1.604249        consistent
+    ## 244        Tbc1d9 0.053664604 1.270312  1.589010        consistent
+    ## 245         Tdrd7 0.088000145 1.055517  1.703265        consistent
+    ## 246          Tet3 0.053844145 1.268862  1.094635        consistent
+    ## 247        Tmem57 0.053844145 1.268862  1.390690        consistent
+    ## 248        Tmem65 0.092944106 1.031778 -1.024638 yoked\nconsistent
+    ## 249       Tmem88b 0.058480905 1.232986  2.631945        consistent
+    ## 250          Tns2 0.077753552 1.109280  5.250512        consistent
+    ## 251          Tox2 0.071099580 1.148133  2.103597        consistent
+    ## 252         Traf6 0.070622910 1.151054  2.544356        consistent
+    ## 253           Ttn 0.094831372 1.023048  5.042780        consistent
+    ## 254        Tvp23a 0.053588804 1.270926  1.914888        consistent
+    ## 255         Uckl1 0.057965671 1.236829 -1.385668 yoked\nconsistent
+    ## 256         Uqcrh 0.023924907 1.621150 -1.273929 yoked\nconsistent
+    ## 257         Usmg5 0.023924907 1.621150 -1.350159 yoked\nconsistent
+    ## 258         Usp45 0.035677918 1.447600  1.581830        consistent
+    ## 259        Usp6nl 0.065511720 1.183681  4.295653        consistent
+    ## 260         Xrcc3 0.092944106 1.031778 -2.619414 yoked\nconsistent
+    ## 261         Xrcc6 0.057140335 1.243057 -1.818006 yoked\nconsistent
+    ## 262         Ylpm1 0.095844557 1.018433  1.188359        consistent
+    ## 263           Zak 0.062452817 1.204448  2.743572        consistent
+    ## 264       Zc3h12a 0.073328276 1.134729 -2.583596 yoked\nconsistent
+    ## 265        Zc3h13 0.035396074 1.451045  1.362548        consistent
+    ## 266        Zfp114 0.089451104 1.048414  4.685814        consistent
+    ## 267        Zfp395 0.040411491 1.393495 -3.819722 yoked\nconsistent
+    ## 268        Zfp414 0.082795261 1.081995 -1.645229 yoked\nconsistent
+    ## 269        Zfp446 0.097473286 1.011114  3.317079        consistent
+    ## 270        Zfp580 0.071099580 1.148133 -1.492773 yoked\nconsistent
+    ## 271        Zfp617 0.061475547 1.211298 -1.440423 yoked\nconsistent
+    ## 272        Zfp711 0.056885301 1.245000 -1.956344 yoked\nconsistent
+    ## 273        Zfp738 0.071124207 1.147983 -1.918231 yoked\nconsistent
+    ## 274        Zfp821 0.056086978 1.251138 -1.211277 yoked\nconsistent
+    ## 275        Zfp831 0.025320503 1.596528  1.931827        consistent
+    ## 276       Zfyve16 0.089699290 1.047211  2.680013        consistent
+    ## 277         Zmym4 0.078256308 1.106481  1.702054        consistent
+    ## 278         Znrd1 0.089832225 1.046568  5.159798        consistent
+
+    CA1stress <- read.csv( "../data/02_CA1lstressgenes.csv")
+    CA1sGO <- left_join(CA1trainpvals,CA1stress)
+
+    ## Joining, by = "gene"
+
+    ## Warning: Column `gene` joining character vector and factor, coercing into
+    ## character vector
+
+    CA1sGO
+
+    ##              gene        padj  logpadj       lfc         direction
+    ## 1   1810022K09Rik 0.088227456 1.054396 -2.103747 yoked\nconsistent
+    ## 2   9430015G10Rik 0.054803146 1.261195 -1.942464 yoked\nconsistent
+    ## 3           Aagab 0.087372943 1.058623 -1.129414 yoked\nconsistent
+    ## 4            Abl1 0.047560292 1.322755  1.540018        consistent
+    ## 5           Acad8 0.099236138 1.003330  1.777297        consistent
+    ## 6           Acads 0.019790733 1.703538 -4.336036 yoked\nconsistent
+    ## 7           Acot9 0.096286699 1.016434 -1.782720 yoked\nconsistent
+    ## 8           Acta1 0.061321606 1.212386  4.198198        consistent
+    ## 9           Adam8 0.075039640 1.124709 -2.813243 yoked\nconsistent
+    ## 10          Adat1 0.079398573 1.100187  4.687065        consistent
+    ## 11         Afg3l2 0.082914792 1.081368  1.156923        consistent
+    ## 12          Ahdc1 0.095844557 1.018433 -1.890135 yoked\nconsistent
+    ## 13            Aip 0.082783987 1.082054 -1.115433 yoked\nconsistent
+    ## 14          Akap9 0.035396074 1.451045  1.252930        consistent
+    ## 15          Alg11 0.060863185 1.215645 -1.162234 yoked\nconsistent
+    ## 16          Alms1 0.050806429 1.294081  5.364739        consistent
+    ## 17         Amigo1 0.077753552 1.109280  1.670131        consistent
+    ## 18         Amigo3 0.082305651 1.084570 -2.444226 yoked\nconsistent
+    ## 19         Ankfy1 0.093565087 1.028886  1.127166        consistent
+    ## 20        Ankrd12 0.087372943 1.058623  1.107307        consistent
+    ## 21           Apln 0.059369676 1.226435  5.070182        consistent
+    ## 22          Apol8 0.081959305 1.086402 -1.928941 yoked\nconsistent
+    ## 23           Aptx 0.089956243 1.045969  1.878595        consistent
+    ## 24        Arfgef3 0.089917206 1.046157  1.509322        consistent
+    ## 25         Arl13b 0.097862636 1.009383  3.405766        consistent
+    ## 26          Arl5a 0.067391414 1.171395  1.144549        consistent
+    ## 27         Arntl2 0.090232749 1.044636 -2.648957 yoked\nconsistent
+    ## 28         Arrdc3 0.090232749 1.044636  2.406740        consistent
+    ## 29          Asxl3 0.052873146 1.276765  3.865796        consistent
+    ## 30           Atf5 0.096482969 1.015549 -1.642500 yoked\nconsistent
+    ## 31          Atf6b 0.040411491 1.393495 -1.225260 yoked\nconsistent
+    ## 32          Atp5e 0.066358213 1.178105 -1.489385 yoked\nconsistent
+    ## 33         Atpaf2 0.089917206 1.046157  3.233725        consistent
+    ## 34          Baz2a 0.096795675 1.014144  1.089441        consistent
+    ## 35          Baz2b 0.090852311 1.041664  2.163200        consistent
+    ## 36       BC030500 0.090298624 1.044319 -1.187449 yoked\nconsistent
+    ## 37        Bloc1s5 0.082783987 1.082054  4.632711        consistent
+    ## 38           Bop1 0.077048887 1.113234 -1.234956 yoked\nconsistent
+    ## 39         Btbd10 0.088000145 1.055517  1.252840        consistent
+    ## 40          C2cd3 0.067391414 1.171395  1.508586        consistent
+    ## 41         Capn10 0.047560292 1.322755  1.992656        consistent
+    ## 42        Ccdc190 0.081574331 1.088446  4.719891        consistent
+    ## 43         Ccdc43 0.089832225 1.046568 -1.312444 yoked\nconsistent
+    ## 44           Ccr5 0.087372943 1.058623 -2.856566 yoked\nconsistent
+    ## 45          Cdh20 0.051433838 1.288751  5.358163        consistent
+    ## 46           Cdh7 0.038825245 1.410886  5.755961        consistent
+    ## 47          Cdk15 0.088083664 1.055105  5.403692        consistent
+    ## 48         Cep131 0.067391414 1.171395 -1.608290 yoked\nconsistent
+    ## 49         Cfap20 0.075888087 1.119826 -1.244613 yoked\nconsistent
+    ## 50           Chuk 0.077048887 1.113234 -1.161201 yoked\nconsistent
+    ## 51          Clock 0.075917692 1.119657  1.301507        consistent
+    ## 52          Cntrl 0.088083664 1.055105  2.152049        consistent
+    ## 53       Colgalt2 0.035396074 1.451045 -2.859570 yoked\nconsistent
+    ## 54            Cpq 0.066691534 1.175929 -3.218289 yoked\nconsistent
+    ## 55           Crem 0.087372943 1.058623 -2.143971 yoked\nconsistent
+    ## 56          Crim1 0.090848135 1.041684  1.086726        consistent
+    ## 57          Cstf1 0.081560857 1.088518  1.858374        consistent
+    ## 58          Ctcfl 0.088083664 1.055105 -2.887153 yoked\nconsistent
+    ## 59     D1Ertd622e 0.050619598 1.295681  1.649572        consistent
+    ## 60            Dbt 0.074745860 1.126413  2.516856        consistent
+    ## 61         Ddx19b 0.071099580 1.148133  1.678328        consistent
+    ## 62          Ddx31 0.075888087 1.119826  4.790523        consistent
+    ## 63        Dennd1b 0.095844557 1.018433  2.583597        consistent
+    ## 64           Dner 0.019268528 1.715151  1.117948        consistent
+    ## 65           Dok6 0.089956243 1.045969  2.097135        consistent
+    ## 66           Dpf1 0.050806429 1.294081 -1.152038 yoked\nconsistent
+    ## 67         Dusp19 0.094831372 1.023048 -2.064674 yoked\nconsistent
+    ## 68         Eif2s1 0.086294718 1.064016 -1.575040 yoked\nconsistent
+    ## 69           Emc4 0.023924907 1.621150 -1.419306 yoked\nconsistent
+    ## 70          Enkd1 0.045945672 1.337755 -2.992738 yoked\nconsistent
+    ## 71          Esrrg 0.089613002 1.047629  2.691423        consistent
+    ## 72          Esyt1 0.093565087 1.028886  4.963608        consistent
+    ## 73           Ext1 0.079834230 1.097811  1.132101        consistent
+    ## 74        Fam110b 0.066775644 1.175382  2.004312        consistent
+    ## 75        Fam19a2 0.038825245 1.410886  5.671638        consistent
+    ## 76         Fam63a 0.098399309 1.007008  2.575974        consistent
+    ## 77         Fam63b 0.091274774 1.039649  1.116486        consistent
+    ## 78          Fanci 0.056885301 1.245000  5.231147        consistent
+    ## 79           Fbn1 0.071124207 1.147983  2.457364        consistent
+    ## 80          Fbxl6 0.099772651 1.000988 -1.239693 yoked\nconsistent
+    ## 81           Fgd4 0.061475547 1.211298  1.980883        consistent
+    ## 82           Fgd5 0.072409094 1.140207  4.953602        consistent
+    ## 83         Filip1 0.064290908 1.191850  4.947799        consistent
+    ## 84           Flt1 0.048061879 1.318199  1.570229        consistent
+    ## 85           Fmn1 0.053664604 1.270312  2.269599        consistent
+    ## 86         Fn3krp 0.099236138 1.003330 -1.919983 yoked\nconsistent
+    ## 87         Fndc3a 0.043730707 1.359214  1.499059        consistent
+    ## 88          Foxj3 0.047560292 1.322755  1.364845        consistent
+    ## 89         Frmpd3 0.088887213 1.051161  1.638085        consistent
+    ## 90           Fzd3 0.085048392 1.070334  1.928208        consistent
+    ## 91           Get4 0.060926364 1.215195 -1.333426 yoked\nconsistent
+    ## 92         Glcci1 0.081560857 1.088518  2.032681        consistent
+    ## 93        Gm10053 0.036827325 1.433830 -1.177339 yoked\nconsistent
+    ## 94        Gm13889 0.061393493 1.211878  2.432572        consistent
+    ## 95        Gm21887 0.043955846 1.356983 -3.630310 yoked\nconsistent
+    ## 96         Gm4631 0.030758294 1.512038  1.070944        consistent
+    ## 97          Gm527 0.082305651 1.084570 -3.498094 yoked\nconsistent
+    ## 98         Gm9821 0.035396074 1.451045 -2.229978 yoked\nconsistent
+    ## 99         Gpr161 0.078677396 1.104150  1.069548        consistent
+    ## 100        Gpr180 0.051433838 1.288751  2.761881        consistent
+    ## 101         Grem2 0.089308034 1.049109  4.761767        consistent
+    ## 102         Grik3 0.045066602 1.346145  3.337036        consistent
+    ## 103          Grm1 0.052012170 1.283895  1.566786        consistent
+    ## 104         Gstt3 0.092552012 1.033614  4.965727        consistent
+    ## 105       Gucy1a2 0.075888087 1.119826  2.408653        consistent
+    ## 106        Gucy2e 0.089917206 1.046157 -2.966315 yoked\nconsistent
+    ## 107          Guk1 0.087297939 1.058996 -1.300820 yoked\nconsistent
+    ## 108         Hdac6 0.082783987 1.082054 -1.160096 yoked\nconsistent
+    ## 109         Hecw2 0.060863185 1.215645  1.950303        consistent
+    ## 110          Helz 0.055649748 1.254537  1.366751        consistent
+    ## 111       Herpud2 0.077221657 1.112261  1.230543        consistent
+    ## 112          Hexb 0.070044490 1.154626 -1.153432 yoked\nconsistent
+    ## 113         Hmox2 0.093506776 1.029157 -1.063294 yoked\nconsistent
+    ## 114        Hspa1b 0.035677918 1.447600  1.568311        consistent
+    ## 115         Hspa2 0.096927716 1.013552  1.099304        consistent
+    ## 116         Igbp1 0.066775644 1.175382  4.435456        consistent
+    ## 117       Igf2bp2 0.064309040 1.191728 -4.033622 yoked\nconsistent
+    ## 118         Inhbb 0.003540332 2.450956 -3.822015 yoked\nconsistent
+    ## 119         Ino80 0.074841461 1.125858 -1.368529 yoked\nconsistent
+    ## 120        Inpp4b 0.098321929 1.007350  4.672146        consistent
+    ## 121          Irs1 0.089917206 1.046157  2.197218        consistent
+    ## 122          Jag2 0.081599684 1.088312  1.445742        consistent
+    ## 123          Jak2 0.077800374 1.109018  1.456565        consistent
+    ## 124         Josd1 0.077753552 1.109280 -1.290114 yoked\nconsistent
+    ## 125         Kat6a 0.053844145 1.268862  1.408021        consistent
+    ## 126        Kbtbd3 0.085703922 1.066999  5.112558        consistent
+    ## 127         Kcna1 0.075090449 1.124415  1.700055        consistent
+    ## 128         Kcna4 0.035677918 1.447600  2.117451        consistent
+    ## 129         Kcnc1 0.091949134 1.036452  1.149074        consistent
+    ## 130         Kcnc2 0.075888087 1.119826  1.094556        consistent
+    ## 131         Kcnd3 0.074745860 1.126413  3.723883        consistent
+    ## 132         Kctd5 0.057439505 1.240789 -1.555371 yoked\nconsistent
+    ## 133         Kdm5d 0.022055009 1.656493 -1.586114 yoked\nconsistent
+    ## 134         Khnyn 0.026827664 1.571417 -2.695515 yoked\nconsistent
+    ## 135        Kif26b 0.082305651 1.084570  4.948583        consistent
+    ## 136         Klkb1 0.018683187 1.728549 -3.519986 yoked\nconsistent
+    ## 137         Kmt5a 0.032866115 1.483252 -1.477646 yoked\nconsistent
+    ## 138          Kri1 0.009269714 2.032934 -1.700187 yoked\nconsistent
+    ## 139         Lemd3 0.050806429 1.294081  1.598017        consistent
+    ## 140         Letm2 0.072367199 1.140458  3.355435        consistent
+    ## 141         Lnpep 0.066691534 1.175929  1.773609        consistent
+    ## 142         Lrfn4 0.081574331 1.088446 -1.243356 yoked\nconsistent
+    ## 143        Lrrc58 0.088083664 1.055105  1.115617        consistent
+    ## 144          Ltv1 0.065813600 1.181684 -1.828609 yoked\nconsistent
+    ## 145        Man1a2 0.095844557 1.018433  1.049128        consistent
+    ## 146         Manba 0.099236138 1.003330  4.491903        consistent
+    ## 147      Mapkapk2 0.098399309 1.007008  1.445756        consistent
+    ## 148         Marf1 0.045945672 1.337755 -1.401831 yoked\nconsistent
+    ## 149          Mbd5 0.090852311 1.041664  1.067662        consistent
+    ## 150           Mcc 0.047560292 1.322755  3.327820        consistent
+    ## 151          Med8 0.062421003 1.204669 -1.461357 yoked\nconsistent
+    ## 152       Mettl16 0.056885301 1.245000  2.210106        consistent
+    ## 153      Mettl21e 0.043911797 1.357419 -4.031179 yoked\nconsistent
+    ## 154       Mfsd13a 0.071099580 1.148133 -1.286223 yoked\nconsistent
+    ## 155        Mmadhc 0.082914792 1.081368 -1.410850 yoked\nconsistent
+    ## 156      Mphosph9 0.066039594 1.180196 -1.177832 yoked\nconsistent
+    ## 157        Mrgpre 0.089917206 1.046157  4.799626        consistent
+    ## 158        Mrpl28 0.071033673 1.148536 -1.277171 yoked\nconsistent
+    ## 159        Mrpl48 0.061475547 1.211298 -1.650438 yoked\nconsistent
+    ## 160        Msl3l2 0.061475547 1.211298 -1.737967 yoked\nconsistent
+    ## 161         Mtfmt 0.064195393 1.192496 -1.990499 yoked\nconsistent
+    ## 162          Nat9 0.075888087 1.119826  4.830314        consistent
+    ## 163        Ndufs7 0.083011642 1.080861 -1.267415 yoked\nconsistent
+    ## 164          Nefm 0.061475547 1.211298  1.074088        consistent
+    ## 165         Neto2 0.057596674 1.239603  1.257996        consistent
+    ## 166          Nkrf 0.099688753 1.001354  1.756114        consistent
+    ## 167          Nle1 0.090852311 1.041664  2.900664        consistent
+    ## 168          Nme1 0.077800374 1.109018 -1.386883 yoked\nconsistent
+    ## 169           Nov 0.070911743 1.149282 -1.016098 yoked\nconsistent
+    ## 170         Npas4 0.072260561 1.141099  2.342853        consistent
+    ## 171         Ntng1 0.097012447 1.013173  4.843551        consistent
+    ## 172         Ntpcr 0.030758294 1.512038 -2.103366 yoked\nconsistent
+    ## 173        Nudt19 0.084452734 1.073386 -1.203811 yoked\nconsistent
+    ## 174         Nudt6 0.070354119 1.152710 -4.264652 yoked\nconsistent
+    ## 175          Nxt2 0.036827325 1.433830 -1.910268 yoked\nconsistent
+    ## 176         Olfm3 0.044213137 1.354449  1.974534        consistent
+    ## 177         Ovca2 0.025320503 1.596528 -1.888529 yoked\nconsistent
+    ## 178         Patz1 0.081959305 1.086402  1.398037        consistent
+    ## 179        Pcdh17 0.049991290 1.301106  1.568507        consistent
+    ## 180         Pde6a 0.049487332 1.305506 -3.718742 yoked\nconsistent
+    ## 181         Phka1 0.077048887 1.113234  2.975156        consistent
+    ## 182         Pias4 0.088154509 1.054755 -1.392803 yoked\nconsistent
+    ## 183        Plagl2 0.079596747 1.099105  4.392761        consistent
+    ## 184          Plau 0.066755149 1.175515 -2.132120 yoked\nconsistent
+    ## 185        Polr2h 0.087372943 1.058623 -1.871598 yoked\nconsistent
+    ## 186        Polrmt 0.088083664 1.055105 -1.060275 yoked\nconsistent
+    ## 187       Ppp1r3f 0.061475547 1.211298  1.776499        consistent
+    ## 188         Psg28 0.081959305 1.086402 -4.158935 yoked\nconsistent
+    ## 189         Psmg2 0.057596674 1.239603 -2.399810 yoked\nconsistent
+    ## 190         Ptpn4 0.092944106 1.031778  1.284176        consistent
+    ## 191         Ptprm 0.086294718 1.064016  2.701829        consistent
+    ## 192         Pygo1 0.082783987 1.082054  1.016283        consistent
+    ## 193          Rbak 0.057439505 1.240789  4.453020        consistent
+    ## 194         Rbbp4 0.027845581 1.555244 -1.325689 yoked\nconsistent
+    ## 195         Rcan2 0.079752393 1.098256  1.334951        consistent
+    ## 196          Rdh1 0.054803146 1.261195  4.353353        consistent
+    ## 197          Rest 0.086294718 1.064016  4.923687        consistent
+    ## 198         Rfesd 0.092995319 1.031539  4.377184        consistent
+    ## 199         Rfwd3 0.055834943 1.253094  2.668277        consistent
+    ## 200          Rgs2 0.050618806 1.295688  1.741528        consistent
+    ## 201        Rhbdl3 0.079714765 1.098461 -1.382995 yoked\nconsistent
+    ## 202       Rnaseh1 0.025320503 1.596528 -3.119018 yoked\nconsistent
+    ## 203        Rnf165 0.079408520 1.100133  1.608227        consistent
+    ## 204        Rnf180 0.098533612 1.006416  4.646787        consistent
+    ## 205        Rnf216 0.098399309 1.007008 -1.073959 yoked\nconsistent
+    ## 206         Rnf25 0.028332466 1.547716 -1.872594 yoked\nconsistent
+    ## 207         Rpl10 0.025963596 1.585635 -2.250149 yoked\nconsistent
+    ## 208         Rpl36 0.050806429 1.294081 -1.359802 yoked\nconsistent
+    ## 209        Rsc1a1 0.049991290 1.301106 -6.696627 yoked\nconsistent
+    ## 210        Rsph3a 0.075888087 1.119826 -1.836296 yoked\nconsistent
+    ## 211        S100a1 0.090506687 1.043319  4.176658        consistent
+    ## 212        Samhd1 0.052247414 1.281935  2.555701        consistent
+    ## 213        Sema4a 0.055697684 1.254163  2.290312        consistent
+    ## 214         Sgms2 0.090232749 1.044636  5.086672        consistent
+    ## 215         Shoc2 0.040649863 1.390941  1.326581        consistent
+    ## 216       Slc24a2 0.040888161 1.388402  1.140005        consistent
+    ## 217      Slc25a38 0.079049015 1.102104 -1.674412 yoked\nconsistent
+    ## 218      Slc25a46 0.035396074 1.451045  1.158403        consistent
+    ## 219       Slc26a2 0.081959305 1.086402  3.718625        consistent
+    ## 220       Slc2a13 0.095844557 1.018433  1.118219        consistent
+    ## 221       Slc35b4 0.049487332 1.305506 -1.323510 yoked\nconsistent
+    ## 222       Slc44a1 0.053664604 1.270312  1.364285        consistent
+    ## 223        Slc4a3 0.047296750 1.325169  1.015137        consistent
+    ## 224        Slc8a1 0.077847562 1.108755  1.535193        consistent
+    ## 225         Slx1b 0.064297173 1.191808 -2.154254 yoked\nconsistent
+    ## 226         Smek2 0.094182143 1.026031  1.475515        consistent
+    ## 227         Smim3 0.073184046 1.135584 -2.173538 yoked\nconsistent
+    ## 228        Snap29 0.032289995 1.490932 -1.667227 yoked\nconsistent
+    ## 229          Snx2 0.071033673 1.148536 -1.157842 yoked\nconsistent
+    ## 230         Snx24 0.089917206 1.046157  4.639860        consistent
+    ## 231        Sorcs1 0.087372943 1.058623 -2.851229 yoked\nconsistent
+    ## 232         Sox10 0.056487180 1.248050  3.604220        consistent
+    ## 233          Sox5 0.062452817 1.204448  4.161665        consistent
+    ## 234         Spast 0.090232749 1.044636  1.120841        consistent
+    ## 235       Specc1l 0.070201017 1.153657  1.353570        consistent
+    ## 236          Srrd 0.047560292 1.322755 -2.740428 yoked\nconsistent
+    ## 237    St6galnac4 0.095844557 1.018433  2.278950        consistent
+    ## 238       St8sia4 0.070004366 1.154875  4.554064        consistent
+    ## 239       Stard13 0.061475547 1.211298  4.597528        consistent
+    ## 240          Stk3 0.097871277 1.009345  2.907311        consistent
+    ## 241         Stox2 0.069073318 1.160690 -4.228689 yoked\nconsistent
+    ## 242          Stx3 0.063703756 1.195835 -1.331315 yoked\nconsistent
+    ## 243       Tbc1d30 0.030758294 1.512038  1.604249        consistent
+    ## 244        Tbc1d9 0.053664604 1.270312  1.589010        consistent
+    ## 245         Tdrd7 0.088000145 1.055517  1.703265        consistent
+    ## 246          Tet3 0.053844145 1.268862  1.094635        consistent
+    ## 247        Tmem57 0.053844145 1.268862  1.390690        consistent
+    ## 248        Tmem65 0.092944106 1.031778 -1.024638 yoked\nconsistent
+    ## 249       Tmem88b 0.058480905 1.232986  2.631945        consistent
+    ## 250          Tns2 0.077753552 1.109280  5.250512        consistent
+    ## 251          Tox2 0.071099580 1.148133  2.103597        consistent
+    ## 252         Traf6 0.070622910 1.151054  2.544356        consistent
+    ## 253           Ttn 0.094831372 1.023048  5.042780        consistent
+    ## 254        Tvp23a 0.053588804 1.270926  1.914888        consistent
+    ## 255         Uckl1 0.057965671 1.236829 -1.385668 yoked\nconsistent
+    ## 256         Uqcrh 0.023924907 1.621150 -1.273929 yoked\nconsistent
+    ## 257         Usmg5 0.023924907 1.621150 -1.350159 yoked\nconsistent
+    ## 258         Usp45 0.035677918 1.447600  1.581830        consistent
+    ## 259        Usp6nl 0.065511720 1.183681  4.295653        consistent
+    ## 260         Xrcc3 0.092944106 1.031778 -2.619414 yoked\nconsistent
+    ## 261         Xrcc6 0.057140335 1.243057 -1.818006 yoked\nconsistent
+    ## 262         Ylpm1 0.095844557 1.018433  1.188359        consistent
+    ## 263           Zak 0.062452817 1.204448  2.743572        consistent
+    ## 264       Zc3h12a 0.073328276 1.134729 -2.583596 yoked\nconsistent
+    ## 265        Zc3h13 0.035396074 1.451045  1.362548        consistent
+    ## 266        Zfp114 0.089451104 1.048414  4.685814        consistent
+    ## 267        Zfp395 0.040411491 1.393495 -3.819722 yoked\nconsistent
+    ## 268        Zfp414 0.082795261 1.081995 -1.645229 yoked\nconsistent
+    ## 269        Zfp446 0.097473286 1.011114  3.317079        consistent
+    ## 270        Zfp580 0.071099580 1.148133 -1.492773 yoked\nconsistent
+    ## 271        Zfp617 0.061475547 1.211298 -1.440423 yoked\nconsistent
+    ## 272        Zfp711 0.056885301 1.245000 -1.956344 yoked\nconsistent
+    ## 273        Zfp738 0.071124207 1.147983 -1.918231 yoked\nconsistent
+    ## 274        Zfp821 0.056086978 1.251138 -1.211277 yoked\nconsistent
+    ## 275        Zfp831 0.025320503 1.596528  1.931827        consistent
+    ## 276       Zfyve16 0.089699290 1.047211  2.680013        consistent
+    ## 277         Zmym4 0.078256308 1.106481  1.702054        consistent
+    ## 278         Znrd1 0.089832225 1.046568  5.159798        consistent

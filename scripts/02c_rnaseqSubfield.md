@@ -760,7 +760,17 @@ filter out nonspecific gene expression responses
     ## 5         Zdbf2
     ## 6 1810030O07Rik
 
+    # CA1 learning but not CA1 stress 
+    CA1learn <- shared %>% filter(CA1learn == 1 & CA1stress == 0) %>%
+      select(gene)
+
+    # CA1 learning but not CA1 stress 
+    CA1stress <- shared %>% filter(CA1learn == 0 & CA1stress == 1) %>%
+      select(gene)
+
     write.csv(CA1learnstress, "../data/02_CA1learningstressgenes.csv", row.names = F)
+    write.csv(CA1learn, "../data/02_CA1learninggenes.csv", row.names = F)
+    write.csv(CA1stress, "../data/02_CA1lstressgenes.csv", row.names = F)
 
     # All degs
     updown <- read.csv("../data/02c_setsize_updown.csv") 

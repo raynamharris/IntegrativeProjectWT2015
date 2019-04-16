@@ -271,8 +271,8 @@ Significant genes
 ```{r significantgenes}
 
 # read files with pvalues
-CA1stresspvals <- read.csv("../data/02c_CA1_consyokcons.csv", stringsAsFactors = F, row.names = NULL) 
-CA1trainpvals <- read.csv("../data/02c_CA1_yokeconfyokcons.csv", stringsAsFactors = F, row.names = NULL)
+CA1trainpvals <- read.csv("../data/02c_CA1_consyokcons.csv", stringsAsFactors = F, row.names = NULL) 
+CA1stresspvals <- read.csv("../data/02c_CA1_yokeconfyokcons.csv", stringsAsFactors = F, row.names = NULL)
 DGtrainpvals <- read.csv("../data/02c_DG_consyokcons.csv", stringsAsFactors = F)
 
 # remove non-significant genes and genes affected by learning and stresss
@@ -316,6 +316,7 @@ correlationdf <- function(pvalues, vsds){
   mydfrandom$ID <- row.names(mydfrandom)
   
   # subset the beahvior data to the last time point and only values shows in figure 2
+  behavior <- read.csv("../data/01a_behavior.csv", header = T)
   favbehav <- behavior %>% 
     filter(TrainSession == "Retention") %>%
     select(ID, NumEntrances, Time1stEntr)
@@ -395,4 +396,16 @@ corCA1train %>%
 
 ```
 
+```{r}
 
+CA1learn <- read.csv( "../data/02_CA1learninggenes.csv", stringsAsFactors = F)
+head(CA1learn)
+head(CA1trainpvals)
+CA1forGO <- left_join(CA1trainpvals,CA1learn)
+CA1forGO
+
+
+CA1stress <- read.csv( "../data/02_CA1lstressgenes.csv")
+CA1sGO <- left_join(CA1trainpvals,CA1stress)
+CA1sGO
+```
