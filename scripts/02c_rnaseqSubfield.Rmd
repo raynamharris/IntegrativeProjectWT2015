@@ -93,7 +93,9 @@ plot.cons.yokcons <- function(mydds, mytissue, mytitle){
 
   write.csv(data, file = paste0("../data/02c_", mytissue, "_consyokcons.csv", sep = ""), row.names = F)
   
-  volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
+  volcano <- data %>%
+    filter(direction != "NS") %>%
+    ggplot(aes(x = lfc, y = logpadj)) + 
     geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
     theme_cowplot(font_size = 7, line_size = 0.25) +
     geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
@@ -199,16 +201,18 @@ plot.yokconf.yokcons <- function(mydds, mytissue, mytitle){
   data <- na.omit(data)
   data <- data %>%
     dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                        yes = "yoked\nconsistent", 
+                        yes = "yoked\nconflict", 
                         no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                    yes = "yoked\nconflict", 
+                                    yes = "yoked\nconsistent", 
                                     no = "NS")))
   
   data$direction <- factor(data$direction, levels = c("yoked\nconsistent", "NS", "yoked\nconflict"))
   
   write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""), row.names = F)
   
-  volcano <- ggplot(data, aes(x = lfc, y = logpadj, color = direction)) + 
+  volcano <- data %>%
+    filter(direction != "NS") %>%
+    ggplot(aes(x = lfc, y = logpadj, color = direction)) + 
     geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
     theme_cowplot(font_size = 7, line_size = 0.25) +
     geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
@@ -485,7 +489,7 @@ d2 <- ggplot(shared2, aes(x=direction, y=setsize, image = status)) +
         legend.position = c(0.05, 0.9),
         legend.text=element_text(size=4),
         legend.key.size = unit(0.2, "cm"),
-        strip.text.x = element_text(size = 0),
+          strip.text.x = element_text(size = 5),
         #axis.text=element_text(size=7),
         strip.background = element_rect(colour=NA, fill=NA),
         panel.border = element_rect(fill = NA, color = "black"),
@@ -493,18 +497,45 @@ d2 <- ggplot(shared2, aes(x=direction, y=setsize, image = status)) +
   facet_wrap(~set, scales = "free_x") 
 d2
 
-newbarplots <- plot_grid(d1,d2, nrow = 2, rel_heights =c(0.4,0.6))
+newbarplots <- plot_grid(d1,d2, nrow = 2, rel_heights =c(0.4,0.6),
+                         labels = c("D","E"), label_size = 7)
 newbarplots
 
 pdf(file="../figures/02c_rnaseqSubfield/barplots.pdf", width=1.9, height=2.15)
 plot(newbarplots)    
 dev.off() 
 
+forgraphicalsummary <- shared2 %>%
+  filter(status != "shared") %>%
+  ggplot(aes(x=direction, y=setsize, fill = direction)) +
+  geom_bar(stat = "identity", position=position_dodge()) +
+  theme_cowplot(font_size = 6, line_size = 0.25) +
+  labs(x = NULL, y = "Genes for GO") +
+  theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
+        legend.position = "none",
+        legend.text=element_text(size=4),
+        legend.key.size = unit(0.2, "cm"),
+        strip.text.x = element_text(size = 0),
+        #axis.text=element_text(size=7),
+        strip.background = element_rect(colour=NA, fill=NA),
+        panel.border = element_rect(fill = NA, color = "black"),
+        legend.margin=margin(t=-0.1, r=0, b=-0.1, l=-0.1, unit="cm")) +
+  facet_wrap(~set, scales = "free_x") +
+    scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"),
+                    name = NULL) +
+    scale_y_continuous(limits = c(0, 560),
+                     breaks = c(0,125,250,375,500)) 
+forgraphicalsummary
+
+pdf(file="../figures/02c_rnaseqSubfield/forgraphicalsummary.pdf", width=1.5, height=1)
+plot(forgraphicalsummary)    
+dev.off() 
+
 ```
 
 ```{r combo, cache=FALSE}
 bottomplots <- plot_grid(CA1yoked, newbarplots,
-                    labels = c("C", "D"),
+                    labels = c("C", NULL),
                     label_size = 7)
 
 volcanos <- plot_grid(training, bottomplots, nrow = 2,

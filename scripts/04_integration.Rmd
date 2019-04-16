@@ -399,13 +399,14 @@ corCA1train %>%
 ```{r}
 
 CA1learn <- read.csv( "../data/02_CA1learninggenes.csv", stringsAsFactors = F)
-head(CA1learn)
-head(CA1trainpvals)
-CA1forGO <- left_join(CA1trainpvals,CA1learn)
-CA1forGO
+CA1learnGO <- left_join(CA1trainpvals,CA1learn)
+CA1learnGO
 
 
 CA1stress <- read.csv( "../data/02_CA1lstressgenes.csv")
-CA1sGO <- left_join(CA1trainpvals,CA1stress)
-CA1sGO
+CA1stressGO <- left_join(CA1stresspvals,CA1stress)
+CA1stressGO
+
+write.csv(CA1learnGO, "../data/04_CA1learnGO.csv", row.names = F)
+write.csv(CA1stressGO, "../data/04_CA1stressGO.csv", row.names = F)
 ```
