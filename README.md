@@ -49,7 +49,7 @@ This workflow below describes the order in which scripts are used to process and
 ![](./figures/figure_3.png)
 **Fig. 3. 10x more vaiartion across tissues than treatment groups** A) I compared gene expression in three hippocampal subfields from our four treatment groups (DG: orange, CA3: green, CA1: purple, yoked-consistent: filled circle, consistent: open square, yoked-conflict: filled square, conflict: open square). B) Hierarchical clustering of differentially expressed genes shows variation between subfields is much greater than variation induced by treatment. C) A principal component analysis estimates that over 50 % of the variation is capture in PC1 and P3, which visually separate the three hippocampal subfields. D) 3000 are differentially expressed in a symmetric pattern between DG and CA. E, F) Fewer genes are up-regulated in CA1 compared to both DG and CA3, but the magnitude of expression differences in greater between DG-CA1 than between CA3-CA1. For volcano plots, dots are partially transparent to aid visualization of density.
 
-![](./figures/figure_5.png | width=50)
+![](./figures/figure_5.png)
 **Fig. 4. Variation in gene expression due to training or "stress"**
 
 
