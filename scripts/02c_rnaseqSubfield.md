@@ -941,7 +941,7 @@ filter out nonspecific gene expression responses
               DGconsyokcons + theme(legend.position = c(0.8,0.9)), NULL,
               CA1consyokcons + theme(legend.position = c(0.8,0.9)), NULL,
               CA1yoked + theme(legend.position = c(0.8,0.9)), NULL,
-              labels="AUTO",
+              labels= c("A", "E", "B", "F", "C", "G", "D", "H"),
               label_size = 7,
               ncol = 2)
     spaceforgo
