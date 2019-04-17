@@ -281,7 +281,7 @@ PCA42
 
 plotnolegend <- plot_grid(PCA12 + theme(legend.position="none"),
            PCA42 + theme(legend.position="none"),
-           labels = c("B", "C"),
+           labels = c("C", "D"),
            ncol = 1,
            label_size = 7
            )
