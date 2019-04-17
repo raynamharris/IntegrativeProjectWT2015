@@ -181,10 +181,9 @@ Consistent versus yoked-consistent
         scale_color_manual(values = volcano1,
                           name = "higher in",
                           breaks = c("yoked\nconsistent", "NS", "consistent"))  + 
-        scale_y_continuous(limits=c(0, 12.5)) +
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
-        ylab(paste0("log10 p-value")) +  
+        ylab(paste0("-log10 p-value")) +  
         labs(subtitle = mytitle) +
         theme(legend.position = "bottom",
               legend.spacing.x = unit(0.1, 'cm'),
@@ -196,7 +195,7 @@ Consistent versus yoked-consistent
     }
 
 
-    DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DEGs - DG train") + theme(legend.position = "none")  
+    DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DEGs - DG train") + theme(legend.position = "none") + scale_y_continuous(breaks = c(0,4,8,12))  
 
     ## [1] "DG"
     ## 
@@ -291,10 +290,9 @@ Confict versus Consistent
         scale_color_manual(values = volcano2,
                            breaks = c("consistent", "NS", "conflict"),
                           name = "higher in")  + 
-        scale_y_continuous(limits=c(0, 12.5)) +
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
-        ylab(paste0("log10 p-value")) +  
+        ylab(paste0("-log10 p-value")) +  
         labs(subtitle = mytissue) +
         theme(panel.grid.minor=element_blank(),
               legend.position = "bottom",
@@ -398,10 +396,10 @@ Yoked confict versus yoked consistent
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
         scale_color_manual(values = volcano3,
                            name = "higher in")  + 
-        scale_y_continuous(limits=c(0, 12.5)) +
+        #scale_y_continuous(limits=c(0, 12.5)) +
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
-        ylab(paste0("log10 p-value")) +  
+        ylab(paste0("-log10 p-value")) +  
         labs(subtitle = mytitle) +
         theme(legend.position = "bottom",
               legend.spacing.x = unit(0.1, 'cm'),
@@ -938,12 +936,17 @@ filter out nonspecific gene expression responses
     # 3 volcanos, 2 bar plots, space for 3 GOs
     spaceforgo <- plot_grid(d1 + labs(x = NULL) + theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1)), 
                             d2 + labs(x = NULL),
-              DGconsyokcons + theme(legend.position = c(0.8,0.9)), NULL,
-              CA1consyokcons + theme(legend.position = c(0.8,0.9)), NULL,
+              DGconsyokcons + theme(legend.position = c(0.8,0.9),
+                                    axis.text.x=element_blank(),
+                                   axis.title.x=element_blank()), NULL,
+              CA1consyokcons + theme(legend.position = c(0.8,0.9),
+                                    axis.text.x=element_blank(),
+                                   axis.title.x=element_blank()), NULL,
               CA1yoked + theme(legend.position = c(0.8,0.9)), NULL,
               labels= c("A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2"),
               label_size = 7,
-              ncol = 2)
+              ncol = 2,
+              rel_heights = c(0.29, 0.19, 0.25, 0.27))
     spaceforgo
 
 ![](../figures/02c_rnaseqSubfield/combo-2.png)
