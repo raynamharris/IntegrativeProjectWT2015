@@ -132,7 +132,7 @@ titles, y labels and limits.
 
     A <- meansdplots(a, "Number of target zone entrances" , "Counts", c(0,10,20,30), c(0, 35))
     B <- meansdplots(b, "Proportion of time in target zone", "Proportion", c(0,.12,.25,.37), c(0, .37 ))
-    C <- meansdplots(c, "Time to 1st target zone entrance", "Time (min)", c(0,2,4,6,8), c(0, 8))
+    C <- meansdplots(c, "Latency to 1st target zone entrance", "Time (min)", c(0,2,4,6,8), c(0, 8))
     D <- meansdplots(d, "Proportion of time opposite the target zone", "Proportion", c(0.25, .5, .75), c(0.1, .75))
 
 
@@ -141,7 +141,7 @@ titles, y labels and limits.
                C + theme(legend.position="none"),
                D + theme(legend.position="none"),
                #align = 'vh',
-               labels = "AUTO",
+               labels = c("A", "C", "B", "D"),
                nrow = 2,
                label_size = 8
                )
@@ -159,18 +159,24 @@ titles, y labels and limits.
     ## quartz_off_screen 
     ##                 2
 
-    plotone <- plot_grid(A + theme(legend.position="none"),
+    plotone <- plot_grid(A + theme(legend.position="none",
+                                   axis.text.x=element_blank(),
+                                   axis.title.x=element_blank()),
                C + theme(legend.position="none"),
-               labels = c("A","C"),
+               labels = c("A","B"),
                nrow = 2,
-               label_size = 7
+               label_size = 7,
+               rel_heights = c(0.4, 0.6)
                )
 
-    plottwo <- plot_grid(B + theme(legend.position="none"),
+    plottwo <- plot_grid(B + theme(legend.position="none",
+                                   axis.text.x=element_blank(),
+                                   axis.title.x=element_blank()),
                D + theme(legend.position="none"),
-               labels = c("B","D"),
+               labels = c("C","D"),
                nrow = 2,
-               label_size = 7
+               label_size = 7,
+               rel_heights = c(0.4, 0.6)
                )
 
     pdf(file="../figures/01_behavior/twomeasuresAC.pdf", width=2.3, height=3)
