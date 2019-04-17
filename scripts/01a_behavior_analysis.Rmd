@@ -389,6 +389,74 @@ for(y in names(exp_nums)){
                xlab = "T6/C3")
 }
 ```
+## Number of shocks
+
+The values in the column "NumShock" are actually measures of the number of entraces into the shock zone. Because, that's what the software records. For consistent and conflict animals, the number of shocks equals equals the number of entraces. However, for yoked individuals, the number of entrances does not equal the number of shocks. For them, the number of shocks is equal to their consistent or conflict trained partner. 
+
+```{r ShocksEntrances}
+# supset beahvior to keep only factors and num shocks
+numshocks <- behavior %>%
+  select(ID, TrainSessionCombo, APA2, NumShock) 
+
+# widen datafram, and sum total
+numshocks <- spread(numshocks, key=TrainSessionCombo, value= NumShock)
+numshocks$sums <- rowSums(numshocks[sapply(numshocks, is.numeric)])
+
+# copy datafram, add identifer
+numentrances <- numshocks
+
+# delete values for yoked animals
+numshocks <- numshocks %>%
+  filter(APA2 %in% c("consistent", "conflict")) %>%
+  droplevels()
+
+# create a tempdataframe with dupclicate values for yoked
+numshockstemp <- numshocks
+levels(numshockstemp$APA2) 
+levels(numshockstemp$APA2) <- c("yoked\nconsistent","yoked\nconflict")
+levels(numshockstemp$APA2) 
+
+# combine the two and plot
+
+realnumshocks <- rbind(numshocks, numshockstemp)
+realnumshocks
+
+realnumshocks$APA2 <- factor(realnumshocks$APA2, levels = c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict"))
+
+a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
+  geom_boxplot(outlier.size = 0.5) +
+  theme_cowplot(font_size = 7, line_size = 0.25) +
+  scale_fill_manual(values = colorvalAPA00,
+                    name = NULL) +
+  labs(x = NULL, subtitle = "Total shocks", y = "Counts") +
+    theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
+          legend.position = "none")
+
+
+numentrances$APA2 <- factor(numentrances$APA2, levels = c("yoked-consistent", "consistent", "yoked-conflict", "conflict"))
+levels(numentrances$APA2) <- c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict")
+
+
+b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
+  geom_boxplot(outlier.size = 0.5) +
+  theme_cowplot(font_size = 7, line_size = 0.25) +
+  scale_fill_manual(values = colorvalAPA00,
+                    name = NULL) +
+  labs(x = NULL, subtitle = "Total entrances", y = "Counts") +
+    theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
+          legend.position = "none")
+
+shockentrplot <- plot_grid(a,b, labels = c("B", "C"), label_size = 7)
+
+pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3, height=2.1)
+plot(shockentrplot)
+dev.off()
+
+
+summary(aov(numentrances$sums ~ numentrances$APA2))
+summary(aov(realnumshocks$sums ~ realnumshocks$APA2))
+```
+
 
 ```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)

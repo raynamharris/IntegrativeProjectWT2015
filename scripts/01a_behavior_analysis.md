@@ -1399,6 +1399,168 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     }
 
 ![](../figures/01_behavior/T6consistentconflict-1.png)![](../figures/01_behavior/T6consistentconflict-2.png)![](../figures/01_behavior/T6consistentconflict-3.png)![](../figures/01_behavior/T6consistentconflict-4.png)![](../figures/01_behavior/T6consistentconflict-5.png)
+\#\# Number of shocks
+
+The values in the column “NumShock” are actually measures of the number
+of entraces into the shock zone. Because, that’s what the software
+records. For consistent and conflict animals, the number of shocks
+equals equals the number of entraces. However, for yoked individuals,
+the number of entrances does not equal the number of shocks. For them,
+the number of shocks is equal to their consistent or conflict trained
+partner.
+
+    # supset beahvior to keep only factors and num shocks
+    numshocks <- behavior %>%
+      select(ID, TrainSessionCombo, APA2, NumShock) 
+
+    # widen datafram, and sum total
+    numshocks <- spread(numshocks, key=TrainSessionCombo, value= NumShock)
+    numshocks$sums <- rowSums(numshocks[sapply(numshocks, is.numeric)])
+
+    # copy datafram, add identifer
+    numentrances <- numshocks
+
+    # delete values for yoked animals
+    numshocks <- numshocks %>%
+      filter(APA2 %in% c("consistent", "conflict")) %>%
+      droplevels()
+
+    # create a tempdataframe with dupclicate values for yoked
+    numshockstemp <- numshocks
+    levels(numshockstemp$APA2) 
+
+    ## [1] "consistent" "conflict"
+
+    levels(numshockstemp$APA2) <- c("yoked\nconsistent","yoked\nconflict")
+    levels(numshockstemp$APA2) 
+
+    ## [1] "yoked\nconsistent" "yoked\nconflict"
+
+    # combine the two and plot
+
+    realnumshocks <- rbind(numshocks, numshockstemp)
+    realnumshocks
+
+    ##        ID              APA2 Hab Retention Retest T1 T2 T3 T4_C1 T5_C2
+    ## 1  15140A          conflict  52         9      1  7  3  3    13     6
+    ## 2  15140C        consistent  62         0     10  6  7  8     3     8
+    ## 3  15141C        consistent  44        21      7  8 19 11    10     7
+    ## 4  15142A          conflict  60         6      0  7  4  2     7     3
+    ## 5  15142C        consistent  57         8      1  5  1  1     0     0
+    ## 6  15143A          conflict  56        33      2 10  3  1    14     2
+    ## 7  15143C        consistent  52         1      2 10  3  1     0     1
+    ## 8  15144A          conflict  64         0      1 12  4  1    26     3
+    ## 9  15144C        consistent  64         0      1  9  3  2     3     0
+    ## 10 15145A          conflict  59         0      6  6  2  1    29     4
+    ## 11 15145C        consistent  54        28      6 10  7  5     5     9
+    ## 12 15146A          conflict  66         0      1 25  2  1    26     1
+    ## 13 15146C        consistent  58         4      3  5  1  1    13     4
+    ## 14 15147A          conflict  48        30      5  6  3  1    15     5
+    ## 15 15147C        consistent  49         5      1  4  2  1     2     1
+    ## 16 15148A          conflict  61        40      0  7  1  1    24     5
+    ## 17 15148C          conflict  50        37      4  7  3 15    33    28
+    ## 18 15140A   yoked\nconflict  52         9      1  7  3  3    13     6
+    ## 19 15140C yoked\nconsistent  62         0     10  6  7  8     3     8
+    ## 20 15141C yoked\nconsistent  44        21      7  8 19 11    10     7
+    ## 21 15142A   yoked\nconflict  60         6      0  7  4  2     7     3
+    ## 22 15142C yoked\nconsistent  57         8      1  5  1  1     0     0
+    ## 23 15143A   yoked\nconflict  56        33      2 10  3  1    14     2
+    ## 24 15143C yoked\nconsistent  52         1      2 10  3  1     0     1
+    ## 25 15144A   yoked\nconflict  64         0      1 12  4  1    26     3
+    ## 26 15144C yoked\nconsistent  64         0      1  9  3  2     3     0
+    ## 27 15145A   yoked\nconflict  59         0      6  6  2  1    29     4
+    ## 28 15145C yoked\nconsistent  54        28      6 10  7  5     5     9
+    ## 29 15146A   yoked\nconflict  66         0      1 25  2  1    26     1
+    ## 30 15146C yoked\nconsistent  58         4      3  5  1  1    13     4
+    ## 31 15147A   yoked\nconflict  48        30      5  6  3  1    15     5
+    ## 32 15147C yoked\nconsistent  49         5      1  4  2  1     2     1
+    ## 33 15148A   yoked\nconflict  61        40      0  7  1  1    24     5
+    ## 34 15148C   yoked\nconflict  50        37      4  7  3 15    33    28
+    ##    T6_C3 sums
+    ## 1      2   96
+    ## 2      0  104
+    ## 3     12  139
+    ## 4      3   92
+    ## 5      0   73
+    ## 6      1  122
+    ## 7      0   70
+    ## 8      1  112
+    ## 9      1   83
+    ## 10     4  111
+    ## 11    13  137
+    ## 12     1  123
+    ## 13     8   97
+    ## 14     9  122
+    ## 15     0   65
+    ## 16     9  148
+    ## 17    23  200
+    ## 18     2   96
+    ## 19     0  104
+    ## 20    12  139
+    ## 21     3   92
+    ## 22     0   73
+    ## 23     1  122
+    ## 24     0   70
+    ## 25     1  112
+    ## 26     1   83
+    ## 27     4  111
+    ## 28    13  137
+    ## 29     1  123
+    ## 30     8   97
+    ## 31     9  122
+    ## 32     0   65
+    ## 33     9  148
+    ## 34    23  200
+
+    realnumshocks$APA2 <- factor(realnumshocks$APA2, levels = c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict"))
+
+    a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
+      geom_boxplot(outlier.size = 0.5) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
+      scale_fill_manual(values = colorvalAPA00,
+                        name = NULL) +
+      labs(x = NULL, subtitle = "Total shocks", y = "Counts") +
+        theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
+              legend.position = "none")
+
+
+    numentrances$APA2 <- factor(numentrances$APA2, levels = c("yoked-consistent", "consistent", "yoked-conflict", "conflict"))
+    levels(numentrances$APA2) <- c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict")
+
+
+    b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
+      geom_boxplot(outlier.size = 0.5) +
+      theme_cowplot(font_size = 7, line_size = 0.25) +
+      scale_fill_manual(values = colorvalAPA00,
+                        name = NULL) +
+      labs(x = NULL, subtitle = "Total entrances", y = "Counts") +
+        theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
+              legend.position = "none")
+
+    shockentrplot <- plot_grid(a,b, labels = c("B", "C"), label_size = 7)
+
+    pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3, height=2.1)
+    plot(shockentrplot)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    summary(aov(numentrances$sums ~ numentrances$APA2))
+
+    ##                   Df  Sum Sq Mean Sq F value   Pr(>F)    
+    ## numentrances$APA2  3 1137278  379093   91.29 3.52e-15 ***
+    ## Residuals         30  124584    4153                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(realnumshocks$sums ~ realnumshocks$APA2))
+
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)  
+    ## realnumshocks$APA2  3   7178  2392.8   2.492 0.0791 .
+    ## Residuals          30  28802   960.1                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
     write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
