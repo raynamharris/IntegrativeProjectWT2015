@@ -411,7 +411,7 @@ lots of useful info to a df for downstream dataviz.
 
     df <- as.data.frame(colData(dds)[,c("treatment", "subfield")]) ## matrix to df
     rownames(df) <- names(countData)
-    levels(df$treatment) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+    levels(df$treatment) <- c("standard yoked","standard trained",  "conflict yoked","conflict trained")
 
 
     DEGes <- as.matrix(DEGes) 
@@ -472,7 +472,7 @@ lots of useful info to a df for downstream dataviz.
 
     df <- as.data.frame(colData(dds)[,c("treatment", "subfield")]) ## matrix to df
     rownames(df) <- names(countData)
-    levels(df$treatment) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+    levels(df$treatment) <- c("standard yoked","standard trained",  "conflict yoked","conflict trained")
 
     DEGes <- as.matrix(DEGes) 
     paletteLength <- 30
@@ -522,7 +522,7 @@ Principle component analysis
     pcadata$subfield <- factor(pcadata$subfield, levels=c("DG","CA3", "CA1"))
     pcadata$treatment <- factor(pcadata$treatment, levels=c("yoked_consistent","consistent",  "yoked_conflict","conflict"))
 
-    levels(pcadata$treatment) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+    levels(pcadata$treatment) <- c("standard yoked","standard trained",  "conflict yoked", "conflict trained")
 
     summary(aov(PC1 ~ subfield * treatment, data=pcadata)) 
 

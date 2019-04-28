@@ -5,7 +5,6 @@ output: md_document
 
 This markdown file is used for behavioral data wrangling, statistical analysis, and data visualization. Figures from this analysis were assembled into this multi-panel plot using Adobe Illustrator. Files used to create the individual figures are saved in the data subdirectory with the prefix 01a.
 
-<img src="../figures/figure_2.png" width="1370" />
 
 ## Setup
 
@@ -40,7 +39,7 @@ behavior <- read.csv("../data/01_behaviordata.csv", header = T)
 
 ## set level for APA2 then renmae
 behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "Same", "YokedConflict","Conflict"))
-levels(behavior$APA2) <-  c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict")
+levels(behavior$APA2) <-  c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained")
 
 # sample sizes
 behavior %>% 
@@ -57,6 +56,11 @@ behavior_slim <- behavior[,c(15,16,14,20:58)]
 To make the point and line graphs, I must create and join some data frames, then I have a function that makes four plots with specific titles, y labels and limits.
 
 ```{r fourmeasures}
+
+behavior$APA2 <- factor(behavior$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
+levels(behavior$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
+
+
 a <- behavior %>%
   dplyr::group_by(APA2, TrainSessionComboNum) %>%
   dplyr::summarise(m = mean(NumEntrances), 
@@ -83,10 +87,10 @@ d <- behavior %>%
   dplyr::mutate(measure = "Proportion of time opposite the target zone")
 
 fourmeasures <- rbind(a,b,c,d)
-head(fourmeasures)
 
+fourmeasures$APA2 <- factor(fourmeasures$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict"))
+levels(fourmeasures$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
 
-fourmeasures$APA2 <- factor(fourmeasures$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
 
 # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
 
@@ -232,6 +236,9 @@ pheatmap(scaledaveragedata, show_colnames=F, show_rownames = F,
 Next, I next reduced the dimentionality of the data with a PCA anlaysis. 
 
 ```{r PCA}
+
+levels(behavior$APA2) <-  c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained")
+
 dataforpca <- behavior %>%
   filter(TrainSessionCombo != "Hab")
 
@@ -248,7 +255,7 @@ rotationdf <- mkrotationdf(dataforpca) #loadings for specific factors
 
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 scoresdf$PC1 <- scoresdf$PC1 * -1
-scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("yoked-consistent" ,"consistent", "yoked-conflict", "conflict"))
+scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
 
 
 ## data wraningly for pca anlysis
@@ -315,13 +322,13 @@ fviz_pca_var(res.pca,
              select.var = list(contrib = 8))
 ```
 
-### Comparing Consistent and Conflict behaviors during the T4/C1 training session
+### Comparing standard-trained and conflict-trained behaviors during the T4/C1 training session
 
 ```{r T4consistentconflict}
 filtered <- behavior_slim %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
 exp_factors <- as.data.frame(filtered[,1])
 exp_nums <- filtered[,c(4:42)]
-exp_factors$APA2 <- factor(filtered$APA2, levels = c("consistent", "conflict"))
+exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard-trained", "conflict-trained"))
 
 # Levene's test for normality
 #for(y in names(exp_nums)){
@@ -361,13 +368,13 @@ for(y in names(exp_nums)){
 }
 ```
 
-### Comparing Consistent and Conflict behaviors during the T6/C3 training session
+### Comparing standard-trained and conflict-trained behaviors during the T6/C3 training session
 
 ```{r T6consistentconflict}
 filtered <- behavior_slim %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
 exp_factors <- as.data.frame(filtered[,1])
 exp_nums <- filtered[,c(4:42)]
-exp_factors$APA2 <- factor(filtered$APA2, levels = c("consistent", "conflict"))
+exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard-trained", "conflict-trained"))
 
 for(y in names(exp_nums)){
   ymod<- wilcox.test(exp_nums[[y]] ~ exp_factors$APA2 )
@@ -397,7 +404,7 @@ for(y in names(exp_nums)){
 ```
 ## Number of shocks
 
-The values in the column "NumShock" are actually measures of the number of entraces into the shock zone. Because, that's what the software records. For consistent and conflict animals, the number of shocks equals equals the number of entraces. However, for yoked individuals, the number of entrances does not equal the number of shocks. For them, the number of shocks is equal to their consistent or conflict trained partner. 
+The values in the column "NumShock" are actually measures of the number of entraces into the shock zone. Because, that's what the software records. For standard-trained and conflict-trained animals, the number of shocks equals equals the number of entraces. However, for yoked individuals, the number of entrances does not equal the number of shocks. For them, the number of shocks is equal to their standard-trained or conflict-trained trained partner. 
 
 ```{r ShocksEntrances}
 # supset beahvior to keep only factors and num shocks
@@ -413,23 +420,24 @@ numentrances <- numshocks
 
 # delete values for yoked animals
 numshocks <- numshocks %>%
-  filter(APA2 %in% c("consistent", "conflict")) %>%
+  filter(APA2 %in% c("standard-trained", "conflict-trained")) %>%
   droplevels()
 
 # create a tempdataframe with dupclicate values for yoked
 numshockstemp <- numshocks
 levels(numshockstemp$APA2) 
-levels(numshockstemp$APA2) <- c("yoked\nconsistent","yoked\nconflict")
+levels(numshockstemp$APA2) <- c("standard-yoked","conflict-yoked")
 levels(numshockstemp$APA2) 
 
 # combine the two and plot
 
 realnumshocks <- rbind(numshocks, numshockstemp)
 
-realnumshocks$APA2 <- factor(realnumshocks$APA2, levels = c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict"))
+realnumshocks$APA2 <- factor(realnumshocks$APA2, levels = c("standard-yoked", "standard-trained", "conflict-yoked", "conflict-trained"))
+levels(realnumshocks$APA2) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
 
-numentrances$APA2 <- factor(numentrances$APA2, levels = c("yoked-consistent", "consistent", "yoked-conflict", "conflict"))
-levels(numentrances$APA2) <- c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict")
+numentrances$APA2 <- factor(numentrances$APA2, levels = c("standard-yoked", "standard-trained", "conflict-yoked", "conflict-trained"))
+levels(numentrances$APA2) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
 
 numentrances %>%
   dplyr::group_by(APA2) %>%
@@ -441,7 +449,7 @@ realnumshocks %>%
 
 a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
   geom_boxplot(outlier.size = 0.5) +
-  theme_cowplot(font_size = 7, line_size = 0.25) +
+  theme_cowplot(font_size = 7, line_size = 0.15) +
   scale_fill_manual(values = colorvalAPA00,
                     name = NULL) +
   labs(x = NULL, subtitle = "Total shocks", y = "Counts") +
@@ -455,7 +463,7 @@ a
 
 b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
   geom_boxplot(outlier.size = 0.5) +
-  theme_cowplot(font_size = 7, line_size = 0.25) +
+  theme_cowplot(font_size = 7, line_size = 0.15) +
   scale_fill_manual(values = colorvalAPA00,
                     name = NULL) +
   labs(x = NULL, subtitle = "Total entrances", y = "Counts") +
@@ -463,12 +471,12 @@ b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
           legend.position = "none") +
   geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
   geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
-  scale_y_continuous(breaks = c(0,100,200,300,400,500,600))
+  scale_y_continuous(breaks = c(0,100,200,400,600))
 b
 
 shockentrplot <- plot_grid(a,b, labels = c("B", "C"), label_size = 7)
 
-pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3, height=2.1)
+pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3, height=2.5)
 plot(shockentrplot)
 dev.off()
 

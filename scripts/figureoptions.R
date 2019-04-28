@@ -2,10 +2,10 @@
 
 # for mean and sd plots of behavior 
 ann_colors_APA2 = list(
-  APA2 =  c('yoked-consistent' = (values=c("#404040")), 
-            'consistent' = (values=c("#ca0020")),
-            'yoked-conflict' = (values=c("#bababa")),
-            'conflict' = (values=c("#f4a582"))))
+  APA2 =  c('standard-yoked' = (values=c("#404040")), 
+            'standard-trained' = (values=c("#ca0020")),
+            'conflict-yoked' = (values=c("#bababa")),
+            'conflict-trained' = (values=c("#f4a582"))))
 
 
 # for beahvior and physiology
@@ -43,10 +43,10 @@ pheatmapcolors = list(
   subfield = c(DG = (values=c("#d95f02")),
               CA3 = (values=c("#1b9e77")),
               CA1 = (values=c("#7570b3"))),
-  treatment = c('yoked consistent' = (values=c("#404040")), 
-            'consistent' = (values=c("#ca0020")),
-              'yoked conflict' = (values=c("#bababa")),
-            'conflict' = (values=c("#f4a582"))))
+  treatment = c('standard yoked' = (values=c("#404040")), 
+            'standard trained' = (values=c("#ca0020")),
+              'conflict yoked' = (values=c("#bababa")),
+            'conflict trained' = (values=c("#f4a582"))))
 
 
 # for subfield volcano plots

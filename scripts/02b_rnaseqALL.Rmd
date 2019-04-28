@@ -125,7 +125,7 @@ DEGes <- DEGes - rowMeans(DEGes)
 
 df <- as.data.frame(colData(dds)[,c("treatment", "subfield")]) ## matrix to df
 rownames(df) <- names(countData)
-levels(df$treatment) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+levels(df$treatment) <- c("standard yoked","standard trained",  "conflict yoked","conflict trained")
 
 
 DEGes <- as.matrix(DEGes) 
@@ -184,7 +184,7 @@ DEGes <- DEGes - rowMeans(DEGes)
 
 df <- as.data.frame(colData(dds)[,c("treatment", "subfield")]) ## matrix to df
 rownames(df) <- names(countData)
-levels(df$treatment) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+levels(df$treatment) <- c("standard yoked","standard trained",  "conflict yoked","conflict trained")
 
 DEGes <- as.matrix(DEGes) 
 paletteLength <- 30
@@ -236,7 +236,7 @@ pcadata$subfieldAPA <- as.factor(paste(pcadata$subfield, pcadata$treatment, sep=
 pcadata$subfield <- factor(pcadata$subfield, levels=c("DG","CA3", "CA1"))
 pcadata$treatment <- factor(pcadata$treatment, levels=c("yoked_consistent","consistent",  "yoked_conflict","conflict"))
 
-levels(pcadata$treatment) <- c("yoked consistent","consistent",  "yoked conflict","conflict")
+levels(pcadata$treatment) <- c("standard yoked","standard trained",  "conflict yoked", "conflict trained")
 
 summary(aov(PC1 ~ subfield * treatment, data=pcadata)) 
 TukeyHSD((aov(PC1 ~ subfield, data=pcadata)), which = "subfield") 
