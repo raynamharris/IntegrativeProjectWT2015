@@ -91,8 +91,8 @@ Data Viz
       labs(subtitle = mysubtitle, y = "fEPSP (%)") 
     }
 
-    A <- plotpotentiation(ycol = ephys3$PTP_3_10, mysubtitle = "Pre-Potentiation") + theme(axis.text.x = element_blank())
-    B <- plotpotentiation(ycol = ephys3$EarlyPotentiation_11_20, mysubtitle = "Early Potentiation") + theme(axis.text.x = element_blank())
+    A <- plotpotentiation(ycol = ephys3$PTP_3_10, mysubtitle = "Pre-Potentiation")  
+    B <- plotpotentiation(ycol = ephys3$EarlyPotentiation_11_20, mysubtitle = "Early Potentiation") 
     C <- plotpotentiation(ycol = ephys3$LatePotentiation_26_end, mysubtitle = "Late Potentiation")
 
     D <- ephys3 %>%
@@ -108,7 +108,7 @@ Data Viz
             legend.position="none") +
       labs(subtitle = "Max fEPSP", y = "?")
 
-    grid <- plot_grid(A, B, C, D, labels="AUTO", nrow = 2, label_size = 7, rel_heights = c(0.4, 0.6))
+    grid <- plot_grid(A, B, C, D, labels="AUTO", nrow = 1, label_size = 7)
 
     ## Warning: Removed 5 rows containing non-finite values (stat_boxplot).
 
@@ -120,9 +120,9 @@ Data Viz
 
     grid
 
-![](../figures/03_ephys/grid-1.png)
+![](../figures/03_ephys/ephys-1.png)
 
-    pdf(file="../figures/03_ephys/grid.pdf", width=3.15, height=4)
+    pdf(file="../figures/03_ephys/ephys.pdf", width=6, height=3)
     plot(grid)
     dev.off()
 
