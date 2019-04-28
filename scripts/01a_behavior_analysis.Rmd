@@ -425,9 +425,19 @@ levels(numshockstemp$APA2)
 # combine the two and plot
 
 realnumshocks <- rbind(numshocks, numshockstemp)
-realnumshocks
 
 realnumshocks$APA2 <- factor(realnumshocks$APA2, levels = c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict"))
+
+numentrances$APA2 <- factor(numentrances$APA2, levels = c("yoked-consistent", "consistent", "yoked-conflict", "conflict"))
+levels(numentrances$APA2) <- c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict")
+
+numentrances %>%
+  dplyr::group_by(APA2) %>%
+  dplyr::summarise(meanentraces = median(sums, na.rm = TRUE))
+
+realnumshocks %>%
+  dplyr::group_by(APA2) %>%
+  dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
 
 a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
   geom_boxplot(outlier.size = 0.5) +
@@ -436,11 +446,11 @@ a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
                     name = NULL) +
   labs(x = NULL, subtitle = "Total shocks", y = "Counts") +
     theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-          legend.position = "none")
+          legend.position = "none") +
+  geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
+  geom_hline(yintercept=90, linetype="dashed", color = "#ca0020")
+a
 
-
-numentrances$APA2 <- factor(numentrances$APA2, levels = c("yoked-consistent", "consistent", "yoked-conflict", "conflict"))
-levels(numentrances$APA2) <- c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict")
 
 
 b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
@@ -450,7 +460,11 @@ b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
                     name = NULL) +
   labs(x = NULL, subtitle = "Total entrances", y = "Counts") +
     theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-          legend.position = "none")
+          legend.position = "none") +
+  geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
+  geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
+  scale_y_continuous(breaks = c(0,100,200,300,400,500,600))
+b
 
 shockentrplot <- plot_grid(a,b, labels = c("B", "C"), label_size = 7)
 
@@ -458,6 +472,9 @@ pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3, height=2.1)
 plot(shockentrplot)
 dev.off()
 
+shockentrplot
+
+numentrances
 
 summary(aov(numentrances$sums ~ numentrances$APA2))
 summary(aov(realnumshocks$sums ~ realnumshocks$APA2))

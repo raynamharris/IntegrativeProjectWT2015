@@ -166,7 +166,7 @@ titles, y labels and limits.
                labels = c("A","B"),
                nrow = 2,
                label_size = 7,
-               rel_heights = c(0.4, 0.6)
+               rel_heights = c(0.45, 0.55)
                )
 
     plottwo <- plot_grid(B + theme(legend.position="none",
@@ -176,7 +176,7 @@ titles, y labels and limits.
                labels = c("C","D"),
                nrow = 2,
                label_size = 7,
-               rel_heights = c(0.4, 0.6)
+               rel_heights = c(0.45, 0.55)
                )
 
     pdf(file="../figures/01_behavior/twomeasuresAC.pdf", width=2.3, height=3)
@@ -1445,80 +1445,35 @@ partner.
     # combine the two and plot
 
     realnumshocks <- rbind(numshocks, numshockstemp)
-    realnumshocks
-
-    ##        ID              APA2 Hab Retention Retest T1 T2 T3 T4_C1 T5_C2
-    ## 1  15140A          conflict  52         9      1  7  3  3    13     6
-    ## 2  15140C        consistent  62         0     10  6  7  8     3     8
-    ## 3  15141C        consistent  44        21      7  8 19 11    10     7
-    ## 4  15142A          conflict  60         6      0  7  4  2     7     3
-    ## 5  15142C        consistent  57         8      1  5  1  1     0     0
-    ## 6  15143A          conflict  56        33      2 10  3  1    14     2
-    ## 7  15143C        consistent  52         1      2 10  3  1     0     1
-    ## 8  15144A          conflict  64         0      1 12  4  1    26     3
-    ## 9  15144C        consistent  64         0      1  9  3  2     3     0
-    ## 10 15145A          conflict  59         0      6  6  2  1    29     4
-    ## 11 15145C        consistent  54        28      6 10  7  5     5     9
-    ## 12 15146A          conflict  66         0      1 25  2  1    26     1
-    ## 13 15146C        consistent  58         4      3  5  1  1    13     4
-    ## 14 15147A          conflict  48        30      5  6  3  1    15     5
-    ## 15 15147C        consistent  49         5      1  4  2  1     2     1
-    ## 16 15148A          conflict  61        40      0  7  1  1    24     5
-    ## 17 15148C          conflict  50        37      4  7  3 15    33    28
-    ## 18 15140A   yoked\nconflict  52         9      1  7  3  3    13     6
-    ## 19 15140C yoked\nconsistent  62         0     10  6  7  8     3     8
-    ## 20 15141C yoked\nconsistent  44        21      7  8 19 11    10     7
-    ## 21 15142A   yoked\nconflict  60         6      0  7  4  2     7     3
-    ## 22 15142C yoked\nconsistent  57         8      1  5  1  1     0     0
-    ## 23 15143A   yoked\nconflict  56        33      2 10  3  1    14     2
-    ## 24 15143C yoked\nconsistent  52         1      2 10  3  1     0     1
-    ## 25 15144A   yoked\nconflict  64         0      1 12  4  1    26     3
-    ## 26 15144C yoked\nconsistent  64         0      1  9  3  2     3     0
-    ## 27 15145A   yoked\nconflict  59         0      6  6  2  1    29     4
-    ## 28 15145C yoked\nconsistent  54        28      6 10  7  5     5     9
-    ## 29 15146A   yoked\nconflict  66         0      1 25  2  1    26     1
-    ## 30 15146C yoked\nconsistent  58         4      3  5  1  1    13     4
-    ## 31 15147A   yoked\nconflict  48        30      5  6  3  1    15     5
-    ## 32 15147C yoked\nconsistent  49         5      1  4  2  1     2     1
-    ## 33 15148A   yoked\nconflict  61        40      0  7  1  1    24     5
-    ## 34 15148C   yoked\nconflict  50        37      4  7  3 15    33    28
-    ##    T6_C3 sums
-    ## 1      2   96
-    ## 2      0  104
-    ## 3     12  139
-    ## 4      3   92
-    ## 5      0   73
-    ## 6      1  122
-    ## 7      0   70
-    ## 8      1  112
-    ## 9      1   83
-    ## 10     4  111
-    ## 11    13  137
-    ## 12     1  123
-    ## 13     8   97
-    ## 14     9  122
-    ## 15     0   65
-    ## 16     9  148
-    ## 17    23  200
-    ## 18     2   96
-    ## 19     0  104
-    ## 20    12  139
-    ## 21     3   92
-    ## 22     0   73
-    ## 23     1  122
-    ## 24     0   70
-    ## 25     1  112
-    ## 26     1   83
-    ## 27     4  111
-    ## 28    13  137
-    ## 29     1  123
-    ## 30     8   97
-    ## 31     9  122
-    ## 32     0   65
-    ## 33     9  148
-    ## 34    23  200
 
     realnumshocks$APA2 <- factor(realnumshocks$APA2, levels = c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict"))
+
+    numentrances$APA2 <- factor(numentrances$APA2, levels = c("yoked-consistent", "consistent", "yoked-conflict", "conflict"))
+    levels(numentrances$APA2) <- c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict")
+
+    numentrances %>%
+      dplyr::group_by(APA2) %>%
+      dplyr::summarise(meanentraces = median(sums, na.rm = TRUE))
+
+    ## # A tibble: 4 x 2
+    ##   APA2                meanentraces
+    ##   <fct>                      <dbl>
+    ## 1 "yoked\nconsistent"         452.
+    ## 2 consistent                   90 
+    ## 3 "yoked\nconflict"           490 
+    ## 4 conflict                    122
+
+    realnumshocks %>%
+      dplyr::group_by(APA2) %>%
+      dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
+
+    ## # A tibble: 4 x 2
+    ##   APA2                meanshocks
+    ##   <fct>                    <dbl>
+    ## 1 "yoked\nconsistent"        96 
+    ## 2 consistent                 96 
+    ## 3 "yoked\nconflict"         125.
+    ## 4 conflict                  125.
 
     a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
       geom_boxplot(outlier.size = 0.5) +
@@ -1527,12 +1482,12 @@ partner.
                         name = NULL) +
       labs(x = NULL, subtitle = "Total shocks", y = "Counts") +
         theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-              legend.position = "none")
+              legend.position = "none") +
+      geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
+      geom_hline(yintercept=90, linetype="dashed", color = "#ca0020")
+    a
 
-
-    numentrances$APA2 <- factor(numentrances$APA2, levels = c("yoked-consistent", "consistent", "yoked-conflict", "conflict"))
-    levels(numentrances$APA2) <- c("yoked\nconsistent", "consistent", "yoked\nconflict", "conflict")
-
+![](../figures/01_behavior/ShocksEntrances-1.png)
 
     b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
       geom_boxplot(outlier.size = 0.5) +
@@ -1541,7 +1496,13 @@ partner.
                         name = NULL) +
       labs(x = NULL, subtitle = "Total entrances", y = "Counts") +
         theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-              legend.position = "none")
+              legend.position = "none") +
+      geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
+      geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
+      scale_y_continuous(breaks = c(0,100,200,300,400,500,600))
+    b
+
+![](../figures/01_behavior/ShocksEntrances-2.png)
 
     shockentrplot <- plot_grid(a,b, labels = c("B", "C"), label_size = 7)
 
@@ -1551,6 +1512,83 @@ partner.
 
     ## quartz_off_screen 
     ##                 2
+
+    shockentrplot
+
+![](../figures/01_behavior/ShocksEntrances-3.png)
+
+    numentrances
+
+    ##        ID              APA2 Hab Retention Retest  T1 T2 T3 T4_C1 T5_C2
+    ## 1  15140A          conflict  52         9      1   7  3  3    13     6
+    ## 2  15140B   yoked\nconflict  55        33     71  96 30 71    87    31
+    ## 3  15140C        consistent  62         0     10   6  7  8     3     8
+    ## 4  15140D yoked\nconsistent  61        41     34  58 32 22    32    54
+    ## 5  15141C        consistent  44        21      7   8 19 11    10     7
+    ## 6  15141D yoked\nconsistent  55        52     50  54 48 27    47    36
+    ## 7  15142A          conflict  60         6      0   7  4  2     7     3
+    ## 8  15142B   yoked\nconflict  57        38     17  59 16 15    31    16
+    ## 9  15142C        consistent  57         8      1   5  1  1     0     0
+    ## 10 15142D yoked\nconsistent  52        51     58  38 48 61    47    39
+    ## 11 15143A          conflict  56        33      2  10  3  1    14     2
+    ## 12 15143B   yoked\nconflict  75        77     60 107 57 50    35    52
+    ## 13 15143C        consistent  52         1      2  10  3  1     0     1
+    ## 14 15143D yoked\nconsistent  59        67     60  49 24 68    70    41
+    ## 15 15144A          conflict  64         0      1  12  4  1    26     3
+    ## 16 15144B   yoked\nconflict  63        52     57  62 31 66    33    70
+    ## 17 15144C        consistent  64         0      1   9  3  2     3     0
+    ## 18 15144D yoked\nconsistent  71        57     60  97 80 50    64    56
+    ## 19 15145A          conflict  59         0      6   6  2  1    29     4
+    ## 20 15145B   yoked\nconflict  55        36     52  55 48 61    40    64
+    ## 21 15145C        consistent  54        28      6  10  7  5     5     9
+    ## 22 15145D yoked\nconsistent  55        63     52  60 63 69    88    93
+    ## 23 15146A          conflict  66         0      1  25  2  1    26     1
+    ## 24 15146B   yoked\nconflict  65        43     44  64 62 47    59    63
+    ## 25 15146C        consistent  58         4      3   5  1  1    13     4
+    ## 26 15146D yoked\nconsistent  51        49     54  44 38 47    25    43
+    ## 27 15147A          conflict  48        30      5   6  3  1    15     5
+    ## 28 15147B   yoked\nconflict  56        32     70  47 56 61    18    48
+    ## 29 15147C        consistent  49         5      1   4  2  1     2     1
+    ## 30 15147D yoked\nconsistent  59        52     52  55 39 49    50    50
+    ## 31 15148A          conflict  61        40      0   7  1  1    24     5
+    ## 32 15148B   yoked\nconflict  51        44     49  77 61 39    40    68
+    ## 33 15148C          conflict  50        37      4   7  3 15    33    28
+    ## 34 15148D   yoked\nconflict  61        41     41  34 64 63    38    40
+    ##    T6_C3 sums
+    ## 1      2   96
+    ## 2     32  506
+    ## 3      0  104
+    ## 4     48  382
+    ## 5     12  139
+    ## 6     34  403
+    ## 7      3   92
+    ## 8     55  304
+    ## 9      0   73
+    ## 10    54  448
+    ## 11     1  122
+    ## 12   112  625
+    ## 13     0   70
+    ## 14    50  488
+    ## 15     1  112
+    ## 16    69  503
+    ## 17     1   83
+    ## 18    59  594
+    ## 19     4  111
+    ## 20    65  476
+    ## 21    13  137
+    ## 22    58  601
+    ## 23     1  123
+    ## 24    43  490
+    ## 25     8   97
+    ## 26    61  412
+    ## 27     9  122
+    ## 28    44  432
+    ## 29     0   65
+    ## 30    51  457
+    ## 31     9  148
+    ## 32   113  542
+    ## 33    23  200
+    ## 34    57  439
 
     summary(aov(numentrances$sums ~ numentrances$APA2))
 
