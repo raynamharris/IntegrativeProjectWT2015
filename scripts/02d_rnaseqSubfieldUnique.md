@@ -176,10 +176,12 @@ filter out nonspecific gene expression responses
     levels(updown$set)[levels(updown$set)=="DGtrain"] <- "DG train"
     levels(updown$set)[levels(updown$set)=="CA1train"]   <- "CA1 train"
     levels(updown$set)[levels(updown$set)=="CA1stress"]   <- "CA1 stress"
-    levels(updown$direction)[levels(updown$direction)=="yoked_consistent"] <- "yoked\nconsistent"
-    levels(updown$direction)[levels(updown$direction)=="yoked_conflict"]   <- "yoked\nconflict"
+    levels(updown$direction)[levels(updown$direction)=="yoked_consistent"] <- "standard\nyoked"
+    levels(updown$direction)[levels(updown$direction)=="yoked_conflict"]   <- "conflict\nyoked"
+    levels(updown$direction)[levels(updown$direction)=="consistent"]   <- "standard\ntrained"
 
-    levels(updown$set) <- c("DG", "CA1", " CA1 ")
+    levels(updown$set) <- c("DG\nyoked v. trained", "CA1\n yoked v. trained", " CA1\n yoked v. yoked")
+
 
     # unique and shared
     shared2 <- read.csv("../data/02c_intersect_updown_shared2.csv") 
@@ -202,19 +204,25 @@ filter out nonspecific gene expression responses
                                       "CA1stress yoked_consistent", "CA1stress yoked_conflict" ))
     shared2$status <- factor(shared2$status,  levels = c(  "stress","train","unique"))
 
-    levels(shared2$direction)[levels(shared2$direction)=="yoked_consistent"] <- "yoked\nconsistent"
-    levels(shared2$direction)[levels(shared2$direction)=="yoked_conflict"]   <- "yoked\nconflict"
+    levels(shared2$direction)
+
+    ## [1] "yoked_consistent" "yoked_conflict"   "consistent"
+
+    levels(shared2$direction)[levels(shared2$direction)=="yoked_consistent"] <- "standard\nyoked"
+    levels(shared2$direction)[levels(shared2$direction)=="yoked_conflict"]   <- "conflict\nyoked"
+    levels(shared2$direction)[levels(shared2$direction)=="consistent"]   <- "standard\ntrained"
     levels(shared2$status)[levels(shared2$status)=="stress"]   <- "shared"
     levels(shared2$status)[levels(shared2$status)=="train"]   <- "shared"
 
 
-    levels(shared2$set) <- c("DG", "CA1", " CA1 ")
+    levels(shared2$set) <- c("DG\nyoked v. trained", "CA1\n yoked v. trained", " CA1\n yoked v. yoked")
+
     str(shared2)
 
     ## 'data.frame':    14 obs. of  6 variables:
-    ##  $ set      : Factor w/ 3 levels "DG","CA1"," CA1 ": 2 2 3 3 1 1 2 3 2 3 ...
+    ##  $ set      : Factor w/ 3 levels "DG\nyoked v. trained",..: 2 2 3 3 1 1 2 3 2 3 ...
     ##  $ setsize  : int  168 181 179 206 6 103 330 330 192 192 ...
-    ##  $ direction: Factor w/ 3 levels "yoked\nconsistent",..: 1 3 1 2 1 3 3 2 1 1 ...
+    ##  $ direction: Factor w/ 3 levels "standard\nyoked",..: 1 3 1 2 1 3 3 2 1 1 ...
     ##  $ subfield : Factor w/ 2 levels "CA1","DG": 1 1 1 1 2 2 1 1 1 1 ...
     ##  $ status   : Factor w/ 2 levels "shared","unique": 2 2 2 2 2 2 1 1 1 1 ...
     ##  $ group    : Factor w/ 6 levels "DGtrain yoked_consistent",..: 3 4 5 6 1 2 4 6 3 5 ...
@@ -253,13 +261,13 @@ filter out nonspecific gene expression responses
 
     head(shared2)
 
-    ##     set setsize         direction subfield status
-    ## 1   CA1     168 yoked\nconsistent      CA1 unique
-    ## 2   CA1     181        consistent      CA1 unique
-    ## 3  CA1      179 yoked\nconsistent      CA1 unique
-    ## 4  CA1      206   yoked\nconflict      CA1 unique
-    ## 5    DG       6 yoked\nconsistent       DG unique
-    ## 6    DG     103        consistent       DG unique
+    ##                      set setsize         direction subfield status
+    ## 1 CA1\n yoked v. trained     168   standard\nyoked      CA1 unique
+    ## 2 CA1\n yoked v. trained     181 standard\ntrained      CA1 unique
+    ## 3   CA1\n yoked v. yoked     179   standard\nyoked      CA1 unique
+    ## 4   CA1\n yoked v. yoked     206   conflict\nyoked      CA1 unique
+    ## 5   DG\nyoked v. trained       6   standard\nyoked       DG unique
+    ## 6   DG\nyoked v. trained     103 standard\ntrained       DG unique
     ##                        group
     ## 1  CA1train yoked_consistent
     ## 2        CA1train consistent
@@ -305,7 +313,7 @@ filter out nonspecific gene expression responses
     # 3 volcanos, 2 bar plots, space for 3 GOs
     fig4barplots <- plot_grid(d1 + labs(x = NULL) + theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1)), 
                             d2 + labs(x = NULL),
-              labels= c("A", "C"),
+              labels= c("B1", "B2"),
               label_size = 7,
               ncol = 2)
     fig4barplots

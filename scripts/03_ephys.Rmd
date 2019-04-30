@@ -42,7 +42,7 @@ ephys3 <- left_join(ephys, colData, by = "Mouse")
 ephys3 <- na.omit(ephys3)
 
 ephys3$APA2 <- factor(ephys3$APA2, levels = c("yoked_consistent", "consistent",  "yoked_conflict", "conflict"))
-levels(ephys3$APA2) <- c("yoked consistent", "consistent",  "yoked conflict", "conflict")
+levels(ephys3$APA2) <- c("standard yoked", "standard trained",  "conflict yoked", "conflict trained")
 
 ephys3$pre <- "Pre-Potentiation"
 ephys3$early <- "Early Potentiation"

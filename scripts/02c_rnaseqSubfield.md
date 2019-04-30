@@ -164,9 +164,9 @@ Consistent versus yoked-consistent
       data <- na.omit(data)
       data <- data %>%
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                            yes = "consistent", 
+                            yes = "standard\ntrained", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "yoked\nconsistent", 
+                                        yes = "standard\nyoked", 
                                         no = "NS")))
 
 
@@ -180,7 +180,7 @@ Consistent versus yoked-consistent
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
         scale_color_manual(values = volcano1,
                           name = "higher in",
-                          breaks = c("yoked\nconsistent", "NS", "consistent"))  + 
+                          breaks = c("standard\nyoked", "NS", "standard\ntrained"))  + 
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
         ylab(paste0("-log10 p-value")) +  
@@ -276,9 +276,9 @@ Confict versus Consistent
       
       data <- data %>%
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                            yes = "conflict", 
+                            yes = "conflict\ntrained", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "consistent", 
+                                        yes = "standard\ntrained", 
                                         no = "NS")))
       
       write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""), row.names = F)
@@ -288,7 +288,7 @@ Confict versus Consistent
         theme_cowplot(font_size = 7, line_size = 0.25) +
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
         scale_color_manual(values = volcano2,
-                           breaks = c("consistent", "NS", "conflict"),
+                           breaks = c("standard\ntrained", "NS", "conflict\ntrained"),
                           name = "higher in")  + 
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
@@ -379,12 +379,12 @@ Yoked confict versus yoked consistent
       data <- na.omit(data)
       data <- data %>%
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                            yes = "yoked\nconflict", 
+                            yes = "conflict\nyoked", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "yoked\nconsistent", 
+                                        yes = "standard\nyoked", 
                                         no = "NS")))
       
-      data$direction <- factor(data$direction, levels = c("yoked\nconsistent", "NS", "yoked\nconflict"))
+      data$direction <- factor(data$direction, levels = c("standard\nyoked", "NS", "conflict\nyoked"))
       
       write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""), row.names = F)
       
@@ -467,7 +467,7 @@ Yoked confict versus yoked consistent
 
 ![](../figures/02c_rnaseqSubfield/yokeconfyokcons-4.png)
 
-    volcanos <- plot_grid(DGconsyokcons + theme(legend.position = c(0.8,0.9)) + labs(subtitle = "DEGs in DG"), 
+    volcanos <- plot_grid(DGconsyokcons + theme(legend.position = c(0.8,0.9)) + labs(subtitle = "DEGs in DG") ,
                           CA1consyokcons + theme(legend.position = c(0.8,0.9)) + labs(subtitle = "DEGs in CA1"), 
                           CA1yoked + theme(legend.position = c(0.8,0.9)) + labs(subtitle = "DEGs in CA1"), 
                                           nrow = 3) 

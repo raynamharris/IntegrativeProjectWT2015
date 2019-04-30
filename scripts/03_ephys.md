@@ -39,7 +39,7 @@ Electrophysiology data wrangling
     ephys3 <- na.omit(ephys3)
 
     ephys3$APA2 <- factor(ephys3$APA2, levels = c("yoked_consistent", "consistent",  "yoked_conflict", "conflict"))
-    levels(ephys3$APA2) <- c("yoked consistent", "consistent",  "yoked conflict", "conflict")
+    levels(ephys3$APA2) <- c("standard yoked", "standard trained",  "conflict yoked", "conflict trained")
 
     ephys3$pre <- "Pre-Potentiation"
     ephys3$early <- "Early Potentiation"
@@ -61,13 +61,13 @@ Electrophysiology data wrangling
     ## 4                  128.81 -0.0027726  144C-DG-2    DG consistent
     ## 6                  193.41 -0.0031377 146C-CA1-4   CA1 consistent
     ## 7                  193.41 -0.0031377  146C-DG-4    DG consistent
-    ##     Conflict Treatment     ID       APA2              pre
-    ## 1 NoConflict   trained 15143C consistent Pre-Potentiation
-    ## 2 NoConflict   trained 15144C consistent Pre-Potentiation
-    ## 3 NoConflict   trained 15144C consistent Pre-Potentiation
-    ## 4 NoConflict   trained 15144C consistent Pre-Potentiation
-    ## 6 NoConflict   trained 15146C consistent Pre-Potentiation
-    ## 7 NoConflict   trained 15146C consistent Pre-Potentiation
+    ##     Conflict Treatment     ID             APA2              pre
+    ## 1 NoConflict   trained 15143C standard trained Pre-Potentiation
+    ## 2 NoConflict   trained 15144C standard trained Pre-Potentiation
+    ## 3 NoConflict   trained 15144C standard trained Pre-Potentiation
+    ## 4 NoConflict   trained 15144C standard trained Pre-Potentiation
+    ## 6 NoConflict   trained 15146C standard trained Pre-Potentiation
+    ## 7 NoConflict   trained 15146C standard trained Pre-Potentiation
     ##                early              late       max
     ## 1 Early Potentiation Late Potentiation Max fEPSP
     ## 2 Early Potentiation Late Potentiation Max fEPSP
@@ -156,20 +156,20 @@ Data Viz
     ## Fit: aov(formula = ephys3$PTP_3_10 ~ ephys3$APA2)
     ## 
     ## $`ephys3$APA2`
-    ##                                        diff        lwr        upr
-    ## consistent-yoked consistent      -72.978095 -115.29288 -30.663309
-    ## yoked conflict-yoked consistent  -79.043929 -118.97763 -39.110225
-    ## conflict-yoked consistent       -102.478929 -142.41263 -62.545225
-    ## yoked conflict-consistent         -6.065833  -43.09127  30.959604
-    ## conflict-consistent              -29.500833  -66.52627   7.524604
-    ## conflict-yoked conflict          -23.435000  -57.71389  10.843894
-    ##                                     p adj
-    ## consistent-yoked consistent     0.0002494
-    ## yoked conflict-yoked consistent 0.0000313
-    ## conflict-yoked consistent       0.0000003
-    ## yoked conflict-consistent       0.9708791
-    ## conflict-consistent             0.1582225
-    ## conflict-yoked conflict         0.2712862
+    ##                                          diff        lwr        upr
+    ## standard trained-standard yoked    -72.978095 -115.29288 -30.663309
+    ## conflict yoked-standard yoked      -79.043929 -118.97763 -39.110225
+    ## conflict trained-standard yoked   -102.478929 -142.41263 -62.545225
+    ## conflict yoked-standard trained     -6.065833  -43.09127  30.959604
+    ## conflict trained-standard trained  -29.500833  -66.52627   7.524604
+    ## conflict trained-conflict yoked    -23.435000  -57.71389  10.843894
+    ##                                       p adj
+    ## standard trained-standard yoked   0.0002494
+    ## conflict yoked-standard yoked     0.0000313
+    ## conflict trained-standard yoked   0.0000003
+    ## conflict yoked-standard trained   0.9708791
+    ## conflict trained-standard trained 0.1582225
+    ## conflict trained-conflict yoked   0.2712862
 
     ## early
 
@@ -198,13 +198,20 @@ Data Viz
     ## Fit: aov(formula = ephys3$EarlyPotentiation_11_20 ~ ephys3$APA2)
     ## 
     ## $`ephys3$APA2`
-    ##                                      diff        lwr        upr     p adj
-    ## consistent-yoked consistent     -39.15619  -81.93035   3.617966 0.0828785
-    ## yoked conflict-yoked consistent -69.56786 -109.93508 -29.200632 0.0002520
-    ## conflict-yoked consistent       -81.54036 -121.90758 -41.173132 0.0000224
-    ## yoked conflict-consistent       -30.41167  -67.83905   7.015720 0.1458452
-    ## conflict-consistent             -42.38417  -79.81155  -4.956780 0.0212699
-    ## conflict-yoked conflict         -11.97250  -46.62353  22.678527 0.7887202
+    ##                                        diff        lwr        upr
+    ## standard trained-standard yoked   -39.15619  -81.93035   3.617966
+    ## conflict yoked-standard yoked     -69.56786 -109.93508 -29.200632
+    ## conflict trained-standard yoked   -81.54036 -121.90758 -41.173132
+    ## conflict yoked-standard trained   -30.41167  -67.83905   7.015720
+    ## conflict trained-standard trained -42.38417  -79.81155  -4.956780
+    ## conflict trained-conflict yoked   -11.97250  -46.62353  22.678527
+    ##                                       p adj
+    ## standard trained-standard yoked   0.0828785
+    ## conflict yoked-standard yoked     0.0002520
+    ## conflict trained-standard yoked   0.0000224
+    ## conflict yoked-standard trained   0.1458452
+    ## conflict trained-standard trained 0.0212699
+    ## conflict trained-conflict yoked   0.7887202
 
     ## late
 
@@ -231,20 +238,20 @@ Data Viz
     ## Fit: aov(formula = ephys3$LatePotentiation_26_end ~ ephys3$APA2)
     ## 
     ## $`ephys3$APA2`
-    ##                                         diff        lwr       upr
-    ## consistent-yoked consistent     -33.88793651  -86.44036  18.66449
-    ## yoked conflict-yoked consistent -68.52488095 -118.12015 -18.92961
-    ## conflict-yoked consistent       -68.53821429 -118.13348 -18.94295
-    ## yoked conflict-consistent       -34.63694444  -80.62032  11.34643
-    ## conflict-consistent             -34.65027778  -80.63365  11.33310
-    ## conflict-yoked conflict          -0.01333333  -42.58567  42.55900
-    ##                                     p adj
-    ## consistent-yoked consistent     0.3201956
-    ## yoked conflict-yoked consistent 0.0036078
-    ## conflict-yoked consistent       0.0036006
-    ## yoked conflict-consistent       0.1965601
-    ## conflict-consistent             0.1962837
-    ## conflict-yoked conflict         1.0000000
+    ##                                           diff        lwr       upr
+    ## standard trained-standard yoked   -33.88793651  -86.44036  18.66449
+    ## conflict yoked-standard yoked     -68.52488095 -118.12015 -18.92961
+    ## conflict trained-standard yoked   -68.53821429 -118.13348 -18.94295
+    ## conflict yoked-standard trained   -34.63694444  -80.62032  11.34643
+    ## conflict trained-standard trained -34.65027778  -80.63365  11.33310
+    ## conflict trained-conflict yoked    -0.01333333  -42.58567  42.55900
+    ##                                       p adj
+    ## standard trained-standard yoked   0.3201956
+    ## conflict yoked-standard yoked     0.0036078
+    ## conflict trained-standard yoked   0.0036006
+    ## conflict yoked-standard trained   0.1965601
+    ## conflict trained-standard trained 0.1962837
+    ## conflict trained-conflict yoked   1.0000000
 
     ## max
 
@@ -269,17 +276,17 @@ Data Viz
     ## Fit: aov(formula = ephys3$MaxfEPSP ~ ephys3$APA2)
     ## 
     ## $`ephys3$APA2`
-    ##                                          diff           lwr         upr
-    ## consistent-yoked consistent     -0.0006618619 -0.0025262648 0.001202541
-    ## yoked conflict-yoked consistent  0.0000307381 -0.0017287535 0.001790230
-    ## conflict-yoked consistent        0.0002898964 -0.0014695952 0.002049388
-    ## yoked conflict-consistent        0.0006926000 -0.0009387525 0.002323953
-    ## conflict-consistent              0.0009517583 -0.0006795942 0.002583111
-    ## conflict-yoked conflict          0.0002591583 -0.0012511806 0.001769497
-    ##                                     p adj
-    ## consistent-yoked consistent     0.7748636
-    ## yoked conflict-yoked consistent 0.9999619
-    ## conflict-yoked consistent       0.9704051
-    ## yoked conflict-consistent       0.6655363
-    ## conflict-consistent             0.4073343
-    ## conflict-yoked conflict         0.9667914
+    ##                                            diff           lwr         upr
+    ## standard trained-standard yoked   -0.0006618619 -0.0025262648 0.001202541
+    ## conflict yoked-standard yoked      0.0000307381 -0.0017287535 0.001790230
+    ## conflict trained-standard yoked    0.0002898964 -0.0014695952 0.002049388
+    ## conflict yoked-standard trained    0.0006926000 -0.0009387525 0.002323953
+    ## conflict trained-standard trained  0.0009517583 -0.0006795942 0.002583111
+    ## conflict trained-conflict yoked    0.0002591583 -0.0012511806 0.001769497
+    ##                                       p adj
+    ## standard trained-standard yoked   0.7748636
+    ## conflict yoked-standard yoked     0.9999619
+    ## conflict trained-standard yoked   0.9704051
+    ## conflict yoked-standard trained   0.6655363
+    ## conflict trained-standard trained 0.4073343
+    ## conflict trained-conflict yoked   0.9667914

@@ -51,16 +51,16 @@ pheatmapcolors = list(
 
 # for subfield volcano plots
 
-volcano1 <-  c("consistent" = "#ca0020",
-           "yoked\nconsistent" = "#404040", 
+volcano1 <-  c("standard\ntrained" = "#ca0020",
+           "standard\nyoked" = "#404040", 
            "NS" = "#d9d9d9")
 
-volcano2 <-  c("consistent" = "#ca0020",
-               "conflict" = "#f4a582", 
+volcano2 <-  c("standard\ntrained" = "#ca0020",
+               "conflict\ntrained" = "#f4a582", 
                "NS" = "#d9d9d9")
 
-volcano3 <-  c("yoked\nconsistent" = "#404040",
-               "yoked\nconflict" = "#bababa", 
+volcano3 <-  c("standard\nyoked" = "#404040",
+               "conflict\nyoked" = "#bababa", 
                "NS" = "#d9d9d9")
 
 

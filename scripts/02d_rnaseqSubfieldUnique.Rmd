@@ -13,7 +13,7 @@ library(ggtextures)
 library(magick)
 
 
-knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = T)
+knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/')
 ```
 
 
@@ -131,10 +131,12 @@ updown$status <- factor(updown$status,  levels = c("train", "stress"))
 levels(updown$set)[levels(updown$set)=="DGtrain"] <- "DG train"
 levels(updown$set)[levels(updown$set)=="CA1train"]   <- "CA1 train"
 levels(updown$set)[levels(updown$set)=="CA1stress"]   <- "CA1 stress"
-levels(updown$direction)[levels(updown$direction)=="yoked_consistent"] <- "yoked\nconsistent"
-levels(updown$direction)[levels(updown$direction)=="yoked_conflict"]   <- "yoked\nconflict"
+levels(updown$direction)[levels(updown$direction)=="yoked_consistent"] <- "standard\nyoked"
+levels(updown$direction)[levels(updown$direction)=="yoked_conflict"]   <- "conflict\nyoked"
+levels(updown$direction)[levels(updown$direction)=="consistent"]   <- "standard\ntrained"
 
-levels(updown$set) <- c("DG", "CA1", " CA1 ")
+levels(updown$set) <- c("DG\nyoked v. trained", "CA1\n yoked v. trained", " CA1\n yoked v. yoked")
+
 
 # unique and shared
 shared2 <- read.csv("../data/02c_intersect_updown_shared2.csv") 
@@ -150,13 +152,16 @@ shared2$group <-factor(shared2$group,
                                   "CA1stress yoked_consistent", "CA1stress yoked_conflict" ))
 shared2$status <- factor(shared2$status,  levels = c(  "stress","train","unique"))
 
-levels(shared2$direction)[levels(shared2$direction)=="yoked_consistent"] <- "yoked\nconsistent"
-levels(shared2$direction)[levels(shared2$direction)=="yoked_conflict"]   <- "yoked\nconflict"
+levels(shared2$direction)
+levels(shared2$direction)[levels(shared2$direction)=="yoked_consistent"] <- "standard\nyoked"
+levels(shared2$direction)[levels(shared2$direction)=="yoked_conflict"]   <- "conflict\nyoked"
+levels(shared2$direction)[levels(shared2$direction)=="consistent"]   <- "standard\ntrained"
 levels(shared2$status)[levels(shared2$status)=="stress"]   <- "shared"
 levels(shared2$status)[levels(shared2$status)=="train"]   <- "shared"
 
 
-levels(shared2$set) <- c("DG", "CA1", " CA1 ")
+levels(shared2$set) <- c("DG\nyoked v. trained", "CA1\n yoked v. trained", " CA1\n yoked v. yoked")
+
 str(shared2)
 ```
 
@@ -225,7 +230,7 @@ dev.off()
 # 3 volcanos, 2 bar plots, space for 3 GOs
 fig4barplots <- plot_grid(d1 + labs(x = NULL) + theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1)), 
                         d2 + labs(x = NULL),
-          labels= c("A", "C"),
+          labels= c("B1", "B2"),
           label_size = 7,
           ncol = 2)
 fig4barplots
