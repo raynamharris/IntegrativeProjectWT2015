@@ -237,6 +237,20 @@ plot_grid(DGyoked, CA3yoked, CA1yoked, nrow = 1)
 ```
 
 
+```{r fig5volcanos}
+
+volcanos <- plot_grid(DGconsyokcons + theme(legend.position = c(0.8,0.9)) + labs(subtitle = "DEGs in DG"), 
+                      CA1consyokcons + theme(legend.position = c(0.8,0.9)) + labs(subtitle = "DEGs in CA1"), 
+                      CA1yoked + theme(legend.position = c(0.8,0.9)) + labs(subtitle = "DEGs in CA1"), 
+                                      nrow = 3) 
+volcanos
+
+
+pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=2.5, height=3.5)
+plot(volcanos)    
+dev.off()
+```
+
 # pkmz
 
 ```{r pkmz}

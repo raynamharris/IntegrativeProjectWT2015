@@ -134,6 +134,8 @@ levels(updown$set)[levels(updown$set)=="CA1stress"]   <- "CA1 stress"
 levels(updown$direction)[levels(updown$direction)=="yoked_consistent"] <- "yoked\nconsistent"
 levels(updown$direction)[levels(updown$direction)=="yoked_conflict"]   <- "yoked\nconflict"
 
+levels(updown$set) <- c("DG", "CA1", " CA1 ")
+
 # unique and shared
 shared2 <- read.csv("../data/02c_intersect_updown_shared2.csv") 
 str(shared2)
@@ -152,6 +154,7 @@ levels(shared2$direction)[levels(shared2$direction)=="yoked_consistent"] <- "yok
 levels(shared2$direction)[levels(shared2$direction)=="yoked_conflict"]   <- "yoked\nconflict"
 levels(shared2$status)[levels(shared2$status)=="stress"]   <- "shared"
 levels(shared2$status)[levels(shared2$status)=="train"]   <- "shared"
+
 
 levels(shared2$set) <- c("DG", "CA1", " CA1 ")
 str(shared2)
@@ -177,7 +180,7 @@ d1 <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
           strip.background = element_rect(colour=NA, fill=NA),
         panel.border = element_rect(fill = NA, color = "black"),
         legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0, unit="cm"))
-
+d1
 
 
 images = c(
@@ -214,70 +217,21 @@ pdf(file="../figures/02c_rnaseqSubfield/barplots.pdf", width=1.9, height=2.15)
 plot(newbarplots)    
 dev.off() 
 
-forgraphicalsummary <- shared2 %>%
-  filter(status != "shared") %>%
-  ggplot(aes(x=direction, y=setsize, fill = direction)) +
-  geom_bar(stat = "identity", position=position_dodge()) +
-  theme_cowplot(font_size = 7, line_size = 0.25) +
-  labs(x = NULL, y = "Genes for GO") +
-  theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-        legend.position = "none",
-        legend.key.size = unit(0.2, "cm"),
-        strip.text.x = element_text(size = 7),
-        strip.background = element_rect(colour=NA, fill=NA),
-        panel.border = element_rect(fill = NA, color = "black"),
-        legend.margin=margin(t=-0.1, r=0, b=-0.1, l=-0.1, unit="cm")) +
-  facet_wrap(~set, scales = "free_x") +
-    scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"),
-                    name = NULL) +
-    scale_y_continuous(limits = c(0, 560),
-                     breaks = c(0,125,250,375,500)) 
-forgraphicalsummary
-
-
-
-
-pdf(file="../figures/02c_rnaseqSubfield/forgraphicalsummary.pdf", width=1.5, height=1)
-plot(forgraphicalsummary)    
-dev.off() 
-
 ```
 
 ```{r combo, cache=FALSE}
 
-# 3 volcanos and a bar plots in a grid
-bottomplots <- plot_grid(CA1yoked, newbarplots,
-                    labels = c("C", NULL),
-                    label_size = 7)
-
-volcanos <- plot_grid(training, bottomplots, nrow = 2,
-                      rel_heights = c(0.475,0.525)) 
-volcanos
-
-
-
-pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=3.15, height=4)
-plot(volcanos)    
-dev.off()
 
 # 3 volcanos, 2 bar plots, space for 3 GOs
-spaceforgo <- plot_grid(d1 + labs(x = NULL) + theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1)), 
+fig4barplots <- plot_grid(d1 + labs(x = NULL) + theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1)), 
                         d2 + labs(x = NULL),
-          DGconsyokcons + theme(legend.position = c(0.8,0.9),
-                                axis.text.x=element_blank(),
-                               axis.title.x=element_blank()), NULL,
-          CA1consyokcons + theme(legend.position = c(0.8,0.9),
-                                axis.text.x=element_blank(),
-                               axis.title.x=element_blank()), NULL,
-          CA1yoked + theme(legend.position = c(0.8,0.9)), NULL,
-          labels= c("A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2"),
+          labels= c("A", "C"),
           label_size = 7,
-          ncol = 2,
-          rel_heights = c(0.29, 0.19, 0.25, 0.27))
-spaceforgo
+          ncol = 2)
+fig4barplots
 
-pdf(file="../figures/02c_rnaseqSubfield/spaceforgo.pdf", width=5, height=5)
-plot(spaceforgo)    
+pdf(file="../figures/02c_rnaseqSubfield/fig4barplots.pdf", width=5, height=1.5)
+plot(fig4barplots)    
 dev.off()
 
 ```
