@@ -1,4 +1,4 @@
-[![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/raynamharris/DissociationTest/master?urlpath=rstudio)
+[![Binder](http://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/raynamharris/IntegrativeProjectWT2015/master)
 *Click the button to launch a Binder R session. Navigate to the
 `scripts` directory and open any `.Rmd` file.*
 
