@@ -2,10 +2,19 @@
 
 # for mean and sd plots of behavior 
 ann_colors_APA2 = list(
-  APA2 =  c('standard-yoked' = (values=c("#404040")), 
-            'standard-trained' = (values=c("#ca0020")),
-            'conflict-yoked' = (values=c("#bababa")),
-            'conflict-trained' = (values=c("#f4a582"))))
+  APA2 =  c('standard yoked' = "#404040", 
+            'standard trained' = "#ca0020",
+            'conflict yoked' = "#bababa",
+            'conflict trained' = "#f4a582"),
+  Session = c(  "T1"      = "#fff7f3",
+                "T2"      = "#fde0dd",
+                "T3"      = "#fcc5c0",
+                "Retest"  = "#fa9fb5",
+                "T4_C1"   = "#f768a1",
+                "T5_C2"   = "#dd3497",
+                "T6_C3"   = "#ae017e",
+              "Retention" = "#7a0177"   )
+  )
 
 
 # for beahvior and physiology

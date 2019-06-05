@@ -19,6 +19,7 @@ library(car) ## stats
 library(pheatmap)  # for pretty heatmap
 library(viridis) # for awesome color pallette
 library(kableExtra) # for better markdown tables
+library(ggpubr) # for stats on figures
 
 ## load user-written functions 
 source("functions_behavior.R")
@@ -46,8 +47,14 @@ behavior %>%
   filter(TrainSessionCombo == "Retention") %>%
   select(APA2)  %>%  summary()
 
+
+# set levels
+behavior$APA2 <- factor(behavior$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
+levels(behavior$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
+
 # keep subset of columns for downstream vizuals
 behavior_slim <- behavior[,c(15,16,14,20:58)] 
+head(behavior_slim)
 ```
 
 
@@ -56,11 +63,6 @@ behavior_slim <- behavior[,c(15,16,14,20:58)]
 To make the point and line graphs, I must create and join some data frames, then I have a function that makes four plots with specific titles, y labels and limits.
 
 ```{r fourmeasures}
-
-behavior$APA2 <- factor(behavior$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
-levels(behavior$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
-
-
 a <- behavior %>%
   dplyr::group_by(APA2, TrainSessionComboNum) %>%
   dplyr::summarise(m = mean(NumEntrances), 
@@ -87,10 +89,7 @@ d <- behavior %>%
   dplyr::mutate(measure = "Proportion of time opposite the target zone")
 
 fourmeasures <- rbind(a,b,c,d)
-
-fourmeasures$APA2 <- factor(fourmeasures$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict"))
-levels(fourmeasures$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
-
+head(fourmeasures)
 
 # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
 
@@ -190,7 +189,7 @@ behavior_slim_heat$PolarMinBin <- NULL
 scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
 
 ## make annotation df and ann_colors for pheatmap
-ann_cols <- as.data.frame(makecolumnannotations(scaledaveragedata))
+ann_cols <- as.data.frame(makecolumnannotations2(scaledaveragedata))
 ann_colors = ann_colors_APA2
 
 # set color breaks
@@ -199,12 +198,12 @@ myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2)
               seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
 
 ## pheatmap for markdown
-pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
+pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
          annotation_col=ann_cols, 
          annotation_colors = ann_colors,
          treeheight_row = 0, treeheight_col = 50,
          border_color = "grey60" ,
-         color = viridis(30),
+         color = viridis(30, option = "D"),
          clustering_method="average",
          breaks=myBreaks,
          clustering_distance_cols="correlation" ,
@@ -256,6 +255,7 @@ rotationdf <- mkrotationdf(dataforpca) #loadings for specific factors
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 scoresdf$PC1 <- scoresdf$PC1 * -1
 scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
+levels(scoresdf$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
 
 
 ## data wraningly for pca anlysis
@@ -273,6 +273,14 @@ ggplot(perc_data, aes(x=PC, y=percent)) +
   geom_text(aes(label=round(percent, 2)), size=4, vjust=-.5) + 
   xlim(0, 10)
 
+# PCA with contributions
+res.pca <- prcomp(behaviormatrix, scale = TRUE)
+fviz_pca_var(res.pca,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE,     # Avoid text overlapping
+             select.var = list(contrib = 8))
+
 
 ## print anova and TukeyHSD stats for first 6 PCs
 j <- 0
@@ -283,6 +291,7 @@ for (i in (scoresdf[,c(1:6)])){
   print(summary(myaov))
   print(TukeyHSD(myaov, which = "APA2"))
 }
+
 
 pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
     geom_point(size=2.5, alpha = 0.7) +
@@ -313,13 +322,6 @@ pdf(file="../figures/01_behavior/pcalegend.pdf",  width=4, height=2)
 plot(pcalegend)
 dev.off()
 
-# PCA with contributions
-res.pca <- prcomp(behaviormatrix, scale = TRUE)
-fviz_pca_var(res.pca,
-             col.var = "contrib", # Color by contributions to the PC
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE,     # Avoid text overlapping
-             select.var = list(contrib = 8))
 ```
 
 ### Comparing standard-trained and conflict-trained behaviors during the T4/C1 training session
@@ -328,7 +330,8 @@ fviz_pca_var(res.pca,
 filtered <- behavior_slim %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
 exp_factors <- as.data.frame(filtered[,1])
 exp_nums <- filtered[,c(4:42)]
-exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard-trained", "conflict-trained"))
+exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard trained", "conflict trained"))
+head(exp_factors)
 
 # Levene's test for normality
 #for(y in names(exp_nums)){
@@ -366,6 +369,8 @@ for(y in names(exp_nums)){
                main = y,
                xlab = "T4/C1")
 }
+
+
 ```
 
 ### Comparing standard-trained and conflict-trained behaviors during the T6/C3 training session
@@ -374,7 +379,7 @@ for(y in names(exp_nums)){
 filtered <- behavior_slim %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
 exp_factors <- as.data.frame(filtered[,1])
 exp_nums <- filtered[,c(4:42)]
-exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard-trained", "conflict-trained"))
+exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard trained", "conflict trained"))
 
 for(y in names(exp_nums)){
   ymod<- wilcox.test(exp_nums[[y]] ~ exp_factors$APA2 )
@@ -402,6 +407,7 @@ for(y in names(exp_nums)){
                xlab = "T6/C3")
 }
 ```
+
 ## Number of shocks
 
 The values in the column "NumShock" are actually measures of the number of entraces into the shock zone. Because, that's what the software records. For standard-trained and conflict-trained animals, the number of shocks equals equals the number of entraces. However, for yoked individuals, the number of entrances does not equal the number of shocks. For them, the number of shocks is equal to their standard-trained or conflict-trained trained partner. 
@@ -417,6 +423,7 @@ numshocks$sums <- rowSums(numshocks[sapply(numshocks, is.numeric)])
 
 # copy datafram, add identifer
 numentrances <- numshocks
+head(numshocks)
 
 # delete values for yoked animals
 numshocks <- numshocks %>%
@@ -432,6 +439,8 @@ levels(numshockstemp$APA2)
 # combine the two and plot
 
 realnumshocks <- rbind(numshocks, numshockstemp)
+levels(realnumshocks$APA2) 
+
 
 realnumshocks$APA2 <- factor(realnumshocks$APA2, levels = c("standard-yoked", "standard-trained", "conflict-yoked", "conflict-trained"))
 levels(realnumshocks$APA2) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
@@ -447,42 +456,49 @@ realnumshocks %>%
   dplyr::group_by(APA2) %>%
   dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
 
+# define what levels to compare for stats
+my_comparisons <- list(c("standard\ntrained", "conflict\ntrained"))
+
 a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
   geom_boxplot(outlier.size = 0.5) +
-  theme_cowplot(font_size = 7, line_size = 0.15) +
+  theme_bw(base_size = 12) +
   scale_fill_manual(values = colorvalAPA00,
                     name = NULL) +
-  labs(x = NULL, subtitle = "Total shocks", y = "Counts") +
-    theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-          legend.position = "none") +
-  geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
-  geom_hline(yintercept=90, linetype="dashed", color = "#ca0020")
-a
-
-
-
-b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
-  geom_boxplot(outlier.size = 0.5) +
-  theme_cowplot(font_size = 7, line_size = 0.15) +
-  scale_fill_manual(values = colorvalAPA00,
-                    name = NULL) +
-  labs(x = NULL, subtitle = "Total entrances", y = "Counts") +
+  labs(x = NULL, subtitle = "Total shocks", y = "Number of shocks") +
     theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
           legend.position = "none") +
   geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
   geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
-  scale_y_continuous(breaks = c(0,100,200,400,600))
+    scale_y_continuous(limits = c(0,750),
+                       expand = c(0,0)) + 
+  stat_compare_means(comparisons = my_comparisons)
+a
+
+my_comparisons <- list( c("standard\nyoked", "standard\ntrained"),
+                        c("conflict\nyoked", "conflict\ntrained"))
+
+b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
+  geom_boxplot(outlier.size = 0.5) +
+  theme_bw(base_size = 12) +
+  scale_fill_manual(values = colorvalAPA00,
+                    name = NULL) +
+  labs(x = NULL, subtitle = "Total entrances", y = "Number of entrances") +
+    theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
+          legend.position = "none") +
+  geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
+  geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
+  scale_y_continuous(limits = c(0,750),
+                     expand = c(0,0)) + 
+  stat_compare_means(comparisons = my_comparisons)
 b
 
-shockentrplot <- plot_grid(a,b, labels = c("B", "C"), label_size = 7)
+shock.entr.plot <- plot_grid(a,b, labels = c("B", "C"), label_size = 7)
+shock.entr.plot
 
 pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3, height=2.5)
-plot(shockentrplot)
+plot(shock.entr.plot)
 dev.off()
 
-shockentrplot
-
-numentrances
 
 summary(aov(numentrances$sums ~ numentrances$APA2))
 summary(aov(realnumshocks$sums ~ realnumshocks$APA2))

@@ -17,6 +17,7 @@ Setup
     library(pheatmap)  # for pretty heatmap
     library(viridis) # for awesome color pallette
     library(kableExtra) # for better markdown tables
+    library(ggpubr) # for stats on figures
 
     ## load user-written functions 
     source("functions_behavior.R")
@@ -28,8 +29,8 @@ Setup
 Sample sizes
 ------------
 
-The ‘APA2’ column describes the four behavioral treatment groups.  
-The ‘TrainSessionCombo’ column describes the behvioral training
+The 'APA2' column describes the four behavioral treatment groups.  
+The 'TrainSessionCombo' column describes the behvioral training
 sessions. Here I filter by a single session to calculte the number of
 mice.
 
@@ -51,8 +52,70 @@ mice.
     ##  conflict-yoked  :9  
     ##  conflict-trained:9
 
+    # set levels
+    behavior$APA2 <- factor(behavior$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
+    levels(behavior$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
+
     # keep subset of columns for downstream vizuals
     behavior_slim <- behavior[,c(15,16,14,20:58)] 
+    head(behavior_slim)
+
+    ##               APA2 TrainSessionCombo  APA SdevSpeedArena Linearity.Arena.
+    ## 1 standard trained               Hab Same           3.19           0.4678
+    ## 2 standard trained                T1 Same           2.34           0.3655
+    ## 3 standard trained                T2 Same           2.85           0.3184
+    ## 4 standard trained                T3 Same           2.94           0.2868
+    ## 5 standard trained            Retest Same           3.41           0.3059
+    ## 6 standard trained             T4_C1 Same           3.21           0.3341
+    ##   NumEntrances Time1stEntr Path1stEntr Speed1stEntr.cm.s. Dist1stEntr.m.
+    ## 1           28        0.53        0.00              -1.00           1.14
+    ## 2            6        1.73        0.02               2.39           0.37
+    ## 3            7        9.80        0.20               9.37           0.38
+    ## 4            6        4.27        0.08               1.89           0.32
+    ## 5            7       17.57        0.72               1.34           0.34
+    ## 6            3      257.83        8.59               9.54           0.15
+    ##   NumShock MaxTimeAvoid Time2ndEntr Path2ndEntr Speed2ndEntr TimeTarget
+    ## 1       62           62       11.30        0.80         9.86    114.934
+    ## 2        6          408       70.67        1.73         5.04      6.333
+    ## 3        7          288       48.47        1.06         2.04      5.766
+    ## 4        8          269       18.47        0.61         1.91     10.334
+    ## 5       10          206       29.00        1.17        16.91     12.901
+    ## 6        3          257      321.23       10.95         1.61      4.500
+    ##   pTimeTarget pTimeCCW pTimeOPP pTimeCW RayleigLength RayleigAngle
+    ## 1      0.2772   0.2821   0.2146  0.2261          0.10        46.70
+    ## 2      0.0166   0.1955   0.5633  0.2246          0.59       180.96
+    ## 3      0.0142   0.2915   0.4241  0.2702          0.45       181.11
+    ## 4      0.0268   0.7740   0.1992  0.0000          0.79       108.38
+    ## 5      0.0310   0.2110   0.5442  0.2138          0.52       183.62
+    ## 6      0.0107   0.1974   0.4619  0.3300          0.52       198.38
+    ##   PolarAvgVal PolarSdVal PolarMinVal PolarMinBin Min50.RngLoBin
+    ## 1      174.07      99.19      0.0179         170            150
+    ## 2      250.18      60.99      0.0001         340            230
+    ## 3      243.45      72.57      0.0001         350            260
+    ## 4      198.75      39.29      0.0000           0            130
+    ## 5      246.97      68.39      0.0010          10            230
+    ## 6      247.00      73.08      0.0001          10            250
+    ##   Min50.RngHiBin PolarMaxVal PolarMaxBin Max50.RngLoBin Max50.RngHiBin
+    ## 1             10      0.0410          10            310            120
+    ## 2            160      0.0697         210            120            220
+    ## 3            180      0.0607         200            160            270
+    ## 4             90      0.1141         120             70            140
+    ## 5            160      0.0716         200            150            250
+    ## 6            180      0.0733         200            160            260
+    ##   AnnularMinVal AnnularMinBin AnnularMaxVal AnnularMaxBin AnnularAvg
+    ## 1        0.0069          18.0        0.3405          13.2      11.95
+    ## 2        0.0421           3.5        0.2551          15.0      13.43
+    ## 3        0.0061          11.1        0.4480          18.0      16.85
+    ## 4        0.0003          11.1        0.3241          18.0      17.12
+    ## 5        0.0030          19.4        0.3993          16.6      15.95
+    ## 6        0.0006           3.5        0.3570          18.0      16.18
+    ##   AnnularSd AnnularSkewnes AnnularKurtosis     Speed1     Speed2
+    ## 1     22.62           1.14            3.89 0.00000000 0.07079646
+    ## 2     20.05           0.88            3.33 0.01156069 0.02447998
+    ## 3     12.74           2.13           10.34 0.02040816 0.02186920
+    ## 4     10.48           0.59            2.58 0.01873536 0.03302653
+    ## 5     14.95           2.30            9.84 0.04097894 0.04034483
+    ## 6     11.21           0.80            3.78 0.03331653 0.03408773
 
 Vizualizing Mean and Standard error for num entrace and time 1st entrance
 =========================================================================
@@ -60,10 +123,6 @@ Vizualizing Mean and Standard error for num entrace and time 1st entrance
 To make the point and line graphs, I must create and join some data
 frames, then I have a function that makes four plots with specific
 titles, y labels and limits.
-
-    behavior$APA2 <- factor(behavior$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
-    levels(behavior$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
-
 
     a <- behavior %>%
       dplyr::group_by(APA2, TrainSessionComboNum) %>%
@@ -91,10 +150,19 @@ titles, y labels and limits.
       dplyr::mutate(measure = "Proportion of time opposite the target zone")
 
     fourmeasures <- rbind(a,b,c,d)
+    head(fourmeasures)
 
-    fourmeasures$APA2 <- factor(fourmeasures$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict"))
-    levels(fourmeasures$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
-
+    ## # A tibble: 6 x 5
+    ## # Groups:   APA2 [1]
+    ##             APA2 TrainSessionComboNum      m       se
+    ##           <fctr>                <int>  <dbl>    <dbl>
+    ## 1 standard yoked                    1 31.375 2.321772
+    ## 2 standard yoked                    2 21.375 2.017225
+    ## 3 standard yoked                    3 15.375 1.400733
+    ## 4 standard yoked                    4 14.500 2.008909
+    ## 5 standard yoked                    5 16.875 0.875000
+    ## 6 standard yoked                    6 15.000 1.558387
+    ## # ... with 1 more variables: measure <chr>
 
     # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
 
@@ -202,7 +270,7 @@ of speed.
     scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
 
     ## make annotation df and ann_colors for pheatmap
-    ann_cols <- as.data.frame(makecolumnannotations(scaledaveragedata))
+    ann_cols <- as.data.frame(makecolumnannotations2(scaledaveragedata))
     ann_colors = ann_colors_APA2
 
     # set color breaks
@@ -211,12 +279,12 @@ of speed.
                   seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
 
     ## pheatmap for markdown
-    pheatmap(scaledaveragedata, show_colnames=T, show_rownames = T,
+    pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
              annotation_col=ann_cols, 
              annotation_colors = ann_colors,
              treeheight_row = 0, treeheight_col = 50,
              border_color = "grey60" ,
-             color = viridis(30),
+             color = viridis(30, option = "D"),
              clustering_method="average",
              breaks=myBreaks,
              clustering_distance_cols="correlation" ,
@@ -265,6 +333,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
     scoresdf$PC1 <- scoresdf$PC1 * -1
     scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
+    levels(scoresdf$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
 
 
     ## data wraningly for pca anlysis
@@ -284,11 +353,19 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
     ## Warning: Removed 29 rows containing missing values (position_stack).
 
-    ## Warning: Removed 1 rows containing missing values (geom_bar).
-
     ## Warning: Removed 29 rows containing missing values (geom_text).
 
 ![](../figures/01_behavior/PCA-1.png)
+
+    # PCA with contributions
+    res.pca <- prcomp(behaviormatrix, scale = TRUE)
+    fviz_pca_var(res.pca,
+                 col.var = "contrib", # Color by contributions to the PC
+                 gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+                 repel = TRUE,     # Avoid text overlapping
+                 select.var = list(contrib = 8))
+
+![](../figures/01_behavior/PCA-2.png)
 
     ## print anova and TukeyHSD stats for first 6 PCs
     j <- 0
@@ -313,19 +390,19 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## 
     ## $APA2
     ##                                          diff        lwr        upr
-    ## standard-trained-standard-yoked    20.7446753  15.611690  25.877661
-    ## conflict-yoked-standard-yoked       2.7420788  -2.246286   7.730444
-    ## conflict-trained-standard-yoked    20.3744685  15.386103  25.362833
-    ## conflict-yoked-standard-trained   -18.0025965 -22.990961 -13.014232
-    ## conflict-trained-standard-trained  -0.3702068  -5.358572   4.618158
-    ## conflict-trained-conflict-yoked    17.6323896  12.792965  22.471815
+    ## standard trained-standard yoked    20.7446753  15.611690  25.877661
+    ## conflict yoked-standard yoked       2.7420788  -2.246286   7.730444
+    ## conflict trained-standard yoked    20.3744685  15.386103  25.362833
+    ## conflict yoked-standard trained   -18.0025965 -22.990961 -13.014232
+    ## conflict trained-standard trained  -0.3702068  -5.358572   4.618158
+    ## conflict trained-conflict yoked    17.6323896  12.792965  22.471815
     ##                                       p adj
-    ## standard-trained-standard-yoked   0.0000000
-    ## conflict-yoked-standard-yoked     0.4531408
-    ## conflict-trained-standard-yoked   0.0000000
-    ## conflict-yoked-standard-trained   0.0000000
-    ## conflict-trained-standard-trained 0.9970257
-    ## conflict-trained-conflict-yoked   0.0000000
+    ## standard trained-standard yoked   0.0000000
+    ## conflict yoked-standard yoked     0.4531408
+    ## conflict trained-standard yoked   0.0000000
+    ## conflict yoked-standard trained   0.0000000
+    ## conflict trained-standard trained 0.9970257
+    ## conflict trained-conflict yoked   0.0000000
     ## 
     ## [1] "PC 2"
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
@@ -340,19 +417,19 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## 
     ## $APA2
     ##                                        diff        lwr         upr
-    ## standard-trained-standard-yoked    0.796763  -4.699718  6.29324383
-    ## conflict-yoked-standard-yoked     -4.589406  -9.931025  0.75221345
-    ## conflict-trained-standard-yoked   -3.270434  -8.612053  2.07118532
-    ## conflict-yoked-standard-trained   -5.386169 -10.727788 -0.04454954
-    ## conflict-trained-standard-trained -4.067197  -9.408816  1.27442233
-    ## conflict-trained-conflict-yoked    1.318972  -3.863160  6.50110370
+    ## standard trained-standard yoked    0.796763  -4.699718  6.29324383
+    ## conflict yoked-standard yoked     -4.589406  -9.931025  0.75221345
+    ## conflict trained-standard yoked   -3.270434  -8.612053  2.07118532
+    ## conflict yoked-standard trained   -5.386169 -10.727788 -0.04454954
+    ## conflict trained-standard trained -4.067197  -9.408816  1.27442233
+    ## conflict trained-conflict yoked    1.318972  -3.863160  6.50110370
     ##                                       p adj
-    ## standard-trained-standard-yoked   0.9788474
-    ## conflict-yoked-standard-yoked     0.1123180
-    ## conflict-trained-standard-yoked   0.3594132
-    ## conflict-yoked-standard-trained   0.0475311
-    ## conflict-trained-standard-trained 0.1859178
-    ## conflict-trained-conflict-yoked   0.8993116
+    ## standard trained-standard yoked   0.9788474
+    ## conflict yoked-standard yoked     0.1123180
+    ## conflict trained-standard yoked   0.3594132
+    ## conflict yoked-standard trained   0.0475311
+    ## conflict trained-standard trained 0.1859178
+    ## conflict trained-conflict yoked   0.8993116
     ## 
     ## [1] "PC 3"
     ##             Df Sum Sq Mean Sq F value Pr(>F)
@@ -365,12 +442,12 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## 
     ## $APA2
     ##                                         diff       lwr       upr     p adj
-    ## standard-trained-standard-yoked    2.1604100 -3.062095 7.3829153 0.6773668
-    ## conflict-yoked-standard-yoked      1.1861085 -3.889254 6.2614714 0.9197309
-    ## conflict-trained-standard-yoked   -2.3456865 -7.421049 2.7296764 0.5967281
-    ## conflict-yoked-standard-trained   -0.9743015 -6.049664 4.1010614 0.9531340
-    ## conflict-trained-standard-trained -4.5060965 -9.581459 0.5692665 0.0959758
-    ## conflict-trained-conflict-yoked   -3.5317950 -8.455620 1.3920303 0.2292910
+    ## standard trained-standard yoked    2.1604100 -3.062095 7.3829153 0.6773668
+    ## conflict yoked-standard yoked      1.1861085 -3.889254 6.2614714 0.9197309
+    ## conflict trained-standard yoked   -2.3456865 -7.421049 2.7296764 0.5967281
+    ## conflict yoked-standard trained   -0.9743015 -6.049664 4.1010614 0.9531340
+    ## conflict trained-standard trained -4.5060965 -9.581459 0.5692665 0.0959758
+    ## conflict trained-conflict yoked   -3.5317950 -8.455620 1.3920303 0.2292910
     ## 
     ## [1] "PC 4"
     ##             Df Sum Sq Mean Sq F value Pr(>F)
@@ -383,12 +460,12 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## 
     ## $APA2
     ##                                         diff       lwr      upr     p adj
-    ## standard-trained-standard-yoked   -2.6638939 -7.697074 2.369287 0.4857398
-    ## conflict-yoked-standard-yoked     -0.3698065 -5.261179 4.521566 0.9968574
-    ## conflict-trained-standard-yoked    0.4885682 -4.402804 5.379940 0.9928462
-    ## conflict-yoked-standard-trained    2.2940874 -2.597285 7.185460 0.5852830
-    ## conflict-trained-standard-trained  3.1524621 -1.738910 8.043834 0.3155405
-    ## conflict-trained-conflict-yoked    0.8583747 -3.886953 5.603703 0.9603067
+    ## standard trained-standard yoked   -2.6638939 -7.697074 2.369287 0.4857398
+    ## conflict yoked-standard yoked     -0.3698065 -5.261179 4.521566 0.9968574
+    ## conflict trained-standard yoked    0.4885682 -4.402804 5.379940 0.9928462
+    ## conflict yoked-standard trained    2.2940874 -2.597285 7.185460 0.5852830
+    ## conflict trained-standard trained  3.1524621 -1.738910 8.043834 0.3155405
+    ## conflict trained-conflict yoked    0.8583747 -3.886953 5.603703 0.9603067
     ## 
     ## [1] "PC 5"
     ##             Df Sum Sq Mean Sq F value Pr(>F)
@@ -401,12 +478,12 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## 
     ## $APA2
     ##                                          diff       lwr      upr     p adj
-    ## standard-trained-standard-yoked   -0.32992433 -5.158137 4.498289 0.9976723
-    ## conflict-yoked-standard-yoked      1.27203715 -3.420142 5.964217 0.8813372
-    ## conflict-trained-standard-yoked   -0.01866219 -4.710842 4.673517 0.9999995
-    ## conflict-yoked-standard-trained    1.60196148 -3.090218 6.294141 0.7899669
-    ## conflict-trained-standard-trained  0.31126214 -4.380917 5.003442 0.9978687
-    ## conflict-trained-conflict-yoked   -1.29069934 -5.842782 3.261384 0.8668811
+    ## standard trained-standard yoked   -0.32992433 -5.158137 4.498289 0.9976723
+    ## conflict yoked-standard yoked      1.27203715 -3.420142 5.964217 0.8813372
+    ## conflict trained-standard yoked   -0.01866219 -4.710842 4.673517 0.9999995
+    ## conflict yoked-standard trained    1.60196148 -3.090218 6.294141 0.7899669
+    ## conflict trained-standard trained  0.31126214 -4.380917 5.003442 0.9978687
+    ## conflict trained-conflict yoked   -1.29069934 -5.842782 3.261384 0.8668811
     ## 
     ## [1] "PC 6"
     ##             Df Sum Sq Mean Sq F value Pr(>F)   
@@ -421,19 +498,19 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## 
     ## $APA2
     ##                                         diff        lwr        upr
-    ## standard-trained-standard-yoked    3.1159850 -0.7607393  6.9927092
-    ## conflict-yoked-standard-yoked      2.7136161 -1.0538826  6.4811149
-    ## conflict-trained-standard-yoked   -1.5414934 -5.3089922  2.2260053
-    ## conflict-yoked-standard-trained   -0.4023688 -4.1698676  3.3651299
-    ## conflict-trained-standard-trained -4.6574784 -8.4249771 -0.8899797
-    ## conflict-trained-conflict-yoked   -4.2551096 -7.9101202 -0.6000989
+    ## standard trained-standard yoked    3.1159850 -0.7607393  6.9927092
+    ## conflict yoked-standard yoked      2.7136161 -1.0538826  6.4811149
+    ## conflict trained-standard yoked   -1.5414934 -5.3089922  2.2260053
+    ## conflict yoked-standard trained   -0.4023688 -4.1698676  3.3651299
+    ## conflict trained-standard trained -4.6574784 -8.4249771 -0.8899797
+    ## conflict trained-conflict yoked   -4.2551096 -7.9101202 -0.6000989
     ##                                       p adj
-    ## standard-trained-standard-yoked   0.1504139
-    ## conflict-yoked-standard-yoked     0.2261477
-    ## conflict-trained-standard-yoked   0.6847551
-    ## conflict-yoked-standard-trained   0.9912926
-    ## conflict-trained-standard-trained 0.0108422
-    ## conflict-trained-conflict-yoked   0.0176085
+    ## standard trained-standard yoked   0.1504139
+    ## conflict yoked-standard yoked     0.2261477
+    ## conflict trained-standard yoked   0.6847551
+    ## conflict yoked-standard trained   0.9912926
+    ## conflict trained-standard trained 0.0108422
+    ## conflict trained-conflict yoked   0.0176085
 
     pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
         geom_point(size=2.5, alpha = 0.7) +
@@ -445,7 +522,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
         theme(legend.position="none") 
     pca12elipse
 
-![](../figures/01_behavior/PCA-2.png)
+![](../figures/01_behavior/PCA-3.png)
 
     pdf(file="../figures/01_behavior/pca12elipse.pdf",  width=2, height=2)
     plot(pca12elipse)
@@ -465,7 +542,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
               legend.title=element_blank()) 
     pcalegend
 
-![](../figures/01_behavior/PCA-3.png)
+![](../figures/01_behavior/PCA-4.png)
 
     pdf(file="../figures/01_behavior/pcalegend.pdf",  width=4, height=2)
     plot(pcalegend)
@@ -474,22 +551,21 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## quartz_off_screen 
     ##                 2
 
-    # PCA with contributions
-    res.pca <- prcomp(behaviormatrix, scale = TRUE)
-    fviz_pca_var(res.pca,
-                 col.var = "contrib", # Color by contributions to the PC
-                 gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-                 repel = TRUE,     # Avoid text overlapping
-                 select.var = list(contrib = 8))
-
-![](../figures/01_behavior/PCA-4.png)
-
 ### Comparing standard-trained and conflict-trained behaviors during the T4/C1 training session
 
     filtered <- behavior_slim %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
     exp_factors <- as.data.frame(filtered[,1])
     exp_nums <- filtered[,c(4:42)]
-    exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard-trained", "conflict-trained"))
+    exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard trained", "conflict trained"))
+    head(exp_factors)
+
+    ##      filtered[, 1]             APA2
+    ## 1 standard trained standard trained
+    ## 2 standard trained standard trained
+    ## 3 standard trained standard trained
+    ## 4 standard trained standard trained
+    ## 5 standard trained standard trained
+    ## 6 standard trained standard trained
 
     # Levene's test for normality
     #for(y in names(exp_nums)){
@@ -964,7 +1040,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     filtered <- behavior_slim %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
     exp_factors <- as.data.frame(filtered[,1])
     exp_nums <- filtered[,c(4:42)]
-    exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard-trained", "conflict-trained"))
+    exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard trained", "conflict trained"))
 
     for(y in names(exp_nums)){
       ymod<- wilcox.test(exp_nums[[y]] ~ exp_factors$APA2 )
@@ -1413,10 +1489,12 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     }
 
 ![](../figures/01_behavior/T6consistentconflict-1.png)![](../figures/01_behavior/T6consistentconflict-2.png)![](../figures/01_behavior/T6consistentconflict-3.png)![](../figures/01_behavior/T6consistentconflict-4.png)![](../figures/01_behavior/T6consistentconflict-5.png)
-\#\# Number of shocks
 
-The values in the column “NumShock” are actually measures of the number
-of entraces into the shock zone. Because, that’s what the software
+Number of shocks
+----------------
+
+The values in the column "NumShock" are actually measures of the number
+of entraces into the shock zone. Because, that's what the software
 records. For standard-trained and conflict-trained animals, the number
 of shocks equals equals the number of entraces. However, for yoked
 individuals, the number of entrances does not equal the number of
@@ -1433,6 +1511,22 @@ standard-trained or conflict-trained trained partner.
 
     # copy datafram, add identifer
     numentrances <- numshocks
+    head(numshocks)
+
+    ##       ID             APA2 Hab Retention Retest T1 T2 T3 T4_C1 T5_C2 T6_C3
+    ## 1 15140A conflict-trained  52         9      1  7  3  3    13     6     2
+    ## 2 15140B   conflict-yoked  55        33     71 96 30 71    87    31    32
+    ## 3 15140C standard-trained  62         0     10  6  7  8     3     8     0
+    ## 4 15140D   standard-yoked  61        41     34 58 32 22    32    54    48
+    ## 5 15141C standard-trained  44        21      7  8 19 11    10     7    12
+    ## 6 15141D   standard-yoked  55        52     50 54 48 27    47    36    34
+    ##   sums
+    ## 1   96
+    ## 2  506
+    ## 3  104
+    ## 4  382
+    ## 5  139
+    ## 6  403
 
     # delete values for yoked animals
     numshocks <- numshocks %>%
@@ -1453,6 +1547,10 @@ standard-trained or conflict-trained trained partner.
     # combine the two and plot
 
     realnumshocks <- rbind(numshocks, numshockstemp)
+    levels(realnumshocks$APA2) 
+
+    ## [1] "standard-trained" "conflict-trained" "standard-yoked"  
+    ## [4] "conflict-yoked"
 
     realnumshocks$APA2 <- factor(realnumshocks$APA2, levels = c("standard-yoked", "standard-trained", "conflict-yoked", "conflict-trained"))
     levels(realnumshocks$APA2) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
@@ -1465,139 +1563,76 @@ standard-trained or conflict-trained trained partner.
       dplyr::summarise(meanentraces = median(sums, na.rm = TRUE))
 
     ## # A tibble: 4 x 2
-    ##   APA2                meanentraces
-    ##   <fct>                      <dbl>
-    ## 1 "standard\nyoked"           452.
-    ## 2 "standard\ntrained"          90 
-    ## 3 "conflict\nyoked"           490 
-    ## 4 "conflict\ntrained"         122
+    ##                  APA2 meanentraces
+    ##                <fctr>        <dbl>
+    ## 1   "standard\nyoked"        452.5
+    ## 2 "standard\ntrained"         90.0
+    ## 3   "conflict\nyoked"        490.0
+    ## 4 "conflict\ntrained"        122.0
 
     realnumshocks %>%
       dplyr::group_by(APA2) %>%
       dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
 
     ## # A tibble: 4 x 2
-    ##   APA2                meanshocks
-    ##   <fct>                    <dbl>
-    ## 1 "standard\nyoked"          96 
-    ## 2 "standard\ntrained"        96 
-    ## 3 "conflict\nyoked"         125.
-    ## 4 "conflict\ntrained"       125.
+    ##                  APA2 meanshocks
+    ##                <fctr>      <dbl>
+    ## 1   "standard\nyoked"    96.0000
+    ## 2 "standard\ntrained"    96.0000
+    ## 3   "conflict\nyoked"   125.1111
+    ## 4 "conflict\ntrained"   125.1111
+
+    # define what levels to compare for stats
+    my_comparisons <- list(c("standard\ntrained", "conflict\ntrained"))
 
     a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
       geom_boxplot(outlier.size = 0.5) +
-      theme_cowplot(font_size = 7, line_size = 0.15) +
+      theme_bw(base_size = 12) +
       scale_fill_manual(values = colorvalAPA00,
                         name = NULL) +
-      labs(x = NULL, subtitle = "Total shocks", y = "Counts") +
-        theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-              legend.position = "none") +
-      geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
-      geom_hline(yintercept=90, linetype="dashed", color = "#ca0020")
-    a
-
-![](../figures/01_behavior/ShocksEntrances-1.png)
-
-    b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
-      geom_boxplot(outlier.size = 0.5) +
-      theme_cowplot(font_size = 7, line_size = 0.15) +
-      scale_fill_manual(values = colorvalAPA00,
-                        name = NULL) +
-      labs(x = NULL, subtitle = "Total entrances", y = "Counts") +
+      labs(x = NULL, subtitle = "Total shocks", y = "Number of shocks") +
         theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
               legend.position = "none") +
       geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
       geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
-      scale_y_continuous(breaks = c(0,100,200,400,600))
+        scale_y_continuous(limits = c(0,750),
+                           expand = c(0,0)) + 
+      stat_compare_means(comparisons = my_comparisons)
+    a
+
+![](../figures/01_behavior/ShocksEntrances-1.png)
+
+    my_comparisons <- list( c("standard\nyoked", "standard\ntrained"),
+                            c("conflict\nyoked", "conflict\ntrained"))
+
+    b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
+      geom_boxplot(outlier.size = 0.5) +
+      theme_bw(base_size = 12) +
+      scale_fill_manual(values = colorvalAPA00,
+                        name = NULL) +
+      labs(x = NULL, subtitle = "Total entrances", y = "Number of entrances") +
+        theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
+              legend.position = "none") +
+      geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
+      geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
+      scale_y_continuous(limits = c(0,750),
+                         expand = c(0,0)) + 
+      stat_compare_means(comparisons = my_comparisons)
     b
 
 ![](../figures/01_behavior/ShocksEntrances-2.png)
 
-    shockentrplot <- plot_grid(a,b, labels = c("B", "C"), label_size = 7)
+    shock.entr.plot <- plot_grid(a,b, labels = c("B", "C"), label_size = 7)
+    shock.entr.plot
+
+![](../figures/01_behavior/ShocksEntrances-3.png)
 
     pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3, height=2.5)
-    plot(shockentrplot)
+    plot(shock.entr.plot)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
-
-    shockentrplot
-
-![](../figures/01_behavior/ShocksEntrances-3.png)
-
-    numentrances
-
-    ##        ID              APA2 Hab Retention Retest  T1 T2 T3 T4_C1 T5_C2
-    ## 1  15140A conflict\ntrained  52         9      1   7  3  3    13     6
-    ## 2  15140B   conflict\nyoked  55        33     71  96 30 71    87    31
-    ## 3  15140C standard\ntrained  62         0     10   6  7  8     3     8
-    ## 4  15140D   standard\nyoked  61        41     34  58 32 22    32    54
-    ## 5  15141C standard\ntrained  44        21      7   8 19 11    10     7
-    ## 6  15141D   standard\nyoked  55        52     50  54 48 27    47    36
-    ## 7  15142A conflict\ntrained  60         6      0   7  4  2     7     3
-    ## 8  15142B   conflict\nyoked  57        38     17  59 16 15    31    16
-    ## 9  15142C standard\ntrained  57         8      1   5  1  1     0     0
-    ## 10 15142D   standard\nyoked  52        51     58  38 48 61    47    39
-    ## 11 15143A conflict\ntrained  56        33      2  10  3  1    14     2
-    ## 12 15143B   conflict\nyoked  75        77     60 107 57 50    35    52
-    ## 13 15143C standard\ntrained  52         1      2  10  3  1     0     1
-    ## 14 15143D   standard\nyoked  59        67     60  49 24 68    70    41
-    ## 15 15144A conflict\ntrained  64         0      1  12  4  1    26     3
-    ## 16 15144B   conflict\nyoked  63        52     57  62 31 66    33    70
-    ## 17 15144C standard\ntrained  64         0      1   9  3  2     3     0
-    ## 18 15144D   standard\nyoked  71        57     60  97 80 50    64    56
-    ## 19 15145A conflict\ntrained  59         0      6   6  2  1    29     4
-    ## 20 15145B   conflict\nyoked  55        36     52  55 48 61    40    64
-    ## 21 15145C standard\ntrained  54        28      6  10  7  5     5     9
-    ## 22 15145D   standard\nyoked  55        63     52  60 63 69    88    93
-    ## 23 15146A conflict\ntrained  66         0      1  25  2  1    26     1
-    ## 24 15146B   conflict\nyoked  65        43     44  64 62 47    59    63
-    ## 25 15146C standard\ntrained  58         4      3   5  1  1    13     4
-    ## 26 15146D   standard\nyoked  51        49     54  44 38 47    25    43
-    ## 27 15147A conflict\ntrained  48        30      5   6  3  1    15     5
-    ## 28 15147B   conflict\nyoked  56        32     70  47 56 61    18    48
-    ## 29 15147C standard\ntrained  49         5      1   4  2  1     2     1
-    ## 30 15147D   standard\nyoked  59        52     52  55 39 49    50    50
-    ## 31 15148A conflict\ntrained  61        40      0   7  1  1    24     5
-    ## 32 15148B   conflict\nyoked  51        44     49  77 61 39    40    68
-    ## 33 15148C conflict\ntrained  50        37      4   7  3 15    33    28
-    ## 34 15148D   conflict\nyoked  61        41     41  34 64 63    38    40
-    ##    T6_C3 sums
-    ## 1      2   96
-    ## 2     32  506
-    ## 3      0  104
-    ## 4     48  382
-    ## 5     12  139
-    ## 6     34  403
-    ## 7      3   92
-    ## 8     55  304
-    ## 9      0   73
-    ## 10    54  448
-    ## 11     1  122
-    ## 12   112  625
-    ## 13     0   70
-    ## 14    50  488
-    ## 15     1  112
-    ## 16    69  503
-    ## 17     1   83
-    ## 18    59  594
-    ## 19     4  111
-    ## 20    65  476
-    ## 21    13  137
-    ## 22    58  601
-    ## 23     1  123
-    ## 24    43  490
-    ## 25     8   97
-    ## 26    61  412
-    ## 27     9  122
-    ## 28    44  432
-    ## 29     0   65
-    ## 30    51  457
-    ## 31     9  148
-    ## 32   113  542
-    ## 33    23  200
-    ## 34    57  439
 
     summary(aov(numentrances$sums ~ numentrances$APA2))
 
