@@ -43,7 +43,11 @@ In this next section, I tidy the trait data for each sample so that I can calcul
 ```{r colData}
 rownames(colData) <- colData$RNAseqID    # set $genoAPAsessionInd as rownames
 colData <- colData[c(1,2,5,7:11)]  #keeping informative volumns
-colData <- colData %>% dplyr::filter(!grepl("147-|148-", RNAseqID))  # remove 147, and 148:  homecage animals 
+head(colData)
+levels(colData$APA_Conflict)
+
+# changing the analysis to include homecage
+# colData <- colData %>% dplyr::filter(!grepl("147-|148-", RNAseqID))  # remove 147, and 148:  homecage animals 
 colData$ID <- gsub("[[:punct:]]", "", colData$Mouse) #make a column that thas id without the dash
 colData$APA <- NULL ## delete old APA column
 names(colData)[names(colData)=="APA_Conflict"] <- "APA3" #rename  APA3 to match color scheme
@@ -51,10 +55,12 @@ names(colData)[names(colData)=="Region"] <- "Punch" #rename  region to punch
 
 # rename factors & group all Control animals into 1 group
 colData$APA2 <- colData$APA3 
-colData$APA2 <- revalue(colData$APA2, c("Trained_Conflict" = "conflict")) 
-colData$APA2 <- revalue(colData$APA2, c("Trained_NoConflict" = "consistent")) 
-colData$APA2 <- revalue(colData$APA2, c("Yoked_Conflict" = "yoked_conflict")) 
-colData$APA2 <- revalue(colData$APA2, c("Yoked_NoConflict" = "yoked_consistent")) 
+colData$APA2 <- revalue(colData$APA2, c("NA_NA" = "home-cage")) 
+colData$APA2 <- revalue(colData$APA2, c("Trained_Conflict" = "conflict-trained")) 
+colData$APA2 <- revalue(colData$APA2, c("Trained_NoConflict" = "standard-trained")) 
+colData$APA2 <- revalue(colData$APA2, c("Yoked_Conflict" = "conflict-yoked")) 
+colData$APA2 <- revalue(colData$APA2, c("Yoked_NoConflict" = "standard-yoked")) 
+head(colData)
 
 # reorder 
 colData <- colData[c(1:5,7:9)]

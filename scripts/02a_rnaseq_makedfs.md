@@ -2,7 +2,7 @@ RNAseq gene expression analysis with DESeq2
 -------------------------------------------
 
 This workflow was modified from the DESeq2 tutorial found at:
-<a href="https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf" class="uri">https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf</a>
+<https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf>
 
 First I load a handful of packages for data wrangling, gene expression
 analysis, data visualization, and statistics.
@@ -40,7 +40,30 @@ I also remove some samples for reasons described within the code blocks.
 
     rownames(colData) <- colData$RNAseqID    # set $genoAPAsessionInd as rownames
     colData <- colData[c(1,2,5,7:11)]  #keeping informative volumns
-    colData <- colData %>% dplyr::filter(!grepl("147-|148-", RNAseqID))  # remove 147, and 148:  homecage animals 
+    head(colData)
+
+    ##              RNAseqID   Mouse Region      Group     APA   Conflict
+    ## 143A-CA3-1 143A-CA3-1 15-143A    CA3   conflict Trained   Conflict
+    ## 143A-DG-1   143A-DG-1 15-143A     DG   conflict Trained   Conflict
+    ## 143B-CA1-1 143B-CA1-1 15-143B    CA1    control   Yoked   Conflict
+    ## 143B-DG-1   143B-DG-1 15-143B     DG    control   Yoked   Conflict
+    ## 143C-CA1-1 143C-CA1-1 15-143C    CA1 consistent Trained NoConflict
+    ## 143D-CA1-3 143D-CA1-3 15-143D    CA1    control   Yoked NoConflict
+    ##                  APA_Conflict Treatment
+    ## 143A-CA3-1   Trained_Conflict  conflict
+    ## 143A-DG-1    Trained_Conflict  conflict
+    ## 143B-CA1-1     Yoked_Conflict   shocked
+    ## 143B-DG-1      Yoked_Conflict   shocked
+    ## 143C-CA1-1 Trained_NoConflict   trained
+    ## 143D-CA1-3   Yoked_NoConflict     yoked
+
+    levels(colData$APA_Conflict)
+
+    ## [1] "NA_NA"              "Trained_Conflict"   "Trained_NoConflict"
+    ## [4] "Yoked_Conflict"     "Yoked_NoConflict"
+
+    # changing the analysis to include homecage
+    # colData <- colData %>% dplyr::filter(!grepl("147-|148-", RNAseqID))  # remove 147, and 148:  homecage animals 
     colData$ID <- gsub("[[:punct:]]", "", colData$Mouse) #make a column that thas id without the dash
     colData$APA <- NULL ## delete old APA column
     names(colData)[names(colData)=="APA_Conflict"] <- "APA3" #rename  APA3 to match color scheme
@@ -48,17 +71,34 @@ I also remove some samples for reasons described within the code blocks.
 
     # rename factors & group all Control animals into 1 group
     colData$APA2 <- colData$APA3 
-    colData$APA2 <- revalue(colData$APA2, c("Trained_Conflict" = "conflict")) 
-    colData$APA2 <- revalue(colData$APA2, c("Trained_NoConflict" = "consistent")) 
-    colData$APA2 <- revalue(colData$APA2, c("Yoked_Conflict" = "yoked_conflict")) 
-    colData$APA2 <- revalue(colData$APA2, c("Yoked_NoConflict" = "yoked_consistent")) 
+    colData$APA2 <- revalue(colData$APA2, c("NA_NA" = "home-cage")) 
+    colData$APA2 <- revalue(colData$APA2, c("Trained_Conflict" = "conflict-trained")) 
+    colData$APA2 <- revalue(colData$APA2, c("Trained_NoConflict" = "standard-trained")) 
+    colData$APA2 <- revalue(colData$APA2, c("Yoked_Conflict" = "conflict-yoked")) 
+    colData$APA2 <- revalue(colData$APA2, c("Yoked_NoConflict" = "standard-yoked")) 
+    head(colData)
+
+    ##              RNAseqID   Mouse Punch      Group   Conflict
+    ## 143A-CA3-1 143A-CA3-1 15-143A   CA3   conflict   Conflict
+    ## 143A-DG-1   143A-DG-1 15-143A    DG   conflict   Conflict
+    ## 143B-CA1-1 143B-CA1-1 15-143B   CA1    control   Conflict
+    ## 143B-DG-1   143B-DG-1 15-143B    DG    control   Conflict
+    ## 143C-CA1-1 143C-CA1-1 15-143C   CA1 consistent NoConflict
+    ## 143D-CA1-3 143D-CA1-3 15-143D   CA1    control NoConflict
+    ##                          APA3 Treatment     ID             APA2
+    ## 143A-CA3-1   Trained_Conflict  conflict 15143A conflict-trained
+    ## 143A-DG-1    Trained_Conflict  conflict 15143A conflict-trained
+    ## 143B-CA1-1     Yoked_Conflict   shocked 15143B   conflict-yoked
+    ## 143B-DG-1      Yoked_Conflict   shocked 15143B   conflict-yoked
+    ## 143C-CA1-1 Trained_NoConflict   trained 15143C standard-trained
+    ## 143D-CA1-3   Yoked_NoConflict     yoked 15143D   standard-yoked
 
     # reorder 
     colData <- colData[c(1:5,7:9)]
 
 Now, we are ready to calculate differential gene expression using the
 DESeq package. For simplicity, I will use the standard nameing of
-“countData” and “colData” for the gene counts and gene information,
+"countData" and "colData" for the gene counts and gene information,
 respectively.
 
     colData <- colData %>% arrange(RNAseqID) %>% droplevels() #set the coldata to be the countbygene df
@@ -76,14 +116,15 @@ respectively.
     colData %>% select(APA2,Punch)  %>%  summary()
 
     ##                APA2    Punch   
-    ##  conflict        :14   CA1:15  
-    ##  consistent      : 9   CA3:13  
-    ##  yoked_conflict  :12   DG :16  
-    ##  yoked_consistent: 9
+    ##  conflict-trained:14   CA1:17  
+    ##  conflict-yoked  :12   CA3:15  
+    ##  home-cage       : 6   DG :18  
+    ##  standard-trained: 9           
+    ##  standard-yoked  : 9
 
     dim(countData)
 
-    ## [1] 22485    44
+    ## [1] 22485    50
 
 Write the two files
 -------------------
@@ -100,7 +141,7 @@ this could say something about data before normalization
     counts <- countData
     dim( counts )
 
-    ## [1] 22485    44
+    ## [1] 22485    50
 
     colSums( counts ) / 1e06  # in millions of reads
 
@@ -114,10 +155,12 @@ this could say something about data before normalization
     ##   0.345619   1.435833   2.020114   1.509310   1.715282   2.756300 
     ##  146A-DG-2 146B-CA1-2 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 
     ##   1.201333   1.063417   2.144771   0.116106   1.360004   0.492145 
-    ## 146D-CA1-3 146D-CA3-3  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 
-    ##   0.391369   2.994536   0.090417   3.072308   5.754581   4.350647 
-    ## 147D-CA3-1  147D-DG-1 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 
-    ##   4.624995  11.700703   5.260906   2.676397   4.019062   0.337174 
+    ## 146D-CA1-3 146D-CA3-3  146D-DG-3  147-CA1-4  147-CA3-4   147-DG-4 
+    ##   0.391369   2.994536   0.090417   0.159069   0.689232   0.139276 
+    ## 147C-CA1-3 147C-CA3-3  147C-DG-3 147D-CA3-1  147D-DG-1  148-CA1-2 
+    ##   3.072308   5.754581   4.350647   4.624995  11.700703   1.901256 
+    ##  148-CA3-2   148-DG-2 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 
+    ##   2.343035   2.231849   5.260906   2.676397   4.019062   0.337174 
     ## 148B-CA3-4  148B-DG-4 
     ##   3.486840   0.798668
 
@@ -125,9 +168,9 @@ this could say something about data before normalization
 
     ## 
     ##    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14 
-    ## 4203  353  236  225  168  145  118  119  110  111   81   82   77   75   71 
+    ## 4169  341  229  217  164  148  120  117  106  117   86   80   81   71   65 
     ##   15   16   17   18   19   20   21   22   23   24   25   26   27   28   29 
-    ##   48   56   65   58   55   55   55   51   48   38   47   48   37   32   26
+    ##   54   61   53   59   56   42   52   47   47   37   43   49   40   36   28
 
     rowsum <- as.data.frame(colSums( counts ) / 1e06 )
     names(rowsum)[1] <- "millioncounts"
