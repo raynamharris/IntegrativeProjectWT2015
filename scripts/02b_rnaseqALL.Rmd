@@ -7,7 +7,7 @@ The figures made from this script were compiled in Adobe.
 
 <img src="../figures/figures-02.png" width="1370" />
 
-```{r setup, message=F}
+```{r setup, message=F, warning=F}
 library(ggplot2) ## for awesome plots!
 library(cowplot) ## for some easy to use themes
 library(dplyr) ## for filtering and selecting rows
@@ -55,6 +55,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               design = ~ subfield + treatment + subfield*treatment)
 
 dds$subfield <- factor(dds$subfield, levels=c("DG","CA3", "CA1")) ## specify the factor levels
+
 dds$treatment <- factor(dds$treatment, levels=c("home.cage","standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained")) ## specify the factor levels
 
 dds # view the DESeq object - note numnber of genes

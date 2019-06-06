@@ -41,11 +41,11 @@ The two two catagorical variables are
     colData %>% select(treatment, subfield)  %>%  summary()
 
     ##             treatment  subfield
-    ##  conflict-trained:14   CA1:17  
-    ##  conflict-yoked  :12   CA3:15  
-    ##  home-cage       : 6   DG :18  
-    ##  standard-trained: 9           
-    ##  standard-yoked  : 9
+    ##  conflict.trained:14   CA1:17  
+    ##  conflict.yoked  :12   CA3:15  
+    ##  home.cage       : 6   DG :18  
+    ##  standard.trained: 9           
+    ##  standard.yoked  : 9
 
     head(colData)
 
@@ -57,12 +57,12 @@ The two two catagorical variables are
     ## 5 143C-CA1-1 15-143C      CA1 consistent NoConflict   trained 15143C
     ## 6 143D-CA1-3 15-143D      CA1    control NoConflict     yoked 15143D
     ##          treatment
-    ## 1 conflict-trained
-    ## 2 conflict-trained
-    ## 3   conflict-yoked
-    ## 4   conflict-yoked
-    ## 5 standard-trained
-    ## 6   standard-yoked
+    ## 1 conflict.trained
+    ## 2 conflict.trained
+    ## 3   conflict.yoked
+    ## 4   conflict.yoked
+    ## 5 standard.trained
+    ## 6   standard.yoked
 
     totalCounts=colSums(countData)
     ### on average 1 million gene counts per sample 
@@ -76,7 +76,8 @@ The two two catagorical variables are
                                   design = ~ subfield + treatment + subfield*treatment)
 
     dds$subfield <- factor(dds$subfield, levels=c("DG","CA3", "CA1")) ## specify the factor levels
-    dds$treatment <- factor(dds$treatment, levels=c("home-cage","standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained")) ## specify the factor levels
+
+    dds$treatment <- factor(dds$treatment, levels=c("home.cage","standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained")) ## specify the factor levels
 
     dds # view the DESeq object - note numnber of genes
 
@@ -250,9 +251,9 @@ genes and the top 3 most significant genes.
     ## Doc2b   -9.84557871575188 7.16258144671295e-23  4.6886258150183e-19
     ## Fam163b -9.54910918662493 1.30816253233078e-21 5.70882129109154e-18
 
-    res_summary(c("treatment", "standard-trained", "standard-yoked"))
+    res_summary(c("treatment", "standard.trained", "standard.yoked"))
 
-    ## [1] "treatment"        "standard-trained" "standard-yoked"  
+    ## [1] "treatment"        "standard.trained" "standard.yoked"  
     ## 
     ## out of 17975 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -265,8 +266,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): treatment standard-trained vs standard-yoked 
-    ## Wald test p-value: treatment standard-trained vs standard-yoked 
+    ## log2 fold change (MLE): treatment standard.trained vs standard.yoked 
+    ## Wald test p-value: treatment standard.trained vs standard.yoked 
     ## DataFrame with 3 rows and 6 columns
     ##               baseMean   log2FoldChange             lfcSE             stat
     ##              <numeric>        <numeric>         <numeric>        <numeric>
@@ -279,9 +280,9 @@ genes and the top 3 most significant genes.
     ## Smad7 1.43963526781775e-10 8.67092321806632e-07
     ## Frmd6 3.50548564993573e-10 1.40756933797086e-06
 
-    res_summary(c("treatment", "conflict-yoked", "standard-yoked"))
+    res_summary(c("treatment", "conflict.yoked", "standard.yoked"))
 
-    ## [1] "treatment"      "conflict-yoked" "standard-yoked"
+    ## [1] "treatment"      "conflict.yoked" "standard.yoked"
     ## 
     ## out of 17975 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -294,8 +295,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): treatment conflict-yoked vs standard-yoked 
-    ## Wald test p-value: treatment conflict-yoked vs standard-yoked 
+    ## log2 fold change (MLE): treatment conflict.yoked vs standard.yoked 
+    ## Wald test p-value: treatment conflict.yoked vs standard.yoked 
     ## DataFrame with 3 rows and 6 columns
     ##                 baseMean   log2FoldChange             lfcSE
     ##                <numeric>        <numeric>         <numeric>
@@ -308,9 +309,9 @@ genes and the top 3 most significant genes.
     ## Cnr1    5.10817524527742 3.25284893107316e-07  0.00195919091118537
     ## St8sia5 4.94328572244555 7.68167731698567e-07  0.00308444949868031
 
-    res_summary(c("treatment", "conflict-trained", "conflict-yoked"))
+    res_summary(c("treatment", "conflict.trained", "conflict.yoked"))
 
-    ## [1] "treatment"        "conflict-trained" "conflict-yoked"  
+    ## [1] "treatment"        "conflict.trained" "conflict.yoked"  
     ## 
     ## out of 17975 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -323,8 +324,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): treatment conflict-trained vs conflict-yoked 
-    ## Wald test p-value: treatment conflict-trained vs conflict-yoked 
+    ## log2 fold change (MLE): treatment conflict.trained vs conflict.yoked 
+    ## Wald test p-value: treatment conflict.trained vs conflict.yoked 
     ## DataFrame with 3 rows and 6 columns
     ##                baseMean    log2FoldChange             lfcSE
     ##               <numeric>         <numeric>         <numeric>
@@ -337,9 +338,9 @@ genes and the top 3 most significant genes.
     ## Insm1  -5.20541702490436 1.93561422874569e-07  0.00127893414260891
     ## Kcnc2  -5.14224257968971 2.71478272682851e-07  0.00127893414260891
 
-    res_summary(c("treatment", "conflict-trained", "standard-trained"))
+    res_summary(c("treatment", "conflict.trained", "standard.trained"))
 
-    ## [1] "treatment"        "conflict-trained" "standard-trained"
+    ## [1] "treatment"        "conflict.trained" "standard.trained"
     ## 
     ## out of 17975 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -352,8 +353,8 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): treatment conflict-trained vs standard-trained 
-    ## Wald test p-value: treatment conflict-trained vs standard-trained 
+    ## log2 fold change (MLE): treatment conflict.trained vs standard.trained 
+    ## Wald test p-value: treatment conflict.trained vs standard.trained 
     ## DataFrame with 3 rows and 6 columns
     ##                       baseMean     log2FoldChange             lfcSE
     ##                      <numeric>          <numeric>         <numeric>
@@ -366,9 +367,9 @@ genes and the top 3 most significant genes.
     ## 0610007P14Rik -0.376164344074828    0.706794721318231                    1
     ## 0610009B22Rik  -1.03895652323856    0.298824956774045                    1
 
-    res_summary(c("treatment", "standard-yoked", "home-cage"))
+    res_summary(c("treatment", "standard.yoked", "home.cage"))
 
-    ## [1] "treatment"      "standard-yoked" "home-cage"     
+    ## [1] "treatment"      "standard.yoked" "home.cage"     
     ## 
     ## out of 17975 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -381,7 +382,7 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): treatment standard-yoked vs home-cage 
+    ## log2 fold change (MLE): treatment standard.yoked vs home.cage 
     ## Wald test p-value: treatment standard.yoked vs home.cage 
     ## DataFrame with 3 rows and 6 columns
     ##                baseMean    log2FoldChange             lfcSE
@@ -395,9 +396,9 @@ genes and the top 3 most significant genes.
     ## Phkb   -6.63918844314324 3.15414940208884e-11 1.84501969275186e-07
     ## Alkbh1 -6.17153196003797  6.7631456328183e-10 2.50169543812552e-06
 
-    res_summary(c("treatment", "standard-trained", "home-cage"))
+    res_summary(c("treatment", "standard.trained", "home.cage"))
 
-    ## [1] "treatment"        "standard-trained" "home-cage"       
+    ## [1] "treatment"        "standard.trained" "home.cage"       
     ## 
     ## out of 17975 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -410,7 +411,7 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): treatment standard-trained vs home-cage 
+    ## log2 fold change (MLE): treatment standard.trained vs home.cage 
     ## Wald test p-value: treatment standard.trained vs home.cage 
     ## DataFrame with 3 rows and 6 columns
     ##                  baseMean    log2FoldChange             lfcSE
@@ -424,9 +425,9 @@ genes and the top 3 most significant genes.
     ## BC068281 -6.25215036598095 4.04839325440685e-10 2.43834725712924e-06
     ## Rfng     -6.18767968564755 6.10562331127034e-10 2.45161128025208e-06
 
-    res_summary(c("treatment", "conflict-yoked", "home-cage"))
+    res_summary(c("treatment", "conflict.yoked", "home.cage"))
 
-    ## [1] "treatment"      "conflict-yoked" "home-cage"     
+    ## [1] "treatment"      "conflict.yoked" "home.cage"     
     ## 
     ## out of 17975 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -439,7 +440,7 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): treatment conflict-yoked vs home-cage 
+    ## log2 fold change (MLE): treatment conflict.yoked vs home.cage 
     ## Wald test p-value: treatment conflict.yoked vs home.cage 
     ## DataFrame with 3 rows and 6 columns
     ##                  baseMean    log2FoldChange             lfcSE
@@ -453,9 +454,9 @@ genes and the top 3 most significant genes.
     ## BC068281 -6.27213527101674 3.56129964041133e-10 3.35243529231545e-06
     ## Dab2ip   -6.03166387396593 1.62280046421079e-09 3.35243529231545e-06
 
-    res_summary(c("treatment", "conflict-trained", "home-cage"))
+    res_summary(c("treatment", "conflict.trained", "home.cage"))
 
-    ## [1] "treatment"        "conflict-trained" "home-cage"       
+    ## [1] "treatment"        "conflict.trained" "home.cage"       
     ## 
     ## out of 17975 with nonzero total read count
     ## adjusted p-value < 0.1
@@ -468,7 +469,7 @@ genes and the top 3 most significant genes.
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): treatment conflict-trained vs home-cage 
+    ## log2 fold change (MLE): treatment conflict.trained vs home.cage 
     ## Wald test p-value: treatment conflict.trained vs home.cage 
     ## DataFrame with 3 rows and 6 columns
     ##                  baseMean    log2FoldChange             lfcSE
@@ -499,35 +500,35 @@ lots of useful info to a df for downstream dataviz.
 
     ## [1] 3078
 
-    contrast4 <- resvals(contrastvector = c("treatment", "standard-trained", "standard-yoked"), mypval = 0.1) #  80
+    contrast4 <- resvals(contrastvector = c("treatment", "standard.trained", "standard.yoked"), mypval = 0.1) #  80
 
     ## [1] 80
 
-    contrast5 <- resvals(contrastvector = c("treatment", "conflict-trained", "conflict-yoked"), mypval = 0.1) # 23
+    contrast5 <- resvals(contrastvector = c("treatment", "conflict.trained", "conflict.yoked"), mypval = 0.1) # 23
 
     ## [1] 23
 
-    contrast6 <- resvals(contrastvector = c("treatment", "conflict-trained", "standard-trained"), mypval = 0.1) #  1
+    contrast6 <- resvals(contrastvector = c("treatment", "conflict.trained", "standard.trained"), mypval = 0.1) #  1
 
     ## [1] 1
 
-    contrast7 <- resvals(contrastvector = c("treatment", "conflict-yoked", "standard-yoked"), mypval = 0.1) # 37
+    contrast7 <- resvals(contrastvector = c("treatment", "conflict.yoked", "standard.yoked"), mypval = 0.1) # 37
 
     ## [1] 37
 
-    contrast8 <- resvals(contrastvector = c("treatment", "standard-yoked", "home-cage"), mypval = 0.1) #1285
+    contrast8 <- resvals(contrastvector = c("treatment", "standard.yoked", "home.cage"), mypval = 0.1) #1285
 
     ## [1] 1285
 
-    contrast9 <- resvals(contrastvector = c("treatment", "standard-trained", "home-cage"), mypval = 0.1) # 1320
+    contrast9 <- resvals(contrastvector = c("treatment", "standard.trained", "home.cage"), mypval = 0.1) # 1320
 
     ## [1] 1320
 
-    contrast10 <- resvals(contrastvector = c("treatment", "conflict-yoked", "home-cage"), mypval = 0.1) #1400
+    contrast10 <- resvals(contrastvector = c("treatment", "conflict.yoked", "home.cage"), mypval = 0.1) #1400
 
     ## [1] 1400
 
-    contrast11 <- resvals(contrastvector = c("treatment", "conflict-trained", "home-cage"), mypval = 0.1) #1659
+    contrast11 <- resvals(contrastvector = c("treatment", "conflict.trained", "home.cage"), mypval = 0.1) #1659
 
     ## [1] 1659
 
@@ -597,29 +598,29 @@ lots of useful info to a df for downstream dataviz.
     ## [54] "padjsubfieldCA1CA3"                           
     ## [55] "pvalsubfieldCA3DG"                            
     ## [56] "padjsubfieldCA3DG"                            
-    ## [57] "pvaltreatmentstandard-trainedstandard-yoked"  
-    ## [58] "padjtreatmentstandard-trainedstandard-yoked"  
-    ## [59] "pvaltreatmentconflict-trainedconflict-yoked"  
-    ## [60] "padjtreatmentconflict-trainedconflict-yoked"  
-    ## [61] "pvaltreatmentconflict-trainedstandard-trained"
-    ## [62] "padjtreatmentconflict-trainedstandard-trained"
-    ## [63] "pvaltreatmentconflict-yokedstandard-yoked"    
-    ## [64] "padjtreatmentconflict-yokedstandard-yoked"    
-    ## [65] "pvaltreatmentstandard-yokedhome-cage"         
-    ## [66] "padjtreatmentstandard-yokedhome-cage"         
-    ## [67] "pvaltreatmentstandard-trainedhome-cage"       
-    ## [68] "padjtreatmentstandard-trainedhome-cage"       
-    ## [69] "pvaltreatmentconflict-yokedhome-cage"         
-    ## [70] "padjtreatmentconflict-yokedhome-cage"         
-    ## [71] "pvaltreatmentconflict-trainedhome-cage"       
-    ## [72] "padjtreatmentconflict-trainedhome-cage"       
+    ## [57] "pvaltreatmentstandard.trainedstandard.yoked"  
+    ## [58] "padjtreatmentstandard.trainedstandard.yoked"  
+    ## [59] "pvaltreatmentconflict.trainedconflict.yoked"  
+    ## [60] "padjtreatmentconflict.trainedconflict.yoked"  
+    ## [61] "pvaltreatmentconflict.trainedstandard.trained"
+    ## [62] "padjtreatmentconflict.trainedstandard.trained"
+    ## [63] "pvaltreatmentconflict.yokedstandard.yoked"    
+    ## [64] "padjtreatmentconflict.yokedstandard.yoked"    
+    ## [65] "pvaltreatmentstandard.yokedhome.cage"         
+    ## [66] "padjtreatmentstandard.yokedhome.cage"         
+    ## [67] "pvaltreatmentstandard.trainedhome.cage"       
+    ## [68] "padjtreatmentstandard.trainedhome.cage"       
+    ## [69] "pvaltreatmentconflict.yokedhome.cage"         
+    ## [70] "padjtreatmentconflict.yokedhome.cage"         
+    ## [71] "pvaltreatmentconflict.trainedhome.cage"       
+    ## [72] "padjtreatmentconflict.trainedhome.cage"       
     ## [73] "rownames"
 
     DEGes$padjmin <- with(DEGes, pmin(padjsubfieldCA1DG, padjsubfieldCA1CA3, padjsubfieldCA3DG, 
-                                      "padjtreatmentstandard-trainedstandard-yoked", "padjtreatmentconflict-trainedconflict-yoked",
-                                      "padjtreatmentconflict-trainedstandard-trained","padjtreatmentconflict-yokedstandard-yoked",
-                                      "padjtreatmentstandard-yokedhome-cage","padjtreatmentstandard-trainedhome-cage",
-                                      "padjtreatmentconflict-yokedhome-cage","padjtreatmentconflict-trainedhome-cage")) 
+                                      "padjtreatmentstandard.trainedstandard.yoked", "padjtreatmentconflict.trainedconflict.yoked",
+                                      "padjtreatmentconflict.trainedstandard.trained","padjtreatmentconflict.yokedstandard.yoked",
+                                      "padjtreatmentstandard.yokedhome.cage","padjtreatmentstandard.trainedhome.cage",
+                                      "padjtreatmentconflict.yokedhome.cage","padjtreatmentconflict.trainedhome.cage")) 
     DEGes <- DEGes %>% filter(padjmin < 0.00000000000000000001)
     rownames(DEGes) <- DEGes$rownames
     drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -681,7 +682,7 @@ Principle component analysis
     percentVar <- round(100 * attr(pcadata, "percentVar"))
     pcadata$subfieldAPA <- as.factor(paste(pcadata$subfield, pcadata$treatment, sep="_"))
     pcadata$subfield <- factor(pcadata$subfield, levels=c("DG","CA3", "CA1"))
-    pcadata$treatment <- factor(pcadata$treatment, levels=c("home-cage", "standard-yoked","standard-trained",  "conflict-yoked","conflict-trained"))
+    pcadata$treatment <- factor(pcadata$treatment, levels=c("home.cage", "standard.yoked","standard.trained",  "conflict.yoked","conflict.trained"))
 
     levels(pcadata$treatment) <- c("home cage", "standard yoked","standard trained",  "conflict yoked", "conflict trained")
 
@@ -886,11 +887,11 @@ Volcanos plots and and gene lists
     DGvCA1 <- makevolcanodf(c("subfield", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
     CA3vCA1 <- makevolcanodf(c("subfield", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
 
-    STY <- makevolcanodf(c("treatment", "standard-trained", "standard-yoked"),"standard-trained", "standard-yoked", "../data/STY.csv")
-    CTY <- makevolcanodf(c("treatment", "conflict-trained", "conflict-yoked"),"conflict-trained", "conflict-yoked", "../data/CTY.csv")
-    SYH <- makevolcanodf(c("treatment", "standard-yoked", "home-cage"),"standard-yoked", "home-cage", "../data/SYH.csv")
-    CYH <- makevolcanodf(c("treatment", "conflict-yoked", "home-cage"),"conflict-yoked", "home-cage", "../data/CYH.csv")
-    CTST <- makevolcanodf(c("treatment", "conflict-trained", "standard-trained"),"conflict-trained", "standard-trained", "../data/CTST.csv")
+    STY <- makevolcanodf(c("treatment", "standard.trained", "standard.yoked"),"standard.trained", "standard.yoked", "../data/STY.csv")
+    CTY <- makevolcanodf(c("treatment", "conflict.trained", "conflict.yoked"),"conflict.trained", "conflict.yoked", "../data/CTY.csv")
+    SYH <- makevolcanodf(c("treatment", "standard.yoked", "home.cage"),"standard.yoked", "home.cage", "../data/SYH.csv")
+    CYH <- makevolcanodf(c("treatment", "conflict.yoked", "home.cage"),"conflict.yoked", "home.cage", "../data/CYH.csv")
+    CTST <- makevolcanodf(c("treatment", "conflict.trained", "standard.trained"),"conflict.trained", "standard.trained", "../data/CTST.csv")
 
 
     volcanoplot <- function(mydata, mycolors, mybreaks){
@@ -926,17 +927,17 @@ Volcanos plots and and gene lists
 
 ![](../figures/02b_RNAseqAll/volcanos-1.png)
 
-    g <- volcanoplot(STY, volcano1, c( "standard-yoked", "standard-trained")) 
+    g <- volcanoplot(STY, volcano1, c( "standard.yoked", "standard.trained")) 
     g
 
 ![](../figures/02b_RNAseqAll/volcanos-2.png)
 
-    h <- volcanoplot(CTY, volcano5, c("conflict-yoked", "conflict-trained")) 
+    h <- volcanoplot(CTY, volcano5, c("conflict.yoked", "conflict.trained")) 
     h
 
 ![](../figures/02b_RNAseqAll/volcanos-3.png)
 
-    i <- volcanoplot(SYH, volcano3, c("home-cage", "standard-yoked")) 
+    i <- volcanoplot(SYH, volcano3, c("home.cage", "standard.yoked")) 
     i
 
 ![](../figures/02b_RNAseqAll/volcanos-4.png)

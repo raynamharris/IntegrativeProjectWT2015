@@ -2,7 +2,7 @@ RNAseq gene expression analysis with DESeq2
 -------------------------------------------
 
 This workflow was modified from the DESeq2 tutorial found at:
-<https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf>
+<a href="https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf" class="uri">https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf</a>
 
 First I load a handful of packages for data wrangling, gene expression
 analysis, data visualization, and statistics.
@@ -71,11 +71,11 @@ I also remove some samples for reasons described within the code blocks.
 
     # rename factors & group all Control animals into 1 group
     colData$APA2 <- colData$APA3 
-    colData$APA2 <- revalue(colData$APA2, c("NA_NA" = "home-cage")) 
-    colData$APA2 <- revalue(colData$APA2, c("Trained_Conflict" = "conflict-trained")) 
-    colData$APA2 <- revalue(colData$APA2, c("Trained_NoConflict" = "standard-trained")) 
-    colData$APA2 <- revalue(colData$APA2, c("Yoked_Conflict" = "conflict-yoked")) 
-    colData$APA2 <- revalue(colData$APA2, c("Yoked_NoConflict" = "standard-yoked")) 
+    colData$APA2 <- revalue(colData$APA2, c("NA_NA" = "home.cage")) 
+    colData$APA2 <- revalue(colData$APA2, c("Trained_Conflict" = "conflict.trained")) 
+    colData$APA2 <- revalue(colData$APA2, c("Trained_NoConflict" = "standard.trained")) 
+    colData$APA2 <- revalue(colData$APA2, c("Yoked_Conflict" = "conflict.yoked")) 
+    colData$APA2 <- revalue(colData$APA2, c("Yoked_NoConflict" = "standard.yoked")) 
     head(colData)
 
     ##              RNAseqID   Mouse Punch      Group   Conflict
@@ -86,19 +86,19 @@ I also remove some samples for reasons described within the code blocks.
     ## 143C-CA1-1 143C-CA1-1 15-143C   CA1 consistent NoConflict
     ## 143D-CA1-3 143D-CA1-3 15-143D   CA1    control NoConflict
     ##                          APA3 Treatment     ID             APA2
-    ## 143A-CA3-1   Trained_Conflict  conflict 15143A conflict-trained
-    ## 143A-DG-1    Trained_Conflict  conflict 15143A conflict-trained
-    ## 143B-CA1-1     Yoked_Conflict   shocked 15143B   conflict-yoked
-    ## 143B-DG-1      Yoked_Conflict   shocked 15143B   conflict-yoked
-    ## 143C-CA1-1 Trained_NoConflict   trained 15143C standard-trained
-    ## 143D-CA1-3   Yoked_NoConflict     yoked 15143D   standard-yoked
+    ## 143A-CA3-1   Trained_Conflict  conflict 15143A conflict.trained
+    ## 143A-DG-1    Trained_Conflict  conflict 15143A conflict.trained
+    ## 143B-CA1-1     Yoked_Conflict   shocked 15143B   conflict.yoked
+    ## 143B-DG-1      Yoked_Conflict   shocked 15143B   conflict.yoked
+    ## 143C-CA1-1 Trained_NoConflict   trained 15143C standard.trained
+    ## 143D-CA1-3   Yoked_NoConflict     yoked 15143D   standard.yoked
 
     # reorder 
     colData <- colData[c(1:5,7:9)]
 
 Now, we are ready to calculate differential gene expression using the
 DESeq package. For simplicity, I will use the standard nameing of
-"countData" and "colData" for the gene counts and gene information,
+“countData” and “colData” for the gene counts and gene information,
 respectively.
 
     colData <- colData %>% arrange(RNAseqID) %>% droplevels() #set the coldata to be the countbygene df
@@ -116,11 +116,11 @@ respectively.
     colData %>% select(APA2,Punch)  %>%  summary()
 
     ##                APA2    Punch   
-    ##  conflict-trained:14   CA1:17  
-    ##  conflict-yoked  :12   CA3:15  
-    ##  home-cage       : 6   DG :18  
-    ##  standard-trained: 9           
-    ##  standard-yoked  : 9
+    ##  conflict.trained:14   CA1:17  
+    ##  conflict.yoked  :12   CA3:15  
+    ##  home.cage       : 6   DG :18  
+    ##  standard.trained: 9           
+    ##  standard.yoked  : 9
 
     dim(countData)
 

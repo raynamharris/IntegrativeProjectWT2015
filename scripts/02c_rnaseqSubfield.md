@@ -51,17 +51,7 @@ Get varience stabilized gene expression for each tissue
 
     ## [1] "DG"
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## estimating size factors
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -69,17 +59,7 @@ Get varience stabilized gene expression for each tissue
 
     ## mean-dispersion relationship
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## final dispersion estimates
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
 
@@ -87,17 +67,7 @@ Get varience stabilized gene expression for each tissue
 
     ## [1] "CA1"
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## estimating size factors
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -105,17 +75,7 @@ Get varience stabilized gene expression for each tissue
 
     ## mean-dispersion relationship
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## final dispersion estimates
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
 
@@ -123,17 +83,7 @@ Get varience stabilized gene expression for each tissue
 
     ## [1] "CA3"
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## estimating size factors
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -141,17 +91,7 @@ Get varience stabilized gene expression for each tissue
 
     ## mean-dispersion relationship
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## final dispersion estimates
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
 
@@ -217,7 +157,7 @@ Consistent versus yoked-consistent
     plot.cons.yokcons <- function(mydds, mytissue, mytitle){
       print(mytissue)
       
-      res <- results(mydds, contrast =c("APA2", "standard-trained", "standard-yoked"),
+      res <- results(mydds, contrast =c("APA2", "standard.trained", "standard.yoked"),
                      independentFiltering = T, alpha = 0.1)
       print(summary(res))
 
@@ -228,9 +168,9 @@ Consistent versus yoked-consistent
       data <- na.omit(data)
       data <- data %>%
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                            yes = "standard-trained", 
+                            yes = "standard.trained", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "standard-yoked", 
+                                        yes = "standard.yoked", 
                                         no = "NS")))
 
 
@@ -244,7 +184,7 @@ Consistent versus yoked-consistent
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
         scale_color_manual(values = volcano1,
                           name = "higher in",
-                          breaks = c("standard-yoked", "NS", "standard-trained"))  + 
+                          breaks = c("standard.yoked", "NS", "standard.trained"))  + 
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
         ylab(paste0("-log10 p-value")) +  
@@ -329,7 +269,7 @@ Confict versus Consistent
       
       print(mytissue)
       
-      res <- results(mydds, contrast =c("APA2", "conflict-trained", "standard-trained"),
+      res <- results(mydds, contrast =c("APA2", "conflict.trained", "standard.trained"),
                      independentFiltering = T, alpha = 0.1)
       print(summary(res))
 
@@ -341,9 +281,9 @@ Confict versus Consistent
       
       data <- data %>%
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                            yes = "conflict-trained", 
+                            yes = "conflict.trained", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "standard-trained", 
+                                        yes = "standard.trained", 
                                         no = "NS")))
       
       write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""), row.names = F)
@@ -353,7 +293,7 @@ Confict versus Consistent
         theme_cowplot(font_size = 7, line_size = 0.25) +
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
         #scale_color_manual(values = volcano2,
-        #                   breaks = c("standard-trained", "NS", "conflict-trained"),
+        #                   breaks = c("standard.trained", "NS", "conflict.trained"),
         #                  name = "higher in")  + 
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
@@ -433,7 +373,7 @@ Yoked confict versus yoked consistent
       
       print(mytissue)
       
-      res <- results(mydds, contrast =c("APA2", "conflict-yoked", "standard-yoked"),
+      res <- results(mydds, contrast =c("APA2", "conflict.yoked", "standard.yoked"),
                      independentFiltering = T, alpha = 0.1)
       print(summary(res))
 
@@ -444,12 +384,12 @@ Yoked confict versus yoked consistent
       data <- na.omit(data)
       data <- data %>%
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                            yes = "conflict-yoked", 
+                            yes = "conflict.yoked", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "standard-yoked", 
+                                        yes = "standard.yoked", 
                                         no = "NS")))
       
-      data$direction <- factor(data$direction, levels = c("standard-yoked", "NS", "conflict-yoked"))
+      data$direction <- factor(data$direction, levels = c("standard.yoked", "NS", "conflict.yoked"))
       
       write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""), row.names = F)
       
@@ -629,10 +569,10 @@ What genes overlap within cetain comparisons?
     dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
     dds <- DESeq(dds) # Differential expression analysis
 
-    A <- listofDEGs("standard-trained","standard-yoked")
-    B <- listofDEGs("conflict-trained","standard-trained")
-    C <- listofDEGs("conflict-trained","conflict-yoked")
-    D <- listofDEGs("conflict-yoked","standard-yoked")
+    A <- listofDEGs("standard.trained","standard.yoked")
+    B <- listofDEGs("conflict.trained","standard.trained")
+    C <- listofDEGs("conflict.trained","conflict.yoked")
+    D <- listofDEGs("conflict.yoked","standard.yoked")
 
 
     all <- rbind(A,B,C,D)
@@ -642,17 +582,7 @@ What genes overlap within cetain comparisons?
 
     ## [1] "CA1"
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## estimating size factors
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -660,33 +590,13 @@ What genes overlap within cetain comparisons?
 
     ## mean-dispersion relationship
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## final dispersion estimates
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
 
     ## [1] "CA3"
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## estimating size factors
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -694,33 +604,13 @@ What genes overlap within cetain comparisons?
 
     ## mean-dispersion relationship
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## final dispersion estimates
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
 
     ## [1] "DG"
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## estimating size factors
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -728,16 +618,6 @@ What genes overlap within cetain comparisons?
 
     ## mean-dispersion relationship
 
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
-
     ## final dispersion estimates
-
-    ##   Note: levels of factors in the design contain characters other than
-    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
-    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
-    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
