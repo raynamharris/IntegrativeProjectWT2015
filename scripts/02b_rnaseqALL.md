@@ -658,11 +658,11 @@ lots of useful info to a df for downstream dataviz.
 
 
     DEGes <- as.matrix(DEGes) 
-    paletteLength <- 30
+    paletteLength <- 80
     myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
                   seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
 
-    pheatmap(DEGes, show_colnames=F, show_rownames = T,
+    pheatmap(DEGes, show_colnames=F, show_rownames = F,
              annotation_col=df, 
              annotation_colors = pheatmapcolors,
              treeheight_row = 0, treeheight_col = 25,
@@ -671,7 +671,7 @@ lots of useful info to a df for downstream dataviz.
              annotation_names_row = FALSE, annotation_names_col = FALSE,
              fontsize = 8, 
              border_color = NA ,
-             color = viridis(30),
+             color = viridis(80),
              cellwidth = 6, 
              clustering_method="average",
              breaks=myBreaks,
@@ -689,7 +689,7 @@ lots of useful info to a df for downstream dataviz.
              treeheight_row = 10, treeheight_col = 10,
              fontsize = 6, 
              border_color = NA ,
-             color = viridis(30),
+             color = viridis(80),
              height = 2.5, 
              width = 3.3,
              clustering_method="average",
@@ -1142,6 +1142,10 @@ Volcanos plots and and gene lists
 
     ## quartz_off_screen 
     ##                 2
+
+    plot_grid(d, g, i,nrow = 1)
+
+![](../figures/02b_RNAseqAll/volcanos-7.png)
 
 plot single gene counts
 -----------------------
@@ -1612,3 +1616,19 @@ Observed versus expected ration of DEGs
     plot_grid(e, mylegend, rel_widths   = c(.9, 0.1), ncol = 2)
 
 ![](../figures/02b_RNAseqAll/plottotalDEGs-5.png)
+
+    colData.DG <- subsetcolData(colData,  "DG")
+    colData.CA3 <- subsetcolData(colData,  "CA3")
+    colData.CA1 <- subsetcolData(colData,  "CA1")
+
+    plotcorrelationheatmaps(dds.DG, colData.DG ,"DG correlations")
+
+![](../figures/02b_RNAseqAll/correlationheatmaps-1.png)
+
+    plotcorrelationheatmaps(dds.CA3, colData.CA3 ,"CA3 correlations")
+
+![](../figures/02b_RNAseqAll/correlationheatmaps-2.png)
+
+    plotcorrelationheatmaps(dds.CA1, colData.CA1 ,"CA1 correlations")
+
+![](../figures/02b_RNAseqAll/correlationheatmaps-3.png)

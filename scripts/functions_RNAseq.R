@@ -204,3 +204,47 @@ plottotalDEGs <- function(myDEGS, mysubtitle){
   print(totalDEGS)
   plot(allcontrasts)
 }
+
+
+## new correlation heatmap
+
+# subset col for heatmap
+subsetcolData <- function(a.colData, eachgroup){
+  
+  # subset to look within one tissue in one sex
+  colData <- a.colData %>%
+    dplyr::filter(subfield == eachgroup) %>%
+    droplevels()
+  row.names(colData) <- colData$RNAseqID
+  return(colData)
+}
+
+plotcorrelationheatmaps <- function(mydds, mycoldata, mysubtitle){
+  dds <- mydds
+  vsd <- vst(dds, blind=FALSE) # variance stabilized 
+  
+  colnames(vsd) = mycoldata$treatment # set col names to group name
+  
+  vsdm <- assay(vsd) # create matrix
+  
+  vsdmmean <-sapply(unique(colnames(vsdm)), function(i)
+    rowMeans(vsdm[,colnames(vsdm) == i]))
+  
+  myannotations = data.frame(
+    treatment = factor(c("home.cage","standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained"))
+  )
+
+  myBreaks <-seq(0.8, 1.0, length.out = 10)
+
+  pheatmap(cor(vsdmmean),
+           #annotation_row = myannotations,
+           #annotation_col = myannotations,
+           #annotation_colors = myannotationscolors,
+           annotation_names_row = F,
+           main= mysubtitle,
+           color = inferno(10),
+           show_rowname= F, show_colnames = F,
+           breaks = myBreaks
+  )
+}
+
