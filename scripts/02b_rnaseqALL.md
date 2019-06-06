@@ -1632,3 +1632,64 @@ Observed versus expected ration of DEGs
     plotcorrelationheatmaps(dds.CA1, colData.CA1 ,"CA1 correlations")
 
 ![](../figures/02b_RNAseqAll/correlationheatmaps-3.png)
+
+    countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+
+    colData <- read.csv("../data/02a_colData.csv", header = T)
+    colData <- colData %>% dplyr::rename(treatment = APA2, subfield = Punch)
+    colData$subtreat <- as.factor(paste(colData$subfield, colData$treatment, sep = ".") ) 
+    colData %>% select(subtreat)  %>%  summary()
+
+    ##                  subtreat 
+    ##  CA1.conflict.yoked  : 5  
+    ##  CA3.conflict.trained: 5  
+    ##  DG.conflict.trained : 5  
+    ##  CA1.conflict.trained: 4  
+    ##  CA1.standard.trained: 4  
+    ##  DG.conflict.yoked   : 4  
+    ##  (Other)             :23
+
+    dds <- DESeqDataSetFromMatrix(countData = countData,
+                                  colData = colData,
+                                  design = ~ subtreat)
+
+    dds # view the DESeq object - note numnber of genes
+
+    ## class: DESeqDataSet 
+    ## dim: 22485 50 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(0):
+    ## colnames(50): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
+    ## colData names(9): RNAseqID Mouse ... treatment subtreat
+
+    dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+    dds # view number of genes afternormalization and the number of samples
+
+    ## class: DESeqDataSet 
+    ## dim: 17975 50 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(17975): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(0):
+    ## colnames(50): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
+    ## colData names(9): RNAseqID Mouse ... treatment subtreat
+
+    dds <- DESeq(dds) # Differential expression analysis
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
+    plotcorrelationheatmaps2(dds, colData ,"Correlations across subfield.treatment")
+
+![](../figures/02b_RNAseqAll/newcorplot-1.png)

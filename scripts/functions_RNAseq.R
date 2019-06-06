@@ -234,7 +234,7 @@ plotcorrelationheatmaps <- function(mydds, mycoldata, mysubtitle){
     treatment = factor(c("home.cage","standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained"))
   )
 
-  myBreaks <-seq(0.8, 1.0, length.out = 10)
+  #myBreaks <-seq(0.8, 1.0, length.out = 10)
 
   pheatmap(cor(vsdmmean),
            #annotation_row = myannotations,
@@ -245,6 +245,25 @@ plotcorrelationheatmaps <- function(mydds, mycoldata, mysubtitle){
            color = inferno(10),
            show_rowname= F, show_colnames = F,
            breaks = myBreaks
+  )
+}
+
+plotcorrelationheatmaps2 <- function(mydds, mycoldata, mysubtitle){
+  dds <- mydds
+  vsd <- vst(dds, blind=FALSE) # variance stabilized 
+  
+  colnames(vsd) = mycoldata$subtreat # set col names to group name
+  
+  vsdm <- assay(vsd) # create matrix
+  
+  vsdmmean <-sapply(unique(colnames(vsdm)), function(i)
+    rowMeans(vsdm[,colnames(vsdm) == i]))
+  
+  pheatmap(cor(vsdmmean),
+           annotation_names_row = F,
+           main= mysubtitle,
+           color = inferno(10),
+           show_rowname= T, show_colnames = T
   )
 }
 
