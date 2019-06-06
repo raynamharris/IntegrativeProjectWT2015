@@ -1084,7 +1084,7 @@ Volcanos plots and and gene lists
       myvolcano <- mydata %>%
         dplyr::filter(direction != "NS") %>%
         ggplot(aes(x = lfc, y = logp)) + 
-      geom_point(aes(color = direction), size = 1, alpha = 0.5, na.rm = T) + 
+      geom_point(aes(color = direction), size = 2, alpha = 0.5, na.rm = T) + 
       scale_color_manual(values = mycolors,
                          breaks = mybreaks,
                          name = "higher in") + 
@@ -1143,7 +1143,7 @@ Volcanos plots and and gene lists
     ## quartz_off_screen 
     ##                 2
 
-    plot_grid(d, g, i,nrow = 1)
+    plot_grid(g, i,nrow = 1)
 
 ![](../figures/02b_RNAseqAll/volcanos-7.png)
 

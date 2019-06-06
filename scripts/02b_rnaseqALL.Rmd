@@ -349,7 +349,7 @@ volcanoplot <- function(mydata, mycolors, mybreaks){
   myvolcano <- mydata %>%
     dplyr::filter(direction != "NS") %>%
     ggplot(aes(x = lfc, y = logp)) + 
-  geom_point(aes(color = direction), size = 1, alpha = 0.5, na.rm = T) + 
+  geom_point(aes(color = direction), size = 2, alpha = 0.5, na.rm = T) + 
   scale_color_manual(values = mycolors,
                      breaks = mybreaks,
                      name = "higher in") + 
@@ -392,7 +392,7 @@ pdf(file="../figures/02b_RNAseqALL/myvolcanoplots.pdf", width=5, height=2)
 plot(myvolcanoplots)
 dev.off()
 
-plot_grid(d, g, i,nrow = 1)
+plot_grid(g, i,nrow = 1)
 
 ```
 
