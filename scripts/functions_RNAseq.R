@@ -103,3 +103,104 @@ plotPCwrapnoe <- function(df, xcol, ycol, aescolor, colorname, colorvalues){
     theme(legend.position="none") +
     facet_wrap(~wrap)
 }
+
+
+## plot DEGs 
+
+subsetDESeq <- function(eachgroup){
+  
+  # subset to look within one tissue in one sex
+  colData <- colData %>%
+    dplyr::filter(subfield == eachgroup) %>%
+    droplevels()
+  row.names(colData) <- colData$RNAseqID
+  print(colData)
+  
+  # which counts to save
+  savecols <- as.character(colData$RNAseqID) 
+  savecols <- as.vector(savecols) 
+  
+  # save counts that match colData
+  countData <- countData %>% dplyr::select(one_of(savecols)) 
+  
+  # check that row and col lenghts are equal
+  print(ncol(countData) == nrow(colData))
+  
+  dds <- DESeqDataSetFromMatrix(countData = countData,
+                                colData = colData,
+                                design = ~ treatment )
+  
+  print(dds)
+  dds <- dds[rowSums(counts(dds) > 1) >= 10]  # filter more than sample with less 0 counts
+  print(dim(dds))
+  
+  dds <- DESeq(dds) # Differential expression analysis
+  return(dds)
+}
+
+numDEGs <- function(dds, group1, group2){
+  res <- results(dds, contrast = c("treatment", group1, group2), independentFiltering = T)
+  sumpadj <- sum(res$padj < 0.01, na.rm = TRUE)
+  return(sumpadj)
+}
+
+
+returntotalDEGs <- function(dds){
+  
+  colData <- colData  
+  group1 <- levels(colData$treatment)
+  
+  a <- group1
+  b <- group1
+  
+  # comapre all contrasts, save to datafrmes
+  totalDEGS=data.frame()
+  for (i in a){
+    for (j in b){
+      if (i != j) {
+        k <- paste(i,j, sep = ".") #assigns usique rownames
+        print(k)
+        totalDEGS[k,1]<-i               
+        totalDEGS[k,2]<-j
+        totalDEGS[k,3]<- numDEGs(dds, i,j) #caluculates number of DEGs
+      }
+    }
+    b <- b[-1]  # drop 1st element of second string to not recalculate DEGs
+  }
+  
+  print(totalDEGS)  
+  return(totalDEGS)
+  
+}
+
+plottotalDEGs <- function(myDEGS, mysubtitle){  
+  totalDEGS <- myDEGS
+  totalDEGS$V2 <- factor(totalDEGS$V2, levels =  c("home.cage",
+                                                   "standard.yoked" ,"standard.trained", 
+                                                   "conflict.yoked", "conflict.trained"))
+  
+  totalDEGS$V1 <- factor(totalDEGS$V1, levels =  c("home.cage",
+                                                   "standard.yoked" ,"standard.trained", 
+                                                   "conflict.yoked", "conflict.trained"))
+  
+  totalDEGS <- totalDEGS %>% dplyr::na_if(0)
+  
+  print(str(totalDEGS))
+  
+  
+  allcontrasts <- totalDEGS %>%
+    ggplot( aes(V1, V2)) +
+    geom_tile(aes(fill = V3)) +
+    theme_minimal(base_size = 8) + 
+    geom_text(aes(label = round(V3, 1)), color = "black")+
+    scale_fill_viridis(na.value="#bdbdbd", 
+                      limits = c(0,602),
+                       option = "C") +
+    xlab(NULL) + ylab(NULL) +
+    labs(fill = "# of DEGs",
+         title = mysubtitle, subtitle = "  ", caption = "  ") +
+    theme(axis.text.x = element_text(angle = 45)) +
+    coord_flip()
+  print(totalDEGS)
+  plot(allcontrasts)
+}

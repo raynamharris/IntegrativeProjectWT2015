@@ -1227,3 +1227,388 @@ Observed versus expected ration of DEGs
     prop.table(c(1, 0))
 
     ## [1] 1 0
+
+    colData$treatment <- factor(colData$treatment , levels = c("home.cage",
+                                                               "standard.yoked", "standard.trained",
+                                                               "conflict.yoked", "conflict.trained"))
+
+    DEGsall <- returntotalDEGs(dds)
+
+    ## [1] "home.cage.standard.yoked"
+    ## [1] "home.cage.standard.trained"
+    ## [1] "home.cage.conflict.yoked"
+    ## [1] "home.cage.conflict.trained"
+    ## [1] "standard.yoked.standard.trained"
+    ## [1] "standard.yoked.conflict.yoked"
+    ## [1] "standard.yoked.conflict.trained"
+    ## [1] "standard.trained.conflict.yoked"
+    ## [1] "standard.trained.conflict.trained"
+    ## [1] "conflict.yoked.conflict.trained"
+    ##                                                 V1               V2  V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 410
+    ## home.cage.standard.trained               home.cage standard.trained 344
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 367
+    ## home.cage.conflict.trained               home.cage conflict.trained 601
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  39
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   5
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  14
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  23
+    ## standard.trained.conflict.trained standard.trained conflict.trained   1
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   5
+
+    d <- plottotalDEGs(DEGsall, "Total number of differentially expressed genes")
+
+    ## 'data.frame':    10 obs. of  3 variables:
+    ##  $ V1: Factor w/ 5 levels "home.cage","standard.yoked",..: 1 1 1 1 2 2 2 3 3 4
+    ##  $ V2: Factor w/ 5 levels "home.cage","standard.yoked",..: 2 3 4 5 3 4 5 4 5 5
+    ##  $ V3: int  410 344 367 601 39 5 14 23 1 5
+    ## NULL
+    ##                                                 V1               V2  V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 410
+    ## home.cage.standard.trained               home.cage standard.trained 344
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 367
+    ## home.cage.conflict.trained               home.cage conflict.trained 601
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  39
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   5
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  14
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  23
+    ## standard.trained.conflict.trained standard.trained conflict.trained   1
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   5
+
+![](../figures/02b_RNAseqAll/plottotalDEGs-1.png)
+
+    dds.DG <- subsetDESeq("DG")
+
+    ##            RNAseqID   Mouse subfield      Group   Conflict Treatment
+    ## 143A-DG-1 143A-DG-1 15-143A       DG   conflict   Conflict  conflict
+    ## 143B-DG-1 143B-DG-1 15-143B       DG    control   Conflict   shocked
+    ## 143D-DG-3 143D-DG-3 15-143D       DG    control NoConflict     yoked
+    ## 144A-DG-2 144A-DG-2 15-144A       DG   conflict   Conflict  conflict
+    ## 144C-DG-2 144C-DG-2 15-144C       DG consistent NoConflict   trained
+    ## 144D-DG-2 144D-DG-2 15-144D       DG    control NoConflict     yoked
+    ## 145A-DG-2 145A-DG-2 15-145A       DG   conflict   Conflict  conflict
+    ## 145B-DG-1 145B-DG-1 15-145B       DG    control   Conflict   shocked
+    ## 146A-DG-2 146A-DG-2 15-146A       DG   conflict   Conflict  conflict
+    ## 146B-DG-2 146B-DG-2 15-146B       DG    control   Conflict   shocked
+    ## 146C-DG-4 146C-DG-4 15-146C       DG consistent NoConflict   trained
+    ## 146D-DG-3 146D-DG-3 15-146D       DG    control NoConflict     yoked
+    ## 147-DG-4   147-DG-4  15-147       DG   homecage       <NA>  homecage
+    ## 147C-DG-3 147C-DG-3 15-147C       DG consistent NoConflict   trained
+    ## 147D-DG-1 147D-DG-1 15-147D       DG    control NoConflict     yoked
+    ## 148-DG-2   148-DG-2  15-148       DG   homecage       <NA>  homecage
+    ## 148A-DG-3 148A-DG-3 15-148A       DG   conflict   Conflict  conflict
+    ## 148B-DG-4 148B-DG-4 15-148B       DG    control   Conflict   shocked
+    ##               ID        treatment
+    ## 143A-DG-1 15143A conflict.trained
+    ## 143B-DG-1 15143B   conflict.yoked
+    ## 143D-DG-3 15143D   standard.yoked
+    ## 144A-DG-2 15144A conflict.trained
+    ## 144C-DG-2 15144C standard.trained
+    ## 144D-DG-2 15144D   standard.yoked
+    ## 145A-DG-2 15145A conflict.trained
+    ## 145B-DG-1 15145B   conflict.yoked
+    ## 146A-DG-2 15146A conflict.trained
+    ## 146B-DG-2 15146B   conflict.yoked
+    ## 146C-DG-4 15146C standard.trained
+    ## 146D-DG-3 15146D   standard.yoked
+    ## 147-DG-4   15147        home.cage
+    ## 147C-DG-3 15147C standard.trained
+    ## 147D-DG-1 15147D   standard.yoked
+    ## 148-DG-2   15148        home.cage
+    ## 148A-DG-3 15148A conflict.trained
+    ## 148B-DG-4 15148B   conflict.yoked
+    ## [1] TRUE
+    ## class: DESeqDataSet 
+    ## dim: 22485 18 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(0):
+    ## colnames(18): 143A-DG-1 143B-DG-1 ... 148A-DG-3 148B-DG-4
+    ## colData names(8): RNAseqID Mouse ... ID treatment
+    ## [1] 12927    18
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
+    dds.CA3 <- subsetDESeq("CA3")
+
+    ##              RNAseqID   Mouse subfield      Group   Conflict Treatment
+    ## 143A-CA3-1 143A-CA3-1 15-143A      CA3   conflict   Conflict  conflict
+    ## 144A-CA3-2 144A-CA3-2 15-144A      CA3   conflict   Conflict  conflict
+    ## 144B-CA3-1 144B-CA3-1 15-144B      CA3    control   Conflict   shocked
+    ## 144C-CA3-2 144C-CA3-2 15-144C      CA3 consistent NoConflict   trained
+    ## 144D-CA3-2 144D-CA3-2 15-144D      CA3    control NoConflict     yoked
+    ## 145A-CA3-2 145A-CA3-2 15-145A      CA3   conflict   Conflict  conflict
+    ## 146A-CA3-2 146A-CA3-2 15-146A      CA3   conflict   Conflict  conflict
+    ## 146B-CA3-2 146B-CA3-2 15-146B      CA3    control   Conflict   shocked
+    ## 146D-CA3-3 146D-CA3-3 15-146D      CA3    control NoConflict     yoked
+    ## 147-CA3-4   147-CA3-4  15-147      CA3   homecage       <NA>  homecage
+    ## 147C-CA3-3 147C-CA3-3 15-147C      CA3 consistent NoConflict   trained
+    ## 147D-CA3-1 147D-CA3-1 15-147D      CA3    control NoConflict     yoked
+    ## 148-CA3-2   148-CA3-2  15-148      CA3   homecage       <NA>  homecage
+    ## 148A-CA3-3 148A-CA3-3 15-148A      CA3   conflict   Conflict  conflict
+    ## 148B-CA3-4 148B-CA3-4 15-148B      CA3    control   Conflict   shocked
+    ##                ID        treatment
+    ## 143A-CA3-1 15143A conflict.trained
+    ## 144A-CA3-2 15144A conflict.trained
+    ## 144B-CA3-1 15144B   conflict.yoked
+    ## 144C-CA3-2 15144C standard.trained
+    ## 144D-CA3-2 15144D   standard.yoked
+    ## 145A-CA3-2 15145A conflict.trained
+    ## 146A-CA3-2 15146A conflict.trained
+    ## 146B-CA3-2 15146B   conflict.yoked
+    ## 146D-CA3-3 15146D   standard.yoked
+    ## 147-CA3-4   15147        home.cage
+    ## 147C-CA3-3 15147C standard.trained
+    ## 147D-CA3-1 15147D   standard.yoked
+    ## 148-CA3-2   15148        home.cage
+    ## 148A-CA3-3 15148A conflict.trained
+    ## 148B-CA3-4 15148B   conflict.yoked
+    ## [1] TRUE
+    ## class: DESeqDataSet 
+    ## dim: 22485 15 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(0):
+    ## colnames(15): 143A-CA3-1 144A-CA3-2 ... 148A-CA3-3 148B-CA3-4
+    ## colData names(8): RNAseqID Mouse ... ID treatment
+    ## [1] 12165    15
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
+    dds.CA1 <- subsetDESeq("CA1")
+
+    ##              RNAseqID   Mouse subfield      Group   Conflict Treatment
+    ## 143B-CA1-1 143B-CA1-1 15-143B      CA1    control   Conflict   shocked
+    ## 143C-CA1-1 143C-CA1-1 15-143C      CA1 consistent NoConflict   trained
+    ## 143D-CA1-3 143D-CA1-3 15-143D      CA1    control NoConflict     yoked
+    ## 144A-CA1-2 144A-CA1-2 15-144A      CA1   conflict   Conflict  conflict
+    ## 144B-CA1-1 144B-CA1-1 15-144B      CA1    control   Conflict   shocked
+    ## 144C-CA1-2 144C-CA1-2 15-144C      CA1 consistent NoConflict   trained
+    ## 145A-CA1-2 145A-CA1-2 15-145A      CA1   conflict   Conflict  conflict
+    ## 145B-CA1-1 145B-CA1-1 15-145B      CA1    control   Conflict   shocked
+    ## 146A-CA1-2 146A-CA1-2 15-146A      CA1   conflict   Conflict  conflict
+    ## 146B-CA1-2 146B-CA1-2 15-146B      CA1    control   Conflict   shocked
+    ## 146C-CA1-4 146C-CA1-4 15-146C      CA1 consistent NoConflict   trained
+    ## 146D-CA1-3 146D-CA1-3 15-146D      CA1    control NoConflict     yoked
+    ## 147-CA1-4   147-CA1-4  15-147      CA1   homecage       <NA>  homecage
+    ## 147C-CA1-3 147C-CA1-3 15-147C      CA1 consistent NoConflict   trained
+    ## 148-CA1-2   148-CA1-2  15-148      CA1   homecage       <NA>  homecage
+    ## 148A-CA1-3 148A-CA1-3 15-148A      CA1   conflict   Conflict  conflict
+    ## 148B-CA1-4 148B-CA1-4 15-148B      CA1    control   Conflict   shocked
+    ##                ID        treatment
+    ## 143B-CA1-1 15143B   conflict.yoked
+    ## 143C-CA1-1 15143C standard.trained
+    ## 143D-CA1-3 15143D   standard.yoked
+    ## 144A-CA1-2 15144A conflict.trained
+    ## 144B-CA1-1 15144B   conflict.yoked
+    ## 144C-CA1-2 15144C standard.trained
+    ## 145A-CA1-2 15145A conflict.trained
+    ## 145B-CA1-1 15145B   conflict.yoked
+    ## 146A-CA1-2 15146A conflict.trained
+    ## 146B-CA1-2 15146B   conflict.yoked
+    ## 146C-CA1-4 15146C standard.trained
+    ## 146D-CA1-3 15146D   standard.yoked
+    ## 147-CA1-4   15147        home.cage
+    ## 147C-CA1-3 15147C standard.trained
+    ## 148-CA1-2   15148        home.cage
+    ## 148A-CA1-3 15148A conflict.trained
+    ## 148B-CA1-4 15148B   conflict.yoked
+    ## [1] TRUE
+    ## class: DESeqDataSet 
+    ## dim: 22485 17 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(0):
+    ## colnames(17): 143B-CA1-1 143C-CA1-1 ... 148A-CA1-3 148B-CA1-4
+    ## colData names(8): RNAseqID Mouse ... ID treatment
+    ## [1] 12421    17
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates
+
+    ## fitting model and testing
+
+    dds.DG.total <- returntotalDEGs(dds.DG)
+
+    ## [1] "home.cage.standard.yoked"
+    ## [1] "home.cage.standard.trained"
+    ## [1] "home.cage.conflict.yoked"
+    ## [1] "home.cage.conflict.trained"
+    ## [1] "standard.yoked.standard.trained"
+    ## [1] "standard.yoked.conflict.yoked"
+    ## [1] "standard.yoked.conflict.trained"
+    ## [1] "standard.trained.conflict.yoked"
+    ## [1] "standard.trained.conflict.trained"
+    ## [1] "conflict.yoked.conflict.trained"
+    ##                                                 V1               V2  V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 350
+    ## home.cage.standard.trained               home.cage standard.trained 277
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 316
+    ## home.cage.conflict.trained               home.cage conflict.trained 483
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  31
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   2
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  12
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked   3
+    ## standard.trained.conflict.trained standard.trained conflict.trained   0
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   0
+
+    dds.CA3.total <- returntotalDEGs(dds.CA3)
+
+    ## [1] "home.cage.standard.yoked"
+    ## [1] "home.cage.standard.trained"
+    ## [1] "home.cage.conflict.yoked"
+    ## [1] "home.cage.conflict.trained"
+    ## [1] "standard.yoked.standard.trained"
+    ## [1] "standard.yoked.conflict.yoked"
+    ## [1] "standard.yoked.conflict.trained"
+    ## [1] "standard.trained.conflict.yoked"
+    ## [1] "standard.trained.conflict.trained"
+    ## [1] "conflict.yoked.conflict.trained"
+    ##                                                 V1               V2 V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked  1
+    ## home.cage.standard.trained               home.cage standard.trained 13
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked  0
+    ## home.cage.conflict.trained               home.cage conflict.trained  2
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  1
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked  0
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  1
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  0
+    ## standard.trained.conflict.trained standard.trained conflict.trained  0
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained  0
+
+    dds.CA1.total <- returntotalDEGs(dds.CA1)
+
+    ## [1] "home.cage.standard.yoked"
+    ## [1] "home.cage.standard.trained"
+    ## [1] "home.cage.conflict.yoked"
+    ## [1] "home.cage.conflict.trained"
+    ## [1] "standard.yoked.standard.trained"
+    ## [1] "standard.yoked.conflict.yoked"
+    ## [1] "standard.yoked.conflict.trained"
+    ## [1] "standard.trained.conflict.yoked"
+    ## [1] "standard.trained.conflict.trained"
+    ## [1] "conflict.yoked.conflict.trained"
+    ##                                                 V1               V2  V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 124
+    ## home.cage.standard.trained               home.cage standard.trained  25
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked  36
+    ## home.cage.conflict.trained               home.cage conflict.trained  36
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  11
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked  11
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained   0
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked   0
+    ## standard.trained.conflict.trained standard.trained conflict.trained   0
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   2
+
+    a <- plottotalDEGs(DEGsall, "DG")
+
+    ## 'data.frame':    10 obs. of  3 variables:
+    ##  $ V1: Factor w/ 5 levels "home.cage","standard.yoked",..: 1 1 1 1 2 2 2 3 3 4
+    ##  $ V2: Factor w/ 5 levels "home.cage","standard.yoked",..: 2 3 4 5 3 4 5 4 5 5
+    ##  $ V3: int  410 344 367 601 39 5 14 23 1 5
+    ## NULL
+    ##                                                 V1               V2  V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 410
+    ## home.cage.standard.trained               home.cage standard.trained 344
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 367
+    ## home.cage.conflict.trained               home.cage conflict.trained 601
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  39
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   5
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  14
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  23
+    ## standard.trained.conflict.trained standard.trained conflict.trained   1
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   5
+
+![](../figures/02b_RNAseqAll/plottotalDEGs-2.png)
+
+    b <- plottotalDEGs(dds.CA3.total, "CA3")
+
+    ## 'data.frame':    10 obs. of  3 variables:
+    ##  $ V1: Factor w/ 5 levels "home.cage","standard.yoked",..: 1 1 1 1 2 2 2 3 3 4
+    ##  $ V2: Factor w/ 5 levels "home.cage","standard.yoked",..: 2 3 4 5 3 4 5 4 5 5
+    ##  $ V3: int  1 13 NA 2 1 NA 1 NA NA NA
+    ## NULL
+    ##                                                 V1               V2 V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked  1
+    ## home.cage.standard.trained               home.cage standard.trained 13
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked NA
+    ## home.cage.conflict.trained               home.cage conflict.trained  2
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  1
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked NA
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  1
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked NA
+    ## standard.trained.conflict.trained standard.trained conflict.trained NA
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained NA
+
+    ## Warning: Removed 5 rows containing missing values (geom_text).
+
+![](../figures/02b_RNAseqAll/plottotalDEGs-3.png)
+
+    c <-  plottotalDEGs(dds.CA1.total, "CA1")
+
+    ## 'data.frame':    10 obs. of  3 variables:
+    ##  $ V1: Factor w/ 5 levels "home.cage","standard.yoked",..: 1 1 1 1 2 2 2 3 3 4
+    ##  $ V2: Factor w/ 5 levels "home.cage","standard.yoked",..: 2 3 4 5 3 4 5 4 5 5
+    ##  $ V3: int  124 25 36 36 11 11 NA NA NA 2
+    ## NULL
+    ##                                                 V1               V2  V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 124
+    ## home.cage.standard.trained               home.cage standard.trained  25
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked  36
+    ## home.cage.conflict.trained               home.cage conflict.trained  36
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  11
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked  11
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  NA
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  NA
+    ## standard.trained.conflict.trained standard.trained conflict.trained  NA
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   2
+
+    ## Warning: Removed 3 rows containing missing values (geom_text).
+
+![](../figures/02b_RNAseqAll/plottotalDEGs-4.png)
+
+    mylegend <- get_legend(c)
+
+    ## Warning: Removed 3 rows containing missing values (geom_text).
+
+    e <- plot_grid(d + theme(legend.position = "none"), a + theme(legend.position = "none"),
+              b+ theme(legend.position = "none"),c + theme(legend.position = "none"),
+              nrow = 2)
+
+    ## Warning: Removed 5 rows containing missing values (geom_text).
+
+    ## Warning: Removed 3 rows containing missing values (geom_text).
+
+    plot_grid(e, mylegend, rel_widths   = c(.9, 0.1), ncol = 2)
+
+![](../figures/02b_RNAseqAll/plottotalDEGs-5.png)

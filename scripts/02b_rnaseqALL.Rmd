@@ -422,3 +422,34 @@ chisq.test(c(1,	0), p = c(0.5, 0.5))$expected
 chisq.test(c(1,	0), p = c(0.5, 0.5))
 prop.table(c(1,	0))
 ```
+
+```{r plottotalDEGs}
+colData$treatment <- factor(colData$treatment , levels = c("home.cage",
+                                                           "standard.yoked", "standard.trained",
+                                                           "conflict.yoked", "conflict.trained"))
+
+DEGsall <- returntotalDEGs(dds)
+d <- plottotalDEGs(DEGsall, "Total number of differentially expressed genes")
+
+dds.DG <- subsetDESeq("DG")
+dds.CA3 <- subsetDESeq("CA3")
+dds.CA1 <- subsetDESeq("CA1")
+
+
+dds.DG.total <- returntotalDEGs(dds.DG)
+dds.CA3.total <- returntotalDEGs(dds.CA3)
+dds.CA1.total <- returntotalDEGs(dds.CA1)
+
+a <- plottotalDEGs(DEGsall, "DG")
+b <- plottotalDEGs(dds.CA3.total, "CA3")
+c <-  plottotalDEGs(dds.CA1.total, "CA1")
+
+mylegend <- get_legend(c)
+
+e <- plot_grid(d + theme(legend.position = "none"), a + theme(legend.position = "none"),
+          b+ theme(legend.position = "none"),c + theme(legend.position = "none"),
+          nrow = 2)
+
+plot_grid(e, mylegend, rel_widths   = c(.9, 0.1), ncol = 2)
+
+```
