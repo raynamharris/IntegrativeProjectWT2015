@@ -150,6 +150,30 @@ The two two catagorical variables are
 
     write.csv(assay(vsd), file = "../data/02b_vsd.csv", row.names = T)
 
+check for outliers
+------------------
+
+    boxplot(log10(assays(dds)[["cooks"]]), range=0, las=2)
+
+![](../figures/02b_RNAseqAll/unnamed-chunk-1-1.png)
+
+    plotDispEsts(dds)
+
+![](../figures/02b_RNAseqAll/unnamed-chunk-1-2.png)
+
+    sampleDists <- dist(t(assay(vsd)))
+    library("RColorBrewer")
+    sampleDistMatrix <- as.matrix(sampleDists)
+    rownames(sampleDistMatrix) <- paste(vsd$condition, vsd$type, sep="-")
+    colnames(sampleDistMatrix) <- NULL
+    colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+    pheatmap(sampleDistMatrix,
+             clustering_distance_rows=sampleDists,
+             clustering_distance_cols=sampleDists,
+             col=colors)
+
+![](../figures/02b_RNAseqAll/unnamed-chunk-1-3.png)
+
 Summary 2 way contrasts
 -----------------------
 
@@ -785,71 +809,232 @@ Principle component analysis
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=subfield)) +
-        geom_point(size=2, aes(shape=treatment), alpha = 0.8) +
+    PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
+        geom_point(size=3, aes(shape=treatment), alpha = 0.8) +
         xlab(paste0("PC1: ", percentVar[1],"%")) +
         ylab(paste0("PC2: ", percentVar[2],"%")) +
-        #stat_ellipse(level = 0.95, (aes(color=subfield)),size=0.25) + 
         scale_colour_manual(values=c(colorvalsubfield))+ 
-        theme_cowplot(font_size = 7, line_size = 0.25)  +
-        #theme(legend.title=element_blank()) +
-        scale_x_continuous(limits=c(-15, 25)) +
-          scale_y_continuous(limits=c(-15, 15)) +
-        scale_shape_manual(values=c(2, 1, 16, 0, 15), aes(color=colorvalsubfield))
+       theme_bw(base_size = 12)  +
+          theme(legend.title=element_blank()) +
+        scale_shape_manual(values=c(2, 1, 16, 0, 15), aes(color=colorvalsubfield)) +
+      labs(color = "subfield", shape = "treatment")
     PCA12
 
 ![](../figures/02b_RNAseqAll/pca-1.png)
 
-    PCA42 <- ggplot(pcadata, aes(pcadata$PC3, pcadata$PC4)) +
-        geom_point(size=2, aes(color=subfield, shape=treatment), alpha = 0.8) +
-        xlab(paste0("PC3: ", percentVar[3],"%")) +
-        ylab(paste0("PC4: ", percentVar[4],"%")) +
-        #stat_ellipse(level = 0.95, (aes(color=subfield)),size=0.25) + 
+    PCA42 <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2)) +
+        geom_point(size=3, aes(colour=subfield, shape=treatment), alpha = 0.8) +
+        xlab(paste0("PC5: ", percentVar[5],"%")) +
+        ylab(paste0("PC2: ", percentVar[2],"%")) +
         scale_colour_manual(values=c(colorvalsubfield))+ 
-        theme_cowplot(font_size = 7, line_size = 0.25)  +
+       theme_bw(base_size = 12)  +
         theme(legend.title=element_blank()) +
-      scale_x_continuous(limits=c(-10, 15)) +
-            scale_y_continuous(limits=c(-15, 15)) +
-        scale_shape_manual(aes(color=colorvalsubfield), values=c(2,1, 16, 0, 15)) +
+        scale_shape_manual(aes(colour=colorvalsubfield), values=c(2,1, 16, 0, 15)) +
       guides(color = guide_legend(order=1),
              shape = guide_legend(order=2)) 
     PCA42
 
-    ## Warning: Removed 2 rows containing missing values (geom_point).
-
 ![](../figures/02b_RNAseqAll/pca-2.png)
 
-    plotnolegend <- plot_grid(PCA12 + theme(legend.position="none"),
-               PCA42 + theme(legend.position="none"),
-               labels = c("C", "D"),
-               ncol = 1,
-               label_size = 7
-               )
-
-    ## Warning: Removed 2 rows containing missing values (geom_point).
-
-    plotnolegend
+    plot_grid(PCA12, PCA42 ,nrow = 2)
 
 ![](../figures/02b_RNAseqAll/pca-3.png)
 
-    legend <- get_legend(PCA42 + theme(legend.position = "bottom",
-                                       legend.direction = "vertical",
-                                       legend.key.size = unit(0.2, "cm"),
-                                       legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0.5, unit="cm")))
+PCA without trained animals
+---------------------------
 
-    ## Warning: Removed 2 rows containing missing values (geom_point).
+    # create the dataframe using my function pcadataframe
+    pcadata <- pcadata %>%
+      filter(treatment %in% c("home cage", "standard yoked","conflict yoked"))
+    head(pcadata)
 
-    pcaplots <- plot_grid(plotnolegend, legend, ncol = 1, rel_heights  = c(1, .2))
-    pcaplots
+    ##          PC1        PC2        PC3         PC4        PC5        PC6
+    ## 1 -10.248532  11.033281 -3.9358111 -0.07416176  1.3174595 -0.8215657
+    ## 2  18.183037  -1.909191 -3.4156549  1.74309014  0.5599177  1.4622793
+    ## 3 -11.082970  12.937073 -0.4472517  0.82278795 -1.2774101 -0.7559707
+    ## 4  19.787195  -1.140826 -1.0869728  2.79026702 -0.8051216  0.5437439
+    ## 5 -10.928638  12.083606 -1.8659673 -0.23674450  0.3361173 -0.1283809
+    ## 6  -8.350649 -10.325457  1.2017648  0.59450604 -1.0327512 -0.4456557
+    ##          PC7         PC8         PC9                group subfield
+    ## 1 -3.0878014  1.61532663 -1.10269922 CA1 : conflict.yoked      CA1
+    ## 2 -1.1135954  2.05283273  0.03563451  DG : conflict.yoked       DG
+    ## 3  0.4961708  0.61207186 -3.03670894 CA1 : standard.yoked      CA1
+    ## 4  0.3386635  1.29059008  0.27796247  DG : standard.yoked       DG
+    ## 5 -1.0118537  0.02196843 -0.61748306 CA1 : conflict.yoked      CA1
+    ## 6  2.2459156 -0.81247110  3.03799531 CA3 : conflict.yoked      CA3
+    ##        treatment       name        subfieldAPA
+    ## 1 conflict yoked 143B-CA1-1 CA1_conflict.yoked
+    ## 2 conflict yoked  143B-DG-1  DG_conflict.yoked
+    ## 3 standard yoked 143D-CA1-3 CA1_standard.yoked
+    ## 4 standard yoked  143D-DG-3  DG_standard.yoked
+    ## 5 conflict yoked 144B-CA1-1 CA1_conflict.yoked
+    ## 6 conflict yoked 144B-CA3-1 CA3_conflict.yoked
 
-![](../figures/02b_RNAseqAll/pca-4.png)
+    summary(aov(PC1 ~ subfield * treatment, data=pcadata)) 
 
-    pdf(file="../figures/02b_RNAseqALL/pcaplots.pdf", width=2.5, height=3.15)
-    plot(pcaplots)
-    dev.off()
+    ##                    Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## subfield            2   4721  2360.5 225.763 1.79e-13 ***
+    ## treatment           2      7     3.7   0.353    0.707    
+    ## subfield:treatment  4     37     9.2   0.884    0.493    
+    ## Residuals          18    188    10.5                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    ## quartz_off_screen 
-    ##                 2
+    TukeyHSD((aov(PC1 ~ subfield, data=pcadata)), which = "subfield") 
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC1 ~ subfield, data = pcadata)
+    ## 
+    ## $subfield
+    ##              diff        lwr        upr     p adj
+    ## CA3-DG  -27.99525 -31.682801 -24.307701 0.0000000
+    ## CA1-DG  -26.80526 -30.377185 -23.233337 0.0000000
+    ## CA1-CA3   1.18999  -2.587514   4.967494 0.7146245
+
+    TukeyHSD((aov(PC1 ~ treatment, data=pcadata)), which = "treatment") 
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC1 ~ treatment, data = pcadata)
+    ## 
+    ## $treatment
+    ##                                     diff       lwr      upr     p adj
+    ## standard yoked-home cage       3.7688406 -14.95946 22.49714 0.8707844
+    ## conflict yoked-home cage      -0.2834496 -18.05067 17.48377 0.9991253
+    ## conflict yoked-standard yoked -4.0522902 -19.72151 11.61693 0.7964625
+
+    summary(aov(PC2 ~ subfield * treatment, data=pcadata)) 
+
+    ##                    Df Sum Sq Mean Sq  F value Pr(>F)    
+    ## subfield            2 2605.8  1302.9 1346.230 <2e-16 ***
+    ## treatment           2    1.6     0.8    0.821  0.456    
+    ## subfield:treatment  4    2.9     0.7    0.753  0.569    
+    ## Residuals          18   17.4     1.0                    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    TukeyHSD((aov(PC2 ~ subfield, data=pcadata)), which = "subfield") 
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC2 ~ subfield, data = pcadata)
+    ## 
+    ## $subfield
+    ##              diff       lwr       upr p adj
+    ## CA3-DG  -10.92942 -12.06162 -9.797222     0
+    ## CA1-DG   13.73853  12.64183 14.835233     0
+    ## CA1-CA3  24.66796  23.50814 25.827774     0
+
+    TukeyHSD((aov(PC2 ~ treatment, data=pcadata)), which = "treatment") 
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC2 ~ treatment, data = pcadata)
+    ## 
+    ## $treatment
+    ##                                    diff        lwr      upr     p adj
+    ## standard yoked-home cage      -2.142275 -15.696938 11.41239 0.9180076
+    ## conflict yoked-home cage       1.856103 -11.002980 14.71519 0.9310875
+    ## conflict yoked-standard yoked  3.998377  -7.342268 15.33902 0.6575266
+
+    summary(aov(PC3 ~ subfield * treatment, data=pcadata)) 
+
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)
+    ## subfield            2  107.4    53.7   0.713  0.503
+    ## treatment           2  241.0   120.5   1.600  0.229
+    ## subfield:treatment  4   38.4     9.6   0.128  0.970
+    ## Residuals          18 1355.4    75.3
+
+    TukeyHSD((aov(PC3 ~ subfield, data=pcadata)), which = "subfield") 
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC3 ~ subfield, data = pcadata)
+    ## 
+    ## $subfield
+    ##              diff        lwr       upr     p adj
+    ## CA3-DG  -4.894490 -14.671037  4.882056 0.4362217
+    ## CA1-DG  -1.780001 -11.249997  7.689994 0.8862068
+    ## CA1-CA3  3.114489  -6.900545 13.129523 0.7206770
+
+    TukeyHSD((aov(PC3 ~ treatment, data=pcadata)), which = "treatment") 
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC3 ~ treatment, data = pcadata)
+    ## 
+    ## $treatment
+    ##                                    diff        lwr      upr     p adj
+    ## standard yoked-home cage      -6.195356 -16.662451 4.271739 0.3188511
+    ## conflict yoked-home cage      -7.312503 -17.242462 2.617455 0.1785619
+    ## conflict yoked-standard yoked -1.117147  -9.874547 7.640253 0.9457194
+
+    summary(aov(PC4 ~ subfield * treatment, data=pcadata)) 
+
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)  
+    ## subfield            2    9.9    4.96   0.175  0.841  
+    ## treatment           2  111.6   55.81   1.968  0.169  
+    ## subfield:treatment  4  276.0   69.00   2.434  0.085 .
+    ## Residuals          18  510.3   28.35                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(PC5 ~ subfield * treatment, data=pcadata)) 
+
+    ##                    Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## subfield            2  33.57   16.79   2.167 0.14345   
+    ## treatment           2 100.99   50.49   6.519 0.00742 **
+    ## subfield:treatment  4  37.85    9.46   1.222 0.33641   
+    ## Residuals          18 139.42    7.75                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(PC6 ~ subfield * treatment, data=pcadata)) 
+
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)  
+    ## subfield            2  34.13  17.066   1.456 0.2593  
+    ## treatment           2  19.05   9.527   0.813 0.4592  
+    ## subfield:treatment  4 119.00  29.749   2.539 0.0758 .
+    ## Residuals          18 210.94  11.719                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
+        geom_point(size=3, aes(shape=treatment), alpha = 0.8) +
+        xlab(paste0("PC1: ", percentVar[1],"%")) +
+        ylab(paste0("PC2: ", percentVar[2],"%")) +
+        scale_colour_manual(values=c(colorvalsubfield)) + 
+       theme_bw(base_size = 12)  +
+          theme(legend.title=element_blank()) +
+        scale_shape_manual(values=c(2, 1,  0), aes(colour=colorvalsubfield)) 
+    PCA12
+
+![](../figures/02b_RNAseqAll/pca2-1.png)
+
+    PCA42 <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2)) +
+        geom_point(size=3, aes(colour=subfield, shape=treatment), alpha = 0.8) +
+        xlab(paste0("PC5: ", percentVar[5],"%")) +
+        ylab(paste0("PC2: ", percentVar[2],"%")) +
+        scale_colour_manual(values=c(colorvalsubfield))+ 
+       theme_bw(base_size = 12)  +
+        theme(legend.title=element_blank()) +
+        scale_shape_manual(aes(colour=colorvalsubfield), values=c(2,1, 0)) +
+      guides(color = guide_legend(order=1),
+             shape = guide_legend(order=2))  
+    PCA42
+
+![](../figures/02b_RNAseqAll/pca2-2.png)
+
+    plot_grid(PCA12, PCA42 ,nrow = 2)
+
+![](../figures/02b_RNAseqAll/pca2-3.png)
 
 Volcanos plots and and gene lists
 ---------------------------------
@@ -903,7 +1088,7 @@ Volcanos plots and and gene lists
       scale_color_manual(values = mycolors,
                          breaks = mybreaks,
                          name = "higher in") + 
-      theme_cowplot(font_size = 7, line_size = 0.25) +
+      theme_cowplot(font_size = 12, line_size = 0.25) +
       geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
       #scale_y_continuous(limits=c(0, 60)) +
       #scale_x_continuous(limits=c(-10, 10)) +
