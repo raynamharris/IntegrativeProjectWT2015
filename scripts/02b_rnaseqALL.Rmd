@@ -55,7 +55,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               design = ~ subfield + treatment + subfield*treatment)
 
 dds$subfield <- factor(dds$subfield, levels=c("DG","CA3", "CA1")) ## specify the factor levels
-dds$treatment <- factor(dds$treatment, levels=c("home-cage","standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained")) ## specify the factor levels
+dds$treatment <- factor(dds$treatment, levels=c("home.cage","standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained")) ## specify the factor levels
 
 dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
@@ -84,15 +84,15 @@ res_summary(c("subfield", "CA1", "DG"))
 res_summary(c("subfield", "CA1", "CA3"))
 res_summary(c("subfield", "CA3", "DG"))
 
-res_summary(c("treatment", "standard-trained", "standard-yoked"))
-res_summary(c("treatment", "conflict-yoked", "standard-yoked"))
-res_summary(c("treatment", "conflict-trained", "conflict-yoked"))
-res_summary(c("treatment", "conflict-trained", "standard-trained"))
+res_summary(c("treatment", "standard.trained", "standard.yoked"))
+res_summary(c("treatment", "conflict.yoked", "standard.yoked"))
+res_summary(c("treatment", "conflict.trained", "conflict.yoked"))
+res_summary(c("treatment", "conflict.trained", "standard.trained"))
 
-res_summary(c("treatment", "standard-yoked", "home-cage"))
-res_summary(c("treatment", "standard-trained", "home-cage"))
-res_summary(c("treatment", "conflict-yoked", "home-cage"))
-res_summary(c("treatment", "conflict-trained", "home-cage"))
+res_summary(c("treatment", "standard.yoked", "home.cage"))
+res_summary(c("treatment", "standard.trained", "home.cage"))
+res_summary(c("treatment", "conflict.yoked", "home.cage"))
+res_summary(c("treatment", "conflict.trained", "home.cage"))
 ```
 
 This second function only prints the total number of DEGs, but it saves lots of useful info to a df for downstream dataviz.
@@ -103,15 +103,15 @@ This second function only prints the total number of DEGs, but it saves lots of 
 contrast1 <- resvals(contrastvector = c("subfield", "CA1", "DG"), mypval = 0.1) # 3060
 contrast2 <- resvals(contrastvector = c("subfield", "CA1", "CA3"), mypval = 0.1) # 2388
 contrast3 <- resvals(contrastvector = c("subfield", "CA3", "DG"), mypval = 0.1) # 3078
-contrast4 <- resvals(contrastvector = c("treatment", "standard-trained", "standard-yoked"), mypval = 0.1) #  80
-contrast5 <- resvals(contrastvector = c("treatment", "conflict-trained", "conflict-yoked"), mypval = 0.1) # 23
-contrast6 <- resvals(contrastvector = c("treatment", "conflict-trained", "standard-trained"), mypval = 0.1) #  1
-contrast7 <- resvals(contrastvector = c("treatment", "conflict-yoked", "standard-yoked"), mypval = 0.1) # 37
+contrast4 <- resvals(contrastvector = c("treatment", "standard.trained", "standard.yoked"), mypval = 0.1) #  80
+contrast5 <- resvals(contrastvector = c("treatment", "conflict.trained", "conflict.yoked"), mypval = 0.1) # 23
+contrast6 <- resvals(contrastvector = c("treatment", "conflict.trained", "standard.trained"), mypval = 0.1) #  1
+contrast7 <- resvals(contrastvector = c("treatment", "conflict.yoked", "standard.yoked"), mypval = 0.1) # 37
 
-contrast8 <- resvals(contrastvector = c("treatment", "standard-yoked", "home-cage"), mypval = 0.1) #1285
-contrast9 <- resvals(contrastvector = c("treatment", "standard-trained", "home-cage"), mypval = 0.1) # 1320
-contrast10 <- resvals(contrastvector = c("treatment", "conflict-yoked", "home-cage"), mypval = 0.1) #1400
-contrast11 <- resvals(contrastvector = c("treatment", "conflict-trained", "home-cage"), mypval = 0.1) #1659
+contrast8 <- resvals(contrastvector = c("treatment", "standard.yoked", "home.cage"), mypval = 0.1) #1285
+contrast9 <- resvals(contrastvector = c("treatment", "standard.trained", "home.cage"), mypval = 0.1) # 1320
+contrast10 <- resvals(contrastvector = c("treatment", "conflict.yoked", "home.cage"), mypval = 0.1) #1400
+contrast11 <- resvals(contrastvector = c("treatment", "conflict.trained", "home.cage"), mypval = 0.1) #1659
 
 ```
 
@@ -128,10 +128,10 @@ DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
 
 names(DEGes)
 DEGes$padjmin <- with(DEGes, pmin(padjsubfieldCA1DG, padjsubfieldCA1CA3, padjsubfieldCA3DG, 
-                                  "padjtreatmentstandard-trainedstandard-yoked", "padjtreatmentconflict-trainedconflict-yoked",
-                                  "padjtreatmentconflict-trainedstandard-trained","padjtreatmentconflict-yokedstandard-yoked",
-                                  "padjtreatmentstandard-yokedhome-cage","padjtreatmentstandard-trainedhome-cage",
-                                  "padjtreatmentconflict-yokedhome-cage","padjtreatmentconflict-trainedhome-cage")) 
+                                  "padjtreatmentstandard.trainedstandard.yoked", "padjtreatmentconflict.trainedconflict.yoked",
+                                  "padjtreatmentconflict.trainedstandard.trained","padjtreatmentconflict.yokedstandard.yoked",
+                                  "padjtreatmentstandard.yokedhome.cage","padjtreatmentstandard.trainedhome.cage",
+                                  "padjtreatmentconflict.yokedhome.cage","padjtreatmentconflict.trainedhome.cage")) 
 DEGes <- DEGes %>% filter(padjmin < 0.00000000000000000001)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -192,7 +192,7 @@ pcadata <- pcadataframe(vsd, intgroup=c("subfield","treatment"), returnData=TRUE
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 pcadata$subfieldAPA <- as.factor(paste(pcadata$subfield, pcadata$treatment, sep="_"))
 pcadata$subfield <- factor(pcadata$subfield, levels=c("DG","CA3", "CA1"))
-pcadata$treatment <- factor(pcadata$treatment, levels=c("home-cage", "standard-yoked","standard-trained",  "conflict-yoked","conflict-trained"))
+pcadata$treatment <- factor(pcadata$treatment, levels=c("home.cage", "standard.yoked","standard.trained",  "conflict.yoked","conflict.trained"))
 
 levels(pcadata$treatment) <- c("home cage", "standard yoked","standard trained",  "conflict yoked", "conflict trained")
 
@@ -286,11 +286,11 @@ head(DGvCA3)
 DGvCA1 <- makevolcanodf(c("subfield", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
 CA3vCA1 <- makevolcanodf(c("subfield", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
 
-STY <- makevolcanodf(c("treatment", "standard-trained", "standard-yoked"),"standard-trained", "standard-yoked", "../data/STY.csv")
-CTY <- makevolcanodf(c("treatment", "conflict-trained", "conflict-yoked"),"conflict-trained", "conflict-yoked", "../data/CTY.csv")
-SYH <- makevolcanodf(c("treatment", "standard-yoked", "home-cage"),"standard-yoked", "home-cage", "../data/SYH.csv")
-CYH <- makevolcanodf(c("treatment", "conflict-yoked", "home-cage"),"conflict-yoked", "home-cage", "../data/CYH.csv")
-CTST <- makevolcanodf(c("treatment", "conflict-trained", "standard-trained"),"conflict-trained", "standard-trained", "../data/CTST.csv")
+STY <- makevolcanodf(c("treatment", "standard.trained", "standard.yoked"),"standard.trained", "standard.yoked", "../data/STY.csv")
+CTY <- makevolcanodf(c("treatment", "conflict.trained", "conflict.yoked"),"conflict.trained", "conflict.yoked", "../data/CTY.csv")
+SYH <- makevolcanodf(c("treatment", "standard.yoked", "home.cage"),"standard.yoked", "home.cage", "../data/SYH.csv")
+CYH <- makevolcanodf(c("treatment", "conflict.yoked", "home.cage"),"conflict.yoked", "home.cage", "../data/CYH.csv")
+CTST <- makevolcanodf(c("treatment", "conflict.trained", "standard.trained"),"conflict.trained", "standard.trained", "../data/CTST.csv")
 
 
 volcanoplot <- function(mydata, mycolors, mybreaks){
@@ -324,11 +324,11 @@ f <- volcanoplot(CA3vCA1, volcanoCA3vCA1, c("CA3", "CA1"))
 
 plot_grid(d,e,f, nrow = 1)
 
-g <- volcanoplot(STY, volcano1, c( "standard-yoked", "standard-trained")) 
+g <- volcanoplot(STY, volcano1, c( "standard.yoked", "standard.trained")) 
 g
-h <- volcanoplot(CTY, volcano5, c("conflict-yoked", "conflict-trained")) 
+h <- volcanoplot(CTY, volcano5, c("conflict.yoked", "conflict.trained")) 
 h
-i <- volcanoplot(SYH, volcano3, c("home-cage", "standard-yoked")) 
+i <- volcanoplot(SYH, volcano3, c("home.cage", "standard.yoked")) 
 i
 
 

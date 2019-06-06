@@ -55,11 +55,11 @@ names(colData)[names(colData)=="Region"] <- "Punch" #rename  region to punch
 
 # rename factors & group all Control animals into 1 group
 colData$APA2 <- colData$APA3 
-colData$APA2 <- revalue(colData$APA2, c("NA_NA" = "home-cage")) 
-colData$APA2 <- revalue(colData$APA2, c("Trained_Conflict" = "conflict-trained")) 
-colData$APA2 <- revalue(colData$APA2, c("Trained_NoConflict" = "standard-trained")) 
-colData$APA2 <- revalue(colData$APA2, c("Yoked_Conflict" = "conflict-yoked")) 
-colData$APA2 <- revalue(colData$APA2, c("Yoked_NoConflict" = "standard-yoked")) 
+colData$APA2 <- revalue(colData$APA2, c("NA_NA" = "home.cage")) 
+colData$APA2 <- revalue(colData$APA2, c("Trained_Conflict" = "conflict.trained")) 
+colData$APA2 <- revalue(colData$APA2, c("Trained_NoConflict" = "standard.trained")) 
+colData$APA2 <- revalue(colData$APA2, c("Yoked_Conflict" = "conflict.yoked")) 
+colData$APA2 <- revalue(colData$APA2, c("Yoked_NoConflict" = "standard.yoked")) 
 head(colData)
 
 # reorder 

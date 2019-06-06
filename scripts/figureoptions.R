@@ -61,28 +61,28 @@ pheatmapcolors = list(
 
 # for subfield volcano plots
 
-volcano1 <-  c("standard-trained" = "#ca0020",
-           "standard-yoked" = "#404040", 
+volcano1 <-  c("standard.trained" = "#ca0020",
+           "standard.yoked" = "#404040", 
            "NS" = "#d9d9d9")
 
-volcano2 <-  c("standard-trained" = "#ca0020",
-               "conflict-trained" = "#f4a582", 
+volcano2 <-  c("standard.trained" = "#ca0020",
+               "conflict.trained" = "#f4a582", 
                "NS" = "#d9d9d9")
 
-volcano3 <-  c("standard-yoked" = "#404040",
-               "home-cage" = "#e0e0e0", 
+volcano3 <-  c("standard.yoked" = "#404040",
+               "home.cage" = "#e0e0e0", 
                "NS" = "#d9d9d9")
 
-volcano4 <-  c("conflict-yoked" = "#bababa",
-               "home-cage" = "#e0e0e0", 
+volcano4 <-  c("conflict.yoked" = "#bababa",
+               "home.cage" = "#e0e0e0", 
                "NS" = "#d9d9d9")
 
-volcano5 <-  c("conflict-trained" = "#f4a582",
-               "conflict-yoked" = "#bababa", 
+volcano5 <-  c("conflict.trained" = "#f4a582",
+               "conflict.yoked" = "#bababa", 
                "NS" = "#d9d9d9")
 
-volcano6 <-  c("standard-yoked" = "#404040",
-               "conflict-yoked" = "#bababa", 
+volcano6 <-  c("standard.yoked" = "#404040",
+               "conflict.yoked" = "#bababa", 
                "NS" = "#d9d9d9")
 
 
