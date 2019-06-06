@@ -1,4 +1,4 @@
 "gene","lfc","padj","tissue","comparison"
-"Sco2",7.92174450889184,0.0024244588553795,"CA3","consistent-yoked_consistent"
-"Sco2",7.47695593197556,0.00416880045127328,"CA3","yoked_conflict-yoked_consistent"
-"Tbc1d16",-1.99890215328692,0.0704945441901401,"CA3","yoked_conflict-yoked_consistent"
+"Sco2",7.9434628891649,0.0130891757922191,"CA3","standard-trained-standard-yoked"
+"Sco2",7.46254633274755,0.0193463093876184,"CA3","conflict-yoked-standard-yoked"
+"Tbc1d16",-2.01314395385284,0.0960506721439744,"CA3","conflict-yoked-standard-yoked"

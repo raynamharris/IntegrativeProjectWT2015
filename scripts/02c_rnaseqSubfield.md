@@ -51,7 +51,17 @@ Get varience stabilized gene expression for each tissue
 
     ## [1] "DG"
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## estimating size factors
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -59,7 +69,17 @@ Get varience stabilized gene expression for each tissue
 
     ## mean-dispersion relationship
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## final dispersion estimates
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
 
@@ -67,7 +87,17 @@ Get varience stabilized gene expression for each tissue
 
     ## [1] "CA1"
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## estimating size factors
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -75,7 +105,17 @@ Get varience stabilized gene expression for each tissue
 
     ## mean-dispersion relationship
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## final dispersion estimates
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
 
@@ -83,7 +123,17 @@ Get varience stabilized gene expression for each tissue
 
     ## [1] "CA3"
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## estimating size factors
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -91,7 +141,17 @@ Get varience stabilized gene expression for each tissue
 
     ## mean-dispersion relationship
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## final dispersion estimates
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
 
@@ -105,47 +165,51 @@ Get varience stabilized gene expression for each tissue
     returnvsds(DGdds, "../data/02c_DGvsd.csv")
 
     ##               143A-DG-1 143B-DG-1 143D-DG-3 144A-DG-2 144C-DG-2 144D-DG-2
-    ## 0610007P14Rik  6.381145  6.405587  6.834813  6.513173  6.401366  6.637581
-    ## 0610009B22Rik  5.781124  5.661825  5.299160  5.528657  5.821796  5.670620
-    ## 0610009L18Rik  5.405848  5.593055  5.422004  5.000789  5.507750  5.506319
+    ## 0610007P14Rik  6.061813  6.093253  6.546473  6.191509  6.081483  6.330372
+    ## 0610009B22Rik  5.427332  5.303459  4.916098  5.155434  5.469507  5.309580
+    ## 0610009L18Rik  5.028120  5.230032  5.047701  4.596165  5.136024  5.134864
     ##               145A-DG-2 145B-DG-1 146A-DG-2 146B-DG-2 146C-DG-4 146D-DG-3
-    ## 0610007P14Rik  6.562833  6.126760  6.298333  5.996243  6.929322  7.411893
-    ## 0610009B22Rik  5.942028  5.787857  5.679794  5.996243  6.060620  5.000789
-    ## 0610009L18Rik  5.256496  5.000789  5.679794  5.000789  5.000789  5.000789
-    ##               147C-DG-3 147D-DG-1 148A-DG-3 148B-DG-4
-    ## 0610007P14Rik  6.298159  6.481476  6.493581  6.349976
-    ## 0610009B22Rik  5.910805  5.893873  5.589261  5.492981
-    ## 0610009L18Rik  5.257050  5.718223  5.505647  5.349661
+    ## 0610007P14Rik  6.255339  5.796661  5.981589  5.666827  6.642897  7.198395
+    ## 0610009B22Rik  5.599669  5.436754  5.323551  5.666827  5.727726  4.596165
+    ## 0610009L18Rik  4.869394  4.596165  5.323551  4.596165  4.596165  4.596165
+    ##               147-DG-4 147C-DG-3 147D-DG-1 148-DG-2 148A-DG-3 148B-DG-4
+    ## 0610007P14Rik 4.596165  5.976081  6.169871 5.962466  6.186452  6.033484
+    ## 0610009B22Rik 7.598426  5.566137  5.548592 5.431813  5.226147  5.122685
+    ## 0610009L18Rik 4.596165  4.869872  5.361845 4.596165  5.136778  4.969498
 
     returnvsds(CA1dds, "../data/02c_CA1vsd.csv")
 
     ##               143B-CA1-1 143C-CA1-1 143D-CA1-3 144A-CA1-2 144B-CA1-1
-    ## 0610007P14Rik   7.520142   7.151097   7.348321   7.355004   7.389284
-    ## 0610009B22Rik   7.035970   6.906418   6.301096   6.955307   6.790054
-    ## 0610009L18Rik   6.811049   6.498778   6.301096   6.661562   6.432357
+    ## 0610007P14Rik   6.880698   6.419536   6.666046   6.684314   6.722455
+    ## 0610009B22Rik   6.271651   6.106656   5.319977   6.174401   5.957844
+    ## 0610009L18Rik   5.982821   5.578039   5.319977   5.792716   5.491744
     ##               144C-CA1-2 145A-CA1-2 145B-CA1-1 146A-CA1-2 146B-CA1-2
-    ## 0610007P14Rik   7.197450   7.402112   7.364954   7.156319   7.035597
-    ## 0610009B22Rik   6.743802   6.883948   6.887177   6.920446   6.802964
-    ## 0610009L18Rik   6.463299   6.747507   6.564639   6.755012   6.301096
-    ##               146C-CA1-4 146D-CA1-3 147C-CA1-3 148A-CA1-3 148B-CA1-4
-    ## 0610007P14Rik   7.401377   7.464466   7.267392   7.328133   7.190380
-    ## 0610009B22Rik   6.782624   6.920474   6.787440   6.987979   6.301096
-    ## 0610009L18Rik   6.846384   6.301096   6.468607   6.661247   6.301096
+    ## 0610007P14Rik   6.477328   6.733923   6.693372   6.430347   6.267586
+    ## 0610009B22Rik   5.896135   6.076698   6.084280   6.127811   5.969877
+    ## 0610009L18Rik   5.531571   5.900652   5.664972   5.913479   5.319977
+    ##               146C-CA1-4 146D-CA1-3 147-CA1-4 147C-CA1-3 148-CA1-2
+    ## 0610007P14Rik   6.733555   6.817016  6.305772   6.569382  6.682223
+    ## 0610009B22Rik   5.946313   6.126776  6.305772   5.954570  5.812180
+    ## 0610009L18Rik   6.028620   5.319977  5.319977   5.539188  6.040488
+    ##               148A-CA1-3 148B-CA1-4
+    ## 0610007P14Rik   6.642458   6.481732
+    ## 0610009B22Rik   6.210959   5.319977
+    ## 0610009L18Rik   5.789298   5.319977
 
     returnvsds(CA3dds, "../data/02c_CA3vsd.csv")
 
     ##               143A-CA3-1 144A-CA3-2 144B-CA3-1 144C-CA3-2 144D-CA3-2
-    ## 0610007P14Rik   7.090155   7.589689   7.267022   7.034300   6.919678
-    ## 0610009B22Rik   6.500788   7.011651   6.577337   6.947298   6.425407
-    ## 0610009L18Rik   6.087226   6.714029   6.321004   6.277450   6.321271
-    ##               145A-CA3-2 146A-CA3-2 146B-CA3-2 146D-CA3-3 147C-CA3-3
-    ## 0610007P14Rik   6.825848   7.267048   6.799319   7.157725   7.172640
-    ## 0610009B22Rik   6.919473   6.288754   6.934486   6.515827   6.403921
-    ## 0610009L18Rik   5.797921   6.288754   6.049110   6.196801   6.166572
-    ##               147D-CA3-1 148A-CA3-3 148B-CA3-4
-    ## 0610007P14Rik   6.881145   6.962549   7.295192
-    ## 0610009B22Rik   6.586876   6.578744   6.732213
-    ## 0610009L18Rik   6.171145   6.223238   6.265907
+    ## 0610007P14Rik   7.229103   7.692534   7.389598   7.189574   7.086379
+    ## 0610009B22Rik   6.710399   7.171219   6.779068   7.111954   6.649230
+    ## 0610009L18Rik   6.350172   6.906144   6.554700   6.519607   6.557669
+    ##               145A-CA3-2 146A-CA3-2 146B-CA3-2 146D-CA3-3 147-CA3-4
+    ## 0610007P14Rik   7.013722   7.407009   6.976367   7.296329  8.544319
+    ## 0610009B22Rik   7.097826   6.532640   7.096058   6.727478  7.370690
+    ## 0610009L18Rik   6.099026   6.532640   6.318145   6.447628  6.099026
+    ##               147C-CA3-3 147D-CA3-1 148-CA3-2 148A-CA3-3 148B-CA3-4
+    ## 0610007P14Rik   7.325639   7.050746  7.202076   7.113575   7.414902
+    ## 0610009B22Rik   6.636480   6.790515  7.086099   6.776859   6.915261
+    ## 0610009L18Rik   6.425657   6.425417  6.099026   6.467472   6.506630
 
 Consistent versus yoked-consistent
 ----------------------------------
@@ -153,7 +217,7 @@ Consistent versus yoked-consistent
     plot.cons.yokcons <- function(mydds, mytissue, mytitle){
       print(mytissue)
       
-      res <- results(mydds, contrast =c("APA2", "consistent", "yoked_consistent"),
+      res <- results(mydds, contrast =c("APA2", "standard-trained", "standard-yoked"),
                      independentFiltering = T, alpha = 0.1)
       print(summary(res))
 
@@ -164,13 +228,13 @@ Consistent versus yoked-consistent
       data <- na.omit(data)
       data <- data %>%
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                            yes = "standard\ntrained", 
+                            yes = "standard-trained", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "standard\nyoked", 
+                                        yes = "standard-yoked", 
                                         no = "NS")))
 
 
-      write.csv(data, file = paste0("../data/02c_", mytissue, "_consyokcons.csv", sep = ""), row.names = F)
+      write.csv(data, file = paste0("../data/02c_", mytissue, "_std.train.yoke", sep = ""), row.names = F)
       
       volcano <- data %>%
         filter(direction != "NS") %>%
@@ -180,7 +244,7 @@ Consistent versus yoked-consistent
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
         scale_color_manual(values = volcano1,
                           name = "higher in",
-                          breaks = c("standard\nyoked", "NS", "standard\ntrained"))  + 
+                          breaks = c("standard-yoked", "NS", "standard-trained"))  + 
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
         ylab(paste0("-log10 p-value")) +  
@@ -195,17 +259,17 @@ Consistent versus yoked-consistent
     }
 
 
-    DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DEGs - DG train") + theme(legend.position = "none") + scale_y_continuous(breaks = c(0,4,8,12))  
+    DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DG: standard yoked v. trained") 
 
     ## [1] "DG"
     ## 
-    ## out of 17011 with nonzero total read count
+    ## out of 17033 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 119, 0.7%
-    ## LFC < 0 (down)     : 6, 0.035%
-    ## outliers [1]       : 20, 0.12%
-    ## low counts [2]     : 4608, 27%
-    ## (mean count < 4)
+    ## LFC > 0 (up)       : 69, 0.41%
+    ## LFC < 0 (down)     : 2, 0.012%
+    ## outliers [1]       : 27, 0.16%
+    ## low counts [2]     : 4285, 25%
+    ## (mean count < 3)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
     ## 
@@ -213,15 +277,15 @@ Consistent versus yoked-consistent
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-1.png)
 
-    CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3", "DEGs - CA3 train")  
+    CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3", "CA3: standard yoked v. trained")  
 
     ## [1] "CA3"
     ## 
-    ## out of 16502 with nonzero total read count
+    ## out of 16583 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 1, 0.0061%
+    ## LFC > 0 (up)       : 1, 0.006%
     ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 11, 0.067%
+    ## outliers [1]       : 9, 0.054%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -231,17 +295,17 @@ Consistent versus yoked-consistent
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-2.png)
 
-    CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "DEGs - CA1 train")  + theme(legend.position = c(0.6,0.9))  
+    CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "CA1: standard yoked v. trained")  
 
     ## [1] "CA1"
     ## 
-    ## out of 16852 with nonzero total read count
+    ## out of 16896 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 522, 3.1%
-    ## LFC < 0 (down)     : 360, 2.1%
-    ## outliers [1]       : 32, 0.19%
-    ## low counts [2]     : 4892, 29%
-    ## (mean count < 5)
+    ## LFC > 0 (up)       : 183, 1.1%
+    ## LFC < 0 (down)     : 105, 0.62%
+    ## outliers [1]       : 31, 0.18%
+    ## low counts [2]     : 5556, 33%
+    ## (mean count < 6)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
     ## 
@@ -249,13 +313,14 @@ Consistent versus yoked-consistent
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-3.png)
 
-    training <- plot_grid(DGconsyokcons,CA1consyokcons, nrow = 1,
-                          labels = "AUTO",
-                          label_size = 7,
-                          rel_widths = c(0.5,0.5))
+    training <- plot_grid(DGconsyokcons,CA1consyokcons, nrow = 1)
     training
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-4.png)
+
+    plot_grid(DGconsyokcons, CA3consyokcons, CA1consyokcons, nrow = 1)
+
+![](../figures/02c_rnaseqSubfield/consyokcons-5.png)
 
 Confict versus Consistent
 -------------------------
@@ -264,7 +329,7 @@ Confict versus Consistent
       
       print(mytissue)
       
-      res <- results(mydds, contrast =c("APA2", "conflict", "consistent"),
+      res <- results(mydds, contrast =c("APA2", "conflict-trained", "standard-trained"),
                      independentFiltering = T, alpha = 0.1)
       print(summary(res))
 
@@ -276,9 +341,9 @@ Confict versus Consistent
       
       data <- data %>%
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                            yes = "conflict\ntrained", 
+                            yes = "conflict-trained", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "standard\ntrained", 
+                                        yes = "standard-trained", 
                                         no = "NS")))
       
       write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""), row.names = F)
@@ -287,9 +352,9 @@ Confict versus Consistent
         geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
         theme_cowplot(font_size = 7, line_size = 0.25) +
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-        scale_color_manual(values = volcano2,
-                           breaks = c("standard\ntrained", "NS", "conflict\ntrained"),
-                          name = "higher in")  + 
+        #scale_color_manual(values = volcano2,
+        #                   breaks = c("standard-trained", "NS", "conflict-trained"),
+        #                  name = "higher in")  + 
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
         ylab(paste0("-log10 p-value")) +  
@@ -303,15 +368,15 @@ Confict versus Consistent
     }
 
 
-    DGconflict <-  plot.conf.cons(DGdds, "DG")
+    DGconflict <-  plot.conf.cons(DGdds, "DG: standard v. conflict trained")
 
-    ## [1] "DG"
+    ## [1] "DG: standard v. conflict trained"
     ## 
-    ## out of 17011 with nonzero total read count
+    ## out of 17033 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 1, 0.0059%
-    ## outliers [1]       : 20, 0.12%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 27, 0.16%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -321,15 +386,15 @@ Confict versus Consistent
 
 ![](../figures/02c_rnaseqSubfield/confcons-1.png)
 
-    CA3conflict <-  plot.conf.cons(CA3dds, "CA3")
+    CA3conflict <-  plot.conf.cons(CA3dds, "CA3: standard v. conflict trained")
 
-    ## [1] "CA3"
+    ## [1] "CA3: standard v. conflict trained"
     ## 
-    ## out of 16502 with nonzero total read count
+    ## out of 16583 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 0, 0%
     ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 11, 0.067%
+    ## outliers [1]       : 9, 0.054%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -339,15 +404,15 @@ Confict versus Consistent
 
 ![](../figures/02c_rnaseqSubfield/confcons-2.png)
 
-    CA1conflict <-  plot.conf.cons(CA1dds, "CA1")
+    CA1conflict <-  plot.conf.cons(CA1dds, "CA1: standard v. conflict trained")
 
-    ## [1] "CA1"
+    ## [1] "CA1: standard v. conflict trained"
     ## 
-    ## out of 16852 with nonzero total read count
+    ## out of 16896 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 0, 0%
     ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 32, 0.19%
+    ## outliers [1]       : 31, 0.18%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -368,7 +433,7 @@ Yoked confict versus yoked consistent
       
       print(mytissue)
       
-      res <- results(mydds, contrast =c("APA2", "yoked_conflict", "yoked_consistent"),
+      res <- results(mydds, contrast =c("APA2", "conflict-yoked", "standard-yoked"),
                      independentFiltering = T, alpha = 0.1)
       print(summary(res))
 
@@ -379,12 +444,12 @@ Yoked confict versus yoked consistent
       data <- na.omit(data)
       data <- data %>%
         dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
-                            yes = "conflict\nyoked", 
+                            yes = "conflict-yoked", 
                             no = ifelse(data$lfc < -1 & data$padj < 0.1, 
-                                        yes = "standard\nyoked", 
+                                        yes = "standard-yoked", 
                                         no = "NS")))
       
-      data$direction <- factor(data$direction, levels = c("standard\nyoked", "NS", "conflict\nyoked"))
+      data$direction <- factor(data$direction, levels = c("standard-yoked", "NS", "conflict-yoked"))
       
       write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""), row.names = F)
       
@@ -394,7 +459,7 @@ Yoked confict versus yoked consistent
         geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
         theme_cowplot(font_size = 7, line_size = 0.25) +
         geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-        scale_color_manual(values = volcano3,
+        scale_color_manual(values = volcano6,
                            name = "higher in")  + 
         #scale_y_continuous(limits=c(0, 12.5)) +
         scale_x_continuous(limits=c(-10, 10),
@@ -409,15 +474,15 @@ Yoked confict versus yoked consistent
       plot(volcano)  
     }
 
-    DGyoked <-  plot.yokconf.yokcons(DGdds, "DG", "DEGs - DG stress")
+    DGyoked <-  plot.yokconf.yokcons(DGdds, "DG", "DG: standard v. conflict yoked")
 
     ## [1] "DG"
     ## 
-    ## out of 17011 with nonzero total read count
+    ## out of 17033 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 3, 0.018%
     ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 20, 0.12%
+    ## outliers [1]       : 27, 0.16%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -427,15 +492,15 @@ Yoked confict versus yoked consistent
 
 ![](../figures/02c_rnaseqSubfield/yokeconfyokcons-1.png)
 
-    CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3", "DEGs - CA3 stress")
+    CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3", "CA3: standard v. conflict yoked")
 
     ## [1] "CA3"
     ## 
-    ## out of 16502 with nonzero total read count
+    ## out of 16583 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 1, 0.0061%
-    ## LFC < 0 (down)     : 1, 0.0061%
-    ## outliers [1]       : 11, 0.067%
+    ## LFC > 0 (up)       : 1, 0.006%
+    ## LFC < 0 (down)     : 1, 0.006%
+    ## outliers [1]       : 9, 0.054%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -445,17 +510,17 @@ Yoked confict versus yoked consistent
 
 ![](../figures/02c_rnaseqSubfield/yokeconfyokcons-2.png)
 
-    CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1", "DEGs - CA1 stress")  
+    CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1", "CA1: standard v. conflict yoked")  
 
     ## [1] "CA1"
     ## 
-    ## out of 16852 with nonzero total read count
+    ## out of 16896 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 545, 3.2%
-    ## LFC < 0 (down)     : 372, 2.2%
-    ## outliers [1]       : 32, 0.19%
-    ## low counts [2]     : 4892, 29%
-    ## (mean count < 5)
+    ## LFC > 0 (up)       : 203, 1.2%
+    ## LFC < 0 (down)     : 136, 0.8%
+    ## outliers [1]       : 31, 0.18%
+    ## low counts [2]     : 4905, 29%
+    ## (mean count < 4)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
     ## 
@@ -467,15 +532,12 @@ Yoked confict versus yoked consistent
 
 ![](../figures/02c_rnaseqSubfield/yokeconfyokcons-4.png)
 
-    volcanos <- plot_grid(DGconsyokcons + theme(legend.position = c(0.8,0.9)) + labs(subtitle = "DEGs in DG") ,
-                          CA1consyokcons + theme(legend.position = c(0.8,0.9)) + labs(subtitle = "DEGs in CA1"), 
-                          CA1yoked + theme(legend.position = c(0.8,0.9)) + labs(subtitle = "DEGs in CA1"), 
-                                          nrow = 3) 
+    volcanos <- plot_grid(DGconsyokcons  ,CA1consyokcons  , CA1yoked , nrow = 1) 
     volcanos
 
 ![](../figures/02c_rnaseqSubfield/fig5volcanos-1.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=2.5, height=3.5)
+    pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=2.5, height=5)
     plot(volcanos)    
     dev.off()
 
@@ -567,10 +629,10 @@ What genes overlap within cetain comparisons?
     dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
     dds <- DESeq(dds) # Differential expression analysis
 
-    A <- listofDEGs("consistent","yoked_consistent")
-    B <- listofDEGs("conflict","consistent")
-    C <- listofDEGs("conflict","yoked_conflict")
-    D <- listofDEGs("yoked_conflict","yoked_consistent")
+    A <- listofDEGs("standard-trained","standard-yoked")
+    B <- listofDEGs("conflict-trained","standard-trained")
+    C <- listofDEGs("conflict-trained","conflict-yoked")
+    D <- listofDEGs("conflict-yoked","standard-yoked")
 
 
     all <- rbind(A,B,C,D)
@@ -580,7 +642,17 @@ What genes overlap within cetain comparisons?
 
     ## [1] "CA1"
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## estimating size factors
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -588,13 +660,33 @@ What genes overlap within cetain comparisons?
 
     ## mean-dispersion relationship
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## final dispersion estimates
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
 
     ## [1] "CA3"
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## estimating size factors
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -602,13 +694,33 @@ What genes overlap within cetain comparisons?
 
     ## mean-dispersion relationship
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## final dispersion estimates
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing
 
     ## [1] "DG"
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## estimating size factors
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## estimating dispersions
 
@@ -616,6 +728,16 @@ What genes overlap within cetain comparisons?
 
     ## mean-dispersion relationship
 
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
+
     ## final dispersion estimates
+
+    ##   Note: levels of factors in the design contain characters other than
+    ##   letters, numbers, '_' and '.'. It is recommended (but not required) to use
+    ##   only letters, numbers, and delimiters '_' or '.', as these are safe characters
+    ##   for column names in R. [This is a message, not an warning or error]
 
     ## fitting model and testing

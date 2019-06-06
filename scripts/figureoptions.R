@@ -81,6 +81,10 @@ volcano5 <-  c("conflict-trained" = "#f4a582",
                "conflict-yoked" = "#bababa", 
                "NS" = "#d9d9d9")
 
+volcano6 <-  c("standard-yoked" = "#404040",
+               "conflict-yoked" = "#bababa", 
+               "NS" = "#d9d9d9")
+
 
 
 # for integrative correlation anaylsis
