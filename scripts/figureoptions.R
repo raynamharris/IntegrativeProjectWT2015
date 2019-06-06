@@ -52,7 +52,8 @@ pheatmapcolors = list(
   subfield = c(DG = (values=c("#d95f02")),
               CA3 = (values=c("#1b9e77")),
               CA1 = (values=c("#7570b3"))),
-  treatment = c('standard yoked' = (values=c("#404040")), 
+  treatment = c('home cage' = (values=c("#e0e0e0")),
+          'standard yoked' = (values=c("#404040")), 
             'standard trained' = (values=c("#ca0020")),
               'conflict yoked' = (values=c("#bababa")),
             'conflict trained' = (values=c("#f4a582"))))
@@ -60,16 +61,24 @@ pheatmapcolors = list(
 
 # for subfield volcano plots
 
-volcano1 <-  c("standard\ntrained" = "#ca0020",
-           "standard\nyoked" = "#404040", 
+volcano1 <-  c("standard-trained" = "#ca0020",
+           "standard-yoked" = "#404040", 
            "NS" = "#d9d9d9")
 
-volcano2 <-  c("standard\ntrained" = "#ca0020",
-               "conflict\ntrained" = "#f4a582", 
+volcano2 <-  c("standard-trained" = "#ca0020",
+               "conflict-trained" = "#f4a582", 
                "NS" = "#d9d9d9")
 
-volcano3 <-  c("standard\nyoked" = "#404040",
-               "conflict\nyoked" = "#bababa", 
+volcano3 <-  c("standard-yoked" = "#404040",
+               "home-cage" = "#e0e0e0", 
+               "NS" = "#d9d9d9")
+
+volcano4 <-  c("conflict-yoked" = "#bababa",
+               "home-cage" = "#e0e0e0", 
+               "NS" = "#d9d9d9")
+
+volcano5 <-  c("conflict-trained" = "#f4a582",
+               "conflict-yoked" = "#bababa", 
                "NS" = "#d9d9d9")
 
 
