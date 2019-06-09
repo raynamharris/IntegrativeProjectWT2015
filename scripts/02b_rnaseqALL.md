@@ -2,9 +2,8 @@ The figures made from this script were compiled in Adobe.
 
 <img src="../figures/figures-02.png" width="1370" />
 
-    library(ggplot2) ## for awesome plots!
+    library(tidyverse)
     library(cowplot) ## for some easy to use themes
-    library(dplyr) ## for filtering and selecting rows
     library(pheatmap) ## awesome heatmaps
     library(viridis) # for awesome color pallette
     library(reshape2) ## for melting dataframe

@@ -259,11 +259,26 @@ plotcorrelationheatmaps2 <- function(mydds, mycoldata, mysubtitle){
   vsdmmean <-sapply(unique(colnames(vsdm)), function(i)
     rowMeans(vsdm[,colnames(vsdm) == i]))
   
+  # Generate column annotations
+  annotation <- colnames(vsdmmean)
+  annotation <- as.data.frame(annotation)
+  annotation$subfield <- sapply(strsplit(as.character(annotation$annotation),'\\.'), "[", 1)
+  annotation$t1 <- sapply(strsplit(as.character(annotation$annotation),'\\.'), "[", 2)
+  annotation$t2 <- sapply(strsplit(as.character(annotation$annotation),'\\.'), "[", 3)
+  annotation  <- unite_(annotation, "treatment", c("t1","t2"), sep = " ")
+  row.names(annotation) <- annotation$annotation
+  annotation$annotation <- NULL
+
   pheatmap(cor(vsdmmean),
-           annotation_names_row = F,
+           annotation_names_row = F, annotation_names_col = F,
            main= mysubtitle,
-           color = inferno(10),
-           show_rowname= T, show_colnames = T
+           color = viridis(20),
+           show_rowname= F, show_colnames = F,
+           display_numbers = T,
+           legend_breaks = c(0.50, 0.85, 0.9, 0.95, 1.0),
+           annotation  = annotation,
+           annotation_colors = pheatmapcolors,
+           treeheight_row = 0
   )
 }
 
