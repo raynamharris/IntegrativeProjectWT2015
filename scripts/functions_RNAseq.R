@@ -140,7 +140,7 @@ subsetDESeq <- function(eachgroup){
 
 numDEGs <- function(dds, group1, group2){
   res <- results(dds, contrast = c("treatment", group1, group2), independentFiltering = T)
-  sumpadj <- sum(res$padj < 0.01, na.rm = TRUE)
+  sumpadj <- sum(res$padj < 0.1, na.rm = TRUE)
   return(sumpadj)
 }
 
@@ -194,7 +194,7 @@ plottotalDEGs <- function(myDEGS, mysubtitle){
     theme_minimal(base_size = 8) + 
     geom_text(aes(label = round(V3, 1)), color = "black")+
     scale_fill_viridis(na.value="#bdbdbd", 
-                      limits = c(1,602),
+                      limits = c(1,1700),
                        option = "C",
                       alpha = 0.5) +
     xlab(NULL) + ylab(NULL) +

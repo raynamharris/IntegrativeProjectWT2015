@@ -444,11 +444,12 @@ dds.CA3.total <- returntotalDEGs(dds.CA3)
 dds.CA1.total <- returntotalDEGs(dds.CA1)
 
 d <- plottotalDEGs(DEGsall, "All subfields")
-a <- plottotalDEGs(DEGsall, "DG")
+a <- plottotalDEGs(dds.DG.total, "DG")
 b <- plottotalDEGs(dds.CA3.total, "CA3")
 c <-  plottotalDEGs(dds.CA1.total, "CA1")
 
 mylegend <- get_legend(c)
+
 
 e <- plot_grid(d + theme(legend.position = "none"), a + theme(legend.position = "none"),
           b+ theme(legend.position = "none"),c + theme(legend.position = "none"),

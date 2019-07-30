@@ -1303,17 +1303,17 @@ Observed versus expected ration of DEGs
     ## [1] "standard.trained.conflict.yoked"
     ## [1] "standard.trained.conflict.trained"
     ## [1] "conflict.yoked.conflict.trained"
-    ##                                                 V1               V2  V3
-    ## home.cage.standard.yoked                 home.cage   standard.yoked 410
-    ## home.cage.standard.trained               home.cage standard.trained 344
-    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 367
-    ## home.cage.conflict.trained               home.cage conflict.trained 601
-    ## standard.yoked.standard.trained     standard.yoked standard.trained  39
-    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   5
-    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  14
-    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  23
-    ## standard.trained.conflict.trained standard.trained conflict.trained   1
-    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   5
+    ##                                                 V1               V2   V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 1285
+    ## home.cage.standard.trained               home.cage standard.trained 1320
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 1400
+    ## home.cage.conflict.trained               home.cage conflict.trained 1659
+    ## standard.yoked.standard.trained     standard.yoked standard.trained   80
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   37
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained   45
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked   76
+    ## standard.trained.conflict.trained standard.trained conflict.trained    1
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   23
 
     dds.DG <- subsetDESeq("DG")
 
@@ -1508,17 +1508,17 @@ Observed versus expected ration of DEGs
     ## [1] "standard.trained.conflict.yoked"
     ## [1] "standard.trained.conflict.trained"
     ## [1] "conflict.yoked.conflict.trained"
-    ##                                                 V1               V2  V3
-    ## home.cage.standard.yoked                 home.cage   standard.yoked 350
-    ## home.cage.standard.trained               home.cage standard.trained 277
-    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 316
-    ## home.cage.conflict.trained               home.cage conflict.trained 483
-    ## standard.yoked.standard.trained     standard.yoked standard.trained  31
-    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   2
-    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  12
-    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked   3
-    ## standard.trained.conflict.trained standard.trained conflict.trained   0
-    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   0
+    ##                                                 V1               V2   V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 1252
+    ## home.cage.standard.trained               home.cage standard.trained 1241
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 1367
+    ## home.cage.conflict.trained               home.cage conflict.trained 1637
+    ## standard.yoked.standard.trained     standard.yoked standard.trained   73
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked    2
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained   36
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked   25
+    ## standard.trained.conflict.trained standard.trained conflict.trained    0
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained    0
 
     dds.CA3.total <- returntotalDEGs(dds.CA3)
 
@@ -1532,17 +1532,17 @@ Observed versus expected ration of DEGs
     ## [1] "standard.trained.conflict.yoked"
     ## [1] "standard.trained.conflict.trained"
     ## [1] "conflict.yoked.conflict.trained"
-    ##                                                 V1               V2 V3
-    ## home.cage.standard.yoked                 home.cage   standard.yoked  1
-    ## home.cage.standard.trained               home.cage standard.trained 13
-    ## home.cage.conflict.yoked                 home.cage   conflict.yoked  0
-    ## home.cage.conflict.trained               home.cage conflict.trained  2
-    ## standard.yoked.standard.trained     standard.yoked standard.trained  1
-    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked  0
-    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  1
-    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  0
-    ## standard.trained.conflict.trained standard.trained conflict.trained  0
-    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained  0
+    ##                                                 V1               V2  V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked  65
+    ## home.cage.standard.trained               home.cage standard.trained 328
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked   4
+    ## home.cage.conflict.trained               home.cage conflict.trained 217
+    ## standard.yoked.standard.trained     standard.yoked standard.trained   1
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   2
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained   2
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked   0
+    ## standard.trained.conflict.trained standard.trained conflict.trained   2
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   0
 
     dds.CA1.total <- returntotalDEGs(dds.CA1)
 
@@ -1556,57 +1556,59 @@ Observed versus expected ration of DEGs
     ## [1] "standard.trained.conflict.yoked"
     ## [1] "standard.trained.conflict.trained"
     ## [1] "conflict.yoked.conflict.trained"
-    ##                                                 V1               V2  V3
-    ## home.cage.standard.yoked                 home.cage   standard.yoked 124
-    ## home.cage.standard.trained               home.cage standard.trained  25
-    ## home.cage.conflict.yoked                 home.cage   conflict.yoked  36
-    ## home.cage.conflict.trained               home.cage conflict.trained  36
-    ## standard.yoked.standard.trained     standard.yoked standard.trained  11
-    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked  11
-    ## standard.yoked.conflict.trained     standard.yoked conflict.trained   0
-    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked   0
-    ## standard.trained.conflict.trained standard.trained conflict.trained   0
-    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   2
+    ##                                                 V1               V2   V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 1131
+    ## home.cage.standard.trained               home.cage standard.trained  678
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked  867
+    ## home.cage.conflict.trained               home.cage conflict.trained  824
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  351
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked  402
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  151
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked    0
+    ## standard.trained.conflict.trained standard.trained conflict.trained    0
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained    2
 
     d <- plottotalDEGs(DEGsall, "All subfields")
 
     ## 'data.frame':    10 obs. of  3 variables:
     ##  $ V1: Factor w/ 5 levels "home.cage","standard.yoked",..: 1 1 1 1 2 2 2 3 3 4
     ##  $ V2: Factor w/ 5 levels "home.cage","standard.yoked",..: 2 3 4 5 3 4 5 4 5 5
-    ##  $ V3: int  410 344 367 601 39 5 14 23 1 5
+    ##  $ V3: int  1285 1320 1400 1659 80 37 45 76 1 23
     ## NULL
-    ##                                                 V1               V2  V3
-    ## home.cage.standard.yoked                 home.cage   standard.yoked 410
-    ## home.cage.standard.trained               home.cage standard.trained 344
-    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 367
-    ## home.cage.conflict.trained               home.cage conflict.trained 601
-    ## standard.yoked.standard.trained     standard.yoked standard.trained  39
-    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   5
-    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  14
-    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  23
-    ## standard.trained.conflict.trained standard.trained conflict.trained   1
-    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   5
+    ##                                                 V1               V2   V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 1285
+    ## home.cage.standard.trained               home.cage standard.trained 1320
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 1400
+    ## home.cage.conflict.trained               home.cage conflict.trained 1659
+    ## standard.yoked.standard.trained     standard.yoked standard.trained   80
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   37
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained   45
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked   76
+    ## standard.trained.conflict.trained standard.trained conflict.trained    1
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   23
 
 ![](../figures/02b_RNAseqAll/plottotalDEGs-1.png)
 
-    a <- plottotalDEGs(DEGsall, "DG")
+    a <- plottotalDEGs(dds.DG.total, "DG")
 
     ## 'data.frame':    10 obs. of  3 variables:
     ##  $ V1: Factor w/ 5 levels "home.cage","standard.yoked",..: 1 1 1 1 2 2 2 3 3 4
     ##  $ V2: Factor w/ 5 levels "home.cage","standard.yoked",..: 2 3 4 5 3 4 5 4 5 5
-    ##  $ V3: int  410 344 367 601 39 5 14 23 1 5
+    ##  $ V3: int  1252 1241 1367 1637 73 2 36 25 NA NA
     ## NULL
-    ##                                                 V1               V2  V3
-    ## home.cage.standard.yoked                 home.cage   standard.yoked 410
-    ## home.cage.standard.trained               home.cage standard.trained 344
-    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 367
-    ## home.cage.conflict.trained               home.cage conflict.trained 601
-    ## standard.yoked.standard.trained     standard.yoked standard.trained  39
-    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   5
-    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  14
-    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  23
-    ## standard.trained.conflict.trained standard.trained conflict.trained   1
-    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   5
+    ##                                                 V1               V2   V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 1252
+    ## home.cage.standard.trained               home.cage standard.trained 1241
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 1367
+    ## home.cage.conflict.trained               home.cage conflict.trained 1637
+    ## standard.yoked.standard.trained     standard.yoked standard.trained   73
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked    2
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained   36
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked   25
+    ## standard.trained.conflict.trained standard.trained conflict.trained   NA
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   NA
+
+    ## Warning: Removed 2 rows containing missing values (geom_text).
 
 ![](../figures/02b_RNAseqAll/plottotalDEGs-2.png)
 
@@ -1615,21 +1617,21 @@ Observed versus expected ration of DEGs
     ## 'data.frame':    10 obs. of  3 variables:
     ##  $ V1: Factor w/ 5 levels "home.cage","standard.yoked",..: 1 1 1 1 2 2 2 3 3 4
     ##  $ V2: Factor w/ 5 levels "home.cage","standard.yoked",..: 2 3 4 5 3 4 5 4 5 5
-    ##  $ V3: int  1 13 NA 2 1 NA 1 NA NA NA
+    ##  $ V3: int  65 328 4 217 1 2 2 NA 2 NA
     ## NULL
-    ##                                                 V1               V2 V3
-    ## home.cage.standard.yoked                 home.cage   standard.yoked  1
-    ## home.cage.standard.trained               home.cage standard.trained 13
-    ## home.cage.conflict.yoked                 home.cage   conflict.yoked NA
-    ## home.cage.conflict.trained               home.cage conflict.trained  2
-    ## standard.yoked.standard.trained     standard.yoked standard.trained  1
-    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked NA
-    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  1
-    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked NA
-    ## standard.trained.conflict.trained standard.trained conflict.trained NA
-    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained NA
+    ##                                                 V1               V2  V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked  65
+    ## home.cage.standard.trained               home.cage standard.trained 328
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked   4
+    ## home.cage.conflict.trained               home.cage conflict.trained 217
+    ## standard.yoked.standard.trained     standard.yoked standard.trained   1
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   2
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained   2
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  NA
+    ## standard.trained.conflict.trained standard.trained conflict.trained   2
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained  NA
 
-    ## Warning: Removed 5 rows containing missing values (geom_text).
+    ## Warning: Removed 2 rows containing missing values (geom_text).
 
 ![](../figures/02b_RNAseqAll/plottotalDEGs-3.png)
 
@@ -1638,35 +1640,37 @@ Observed versus expected ration of DEGs
     ## 'data.frame':    10 obs. of  3 variables:
     ##  $ V1: Factor w/ 5 levels "home.cage","standard.yoked",..: 1 1 1 1 2 2 2 3 3 4
     ##  $ V2: Factor w/ 5 levels "home.cage","standard.yoked",..: 2 3 4 5 3 4 5 4 5 5
-    ##  $ V3: int  124 25 36 36 11 11 NA NA NA 2
+    ##  $ V3: int  1131 678 867 824 351 402 151 NA NA 2
     ## NULL
-    ##                                                 V1               V2  V3
-    ## home.cage.standard.yoked                 home.cage   standard.yoked 124
-    ## home.cage.standard.trained               home.cage standard.trained  25
-    ## home.cage.conflict.yoked                 home.cage   conflict.yoked  36
-    ## home.cage.conflict.trained               home.cage conflict.trained  36
-    ## standard.yoked.standard.trained     standard.yoked standard.trained  11
-    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked  11
-    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  NA
-    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  NA
-    ## standard.trained.conflict.trained standard.trained conflict.trained  NA
-    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   2
+    ##                                                 V1               V2   V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 1131
+    ## home.cage.standard.trained               home.cage standard.trained  678
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked  867
+    ## home.cage.conflict.trained               home.cage conflict.trained  824
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  351
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked  402
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  151
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked   NA
+    ## standard.trained.conflict.trained standard.trained conflict.trained   NA
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained    2
 
-    ## Warning: Removed 3 rows containing missing values (geom_text).
+    ## Warning: Removed 2 rows containing missing values (geom_text).
 
 ![](../figures/02b_RNAseqAll/plottotalDEGs-4.png)
 
     mylegend <- get_legend(c)
 
-    ## Warning: Removed 3 rows containing missing values (geom_text).
+    ## Warning: Removed 2 rows containing missing values (geom_text).
 
     e <- plot_grid(d + theme(legend.position = "none"), a + theme(legend.position = "none"),
               b+ theme(legend.position = "none"),c + theme(legend.position = "none"),
               nrow = 2)
 
-    ## Warning: Removed 5 rows containing missing values (geom_text).
+    ## Warning: Removed 2 rows containing missing values (geom_text).
 
-    ## Warning: Removed 3 rows containing missing values (geom_text).
+    ## Warning: Removed 2 rows containing missing values (geom_text).
+
+    ## Warning: Removed 2 rows containing missing values (geom_text).
 
     f <- plot_grid(e, mylegend, rel_widths   = c(.9, 0.1), ncol = 2)
     f
