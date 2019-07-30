@@ -95,7 +95,7 @@ res_summary <- function(mycontrast){
   res <- results(dds, contrast = mycontrast, independentFiltering = T)
   print(mycontrast)
   print(summary(res))
-  print(head((res[order(res$padj),]), 3))
+  print(head((res[order(res$padj),]), 5))
   cat("\n")
 }
 
@@ -401,6 +401,10 @@ plot_grid(g, i,nrow = 1)
 ```{r Prkcz}
 plotCounts(dds, "Prkcz", intgroup = "subfield", normalized = TRUE)
 plotCounts(dds, "Prkcz", intgroup = "treatment", normalized = TRUE)
+
+plotCounts(dds, "Arc", intgroup = "treatment", normalized = TRUE)
+plotCounts(dds, "Egr1", intgroup = "treatment", normalized = TRUE)
+plotCounts(dds, "Camk1g", intgroup = "treatment", normalized = TRUE)
 ```
 
 ## Observed versus expected ration of DEGs
@@ -430,17 +434,16 @@ colData$treatment <- factor(colData$treatment , levels = c("home.cage",
                                                            "conflict.yoked", "conflict.trained"))
 
 DEGsall <- returntotalDEGs(dds)
-d <- plottotalDEGs(DEGsall, "Total number of differentially expressed genes")
 
 dds.DG <- subsetDESeq("DG")
 dds.CA3 <- subsetDESeq("CA3")
 dds.CA1 <- subsetDESeq("CA1")
 
-
 dds.DG.total <- returntotalDEGs(dds.DG)
 dds.CA3.total <- returntotalDEGs(dds.CA3)
 dds.CA1.total <- returntotalDEGs(dds.CA1)
 
+d <- plottotalDEGs(DEGsall, "All subfields")
 a <- plottotalDEGs(DEGsall, "DG")
 b <- plottotalDEGs(dds.CA3.total, "CA3")
 c <-  plottotalDEGs(dds.CA1.total, "CA1")
@@ -451,7 +454,13 @@ e <- plot_grid(d + theme(legend.position = "none"), a + theme(legend.position = 
           b+ theme(legend.position = "none"),c + theme(legend.position = "none"),
           nrow = 2)
 
-plot_grid(e, mylegend, rel_widths   = c(.9, 0.1), ncol = 2)
+f <- plot_grid(e, mylegend, rel_widths   = c(.9, 0.1), ncol = 2)
+f
+
+pdf(file="../figures/02b_RNAseqALL/plottotalDEGs.pdf", width=6, height=6)
+plot(f)
+dev.off()
+
 
 ```
 

@@ -183,7 +183,7 @@ genes and the top 3 most significant genes.
       res <- results(dds, contrast = mycontrast, independentFiltering = T)
       print(mycontrast)
       print(summary(res))
-      print(head((res[order(res$padj),]), 3))
+      print(head((res[order(res$padj),]), 5))
       cat("\n")
     }
 
@@ -204,17 +204,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): subfield CA1 vs DG 
     ## Wald test p-value: subfield CA1 vs DG 
-    ## DataFrame with 3 rows and 6 columns
-    ##                baseMean    log2FoldChange             lfcSE
-    ##               <numeric>         <numeric>         <numeric>
-    ## Cxcl12 63.0306483115304 -16.5881774318882  1.66775266108725
-    ## Cdh9   50.8740504975299 -16.3822507108132  1.73111050595518
-    ## Cpe    2718.77590276315  2.79592069940428 0.334913187165121
-    ##                    stat               pvalue                 padj
-    ##               <numeric>            <numeric>            <numeric>
-    ## Cxcl12 -9.9464254016384  2.6140452888182e-23 3.24010913549015e-19
-    ## Cdh9   -9.4634343991656 2.97991441993193e-21 1.84680196175281e-17
-    ## Cpe    8.34819531315084 6.93138861524575e-17 2.86381872953237e-13
+    ## DataFrame with 5 rows and 6 columns
+    ##                 baseMean    log2FoldChange             lfcSE
+    ##                <numeric>         <numeric>         <numeric>
+    ## Cxcl12  63.0306483115304 -16.5881774318882  1.66775266108725
+    ## Cdh9    50.8740504975299 -16.3822507108132  1.73111050595518
+    ## Cpe     2718.77590276315  2.79592069940428 0.334913187165121
+    ## Plekha2 139.077569484557 -7.38275250194524   0.9078299953689
+    ## Sept5   914.134724996885 -1.98866340755846 0.245287831497518
+    ##                      stat               pvalue                 padj
+    ##                 <numeric>            <numeric>            <numeric>
+    ## Cxcl12   -9.9464254016384  2.6140452888182e-23 3.24010913549015e-19
+    ## Cdh9     -9.4634343991656 2.97991441993193e-21 1.84680196175281e-17
+    ## Cpe      8.34819531315084 6.93138861524575e-17 2.86381872953237e-13
+    ## Plekha2 -8.13230730379782 4.21195412426639e-16 1.27299333374074e-12
+    ## Sept5    -8.1074686641297 5.16851915724209e-16 1.27299333374074e-12
 
     res_summary(c("subfield", "CA1", "CA3"))
 
@@ -233,17 +237,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): subfield CA1 vs CA3 
     ## Wald test p-value: subfield CA1 vs CA3 
-    ## DataFrame with 3 rows and 6 columns
+    ## DataFrame with 5 rows and 6 columns
     ##                baseMean    log2FoldChange             lfcSE
     ##               <numeric>         <numeric>         <numeric>
     ## Doc2b  313.433661413489  6.62201632176014 0.735304609612857
     ## Cdh9   50.8740504975299 -15.0953995521465  1.71741857597254
     ## Cxcl12 63.0306483115304 -13.6729048407547  1.67700361952213
+    ## Itpka  611.667927730471  2.25650464050331 0.292740306257203
+    ## Kcnb1   336.15136171032  3.56512049750924 0.465953557080791
     ##                    stat               pvalue                 padj
     ##               <numeric>            <numeric>            <numeric>
     ## Doc2b  9.00581369297642 2.14072374898396e-19 2.80263553216981e-15
     ## Cdh9   -8.7895867456763 1.50111105134479e-18 9.82627294210301e-15
     ## Cxcl12 -8.1531755099317 3.54490564018055e-16 1.54699682137479e-12
+    ## Itpka  7.70821302113668 1.27591650501459e-14 4.17607472091274e-11
+    ## Kcnb1  7.65123571508884  1.9905707242934e-14 4.44127324046486e-11
 
     res_summary(c("subfield", "CA3", "DG"))
 
@@ -262,17 +270,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): subfield CA3 vs DG 
     ## Wald test p-value: subfield CA3 vs DG 
-    ## DataFrame with 3 rows and 6 columns
+    ## DataFrame with 5 rows and 6 columns
     ##                 baseMean    log2FoldChange             lfcSE
     ##                <numeric>         <numeric>         <numeric>
     ## Adcy1   2262.91207204567 -4.22772039704826 0.400678566515945
     ## Doc2b   313.433661413489 -7.24316635773793 0.735677055341565
     ## Fam163b 554.096017468359  -5.1025729838737 0.534350679644618
+    ## C1ql3   258.612905760531   -7.153109369313 0.753769617165075
+    ## Cpe     2718.77590276315  3.07553800253409 0.333087885716157
     ##                      stat               pvalue                 padj
     ##                 <numeric>            <numeric>            <numeric>
     ## Adcy1   -10.5514014233652 5.00450012186108e-26 6.55189155954052e-22
     ## Doc2b   -9.84557871575188 7.16258144671295e-23  4.6886258150183e-19
     ## Fam163b -9.54910918662493 1.30816253233078e-21 5.70882129109154e-18
+    ## C1ql3   -9.48978203209599  2.3151785967198e-21  7.5775795470639e-18
+    ## Cpe      9.23341296523443 2.62143119873749e-20 6.86395545077423e-17
 
     res_summary(c("treatment", "standard.trained", "standard.yoked"))
 
@@ -291,17 +303,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): treatment standard.trained vs standard.yoked 
     ## Wald test p-value: treatment standard.trained vs standard.yoked 
-    ## DataFrame with 3 rows and 6 columns
+    ## DataFrame with 5 rows and 6 columns
     ##               baseMean   log2FoldChange             lfcSE             stat
     ##              <numeric>        <numeric>         <numeric>        <numeric>
     ## Arc   758.392356281105 2.87460649842132 0.417901748333271 6.87866588231849
     ## Smad7 92.8148992828604 3.57358999810335 0.557359836567866 6.41163887966696
     ## Frmd6 94.1573503918978 3.27854070789048 0.522510442209896 6.27459365984014
+    ## Sgk1  216.520310929759  2.5436465108213 0.418485081060251 6.07822506928289
+    ## Egr1  1099.55125407104 2.40057501359089 0.397528466556896 6.03874996521112
     ##                     pvalue                 padj
     ##                  <numeric>            <numeric>
     ## Arc   6.04156721189535e-12 7.27767186344914e-08
     ## Smad7 1.43963526781775e-10 8.67092321806632e-07
     ## Frmd6 3.50548564993573e-10 1.40756933797086e-06
+    ## Sgk1  1.21520112762777e-09 3.65957819585102e-06
+    ## Egr1   1.5531268838205e-09 3.74179328850035e-06
 
     res_summary(c("treatment", "conflict.yoked", "standard.yoked"))
 
@@ -320,17 +336,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): treatment conflict.yoked vs standard.yoked 
     ## Wald test p-value: treatment conflict.yoked vs standard.yoked 
-    ## DataFrame with 3 rows and 6 columns
+    ## DataFrame with 5 rows and 6 columns
     ##                 baseMean   log2FoldChange             lfcSE
     ##                <numeric>        <numeric>         <numeric>
     ## Kcnc2   124.952493734933 3.83674269491689 0.584367546731223
     ## Cnr1    296.149800385222 3.90399810714797 0.764264716790456
     ## St8sia5 69.5476502474826 3.57600594059455 0.723406685629619
+    ## Dner    153.262759844367 1.75326848146048 0.361641191111858
+    ## Camk1g  38.5597191774869 3.08308692900109 0.665243199868374
     ##                     stat               pvalue                 padj
     ##                <numeric>            <numeric>            <numeric>
     ## Kcnc2   6.56563273641474 5.18123751144787e-11 6.24131870629011e-07
     ## Cnr1    5.10817524527742 3.25284893107316e-07  0.00195919091118537
     ## St8sia5 4.94328572244555 7.68167731698567e-07  0.00308444949868031
+    ## Dner    4.84808844941056 1.24656822373952e-06  0.00375404020579156
+    ## Camk1g  4.63452603440533 3.57756210369691e-06  0.00861906262022659
 
     res_summary(c("treatment", "conflict.trained", "conflict.yoked"))
 
@@ -349,17 +369,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): treatment conflict.trained vs conflict.yoked 
     ## Wald test p-value: treatment conflict.trained vs conflict.yoked 
-    ## DataFrame with 3 rows and 6 columns
-    ##                baseMean    log2FoldChange             lfcSE
-    ##               <numeric>         <numeric>         <numeric>
-    ## Camk1g 38.5597191774869 -3.40546281993487 0.631292971749786
-    ## Insm1  22.5612210391479 -4.62031779282814 0.887598010058192
-    ## Kcnc2  124.952493734933 -2.55095636602511 0.496078573986496
-    ##                     stat               pvalue                 padj
-    ##                <numeric>            <numeric>            <numeric>
-    ## Camk1g -5.39442536560446 6.87431927870915e-08 0.000971547543659964
-    ## Insm1  -5.20541702490436 1.93561422874569e-07  0.00127893414260891
-    ## Kcnc2  -5.14224257968971 2.71478272682851e-07  0.00127893414260891
+    ## DataFrame with 5 rows and 6 columns
+    ##                 baseMean    log2FoldChange             lfcSE
+    ##                <numeric>         <numeric>         <numeric>
+    ## Camk1g  38.5597191774869 -3.40546281993487 0.631292971749786
+    ## Insm1   22.5612210391479 -4.62031779282814 0.887598010058192
+    ## Kcnc2   124.952493734933 -2.55095636602511 0.496078573986496
+    ## Neurod6 311.659477306372 -3.55004802375201 0.701650727821907
+    ## Sv2b    516.758080275828 -3.74676841377883 0.769493214435481
+    ##                      stat               pvalue                 padj
+    ##                 <numeric>            <numeric>            <numeric>
+    ## Camk1g  -5.39442536560446 6.87431927870915e-08 0.000971547543659964
+    ## Insm1   -5.20541702490436 1.93561422874569e-07  0.00127893414260891
+    ## Kcnc2   -5.14224257968971 2.71478272682851e-07  0.00127893414260891
+    ## Neurod6 -5.05956579674936 4.20212260800966e-07  0.00148471497047501
+    ## Sv2b    -4.86913769152279 1.12086288711912e-06  0.00316823103673091
 
     res_summary(c("treatment", "conflict.trained", "standard.trained"))
 
@@ -378,17 +402,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): treatment conflict.trained vs standard.trained 
     ## Wald test p-value: treatment conflict.trained vs standard.trained 
-    ## DataFrame with 3 rows and 6 columns
+    ## DataFrame with 5 rows and 6 columns
     ##                       baseMean     log2FoldChange             lfcSE
     ##                      <numeric>          <numeric>         <numeric>
     ## Gm21949       13.3277949535085   -25.833985376996  4.07898589958271
     ## 0610007P14Rik  41.002867232644 -0.173528129285372 0.461309350603557
     ## 0610009B22Rik 15.7511687047392 -0.756248610166991 0.727892450985017
+    ## 0610009L18Rik 3.22430530585902  0.587093135119797  1.32359877609848
+    ## 0610009O20Rik 42.8500159535687  0.268528280803771 0.459643641922261
     ##                             stat               pvalue                 padj
     ##                        <numeric>            <numeric>            <numeric>
     ## Gm21949        -6.33343336137517 2.39764889006869e-10 4.30785576078641e-06
     ## 0610007P14Rik -0.376164344074828    0.706794721318231                    1
     ## 0610009B22Rik  -1.03895652323856    0.298824956774045                    1
+    ## 0610009L18Rik  0.443558233598815     0.65736200808842                    1
+    ## 0610009O20Rik  0.584209714466554    0.559079226505278                    1
 
     res_summary(c("treatment", "standard.yoked", "home.cage"))
 
@@ -407,17 +435,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): treatment standard.yoked vs home.cage 
     ## Wald test p-value: treatment standard.yoked vs home.cage 
-    ## DataFrame with 3 rows and 6 columns
+    ## DataFrame with 5 rows and 6 columns
     ##                baseMean    log2FoldChange             lfcSE
     ##               <numeric>         <numeric>         <numeric>
     ## Efnb2  56.7882142397795 -5.27099111839829 0.790215320608203
     ## Phkb    51.377002305436 -4.89027322779646 0.736576958114059
     ## Alkbh1 47.6954100002425 -4.35311342958819 0.705353785377044
+    ## Tm2d2  73.1835387317898   -3.416618757933 0.556969687943786
+    ## Zdbf2  72.7605447738455  -4.2582403506116 0.703613526237727
     ##                     stat               pvalue                 padj
     ##                <numeric>            <numeric>            <numeric>
     ## Efnb2  -6.67032260819922  2.5524172230148e-11 1.84501969275186e-07
     ## Phkb   -6.63918844314324 3.15414940208884e-11 1.84501969275186e-07
     ## Alkbh1 -6.17153196003797  6.7631456328183e-10 2.50169543812552e-06
+    ## Tm2d2  -6.13429928394565 8.55353598812042e-10 2.50169543812552e-06
+    ## Zdbf2  -6.05195919609551 1.43094719899242e-09 3.34813025620248e-06
 
     res_summary(c("treatment", "standard.trained", "home.cage"))
 
@@ -436,17 +468,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): treatment standard.trained vs home.cage 
     ## Wald test p-value: treatment standard.trained vs home.cage 
-    ## DataFrame with 3 rows and 6 columns
+    ## DataFrame with 5 rows and 6 columns
     ##                  baseMean    log2FoldChange             lfcSE
     ##                 <numeric>         <numeric>         <numeric>
     ## Ephb6    163.997853114623 -3.08904301500247 0.479759817352088
     ## BC068281 34.2258704050532  -5.9006312973857 0.943776293272163
     ## Rfng     187.215948646428 -2.90460467559235 0.469417426750392
+    ## Dab2ip    184.45067783596 -3.20706390087913 0.525793319385623
+    ## Polr3k    58.921335312843 -3.64206409474448 0.620787737909977
     ##                       stat               pvalue                 padj
     ##                  <numeric>            <numeric>            <numeric>
     ## Ephb6    -6.43872809534499 1.20478804133903e-10 1.45128767459699e-06
     ## BC068281 -6.25215036598095 4.04839325440685e-10 2.43834725712924e-06
     ## Rfng     -6.18767968564755 6.10562331127034e-10 2.45161128025208e-06
+    ## Dab2ip   -6.09947632013757  1.0641652270551e-09 3.20473358127642e-06
+    ## Polr3k   -5.86684283907783 4.44171315197402e-09 1.07009753257358e-05
 
     res_summary(c("treatment", "conflict.yoked", "home.cage"))
 
@@ -465,17 +501,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): treatment conflict.yoked vs home.cage 
     ## Wald test p-value: treatment conflict.yoked vs home.cage 
-    ## DataFrame with 3 rows and 6 columns
+    ## DataFrame with 5 rows and 6 columns
     ##                  baseMean    log2FoldChange             lfcSE
     ##                 <numeric>         <numeric>         <numeric>
     ## Alkbh1   47.6954100002425 -4.30563510210828 0.711553907527244
     ## BC068281 34.2258704050532 -5.78681762557704 0.922623217697116
     ## Dab2ip    184.45067783596 -3.08057954587541 0.510734618215698
+    ## Endod1   134.866699757377  4.27783967992093  0.70868455485439
+    ## Gpr27    106.852369579923 -3.28028433606842 0.535256578241059
     ##                       stat               pvalue                 padj
     ##                  <numeric>            <numeric>            <numeric>
     ## Alkbh1   -6.05103149116418 1.43921307946603e-09 3.35243529231545e-06
     ## BC068281 -6.27213527101674 3.56129964041133e-10 3.35243529231545e-06
     ## Dab2ip   -6.03166387396593 1.62280046421079e-09 3.35243529231545e-06
+    ## Endod1    6.03631002061259 1.57678188133849e-09 3.35243529231545e-06
+    ## Gpr27    -6.12843348296246 8.87485171671387e-10 3.35243529231545e-06
 
     res_summary(c("treatment", "conflict.trained", "home.cage"))
 
@@ -494,17 +534,21 @@ genes and the top 3 most significant genes.
     ## NULL
     ## log2 fold change (MLE): treatment conflict.trained vs home.cage 
     ## Wald test p-value: treatment conflict.trained vs home.cage 
-    ## DataFrame with 3 rows and 6 columns
+    ## DataFrame with 5 rows and 6 columns
     ##                  baseMean    log2FoldChange             lfcSE
     ##                 <numeric>         <numeric>         <numeric>
     ## BC068281 34.2258704050532 -5.92261090786567 0.843983239835422
     ## Rfng     187.215948646428 -2.72895221438367 0.427701533111444
     ## Dab2ip    184.45067783596 -2.97029411412126 0.476809821594452
+    ## Tm2d2    73.1835387317898 -3.19014467909072 0.519743087903116
+    ## Alkbh1   47.6954100002425 -3.98524963393853 0.656812896549362
     ##                       stat               pvalue                 padj
     ##                  <numeric>            <numeric>            <numeric>
     ## BC068281 -7.01745085485417 2.25952595198543e-12 2.72182496176165e-08
     ## Rfng     -6.38050603777611 1.76503767089971e-10  1.0630821891829e-06
     ## Dab2ip   -6.22951537405123 4.67880242961723e-10  1.8786951355723e-06
+    ## Tm2d2    -6.13792612800535  8.3605721198489e-10  2.5177862938925e-06
+    ## Alkbh1   -6.06755691746534 1.29870599744614e-09  2.5522717325059e-06
 
 This second function only prints the total number of DEGs, but it saves
 lots of useful info to a df for downstream dataviz.
@@ -1157,6 +1201,18 @@ plot single gene counts
 
 ![](../figures/02b_RNAseqAll/Prkcz-2.png)
 
+    plotCounts(dds, "Arc", intgroup = "treatment", normalized = TRUE)
+
+![](../figures/02b_RNAseqAll/Prkcz-3.png)
+
+    plotCounts(dds, "Egr1", intgroup = "treatment", normalized = TRUE)
+
+![](../figures/02b_RNAseqAll/Prkcz-4.png)
+
+    plotCounts(dds, "Camk1g", intgroup = "treatment", normalized = TRUE)
+
+![](../figures/02b_RNAseqAll/Prkcz-5.png)
+
 Observed versus expected ration of DEGs
 ---------------------------------------
 
@@ -1258,27 +1314,6 @@ Observed versus expected ration of DEGs
     ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  23
     ## standard.trained.conflict.trained standard.trained conflict.trained   1
     ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   5
-
-    d <- plottotalDEGs(DEGsall, "Total number of differentially expressed genes")
-
-    ## 'data.frame':    10 obs. of  3 variables:
-    ##  $ V1: Factor w/ 5 levels "home.cage","standard.yoked",..: 1 1 1 1 2 2 2 3 3 4
-    ##  $ V2: Factor w/ 5 levels "home.cage","standard.yoked",..: 2 3 4 5 3 4 5 4 5 5
-    ##  $ V3: int  410 344 367 601 39 5 14 23 1 5
-    ## NULL
-    ##                                                 V1               V2  V3
-    ## home.cage.standard.yoked                 home.cage   standard.yoked 410
-    ## home.cage.standard.trained               home.cage standard.trained 344
-    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 367
-    ## home.cage.conflict.trained               home.cage conflict.trained 601
-    ## standard.yoked.standard.trained     standard.yoked standard.trained  39
-    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   5
-    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  14
-    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  23
-    ## standard.trained.conflict.trained standard.trained conflict.trained   1
-    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   5
-
-![](../figures/02b_RNAseqAll/plottotalDEGs-1.png)
 
     dds.DG <- subsetDESeq("DG")
 
@@ -1533,6 +1568,27 @@ Observed versus expected ration of DEGs
     ## standard.trained.conflict.trained standard.trained conflict.trained   0
     ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   2
 
+    d <- plottotalDEGs(DEGsall, "All subfields")
+
+    ## 'data.frame':    10 obs. of  3 variables:
+    ##  $ V1: Factor w/ 5 levels "home.cage","standard.yoked",..: 1 1 1 1 2 2 2 3 3 4
+    ##  $ V2: Factor w/ 5 levels "home.cage","standard.yoked",..: 2 3 4 5 3 4 5 4 5 5
+    ##  $ V3: int  410 344 367 601 39 5 14 23 1 5
+    ## NULL
+    ##                                                 V1               V2  V3
+    ## home.cage.standard.yoked                 home.cage   standard.yoked 410
+    ## home.cage.standard.trained               home.cage standard.trained 344
+    ## home.cage.conflict.yoked                 home.cage   conflict.yoked 367
+    ## home.cage.conflict.trained               home.cage conflict.trained 601
+    ## standard.yoked.standard.trained     standard.yoked standard.trained  39
+    ## standard.yoked.conflict.yoked       standard.yoked   conflict.yoked   5
+    ## standard.yoked.conflict.trained     standard.yoked conflict.trained  14
+    ## standard.trained.conflict.yoked   standard.trained   conflict.yoked  23
+    ## standard.trained.conflict.trained standard.trained conflict.trained   1
+    ## conflict.yoked.conflict.trained     conflict.yoked conflict.trained   5
+
+![](../figures/02b_RNAseqAll/plottotalDEGs-1.png)
+
     a <- plottotalDEGs(DEGsall, "DG")
 
     ## 'data.frame':    10 obs. of  3 variables:
@@ -1612,9 +1668,17 @@ Observed versus expected ration of DEGs
 
     ## Warning: Removed 3 rows containing missing values (geom_text).
 
-    plot_grid(e, mylegend, rel_widths   = c(.9, 0.1), ncol = 2)
+    f <- plot_grid(e, mylegend, rel_widths   = c(.9, 0.1), ncol = 2)
+    f
 
 ![](../figures/02b_RNAseqAll/plottotalDEGs-5.png)
+
+    pdf(file="../figures/02b_RNAseqALL/plottotalDEGs.pdf", width=6, height=6)
+    plot(f)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
 
     colData.DG <- subsetcolData(colData,  "DG")
     colData.CA3 <- subsetcolData(colData,  "CA3")
