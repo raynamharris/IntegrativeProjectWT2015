@@ -13,7 +13,10 @@ The figures made from this script were compiled in Adobe.
     library(ggrepel) ## for labeling volcano plot
     library(stringr) ## for uppercase gene names
     library(car)
-    library(VennDiagram)
+
+    library(BiocParallel)
+    register(MulticoreParam(6))
+
 
     ## load functions 
     source("figureoptions.R")
@@ -46,24 +49,28 @@ The two two catagorical variables are
     ##  standard.trained: 9           
     ##  standard.yoked  : 9
 
-    head(colData)
+    totalCounts <- colSums(countData)
+    totalCounts
 
-    ##     RNAseqID   Mouse subfield      Group   Conflict Treatment     ID
-    ## 1 143A-CA3-1 15-143A      CA3   conflict   Conflict  conflict 15143A
-    ## 2  143A-DG-1 15-143A       DG   conflict   Conflict  conflict 15143A
-    ## 3 143B-CA1-1 15-143B      CA1    control   Conflict   shocked 15143B
-    ## 4  143B-DG-1 15-143B       DG    control   Conflict   shocked 15143B
-    ## 5 143C-CA1-1 15-143C      CA1 consistent NoConflict   trained 15143C
-    ## 6 143D-CA1-3 15-143D      CA1    control NoConflict     yoked 15143D
-    ##          treatment
-    ## 1 conflict.trained
-    ## 2 conflict.trained
-    ## 3   conflict.yoked
-    ## 4   conflict.yoked
-    ## 5 standard.trained
-    ## 6   standard.yoked
+    ## 143A-CA3-1  143A-DG-1 143B-CA1-1  143B-DG-1 143C-CA1-1 143D-CA1-3 
+    ##    3327867    5279392    1719498    2085031    2213452    1091672 
+    ##  143D-DG-3 144A-CA1-2 144A-CA3-2  144A-DG-2 144B-CA1-1 144B-CA3-1 
+    ##    1043885    2980775     421165    3210030    2555909    1027388 
+    ## 144C-CA1-2 144C-CA3-2  144C-DG-2 144D-CA3-2  144D-DG-2 145A-CA1-2 
+    ##    3298825    1238998    2224182    2323243    4691568    4680960 
+    ## 145A-CA3-2  145A-DG-2 145B-CA1-1  145B-DG-1 146A-CA1-2 146A-CA3-2 
+    ##     345619    1435833    2020114    1509310    1715282    2756300 
+    ##  146A-DG-2 146B-CA1-2 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 
+    ##    1201333    1063417    2144771     116106    1360004     492145 
+    ## 146D-CA1-3 146D-CA3-3  146D-DG-3  147-CA1-4  147-CA3-4   147-DG-4 
+    ##     391369    2994536      90417     159069     689232     139276 
+    ## 147C-CA1-3 147C-CA3-3  147C-DG-3 147D-CA3-1  147D-DG-1  148-CA1-2 
+    ##    3072308    5754581    4350647    4624995   11700703    1901256 
+    ##  148-CA3-2   148-DG-2 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 
+    ##    2343035    2231849    5260906    2676397    4019062     337174 
+    ## 148B-CA3-4  148B-DG-4 
+    ##    3486840     798668
 
-    totalCounts=colSums(countData)
     ### on average 1 million gene counts per sample 
     summary((colSums(countData)/1000000))
 
@@ -101,7 +108,7 @@ The two two catagorical variables are
     ## colnames(50): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
     ## colData names(8): RNAseqID Mouse ... ID treatment
 
-    dds <- DESeq(dds) # Differential expression analysis
+    dds <- DESeq(dds, parallel = TRUE) # Differential expression analysis
     #rld <- rlog(dds, blind=FALSE) ## log transformed data
     vsd <- vst(dds, blind=FALSE) ## variance stabilized
     head(assay(vsd),3)
@@ -163,13 +170,13 @@ check for outliers
     sampleDists <- dist(t(assay(vsd)))
     library("RColorBrewer")
     sampleDistMatrix <- as.matrix(sampleDists)
-    rownames(sampleDistMatrix) <- paste(vsd$condition, vsd$type, sep="-")
+    rownames(sampleDistMatrix) <- paste(vsd$subfield, vsd$treatment, sep="-")
     colnames(sampleDistMatrix) <- NULL
     colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
     pheatmap(sampleDistMatrix,
              clustering_distance_rows=sampleDists,
              clustering_distance_cols=sampleDists,
-             col=colors)
+             col=colors, fontsize = 6)
 
 ![](../figures/02b_RNAseqAll/unnamed-chunk-1-3.png)
 
@@ -319,39 +326,6 @@ genes and the top 3 most significant genes.
     ## Sgk1  1.21520112762777e-09 3.65957819585102e-06
     ## Egr1   1.5531268838205e-09 3.74179328850035e-06
 
-    res_summary(c("treatment", "conflict.yoked", "standard.yoked"))
-
-    ## [1] "treatment"      "conflict.yoked" "standard.yoked"
-    ## 
-    ## out of 17975 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 34, 0.19%
-    ## LFC < 0 (down)     : 3, 0.017%
-    ## outliers [1]       : 8, 0.045%
-    ## low counts [2]     : 5921, 33%
-    ## (mean count < 5)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## log2 fold change (MLE): treatment conflict.yoked vs standard.yoked 
-    ## Wald test p-value: treatment conflict.yoked vs standard.yoked 
-    ## DataFrame with 5 rows and 6 columns
-    ##                 baseMean   log2FoldChange             lfcSE
-    ##                <numeric>        <numeric>         <numeric>
-    ## Kcnc2   124.952493734933 3.83674269491689 0.584367546731223
-    ## Cnr1    296.149800385222 3.90399810714797 0.764264716790456
-    ## St8sia5 69.5476502474826 3.57600594059455 0.723406685629619
-    ## Dner    153.262759844367 1.75326848146048 0.361641191111858
-    ## Camk1g  38.5597191774869 3.08308692900109 0.665243199868374
-    ##                     stat               pvalue                 padj
-    ##                <numeric>            <numeric>            <numeric>
-    ## Kcnc2   6.56563273641474 5.18123751144787e-11 6.24131870629011e-07
-    ## Cnr1    5.10817524527742 3.25284893107316e-07  0.00195919091118537
-    ## St8sia5 4.94328572244555 7.68167731698567e-07  0.00308444949868031
-    ## Dner    4.84808844941056 1.24656822373952e-06  0.00375404020579156
-    ## Camk1g  4.63452603440533 3.57756210369691e-06  0.00861906262022659
-
     res_summary(c("treatment", "conflict.trained", "conflict.yoked"))
 
     ## [1] "treatment"        "conflict.trained" "conflict.yoked"  
@@ -418,6 +392,39 @@ genes and the top 3 most significant genes.
     ## 0610009L18Rik  0.443558233598815     0.65736200808842                    1
     ## 0610009O20Rik  0.584209714466554    0.559079226505278                    1
 
+    res_summary(c("treatment", "conflict.yoked", "standard.yoked"))
+
+    ## [1] "treatment"      "conflict.yoked" "standard.yoked"
+    ## 
+    ## out of 17975 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 34, 0.19%
+    ## LFC < 0 (down)     : 3, 0.017%
+    ## outliers [1]       : 8, 0.045%
+    ## low counts [2]     : 5921, 33%
+    ## (mean count < 5)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## log2 fold change (MLE): treatment conflict.yoked vs standard.yoked 
+    ## Wald test p-value: treatment conflict.yoked vs standard.yoked 
+    ## DataFrame with 5 rows and 6 columns
+    ##                 baseMean   log2FoldChange             lfcSE
+    ##                <numeric>        <numeric>         <numeric>
+    ## Kcnc2   124.952493734933 3.83674269491689 0.584367546731223
+    ## Cnr1    296.149800385222 3.90399810714797 0.764264716790456
+    ## St8sia5 69.5476502474826 3.57600594059455 0.723406685629619
+    ## Dner    153.262759844367 1.75326848146048 0.361641191111858
+    ## Camk1g  38.5597191774869 3.08308692900109 0.665243199868374
+    ##                     stat               pvalue                 padj
+    ##                <numeric>            <numeric>            <numeric>
+    ## Kcnc2   6.56563273641474 5.18123751144787e-11 6.24131870629011e-07
+    ## Cnr1    5.10817524527742 3.25284893107316e-07  0.00195919091118537
+    ## St8sia5 4.94328572244555 7.68167731698567e-07  0.00308444949868031
+    ## Dner    4.84808844941056 1.24656822373952e-06  0.00375404020579156
+    ## Camk1g  4.63452603440533 3.57756210369691e-06  0.00861906262022659
+
     res_summary(c("treatment", "standard.yoked", "home.cage"))
 
     ## [1] "treatment"      "standard.yoked" "home.cage"     
@@ -451,39 +458,6 @@ genes and the top 3 most significant genes.
     ## Tm2d2  -6.13429928394565 8.55353598812042e-10 2.50169543812552e-06
     ## Zdbf2  -6.05195919609551 1.43094719899242e-09 3.34813025620248e-06
 
-    res_summary(c("treatment", "standard.trained", "home.cage"))
-
-    ## [1] "treatment"        "standard.trained" "home.cage"       
-    ## 
-    ## out of 17975 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 452, 2.5%
-    ## LFC < 0 (down)     : 868, 4.8%
-    ## outliers [1]       : 8, 0.045%
-    ## low counts [2]     : 5921, 33%
-    ## (mean count < 5)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## log2 fold change (MLE): treatment standard.trained vs home.cage 
-    ## Wald test p-value: treatment standard.trained vs home.cage 
-    ## DataFrame with 5 rows and 6 columns
-    ##                  baseMean    log2FoldChange             lfcSE
-    ##                 <numeric>         <numeric>         <numeric>
-    ## Ephb6    163.997853114623 -3.08904301500247 0.479759817352088
-    ## BC068281 34.2258704050532  -5.9006312973857 0.943776293272163
-    ## Rfng     187.215948646428 -2.90460467559235 0.469417426750392
-    ## Dab2ip    184.45067783596 -3.20706390087913 0.525793319385623
-    ## Polr3k    58.921335312843 -3.64206409474448 0.620787737909977
-    ##                       stat               pvalue                 padj
-    ##                  <numeric>            <numeric>            <numeric>
-    ## Ephb6    -6.43872809534499 1.20478804133903e-10 1.45128767459699e-06
-    ## BC068281 -6.25215036598095 4.04839325440685e-10 2.43834725712924e-06
-    ## Rfng     -6.18767968564755 6.10562331127034e-10 2.45161128025208e-06
-    ## Dab2ip   -6.09947632013757  1.0641652270551e-09 3.20473358127642e-06
-    ## Polr3k   -5.86684283907783 4.44171315197402e-09 1.07009753257358e-05
-
     res_summary(c("treatment", "conflict.yoked", "home.cage"))
 
     ## [1] "treatment"      "conflict.yoked" "home.cage"     
@@ -516,39 +490,6 @@ genes and the top 3 most significant genes.
     ## Dab2ip   -6.03166387396593 1.62280046421079e-09 3.35243529231545e-06
     ## Endod1    6.03631002061259 1.57678188133849e-09 3.35243529231545e-06
     ## Gpr27    -6.12843348296246 8.87485171671387e-10 3.35243529231545e-06
-
-    res_summary(c("treatment", "conflict.trained", "home.cage"))
-
-    ## [1] "treatment"        "conflict.trained" "home.cage"       
-    ## 
-    ## out of 17975 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 589, 3.3%
-    ## LFC < 0 (down)     : 1070, 6%
-    ## outliers [1]       : 8, 0.045%
-    ## low counts [2]     : 5921, 33%
-    ## (mean count < 5)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## log2 fold change (MLE): treatment conflict.trained vs home.cage 
-    ## Wald test p-value: treatment conflict.trained vs home.cage 
-    ## DataFrame with 5 rows and 6 columns
-    ##                  baseMean    log2FoldChange             lfcSE
-    ##                 <numeric>         <numeric>         <numeric>
-    ## BC068281 34.2258704050532 -5.92261090786567 0.843983239835422
-    ## Rfng     187.215948646428 -2.72895221438367 0.427701533111444
-    ## Dab2ip    184.45067783596 -2.97029411412126 0.476809821594452
-    ## Tm2d2    73.1835387317898 -3.19014467909072 0.519743087903116
-    ## Alkbh1   47.6954100002425 -3.98524963393853 0.656812896549362
-    ##                       stat               pvalue                 padj
-    ##                  <numeric>            <numeric>            <numeric>
-    ## BC068281 -7.01745085485417 2.25952595198543e-12 2.72182496176165e-08
-    ## Rfng     -6.38050603777611 1.76503767089971e-10  1.0630821891829e-06
-    ## Dab2ip   -6.22951537405123 4.67880242961723e-10  1.8786951355723e-06
-    ## Tm2d2    -6.13792612800535  8.3605721198489e-10  2.5177862938925e-06
-    ## Alkbh1   -6.06755691746534 1.29870599744614e-09  2.5522717325059e-06
 
 This second function only prints the total number of DEGs, but it saves
 lots of useful info to a df for downstream dataviz.
@@ -587,22 +528,13 @@ lots of useful info to a df for downstream dataviz.
 
     ## [1] 1285
 
-    contrast9 <- resvals(contrastvector = c("treatment", "standard.trained", "home.cage"), mypval = 0.1) # 1320
-
-    ## [1] 1320
-
-    contrast10 <- resvals(contrastvector = c("treatment", "conflict.yoked", "home.cage"), mypval = 0.1) #1400
+    contrast9 <- resvals(contrastvector = c("treatment", "conflict.yoked", "home.cage"), mypval = 0.1) #1400
 
     ## [1] 1400
 
-    contrast11 <- resvals(contrastvector = c("treatment", "conflict.trained", "home.cage"), mypval = 0.1) #1659
-
-    ## [1] 1659
-
     # heatmap with all DEGs
     DEGes <- assay(vsd)
-    DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7,
-                   contrast8, contrast9, contrast10, contrast11)
+    DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7, contrast8, contrast9)
     DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
     DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
     DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
@@ -675,20 +607,16 @@ lots of useful info to a df for downstream dataviz.
     ## [64] "padjtreatmentconflict.yokedstandard.yoked"    
     ## [65] "pvaltreatmentstandard.yokedhome.cage"         
     ## [66] "padjtreatmentstandard.yokedhome.cage"         
-    ## [67] "pvaltreatmentstandard.trainedhome.cage"       
-    ## [68] "padjtreatmentstandard.trainedhome.cage"       
-    ## [69] "pvaltreatmentconflict.yokedhome.cage"         
-    ## [70] "padjtreatmentconflict.yokedhome.cage"         
-    ## [71] "pvaltreatmentconflict.trainedhome.cage"       
-    ## [72] "padjtreatmentconflict.trainedhome.cage"       
-    ## [73] "rownames"
+    ## [67] "pvaltreatmentconflict.yokedhome.cage"         
+    ## [68] "padjtreatmentconflict.yokedhome.cage"         
+    ## [69] "rownames"
 
-    DEGes$padjmin <- with(DEGes, pmin(padjsubfieldCA1DG, padjsubfieldCA1CA3, padjsubfieldCA3DG, 
-                                      "padjtreatmentstandard.trainedstandard.yoked", "padjtreatmentconflict.trainedconflict.yoked",
-                                      "padjtreatmentconflict.trainedstandard.trained","padjtreatmentconflict.yokedstandard.yoked",
-                                      "padjtreatmentstandard.yokedhome.cage","padjtreatmentstandard.trainedhome.cage",
-                                      "padjtreatmentconflict.yokedhome.cage","padjtreatmentconflict.trainedhome.cage")) 
-    DEGes <- DEGes %>% filter(padjmin < 0.00000000000000000001)
+    DEGes$padjmin <- with(DEGes, pmin(# padjsubfieldCA1DG, padjsubfieldCA1CA3, padjsubfieldCA3DG,
+                                      padjtreatmentstandard.trainedstandard.yoked, padjtreatmentconflict.trainedconflict.yoked,
+                                      padjtreatmentconflict.trainedstandard.trained,padjtreatmentconflict.yokedstandard.yoked,
+                                      padjtreatmentstandard.yokedhome.cage,padjtreatmentconflict.yokedhome.cage)) 
+    DEGes <- DEGes %>% filter(padjmin < 0.1)
+
     rownames(DEGes) <- DEGes$rownames
     drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
     DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
@@ -865,9 +793,9 @@ Principle component analysis
 
 ![](../figures/02b_RNAseqAll/pca-1.png)
 
-    PCA42 <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2)) +
+    PCA42 <- ggplot(pcadata, aes(pcadata$PC4, pcadata$PC2)) +
         geom_point(size=3, aes(colour=subfield, shape=treatment), alpha = 0.8) +
-        xlab(paste0("PC5: ", percentVar[5],"%")) +
+        xlab(paste0("PC4: ", percentVar[4],"%")) +
         ylab(paste0("PC2: ", percentVar[2],"%")) +
         scale_colour_manual(values=c(colorvalsubfield))+ 
        theme_bw(base_size = 12)  +
@@ -882,202 +810,6 @@ Principle component analysis
     plot_grid(PCA12, PCA42 ,nrow = 2)
 
 ![](../figures/02b_RNAseqAll/pca-3.png)
-
-PCA without trained animals
----------------------------
-
-    # create the dataframe using my function pcadataframe
-    pcadata <- pcadata %>%
-      filter(treatment %in% c("home cage", "standard yoked","conflict yoked"))
-    head(pcadata)
-
-    ##          PC1        PC2        PC3         PC4        PC5        PC6
-    ## 1 -10.248532  11.033281 -3.9358111 -0.07416176  1.3174595 -0.8215657
-    ## 2  18.183037  -1.909191 -3.4156549  1.74309014  0.5599177  1.4622793
-    ## 3 -11.082970  12.937073 -0.4472517  0.82278795 -1.2774101 -0.7559707
-    ## 4  19.787195  -1.140826 -1.0869728  2.79026702 -0.8051216  0.5437439
-    ## 5 -10.928638  12.083606 -1.8659673 -0.23674450  0.3361173 -0.1283809
-    ## 6  -8.350649 -10.325457  1.2017648  0.59450604 -1.0327512 -0.4456557
-    ##          PC7         PC8         PC9                group subfield
-    ## 1 -3.0878014  1.61532663 -1.10269922 CA1 : conflict.yoked      CA1
-    ## 2 -1.1135954  2.05283273  0.03563451  DG : conflict.yoked       DG
-    ## 3  0.4961708  0.61207186 -3.03670894 CA1 : standard.yoked      CA1
-    ## 4  0.3386635  1.29059008  0.27796247  DG : standard.yoked       DG
-    ## 5 -1.0118537  0.02196843 -0.61748306 CA1 : conflict.yoked      CA1
-    ## 6  2.2459156 -0.81247110  3.03799531 CA3 : conflict.yoked      CA3
-    ##        treatment       name        subfieldAPA
-    ## 1 conflict yoked 143B-CA1-1 CA1_conflict.yoked
-    ## 2 conflict yoked  143B-DG-1  DG_conflict.yoked
-    ## 3 standard yoked 143D-CA1-3 CA1_standard.yoked
-    ## 4 standard yoked  143D-DG-3  DG_standard.yoked
-    ## 5 conflict yoked 144B-CA1-1 CA1_conflict.yoked
-    ## 6 conflict yoked 144B-CA3-1 CA3_conflict.yoked
-
-    summary(aov(PC1 ~ subfield * treatment, data=pcadata)) 
-
-    ##                    Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## subfield            2   4721  2360.5 225.763 1.79e-13 ***
-    ## treatment           2      7     3.7   0.353    0.707    
-    ## subfield:treatment  4     37     9.2   0.884    0.493    
-    ## Residuals          18    188    10.5                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    TukeyHSD((aov(PC1 ~ subfield, data=pcadata)), which = "subfield") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC1 ~ subfield, data = pcadata)
-    ## 
-    ## $subfield
-    ##              diff        lwr        upr     p adj
-    ## CA3-DG  -27.99525 -31.682801 -24.307701 0.0000000
-    ## CA1-DG  -26.80526 -30.377185 -23.233337 0.0000000
-    ## CA1-CA3   1.18999  -2.587514   4.967494 0.7146245
-
-    TukeyHSD((aov(PC1 ~ treatment, data=pcadata)), which = "treatment") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC1 ~ treatment, data = pcadata)
-    ## 
-    ## $treatment
-    ##                                     diff       lwr      upr     p adj
-    ## standard yoked-home cage       3.7688406 -14.95946 22.49714 0.8707844
-    ## conflict yoked-home cage      -0.2834496 -18.05067 17.48377 0.9991253
-    ## conflict yoked-standard yoked -4.0522902 -19.72151 11.61693 0.7964625
-
-    summary(aov(PC2 ~ subfield * treatment, data=pcadata)) 
-
-    ##                    Df Sum Sq Mean Sq  F value Pr(>F)    
-    ## subfield            2 2605.8  1302.9 1346.230 <2e-16 ***
-    ## treatment           2    1.6     0.8    0.821  0.456    
-    ## subfield:treatment  4    2.9     0.7    0.753  0.569    
-    ## Residuals          18   17.4     1.0                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    TukeyHSD((aov(PC2 ~ subfield, data=pcadata)), which = "subfield") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC2 ~ subfield, data = pcadata)
-    ## 
-    ## $subfield
-    ##              diff       lwr       upr p adj
-    ## CA3-DG  -10.92942 -12.06162 -9.797222     0
-    ## CA1-DG   13.73853  12.64183 14.835233     0
-    ## CA1-CA3  24.66796  23.50814 25.827774     0
-
-    TukeyHSD((aov(PC2 ~ treatment, data=pcadata)), which = "treatment") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC2 ~ treatment, data = pcadata)
-    ## 
-    ## $treatment
-    ##                                    diff        lwr      upr     p adj
-    ## standard yoked-home cage      -2.142275 -15.696938 11.41239 0.9180076
-    ## conflict yoked-home cage       1.856103 -11.002980 14.71519 0.9310875
-    ## conflict yoked-standard yoked  3.998377  -7.342268 15.33902 0.6575266
-
-    summary(aov(PC3 ~ subfield * treatment, data=pcadata)) 
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)
-    ## subfield            2  107.4    53.7   0.713  0.503
-    ## treatment           2  241.0   120.5   1.600  0.229
-    ## subfield:treatment  4   38.4     9.6   0.128  0.970
-    ## Residuals          18 1355.4    75.3
-
-    TukeyHSD((aov(PC3 ~ subfield, data=pcadata)), which = "subfield") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC3 ~ subfield, data = pcadata)
-    ## 
-    ## $subfield
-    ##              diff        lwr       upr     p adj
-    ## CA3-DG  -4.894490 -14.671037  4.882056 0.4362217
-    ## CA1-DG  -1.780001 -11.249997  7.689994 0.8862068
-    ## CA1-CA3  3.114489  -6.900545 13.129523 0.7206770
-
-    TukeyHSD((aov(PC3 ~ treatment, data=pcadata)), which = "treatment") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC3 ~ treatment, data = pcadata)
-    ## 
-    ## $treatment
-    ##                                    diff        lwr      upr     p adj
-    ## standard yoked-home cage      -6.195356 -16.662451 4.271739 0.3188511
-    ## conflict yoked-home cage      -7.312503 -17.242462 2.617455 0.1785619
-    ## conflict yoked-standard yoked -1.117147  -9.874547 7.640253 0.9457194
-
-    summary(aov(PC4 ~ subfield * treatment, data=pcadata)) 
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)  
-    ## subfield            2    9.9    4.96   0.175  0.841  
-    ## treatment           2  111.6   55.81   1.968  0.169  
-    ## subfield:treatment  4  276.0   69.00   2.434  0.085 .
-    ## Residuals          18  510.3   28.35                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    summary(aov(PC5 ~ subfield * treatment, data=pcadata)) 
-
-    ##                    Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## subfield            2  33.57   16.79   2.167 0.14345   
-    ## treatment           2 100.99   50.49   6.519 0.00742 **
-    ## subfield:treatment  4  37.85    9.46   1.222 0.33641   
-    ## Residuals          18 139.42    7.75                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    summary(aov(PC6 ~ subfield * treatment, data=pcadata)) 
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)  
-    ## subfield            2  34.13  17.066   1.456 0.2593  
-    ## treatment           2  19.05   9.527   0.813 0.4592  
-    ## subfield:treatment  4 119.00  29.749   2.539 0.0758 .
-    ## Residuals          18 210.94  11.719                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
-        geom_point(size=3, aes(shape=treatment), alpha = 0.8) +
-        xlab(paste0("PC1: ", percentVar[1],"%")) +
-        ylab(paste0("PC2: ", percentVar[2],"%")) +
-        scale_colour_manual(values=c(colorvalsubfield)) + 
-       theme_bw(base_size = 12)  +
-          theme(legend.title=element_blank()) +
-        scale_shape_manual(values=c(2, 1,  0), aes(colour=colorvalsubfield)) 
-    PCA12
-
-![](../figures/02b_RNAseqAll/pca2-1.png)
-
-    PCA42 <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2)) +
-        geom_point(size=3, aes(colour=subfield, shape=treatment), alpha = 0.8) +
-        xlab(paste0("PC5: ", percentVar[5],"%")) +
-        ylab(paste0("PC2: ", percentVar[2],"%")) +
-        scale_colour_manual(values=c(colorvalsubfield))+ 
-       theme_bw(base_size = 12)  +
-        theme(legend.title=element_blank()) +
-        scale_shape_manual(aes(colour=colorvalsubfield), values=c(2,1, 0)) +
-      guides(color = guide_legend(order=1),
-             shape = guide_legend(order=2))  
-    PCA42
-
-![](../figures/02b_RNAseqAll/pca2-2.png)
-
-    plot_grid(PCA12, PCA42 ,nrow = 2)
-
-![](../figures/02b_RNAseqAll/pca2-3.png)
 
 Volcanos plots and and gene lists
 ---------------------------------
@@ -1151,7 +883,7 @@ Volcanos plots and and gene lists
     e <- volcanoplot(DGvCA1, volcanoDGvCA1, c("DG", "CA1"))  
     f <- volcanoplot(CA3vCA1, volcanoCA3vCA1, c("CA3", "CA1")) 
 
-    plot_grid(d,e,f, nrow = 1)
+    plot_grid(d,e,f, nrow = 3)
 
 ![](../figures/02b_RNAseqAll/volcanos-1.png)
 
@@ -1170,7 +902,7 @@ Volcanos plots and and gene lists
 
 ![](../figures/02b_RNAseqAll/volcanos-4.png)
 
-    plot_grid(g,h,i,nrow = 1)
+    plot_grid(g,h,i,nrow = 3)
 
 ![](../figures/02b_RNAseqAll/volcanos-5.png)
 

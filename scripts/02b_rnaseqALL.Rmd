@@ -19,7 +19,10 @@ library(magrittr) ## to use the weird pipe
 library(ggrepel) ## for labeling volcano plot
 library(stringr) ## for uppercase gene names
 library(car)
-library(VennDiagram)
+
+library(BiocParallel)
+register(MulticoreParam(6))
+
 
 ## load functions 
 source("figureoptions.R")
@@ -43,9 +46,10 @@ countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, 
 colData <- colData %>% dplyr::rename(treatment = APA2, subfield = Punch)
 colData %>% select(treatment, subfield)  %>%  summary()
 
-head(colData)
 
-totalCounts=colSums(countData)
+totalCounts <- colSums(countData)
+totalCounts
+
 ### on average 1 million gene counts per sample 
 summary((colSums(countData)/1000000))
 
@@ -60,7 +64,7 @@ dds$treatment <- factor(dds$treatment, levels=c("home.cage","standard.yoked" ,"s
 dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
 dds # view number of genes afternormalization and the number of samples
-dds <- DESeq(dds) # Differential expression analysis
+dds <- DESeq(dds, parallel = TRUE) # Differential expression analysis
 #rld <- rlog(dds, blind=FALSE) ## log transformed data
 vsd <- vst(dds, blind=FALSE) ## variance stabilized
 head(assay(vsd),3)
@@ -77,13 +81,13 @@ plotDispEsts(dds)
 sampleDists <- dist(t(assay(vsd)))
 library("RColorBrewer")
 sampleDistMatrix <- as.matrix(sampleDists)
-rownames(sampleDistMatrix) <- paste(vsd$condition, vsd$type, sep="-")
+rownames(sampleDistMatrix) <- paste(vsd$subfield, vsd$treatment, sep="-")
 colnames(sampleDistMatrix) <- NULL
 colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
 pheatmap(sampleDistMatrix,
          clustering_distance_rows=sampleDists,
          clustering_distance_cols=sampleDists,
-         col=colors)
+         col=colors, fontsize = 6)
 ```
 
 ## Summary 2 way contrasts
@@ -104,14 +108,13 @@ res_summary(c("subfield", "CA1", "CA3"))
 res_summary(c("subfield", "CA3", "DG"))
 
 res_summary(c("treatment", "standard.trained", "standard.yoked"))
-res_summary(c("treatment", "conflict.yoked", "standard.yoked"))
 res_summary(c("treatment", "conflict.trained", "conflict.yoked"))
 res_summary(c("treatment", "conflict.trained", "standard.trained"))
+res_summary(c("treatment", "conflict.yoked", "standard.yoked"))
+
 
 res_summary(c("treatment", "standard.yoked", "home.cage"))
-res_summary(c("treatment", "standard.trained", "home.cage"))
 res_summary(c("treatment", "conflict.yoked", "home.cage"))
-res_summary(c("treatment", "conflict.trained", "home.cage"))
 ```
 
 This second function only prints the total number of DEGs, but it saves lots of useful info to a df for downstream dataviz.
@@ -128,28 +131,25 @@ contrast6 <- resvals(contrastvector = c("treatment", "conflict.trained", "standa
 contrast7 <- resvals(contrastvector = c("treatment", "conflict.yoked", "standard.yoked"), mypval = 0.1) # 37
 
 contrast8 <- resvals(contrastvector = c("treatment", "standard.yoked", "home.cage"), mypval = 0.1) #1285
-contrast9 <- resvals(contrastvector = c("treatment", "standard.trained", "home.cage"), mypval = 0.1) # 1320
-contrast10 <- resvals(contrastvector = c("treatment", "conflict.yoked", "home.cage"), mypval = 0.1) #1400
-contrast11 <- resvals(contrastvector = c("treatment", "conflict.trained", "home.cage"), mypval = 0.1) #1659
+contrast9 <- resvals(contrastvector = c("treatment", "conflict.yoked", "home.cage"), mypval = 0.1) #1400
 
 ```
 
 ```{r heatmap}
 # heatmap with all DEGs
 DEGes <- assay(vsd)
-DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7,
-               contrast8, contrast9, contrast10, contrast11)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7, contrast8, contrast9)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
 DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
 
 names(DEGes)
-DEGes$padjmin <- with(DEGes, pmin(padjsubfieldCA1DG, padjsubfieldCA1CA3, padjsubfieldCA3DG, 
-                                  "padjtreatmentstandard.trainedstandard.yoked", "padjtreatmentconflict.trainedconflict.yoked",
-                                  "padjtreatmentconflict.trainedstandard.trained","padjtreatmentconflict.yokedstandard.yoked",
-                                  "padjtreatmentstandard.yokedhome.cage","padjtreatmentstandard.trainedhome.cage",
-                                  "padjtreatmentconflict.yokedhome.cage","padjtreatmentconflict.trainedhome.cage")) 
-DEGes <- DEGes %>% filter(padjmin < 0.00000000000000000001)
+DEGes$padjmin <- with(DEGes, pmin(# padjsubfieldCA1DG, padjsubfieldCA1CA3, padjsubfieldCA3DG,
+                                  padjtreatmentstandard.trainedstandard.yoked, padjtreatmentconflict.trainedconflict.yoked,
+                                  padjtreatmentconflict.trainedstandard.trained,padjtreatmentconflict.yokedstandard.yoked,
+                                  padjtreatmentstandard.yokedhome.cage,padjtreatmentconflict.yokedhome.cage)) 
+DEGes <- DEGes %>% filter(padjmin < 0.1)
+
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
@@ -237,9 +237,9 @@ PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
   labs(color = "subfield", shape = "treatment")
 PCA12
 
-PCA42 <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2)) +
+PCA42 <- ggplot(pcadata, aes(pcadata$PC4, pcadata$PC2)) +
     geom_point(size=3, aes(colour=subfield, shape=treatment), alpha = 0.8) +
-    xlab(paste0("PC5: ", percentVar[5],"%")) +
+    xlab(paste0("PC4: ", percentVar[4],"%")) +
     ylab(paste0("PC2: ", percentVar[2],"%")) +
     scale_colour_manual(values=c(colorvalsubfield))+ 
    theme_bw(base_size = 12)  +
@@ -254,59 +254,7 @@ plot_grid(PCA12, PCA42 ,nrow = 2)
 
 ```
 
-## PCA without trained animals
 
-
-```{r pca2}
-# create the dataframe using my function pcadataframe
-pcadata <- pcadata %>%
-  filter(treatment %in% c("home cage", "standard yoked","conflict yoked"))
-head(pcadata)
-
-summary(aov(PC1 ~ subfield * treatment, data=pcadata)) 
-TukeyHSD((aov(PC1 ~ subfield, data=pcadata)), which = "subfield") 
-TukeyHSD((aov(PC1 ~ treatment, data=pcadata)), which = "treatment") 
-
-
-summary(aov(PC2 ~ subfield * treatment, data=pcadata)) 
-TukeyHSD((aov(PC2 ~ subfield, data=pcadata)), which = "subfield") 
-TukeyHSD((aov(PC2 ~ treatment, data=pcadata)), which = "treatment") 
-
-
-summary(aov(PC3 ~ subfield * treatment, data=pcadata)) 
-TukeyHSD((aov(PC3 ~ subfield, data=pcadata)), which = "subfield") 
-TukeyHSD((aov(PC3 ~ treatment, data=pcadata)), which = "treatment") 
-
-
-summary(aov(PC4 ~ subfield * treatment, data=pcadata)) 
-summary(aov(PC5 ~ subfield * treatment, data=pcadata)) 
-summary(aov(PC6 ~ subfield * treatment, data=pcadata)) 
-
-PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
-    geom_point(size=3, aes(shape=treatment), alpha = 0.8) +
-    xlab(paste0("PC1: ", percentVar[1],"%")) +
-    ylab(paste0("PC2: ", percentVar[2],"%")) +
-    scale_colour_manual(values=c(colorvalsubfield)) + 
-   theme_bw(base_size = 12)  +
-      theme(legend.title=element_blank()) +
-    scale_shape_manual(values=c(2, 1,  0), aes(colour=colorvalsubfield)) 
-PCA12
-
-PCA42 <- ggplot(pcadata, aes(pcadata$PC5, pcadata$PC2)) +
-    geom_point(size=3, aes(colour=subfield, shape=treatment), alpha = 0.8) +
-    xlab(paste0("PC5: ", percentVar[5],"%")) +
-    ylab(paste0("PC2: ", percentVar[2],"%")) +
-    scale_colour_manual(values=c(colorvalsubfield))+ 
-   theme_bw(base_size = 12)  +
-    theme(legend.title=element_blank()) +
-    scale_shape_manual(aes(colour=colorvalsubfield), values=c(2,1, 0)) +
-  guides(color = guide_legend(order=1),
-         shape = guide_legend(order=2))  
-PCA42
-
-plot_grid(PCA12, PCA42 ,nrow = 2)
-
-```
 
 ## Volcanos plots and and gene lists
 
@@ -372,7 +320,7 @@ d <- volcanoplot(DGvCA3, volcanoDGvCA3, c("DG", "CA3"))
 e <- volcanoplot(DGvCA1, volcanoDGvCA1, c("DG", "CA1"))  
 f <- volcanoplot(CA3vCA1, volcanoCA3vCA1, c("CA3", "CA1")) 
 
-plot_grid(d,e,f, nrow = 1)
+plot_grid(d,e,f, nrow = 3)
 
 g <- volcanoplot(STY, volcano1, c( "standard.yoked", "standard.trained")) 
 g
@@ -382,7 +330,7 @@ i <- volcanoplot(SYH, volcano3, c("home.cage", "standard.yoked"))
 i
 
 
-plot_grid(g,h,i,nrow = 1)
+plot_grid(g,h,i,nrow = 3)
 
 myvolcanoplots <- plot_grid(d,e,f, g,h,i,nrow = 2)
 myvolcanoplots
