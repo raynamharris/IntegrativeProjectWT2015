@@ -29,8 +29,8 @@ Setup
 Sample sizes
 ------------
 
-The 'APA2' column describes the four behavioral treatment groups.  
-The 'TrainSessionCombo' column describes the behvioral training
+The ‘APA2’ column describes the four behavioral treatment groups.  
+The ‘TrainSessionCombo’ column describes the behvioral training
 sessions. Here I filter by a single session to calculte the number of
 mice.
 
@@ -154,15 +154,14 @@ titles, y labels and limits.
 
     ## # A tibble: 6 x 5
     ## # Groups:   APA2 [1]
-    ##             APA2 TrainSessionComboNum      m       se
-    ##           <fctr>                <int>  <dbl>    <dbl>
-    ## 1 standard yoked                    1 31.375 2.321772
-    ## 2 standard yoked                    2 21.375 2.017225
-    ## 3 standard yoked                    3 15.375 1.400733
-    ## 4 standard yoked                    4 14.500 2.008909
-    ## 5 standard yoked                    5 16.875 0.875000
-    ## 6 standard yoked                    6 15.000 1.558387
-    ## # ... with 1 more variables: measure <chr>
+    ##   APA2          TrainSessionComboN…     m    se measure                    
+    ##   <fct>                       <int> <dbl> <dbl> <chr>                      
+    ## 1 standard yok…                   1  31.4 2.32  Number of target zone entr…
+    ## 2 standard yok…                   2  21.4 2.02  Number of target zone entr…
+    ## 3 standard yok…                   3  15.4 1.40  Number of target zone entr…
+    ## 4 standard yok…                   4  14.5 2.01  Number of target zone entr…
+    ## 5 standard yok…                   5  16.9 0.875 Number of target zone entr…
+    ## 6 standard yok…                   6  15   1.56  Number of target zone entr…
 
     # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
 
@@ -190,10 +189,10 @@ titles, y labels and limits.
       return(myplot)
     }  
 
-    A <- meansdplots(a, "Number of target zone entrances" , "Counts", c(0,10,20,30), c(0, 35))
-    B <- meansdplots(b, "Proportion of time in target zone", "Proportion", c(0,.12,.25,.37), c(0, .37 ))
-    C <- meansdplots(c, "Latency to 1st target zone entrance", "Time (min)", c(0,2,4,6,8), c(0, 8))
-    D <- meansdplots(d, "Proportion of time opposite the target zone", "Proportion", c(0.25, .5, .75), c(0.1, .75))
+    A <- meansdplots(a, "Number of entrances" , "Counts", c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
+    B <- meansdplots(c, "Latency to 1st entrance", "Time (min)", c(0,2,4,6,8), c(0, 8))
+    C <- meansdplots(b, "Proportion of time in target", "Proportion", c(0,.12,.25,.37), c(0, .37 ))
+    D <- meansdplots(d, "Proportion of time opposite", "Proportion", c(0.25, .5, .75), c(0.1, .75))
 
 
     plotnolegend <- plot_grid(A + theme(legend.position="none"),
@@ -201,53 +200,26 @@ titles, y labels and limits.
                C + theme(legend.position="none"),
                D + theme(legend.position="none"),
                #align = 'vh',
-               labels = c("A", "C", "B", "D"),
-               nrow = 2,
+               labels = c("(a)", "(b)", "(c)", "(d)"),
+               nrow = 1,
                label_size = 8
                )
-    legend <- get_legend(A)
+    legend <- get_legend(A) 
 
     fourplots <- plot_grid(plotnolegend, legend, ncol = 1, rel_heights = c(1, .1))
     fourplots
 
 ![](../figures/01_behavior/fourmeasures-1.png)
 
-    pdf(file="../figures/01_behavior/fourmeasures.pdf", width=5.1, height=4.1)
+    pdf(file="../figures/01_behavior/fourmeasures.pdf", width=6.65, height=2)
     plot(fourplots)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-    plotone <- plot_grid(A + theme(legend.position="none",
-                                   axis.text.x=element_blank(),
-                                   axis.title.x=element_blank()),
-               C + theme(legend.position="none"),
-               labels = c("A","B"),
-               nrow = 2,
-               label_size = 7,
-               rel_heights = c(0.45, 0.55)
-               )
-
-    plottwo <- plot_grid(B + theme(legend.position="none",
-                                   axis.text.x=element_blank(),
-                                   axis.title.x=element_blank()),
-               D + theme(legend.position="none"),
-               labels = c("C","D"),
-               nrow = 2,
-               label_size = 7,
-               rel_heights = c(0.45, 0.55)
-               )
-
-    pdf(file="../figures/01_behavior/twomeasuresAC.pdf", width=2.3, height=3)
-    plot(plotone)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    pdf(file="../figures/01_behavior/twomeasuresBD.pdf", width=2.3, height=3)
-    plot(plottwo)
+    pdf(file="../figures/figure_2.pdf", width=6.65, height=2)
+    plot(fourplots)
     dev.off()
 
     ## quartz_off_screen 
@@ -352,6 +324,8 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
       xlim(0, 10)
 
     ## Warning: Removed 29 rows containing missing values (position_stack).
+
+    ## Warning: Removed 1 rows containing missing values (geom_bar).
 
     ## Warning: Removed 29 rows containing missing values (geom_text).
 
@@ -1493,8 +1467,8 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 Number of shocks
 ----------------
 
-The values in the column "NumShock" are actually measures of the number
-of entraces into the shock zone. Because, that's what the software
+The values in the column “NumShock” are actually measures of the number
+of entraces into the shock zone. Because, that’s what the software
 records. For standard-trained and conflict-trained animals, the number
 of shocks equals equals the number of entraces. However, for yoked
 individuals, the number of entrances does not equal the number of
@@ -1563,71 +1537,61 @@ standard-trained or conflict-trained trained partner.
       dplyr::summarise(meanentraces = median(sums, na.rm = TRUE))
 
     ## # A tibble: 4 x 2
-    ##                  APA2 meanentraces
-    ##                <fctr>        <dbl>
-    ## 1   "standard\nyoked"        452.5
-    ## 2 "standard\ntrained"         90.0
-    ## 3   "conflict\nyoked"        490.0
-    ## 4 "conflict\ntrained"        122.0
+    ##   APA2                meanentraces
+    ##   <fct>                      <dbl>
+    ## 1 "standard\nyoked"           452.
+    ## 2 "standard\ntrained"          90 
+    ## 3 "conflict\nyoked"           490 
+    ## 4 "conflict\ntrained"         122
 
     realnumshocks %>%
       dplyr::group_by(APA2) %>%
       dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
 
     ## # A tibble: 4 x 2
-    ##                  APA2 meanshocks
-    ##                <fctr>      <dbl>
-    ## 1   "standard\nyoked"    96.0000
-    ## 2 "standard\ntrained"    96.0000
-    ## 3   "conflict\nyoked"   125.1111
-    ## 4 "conflict\ntrained"   125.1111
+    ##   APA2                meanshocks
+    ##   <fct>                    <dbl>
+    ## 1 "standard\nyoked"          96 
+    ## 2 "standard\ntrained"        96 
+    ## 3 "conflict\nyoked"         125.
+    ## 4 "conflict\ntrained"       125.
 
     # define what levels to compare for stats
     my_comparisons <- list(c("standard\ntrained", "conflict\ntrained"))
 
     a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
       geom_boxplot(outlier.size = 0.5) +
-      theme_bw(base_size = 12) +
+      theme_bw(base_size = 8) +
       scale_fill_manual(values = colorvalAPA00,
                         name = NULL) +
-      labs(x = NULL, subtitle = "Total shocks", y = "Number of shocks") +
+      labs(x = NULL, subtitle = " ", y = "No. of footshocks") +
         theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
               legend.position = "none") +
-      geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
-      geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
-        scale_y_continuous(limits = c(0,750),
-                           expand = c(0,0)) + 
-      stat_compare_means(comparisons = my_comparisons)
-    a
-
-![](../figures/01_behavior/ShocksEntrances-1.png)
+      #geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
+      #geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
+        scale_y_continuous( expand = c(0,0)) 
 
     my_comparisons <- list( c("standard\nyoked", "standard\ntrained"),
                             c("conflict\nyoked", "conflict\ntrained"))
 
     b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
       geom_boxplot(outlier.size = 0.5) +
-      theme_bw(base_size = 12) +
+      theme_bw(base_size = 8) +
       scale_fill_manual(values = colorvalAPA00,
                         name = NULL) +
-      labs(x = NULL, subtitle = "Total entrances", y = "Number of entrances") +
+      labs(x = NULL, subtitle = " ", y = "No. of entrances") +
         theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
               legend.position = "none") +
-      geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
-      geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
-      scale_y_continuous(limits = c(0,750),
-                         expand = c(0,0)) + 
-      stat_compare_means(comparisons = my_comparisons)
-    b
+      #geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
+      #geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
+      scale_y_continuous( expand = c(0,0)) 
 
-![](../figures/01_behavior/ShocksEntrances-2.png)
-
-    shock.entr.plot <- plot_grid(a,b, labels = c("B", "C"), label_size = 7)
+    shock.entr.plot <- plot_grid(a,b, labels = c("(b)", "(c)"), label_size = 8)
     shock.entr.plot
 
-![](../figures/01_behavior/ShocksEntrances-3.png)
+![](../figures/01_behavior/shockentrplot-1.png)
 
-    pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3, height=2.5)
+    pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3.5, height=2.45)
     plot(shock.entr.plot)
     dev.off()
 
