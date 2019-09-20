@@ -654,15 +654,15 @@ lots of useful info to a df for downstream dataviz.
     pheatmap(DEGes, show_colnames=F, show_rownames = F,
              annotation_col=df, annotation_colors = pheatmapcolors, 
              annotation_row = NA, 
-             annotation_legend = TRUE,
+             annotation_legend = F,
              annotation_names_row = FALSE, 
              annotation_names_col = FALSE,
-             treeheight_row = 10, treeheight_col = 10,
+             treeheight_row = 0, treeheight_col = 10,
              fontsize = 6, 
              border_color = NA ,
              color = viridis(80),
              height = 2.5, 
-             width = 3.3,
+             width = 2.5,
              clustering_method="average",
              breaks=myBreaks,
              clustering_distance_cols="correlation", 
@@ -781,20 +781,31 @@ Principle component analysis
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
-        geom_point(size=3, aes(shape=treatment), alpha = 0.8) +
+        geom_point(size=2, aes(shape=treatment), alpha = 0.8) +
         xlab(paste0("PC1: ", percentVar[1],"%")) +
         ylab(paste0("PC2: ", percentVar[2],"%")) +
         scale_colour_manual(values=c(colorvalsubfield))+ 
-       theme_bw(base_size = 12)  +
-          theme(legend.title=element_blank()) +
+       theme_classic(base_size = 8)  +
+          theme(legend.title=element_blank(), 
+                legend.position=c(0.8,0.825),
+                legend.text = element_text(size=5),
+                legend.key.size = unit(0, 'lines')) +
         scale_shape_manual(values=c(2, 1, 16, 0, 15), aes(color=colorvalsubfield)) +
-      labs(color = "subfield", shape = "treatment")
+      labs(color = "subfield", shape = "treatment") +
+      guides(color = FALSE)
     PCA12
 
 ![](../figures/02b_RNAseqAll/pca-1.png)
 
+    pdf(file="../figures/02b_RNAseqALL/PCA12.pdf", width=2.75, height=2.5)
+    plot(PCA12)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
     PCA42 <- ggplot(pcadata, aes(pcadata$PC4, pcadata$PC2)) +
-        geom_point(size=3, aes(colour=subfield, shape=treatment), alpha = 0.8) +
+        geom_point(size=2, aes(colour=subfield, shape=treatment), alpha = 0.8) +
         xlab(paste0("PC4: ", percentVar[4],"%")) +
         ylab(paste0("PC2: ", percentVar[2],"%")) +
         scale_colour_manual(values=c(colorvalsubfield))+ 
@@ -859,7 +870,7 @@ Volcanos plots and and gene lists
       myvolcano <- mydata %>%
         dplyr::filter(direction != "NS") %>%
         ggplot(aes(x = lfc, y = logp)) + 
-      geom_point(aes(color = direction), size = 2, alpha = 0.5, na.rm = T) + 
+      geom_point(aes(color = direction), size = 1.5, alpha = 0.5, na.rm = T) + 
       scale_color_manual(values = mycolors,
                          breaks = mybreaks,
                          name = "higher in") + 
