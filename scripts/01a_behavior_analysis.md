@@ -1561,7 +1561,7 @@ standard-trained or conflict-trained trained partner.
 
     a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
       geom_boxplot(outlier.size = 0.5) +
-      theme_bw(base_size = 8) +
+      theme_classic(base_size = 8) +
       scale_fill_manual(values = colorvalAPA00,
                         name = NULL) +
       labs(x = NULL, subtitle = " ", y = "Total footshocks") +
@@ -1573,7 +1573,7 @@ standard-trained or conflict-trained trained partner.
 
     b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
       geom_boxplot(outlier.size = 0.5) +
-      theme_bw(base_size = 8) +
+      theme_classic(base_size = 8) +
       scale_fill_manual(values = colorvalAPA00,
                         name = NULL) +
       labs(x = NULL, subtitle = " ", y = "Total entrances to 60\u00b0 sector") +
