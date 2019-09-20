@@ -362,7 +362,7 @@ Confict versus Consistent
 
 ![](../figures/02c_rnaseqSubfield/confcons-3.png)
 
-    plot_grid(DGconflict, CA3conflict, CA1conflict, nrow = 1)
+    plot_grid(DGconflict, CA3conflict, CA1conflict, nrow = 3)
 
 ![](../figures/02c_rnaseqSubfield/confcons-4.png)
 

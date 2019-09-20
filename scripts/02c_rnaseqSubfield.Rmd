@@ -175,7 +175,7 @@ DGconflict <-  plot.conf.cons(DGdds, "DG: standard v. conflict trained")
 CA3conflict <-  plot.conf.cons(CA3dds, "CA3: standard v. conflict trained")
 CA1conflict <-  plot.conf.cons(CA1dds, "CA1: standard v. conflict trained")
 
-plot_grid(DGconflict, CA3conflict, CA1conflict, nrow = 1)
+plot_grid(DGconflict, CA3conflict, CA1conflict, nrow = 3)
 ```
 
 
