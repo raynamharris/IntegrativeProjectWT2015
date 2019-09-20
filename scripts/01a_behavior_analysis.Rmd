@@ -93,13 +93,13 @@ head(fourmeasures)
 
 # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
 
-meansdplots <- function(df, mytitle, myylab, ybreaks, ylims){
+meansdplots <- function(df, myylab, ybreaks, ylims){
   myplot <- ggplot(df, 
                   aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
     geom_point(size = 1.5) +
     geom_line() +
-    labs(subtitle = mytitle) +
+    labs(subtitle = " ") +
     scale_y_continuous(name= myylab,
                        breaks = ybreaks,
                        limits = ylims) +
@@ -117,10 +117,10 @@ meansdplots <- function(df, mytitle, myylab, ybreaks, ylims){
   return(myplot)
 }  
 
-A <- meansdplots(a, "Number of entrances" , "Counts", c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
-B <- meansdplots(c, "Latency to 1st entrance", "Time (min)", c(0,2,4,6,8), c(0, 8))
-C <- meansdplots(b, "Proportion of time in target", "Proportion", c(0,.12,.25,.37), c(0, .37 ))
-D <- meansdplots(d, "Proportion of time opposite", "Proportion", c(0.25, .5, .75), c(0.1, .75))
+A <- meansdplots(a, "Number of entrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
+B <- meansdplots(c, "Latency to 1st entrance (min)",  c(0,2,4,6,8), c(0, 8))
+C <- meansdplots(b, "Prop. time in 60\u00b0 sector", c(0,.12,.25,.37), c(0, .37 ))
+D <- meansdplots(d, "Prop. time opposite 60\u00b0 sector", c(0.25, .5, .75), c(0.1, .75))
 
 
 plotnolegend <- plot_grid(A + theme(legend.position="none"),
@@ -128,7 +128,7 @@ plotnolegend <- plot_grid(A + theme(legend.position="none"),
            C + theme(legend.position="none"),
            D + theme(legend.position="none"),
            #align = 'vh',
-           labels = c("(a)", "(b)", "(c)", "(d)"),
+           labels = c("(d)", "(e)", "(f)", "(g)"),
            nrow = 1,
            label_size = 8
            )
@@ -141,7 +141,7 @@ pdf(file="../figures/01_behavior/fourmeasures.pdf", width=6.65, height=2)
 plot(fourplots)
 dev.off()
 
-pdf(file="../figures/figure_2.pdf", width=6.65, height=2)
+pdf(file="../figures/figure_1d.pdf", width=6.65, height=2)
 plot(fourplots)
 dev.off()
 
@@ -438,12 +438,9 @@ a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
   theme_bw(base_size = 8) +
   scale_fill_manual(values = colorvalAPA00,
                     name = NULL) +
-  labs(x = NULL, subtitle = " ", y = "No. of footshocks") +
+  labs(x = NULL, subtitle = " ", y = "Total footshocks") +
     theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-          legend.position = "none") +
-  #geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
-  #geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
-    scale_y_continuous( expand = c(0,0)) 
+          legend.position = "none") 
 
 my_comparisons <- list( c("standard\nyoked", "standard\ntrained"),
                         c("conflict\nyoked", "conflict\ntrained"))
@@ -453,12 +450,9 @@ b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
   theme_bw(base_size = 8) +
   scale_fill_manual(values = colorvalAPA00,
                     name = NULL) +
-  labs(x = NULL, subtitle = " ", y = "No. of entrances") +
+  labs(x = NULL, subtitle = " ", y = "Total entrances to 60\u00b0 sector") +
     theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-          legend.position = "none") +
-  #geom_hline(yintercept=122, linetype="dashed", color = "#f4a582") +
-  #geom_hline(yintercept=90, linetype="dashed", color = "#ca0020") +
-  scale_y_continuous( expand = c(0,0)) 
+          legend.position = "none") 
 
 shock.entr.plot <- plot_grid(a,b, labels = c("(b)", "(c)"), label_size = 8)
 shock.entr.plot
