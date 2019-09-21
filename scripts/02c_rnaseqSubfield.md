@@ -14,6 +14,9 @@ have been inserted just below the subheadings.
     library(ggtextures)
     library(magick)
 
+    library(BiocParallel)
+    register(MulticoreParam(6))
+
     ## load functions 
     source("figureoptions.R")
     source("functions_RNAseq.R")
@@ -43,8 +46,8 @@ Get varience stabilized gene expression for each tissue
                                   design = ~ APA2)
 
       dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-       # Differential expression analysis
-      return(DESeq(dds))
+      dds <- DESeq(dds, parallel = TRUE)
+      return(dds)
     }
 
     DGdds <- returndds("DG") 
@@ -55,13 +58,11 @@ Get varience stabilized gene expression for each tissue
 
     ## estimating dispersions
 
-    ## gene-wise dispersion estimates
+    ## gene-wise dispersion estimates: 6 workers
 
     ## mean-dispersion relationship
 
-    ## final dispersion estimates
-
-    ## fitting model and testing
+    ## final dispersion estimates, fitting model and testing: 6 workers
 
     CA1dds <- returndds("CA1") 
 
@@ -71,13 +72,11 @@ Get varience stabilized gene expression for each tissue
 
     ## estimating dispersions
 
-    ## gene-wise dispersion estimates
+    ## gene-wise dispersion estimates: 6 workers
 
     ## mean-dispersion relationship
 
-    ## final dispersion estimates
-
-    ## fitting model and testing
+    ## final dispersion estimates, fitting model and testing: 6 workers
 
     CA3dds <- returndds("CA3") 
 
@@ -87,13 +86,11 @@ Get varience stabilized gene expression for each tissue
 
     ## estimating dispersions
 
-    ## gene-wise dispersion estimates
+    ## gene-wise dispersion estimates: 6 workers
 
     ## mean-dispersion relationship
 
-    ## final dispersion estimates
-
-    ## fitting model and testing
+    ## final dispersion estimates, fitting model and testing: 6 workers
 
     returnvsds <- function(mydds, vsdfilename){
       dds <- mydds
@@ -167,17 +164,17 @@ Consistent versus yoked-consistent
                        lfc = res$log2FoldChange)
       data <- na.omit(data)
       data <- data %>%
-        dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
+        dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
                             yes = "standard.trained", 
-                            no = ifelse(data$lfc < -1 & data$padj < 0.1, 
+                            no = ifelse(data$lfc < 0 & data$padj < 0.1, 
                                         yes = "standard.yoked", 
                                         no = "NS")))
 
 
-      write.csv(data, file = paste0("../data/02c_", mytissue, "_std.train.yoke", sep = ""), row.names = F)
+      write.csv(data, file = paste0("../data/02c_", mytissue, "_std.train.yoked.csv", sep = ""), row.names = F)
       
       volcano <- data %>%
-        filter(direction != "NS") %>%
+        #filter(direction != "NS") %>%
         ggplot(aes(x = lfc, y = logpadj)) + 
         geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
         theme_cowplot(font_size = 7, line_size = 0.25) +
@@ -187,6 +184,7 @@ Consistent versus yoked-consistent
                           breaks = c("standard.yoked", "NS", "standard.trained"))  + 
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
+        ylim(c(0,7)) +
         ylab(paste0("-log10 p-value")) +  
         labs(subtitle = mytitle) +
         theme(legend.position = "bottom",
@@ -253,14 +251,9 @@ Consistent versus yoked-consistent
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-3.png)
 
-    training <- plot_grid(DGconsyokcons,CA1consyokcons, nrow = 1)
-    training
+    plot_grid(DGconsyokcons,CA1consyokcons, nrow = 1)
 
 ![](../figures/02c_rnaseqSubfield/consyokcons-4.png)
-
-    plot_grid(DGconsyokcons, CA3consyokcons, CA1consyokcons, nrow = 1)
-
-![](../figures/02c_rnaseqSubfield/consyokcons-5.png)
 
 Confict versus Consistent
 -------------------------
@@ -280,9 +273,9 @@ Confict versus Consistent
       data <- na.omit(data)
       
       data <- data %>%
-        dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
+        dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
                             yes = "conflict.trained", 
-                            no = ifelse(data$lfc < -1 & data$padj < 0.1, 
+                            no = ifelse(data$lfc < 0 & data$padj < 0.1, 
                                         yes = "standard.trained", 
                                         no = "NS")))
       
@@ -383,9 +376,9 @@ Yoked confict versus yoked consistent
                        lfc = res$log2FoldChange)
       data <- na.omit(data)
       data <- data %>%
-        dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
+        dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
                             yes = "conflict.yoked", 
-                            no = ifelse(data$lfc < -1 & data$padj < 0.1, 
+                            no = ifelse(data$lfc < 0 & data$padj < 0.1, 
                                         yes = "standard.yoked", 
                                         no = "NS")))
       
@@ -394,7 +387,7 @@ Yoked confict versus yoked consistent
       write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""), row.names = F)
       
       volcano <- data %>%
-        filter(direction != "NS") %>%
+        #filter(direction != "NS") %>%
         ggplot(aes(x = lfc, y = logpadj, color = direction)) + 
         geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
         theme_cowplot(font_size = 7, line_size = 0.25) +
@@ -404,7 +397,8 @@ Yoked confict versus yoked consistent
         #scale_y_continuous(limits=c(0, 12.5)) +
         scale_x_continuous(limits=c(-10, 10),
                             name="Log fold difference")+
-        ylab(paste0("-log10 p-value")) +  
+        ylab(paste0("-log10 p-value")) + 
+        ylim(c(0,7)) +
         labs(subtitle = mytitle) +
         theme(legend.position = "bottom",
               legend.spacing.x = unit(0.1, 'cm'),
@@ -477,7 +471,7 @@ Yoked confict versus yoked consistent
 
 ![](../figures/02c_rnaseqSubfield/fig5volcanos-1.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=2.5, height=5)
+    pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=6.65, height=2)
     plot(volcanos)    
     dev.off()
 

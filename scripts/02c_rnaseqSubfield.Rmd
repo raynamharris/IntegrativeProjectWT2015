@@ -16,6 +16,9 @@ library(UpSetR)
 library(ggtextures)
 library(magick)
 
+library(BiocParallel)
+register(MulticoreParam(6))
+
 ## load functions 
 source("figureoptions.R")
 source("functions_RNAseq.R")
@@ -46,8 +49,8 @@ returndds <- function(mytissue){
                               design = ~ APA2)
 
   dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-   # Differential expression analysis
-  return(DESeq(dds))
+  dds <- DESeq(dds, parallel = TRUE)
+  return(dds)
 }
 
 DGdds <- returndds("DG") 
@@ -82,17 +85,17 @@ plot.cons.yokcons <- function(mydds, mytissue, mytitle){
                    lfc = res$log2FoldChange)
   data <- na.omit(data)
   data <- data %>%
-    dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
+    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
                         yes = "standard.trained", 
-                        no = ifelse(data$lfc < -1 & data$padj < 0.1, 
+                        no = ifelse(data$lfc < 0 & data$padj < 0.1, 
                                     yes = "standard.yoked", 
                                     no = "NS")))
 
 
-  write.csv(data, file = paste0("../data/02c_", mytissue, "_std.train.yoke", sep = ""), row.names = F)
+  write.csv(data, file = paste0("../data/02c_", mytissue, "_std.train.yoked.csv", sep = ""), row.names = F)
   
   volcano <- data %>%
-    filter(direction != "NS") %>%
+    #filter(direction != "NS") %>%
     ggplot(aes(x = lfc, y = logpadj)) + 
     geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
     theme_cowplot(font_size = 7, line_size = 0.25) +
@@ -102,6 +105,7 @@ plot.cons.yokcons <- function(mydds, mytissue, mytitle){
                       breaks = c("standard.yoked", "NS", "standard.trained"))  + 
     scale_x_continuous(limits=c(-10, 10),
                         name="Log fold difference")+
+    ylim(c(0,7)) +
     ylab(paste0("-log10 p-value")) +  
     labs(subtitle = mytitle) +
     theme(legend.position = "bottom",
@@ -118,11 +122,7 @@ DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DG: standard yoked v. trained"
 CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3", "CA3: standard yoked v. trained")  
 CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "CA1: standard yoked v. trained")  
 
-training <- plot_grid(DGconsyokcons,CA1consyokcons, nrow = 1)
-training
-
-plot_grid(DGconsyokcons, CA3consyokcons, CA1consyokcons, nrow = 1)
-
+plot_grid(DGconsyokcons,CA1consyokcons, nrow = 1)
 ```
 
 ## Confict versus Consistent
@@ -143,9 +143,9 @@ plot.conf.cons <- function(mydds, mytissue){
   data <- na.omit(data)
   
   data <- data %>%
-    dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
+    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
                         yes = "conflict.trained", 
-                        no = ifelse(data$lfc < -1 & data$padj < 0.1, 
+                        no = ifelse(data$lfc < 0 & data$padj < 0.1, 
                                     yes = "standard.trained", 
                                     no = "NS")))
   
@@ -196,9 +196,9 @@ plot.yokconf.yokcons <- function(mydds, mytissue, mytitle){
                    lfc = res$log2FoldChange)
   data <- na.omit(data)
   data <- data %>%
-    dplyr::mutate(direction = ifelse(data$lfc > 1 & data$padj < 0.1, 
+    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
                         yes = "conflict.yoked", 
-                        no = ifelse(data$lfc < -1 & data$padj < 0.1, 
+                        no = ifelse(data$lfc < 0 & data$padj < 0.1, 
                                     yes = "standard.yoked", 
                                     no = "NS")))
   
@@ -207,7 +207,7 @@ plot.yokconf.yokcons <- function(mydds, mytissue, mytitle){
   write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""), row.names = F)
   
   volcano <- data %>%
-    filter(direction != "NS") %>%
+    #filter(direction != "NS") %>%
     ggplot(aes(x = lfc, y = logpadj, color = direction)) + 
     geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
     theme_cowplot(font_size = 7, line_size = 0.25) +
@@ -217,7 +217,8 @@ plot.yokconf.yokcons <- function(mydds, mytissue, mytitle){
     #scale_y_continuous(limits=c(0, 12.5)) +
     scale_x_continuous(limits=c(-10, 10),
                         name="Log fold difference")+
-    ylab(paste0("-log10 p-value")) +  
+    ylab(paste0("-log10 p-value")) + 
+    ylim(c(0,7)) +
     labs(subtitle = mytitle) +
     theme(legend.position = "bottom",
           legend.spacing.x = unit(0.1, 'cm'),
@@ -236,12 +237,10 @@ plot_grid(DGyoked, CA3yoked, CA1yoked, nrow = 1)
 
 
 ```{r fig5volcanos}
-
 volcanos <- plot_grid(DGconsyokcons  ,CA1consyokcons  , CA1yoked , nrow = 1) 
 volcanos
 
-
-pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=2.5, height=5)
+pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=6.65, height=2)
 plot(volcanos)    
 dev.off()
 ```
