@@ -466,7 +466,8 @@ Yoked confict versus yoked consistent
 
 ![](../figures/02c_rnaseqSubfield/yokeconfyokcons-4.png)
 
-    volcanos <- plot_grid(DGconsyokcons  ,CA1consyokcons  , CA1yoked , nrow = 1) 
+    volcanos <- plot_grid(DGconsyokcons  ,CA1consyokcons  , CA1yoked , nrow = 1,
+                          labels = c("(d)", "(e)", "(f)"), label_size = 8) 
     volcanos
 
 ![](../figures/02c_rnaseqSubfield/fig5volcanos-1.png)
