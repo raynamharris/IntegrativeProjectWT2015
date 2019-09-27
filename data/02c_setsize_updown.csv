@@ -1,7 +1,0 @@
-set,setsize,direction,subfield,status
-CA1stress,545,yoked_conflict,CA1,stress
-CA1stress,372,yoked_consistent,CA1,stress
-CA1train,522,consistent,CA1,train
-CA1train,360,yoked_consistent,CA1,train
-DGtrain,119,consistent,DG,train
-DGtrain,6,yoked_consistent,DG,train
