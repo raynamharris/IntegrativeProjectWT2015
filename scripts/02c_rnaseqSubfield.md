@@ -562,15 +562,19 @@ What genes overlap within cetain comparisons?
 
     dds # view the DESeq object - note numnber of genes
     dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-    dds <- DESeq(dds) # Differential expression analysis
+    dds <- DESeq(dds, parallel = TRUE) # Differential expression analysis
 
     A <- listofDEGs("standard.trained","standard.yoked")
     B <- listofDEGs("conflict.trained","standard.trained")
     C <- listofDEGs("conflict.trained","conflict.yoked")
     D <- listofDEGs("conflict.yoked","standard.yoked")
 
+    E <- listofDEGs("home.cage","standard.yoked")
+    G <- listofDEGs("home.cage","standard.trained")
+    H <- listofDEGs("home.cage","conflict.yoked")
+    I <- listofDEGs("home.cage","conflict.trained")
 
-    all <- rbind(A,B,C,D)
+    all <- rbind(A,B,C,D,E,G,H,I)
 
     write.csv(all, file = paste("../data/02c_",i,"forupset.csv", sep = ""), row.names = F)
     }
@@ -581,13 +585,11 @@ What genes overlap within cetain comparisons?
 
     ## estimating dispersions
 
-    ## gene-wise dispersion estimates
+    ## gene-wise dispersion estimates: 6 workers
 
     ## mean-dispersion relationship
 
-    ## final dispersion estimates
-
-    ## fitting model and testing
+    ## final dispersion estimates, fitting model and testing: 6 workers
 
     ## [1] "CA3"
 
@@ -595,13 +597,11 @@ What genes overlap within cetain comparisons?
 
     ## estimating dispersions
 
-    ## gene-wise dispersion estimates
+    ## gene-wise dispersion estimates: 6 workers
 
     ## mean-dispersion relationship
 
-    ## final dispersion estimates
-
-    ## fitting model and testing
+    ## final dispersion estimates, fitting model and testing: 6 workers
 
     ## [1] "DG"
 
@@ -609,10 +609,8 @@ What genes overlap within cetain comparisons?
 
     ## estimating dispersions
 
-    ## gene-wise dispersion estimates
+    ## gene-wise dispersion estimates: 6 workers
 
     ## mean-dispersion relationship
 
-    ## final dispersion estimates
-
-    ## fitting model and testing
+    ## final dispersion estimates, fitting model and testing: 6 workers
