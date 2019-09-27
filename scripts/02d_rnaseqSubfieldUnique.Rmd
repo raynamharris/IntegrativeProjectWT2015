@@ -20,19 +20,25 @@ knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/')
 ```{r beginupset}
 
 DG <- read.csv("../data/02c_DGforupset.csv")  
-CA1<- read.csv("../data/02c_CA1forupset.csv")  
+CA1 <- read.csv("../data/02c_CA1forupset.csv")  
 CA3 <- read.csv("../data/02c_CA3forupset.csv") 
 
+tail(CA1)
 
 # upset plot without direction
 all <- rbind(DG,CA1,CA3)
+str(all)
+levels(all$comparison)
 
-levels(all$comparison) <- c("conf-cons",
-                            "conf-yconf", 
-                            "cons-ycons", 
-                            "yconf-ycons")
+all <- all %>%
+  mutate(comparison = fct_recode(comparison,
+    "ConfT.ConfY"    = "conflict.trained-conflict.yoked",
+    "ConfY.StdY"      = "conflict.yoked-standard.yoked",
+    "StdT.StdY" = "standard.trained-standard.yoked"
+  ))
 
-all$significant <- paste(all$tissue, all$comparison, sep = "-")
+
+all$significant <- paste(all$tissue, all$comparison, sep = ".")
 
 myupsetdf <- all %>%
   select(gene,significant) %>%
@@ -50,7 +56,7 @@ all$direction <- ifelse(all$lfc > 0, "up", "down")
 all$sigdir <- paste(all$significant, all$direction, sep = "-")
 
 myupsetslim  <- all %>%
-  filter(significant %in% c("DG-cons-ycons", "CA1-cons-ycons", "CA1-yconf-ycons")) %>%
+  #filter(significant %in% c("DG-cons-ycons", "CA1-cons-ycons", "CA1-yconf-ycons")) %>%
   select(gene,sigdir) %>%
   mutate(yesno = 1) %>%
   distinct %>%
@@ -66,11 +72,27 @@ myupsetslim$gene <- row.names(myupsetslim)
 ```{r upsetplot}
 upset(myupsetdf, keep.order = T)
 
+pdf(file="../figures/02c_rnaseqSubfield/upsetall.pdf",  onefile=FALSE) # or other device
+
+myupsetdfslim <- myupsetdf %>%
+  select(gene, "CA1.ConfY.StdY", "CA1.StdT.StdY",
+               "CA3.ConfY.StdY" , 
+               "DG.ConfY.StdY" ,  "DG.StdT.StdY" )
+
+upset(myupsetdfslim, keep.order = F,
+      sets = c("CA1.ConfY.StdY", "CA1.StdT.StdY",
+               "CA3.ConfY.StdY" , 
+               "DG.ConfY.StdY" ,  "DG.StdT.StdY" ),
+      sets.bar.color=c("#7570b3","#7570b3",
+                       "#d95f02","#d95f02",
+                       "#1b9e77"),
+      order.by = "freq"
+)
+dev.off()
+
 trained <- myupsetdf %>%
-  select(gene, 'DG-cons-ycons', 'CA3-cons-ycons', 'CA1-cons-ycons')
-
+  select(gene, 'DG.StdT.StdY', 'CA3.StdT.StdY', 'CA1.StdT.StdY')
 colnames(trained) <- c("gene", "DG", "CA3", "CA1")
-
 
 pdf(file="../figures/02c_rnaseqSubfield/upsettraining.pdf",  onefile=FALSE) # or other device
 upset(trained, keep.order = T,
@@ -91,7 +113,9 @@ dev.off()
 
 Create a list of genes afected by stress and learning. Save. THen use to filter out nonspecific gene expression responses
 
-```{r listofDEGs}
+```{r listofDEGs, eval=F}
+
+names(myupsetdf)
 shared <- myupsetdf %>%
   select(gene, "CA1-yconf-ycons", "CA1-cons-ycons", "DG-cons-ycons")
 colnames(shared) <- c("gene", "CA1stress", "CA1learn", "DGlearn")

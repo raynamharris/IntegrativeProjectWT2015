@@ -1,17 +1,42 @@
     DG <- read.csv("../data/02c_DGforupset.csv")  
-    CA1<- read.csv("../data/02c_CA1forupset.csv")  
+    CA1 <- read.csv("../data/02c_CA1forupset.csv")  
     CA3 <- read.csv("../data/02c_CA3forupset.csv") 
 
+    tail(CA1)
+
+    ##         gene        lfc       padj tissue                    comparison
+    ## 624   Zfp937  4.0311619 0.09502176    CA1 conflict.yoked-standard.yoked
+    ## 625  Zfyve21 -2.8761465 0.09570253    CA1 conflict.yoked-standard.yoked
+    ## 626    Zgpat -1.0475942 0.08574683    CA1 conflict.yoked-standard.yoked
+    ## 627     Zic3 -5.9099446 0.05608592    CA1 conflict.yoked-standard.yoked
+    ## 628 Zmpste24  4.0930764 0.05618195    CA1 conflict.yoked-standard.yoked
+    ## 629  Zscan26 -0.9015179 0.07517407    CA1 conflict.yoked-standard.yoked
 
     # upset plot without direction
     all <- rbind(DG,CA1,CA3)
+    str(all)
 
-    levels(all$comparison) <- c("conf-cons",
-                                "conf-yconf", 
-                                "cons-ycons", 
-                                "yconf-ycons")
+    ## 'data.frame':    707 obs. of  5 variables:
+    ##  $ gene      : Factor w/ 548 levels "A830010M20Rik",..: 1 2 3 4 5 6 7 8 9 10 ...
+    ##  $ lfc       : num  2.03 2.44 2.36 1.66 2.87 ...
+    ##  $ padj      : num  4.42e-03 2.70e-04 4.42e-03 6.77e-02 1.77e-05 ...
+    ##  $ tissue    : Factor w/ 3 levels "DG","CA1","CA3": 1 1 1 1 1 1 1 1 1 1 ...
+    ##  $ comparison: Factor w/ 3 levels "conflict.trained-conflict.yoked",..: 3 3 3 3 3 3 3 3 3 3 ...
 
-    all$significant <- paste(all$tissue, all$comparison, sep = "-")
+    levels(all$comparison)
+
+    ## [1] "conflict.trained-conflict.yoked" "conflict.yoked-standard.yoked"  
+    ## [3] "standard.trained-standard.yoked"
+
+    all <- all %>%
+      mutate(comparison = fct_recode(comparison,
+        "ConfT.ConfY"    = "conflict.trained-conflict.yoked",
+        "ConfY.StdY"      = "conflict.yoked-standard.yoked",
+        "StdT.StdY" = "standard.trained-standard.yoked"
+      ))
+
+
+    all$significant <- paste(all$tissue, all$comparison, sep = ".")
 
     myupsetdf <- all %>%
       select(gene,significant) %>%
@@ -20,27 +45,20 @@
       spread(significant, yesno, fill = 0)
     head(myupsetdf)
 
-    ##            gene CA1-conf-yconf CA1-cons-ycons CA1-yconf-ycons
-    ## 1 A830010M20Rik              0              0               0
-    ## 2          Acan              0              0               0
-    ## 3       Adamts1              0              1               1
-    ## 4        Amigo2              0              0               0
-    ## 5       Ankrd28              0              0               0
-    ## 6      Ankrd33b              0              0               0
-    ##   CA3-cons-ycons CA3-yconf-ycons DG-conf-cons DG-conf-yconf DG-cons-ycons
-    ## 1              0               0            0             0             1
-    ## 2              0               0            0             1             1
-    ## 3              0               0            0             0             1
-    ## 4              0               0            0             0             1
-    ## 5              0               0            0             0             1
-    ## 6              0               0            0             1             0
-    ##   DG-yconf-ycons
-    ## 1              0
-    ## 2              0
-    ## 3              0
-    ## 4              0
-    ## 5              0
-    ## 6              0
+    ##            gene CA1.ConfT.ConfY CA1.ConfY.StdY CA1.StdT.StdY
+    ## 1 A830010M20Rik               0              0             0
+    ## 2          Acan               0              0             0
+    ## 3       Adamts1               0              1             1
+    ## 4       Ankrd28               0              0             0
+    ## 5           Arc               0              0             0
+    ## 6         Arl5b               0              0             0
+    ##   CA3.ConfY.StdY CA3.StdT.StdY DG.ConfT.ConfY DG.ConfY.StdY DG.StdT.StdY
+    ## 1              0             0              0             0            1
+    ## 2              0             0              0             0            1
+    ## 3              0             0              0             0            1
+    ## 4              0             0              0             0            1
+    ## 5              0             0              0             0            1
+    ## 6              0             0              0             0            1
 
     write.csv(myupsetdf, "../data/02c_upsetdf.csv")
 
@@ -48,48 +66,68 @@
     # upset plot with direction, only CA1learn, CA1 stress, and DGlearn
     head(all) 
 
-    ##            gene      lfc         padj tissue comparison   significant
-    ## 1 A830010M20Rik 1.991294 6.235077e-05     DG cons-ycons DG-cons-ycons
-    ## 2          Acan 2.459128 1.411053e-05     DG cons-ycons DG-cons-ycons
-    ## 3       Adamts1 2.370955 3.493214e-02     DG cons-ycons DG-cons-ycons
-    ## 4        Amigo2 1.982597 6.941977e-02     DG cons-ycons DG-cons-ycons
-    ## 5       Ankrd28 1.642931 1.247682e-02     DG cons-ycons DG-cons-ycons
-    ## 6           Arc 2.891323 3.577881e-05     DG cons-ycons DG-cons-ycons
+    ##            gene      lfc         padj tissue comparison  significant
+    ## 1 A830010M20Rik 2.025595 4.423579e-03     DG  StdT.StdY DG.StdT.StdY
+    ## 2          Acan 2.443989 2.703270e-04     DG  StdT.StdY DG.StdT.StdY
+    ## 3       Adamts1 2.362481 4.423579e-03     DG  StdT.StdY DG.StdT.StdY
+    ## 4       Ankrd28 1.655249 6.766322e-02     DG  StdT.StdY DG.StdT.StdY
+    ## 5           Arc 2.869251 1.765702e-05     DG  StdT.StdY DG.StdT.StdY
+    ## 6         Arl5b 1.886192 1.351422e-02     DG  StdT.StdY DG.StdT.StdY
 
     all$direction <- ifelse(all$lfc > 0, "up", "down")
     all$sigdir <- paste(all$significant, all$direction, sep = "-")
 
     myupsetslim  <- all %>%
-      filter(significant %in% c("DG-cons-ycons", "CA1-cons-ycons", "CA1-yconf-ycons")) %>%
+      #filter(significant %in% c("DG-cons-ycons", "CA1-cons-ycons", "CA1-yconf-ycons")) %>%
       select(gene,sigdir) %>%
       mutate(yesno = 1) %>%
       distinct %>%
       spread(sigdir, yesno, fill = 0)
     head(myupsetslim)
 
-    ##            gene CA1-cons-ycons-down CA1-cons-ycons-up CA1-yconf-ycons-down
-    ## 1 A830010M20Rik                   0                 0                    0
-    ## 2          Acan                   0                 0                    0
-    ## 3       Adamts1                   0                 1                    0
-    ## 4        Amigo2                   0                 0                    0
-    ## 5       Ankrd28                   0                 0                    0
-    ## 6           Arc                   0                 0                    0
-    ##   CA1-yconf-ycons-up DG-cons-ycons-down DG-cons-ycons-up
-    ## 1                  0                  0                1
-    ## 2                  0                  0                1
-    ## 3                  1                  0                1
-    ## 4                  0                  0                1
-    ## 5                  0                  0                1
-    ## 6                  0                  0                1
+    ##            gene CA1.ConfT.ConfY-down CA1.ConfT.ConfY-up
+    ## 1 A830010M20Rik                    0                  0
+    ## 2          Acan                    0                  0
+    ## 3       Adamts1                    0                  0
+    ## 4       Ankrd28                    0                  0
+    ## 5           Arc                    0                  0
+    ## 6         Arl5b                    0                  0
+    ##   CA1.ConfY.StdY-down CA1.ConfY.StdY-up CA1.StdT.StdY-down
+    ## 1                   0                 0                  0
+    ## 2                   0                 0                  0
+    ## 3                   0                 1                  0
+    ## 4                   0                 0                  0
+    ## 5                   0                 0                  0
+    ## 6                   0                 0                  0
+    ##   CA1.StdT.StdY-up CA3.ConfY.StdY-down CA3.ConfY.StdY-up CA3.StdT.StdY-up
+    ## 1                0                   0                 0                0
+    ## 2                0                   0                 0                0
+    ## 3                1                   0                 0                0
+    ## 4                0                   0                 0                0
+    ## 5                0                   0                 0                0
+    ## 6                0                   0                 0                0
+    ##   DG.ConfT.ConfY-down DG.ConfY.StdY-up DG.StdT.StdY-down DG.StdT.StdY-up
+    ## 1                   0                0                 0               1
+    ## 2                   0                0                 0               1
+    ## 3                   0                0                 0               1
+    ## 4                   0                0                 0               1
+    ## 5                   0                0                 0               1
+    ## 6                   0                0                 0               1
 
     row.names(myupsetslim) <- myupsetslim$gene
     myupsetslim$gene <- NULL
     colSums(myupsetslim)
 
-    ##  CA1-cons-ycons-down    CA1-cons-ycons-up CA1-yconf-ycons-down 
-    ##                  360                  522                  372 
-    ##   CA1-yconf-ycons-up   DG-cons-ycons-down     DG-cons-ycons-up 
-    ##                  545                    6                  119
+    ## CA1.ConfT.ConfY-down   CA1.ConfT.ConfY-up  CA1.ConfY.StdY-down 
+    ##                    1                    1                  136 
+    ##    CA1.ConfY.StdY-up   CA1.StdT.StdY-down     CA1.StdT.StdY-up 
+    ##                  203                  105                  183 
+    ##  CA3.ConfY.StdY-down    CA3.ConfY.StdY-up     CA3.StdT.StdY-up 
+    ##                    1                    1                    1 
+    ##  DG.ConfT.ConfY-down     DG.ConfY.StdY-up    DG.StdT.StdY-down 
+    ##                    1                    3                    2 
+    ##      DG.StdT.StdY-up 
+    ##                   69
 
     myupsetslim$gene <- row.names(myupsetslim)
 
@@ -97,11 +135,30 @@
 
 ![](../figures/02c_rnaseqSubfield/upsetplot-1.png)
 
+    pdf(file="../figures/02c_rnaseqSubfield/upsetall.pdf",  onefile=FALSE) # or other device
+
+    myupsetdfslim <- myupsetdf %>%
+      select(gene, "CA1.ConfY.StdY", "CA1.StdT.StdY",
+                   "CA3.ConfY.StdY" , 
+                   "DG.ConfY.StdY" ,  "DG.StdT.StdY" )
+
+    upset(myupsetdfslim, keep.order = F,
+          sets = c("CA1.ConfY.StdY", "CA1.StdT.StdY",
+                   "CA3.ConfY.StdY" , 
+                   "DG.ConfY.StdY" ,  "DG.StdT.StdY" ),
+          sets.bar.color=c("#7570b3","#7570b3",
+                           "#d95f02","#d95f02",
+                           "#1b9e77"),
+          order.by = "freq"
+    )
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
     trained <- myupsetdf %>%
-      select(gene, 'DG-cons-ycons', 'CA3-cons-ycons', 'CA1-cons-ycons')
-
+      select(gene, 'DG.StdT.StdY', 'CA3.StdT.StdY', 'CA1.StdT.StdY')
     colnames(trained) <- c("gene", "DG", "CA3", "CA1")
-
 
     pdf(file="../figures/02c_rnaseqSubfield/upsettraining.pdf",  onefile=FALSE) # or other device
     upset(trained, keep.order = T,
@@ -125,6 +182,7 @@
 Create a list of genes afected by stress and learning. Save. THen use to
 filter out nonspecific gene expression responses
 
+    names(myupsetdf)
     shared <- myupsetdf %>%
       select(gene, "CA1-yconf-ycons", "CA1-cons-ycons", "DG-cons-ycons")
     colnames(shared) <- c("gene", "CA1stress", "CA1learn", "DGlearn")
@@ -134,26 +192,10 @@ filter out nonspecific gene expression responses
     shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
       select(gene) 
 
-    ##      gene
-    ## 1    Fosb
-    ## 2 Gm13889
-    ## 3    Irs1
-    ## 4   Lemd3
-    ## 5   Npas4
-    ## 6    Rgs2
-
     # learning and stress CA1
     CA1learnstress <- shared %>% filter(CA1learn == 1 & CA1stress == 1) %>%
       select(gene)
     head(CA1learnstress)
-
-    ##            gene
-    ## 1       Adamts1
-    ## 2           Mn1
-    ## 3         Nptx2
-    ## 4        Tiparp
-    ## 5         Zdbf2
-    ## 6 1810030O07Rik
 
     # CA1 learning but not CA1 stress 
     CA1learn <- shared %>% filter(CA1learn == 1 & CA1stress == 0) %>%
