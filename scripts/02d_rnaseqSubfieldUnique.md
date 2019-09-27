@@ -131,26 +131,23 @@
 
     myupsetslim$gene <- row.names(myupsetslim)
 
-    upset(myupsetdf, keep.order = T)
-
-![](../figures/02c_rnaseqSubfield/upsetplot-1.png)
-
-    pdf(file="../figures/02c_rnaseqSubfield/upsetall.pdf",  onefile=FALSE) # or other device
-
-    myupsetdfslim <- myupsetdf %>%
-      select(gene, "CA1.ConfY.StdY", "CA1.StdT.StdY",
-                   "CA3.ConfY.StdY" , 
-                   "DG.ConfY.StdY" ,  "DG.StdT.StdY" )
-
-    upset(myupsetdfslim, keep.order = F,
+    upset1 <- upset(myupsetdf, keep.order = F,
           sets = c("CA1.ConfY.StdY", "CA1.StdT.StdY",
                    "CA3.ConfY.StdY" , 
                    "DG.ConfY.StdY" ,  "DG.StdT.StdY" ),
           sets.bar.color=c("#7570b3","#7570b3",
                            "#d95f02","#d95f02",
                            "#1b9e77"),
-          order.by = "freq"
-    )
+          order.by = "freq",
+          sets.x.label = NULL,
+          point.size = 1.5, 
+          mb.ratio = c(0.6, 0.4))
+    upset1
+
+![](../figures/02c_rnaseqSubfield/upsetplot-1.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/upsetall.pdf",  onefile=FALSE, width=3.15, height=3.15) # or other device
+    upset1
     dev.off()
 
     ## quartz_off_screen 
@@ -160,8 +157,8 @@
       select(gene, 'DG.StdT.StdY', 'CA3.StdT.StdY', 'CA1.StdT.StdY')
     colnames(trained) <- c("gene", "DG", "CA3", "CA1")
 
-    pdf(file="../figures/02c_rnaseqSubfield/upsettraining.pdf",  onefile=FALSE) # or other device
-    upset(trained, keep.order = T,
+
+    upset2 <- upset(trained, keep.order = T,
           sets = c("CA1", "CA3", "DG"),
           sets.bar.color=c("#7570b3","#1b9e77", "#d95f02"),
           queries = list(list(query = intersects, params = list("CA1"), color = "#ca0020", active = T),
@@ -169,11 +166,15 @@
                          list(query = intersects, params = list("CA3"), color = "#ca0020", active = T),
                          list(query = intersects, params = list("CA1", "DG"), 
                               color = "#ca0020", active = T)),
-          text.scale = 2,
           sets.x.label = NULL,
-          #point.size = 1, line.size = 1,
-          mb.ratio = c(0.6, 0.4)
-    )
+          point.size = 1.5, 
+          mb.ratio = c(0.6, 0.4))
+    upset2
+
+![](../figures/02c_rnaseqSubfield/upsetplot-2.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/upsettraining.pdf",  onefile=FALSE, width=3.15, height=3.15) # or other device
+    upset2
     dev.off()
 
     ## quartz_off_screen 
@@ -182,9 +183,8 @@
 Create a list of genes afected by stress and learning. Save. THen use to
 filter out nonspecific gene expression responses
 
-    names(myupsetdf)
     shared <- myupsetdf %>%
-      select(gene, "CA1-yconf-ycons", "CA1-cons-ycons", "DG-cons-ycons")
+      select(gene, "CA1.ConfY.StdY", "CA1.StdT.StdY",  "DG.StdT.StdY")
     colnames(shared) <- c("gene", "CA1stress", "CA1learn", "DGlearn")
 
 
@@ -192,10 +192,21 @@ filter out nonspecific gene expression responses
     shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
       select(gene) 
 
+    ## [1] gene
+    ## <0 rows> (or 0-length row.names)
+
     # learning and stress CA1
     CA1learnstress <- shared %>% filter(CA1learn == 1 & CA1stress == 1) %>%
       select(gene)
     head(CA1learnstress)
+
+    ##            gene
+    ## 1       Adamts1
+    ## 2 2410002F23Rik
+    ## 3 2410004P03Rik
+    ## 4 3632451O06Rik
+    ## 5 6330408A02Rik
+    ## 6         Acin1
 
     # CA1 learning but not CA1 stress 
     CA1learn <- shared %>% filter(CA1learn == 1 & CA1stress == 0) %>%
