@@ -535,6 +535,10 @@ What genes overlap within cetain comparisons?
 
     listofDEGs <- function(group1, group2){
       res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
+      
+      print(paste(group1,group2, sep = " vs "))
+      print(summary(res))
+      
       data <- data.frame(gene = row.names(res),
                          lfc = res$log2FoldChange,
                          padj = res$padj,
@@ -591,6 +595,110 @@ What genes overlap within cetain comparisons?
 
     ## final dispersion estimates, fitting model and testing: 6 workers
 
+    ## [1] "standard.trained vs standard.yoked"
+    ## 
+    ## out of 16896 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 183, 1.1%
+    ## LFC < 0 (down)     : 105, 0.62%
+    ## outliers [1]       : 31, 0.18%
+    ## low counts [2]     : 5556, 33%
+    ## (mean count < 6)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "conflict.trained vs standard.trained"
+    ## 
+    ## out of 16896 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 31, 0.18%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "conflict.trained vs conflict.yoked"
+    ## 
+    ## out of 16896 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 1, 0.0059%
+    ## LFC < 0 (down)     : 1, 0.0059%
+    ## outliers [1]       : 31, 0.18%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "conflict.yoked vs standard.yoked"
+    ## 
+    ## out of 16896 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 203, 1.2%
+    ## LFC < 0 (down)     : 136, 0.8%
+    ## outliers [1]       : 31, 0.18%
+    ## low counts [2]     : 4905, 29%
+    ## (mean count < 4)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs standard.yoked"
+    ## 
+    ## out of 16896 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 441, 2.6%
+    ## LFC < 0 (down)     : 658, 3.9%
+    ## outliers [1]       : 31, 0.18%
+    ## low counts [2]     : 4905, 29%
+    ## (mean count < 4)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs standard.trained"
+    ## 
+    ## out of 16896 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 209, 1.2%
+    ## LFC < 0 (down)     : 420, 2.5%
+    ## outliers [1]       : 31, 0.18%
+    ## low counts [2]     : 4580, 27%
+    ## (mean count < 4)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs conflict.yoked"
+    ## 
+    ## out of 16896 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 257, 1.5%
+    ## LFC < 0 (down)     : 561, 3.3%
+    ## outliers [1]       : 31, 0.18%
+    ## low counts [2]     : 4905, 29%
+    ## (mean count < 4)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs conflict.trained"
+    ## 
+    ## out of 16896 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 236, 1.4%
+    ## LFC < 0 (down)     : 492, 2.9%
+    ## outliers [1]       : 31, 0.18%
+    ## low counts [2]     : 4905, 29%
+    ## (mean count < 4)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
     ## [1] "CA3"
 
     ## estimating size factors
@@ -603,6 +711,110 @@ What genes overlap within cetain comparisons?
 
     ## final dispersion estimates, fitting model and testing: 6 workers
 
+    ## [1] "standard.trained vs standard.yoked"
+    ## 
+    ## out of 16583 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 1, 0.006%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 9, 0.054%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "conflict.trained vs standard.trained"
+    ## 
+    ## out of 16583 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 9, 0.054%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "conflict.trained vs conflict.yoked"
+    ## 
+    ## out of 16583 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 9, 0.054%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "conflict.yoked vs standard.yoked"
+    ## 
+    ## out of 16583 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 1, 0.006%
+    ## LFC < 0 (down)     : 1, 0.006%
+    ## outliers [1]       : 9, 0.054%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs standard.yoked"
+    ## 
+    ## out of 16583 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 11, 0.066%
+    ## LFC < 0 (down)     : 38, 0.23%
+    ## outliers [1]       : 9, 0.054%
+    ## low counts [2]     : 4177, 25%
+    ## (mean count < 4)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs standard.trained"
+    ## 
+    ## out of 16583 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 49, 0.3%
+    ## LFC < 0 (down)     : 260, 1.6%
+    ## outliers [1]       : 9, 0.054%
+    ## low counts [2]     : 4497, 27%
+    ## (mean count < 5)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs conflict.yoked"
+    ## 
+    ## out of 16583 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 2, 0.012%
+    ## outliers [1]       : 9, 0.054%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs conflict.trained"
+    ## 
+    ## out of 16583 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 26, 0.16%
+    ## LFC < 0 (down)     : 170, 1%
+    ## outliers [1]       : 9, 0.054%
+    ## low counts [2]     : 4497, 27%
+    ## (mean count < 5)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
     ## [1] "DG"
 
     ## estimating size factors
@@ -614,3 +826,108 @@ What genes overlap within cetain comparisons?
     ## mean-dispersion relationship
 
     ## final dispersion estimates, fitting model and testing: 6 workers
+
+    ## [1] "standard.trained vs standard.yoked"
+    ## 
+    ## out of 17033 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 69, 0.41%
+    ## LFC < 0 (down)     : 2, 0.012%
+    ## outliers [1]       : 27, 0.16%
+    ## low counts [2]     : 4285, 25%
+    ## (mean count < 3)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "conflict.trained vs standard.trained"
+    ## 
+    ## out of 17033 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 27, 0.16%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "conflict.trained vs conflict.yoked"
+    ## 
+    ## out of 17033 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 1, 0.0059%
+    ## outliers [1]       : 27, 0.16%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "conflict.yoked vs standard.yoked"
+    ## 
+    ## out of 17033 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 3, 0.018%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 27, 0.16%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs standard.yoked"
+    ## 
+    ## out of 17033 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 908, 5.3%
+    ## LFC < 0 (down)     : 352, 2.1%
+    ## outliers [1]       : 27, 0.16%
+    ## low counts [2]     : 5274, 31%
+    ## (mean count < 5)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs standard.trained"
+    ## 
+    ## out of 17033 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 834, 4.9%
+    ## LFC < 0 (down)     : 411, 2.4%
+    ## outliers [1]       : 27, 0.16%
+    ## low counts [2]     : 4944, 29%
+    ## (mean count < 4)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs conflict.yoked"
+    ## 
+    ## out of 17033 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 875, 5.1%
+    ## LFC < 0 (down)     : 480, 2.8%
+    ## outliers [1]       : 27, 0.16%
+    ## low counts [2]     : 4944, 29%
+    ## (mean count < 4)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## [1] "home.cage vs conflict.trained"
+    ## 
+    ## out of 17033 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 1055, 6.2%
+    ## LFC < 0 (down)     : 550, 3.2%
+    ## outliers [1]       : 27, 0.16%
+    ## low counts [2]     : 4285, 25%
+    ## (mean count < 3)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL

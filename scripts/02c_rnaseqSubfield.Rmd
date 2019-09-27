@@ -281,6 +281,10 @@ eachsubfield <- levels(a.colData$Punch)
 
 listofDEGs <- function(group1, group2){
   res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
+  
+  print(paste(group1,group2, sep = " vs "))
+  print(summary(res))
+  
   data <- data.frame(gene = row.names(res),
                      lfc = res$log2FoldChange,
                      padj = res$padj,
