@@ -65,9 +65,9 @@ upset1
 dev.off()
 
 
-DGupset <- myupsetdf %>% select(starts_with("DG")) 
-CA1upset <- myupsetdf %>% select(starts_with("CA1")) 
-CA3upset <- myupsetdf %>% select(starts_with("CA3")) 
+DGupset <- myupsetdf %>% select(gene, starts_with("DG")) 
+CA1upset <- myupsetdf %>% select(gene, starts_with("CA1")) 
+CA3upset <- myupsetdf %>% select(gene, starts_with("CA3")) 
 
 upset2 <- upset(DGupset, keep.order = F,
       order.by = "freq",
@@ -100,102 +100,30 @@ upset4
 Create a list of genes afected by stress and learning. Save. THen use to filter out nonspecific gene expression responses
 
 ```{r listofDEGs}
-shared <- myupsetdf %>%
-  select(gene, "CA1.ConfY.StdY", "CA1.StdT.StdY",  "DG.StdT.StdY")
-colnames(shared) <- c("gene", "CA1stress", "CA1learn", "DGlearn")
+# DG learning but not homecage or yoked yoked
+DGtrainingonlygenes <- DGupset %>% 
+  filter(DG.StdT.StdY == 1 &  DG.ConfY.StdY == 0 &DG.HC.ConfT == 0 & DG.HC.ConfY == 0 & DG.HC.StdT == 0 & DG.HC.StdY == 0 ) %>% 
+  select(gene)  %>% droplevels()
+
+print("DG training but not homecage or yoked")
+as.list(DGtrainingonlygenes)
+
+# CA1 learning  but not homecage or yoked yoked
+CA1trainingonlygenes <- CA1upset %>% 
+  filter(CA1.StdT.StdY == 1 &  CA1.ConfY.StdY == 0 & CA1.HC.ConfT == 0 & CA1.HC.ConfY == 0 & CA1.HC.StdT == 0 & CA1.HC.StdY == 0 ) %>% 
+  select(gene) %>% droplevels()
+
+print("CA1 training but not homecage or yoked")
+as.list(CA1trainingonlygenes)
 
 
-# CA1 and DG learning only (none in stress)
-shared %>% filter(CA1learn == 1 & DGlearn == 1 & CA1stress == 0) %>%
-  select(gene) 
+# CA3 learning  but not homecage or yoked yoked
+CA3trainingonlygenes <- CA3upset %>% 
+  filter(CA3.StdT.StdY == 1  ) %>% 
+  select(gene)  %>% droplevels()
 
-# learning and stress CA1
-CA1learnstress <- shared %>% filter(CA1learn == 1 & CA1stress == 1) %>%
-  select(gene)
-head(CA1learnstress)
-
-# CA1 learning but not CA1 stress 
-CA1learn <- shared %>% filter(CA1learn == 1 & CA1stress == 0) %>%
-  select(gene)
-
-# CA1 learning but not CA1 stress 
-CA1stress <- shared %>% filter(CA1learn == 0 & CA1stress == 1) %>%
-  select(gene)
-
-
-```
-
-
-```{r newbarplot}
-
-d1 <- ggplot(updown, aes(x=direction, y=setsize, fill = direction)) +
-  geom_bar(stat="identity", position=position_dodge()) +
-  theme_cowplot(font_size = 7, line_size = 0.25) +
-  scale_fill_manual(values = c("#404040", "#bababa", "#ca0020"),
-                    name = NULL)  +
-  labs(x = NULL, y = "Total DEGs") +
-  scale_y_continuous(limits = c(0, 560),
-                     breaks = c(0,125,250,375,500)) +
-    facet_wrap(~set, scales = "free_x") +
-    theme(axis.text.x = element_blank(),
-          legend.position = "none",
-          legend.text=element_text(size=4),
-          legend.key.size = unit(0.2, "cm"),
-          #legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
-          #strip.text.x = element_text(size = 5),
-          strip.background = element_rect(colour=NA, fill=NA),
-        panel.border = element_rect(fill = NA, color = "black"),
-        legend.margin=margin(t=-0.1, r=0, b=-0.1, l=0, unit="cm"))
-d1
-
-
-images = c(
-  unique = "../figures/00_schematics/patterns_blank.png",
-  shared = "../figures/00_schematics/patterns_crosed-lines.png")
-images
-
-head(shared2)
-
-d2 <- ggplot(shared2, aes(x=direction, y=setsize, image = status)) +
-  geom_textured_bar(stat = "identity") +
-  theme_cowplot(font_size = 7, line_size = 0.25) +
-  scale_image_manual(values = images,
-                     name = NULL) +
-  labs(x = "subfield * treatment", y = "Unique DEGs") +
-    scale_y_continuous(limits = c(0, 560),
-                     breaks = c(0,125,250,375,500)) +
-  theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-        legend.position = c(0.05, 0.8),
-        #legend.text=element_text(size=4),
-        legend.key.size = unit(0.2, "cm"),
-        #strip.text.x = element_text(size = 5),
-        strip.background = element_rect(colour=NA, fill=NA),
-        panel.border = element_rect(fill = NA, color = "black"),
-        legend.margin=margin(t=-0.1, r=0, b=-0.1, l=-0.1, unit="cm")) +
-  facet_wrap(~set, scales = "free_x") 
-d2
-
-newbarplots <- plot_grid(d1,d2, nrow = 2, rel_heights =c(0.4,0.6),
-                         labels = c("D","E"), label_size = 7)
-newbarplots
-
-pdf(file="../figures/02c_rnaseqSubfield/barplots.pdf", width=1.9, height=2.15)
-plot(newbarplots)    
-dev.off() 
+print("CA3 training but not homecage or yoked")
+as.list(CA3trainingonlygenes)
 
 ```
 
-```{r combo}
-# 3 volcanos, 2 bar plots, space for 3 GOs
-fig4barplots <- plot_grid(d1 + labs(x = NULL) + theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1)), 
-                        d2 + labs(x = NULL),
-          labels= c("B1", "B2"),
-          label_size = 7,
-          ncol = 2)
-fig4barplots
-
-pdf(file="../figures/02c_rnaseqSubfield/fig4barplots.pdf", width=5, height=1.5)
-plot(fig4barplots)    
-dev.off()
-
-```
