@@ -1,0 +1,17 @@
+X	Gene	Symbol	GO_P	GO_C	GO_F	
+N	RTL1	MGI:2656842	na	na	na
+N	LBH	MGI:1925139	regulation of transcription from RNA polymerase II promoter	nucleus	transcriptional activator activity
+V	DNAJB1	MGI:1931874	chaperone cofactor-dependent protein folding	na	na
+V	HES5	MGI:104876	Golgi vesicle transport; cell adhesion; response to xenobiotic stimulus; cell maturation; eye photoreceptor cell development; regulation of fat cell differentiation; taxis; protein amino acid acetylation; regulation of secretion; regulation of GTPase activity; establishment of cell polarity; positive regulation of exocytosis; cortical cytoskeleton organization and biogenesis; response to hypoxia; negative regulation of protein kinase activity; keratinocyte differentiation; T cell homeostasis; regulation of activated T cell proliferation; negative regulation of neuron differentiation	membrane-bound organelle	na
+V	SLC16A1	MGI:106013	na	integral to membrane	na
+V	SIAH2	MGI:108062	multicellular organismal development; ubiquitin-dependent protein catabolic process	nucleus	ubiquitin-protein ligase activity
+V	FOS	MGI:95574	nervous system development; regulation of transcription, DNA-dependent	transcription factor complex	transcription factor activity
+V	DUSP16	MGI:1917936	inactivation of MAPK activity	cytoplasm; nucleus	protein binding; phosphoric monoester hydrolase activity
+V	THBS1	MGI:98737	immune response; response to other organism; negative regulation of angiogenesis; inflammatory response	extracellular space	na
+V	RASL11A	MGI:1916145	na	na	na
+V	IER3	MGI:104814	na	integral to membrane	na
+V	TIPARP	MGI:2159210	protein amino acid ADP-ribosylation	na	na
+V	DNAJA1	MGI:1270129	establishment of localization; spermatogenesis; locomotion; androgen receptor signaling pathway; sperm motility	na	signal transducer activity; low-density lipoprotein receptor binding
+I	LRRC32
+I	GM1818
+I	ZFAND5

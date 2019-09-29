@@ -12,15 +12,14 @@ library(UpSetR)
 library(ggtextures)
 library(magick)
 
-
 knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/')
 ```
 
 
 ```{r importdata}
-DG <- read.csv("../data/02c_DGforupset.csv")  
-CA1 <- read.csv("../data/02c_CA1forupset.csv")  
-CA3 <- read.csv("../data/02c_CA3forupset.csv") 
+DG <- read.csv("../data/02c_DGforupset.csv", stringsAsFactors = F)  
+CA1 <- read.csv("../data/02c_CA1forupset.csv", stringsAsFactors = F)  
+CA3 <- read.csv("../data/02c_CA3forupset.csv", stringsAsFactors = F) 
 
 # make df for upset plots without direction
 myupsetdf <- rbind(DG,CA1,CA3)
@@ -102,20 +101,22 @@ Create a list of genes afected by stress and learning. Save. THen use to filter 
 ```{r listofDEGs}
 # DG learning but not homecage or yoked yoked
 DGtrainingonlygenes <- DGupset %>% 
-  filter(DG.StdT.StdY == 1 &  DG.ConfY.StdY == 0 &DG.HC.ConfT == 0 & DG.HC.ConfY == 0 & DG.HC.StdT == 0 & DG.HC.StdY == 0 ) %>% 
-  select(gene)  %>% droplevels()
+  filter(DG.StdT.StdY == 1 &  DG.ConfY.StdY == 0 &DG.HC.ConfT == 0 & 
+           DG.HC.ConfY == 0 & DG.HC.StdT == 0 & DG.HC.StdY == 0 ) %>% 
+  select(gene)  %>% arrange(gene) %>% droplevels()
 
 print("DG training but not homecage or yoked")
 as.list(DGtrainingonlygenes)
 
 # CA1 learning  but not homecage or yoked yoked
 CA1trainingonlygenes <- CA1upset %>% 
-  filter(CA1.StdT.StdY == 1 &  CA1.ConfY.StdY == 0 & CA1.HC.ConfT == 0 & CA1.HC.ConfY == 0 & CA1.HC.StdT == 0 & CA1.HC.StdY == 0 ) %>% 
-  select(gene) %>% droplevels()
+  filter(CA1.StdT.StdY == 1 &  CA1.ConfY.StdY == 0 & CA1.HC.ConfT == 0 & 
+           CA1.HC.ConfY == 0 & CA1.HC.StdT == 0 & CA1.HC.StdY == 0 ) %>% 
+  select(gene) %>% arrange(gene) %>% droplevels()
 
 print("CA1 training but not homecage or yoked")
 as.list(CA1trainingonlygenes)
-
+str(CA1trainingonlygenes)
 
 # CA3 learning  but not homecage or yoked yoked
 CA3trainingonlygenes <- CA3upset %>% 
@@ -125,5 +126,13 @@ CA3trainingonlygenes <- CA3upset %>%
 print("CA3 training but not homecage or yoked")
 as.list(CA3trainingonlygenes)
 
+write.csv(CA1trainingonlygenes, "../data/02d_CA1_trainingonlygenes.csv", row.names = F)
+write.csv(DGtrainingonlygenes, "../data/02d_DG_trainingonlygenes.csv", row.names = F)
 ```
 
+```{r}
+# to use GORILLA, I need a list of all genes used
+genesforgo <- read_csv("../data/00_geneids.csv") %>% 
+  select(gene) %>% arrange(gene)
+write.csv(genesforgo, "../data/02d_genesforgo.csv")
+```

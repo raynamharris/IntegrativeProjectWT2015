@@ -355,13 +355,15 @@ plot_grid(g, i,nrow = 1)
 
 ## plot single gene counts
 
-```{r Prkcz}
-plotCounts(dds, "Prkcz", intgroup = "subfield", normalized = TRUE)
+```{r candidates}
 plotCounts(dds, "Prkcz", intgroup = "treatment", normalized = TRUE)
+plotCounts(dds, "GRM1", intgroup = "treatment", normalized = TRUE)
+plotCounts(dds, "Grin2b", intgroup = "treatment", normalized = TRUE)
+plotCounts(dds, "Foxj3", intgroup = "treatment", normalized = TRUE)
+plotCounts(dds, "Grik3", intgroup = "treatment", normalized = TRUE)
+plotCounts(dds, "Fos", intgroup = "treatment", normalized = TRUE)
+plotCounts(dds, "Siah2", intgroup = "treatment", normalized = TRUE)
 
-plotCounts(dds, "Arc", intgroup = "treatment", normalized = TRUE)
-plotCounts(dds, "Egr1", intgroup = "treatment", normalized = TRUE)
-plotCounts(dds, "Camk1g", intgroup = "treatment", normalized = TRUE)
 ```
 
 ## Observed versus expected ration of DEGs
