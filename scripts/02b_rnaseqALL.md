@@ -13,6 +13,7 @@ The figures made from this script were compiled in Adobe.
     library(ggrepel) ## for labeling volcano plot
     library(stringr) ## for uppercase gene names
     library(car)
+    library("RColorBrewer") 
 
     library(BiocParallel)
     register(MulticoreParam(6))
@@ -161,14 +162,13 @@ check for outliers
 
     boxplot(log10(assays(dds)[["cooks"]]), range=0, las=2)
 
-![](../figures/02b_RNAseqAll/unnamed-chunk-1-1.png)
+![](../figures/02b_RNAseqAll/outliers-1.png)
 
     plotDispEsts(dds)
 
-![](../figures/02b_RNAseqAll/unnamed-chunk-1-2.png)
+![](../figures/02b_RNAseqAll/outliers-2.png)
 
     sampleDists <- dist(t(assay(vsd)))
-    library("RColorBrewer")
     sampleDistMatrix <- as.matrix(sampleDists)
     rownames(sampleDistMatrix) <- paste(vsd$subfield, vsd$treatment, sep="-")
     colnames(sampleDistMatrix) <- NULL
@@ -178,7 +178,7 @@ check for outliers
              clustering_distance_cols=sampleDists,
              col=colors, fontsize = 6)
 
-![](../figures/02b_RNAseqAll/unnamed-chunk-1-3.png)
+![](../figures/02b_RNAseqAll/outliers-3.png)
 
 Summary 2 way contrasts
 -----------------------
@@ -932,103 +932,6 @@ Volcanos plots and and gene lists
     plot_grid(g, i,nrow = 1)
 
 ![](../figures/02b_RNAseqAll/volcanos-7.png)
-
-plot single gene counts
------------------------
-
-    plotCounts(dds, "Prkcz", intgroup = "subfield", normalized = TRUE)
-
-![](../figures/02b_RNAseqAll/Prkcz-1.png)
-
-    plotCounts(dds, "Prkcz", intgroup = "treatment", normalized = TRUE)
-
-![](../figures/02b_RNAseqAll/Prkcz-2.png)
-
-    plotCounts(dds, "Arc", intgroup = "treatment", normalized = TRUE)
-
-![](../figures/02b_RNAseqAll/Prkcz-3.png)
-
-    plotCounts(dds, "Egr1", intgroup = "treatment", normalized = TRUE)
-
-![](../figures/02b_RNAseqAll/Prkcz-4.png)
-
-    plotCounts(dds, "Camk1g", intgroup = "treatment", normalized = TRUE)
-
-![](../figures/02b_RNAseqAll/Prkcz-5.png)
-
-Observed versus expected ration of DEGs
----------------------------------------
-
-    # chisq.test equal expression of increased versus decreased expression
-    chisq.test(c(1099,  1427), p = c(0.45, 0.55))$expected
-
-    ## [1] 1136.7 1389.3
-
-    chisq.test(c(1099,  1427), p = c(0.45, 0.55))
-
-    ## 
-    ##  Chi-squared test for given probabilities
-    ## 
-    ## data:  c(1099, 1427)
-    ## X-squared = 2.2734, df = 1, p-value = 0.1316
-
-    prop.table(c(1099,  1427))
-
-    ## [1] 0.4350752 0.5649248
-
-    chisq.test(c(850,   1172), p = c(0.4, 0.6))$expected
-
-    ## [1]  808.8 1213.2
-
-    chisq.test(c(850,   1172), p = c(0.4, 0.6))
-
-    ## 
-    ##  Chi-squared test for given probabilities
-    ## 
-    ## data:  c(850, 1172)
-    ## X-squared = 3.4979, df = 1, p-value = 0.06145
-
-    prop.table(c(850,   1172))
-
-    ## [1] 0.4203759 0.5796241
-
-    chisq.test(c(1585,  1560), p = c(0.5, 0.5))$expected
-
-    ## [1] 1572.5 1572.5
-
-    chisq.test(c(1585,  1560), p = c(0.5, 0.5))
-
-    ## 
-    ##  Chi-squared test for given probabilities
-    ## 
-    ## data:  c(1585, 1560)
-    ## X-squared = 0.19873, df = 1, p-value = 0.6557
-
-    prop.table(c(1585,  1560))
-
-    ## [1] 0.5039746 0.4960254
-
-    chisq.test(c(1, 0), p = c(0.5, 0.5))$expected
-
-    ## Warning in chisq.test(c(1, 0), p = c(0.5, 0.5)): Chi-squared approximation
-    ## may be incorrect
-
-    ## [1] 0.5 0.5
-
-    chisq.test(c(1, 0), p = c(0.5, 0.5))
-
-    ## Warning in chisq.test(c(1, 0), p = c(0.5, 0.5)): Chi-squared approximation
-    ## may be incorrect
-
-    ## 
-    ##  Chi-squared test for given probabilities
-    ## 
-    ## data:  c(1, 0)
-    ## X-squared = 1, df = 1, p-value = 0.3173
-
-    prop.table(c(1, 0))
-
-    ## [1] 1 0
 
     colData$treatment <- factor(colData$treatment , levels = c("home.cage",
                                                                "standard.yoked", "standard.trained",

@@ -13,6 +13,7 @@ have been inserted just below the subheadings.
     #devtools::install_github("clauswilke/ggtextures")
     library(ggtextures)
     library(magick)
+    library(ggtext) # for markdown in plots
 
     library(BiocParallel)
     register(MulticoreParam(6))
@@ -479,20 +480,66 @@ Yoked confict versus yoked consistent
     ## quartz_off_screen 
     ##                 2
 
-pkmz
-====
+candidate gnees
+===============
 
-    plotCounts(DGdds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
+    betterPlotCounts <- function(mygene, mydds, mysubfield){
+      df <- plotCounts(mydds, mygene, intgroup = "APA2",  transform = F, replaced = F, returnData = T)
+      names(df) <- c("count", "treatment")
+      df$treatment <- factor(df$treatment, levels = c("home.cage","standard.yoked","standard.trained",
+                                                      "conflict.yoked", "conflict.trained"))
+      ggplot(df, aes(x = treatment, y = count, fill = treatment)) +
+        geom_boxplot() + theme(axis.text.x = element_blank()) + 
+        labs(subtitle = paste(mysubfield, " *", mygene, "*",  sep = "")) +
+        theme( plot.subtitle  = element_markdown(),
+               legend.position = "bottom", legend.title = element_blank()) +
+        scale_fill_manual(values = fivegroups) 
+      
+    }
 
-![](../figures/02c_rnaseqSubfield/pkmz-1.png)
+    betterPlotCounts("Prkcz", DGdds, "DG")
 
-    plotCounts(CA3dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA3")
+![](../figures/02c_rnaseqSubfield/DG_boxplots-1.png)
 
-![](../figures/02c_rnaseqSubfield/pkmz-2.png)
+    betterPlotCounts("Dusp16", DGdds, "DG")
 
-    plotCounts(CA1dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
+![](../figures/02c_rnaseqSubfield/DG_boxplots-2.png)
 
-![](../figures/02c_rnaseqSubfield/pkmz-3.png)
+    betterPlotCounts("Thbs1", DGdds, "DG")
+
+![](../figures/02c_rnaseqSubfield/DG_boxplots-3.png)
+
+    betterPlotCounts("Slc16a1", DGdds, "DG")
+
+![](../figures/02c_rnaseqSubfield/DG_boxplots-4.png)
+
+    betterPlotCounts("Hes5", DGdds, "DG")
+
+![](../figures/02c_rnaseqSubfield/DG_boxplots-5.png)
+
+    betterPlotCounts("Rtl1", DGdds, "DG")
+
+![](../figures/02c_rnaseqSubfield/DG_boxplots-6.png)
+
+    betterPlotCounts("Prkcz", CA1dds, "CA1")
+
+![](../figures/02c_rnaseqSubfield/CA1_boxplots-1.png)
+
+    betterPlotCounts("Grm1", CA1dds, "CA1")
+
+![](../figures/02c_rnaseqSubfield/CA1_boxplots-2.png)
+
+    betterPlotCounts("Grin2b", CA1dds, "CA1")
+
+![](../figures/02c_rnaseqSubfield/CA1_boxplots-3.png)
+
+    betterPlotCounts("Foxj3", CA1dds, "CA1")
+
+![](../figures/02c_rnaseqSubfield/CA1_boxplots-4.png)
+
+    betterPlotCounts("Grik3", CA1dds, "CA1")
+
+![](../figures/02c_rnaseqSubfield/CA1_boxplots-5.png)
 
 genes that are correlated with number of entrances
 --------------------------------------------------

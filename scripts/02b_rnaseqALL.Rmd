@@ -19,6 +19,7 @@ library(magrittr) ## to use the weird pipe
 library(ggrepel) ## for labeling volcano plot
 library(stringr) ## for uppercase gene names
 library(car)
+library("RColorBrewer") 
 
 library(BiocParallel)
 register(MulticoreParam(6))
@@ -74,12 +75,11 @@ write.csv(assay(vsd), file = "../data/02b_vsd.csv", row.names = T)
 ## check for outliers
 
 
-```{r}
+```{r outliers}
 boxplot(log10(assays(dds)[["cooks"]]), range=0, las=2)
 plotDispEsts(dds)
 
 sampleDists <- dist(t(assay(vsd)))
-library("RColorBrewer")
 sampleDistMatrix <- as.matrix(sampleDists)
 rownames(sampleDistMatrix) <- paste(vsd$subfield, vsd$treatment, sep="-")
 colnames(sampleDistMatrix) <- NULL
@@ -352,40 +352,6 @@ plot_grid(g, i,nrow = 1)
 
 ```
 
-
-## plot single gene counts
-
-```{r candidates}
-plotCounts(dds, "Prkcz", intgroup = "treatment", normalized = TRUE)
-plotCounts(dds, "GRM1", intgroup = "treatment", normalized = TRUE)
-plotCounts(dds, "Grin2b", intgroup = "treatment", normalized = TRUE)
-plotCounts(dds, "Foxj3", intgroup = "treatment", normalized = TRUE)
-plotCounts(dds, "Grik3", intgroup = "treatment", normalized = TRUE)
-plotCounts(dds, "Fos", intgroup = "treatment", normalized = TRUE)
-plotCounts(dds, "Siah2", intgroup = "treatment", normalized = TRUE)
-
-```
-
-## Observed versus expected ration of DEGs
-
-```{r stats}
-# chisq.test equal expression of increased versus decreased expression
-chisq.test(c(1099,	1427), p = c(0.45, 0.55))$expected
-chisq.test(c(1099,	1427), p = c(0.45, 0.55))
-prop.table(c(1099,	1427))
-
-chisq.test(c(850,	1172), p = c(0.4, 0.6))$expected
-chisq.test(c(850,	1172), p = c(0.4, 0.6))
-prop.table(c(850,	1172))
-
-chisq.test(c(1585,	1560), p = c(0.5, 0.5))$expected
-chisq.test(c(1585,	1560), p = c(0.5, 0.5))
-prop.table(c(1585,	1560))
-
-chisq.test(c(1,	0), p = c(0.5, 0.5))$expected
-chisq.test(c(1,	0), p = c(0.5, 0.5))
-prop.table(c(1,	0))
-```
 
 ```{r plottotalDEGs}
 colData$treatment <- factor(colData$treatment , levels = c("home.cage",

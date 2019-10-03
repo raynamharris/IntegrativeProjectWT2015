@@ -15,6 +15,7 @@ library(UpSetR)
 #devtools::install_github("clauswilke/ggtextures")
 library(ggtextures)
 library(magick)
+library(ggtext) # for markdown in plots
 
 library(BiocParallel)
 register(MulticoreParam(6))
@@ -246,14 +247,40 @@ plot(volcanos)
 dev.off()
 ```
 
-# pkmz
+# candidate gnees
 
-```{r pkmz}
-plotCounts(DGdds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in DG")
-plotCounts(CA3dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA3")
-plotCounts(CA1dds, "Prkcz", intgroup = "APA2", normalized = TRUE, main="Prkcz in CA1")
+```{r DG_boxplots}
 
+betterPlotCounts <- function(mygene, mydds, mysubfield){
+  df <- plotCounts(mydds, mygene, intgroup = "APA2",  transform = F, replaced = F, returnData = T)
+  names(df) <- c("count", "treatment")
+  df$treatment <- factor(df$treatment, levels = c("home.cage","standard.yoked","standard.trained",
+                                                  "conflict.yoked", "conflict.trained"))
+  ggplot(df, aes(x = treatment, y = count, fill = treatment)) +
+    geom_boxplot() + theme(axis.text.x = element_blank()) + 
+    labs(subtitle = paste(mysubfield, " *", mygene, "*",  sep = "")) +
+    theme( plot.subtitle  = element_markdown(),
+           legend.position = "bottom", legend.title = element_blank()) +
+    scale_fill_manual(values = fivegroups) 
+  
+}
+
+betterPlotCounts("Prkcz", DGdds, "DG")
+betterPlotCounts("Dusp16", DGdds, "DG")
+betterPlotCounts("Thbs1", DGdds, "DG")
+betterPlotCounts("Slc16a1", DGdds, "DG")
+betterPlotCounts("Hes5", DGdds, "DG")
+betterPlotCounts("Rtl1", DGdds, "DG")
 ```
+
+```{r CA1_boxplots}
+betterPlotCounts("Prkcz", CA1dds, "CA1")
+betterPlotCounts("Grm1", CA1dds, "CA1")
+betterPlotCounts("Grin2b", CA1dds, "CA1")
+betterPlotCounts("Foxj3", CA1dds, "CA1")
+betterPlotCounts("Grik3", CA1dds, "CA1")
+```
+
 
 ## genes that are correlated with number of entrances 
 
@@ -267,7 +294,6 @@ plotCounts(DGdds, "Ptgs2", intgroup = "APA2", normalized = TRUE, main="Ptgs2 in 
 plotCounts(DGdds, "Rgs2", intgroup = "APA2", normalized = TRUE, main="Rgs2 in DG")
 plotCounts(DGdds, "Syt4", intgroup = "APA2", normalized = TRUE, main="Syt4 in DG")
 ```
-
 
 ## Upset plots
 
