@@ -136,3 +136,21 @@ genesforgo <- read_csv("../data/00_geneids.csv") %>%
   select(gene) %>% arrange(gene)
 write.csv(genesforgo, "../data/02d_genesforgo.csv")
 ```
+
+
+```{r wide}
+DGwide <- DG %>%
+  select(-padj,-tissue) %>%
+  spread(key = comparison, value = lfc)  %>%
+  select(gene, "home.cage-standard.yoked", "home.cage-standard.trained",  "home.cage-conflict.yoked", "home.cage-conflict.trained",
+         "standard.trained-standard.yoked", "conflict.yoked-standard.yoked", "conflict.trained-conflict.yoked")
+head(DGwide)
+
+
+CA1wide <- CA1 %>%
+  select(-padj,-tissue) %>%
+  spread(key = comparison, value = lfc)  %>%
+  select(gene, "home.cage-standard.yoked", "home.cage-standard.trained",  "home.cage-conflict.yoked", "home.cage-conflict.trained",
+         "standard.trained-standard.yoked", "conflict.yoked-standard.yoked", "conflict.trained-conflict.yoked")
+head(CA1wide)
+```

@@ -173,3 +173,39 @@ filter out nonspecific gene expression responses
     ## )
 
     write.csv(genesforgo, "../data/02d_genesforgo.csv")
+
+    DGwide <- DG %>%
+      select(-padj,-tissue) %>%
+      spread(key = comparison, value = lfc)  %>%
+      select(gene, "home.cage-standard.yoked", "home.cage-standard.trained",  "home.cage-conflict.yoked", "home.cage-conflict.trained",
+             "standard.trained-standard.yoked", "conflict.yoked-standard.yoked", "conflict.trained-conflict.yoked")
+    head(DGwide)
+
+    ##            gene home.cage-standard.yoked home.cage-standard.trained
+    ## 1 0610009B22Rik                 3.372990                         NA
+    ## 2 0610010F05Rik                       NA                         NA
+    ## 3 1110008F13Rik                 1.920996                   1.835162
+    ## 4 1110032F04Rik                       NA                         NA
+    ## 5 1110051M20Rik                 1.370361                         NA
+    ## 6 1500011B03Rik                       NA                   1.852466
+    ##   home.cage-conflict.yoked home.cage-conflict.trained
+    ## 1                 3.280862                   3.216008
+    ## 2                       NA                   1.468638
+    ## 3                 1.917032                   2.233990
+    ## 4                -4.458811                         NA
+    ## 5                       NA                   1.210130
+    ## 6                 1.949101                   1.936894
+    ##   standard.trained-standard.yoked conflict.yoked-standard.yoked
+    ## 1                              NA                            NA
+    ## 2                              NA                            NA
+    ## 3                              NA                            NA
+    ## 4                              NA                            NA
+    ## 5                              NA                            NA
+    ## 6                              NA                            NA
+    ##   conflict.trained-conflict.yoked
+    ## 1                              NA
+    ## 2                              NA
+    ## 3                              NA
+    ## 4                              NA
+    ## 5                              NA
+    ## 6                              NA

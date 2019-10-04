@@ -488,12 +488,16 @@ candidate gnees
       names(df) <- c("count", "treatment")
       df$treatment <- factor(df$treatment, levels = c("home.cage","standard.yoked","standard.trained",
                                                       "conflict.yoked", "conflict.trained"))
-      ggplot(df, aes(x = treatment, y = count, fill = treatment)) +
-        geom_boxplot() + theme(axis.text.x = element_blank()) + 
+      ggplot(df, aes(x = treatment, y = count)) +
+        #geom_boxplot(aes(fill = treatment)) + 
+        geom_point(aes(color = treatment, size = 1.5)) +
         labs(subtitle = paste(mysubfield, " *", mygene, "*",  sep = "")) +
-        theme( plot.subtitle  = element_markdown(),
-               legend.position = "bottom", legend.title = element_blank()) +
-        scale_fill_manual(values = fivegroups) 
+        theme_classic() +
+        theme(plot.subtitle  = element_markdown(),
+              legend.position = "none", 
+              panel.grid.major  = element_blank(),  # remove major gridlines
+              panel.grid.minor  = element_blank()) + # remove minor gridlines) +
+        scale_color_manual(values = fivegroups) 
       
     }
 

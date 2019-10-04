@@ -250,17 +250,21 @@ dev.off()
 # candidate gnees
 
 ```{r DG_boxplots}
-
 betterPlotCounts <- function(mygene, mydds, mysubfield){
   df <- plotCounts(mydds, mygene, intgroup = "APA2",  transform = F, replaced = F, returnData = T)
   names(df) <- c("count", "treatment")
   df$treatment <- factor(df$treatment, levels = c("home.cage","standard.yoked","standard.trained",
                                                   "conflict.yoked", "conflict.trained"))
-  ggplot(df, aes(x = treatment, y = count, fill = treatment)) +
-    geom_boxplot() + theme(axis.text.x = element_blank()) + 
+  ggplot(df, aes(x = treatment, y = count)) +
+    geom_boxplot(aes(fill = treatment)) + 
+    geom_point(aes( size = 1.5)) +
     labs(subtitle = paste(mysubfield, " *", mygene, "*",  sep = "")) +
-    theme( plot.subtitle  = element_markdown(),
-           legend.position = "bottom", legend.title = element_blank()) +
+    theme_classic() +
+    theme(plot.subtitle  = element_markdown(),
+          legend.position = "none", 
+          panel.grid.major  = element_blank(),  # remove major gridlines
+          panel.grid.minor  = element_blank()) + # remove minor gridlines) +
+    scale_color_manual(values = fivegroups) +
     scale_fill_manual(values = fivegroups) 
   
 }
@@ -271,6 +275,11 @@ betterPlotCounts("Thbs1", DGdds, "DG")
 betterPlotCounts("Slc16a1", DGdds, "DG")
 betterPlotCounts("Hes5", DGdds, "DG")
 betterPlotCounts("Rtl1", DGdds, "DG")
+
+betterPlotCounts("Nlrp3", DGdds, "DG")
+betterPlotCounts("Kcnc2", DGdds, "DG")
+
+betterPlotCounts("1110008F13Rik", DGdds, "DG")
 ```
 
 ```{r CA1_boxplots}
@@ -279,6 +288,10 @@ betterPlotCounts("Grm1", CA1dds, "CA1")
 betterPlotCounts("Grin2b", CA1dds, "CA1")
 betterPlotCounts("Foxj3", CA1dds, "CA1")
 betterPlotCounts("Grik3", CA1dds, "CA1")
+
+betterPlotCounts("0610010K14Rik", CA1dds, "CA1")
+
+
 ```
 
 
