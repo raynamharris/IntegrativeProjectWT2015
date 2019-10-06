@@ -149,54 +149,8 @@ Get varience stabilized gene expression for each tissue
     ## 0610009B22Rik   6.636480   6.790515  7.086099   6.776859   6.915261
     ## 0610009L18Rik   6.425657   6.425417  6.099026   6.467472   6.506630
 
-Consistent versus yoked-consistent
-----------------------------------
-
-    plot.cons.yokcons <- function(mydds, mytissue, mytitle){
-      print(mytissue)
-      
-      res <- results(mydds, contrast =c("APA2", "standard.trained", "standard.yoked"),
-                     independentFiltering = T, alpha = 0.1)
-      print(summary(res))
-
-      data <- data.frame(gene = row.names(res),
-                       padj = res$padj, 
-                       logpadj = -log10(res$padj),
-                       lfc = res$log2FoldChange)
-      data <- na.omit(data)
-      data <- data %>%
-        dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                            yes = "standard.trained", 
-                            no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                        yes = "standard.yoked", 
-                                        no = "NS")))
-
-
-      write.csv(data, file = paste0("../data/02c_", mytissue, "_std.train.yoked.csv", sep = ""), row.names = F)
-      
-      volcano <- data %>%
-        #filter(direction != "NS") %>%
-        ggplot(aes(x = lfc, y = logpadj)) + 
-        geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-        theme_cowplot(font_size = 7, line_size = 0.25) +
-        geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-        scale_color_manual(values = volcano1,
-                          name = "higher in",
-                          breaks = c("standard.yoked", "NS", "standard.trained"))  + 
-        scale_x_continuous(limits=c(-10, 10),
-                            name="Log fold difference")+
-        ylim(c(0,7)) +
-        ylab(paste0("-log10 p-value")) +  
-        labs(subtitle = mytitle) +
-        theme(legend.position = "bottom",
-              legend.spacing.x = unit(0.1, 'cm'),
-              #legend.text=element_text(size=4),
-              legend.title = element_text(size=6),
-              legend.key.size = unit(0.2, "cm"),
-              legend.margin=margin(t=-0.1, r=0, b=0, l=-0.1, unit="cm")) 
-      plot(volcano)
-    }
-
+Volcano plots
+-------------
 
     DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DG: standard yoked v. trained") 
 
@@ -214,25 +168,7 @@ Consistent versus yoked-consistent
     ## 
     ## NULL
 
-![](../figures/02c_rnaseqSubfield/consyokcons-1.png)
-
-    CA3consyokcons <-  plot.cons.yokcons(CA3dds, "CA3", "CA3: standard yoked v. trained")  
-
-    ## [1] "CA3"
-    ## 
-    ## out of 16583 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 1, 0.006%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 9, 0.054%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/02c_rnaseqSubfield/consyokcons-2.png)
+![](../figures/02c_rnaseqSubfield/volcanos-1.png)
 
     CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "CA1: standard yoked v. trained")  
 
@@ -250,200 +186,7 @@ Consistent versus yoked-consistent
     ## 
     ## NULL
 
-![](../figures/02c_rnaseqSubfield/consyokcons-3.png)
-
-    plot_grid(DGconsyokcons,CA1consyokcons, nrow = 1)
-
-![](../figures/02c_rnaseqSubfield/consyokcons-4.png)
-
-Confict versus Consistent
--------------------------
-
-    plot.conf.cons <- function(mydds, mytissue){
-      
-      print(mytissue)
-      
-      res <- results(mydds, contrast =c("APA2", "conflict.trained", "standard.trained"),
-                     independentFiltering = T, alpha = 0.1)
-      print(summary(res))
-
-      data <- data.frame(gene = row.names(res),
-                       padj = res$padj, 
-                       logpadj = -log10(res$padj),
-                       lfc = res$log2FoldChange)
-      data <- na.omit(data)
-      
-      data <- data %>%
-        dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                            yes = "conflict.trained", 
-                            no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                        yes = "standard.trained", 
-                                        no = "NS")))
-      
-      write.csv(data, file = paste0("../data/02c_", mytissue, "_confcons.csv", sep = ""), row.names = F)
-      
-      volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-        geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-        theme_cowplot(font_size = 7, line_size = 0.25) +
-        geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-        #scale_color_manual(values = volcano2,
-        #                   breaks = c("standard.trained", "NS", "conflict.trained"),
-        #                  name = "higher in")  + 
-        scale_x_continuous(limits=c(-10, 10),
-                            name="Log fold difference")+
-        ylab(paste0("-log10 p-value")) +  
-        labs(subtitle = mytissue) +
-        theme(panel.grid.minor=element_blank(),
-              legend.position = "bottom",
-              legend.spacing.x = unit(-0.1, 'cm'),
-              panel.grid.major=element_blank(),
-              legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
-      plot(volcano)
-    }
-
-
-    DGconflict <-  plot.conf.cons(DGdds, "DG: standard v. conflict trained")
-
-    ## [1] "DG: standard v. conflict trained"
-    ## 
-    ## out of 17033 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 27, 0.16%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/02c_rnaseqSubfield/confcons-1.png)
-
-    CA3conflict <-  plot.conf.cons(CA3dds, "CA3: standard v. conflict trained")
-
-    ## [1] "CA3: standard v. conflict trained"
-    ## 
-    ## out of 16583 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 9, 0.054%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/02c_rnaseqSubfield/confcons-2.png)
-
-    CA1conflict <-  plot.conf.cons(CA1dds, "CA1: standard v. conflict trained")
-
-    ## [1] "CA1: standard v. conflict trained"
-    ## 
-    ## out of 16896 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 31, 0.18%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/02c_rnaseqSubfield/confcons-3.png)
-
-    plot_grid(DGconflict, CA3conflict, CA1conflict, nrow = 3)
-
-![](../figures/02c_rnaseqSubfield/confcons-4.png)
-
-Yoked confict versus yoked consistent
--------------------------------------
-
-    plot.yokconf.yokcons <- function(mydds, mytissue, mytitle){
-      
-      print(mytissue)
-      
-      res <- results(mydds, contrast =c("APA2", "conflict.yoked", "standard.yoked"),
-                     independentFiltering = T, alpha = 0.1)
-      print(summary(res))
-
-      data <- data.frame(gene = row.names(res),
-                       padj = res$padj, 
-                       logpadj = -log10(res$padj),
-                       lfc = res$log2FoldChange)
-      data <- na.omit(data)
-      data <- data %>%
-        dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                            yes = "conflict.yoked", 
-                            no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                        yes = "standard.yoked", 
-                                        no = "NS")))
-      
-      data$direction <- factor(data$direction, levels = c("standard.yoked", "NS", "conflict.yoked"))
-      
-      write.csv(data, file = paste0("../data/02c_", mytissue, "_yokeconfyokcons.csv", sep = ""), row.names = F)
-      
-      volcano <- data %>%
-        #filter(direction != "NS") %>%
-        ggplot(aes(x = lfc, y = logpadj, color = direction)) + 
-        geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
-        theme_cowplot(font_size = 7, line_size = 0.25) +
-        geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
-        scale_color_manual(values = volcano6,
-                           name = "higher in")  + 
-        #scale_y_continuous(limits=c(0, 12.5)) +
-        scale_x_continuous(limits=c(-10, 10),
-                            name="Log fold difference")+
-        ylab(paste0("-log10 p-value")) + 
-        ylim(c(0,7)) +
-        labs(subtitle = mytitle) +
-        theme(legend.position = "bottom",
-              legend.spacing.x = unit(0.1, 'cm'),
-              #legend.text=element_text(size=4),
-              legend.key.size = unit(0.2, "cm"),
-              legend.margin=margin(t=-0.1, r=0, b=0, l=-0.1, unit="cm")) 
-      plot(volcano)  
-    }
-
-    DGyoked <-  plot.yokconf.yokcons(DGdds, "DG", "DG: standard v. conflict yoked")
-
-    ## [1] "DG"
-    ## 
-    ## out of 17033 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 3, 0.018%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 27, 0.16%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/02c_rnaseqSubfield/yokeconfyokcons-1.png)
-
-    CA3yoked <-  plot.yokconf.yokcons(CA3dds, "CA3", "CA3: standard v. conflict yoked")
-
-    ## [1] "CA3"
-    ## 
-    ## out of 16583 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 1, 0.006%
-    ## LFC < 0 (down)     : 1, 0.006%
-    ## outliers [1]       : 9, 0.054%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/02c_rnaseqSubfield/yokeconfyokcons-2.png)
+![](../figures/02c_rnaseqSubfield/volcanos-2.png)
 
     CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1", "CA1: standard v. conflict yoked")  
 
@@ -461,17 +204,13 @@ Yoked confict versus yoked consistent
     ## 
     ## NULL
 
-![](../figures/02c_rnaseqSubfield/yokeconfyokcons-3.png)
-
-    plot_grid(DGyoked, CA3yoked, CA1yoked, nrow = 1)
-
-![](../figures/02c_rnaseqSubfield/yokeconfyokcons-4.png)
+![](../figures/02c_rnaseqSubfield/volcanos-3.png)
 
     volcanos <- plot_grid(DGconsyokcons  ,CA1consyokcons  , CA1yoked , nrow = 1,
                           labels = c("(d)", "(e)", "(f)"), label_size = 8) 
     volcanos
 
-![](../figures/02c_rnaseqSubfield/fig5volcanos-1.png)
+![](../figures/02c_rnaseqSubfield/volcanos-4.png)
 
     pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=6.65, height=2)
     plot(volcanos)    
@@ -489,15 +228,16 @@ candidate gnees
       df$treatment <- factor(df$treatment, levels = c("home.cage","standard.yoked","standard.trained",
                                                       "conflict.yoked", "conflict.trained"))
       ggplot(df, aes(x = treatment, y = count)) +
-        #geom_boxplot(aes(fill = treatment)) + 
-        geom_point(aes(color = treatment, size = 1.5)) +
+        geom_boxplot(aes(fill = treatment)) + 
+        geom_point(aes( size = 1.5)) +
         labs(subtitle = paste(mysubfield, " *", mygene, "*",  sep = "")) +
         theme_classic() +
         theme(plot.subtitle  = element_markdown(),
               legend.position = "none", 
               panel.grid.major  = element_blank(),  # remove major gridlines
               panel.grid.minor  = element_blank()) + # remove minor gridlines) +
-        scale_color_manual(values = fivegroups) 
+        scale_color_manual(values = fivegroups) +
+        scale_fill_manual(values = fivegroups) 
       
     }
 
@@ -525,6 +265,18 @@ candidate gnees
 
 ![](../figures/02c_rnaseqSubfield/DG_boxplots-6.png)
 
+    betterPlotCounts("Nlrp3", DGdds, "DG")
+
+![](../figures/02c_rnaseqSubfield/DG_boxplots-7.png)
+
+    betterPlotCounts("Kcnc2", DGdds, "DG")
+
+![](../figures/02c_rnaseqSubfield/DG_boxplots-8.png)
+
+    betterPlotCounts("1110008F13Rik", DGdds, "DG")
+
+![](../figures/02c_rnaseqSubfield/DG_boxplots-9.png)
+
     betterPlotCounts("Prkcz", CA1dds, "CA1")
 
 ![](../figures/02c_rnaseqSubfield/CA1_boxplots-1.png)
@@ -544,6 +296,10 @@ candidate gnees
     betterPlotCounts("Grik3", CA1dds, "CA1")
 
 ![](../figures/02c_rnaseqSubfield/CA1_boxplots-5.png)
+
+    betterPlotCounts("0610010K14Rik", CA1dds, "CA1")
+
+![](../figures/02c_rnaseqSubfield/CA1_boxplots-6.png)
 
 genes that are correlated with number of entrances
 --------------------------------------------------
