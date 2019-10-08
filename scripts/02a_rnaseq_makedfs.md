@@ -95,6 +95,113 @@ I also remove some samples for reasons described within the code blocks.
 
     # reorder 
     colData <- colData[c(1:5,7:9)]
+    colData
+
+    ##              RNAseqID   Mouse Punch      Group   Conflict Treatment     ID
+    ## 143A-CA3-1 143A-CA3-1 15-143A   CA3   conflict   Conflict  conflict 15143A
+    ## 143A-DG-1   143A-DG-1 15-143A    DG   conflict   Conflict  conflict 15143A
+    ## 143B-CA1-1 143B-CA1-1 15-143B   CA1    control   Conflict   shocked 15143B
+    ## 143B-DG-1   143B-DG-1 15-143B    DG    control   Conflict   shocked 15143B
+    ## 143C-CA1-1 143C-CA1-1 15-143C   CA1 consistent NoConflict   trained 15143C
+    ## 143D-CA1-3 143D-CA1-3 15-143D   CA1    control NoConflict     yoked 15143D
+    ## 143D-DG-3   143D-DG-3 15-143D    DG    control NoConflict     yoked 15143D
+    ## 144A-CA1-2 144A-CA1-2 15-144A   CA1   conflict   Conflict  conflict 15144A
+    ## 144A-CA3-2 144A-CA3-2 15-144A   CA3   conflict   Conflict  conflict 15144A
+    ## 144A-DG-2   144A-DG-2 15-144A    DG   conflict   Conflict  conflict 15144A
+    ## 144B-CA1-1 144B-CA1-1 15-144B   CA1    control   Conflict   shocked 15144B
+    ## 144B-CA3-1 144B-CA3-1 15-144B   CA3    control   Conflict   shocked 15144B
+    ## 144C-CA1-2 144C-CA1-2 15-144C   CA1 consistent NoConflict   trained 15144C
+    ## 144C-CA3-2 144C-CA3-2 15-144C   CA3 consistent NoConflict   trained 15144C
+    ## 144C-DG-2   144C-DG-2 15-144C    DG consistent NoConflict   trained 15144C
+    ## 144D-CA3-2 144D-CA3-2 15-144D   CA3    control NoConflict     yoked 15144D
+    ## 144D-DG-2   144D-DG-2 15-144D    DG    control NoConflict     yoked 15144D
+    ## 145A-CA1-2 145A-CA1-2 15-145A   CA1   conflict   Conflict  conflict 15145A
+    ## 145A-CA3-2 145A-CA3-2 15-145A   CA3   conflict   Conflict  conflict 15145A
+    ## 145A-DG-2   145A-DG-2 15-145A    DG   conflict   Conflict  conflict 15145A
+    ## 145B-CA1-1 145B-CA1-1 15-145B   CA1    control   Conflict   shocked 15145B
+    ## 145B-DG-1   145B-DG-1 15-145B    DG    control   Conflict   shocked 15145B
+    ## 146A-CA1-2 146A-CA1-2 15-146A   CA1   conflict   Conflict  conflict 15146A
+    ## 146A-CA3-2 146A-CA3-2 15-146A   CA3   conflict   Conflict  conflict 15146A
+    ## 146A-DG-2   146A-DG-2 15-146A    DG   conflict   Conflict  conflict 15146A
+    ## 146B-CA1-2 146B-CA1-2 15-146B   CA1    control   Conflict   shocked 15146B
+    ## 146B-CA3-2 146B-CA3-2 15-146B   CA3    control   Conflict   shocked 15146B
+    ## 146B-DG-2   146B-DG-2 15-146B    DG    control   Conflict   shocked 15146B
+    ## 146C-CA1-4 146C-CA1-4 15-146C   CA1 consistent NoConflict   trained 15146C
+    ## 146C-DG-4   146C-DG-4 15-146C    DG consistent NoConflict   trained 15146C
+    ## 146D-CA1-3 146D-CA1-3 15-146D   CA1    control NoConflict     yoked 15146D
+    ## 146D-CA3-3 146D-CA3-3 15-146D   CA3    control NoConflict     yoked 15146D
+    ## 146D-DG-3   146D-DG-3 15-146D    DG    control NoConflict     yoked 15146D
+    ## 147-CA1-4   147-CA1-4  15-147   CA1   homecage       <NA>  homecage  15147
+    ## 147-CA3-4   147-CA3-4  15-147   CA3   homecage       <NA>  homecage  15147
+    ## 147-DG-4     147-DG-4  15-147    DG   homecage       <NA>  homecage  15147
+    ## 147C-CA1-3 147C-CA1-3 15-147C   CA1 consistent NoConflict   trained 15147C
+    ## 147C-CA3-3 147C-CA3-3 15-147C   CA3 consistent NoConflict   trained 15147C
+    ## 147C-DG-3   147C-DG-3 15-147C    DG consistent NoConflict   trained 15147C
+    ## 147D-CA3-1 147D-CA3-1 15-147D   CA3    control NoConflict     yoked 15147D
+    ## 147D-DG-1   147D-DG-1 15-147D    DG    control NoConflict     yoked 15147D
+    ## 148-CA1-2   148-CA1-2  15-148   CA1   homecage       <NA>  homecage  15148
+    ## 148-CA3-2   148-CA3-2  15-148   CA3   homecage       <NA>  homecage  15148
+    ## 148-DG-2     148-DG-2  15-148    DG   homecage       <NA>  homecage  15148
+    ## 148A-CA1-3 148A-CA1-3 15-148A   CA1   conflict   Conflict  conflict 15148A
+    ## 148A-CA3-3 148A-CA3-3 15-148A   CA3   conflict   Conflict  conflict 15148A
+    ## 148A-DG-3   148A-DG-3 15-148A    DG   conflict   Conflict  conflict 15148A
+    ## 148B-CA1-4 148B-CA1-4 15-148B   CA1    control   Conflict   shocked 15148B
+    ## 148B-CA3-4 148B-CA3-4 15-148B   CA3    control   Conflict   shocked 15148B
+    ## 148B-DG-4   148B-DG-4 15-148B    DG    control   Conflict   shocked 15148B
+    ##                        APA2
+    ## 143A-CA3-1 conflict.trained
+    ## 143A-DG-1  conflict.trained
+    ## 143B-CA1-1   conflict.yoked
+    ## 143B-DG-1    conflict.yoked
+    ## 143C-CA1-1 standard.trained
+    ## 143D-CA1-3   standard.yoked
+    ## 143D-DG-3    standard.yoked
+    ## 144A-CA1-2 conflict.trained
+    ## 144A-CA3-2 conflict.trained
+    ## 144A-DG-2  conflict.trained
+    ## 144B-CA1-1   conflict.yoked
+    ## 144B-CA3-1   conflict.yoked
+    ## 144C-CA1-2 standard.trained
+    ## 144C-CA3-2 standard.trained
+    ## 144C-DG-2  standard.trained
+    ## 144D-CA3-2   standard.yoked
+    ## 144D-DG-2    standard.yoked
+    ## 145A-CA1-2 conflict.trained
+    ## 145A-CA3-2 conflict.trained
+    ## 145A-DG-2  conflict.trained
+    ## 145B-CA1-1   conflict.yoked
+    ## 145B-DG-1    conflict.yoked
+    ## 146A-CA1-2 conflict.trained
+    ## 146A-CA3-2 conflict.trained
+    ## 146A-DG-2  conflict.trained
+    ## 146B-CA1-2   conflict.yoked
+    ## 146B-CA3-2   conflict.yoked
+    ## 146B-DG-2    conflict.yoked
+    ## 146C-CA1-4 standard.trained
+    ## 146C-DG-4  standard.trained
+    ## 146D-CA1-3   standard.yoked
+    ## 146D-CA3-3   standard.yoked
+    ## 146D-DG-3    standard.yoked
+    ## 147-CA1-4         home.cage
+    ## 147-CA3-4         home.cage
+    ## 147-DG-4          home.cage
+    ## 147C-CA1-3 standard.trained
+    ## 147C-CA3-3 standard.trained
+    ## 147C-DG-3  standard.trained
+    ## 147D-CA3-1   standard.yoked
+    ## 147D-DG-1    standard.yoked
+    ## 148-CA1-2         home.cage
+    ## 148-CA3-2         home.cage
+    ## 148-DG-2          home.cage
+    ## 148A-CA1-3 conflict.trained
+    ## 148A-CA3-3 conflict.trained
+    ## 148A-DG-3  conflict.trained
+    ## 148B-CA1-4   conflict.yoked
+    ## 148B-CA3-4   conflict.yoked
+    ## 148B-DG-4    conflict.yoked
+
+    # remove home.cage
+    colData <- colData %>% filter(APA2 != "home.cage")
 
 Now, we are ready to calculate differential gene expression using the
 DESeq package. For simplicity, I will use the standard nameing of
@@ -116,15 +223,14 @@ respectively.
     colData %>% select(APA2,Punch)  %>%  summary()
 
     ##                APA2    Punch   
-    ##  conflict.trained:14   CA1:17  
-    ##  conflict.yoked  :12   CA3:15  
-    ##  home.cage       : 6   DG :18  
-    ##  standard.trained: 9           
+    ##  conflict.trained:14   CA1:15  
+    ##  conflict.yoked  :12   CA3:13  
+    ##  standard.trained: 9   DG :16  
     ##  standard.yoked  : 9
 
     dim(countData)
 
-    ## [1] 22485    50
+    ## [1] 22485    44
 
 Write the two files
 -------------------
@@ -141,7 +247,7 @@ this could say something about data before normalization
     counts <- countData
     dim( counts )
 
-    ## [1] 22485    50
+    ## [1] 22485    44
 
     colSums( counts ) / 1e06  # in millions of reads
 
@@ -155,12 +261,10 @@ this could say something about data before normalization
     ##   0.345619   1.435833   2.020114   1.509310   1.715282   2.756300 
     ##  146A-DG-2 146B-CA1-2 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 
     ##   1.201333   1.063417   2.144771   0.116106   1.360004   0.492145 
-    ## 146D-CA1-3 146D-CA3-3  146D-DG-3  147-CA1-4  147-CA3-4   147-DG-4 
-    ##   0.391369   2.994536   0.090417   0.159069   0.689232   0.139276 
-    ## 147C-CA1-3 147C-CA3-3  147C-DG-3 147D-CA3-1  147D-DG-1  148-CA1-2 
-    ##   3.072308   5.754581   4.350647   4.624995  11.700703   1.901256 
-    ##  148-CA3-2   148-DG-2 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 
-    ##   2.343035   2.231849   5.260906   2.676397   4.019062   0.337174 
+    ## 146D-CA1-3 146D-CA3-3  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 
+    ##   0.391369   2.994536   0.090417   3.072308   5.754581   4.350647 
+    ## 147D-CA3-1  147D-DG-1 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 
+    ##   4.624995  11.700703   5.260906   2.676397   4.019062   0.337174 
     ## 148B-CA3-4  148B-DG-4 
     ##   3.486840   0.798668
 
@@ -168,9 +272,9 @@ this could say something about data before normalization
 
     ## 
     ##    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14 
-    ## 4169  341  229  217  164  148  120  117  106  117   86   80   81   71   65 
+    ## 4203  353  236  225  168  145  118  119  110  111   81   82   77   75   71 
     ##   15   16   17   18   19   20   21   22   23   24   25   26   27   28   29 
-    ##   54   61   53   59   56   42   52   47   47   37   43   49   40   36   28
+    ##   48   56   65   58   55   55   55   51   48   38   47   48   37   32   26
 
     rowsum <- as.data.frame(colSums( counts ) / 1e06 )
     names(rowsum)[1] <- "millioncounts"

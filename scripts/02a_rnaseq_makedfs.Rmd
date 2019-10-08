@@ -64,6 +64,9 @@ head(colData)
 
 # reorder 
 colData <- colData[c(1:5,7:9)]
+colData
+# remove home.cage
+colData <- colData %>% filter(APA2 != "home.cage")
 ```
 
 Now, we are ready to calculate differential gene expression using the DESeq package. For simplicity, I will use the standard nameing of "countData" and "colData" for the gene counts and gene information, respectively.

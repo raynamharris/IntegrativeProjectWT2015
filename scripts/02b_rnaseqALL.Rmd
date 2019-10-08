@@ -30,8 +30,7 @@ source("figureoptions.R")
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/',
-                      cache = T)
+knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = F)
 ```
 
 ## Design
@@ -39,14 +38,13 @@ knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/',
 The two two catagorical variables are
 
 * Hippocampal subfield: DG, CA3, CA1
-* Treatment: homecage, standard yoked, standard trained, conflict yoked, conflict trained
+* Treatment: standard yoked, standard trained, conflict yoked, conflict trained
 
 ```{r data, message=F, warning=F}
 colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData <- colData %>% dplyr::rename(treatment = APA2, subfield = Punch)
 colData %>% select(treatment, subfield)  %>%  summary()
-
 
 totalCounts <- colSums(countData)
 totalCounts
@@ -60,10 +58,10 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
 
 dds$subfield <- factor(dds$subfield, levels=c("DG","CA3", "CA1")) ## specify the factor levels
 
-dds$treatment <- factor(dds$treatment, levels=c("home.cage","standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained")) ## specify the factor levels
+dds$treatment <- factor(dds$treatment, levels=c("standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained")) ## specify the factor levels
 
 dds # view the DESeq object - note numnber of genes
-dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+dds <- dds[ rowSums(counts(dds)) > 10, ]  # Pre-filtering genes
 dds # view number of genes afternormalization and the number of samples
 dds <- DESeq(dds, parallel = TRUE) # Differential expression analysis
 #rld <- rlog(dds, blind=FALSE) ## log transformed data
@@ -98,6 +96,7 @@ This first function shows the total number of up and down regulated genes and th
 res_summary <- function(mycontrast){
   res <- results(dds, contrast = mycontrast, independentFiltering = T)
   print(mycontrast)
+  print(sum(res$padj < 0.1, na.rm=TRUE))
   print(summary(res))
   print(head((res[order(res$padj),]), 5))
   cat("\n")
@@ -111,10 +110,6 @@ res_summary(c("treatment", "standard.trained", "standard.yoked"))
 res_summary(c("treatment", "conflict.trained", "conflict.yoked"))
 res_summary(c("treatment", "conflict.trained", "standard.trained"))
 res_summary(c("treatment", "conflict.yoked", "standard.yoked"))
-
-
-res_summary(c("treatment", "standard.yoked", "home.cage"))
-res_summary(c("treatment", "conflict.yoked", "home.cage"))
 ```
 
 This second function only prints the total number of DEGs, but it saves lots of useful info to a df for downstream dataviz.
@@ -129,16 +124,12 @@ contrast4 <- resvals(contrastvector = c("treatment", "standard.trained", "standa
 contrast5 <- resvals(contrastvector = c("treatment", "conflict.trained", "conflict.yoked"), mypval = 0.1) # 23
 contrast6 <- resvals(contrastvector = c("treatment", "conflict.trained", "standard.trained"), mypval = 0.1) #  1
 contrast7 <- resvals(contrastvector = c("treatment", "conflict.yoked", "standard.yoked"), mypval = 0.1) # 37
-
-contrast8 <- resvals(contrastvector = c("treatment", "standard.yoked", "home.cage"), mypval = 0.1) #1285
-contrast9 <- resvals(contrastvector = c("treatment", "conflict.yoked", "home.cage"), mypval = 0.1) #1400
-
 ```
 
-```{r heatmap}
+```{r pheatmap}
 # heatmap with all DEGs
 DEGes <- assay(vsd)
-DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7, contrast8, contrast9)
+DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
 DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
@@ -146,8 +137,7 @@ DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
 names(DEGes)
 DEGes$padjmin <- with(DEGes, pmin(# padjsubfieldCA1DG, padjsubfieldCA1CA3, padjsubfieldCA3DG,
                                   padjtreatmentstandard.trainedstandard.yoked, padjtreatmentconflict.trainedconflict.yoked,
-                                  padjtreatmentconflict.trainedstandard.trained,padjtreatmentconflict.yokedstandard.yoked,
-                                  padjtreatmentstandard.yokedhome.cage,padjtreatmentconflict.yokedhome.cage)) 
+                                  padjtreatmentconflict.trainedstandard.trained,padjtreatmentconflict.yokedstandard.yoked)) 
 DEGes <- DEGes %>% filter(padjmin < 0.1)
 
 rownames(DEGes) <- DEGes$rownames
@@ -158,7 +148,7 @@ DEGes <- DEGes - rowMeans(DEGes)
 
 df <- as.data.frame(colData(dds)[,c("treatment", "subfield")]) ## matrix to df
 rownames(df) <- names(countData)
-levels(df$treatment) <- c("home cage", "standard yoked","standard trained",  "conflict yoked","conflict trained")
+levels(df$treatment) <- c("standard yoked","standard trained",  "conflict yoked","conflict trained")
 
 
 DEGes <- as.matrix(DEGes) 
@@ -209,9 +199,9 @@ pcadata <- pcadataframe(vsd, intgroup=c("subfield","treatment"), returnData=TRUE
 percentVar <- round(100 * attr(pcadata, "percentVar"))
 pcadata$subfieldAPA <- as.factor(paste(pcadata$subfield, pcadata$treatment, sep="_"))
 pcadata$subfield <- factor(pcadata$subfield, levels=c("DG","CA3", "CA1"))
-pcadata$treatment <- factor(pcadata$treatment, levels=c("home.cage", "standard.yoked","standard.trained",  "conflict.yoked","conflict.trained"))
+pcadata$treatment <- factor(pcadata$treatment, levels=c("standard.yoked","standard.trained",  "conflict.yoked","conflict.trained"))
 
-levels(pcadata$treatment) <- c("home cage", "standard yoked","standard trained",  "conflict yoked", "conflict trained")
+levels(pcadata$treatment) <- c("standard yoked","standard trained",  "conflict yoked", "conflict trained")
 
 summary(aov(PC1 ~ subfield * treatment, data=pcadata)) 
 TukeyHSD((aov(PC1 ~ subfield, data=pcadata)), which = "subfield") 
@@ -236,7 +226,7 @@ PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
             legend.position=c(0.8,0.825),
             legend.text = element_text(size=5),
             legend.key.size = unit(0, 'lines')) +
-    scale_shape_manual(values=c(2, 1, 16, 0, 15), aes(color=colorvalsubfield)) +
+    scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield)) +
   labs(color = "subfield", shape = "treatment") +
   guides(color = FALSE)
 PCA12
@@ -253,7 +243,7 @@ PCA42 <- ggplot(pcadata, aes(pcadata$PC4, pcadata$PC2)) +
     scale_colour_manual(values=c(colorvalsubfield))+ 
    theme_bw(base_size = 12)  +
     theme(legend.title=element_blank()) +
-    scale_shape_manual(aes(colour=colorvalsubfield), values=c(2,1, 16, 0, 15)) +
+    scale_shape_manual(aes(colour=colorvalsubfield), values=c(1, 16, 0, 15)) +
   guides(color = guide_legend(order=1),
          shape = guide_legend(order=2)) 
 PCA42
@@ -293,13 +283,6 @@ head(DGvCA3)
 DGvCA1 <- makevolcanodf(c("subfield", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
 CA3vCA1 <- makevolcanodf(c("subfield", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
 
-STY <- makevolcanodf(c("treatment", "standard.trained", "standard.yoked"),"standard.trained", "standard.yoked", "../data/STY.csv")
-CTY <- makevolcanodf(c("treatment", "conflict.trained", "conflict.yoked"),"conflict.trained", "conflict.yoked", "../data/CTY.csv")
-SYH <- makevolcanodf(c("treatment", "standard.yoked", "home.cage"),"standard.yoked", "home.cage", "../data/SYH.csv")
-CYH <- makevolcanodf(c("treatment", "conflict.yoked", "home.cage"),"conflict.yoked", "home.cage", "../data/CYH.csv")
-CTST <- makevolcanodf(c("treatment", "conflict.trained", "standard.trained"),"conflict.trained", "standard.trained", "../data/CTST.csv")
-
-
 volcanoplot <- function(mydata, mycolors, mybreaks){
   
   myvolcano <- mydata %>%
@@ -329,99 +312,10 @@ d <- volcanoplot(DGvCA3, volcanoDGvCA3, c("DG", "CA3"))
 e <- volcanoplot(DGvCA1, volcanoDGvCA1, c("DG", "CA1"))  
 f <- volcanoplot(CA3vCA1, volcanoCA3vCA1, c("CA3", "CA1")) 
 
-plot_grid(d,e,f, nrow = 3)
-
-g <- volcanoplot(STY, volcano1, c( "standard.yoked", "standard.trained")) 
-g
-h <- volcanoplot(CTY, volcano5, c("conflict.yoked", "conflict.trained")) 
-h
-i <- volcanoplot(SYH, volcano3, c("home.cage", "standard.yoked")) 
-i
-
-
-plot_grid(g,h,i,nrow = 3)
-
-myvolcanoplots <- plot_grid(d,e,f, g,h,i,nrow = 2)
+myvolcanoplots <- plot_grid(d,e,f,nrow = 1)
 myvolcanoplots
 
-pdf(file="../figures/02b_RNAseqALL/myvolcanoplots.pdf", width=5, height=2)
+pdf(file="../figures/02b_RNAseqALL/volcanoplots.pdf", width=5, height=2)
 plot(myvolcanoplots)
 dev.off()
-
-plot_grid(g, i,nrow = 1)
-
-```
-
-
-```{r plottotalDEGs}
-colData$treatment <- factor(colData$treatment , levels = c("home.cage",
-                                                           "standard.yoked", "standard.trained",
-                                                           "conflict.yoked", "conflict.trained"))
-
-DEGsall <- returntotalDEGs(dds)
-
-dds.DG <- subsetDESeq("DG")
-dds.CA3 <- subsetDESeq("CA3")
-dds.CA1 <- subsetDESeq("CA1")
-
-dds.DG.total <- returntotalDEGs(dds.DG)
-dds.CA3.total <- returntotalDEGs(dds.CA3)
-dds.CA1.total <- returntotalDEGs(dds.CA1)
-
-d <- plottotalDEGs(DEGsall, "All subfields")
-a <- plottotalDEGs(dds.DG.total, "DG")
-b <- plottotalDEGs(dds.CA3.total, "CA3")
-c <-  plottotalDEGs(dds.CA1.total, "CA1")
-
-mylegend <- get_legend(c)
-
-
-e <- plot_grid(d + theme(legend.position = "none"), a + theme(legend.position = "none"),
-          b+ theme(legend.position = "none"),c + theme(legend.position = "none"),
-          nrow = 2)
-
-f <- plot_grid(e, mylegend, rel_widths   = c(.9, 0.1), ncol = 2)
-f
-
-pdf(file="../figures/02b_RNAseqALL/plottotalDEGs.pdf", width=6, height=6)
-plot(f)
-dev.off()
-
-
-```
-
-
-```{r correlationheatmaps}
-colData.DG <- subsetcolData(colData,  "DG")
-colData.CA3 <- subsetcolData(colData,  "CA3")
-colData.CA1 <- subsetcolData(colData,  "CA1")
-
-plotcorrelationheatmaps(dds.DG, colData.DG ,"DG correlations")
-plotcorrelationheatmaps(dds.CA3, colData.CA3 ,"CA3 correlations")
-plotcorrelationheatmaps(dds.CA1, colData.CA1 ,"CA1 correlations")
-```
-
-
-```{r}
-countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-
-colData <- read.csv("../data/02a_colData.csv", header = T)
-colData <- colData %>% dplyr::rename(treatment = APA2, subfield = Punch)
-colData$subtreat <- as.factor(paste(colData$subfield, colData$treatment, sep = ".") ) 
-colData %>% select(subtreat)  %>%  summary()
-
-
-dds <- DESeqDataSetFromMatrix(countData = countData,
-                              colData = colData,
-                              design = ~ subtreat)
-
-dds # view the DESeq object - note numnber of genes
-dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-dds # view number of genes afternormalization and the number of samples
-dds <- DESeq(dds) # Differential expression analysis
-```
-
-```{r newcorplot}
-plotcorrelationheatmaps2(dds, colData ,"Correlations across subfield.treatment")
-
 ```

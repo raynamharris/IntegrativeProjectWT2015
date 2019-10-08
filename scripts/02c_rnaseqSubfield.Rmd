@@ -94,18 +94,20 @@ betterPlotCounts <- function(mygene, mydds, mysubfield){
   names(df) <- c("count", "treatment")
   df$treatment <- factor(df$treatment, levels = c("home.cage","standard.yoked","standard.trained",
                                                   "conflict.yoked", "conflict.trained"))
+  
+  #df <- df %>% filter(treatment %in% c("home.cage","standard.trained"))
+  
   ggplot(df, aes(x = treatment, y = count)) +
     geom_boxplot(aes(fill = treatment)) + 
-    geom_point(aes( size = 1.5)) +
+    geom_point() +
     labs(subtitle = paste(mysubfield, " *", mygene, "*",  sep = "")) +
     theme_classic() +
     theme(plot.subtitle  = element_markdown(),
           legend.position = "none", 
           panel.grid.major  = element_blank(),  # remove major gridlines
           panel.grid.minor  = element_blank()) + # remove minor gridlines) +
-    scale_color_manual(values = fivegroups) +
     scale_fill_manual(values = fivegroups) 
-  
+
 }
 
 betterPlotCounts("Prkcz", DGdds, "DG")
@@ -117,8 +119,12 @@ betterPlotCounts("Rtl1", DGdds, "DG")
 
 betterPlotCounts("Nlrp3", DGdds, "DG")
 betterPlotCounts("Kcnc2", DGdds, "DG")
-
 betterPlotCounts("1110008F13Rik", DGdds, "DG")
+
+a <- betterPlotCounts("Irs1", DGdds, "DG") + labs(title = "wald = -6, p = 1.577782e-06")
+b <- betterPlotCounts("Dab2ip", DGdds, "DG")  + labs(title = "wald =  5, p = 3.227358e-05")
+plot_grid(a,b)
+
 ```
 
 ```{r CA1_boxplots}
@@ -127,12 +133,20 @@ betterPlotCounts("Grm1", CA1dds, "CA1")
 betterPlotCounts("Grin2b", CA1dds, "CA1")
 betterPlotCounts("Foxj3", CA1dds, "CA1")
 betterPlotCounts("Grik3", CA1dds, "CA1")
-
 betterPlotCounts("0610010K14Rik", CA1dds, "CA1")
-
-
 ```
 
+```{r pkrcs}
+a <- betterPlotCounts("Prkcz", CA1dds, "CA1")
+b <- betterPlotCounts("Prkcz", CA3dds, "CA3")
+c <- betterPlotCounts("Prkcz", DGdds, "DG")
+
+d <- betterPlotCounts("Prkci", CA1dds, "CA1")
+e <- betterPlotCounts("Prkci", CA3dds, "CA3")
+f <- betterPlotCounts("Prkci", DGdds, "DG")
+
+plot_grid(a,b,c,d,e,f)
+```
 
 ## genes that are correlated with number of entrances 
 
@@ -208,6 +222,24 @@ write.csv(all, file = paste("../data/02c_",i,"forupset.csv", sep = ""), row.name
 }
 ```
 
+## Standard deviation stuff
 
+```{r stdev}
+res <- results(DGdds, contrast =c("APA2", "home.cage", "standard.trained"))
+res
+summary(res)
+
+resSig <- subset(res, padj < 0.1)
+resSig <- as.data.frame(resSig)
+resSig$gene <- row.names(resSig)
+resSig <- resSig %>% arrange(stat)
+head(resSig)
+
+head(assays(DGdds)[["mu"]])
+head(assays(DGdds)[["cooks"]])
+
+sizeFactors(DGdds)
+head(coef(DGdds))
+```
 
 

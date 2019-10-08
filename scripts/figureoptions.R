@@ -52,8 +52,7 @@ pheatmapcolors = list(
   subfield = c(DG = (values=c("#d95f02")),
               CA3 = (values=c("#1b9e77")),
               CA1 = (values=c("#7570b3"))),
-  treatment = c('home cage' = (values=c("#e0e0e0")),
-          'standard yoked' = (values=c("#404040")), 
+  treatment = c( 'standard yoked' = (values=c("#404040")), 
             'standard trained' = (values=c("#ca0020")),
               'conflict yoked' = (values=c("#bababa")),
             'conflict trained' = (values=c("#f4a582"))))
