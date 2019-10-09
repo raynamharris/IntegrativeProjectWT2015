@@ -70,6 +70,24 @@ returnvsds(CA1dds, "../data/02c_CA1vsd.csv")
 returnvsds(CA3dds, "../data/02c_CA3vsd.csv")
 ```
 
+## Res summary
+
+```{r twowaycontrasts}
+res_summary_subfield <- function(mydds, mycontrast){
+  res <- results(dds, contrast = mycontrast, independentFiltering = T)
+  print(mycontrast)
+  print(sum(res$padj < 0.1, na.rm=TRUE))
+  print(summary(res))
+  print(head((res[order(res$padj),]), 5))
+  cat("\n")
+}
+
+res_summary_subfield(c("treatment", "standard.trained", "standard.yoked"))
+res_summary_subfield(c("treatment", "conflict.trained", "conflict.yoked"))
+res_summary_subfield(c("treatment", "conflict.trained", "standard.trained"))
+res_summary_subfield(c("treatment", "conflict.yoked", "standard.yoked"))
+```
+
 ## Volcano plots
 
 ```{r volcanos}
@@ -77,7 +95,7 @@ DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DG: standard yoked v. trained"
 CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "CA1: standard yoked v. trained")  
 CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1", "CA1: standard v. conflict yoked")  
 
-volcanos <- plot_grid(DGconsyokcons  ,CA1consyokcons  , CA1yoked , nrow = 1,
+volcanos <- plot_grid(DGconsyokcons, CA1consyokcons, CA1yoked , nrow = 1,
                       labels = c("(d)", "(e)", "(f)"), label_size = 8) 
 volcanos
 
@@ -92,7 +110,7 @@ dev.off()
 betterPlotCounts <- function(mygene, mydds, mysubfield){
   df <- plotCounts(mydds, mygene, intgroup = "APA2",  transform = F, replaced = F, returnData = T)
   names(df) <- c("count", "treatment")
-  df$treatment <- factor(df$treatment, levels = c("home.cage","standard.yoked","standard.trained",
+  df$treatment <- factor(df$treatment, levels = c("standard.yoked","standard.trained",
                                                   "conflict.yoked", "conflict.trained"))
   
   #df <- df %>% filter(treatment %in% c("home.cage","standard.trained"))
@@ -106,7 +124,7 @@ betterPlotCounts <- function(mygene, mydds, mysubfield){
           legend.position = "none", 
           panel.grid.major  = element_blank(),  # remove major gridlines
           panel.grid.minor  = element_blank()) + # remove minor gridlines) +
-    scale_fill_manual(values = fivegroups) 
+    scale_fill_manual(values = fourgroups) 
 
 }
 
@@ -211,35 +229,9 @@ B <- listofDEGs("conflict.trained","standard.trained")
 C <- listofDEGs("conflict.trained","conflict.yoked")
 D <- listofDEGs("conflict.yoked","standard.yoked")
 
-E <- listofDEGs("home.cage","standard.yoked")
-G <- listofDEGs("home.cage","standard.trained")
-H <- listofDEGs("home.cage","conflict.yoked")
-I <- listofDEGs("home.cage","conflict.trained")
-
-all <- rbind(A,B,C,D,E,G,H,I)
+all <- rbind(A,B,C,D)
 
 write.csv(all, file = paste("../data/02c_",i,"forupset.csv", sep = ""), row.names = F)
 }
 ```
-
-## Standard deviation stuff
-
-```{r stdev}
-res <- results(DGdds, contrast =c("APA2", "home.cage", "standard.trained"))
-res
-summary(res)
-
-resSig <- subset(res, padj < 0.1)
-resSig <- as.data.frame(resSig)
-resSig$gene <- row.names(resSig)
-resSig <- resSig %>% arrange(stat)
-head(resSig)
-
-head(assays(DGdds)[["mu"]])
-head(assays(DGdds)[["cooks"]])
-
-sizeFactors(DGdds)
-head(coef(DGdds))
-```
-
 

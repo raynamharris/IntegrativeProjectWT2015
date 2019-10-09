@@ -206,7 +206,7 @@ Volcano plots
 
 ![](../figures/02c_rnaseqSubfield/volcanos-3.png)
 
-    volcanos <- plot_grid(DGconsyokcons  ,CA1consyokcons  , CA1yoked , nrow = 1,
+    volcanos <- plot_grid(DGconsyokcons, CA1consyokcons, CA1yoked , nrow = 1,
                           labels = c("(d)", "(e)", "(f)"), label_size = 8) 
     volcanos
 
@@ -225,7 +225,7 @@ candidate gnees
     betterPlotCounts <- function(mygene, mydds, mysubfield){
       df <- plotCounts(mydds, mygene, intgroup = "APA2",  transform = F, replaced = F, returnData = T)
       names(df) <- c("count", "treatment")
-      df$treatment <- factor(df$treatment, levels = c("home.cage","standard.yoked","standard.trained",
+      df$treatment <- factor(df$treatment, levels = c("standard.yoked","standard.trained",
                                                       "conflict.yoked", "conflict.trained"))
       
       #df <- df %>% filter(treatment %in% c("home.cage","standard.trained"))
@@ -239,7 +239,7 @@ candidate gnees
               legend.position = "none", 
               panel.grid.major  = element_blank(),  # remove major gridlines
               panel.grid.minor  = element_blank()) + # remove minor gridlines) +
-        scale_fill_manual(values = fivegroups) 
+        scale_fill_manual(values = fourgroups) 
 
     }
 
@@ -400,12 +400,7 @@ What genes overlap within cetain comparisons?
     C <- listofDEGs("conflict.trained","conflict.yoked")
     D <- listofDEGs("conflict.yoked","standard.yoked")
 
-    E <- listofDEGs("home.cage","standard.yoked")
-    G <- listofDEGs("home.cage","standard.trained")
-    H <- listofDEGs("home.cage","conflict.yoked")
-    I <- listofDEGs("home.cage","conflict.trained")
-
-    all <- rbind(A,B,C,D,E,G,H,I)
+    all <- rbind(A,B,C,D)
 
     write.csv(all, file = paste("../data/02c_",i,"forupset.csv", sep = ""), row.names = F)
     }
@@ -424,24 +419,24 @@ What genes overlap within cetain comparisons?
 
     ## [1] "standard.trained vs standard.yoked"
     ## 
-    ## out of 16896 with nonzero total read count
+    ## out of 16852 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 183, 1.1%
-    ## LFC < 0 (down)     : 105, 0.62%
-    ## outliers [1]       : 31, 0.18%
-    ## low counts [2]     : 5556, 33%
-    ## (mean count < 6)
+    ## LFC > 0 (up)       : 522, 3.1%
+    ## LFC < 0 (down)     : 360, 2.1%
+    ## outliers [1]       : 32, 0.19%
+    ## low counts [2]     : 4892, 29%
+    ## (mean count < 5)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
     ## [1] "conflict.trained vs standard.trained"
     ## 
-    ## out of 16896 with nonzero total read count
+    ## out of 16852 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 0, 0%
     ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 31, 0.18%
+    ## outliers [1]       : 32, 0.19%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -450,11 +445,11 @@ What genes overlap within cetain comparisons?
     ## NULL
     ## [1] "conflict.trained vs conflict.yoked"
     ## 
-    ## out of 16896 with nonzero total read count
+    ## out of 16852 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 1, 0.0059%
-    ## LFC < 0 (down)     : 1, 0.0059%
-    ## outliers [1]       : 31, 0.18%
+    ## LFC < 0 (down)     : 3, 0.018%
+    ## outliers [1]       : 32, 0.19%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -463,65 +458,13 @@ What genes overlap within cetain comparisons?
     ## NULL
     ## [1] "conflict.yoked vs standard.yoked"
     ## 
-    ## out of 16896 with nonzero total read count
+    ## out of 16852 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 203, 1.2%
-    ## LFC < 0 (down)     : 136, 0.8%
-    ## outliers [1]       : 31, 0.18%
-    ## low counts [2]     : 4905, 29%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs standard.yoked"
-    ## 
-    ## out of 16896 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 441, 2.6%
-    ## LFC < 0 (down)     : 658, 3.9%
-    ## outliers [1]       : 31, 0.18%
-    ## low counts [2]     : 4905, 29%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs standard.trained"
-    ## 
-    ## out of 16896 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 209, 1.2%
-    ## LFC < 0 (down)     : 420, 2.5%
-    ## outliers [1]       : 31, 0.18%
-    ## low counts [2]     : 4580, 27%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs conflict.yoked"
-    ## 
-    ## out of 16896 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 257, 1.5%
-    ## LFC < 0 (down)     : 561, 3.3%
-    ## outliers [1]       : 31, 0.18%
-    ## low counts [2]     : 4905, 29%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs conflict.trained"
-    ## 
-    ## out of 16896 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 236, 1.4%
-    ## LFC < 0 (down)     : 492, 2.9%
-    ## outliers [1]       : 31, 0.18%
-    ## low counts [2]     : 4905, 29%
-    ## (mean count < 4)
+    ## LFC > 0 (up)       : 545, 3.2%
+    ## LFC < 0 (down)     : 372, 2.2%
+    ## outliers [1]       : 32, 0.19%
+    ## low counts [2]     : 4892, 29%
+    ## (mean count < 5)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
     ## 
@@ -540,11 +483,11 @@ What genes overlap within cetain comparisons?
 
     ## [1] "standard.trained vs standard.yoked"
     ## 
-    ## out of 16583 with nonzero total read count
+    ## out of 16502 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 1, 0.006%
+    ## LFC > 0 (up)       : 1, 0.0061%
     ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 9, 0.054%
+    ## outliers [1]       : 11, 0.067%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -553,11 +496,11 @@ What genes overlap within cetain comparisons?
     ## NULL
     ## [1] "conflict.trained vs standard.trained"
     ## 
-    ## out of 16583 with nonzero total read count
+    ## out of 16502 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 0, 0%
     ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 9, 0.054%
+    ## outliers [1]       : 11, 0.067%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -566,11 +509,11 @@ What genes overlap within cetain comparisons?
     ## NULL
     ## [1] "conflict.trained vs conflict.yoked"
     ## 
-    ## out of 16583 with nonzero total read count
+    ## out of 16502 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 0, 0%
     ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 9, 0.054%
+    ## outliers [1]       : 11, 0.067%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -579,65 +522,13 @@ What genes overlap within cetain comparisons?
     ## NULL
     ## [1] "conflict.yoked vs standard.yoked"
     ## 
-    ## out of 16583 with nonzero total read count
+    ## out of 16502 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 1, 0.006%
-    ## LFC < 0 (down)     : 1, 0.006%
-    ## outliers [1]       : 9, 0.054%
+    ## LFC > 0 (up)       : 1, 0.0061%
+    ## LFC < 0 (down)     : 1, 0.0061%
+    ## outliers [1]       : 11, 0.067%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs standard.yoked"
-    ## 
-    ## out of 16583 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 11, 0.066%
-    ## LFC < 0 (down)     : 38, 0.23%
-    ## outliers [1]       : 9, 0.054%
-    ## low counts [2]     : 4177, 25%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs standard.trained"
-    ## 
-    ## out of 16583 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 49, 0.3%
-    ## LFC < 0 (down)     : 260, 1.6%
-    ## outliers [1]       : 9, 0.054%
-    ## low counts [2]     : 4497, 27%
-    ## (mean count < 5)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs conflict.yoked"
-    ## 
-    ## out of 16583 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 2, 0.012%
-    ## outliers [1]       : 9, 0.054%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs conflict.trained"
-    ## 
-    ## out of 16583 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 26, 0.16%
-    ## LFC < 0 (down)     : 170, 1%
-    ## outliers [1]       : 9, 0.054%
-    ## low counts [2]     : 4497, 27%
-    ## (mean count < 5)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
     ## 
@@ -656,24 +547,24 @@ What genes overlap within cetain comparisons?
 
     ## [1] "standard.trained vs standard.yoked"
     ## 
-    ## out of 17033 with nonzero total read count
+    ## out of 17011 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 69, 0.41%
-    ## LFC < 0 (down)     : 2, 0.012%
-    ## outliers [1]       : 27, 0.16%
-    ## low counts [2]     : 4285, 25%
-    ## (mean count < 3)
+    ## LFC > 0 (up)       : 119, 0.7%
+    ## LFC < 0 (down)     : 6, 0.035%
+    ## outliers [1]       : 20, 0.12%
+    ## low counts [2]     : 4608, 27%
+    ## (mean count < 4)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
     ## [1] "conflict.trained vs standard.trained"
     ## 
-    ## out of 17033 with nonzero total read count
+    ## out of 17011 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 27, 0.16%
+    ## LFC < 0 (down)     : 1, 0.0059%
+    ## outliers [1]       : 20, 0.12%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -682,11 +573,11 @@ What genes overlap within cetain comparisons?
     ## NULL
     ## [1] "conflict.trained vs conflict.yoked"
     ## 
-    ## out of 17033 with nonzero total read count
+    ## out of 17011 with nonzero total read count
     ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 1, 0.0059%
-    ## outliers [1]       : 27, 0.16%
+    ## LFC > 0 (up)       : 8, 0.047%
+    ## LFC < 0 (down)     : 2, 0.012%
+    ## outliers [1]       : 20, 0.12%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
@@ -695,238 +586,14 @@ What genes overlap within cetain comparisons?
     ## NULL
     ## [1] "conflict.yoked vs standard.yoked"
     ## 
-    ## out of 17033 with nonzero total read count
+    ## out of 17011 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 3, 0.018%
     ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 27, 0.16%
+    ## outliers [1]       : 20, 0.12%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## [1] "home.cage vs standard.yoked"
-    ## 
-    ## out of 17033 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 908, 5.3%
-    ## LFC < 0 (down)     : 352, 2.1%
-    ## outliers [1]       : 27, 0.16%
-    ## low counts [2]     : 5274, 31%
-    ## (mean count < 5)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs standard.trained"
-    ## 
-    ## out of 17033 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 834, 4.9%
-    ## LFC < 0 (down)     : 411, 2.4%
-    ## outliers [1]       : 27, 0.16%
-    ## low counts [2]     : 4944, 29%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs conflict.yoked"
-    ## 
-    ## out of 17033 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 875, 5.1%
-    ## LFC < 0 (down)     : 480, 2.8%
-    ## outliers [1]       : 27, 0.16%
-    ## low counts [2]     : 4944, 29%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-    ## [1] "home.cage vs conflict.trained"
-    ## 
-    ## out of 17033 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 1055, 6.2%
-    ## LFC < 0 (down)     : 550, 3.2%
-    ## outliers [1]       : 27, 0.16%
-    ## low counts [2]     : 4285, 25%
-    ## (mean count < 3)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-Standard deviation stuff
-------------------------
-
-    res <- results(DGdds, contrast =c("APA2", "home.cage", "standard.trained"))
-    res
-
-    ## log2 fold change (MLE): APA2 home.cage vs standard.trained 
-    ## Wald test p-value: APA2 home.cage vs standard.trained 
-    ## DataFrame with 17033 rows and 6 columns
-    ##                       baseMean     log2FoldChange             lfcSE
-    ##                      <numeric>          <numeric>         <numeric>
-    ## 0610007P14Rik  33.106847648943 -0.824688805172559 0.706201212652936
-    ## 0610009B22Rik 15.4308333541882    2.4559198020875   1.0053171058589
-    ## 0610009L18Rik 2.01213758864991  -1.16221292431944  2.27283316314352
-    ## 0610009O20Rik 42.3702664233309  0.711085181407761 0.592961039759206
-    ## 0610010F05Rik 64.7038994019559   1.07957936173565 0.629057203565766
-    ## ...                        ...                ...               ...
-    ## Zxdc          43.1486819277236 -0.766976885312159 0.594530233960452
-    ## Zyg11b        321.833700366766   1.08433885348256 0.510532304484217
-    ## Zyx           95.5520024625261   1.61913942562895 0.693930838538127
-    ## Zzef1         150.425199831691 -0.500013592342612 0.491422612638784
-    ## Zzz3          141.469097182289    1.5276616995255 0.575200802445279
-    ##                             stat              pvalue               padj
-    ##                        <numeric>           <numeric>          <numeric>
-    ## 0610007P14Rik  -1.16778163276513   0.242894858709327  0.610408782238628
-    ## 0610009B22Rik   2.44293048210819  0.0145685432626862  0.123429619198798
-    ## 0610009L18Rik -0.511349861998668    0.60910609613768                 NA
-    ## 0610009O20Rik   1.19921062890831   0.230446055372204  0.595424576296302
-    ## 0610010F05Rik   1.71618631122279  0.0861279478114974  0.351162213907659
-    ## ...                          ...                 ...                ...
-    ## Zxdc           -1.29005531006044   0.197031454883037  0.549395614740788
-    ## Zyg11b          2.12393778798787  0.0336753460502013  0.204522462998817
-    ## Zyx             2.33328645407937   0.019633115916954  0.148566276154516
-    ## Zzef1          -1.01748185672144   0.308924258994894  0.681214700547789
-    ## Zzz3            2.65587546649995 0.00791028201436956 0.0840650411077759
-
-    summary(res)
-
-    ## 
-    ## out of 17033 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 834, 4.9%
-    ## LFC < 0 (down)     : 411, 2.4%
-    ## outliers [1]       : 27, 0.16%
-    ## low counts [2]     : 4944, 29%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-
-    resSig <- subset(res, padj < 0.1)
-    resSig <- as.data.frame(resSig)
-    resSig$gene <- row.names(resSig)
-    resSig <- resSig %>% arrange(stat)
-    head(resSig)
-
-    ##    baseMean log2FoldChange     lfcSE      stat       pvalue         padj
-    ## 1  84.21645      -5.272785 0.8205097 -6.426232 1.308060e-10 1.577782e-06
-    ## 2  39.01042      -7.231125 1.3104090 -5.518220 3.424502e-08 7.645806e-05
-    ## 3 152.69849      -3.779588 0.6943040 -5.443708 5.218263e-08 7.645806e-05
-    ## 4 168.14676      -3.709184 0.7158185 -5.181738 2.198273e-07 1.473087e-04
-    ## 5  38.29160      -5.778719 1.1493714 -5.027721 4.963422e-07 2.394752e-04
-    ## 6  39.27817      -3.905596 0.7979443 -4.894572 9.851984e-07 3.304778e-04
-    ##     gene
-    ## 1   Irs1
-    ## 2   Acan
-    ## 3  Frmd6
-    ## 4  Ptgs2
-    ## 5 Adgrg1
-    ## 6   Mios
-
-    head(assays(DGdds)[["mu"]])
-
-    ##               143A-DG-1 143B-DG-1 143D-DG-3  144A-DG-2  144C-DG-2
-    ## 0610007P14Rik 125.51220 39.128224 39.202876  74.495857  60.363965
-    ## 0610009B22Rik  28.51032 11.155148  5.196671  16.921864  20.521916
-    ## 0610009L18Rik  10.30368  3.794863  3.465592   6.115592   2.805252
-    ## 0610009O20Rik 198.49054 61.377565 35.248745 117.811039  70.217834
-    ## 0610010F05Rik 198.97150 85.100062 41.396385 118.096504 110.742907
-    ## 0610010K14Rik  61.80884 41.932264 12.555485  36.685695  19.763325
-    ##               144D-DG-2 145A-DG-2 145B-DG-1 146A-DG-2 146B-DG-2  146C-DG-4
-    ## 0610007P14Rik 178.41307 35.011671 27.475921 29.107447 1.6642736 13.2096875
-    ## 0610009B22Rik  23.65015  7.952962  7.833168  6.611807 0.4744713  4.4908928
-    ## 0610009L18Rik  15.77198  2.874215  2.664761  2.389519 0.1614101  0.6138845
-    ## 0610009O20Rik 160.41774 55.369003 43.099455 46.031802 2.6106236 15.3660489
-    ## 0610010F05Rik 188.39577 55.503167 59.757443 46.143341 3.6196325 24.2343126
-    ## 0610010K14Rik  57.14026 17.241596 29.444924 14.334044 1.7835402  4.3248873
-    ##               146D-DG-3   147-DG-4 147C-DG-3 147D-DG-1   148-DG-2
-    ## 0610007P14Rik 2.7413665 1.18006267 118.43938 449.80613  34.988778
-    ## 0610009B22Rik 0.3633912 3.89858326  40.26580  59.62558 115.592730
-    ## 0610009L18Rik 0.2423409 0.04340046   5.50415  39.76353   1.286821
-    ## 0610009O20Rik 2.4648633 3.98005226 137.77354 404.43720 118.008281
-    ## 0610010F05Rik 2.8947535 8.10373203 217.28728 474.97402 240.275108
-    ## 0610010K14Rik 0.8779760 0.38435899  38.77737 144.05917  11.396218
-    ##               148A-DG-3 148B-DG-4
-    ## 0610007P14Rik  97.52312 14.248047
-    ## 0610009B22Rik  22.15255  4.062006
-    ## 0610009L18Rik   8.00597  1.381851
-    ## 0610009O20Rik 154.22737 22.349863
-    ## 0610010F05Rik 154.60108 30.988110
-    ## 0610010K14Rik  48.02554 15.269103
-
-    head(assays(DGdds)[["cooks"]])
-
-    ##                  143A-DG-1  143B-DG-1    143D-DG-3   144A-DG-2  144C-DG-2
-    ## 0610007P14Rik 0.0047563777 0.04134201 0.0054250301 0.002074481 0.03493602
-    ## 0610009B22Rik 0.0350000133 0.01279839 0.2592337018 0.146187763 0.09452981
-    ## 0610009L18Rik 0.0006873141 0.08492622 0.0096689407 0.039273461 0.12798056
-    ## 0610009O20Rik 0.0068402553 0.07395699 0.0093284481 0.122813378 0.14066383
-    ## 0610010F05Rik 0.0305325964 0.15504542 0.1911136419 0.016748112 0.02292438
-    ## 0610010K14Rik 0.0087830510 0.10107064 0.0005578724 0.043109661 0.02444902
-    ##                 144D-DG-2   145A-DG-2  145B-DG-1    146A-DG-2   146B-DG-2
-    ## 0610007P14Rik 0.019881864 0.009108214 0.03809356 0.0127633548 0.004315805
-    ## 0610009B22Rik 0.001341341 0.194068436 0.06220278 0.0023478043 0.010501794
-    ## 0610009L18Rik 0.002299207 0.013285044 0.05950413 0.0657668325 0.006331534
-    ## 0610009O20Rik 0.010003784 0.003757888 0.00919852 0.0018009626 0.003139963
-    ## 0610010F05Rik 0.078280582 0.002013498 0.09952414 0.0002934111 0.013390475
-    ## 0610010K14Rik 0.003282354 0.026030270 0.01280175 0.0575034420 0.220773428
-    ##                 146C-DG-4   146D-DG-3    147-DG-4   147C-DG-3   147D-DG-1
-    ## 0610007P14Rik 0.195497379 0.069518483 0.047851744 0.107318778 0.085969880
-    ## 0610009B22Rik 0.043310414 0.005762166 1.278932710 0.002906652 1.647032927
-    ## 0610009L18Rik 0.026093660 0.007348606 0.009552561 0.026837584 0.037065486
-    ## 0610009O20Rik 0.118262917 0.002212013 0.372001978 0.011024654 0.015260052
-    ## 0610010F05Rik 0.088207959 0.006035332 1.343856544 0.035886249 0.004695359
-    ## 0610010K14Rik 0.004265768 0.013422750 0.015760008 0.060694479 0.020048654
-    ##                 148-DG-2   148A-DG-3   148B-DG-4
-    ## 0610007P14Rik  1.2908053 0.001752103 0.006749729
-    ## 0610009B22Rik 11.7200413 0.084232385 0.088854014
-    ## 0610009L18Rik  0.3106720 0.005781759 0.003018016
-    ## 0610009O20Rik  5.7323780 0.306253729 0.046181651
-    ## 0610010F05Rik  4.6360407 0.011684718 0.052072898
-    ## 0610010K14Rik  0.3476747 0.091077411 0.035367588
-
-    sizeFactors(DGdds)
-
-    ##  143A-DG-1  143B-DG-1  143D-DG-3  144A-DG-2  144C-DG-2  144D-DG-2 
-    ## 4.11991222 1.68610385 0.83727353 2.44531116 1.75103389 3.81044847 
-    ##  145A-DG-2  145B-DG-1  146A-DG-2  146B-DG-2  146C-DG-4  146D-DG-3 
-    ## 1.14925089 1.18398567 0.95544594 0.07171647 0.38318574 0.05854860 
-    ##   147-DG-4  147C-DG-3  147D-DG-1   148-DG-2  148A-DG-3  148B-DG-4 
-    ## 0.06062865 3.43568179 9.60671264 1.79763552 3.20117640 0.61397337
-
-    head(coef(DGdds))
-
-    ##               Intercept APA2_conflict.yoked_vs_conflict.trained
-    ## 0610007P14Rik  4.929070                             -0.39262591
-    ## 0610009B22Rik  2.790799                             -0.06485422
-    ## 0610009L18Rik  1.322474                             -0.15211976
-    ## 0610009O20Rik  5.590313                             -0.40436674
-    ## 0610010F05Rik  5.593804                              0.06359049
-    ## 0610010K14Rik  3.907128                              0.72916779
-    ##               APA2_home.cage_vs_conflict.trained
-    ## 0610007P14Rik                         -0.6463504
-    ## 0610009B22Rik                          3.2160078
-    ## 0610009L18Rik                         -1.8047637
-    ## 0610009O20Rik                          0.4463309
-    ## 0610010F05Rik                          1.4686384
-    ## 0610010K14Rik                         -1.2427450
-    ##               APA2_standard.trained_vs_conflict.trained
-    ## 0610007P14Rik                                 0.1783384
-    ## 0610009B22Rik                                 0.7600880
-    ## 0610009L18Rik                                -0.6425508
-    ## 0610009O20Rik                                -0.2647543
-    ## 0610010F05Rik                                 0.3890591
-    ## 0610010K14Rik                                -0.4105809
-    ##               APA2_standard.yoked_vs_conflict.trained
-    ## 0610007P14Rik                            0.6200464503
-    ## 0610009B22Rik                           -0.1569818073
-    ## 0610009L18Rik                            0.7268569386
-    ## 0610009O20Rik                           -0.1945837943
-    ## 0610010F05Rik                            0.0338575601
-    ## 0610010K14Rik                           -0.0006527513

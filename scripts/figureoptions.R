@@ -86,7 +86,8 @@ volcano6 <-  c("standard.yoked" = "#404040",
 
 # subfield box plots
 
-fivegroups = c( "#e0e0e0", "#404040",  "#ca0020", "#bababa", "#f4a582")
+fivegroups <- c( "#e0e0e0", "#404040",  "#ca0020", "#bababa", "#f4a582")
+fourgroups <- c(           "#404040",  "#ca0020", "#bababa", "#f4a582")
 
 
 # for integrative correlation anaylsis
