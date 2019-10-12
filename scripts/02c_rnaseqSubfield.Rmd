@@ -25,7 +25,7 @@ source("figureoptions.R")
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = T)
+knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = F)
 ```
 
 ## Get varience stabilized gene expression for each tissue
@@ -74,7 +74,7 @@ returnvsds(CA3dds, "../data/02c_CA3vsd.csv")
 
 ```{r twowaycontrasts}
 res_summary_subfield <- function(mydds, mycontrast){
-  res <- results(dds, contrast = mycontrast, independentFiltering = T)
+  res <- results(mydds, contrast = mycontrast, independentFiltering = T)
   print(mycontrast)
   print(sum(res$padj < 0.1, na.rm=TRUE))
   print(summary(res))
@@ -82,10 +82,24 @@ res_summary_subfield <- function(mydds, mycontrast){
   cat("\n")
 }
 
-res_summary_subfield(c("treatment", "standard.trained", "standard.yoked"))
-res_summary_subfield(c("treatment", "conflict.trained", "conflict.yoked"))
-res_summary_subfield(c("treatment", "conflict.trained", "standard.trained"))
-res_summary_subfield(c("treatment", "conflict.yoked", "standard.yoked"))
+print("DG")
+res_summary_subfield(DGdds, c("APA2", "standard.trained", "standard.yoked"))
+res_summary_subfield(DGdds, c("APA2", "conflict.trained", "conflict.yoked"))
+res_summary_subfield(DGdds, c("APA2", "conflict.trained", "standard.trained"))
+res_summary_subfield(DGdds, c("APA2", "conflict.yoked", "standard.yoked"))
+
+print("CA3")
+res_summary_subfield(CA3dds, c("APA2", "standard.trained", "standard.yoked"))
+res_summary_subfield(CA3dds, c("APA2", "conflict.trained", "conflict.yoked"))
+res_summary_subfield(CA3dds, c("APA2", "conflict.trained", "standard.trained"))
+res_summary_subfield(CA3dds, c("APA2", "conflict.yoked", "standard.yoked"))
+
+print("CA1")
+res_summary_subfield(CA1dds, c("APA2", "standard.trained", "standard.yoked"))
+res_summary_subfield(CA1dds, c("APA2", "conflict.trained", "conflict.yoked"))
+res_summary_subfield(CA1dds, c("APA2", "conflict.trained", "standard.trained"))
+res_summary_subfield(CA1dds, c("APA2", "conflict.yoked", "standard.yoked"))
+
 ```
 
 ## Volcano plots
