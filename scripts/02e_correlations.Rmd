@@ -1,0 +1,104 @@
+---
+title: "02e_correlations"
+output: md_document
+---
+
+```{r setup}
+library(tidyverse) 
+library(corrplot)
+
+knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = F)
+```    
+
+```{r correlations}
+# import varance stabilized data
+DGvsd <- read.csv("../data/02c_DGvsd.csv", stringsAsFactors = F, check.names = F, row.names = 1)  
+CA1vsd <- read.csv("../data/02c_CA1vsd.csv", stringsAsFactors = F, check.names = F, row.names = 1)  
+
+
+# import col Data and subset for each region
+a.colData <- read.csv("../data/02a_colData.csv", header = T)
+a.colData$mouse <- sapply(strsplit(as.character(a.colData$RNAseqID),"-"), "[", 1)
+
+DGcols <- a.colData %>% filter(Punch == "DG", APA2 %in% c("conflict.trained", "standard.trained")) %>% droplevels()
+CA1cols <- a.colData %>% filter(Punch == "CA1", APA2 %in% c("conflict.trained", "standard.trained")) %>% droplevels()
+
+# create lists of trained only samples
+DGtrained <- DGcols$mouse
+CA1trained <- CA1cols$mouse
+
+# cutoff region in name
+names(DGvsd) <- sapply(strsplit(names(DGvsd),"-"), "[", 1)
+names(CA1vsd) <- sapply(strsplit(names(CA1vsd),"-"), "[", 1)
+
+# keep only trained varance stabilized data
+DGvsd <- DGvsd %>% select(DGtrained)
+CA1vsd <- CA1vsd %>% select(CA1trained)
+
+DGvsd <- as.data.frame(t(DGvsd))
+CA1vsd <- as.data.frame(t(CA1vsd))
+
+DGvsd$mouse <- row.names(DGvsd)
+CA1vsd$mouse <- row.names(CA1vsd)
+
+# import behavior data, create mouse id
+behav <- read.csv("../data/01a_behavior.csv") 
+behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
+
+# summarize number of entrances
+entrsum <- behav %>% select(mouse,APA2,TrainSessionCombo,TrainSessionComboNum,NumEntrances) %>%
+                    filter(APA2 %in% c("conflict-trained", "standard-trained")) %>%
+                    group_by(mouse) %>%
+                    summarize(totalentr = sum(NumEntrances, na.rm = TRUE))
+entrsum$mouse <- as.character(entrsum$mouse)
+entrsum
+
+
+DGsig <- read.csv("../data/02c_DGforupset.csv") %>% select(gene) %>% droplevels()
+DGsig <- DGsig$gene
+
+CA1sig <- read.csv("../data/02c_CA1forupset.csv") %>% select(gene) %>% droplevels()
+CA1sig <- CA1sig$gene
+
+  
+DGvsd <- DGvsd %>% select(mouse,DGsig)
+CA1vsd <- CA1vsd %>% select(mouse,CA1sig)
+
+DG <- left_join(entrsum,DGvsd) %>% drop_na()
+CA1 <- left_join(entrsum,CA1vsd) %>% drop_na()
+
+DG <- as.data.frame(DG)
+CA1 <- as.data.frame(CA1)
+
+row.names(DG) <- DG$mouse 
+DG$mouse <- NULL
+
+row.names(CA1) <- CA1$mouse 
+CA1$mouse <- NULL
+```
+
+```{r DG}
+M <- cor(DG)
+M <- as.data.frame(M)
+M$rownames <- row.names(M)
+M <- M %>% filter(totalentr > 0.5 | totalentr < -0.5)
+row.names(M) <- M$rownames
+greatthan05 <- M$rownames
+M <- M %>% select(greatthan05)
+M <- as.matrix(M)
+corrplot(M, method = "circle")
+```
+
+```{r CA1}
+M <- cor(CA1)
+M <- as.data.frame(M)
+M$rownames <- row.names(M)
+M <- M %>% filter(totalentr > 0.75 | totalentr < -0.75)
+row.names(M) <- M$rownames
+greatthan05 <- M$rownames
+M <- M %>% select(greatthan05)
+M <- as.matrix(M)
+corrplot(M, method = "circle")
+
+ggplot(CA1, aes(x = totalentr, y = Abhd4)) + geom_point()
+```
