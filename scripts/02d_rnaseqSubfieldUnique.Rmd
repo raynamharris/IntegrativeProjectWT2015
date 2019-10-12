@@ -28,11 +28,7 @@ myupsetdf <- myupsetdf %>%
   mutate(comparison = fct_recode(comparison,
     "ConfT.ConfY"    = "conflict.trained-conflict.yoked",
     "ConfY.StdY"      = "conflict.yoked-standard.yoked",
-    "StdT.StdY" = "standard.trained-standard.yoked",
-    "HC.ConfT" = "home.cage-conflict.trained" ,
-    "HC.ConfY" =  "home.cage-conflict.yoked" ,
-    "HC.StdT" = "home.cage-standard.trained" ,
-    "HC.StdY" =  "home.cage-standard.yoked")) %>%
+    "StdT.StdY" = "standard.trained-standard.yoked")) %>%
   mutate(tissue.contrast = paste(tissue, comparison, sep = ".")) %>%
   select(gene,tissue.contrast) %>%
   mutate(yesno = 1) %>%
@@ -44,14 +40,6 @@ write.csv(myupsetdf, "../data/02d_upsetdf.csv")
 
 ```{r upsetplot}
 upset1 <- upset(myupsetdf, keep.order = F,
-     sets.bar.color=c(
-       "#d95f02","#d95f02","#d95f02","#d95f02",
-       "#7570b3","#7570b3","#7570b3","#7570b3","#7570b3",
-       "#1b9e77",
-       "#7570b3",
-       "#1b9e77",
-       "#d95f02",
-       "#1b9e77"),
       nsets = 14,
       order.by = "freq",
       sets.x.label = NULL,
@@ -96,39 +84,7 @@ upset4 <- upset(CA3upset, keep.order = F,
 upset4
 ```
 
-Create a list of genes afected by stress and learning. Save. THen use to filter out nonspecific gene expression responses
 
-```{r listofDEGs}
-# DG learning but not homecage or yoked yoked
-DGtrainingonlygenes <- DGupset %>% 
-  filter(DG.StdT.StdY == 1 &  DG.ConfY.StdY == 0 &DG.HC.ConfT == 0 & 
-           DG.HC.ConfY == 0 & DG.HC.StdT == 0 & DG.HC.StdY == 0 ) %>% 
-  select(gene)  %>% arrange(gene) %>% droplevels()
-
-print("DG training but not homecage or yoked")
-as.list(DGtrainingonlygenes)
-
-# CA1 learning  but not homecage or yoked yoked
-CA1trainingonlygenes <- CA1upset %>% 
-  filter(CA1.StdT.StdY == 1 &  CA1.ConfY.StdY == 0 & CA1.HC.ConfT == 0 & 
-           CA1.HC.ConfY == 0 & CA1.HC.StdT == 0 & CA1.HC.StdY == 0 ) %>% 
-  select(gene) %>% arrange(gene) %>% droplevels()
-
-print("CA1 training but not homecage or yoked")
-as.list(CA1trainingonlygenes)
-str(CA1trainingonlygenes)
-
-# CA3 learning  but not homecage or yoked yoked
-CA3trainingonlygenes <- CA3upset %>% 
-  filter(CA3.StdT.StdY == 1  ) %>% 
-  select(gene)  %>% droplevels()
-
-print("CA3 training but not homecage or yoked")
-as.list(CA3trainingonlygenes)
-
-write.csv(CA1trainingonlygenes, "../data/02d_CA1_trainingonlygenes.csv", row.names = F)
-write.csv(DGtrainingonlygenes, "../data/02d_DG_trainingonlygenes.csv", row.names = F)
-```
 
 ```{r}
 # to use GORILLA, I need a list of all genes used
@@ -142,15 +98,13 @@ write.csv(genesforgo, "../data/02d_genesforgo.csv")
 DGwide <- DG %>%
   select(-padj,-tissue) %>%
   spread(key = comparison, value = lfc)  %>%
-  select(gene, "home.cage-standard.yoked", "home.cage-standard.trained",  "home.cage-conflict.yoked", "home.cage-conflict.trained",
-         "standard.trained-standard.yoked", "conflict.yoked-standard.yoked", "conflict.trained-conflict.yoked")
+  select(gene, "standard.trained-standard.yoked", "conflict.yoked-standard.yoked", "conflict.trained-conflict.yoked")
 head(DGwide)
 
 
 CA1wide <- CA1 %>%
   select(-padj,-tissue) %>%
   spread(key = comparison, value = lfc)  %>%
-  select(gene, "home.cage-standard.yoked", "home.cage-standard.trained",  "home.cage-conflict.yoked", "home.cage-conflict.trained",
-         "standard.trained-standard.yoked", "conflict.yoked-standard.yoked", "conflict.trained-conflict.yoked")
+  select(gene,  "standard.trained-standard.yoked", "conflict.yoked-standard.yoked", "conflict.trained-conflict.yoked")
 head(CA1wide)
 ```
