@@ -6,6 +6,7 @@ output: md_document
 ```{r setup}
 library(tidyverse) 
 library(corrplot)
+library(cowplot)
 
 knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = F)
 ```    
@@ -14,7 +15,6 @@ knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = F)
 # import varance stabilized data
 DGvsd <- read.csv("../data/02c_DGvsd.csv", stringsAsFactors = F, check.names = F, row.names = 1)  
 CA1vsd <- read.csv("../data/02c_CA1vsd.csv", stringsAsFactors = F, check.names = F, row.names = 1)  
-
 
 # import col Data and subset for each region
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
@@ -45,27 +45,26 @@ CA1vsd$mouse <- row.names(CA1vsd)
 behav <- read.csv("../data/01a_behavior.csv") 
 behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
 
+
 # summarize number of entrances
-entrsum <- behav %>% select(mouse,APA2,TrainSessionCombo,TrainSessionComboNum,NumEntrances) %>%
-                    filter(APA2 %in% c("conflict-trained", "standard-trained")) %>%
-                    group_by(mouse) %>%
-                    summarize(totalentr = sum(NumEntrances, na.rm = TRUE))
-entrsum$mouse <- as.character(entrsum$mouse)
-entrsum
+timefirstentr <- behav %>% filter(APA2 %in% c("conflict-trained", "standard-trained"),
+                                  TrainSession == "Retention") %>% 
+                           select(mouse,Time1stEntr,pTimeTarget) 
+timefirstentr$mouse <- as.character(timefirstentr$mouse)
+head(timefirstentr)
 
-
-DGsig <- read.csv("../data/02c_DGforupset.csv") %>% select(gene) %>% droplevels()
+# subset for genes that are significant
+DGsig <- read.csv("../data/02c_DGforupset.csv", stringsAsFactors = F) %>% select(gene) %>% droplevels()
 DGsig <- DGsig$gene
 
-CA1sig <- read.csv("../data/02c_CA1forupset.csv") %>% select(gene) %>% droplevels()
+CA1sig <- read.csv("../data/02c_CA1forupset.csv", stringsAsFactors = F) %>% select(gene) %>% droplevels()
 CA1sig <- CA1sig$gene
 
-  
-DGvsd <- DGvsd %>% select(mouse,DGsig)
-CA1vsd <- CA1vsd %>% select(mouse,CA1sig)
+DGvsdSig <- DGvsd %>% select(mouse,DGsig) %>% arrange(mouse)
+CA1vsdSig <- CA1vsd %>% select(mouse,CA1sig) %>% arrange(mouse)
 
-DG <- left_join(entrsum,DGvsd) %>% drop_na()
-CA1 <- left_join(entrsum,CA1vsd) %>% drop_na()
+DG <- left_join(timefirstentr,DGvsdSig) %>% drop_na()  %>% arrange(mouse)
+CA1 <- left_join(timefirstentr,CA1vsdSig) %>% drop_na() %>% arrange(mouse)
 
 DG <- as.data.frame(DG)
 CA1 <- as.data.frame(CA1)
@@ -75,30 +74,158 @@ DG$mouse <- NULL
 
 row.names(CA1) <- CA1$mouse 
 CA1$mouse <- NULL
+
+# subset for sanes genes
+candidates <- c("Gria1", "Gria2", "Grin1", "Grin2a", "Grin2d",  "Prkcz" , "Prkci", "Wwc1")
+
+DGvsdCan <- DGvsd %>% select(mouse,candidates)
+CA1vsdCan <- CA1vsd %>% select(mouse,candidates)
+
+DGcan <- left_join(timefirstentr,DGvsdCan) %>% drop_na()
+CA1can <- left_join(timefirstentr,CA1vsdCan) %>% drop_na()
+
+DGcan <- as.data.frame(DGcan)
+CA1can <- as.data.frame(CA1can)
+
+row.names(DGcan) <- DGcan$mouse 
+DGcan$mouse <- NULL
+
+row.names(CA1can) <- CA1can$mouse 
+CA1can$mouse <- NULL
+
+DGcolscounts <- cbind(DGcols,DG)
+CA1colscounts <- cbind(CA1cols,CA1)
 ```
 
 ```{r DG}
 M <- cor(DG)
 M <- as.data.frame(M)
 M$rownames <- row.names(M)
-M <- M %>% filter(totalentr > 0.5 | totalentr < -0.5)
+M <- M %>% filter(pTimeTarget > 0.6 | pTimeTarget < -0.6)
 row.names(M) <- M$rownames
 greatthan05 <- M$rownames
 M <- M %>% select(greatthan05)
 M <- as.matrix(M)
-corrplot(M, method = "circle")
+corrplot.mixed(M, number.cex = .7)
+
+ggplot(DGcolscounts, aes(x = Time1stEntr, y = Nlrp3, color = DGcols$Treatment)) +
+  geom_point() + 
+  scale_color_manual(values = c("#f4a582", "#ca0020")) +
+  theme(legend.position = "none") +
+  geom_smooth(method='lm', color = "grey")
+
+ggplot(DGcolscounts, aes(x = pTimeTarget, y = Npas4, color = DGcols$Treatment)) +
+  geom_point() + 
+  scale_color_manual(values = c("#f4a582", "#ca0020")) +
+  theme(legend.position = "none") +
+  geom_smooth(method='lm', color = "grey")
+
+M <- cor(DGcan)
+M <- as.data.frame(M)
+M$rownames <- row.names(M)
+row.names(M) <- M$rownames
+greatthan05 <- M$rownames
+M <- M %>% select(greatthan05)
+M <- as.matrix(M)
+corrplot.mixed(M, order = "hclust")
 ```
+
+
+
 
 ```{r CA1}
 M <- cor(CA1)
 M <- as.data.frame(M)
 M$rownames <- row.names(M)
-M <- M %>% filter(totalentr > 0.75 | totalentr < -0.75)
+M <- M %>% filter(pTimeTarget > 0.75 | pTimeTarget < -0.75)
 row.names(M) <- M$rownames
 greatthan05 <- M$rownames
 M <- M %>% select(greatthan05)
 M <- as.matrix(M)
-corrplot(M, method = "circle")
+corrplot.mixed(M, order = "hclust")
+ 
+ggplot(CA1colscounts, aes(x = Time1stEntr, y = Snx2, color = CA1cols$Treatment)) +
+  geom_point() + 
+  scale_color_manual(values = c("#f4a582", "#ca0020")) +
+  theme(legend.position = "none") +
+  geom_smooth(method='lm', color = "grey")
 
-ggplot(CA1, aes(x = totalentr, y = Abhd4)) + geom_point()
+ggplot(CA1colscounts, aes(x = pTimeTarget, y = Adamts1, color = CA1cols$Treatment)) +
+  geom_point() + 
+  scale_color_manual(values = c("#f4a582", "#ca0020")) +
+  theme(legend.position = "none") +
+  geom_smooth(method='lm', color = "grey")
+
+M <- cor(CA1can)
+M <- as.data.frame(M)
+M$rownames <- row.names(M)
+row.names(M) <- M$rownames
+greatthan05 <- M$rownames
+M <- M %>% select(greatthan05)
+M <- as.matrix(M)
+corrplot.mixed(M, order = "hclust")
+
+ggplot(CA1can, aes(x = Time1stEntr, y = Prkci, color = CA1cols$Treatment)) +
+  geom_point() + 
+  scale_color_manual(values = c("#f4a582", "#ca0020")) +
+  theme(legend.position = "none") +
+  geom_smooth(method='lm', color = "grey")
+```
+
+
+```{r pkcs}
+zDG <- ggplot(DGcan, aes(x = Time1stEntr, y = Prkcz)) +
+  geom_point(aes( color = DGcols$Treatment))  +
+  scale_color_manual(values = c("#f4a582", "#ca0020")) +
+  theme(legend.position = "none") +
+  geom_smooth(method='lm', color = "grey") +
+  labs(title = "DG")
+
+iDG <- ggplot(DGcan, aes(x = Time1stEntr, y = Prkci )) +
+  geom_point(aes(color = DGcols$Treatment)) + 
+  scale_color_manual(values = c("#f4a582", "#ca0020")) +
+  theme(legend.position = "none") +
+  geom_smooth(method='lm', color = "grey")  +
+  labs(title = "DG")
+
+zCA1 <- ggplot(CA1can, aes(x = Time1stEntr, y = Prkcz)) +
+  geom_point(aes( color = CA1cols$Treatment))  +
+  scale_color_manual(values = c("#f4a582", "#ca0020")) +
+  theme(legend.position = "none") +
+  geom_smooth(method='lm', color = "grey")  +
+  labs(title = "CA1")
+
+iCA1 <- ggplot(CA1can, aes(x = Time1stEntr, y = Prkci )) +
+  geom_point(aes(color = CA1cols$Treatment)) + 
+  scale_color_manual(values = c("#f4a582", "#ca0020")) +
+  theme(legend.position = "none") +
+  geom_smooth(method='lm', color = "grey") +
+  labs(title = "CA1")
+
+plot_grid(zDG, iDG, zCA1, iCA1, 
+          labels = c("R2 = -0.45" ,"R2 = 0.10", "R2 = -0.02", "R2 = -0.82"), 
+          label_size = 10)
+```
+
+
+```{r behavior}
+# retention plot
+retention <- behav %>% filter(APA2 %in% c("conflict-trained", "standard-trained"),
+                                 TrainSession == "Retention") %>% 
+                           select(mouse,APA2, Time1stEntr, Path1stEntr, pTimeTarget)
+retention$APA2 <- factor(retention$APA2, levels = c("standard-trained", "conflict-trained"))
+
+a <- ggplot(retention, aes(y = Time1stEntr, x = APA2, color = APA2)) +
+  geom_point() + 
+  scale_color_manual(values = c("#ca0020", "#f4a582")) +
+  theme(legend.position = "none") +
+  labs(y = "reten. time to 1st entr. (s)", x = NULL)
+
+b <- ggplot(retention, aes(y =pTimeTarget, x = APA2, color = APA2)) +
+  geom_point() + 
+  scale_color_manual(values = c("#ca0020", "#f4a582")) +
+  theme(legend.position = "none") +
+  labs(y = "reten. prop. time in shock zone", x = NULL)
+
+plot_grid(a,b)
 ```
