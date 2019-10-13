@@ -10,100 +10,92 @@ library(cowplot)
 
 knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = F)
 ```    
+For this analysis, I want to explor correlations between a behavioral measure and gene expression.
 
-```{r correlations}
+```{r behavior}
+# import behavior data, create mouse id, select relvant samples
+behav <- read.csv("../data/01a_behavior.csv") 
+behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
+behav <- behav %>% filter(APA2 %in% c("conflict-trained", "standard-trained"),
+                                  TrainSession == "Retention") %>% 
+                           select(mouse,Time1stEntr,pTimeTarget) 
+behav$mouse <- as.character(behav$mouse)
+head(behav)
+```
 
-# DG only
+```{r vsd-all}
+# import varance stabilized data and fix sample names
+DGvsd <- read.csv("../data/02c_DGvsd.csv", stringsAsFactors = F, check.names = F, row.names = 1) 
+names(DGvsd) <- sapply(strsplit(names(DGvsd),"-"), "[", 1)
 
-# import varance stabilized data
-DGvsd <- read.csv("../data/02c_DGvsd.csv", stringsAsFactors = F, check.names = F, row.names = 1)  
-
-# import col Data and subset for each region
+# import col Data 
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
 a.colData$mouse <- sapply(strsplit(as.character(a.colData$RNAseqID),"-"), "[", 1)
 
-DGcols <- a.colData %>% filter(Punch == "DG", APA2 %in% c("conflict.trained", "standard.trained")) %>% droplevels()
-
-
-# create lists of trained only samples
+# subset data by subfield and training and create list of samples for substting
+DGcols <- a.colData %>% 
+  filter(Punch == "DG", APA2 %in% c("conflict.trained", "standard.trained")) %>% 
+  droplevels()
 DGtrained <- DGcols$mouse
-
-# cutoff region in name
-names(DGvsd) <- sapply(strsplit(names(DGvsd),"-"), "[", 1)
 
 # keep only trained varance stabilized data
 DGvsd <- DGvsd %>% select(DGtrained)
 
+# transform and set rownames
 DGvsd <- as.data.frame(t(DGvsd))
-
-
 DGvsd$mouse <- row.names(DGvsd)
+DGvsdbehav <- left_join(behav, DGvsd) %>% drop_na()
+row.names(DGvsdbehav) <- DGvsdbehav$mouse
+DGvsdbehav$mouse <- NULL
+#head(DGvsdbehav)
+```
 
 
-# import behavior data, create mouse id
-behav <- read.csv("../data/01a_behavior.csv") 
-behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
 
-
-# summarize number of entrances
-timefirstentr <- behav %>% filter(APA2 %in% c("conflict-trained", "standard-trained"),
-                                  TrainSession == "Retention") %>% 
-                           select(mouse,Time1stEntr,pTimeTarget) 
-timefirstentr$mouse <- as.character(timefirstentr$mouse)
-head(timefirstentr)
-
+```{r vsd-sig}
 # subset for genes that are significant
 DGsig <- read.csv("../data/02c_DGforupset.csv", stringsAsFactors = F) %>% select(gene) %>% droplevels()
 DGsig <- DGsig$gene
-
-
 DGvsdSig <- DGvsd %>% select(mouse,DGsig) %>% arrange(mouse)
 
-DG <- left_join(timefirstentr,DGvsdSig) %>% drop_na()  %>% arrange(mouse)
+# join significant genes and time to first entrance
+DGsigbehav <- left_join(behav,DGvsdSig) %>% drop_na()  %>% arrange(mouse)
+DGsigbehav <- as.data.frame(DGsigbehav)
 
-DG <- as.data.frame(DG)
-
-row.names(DG) <- DG$mouse 
-DG$mouse <- NULL
-
-
-# subset for sanes genes
-candidates <- c("Gria1", "Gria2", "Grin1", "Grin2a", "Grin2d",  "Prkcz" , "Prkci", "Wwc1")
-
-DGvsdCan <- DGvsd %>% select(mouse,candidates)
-
-DGcan <- left_join(timefirstentr,DGvsdCan) %>% drop_na()
-
-DGcan <- as.data.frame(DGcan)
-
-row.names(DGcan) <- DGcan$mouse 
-DGcan$mouse <- NULL
-
-DGcolscounts <- cbind(DGcols,DG)
+row.names(DGsigbehav) <- DGsigbehav$mouse 
+DGsigbehav$mouse <- NULL
+#head(DGsigbehav)
 ```
 
-```{r DG}
-M <- cor(DG)
+```{r vsd-candidates}
+# subset for sanes genes
+candidates <- c("Gria1", "Gria2", "Grin1", "Grin2a", "Grin2d",  "Prkcz" , "Prkci", "Wwc1")
+DGvsdCan <- DGvsd %>% select(mouse,candidates)
+DGcan <- left_join(behav,DGvsdCan) %>% drop_na()
+DGcan <- as.data.frame(DGcan)
+row.names(DGcan) <- DGcan$mouse 
+DGcan$mouse <- NULL
+#head(DGcan)
+```
+
+```{r corrplot}
+M <- cor(DGvsdbehav)
 M <- as.data.frame(M)
 M$rownames <- row.names(M)
-M <- M %>% filter(pTimeTarget > 0.6 | pTimeTarget < -0.6)
-row.names(M) <- M$rownames
-greatthan05 <- M$rownames
-M <- M %>% select(greatthan05)
-M <- as.matrix(M)
-corrplot.mixed(M, number.cex = .7)
 
-ggplot(DGcolscounts, aes(x = Time1stEntr, y = Nlrp3, color = DGcols$Treatment)) +
-  geom_point() + 
-  scale_color_manual(values = c("#f4a582", "#ca0020")) +
-  theme(legend.position = "none") +
-  geom_smooth(method='lm', color = "grey")
+Mslim <- M %>% filter(pTimeTarget > 0.95 | pTimeTarget < -0.95)
+row.names(Mslim) <- Mslim$rownames
+colstokeep <- Mslim$rownames
+Mslim <- Mslim %>% select(colstokeep)
+Mslim <- as.matrix(Mslim)
+corrplot.mixed(Mslim, number.cex = .7)
 
-ggplot(DGcolscounts, aes(x = pTimeTarget, y = Npas4, color = DGcols$Treatment)) +
-  geom_point() + 
-  scale_color_manual(values = c("#f4a582", "#ca0020")) +
-  theme(legend.position = "none") +
-  geom_smooth(method='lm', color = "grey")
+Mslim <- M %>% filter(Time1stEntr > 0.95 | Time1stEntr < -0.95)
+row.names(Mslim) <- Mslim$rownames
+colstokeep <- Mslim$rownames
+Mslim <- Mslim %>% select(colstokeep)
+Mslim <- as.matrix(Mslim)
+corrplot.mixed(Mslim, number.cex = .7)
 
 M <- cor(DGcan)
 M <- as.data.frame(M)
@@ -114,9 +106,6 @@ M <- M %>% select(greatthan05)
 M <- as.matrix(M)
 corrplot.mixed(M, order = "hclust")
 ```
-
-
-
 
 
 
@@ -143,8 +132,10 @@ plot_grid(zDG, iDG,
 ```
 
 
-```{r behavior}
+```{r behav}
 # retention plot
+behav <- read.csv("../data/01a_behavior.csv") 
+behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
 retention <- behav %>% filter(APA2 %in% c("conflict-trained", "standard-trained"),
                                  TrainSession == "Retention") %>% 
                            select(mouse,APA2, Time1stEntr, Path1stEntr, pTimeTarget)
