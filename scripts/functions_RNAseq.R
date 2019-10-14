@@ -320,16 +320,15 @@ plot.cons.yokcons <- function(mydds, mytissue, mytitle){
     #filter(direction != "NS") %>%
     ggplot(aes(x = lfc, y = logpadj)) + 
     geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-    theme_cowplot(font_size = 7, line_size = 0.25) +
-    geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+theme_minimal(base_size = 8) +
+  
     scale_color_manual(values = volcano1,
                        name = "higher in",
                        breaks = c("standard.yoked", "NS", "standard.trained"))  + 
     scale_x_continuous(limits=c(-10, 10),
                        name="Log fold difference")+
     ylim(c(0,7)) +
-    ylab(paste0("-log10 p-value")) +  
-    labs(subtitle = mytitle) +
+    ylab(paste(mytitle, "-log10(p)", sep = "\n")) +  
     theme(legend.position = "none",
           legend.spacing.x = unit(0.1, 'cm'),
           #legend.text=element_text(size=4),
@@ -367,15 +366,14 @@ plot.conf.cons <- function(mydds, mytissue){
   
   volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
     geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-    theme_cowplot(font_size = 7, line_size = 0.25) +
-    geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+theme_minimal(base_size = 8) +
+  
     #scale_color_manual(values = volcano2,
     #                   breaks = c("standard.trained", "NS", "conflict.trained"),
     #                  name = "higher in")  + 
     scale_x_continuous(limits=c(-10, 10),
                        name="Log fold difference")+
-    ylab(paste0("-log10 p-value")) +  
-    labs(subtitle = mytissue) +
+    ylab(paste(mytitle, "-log10(p)", sep = "\n")) +  
     theme(panel.grid.minor=element_blank(),
           legend.position = "bottom",
           legend.spacing.x = unit(-0.1, 'cm'),
@@ -416,16 +414,15 @@ plot.yokconf.yokcons <- function(mydds, mytissue, mytitle){
     #filter(direction != "NS") %>%
     ggplot(aes(x = lfc, y = logpadj, color = direction)) + 
     geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
-    theme_cowplot(font_size = 7, line_size = 0.25) +
-    geom_hline(yintercept = 1,  size = 0.25, linetype = 2) + 
+theme_minimal(base_size = 8) +
+  
     scale_color_manual(values = volcano6,
                        name = "higher in")  + 
     #scale_y_continuous(limits=c(0, 12.5)) +
     scale_x_continuous(limits=c(-10, 10),
                        name="Log fold difference")+
-    ylab(paste0("-log10 p-value")) + 
+    ylab(paste(mytitle, "-log10(p)", sep = "\n")) +  
     ylim(c(0,7)) +
-    labs(subtitle = mytitle) +
     theme(legend.position = "bottom",
           legend.spacing.x = unit(0.1, 'cm'),
           #legend.text=element_text(size=4),

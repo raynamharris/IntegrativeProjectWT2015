@@ -11,6 +11,9 @@ library(tidyverse) ## for respahing data
 library(cowplot) ## for some easy to use themes
 library(DESeq2)
 
+library("png")
+library("grid")
+
 library(BiocParallel)
 register(MulticoreParam(6))
 
@@ -27,11 +30,11 @@ behav <- read.csv("../data/01a_behavior.csv")
 # make mouse name
 behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
 
-# subset to standard paradigm only
-standard <- behav %>% filter(APA2 %in% c("standard-yoked", "standard-trained"),
-                             TrainSession == "Retention") %>% 
-                           select(mouse,APA2, Time1stEntr, Path1stEntr, pTimeTarget, NumEntrances)
+behav <-  behav %>% 
+  select(mouse,APA2, TrainSessionCombo, TrainSessionComboNum, Time1stEntr, Path1stEntr, pTimeTarget, NumEntrances)
 
+# subset to standard paradigm only
+standard <- behav %>% filter(APA2 %in% c("standard-yoked", "standard-trained")) 
 standard$APA2 <- factor(standard$APA2, levels = c("standard-yoked", "standard-trained"))
 
 # gather
@@ -39,8 +42,9 @@ standard <- standard %>% gather(behavior, measure, Time1stEntr:NumEntrances)
 
 standard$behavior <- factor(standard$behavior, levels = c("Path1stEntr", "Time1stEntr", "pTimeTarget", "NumEntrances"))
 
-top <- ggplot(standard, aes(x = APA2, y = measure, color = APA2)) + 
-
+standard %>%
+  filter(TrainSessionCombo == "Retention") %>%
+    ggplot( aes(x = APA2, y = measure, color = APA2)) + 
   geom_boxplot() +
     geom_jitter()  + 
   facet_wrap(~behavior, scales = "free_y", nrow  = 1) + 
@@ -49,8 +53,42 @@ top <- ggplot(standard, aes(x = APA2, y = measure, color = APA2)) +
         axis.text.x = element_blank()) + 
   scale_color_manual(values = trainedcolors) +
   labs(x = NULL) 
+
+
+meandev <- standard %>%
+  dplyr::group_by(APA2, TrainSessionComboNum, behavior) %>%
+  dplyr::summarise(m = mean(measure), 
+                   se = sd(measure)/sqrt(length(measure)))
+
+plotmeansd <- function(mybehavior, myylab){
+  
+  meandev %>% 
+    filter(behavior == mybehavior) %>% 
+    ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+      geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+      geom_point(size = 1.5) +
+      geom_line() +
+    theme_minimal(base_size = 8) + 
+    theme(legend.position = "none") + 
+    scale_color_manual(values = trainedcolors) +
+    scale_x_continuous( breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels = c( "P", "T1", "T2", "T3",
+                                   "Rt", "T4", "T5", "T6", "Rn")) +
+    labs(x = NULL, y = myylab) 
+  }
+  
+# Time1stEntr, Path1stEntr, pTimeTarget, NumEntrances
+a <- plotmeansd("Time1stEntr", "Time 1st entr. (s)" )
+b <- plotmeansd("Path1stEntr", "Path 1st entr. (m)" )
+c <- plotmeansd("pTimeTarget", "Prop. time in zone" )
+d <- plotmeansd("NumEntrances", "Num. of entr." )
+
+top <- plot_grid(a,c,b,d, ncol = 1)
 top
+
 ```
+
+
 
 ```{r DESeq2}
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
@@ -70,15 +108,20 @@ res_summary_subfield(DGdds, c("APA2", "standard.trained", "standard.yoked"))
 res_summary_subfield(CA1dds, c("APA2", "standard.trained", "standard.yoked"))
 res_summary_subfield(CA3dds, c("APA2", "standard.trained", "standard.yoked"))
 
-a <-  plot.cons.yokcons(DGdds, "DG", "DG") 
-b <-  plot.cons.yokcons(CA3dds, "CA3", "CA3") 
-c <-  plot.cons.yokcons(CA1dds, "CA1", "CA1") 
+e <-  plot.cons.yokcons(DGdds, "DG", "DG") 
+f <-  plot.cons.yokcons(CA3dds, "CA3", "CA3") 
+g <-  plot.cons.yokcons(CA1dds, "CA1", "CA1") 
 
-abc <- plot_grid(a,b,c, nrow = 1)
-abc
+efg <- plot_grid(e + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
+                 f + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
+                 g, nrow = 3)
+efg
 ```
 
 
 ```{r fig1}
-plot_grid(top,abc, nrow = 2)
+schematic <- ggdraw() +  draw_image("../figures/figure_fig1a.png")
+left <- plot_grid(schematic,a,b,c, ncol = 1)
+right <- plot_grid(e,f,g, ncol = 1)
+plot_grid(left,right, ncol = 2)
 ```

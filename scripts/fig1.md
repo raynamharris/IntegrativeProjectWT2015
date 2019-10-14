@@ -2,14 +2,14 @@ New approach. Behavior-centric analysis figures first.
 
     library(tidyverse) ## for respahing data
 
-    ## ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.2.1     ✔ purrr   0.3.2
     ## ✔ tibble  2.1.3     ✔ dplyr   0.8.1
     ## ✔ tidyr   0.8.3     ✔ stringr 1.4.0
     ## ✔ readr   1.3.1     ✔ forcats 0.4.0
 
-    ## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -133,6 +133,9 @@ New approach. Behavior-centric analysis figures first.
     ## 
     ##     aperm, apply, rowsum
 
+    library("png")
+    library("grid")
+
     library(BiocParallel)
     register(MulticoreParam(6))
 
@@ -147,11 +150,11 @@ New approach. Behavior-centric analysis figures first.
     # make mouse name
     behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
 
-    # subset to standard paradigm only
-    standard <- behav %>% filter(APA2 %in% c("standard-yoked", "standard-trained"),
-                                 TrainSession == "Retention") %>% 
-                               select(mouse,APA2, Time1stEntr, Path1stEntr, pTimeTarget, NumEntrances)
+    behav <-  behav %>% 
+      select(mouse,APA2, TrainSessionCombo, TrainSessionComboNum, Time1stEntr, Path1stEntr, pTimeTarget, NumEntrances)
 
+    # subset to standard paradigm only
+    standard <- behav %>% filter(APA2 %in% c("standard-yoked", "standard-trained")) 
     standard$APA2 <- factor(standard$APA2, levels = c("standard-yoked", "standard-trained"))
 
     # gather
@@ -159,8 +162,9 @@ New approach. Behavior-centric analysis figures first.
 
     standard$behavior <- factor(standard$behavior, levels = c("Path1stEntr", "Time1stEntr", "pTimeTarget", "NumEntrances"))
 
-    top <- ggplot(standard, aes(x = APA2, y = measure, color = APA2)) + 
-
+    standard %>%
+      filter(TrainSessionCombo == "Retention") %>%
+        ggplot( aes(x = APA2, y = measure, color = APA2)) + 
       geom_boxplot() +
         geom_jitter()  + 
       facet_wrap(~behavior, scales = "free_y", nrow  = 1) + 
@@ -169,9 +173,41 @@ New approach. Behavior-centric analysis figures first.
             axis.text.x = element_blank()) + 
       scale_color_manual(values = trainedcolors) +
       labs(x = NULL) 
-    top
 
 ![](../figures/fig1/behav-1.png)
+
+    meandev <- standard %>%
+      dplyr::group_by(APA2, TrainSessionComboNum, behavior) %>%
+      dplyr::summarise(m = mean(measure), 
+                       se = sd(measure)/sqrt(length(measure)))
+
+    plotmeansd <- function(mybehavior, myylab){
+      
+      meandev %>% 
+        filter(behavior == mybehavior) %>% 
+        ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+          geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+          geom_point(size = 1.5) +
+          geom_line() +
+        theme_minimal(base_size = 8) + 
+        theme(legend.position = "none") + 
+        scale_color_manual(values = trainedcolors) +
+        scale_x_continuous( breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                           labels = c( "P", "T1", "T2", "T3",
+                                       "Rt", "T4", "T5", "T6", "Rn")) +
+        labs(x = NULL, y = myylab) 
+      }
+      
+    # Time1stEntr, Path1stEntr, pTimeTarget, NumEntrances
+    a <- plotmeansd("Time1stEntr", "Time 1st entr. (s)" )
+    b <- plotmeansd("Path1stEntr", "Path 1st entr. (m)" )
+    c <- plotmeansd("pTimeTarget", "Prop. time in zone" )
+    d <- plotmeansd("NumEntrances", "Num. of entr." )
+
+    top <- plot_grid(a,c,b,d, ncol = 1)
+    top
+
+![](../figures/fig1/behav-2.png)
 
     a.colData <- read.csv("../data/02a_colData.csv", header = T)
     a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
@@ -370,7 +406,7 @@ New approach. Behavior-centric analysis figures first.
     ## Daam2  4.27370378067843 1.92252412490963e-05  0.0278560552424099
     ## Slc6a1 4.22996184172153 2.33730955214045e-05  0.0278560552424099
 
-    a <-  plot.cons.yokcons(DGdds, "DG", "DG") 
+    e <-  plot.cons.yokcons(DGdds, "DG", "DG") 
 
     ## [1] "DG"
     ## 
@@ -388,7 +424,7 @@ New approach. Behavior-centric analysis figures first.
 
 ![](../figures/fig1/DESeq2-1.png)
 
-    b <-  plot.cons.yokcons(CA3dds, "CA3", "CA3") 
+    f <-  plot.cons.yokcons(CA3dds, "CA3", "CA3") 
 
     ## [1] "CA3"
     ## 
@@ -406,7 +442,7 @@ New approach. Behavior-centric analysis figures first.
 
 ![](../figures/fig1/DESeq2-2.png)
 
-    c <-  plot.cons.yokcons(CA1dds, "CA1", "CA1") 
+    g <-  plot.cons.yokcons(CA1dds, "CA1", "CA1") 
 
     ## [1] "CA1"
     ## 
@@ -424,11 +460,16 @@ New approach. Behavior-centric analysis figures first.
 
 ![](../figures/fig1/DESeq2-3.png)
 
-    abc <- plot_grid(a,b,c, nrow = 1)
-    abc
+    efg <- plot_grid(e + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
+                     f + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
+                     g, nrow = 3)
+    efg
 
 ![](../figures/fig1/DESeq2-4.png)
 
-    plot_grid(top,abc, nrow = 2)
+    schematic <- ggdraw() +  draw_image("../figures/figure_fig1a.png")
+    left <- plot_grid(schematic,a,b,c, ncol = 1)
+    right <- plot_grid(e,f,g, ncol = 1)
+    plot_grid(left,right, ncol = 2)
 
 ![](../figures/fig1/fig1-1.png)
