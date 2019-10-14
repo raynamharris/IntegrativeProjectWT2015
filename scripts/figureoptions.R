@@ -59,6 +59,8 @@ pheatmapcolors = list(
 
 # for subfield volcano plots
 
+trainedcolors <-  c( "standard-yoked" = "#404040", "standard-trained" = "#ca0020")
+
 volcano1 <-  c("standard.trained" = "#ca0020",
            "standard.yoked" = "#404040", 
            "NS" = "#d9d9d9")

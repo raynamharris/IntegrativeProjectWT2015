@@ -330,7 +330,7 @@ plot.cons.yokcons <- function(mydds, mytissue, mytitle){
     ylim(c(0,7)) +
     ylab(paste0("-log10 p-value")) +  
     labs(subtitle = mytitle) +
-    theme(legend.position = "bottom",
+    theme(legend.position = "none",
           legend.spacing.x = unit(0.1, 'cm'),
           #legend.text=element_text(size=4),
           legend.title = element_text(size=6),
@@ -432,4 +432,44 @@ plot.yokconf.yokcons <- function(mydds, mytissue, mytitle){
           legend.key.size = unit(0.2, "cm"),
           legend.margin=margin(t=-0.1, r=0, b=0, l=-0.1, unit="cm")) 
   plot(volcano)  
+}
+
+
+returndds <- function(mytissue, mytreatment){
+  print(mytissue)
+  colData <- a.colData %>% 
+    filter(Punch %in% c(mytissue),
+           APA2 %in% c(mytreatment))  %>% 
+    droplevels()
+  
+  savecols <- as.character(colData$RNAseqID) 
+  savecols <- as.vector(savecols) 
+  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+  
+  ## create DESeq object using the factors Punch and APA
+  dds <- DESeqDataSetFromMatrix(countData = countData,
+                                colData = colData,
+                                design = ~ APA2)
+  
+  dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+  dds <- DESeq(dds, parallel = TRUE)
+  return(dds)
+}
+
+
+returnvsds <- function(mydds, vsdfilename){
+  dds <- mydds
+  vsd <- vst(dds, blind=FALSE) ## variance stabilized
+  print(head(assay(vsd),3))
+  #return(write.csv(assay(vsd), file = vsdfilename, row.names = T))
+  return(vsd)
+}
+
+res_summary_subfield <- function(mydds, mycontrast){
+  res <- results(mydds, contrast = mycontrast, independentFiltering = T)
+  print(mycontrast)
+  print(sum(res$padj < 0.1, na.rm=TRUE))
+  print(summary(res))
+  print(head((res[order(res$padj),]), 5))
+  cat("\n")
 }
