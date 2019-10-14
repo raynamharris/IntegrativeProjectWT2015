@@ -63,7 +63,7 @@ CA1vsdbehav <- vsdbehav("CA1", CA1vsd)
 
 
 
-```{r vsd-sig}
+```{r vsd-sig, eval = F}
 # subset for genes that are significant
 DGsig <- read.csv("../data/02c_DGforupset.csv", stringsAsFactors = F) %>% select(gene) %>% droplevels()
 DGsig <- DGsig$gene
@@ -78,7 +78,7 @@ DGsigbehav$mouse <- NULL
 #head(DGsigbehav)
 ```
 
-```{r vsd-candidates}
+```{r vsd-candidates, eval=F}
 # subset for sanes genes
 candidates <- c("Gria1", "Gria2", "Grin1", "Grin2a", "Grin2d",  "Prkcz" , "Prkci", "Wwc1")
 
@@ -119,33 +119,8 @@ makecorplot <- function(myvsd, positivethreshold, negativethreshold){
 
 makecorplot(DGvsdbehav,  0.95, -0.95)
 makecorplot(CA1vsdbehav, 0.95, -0.95)
-makecorplot(DGcan, 0.35, -0.35)
-makecorplot(CA1can, 0.35, -0.35)
 ```
 
-
-
-
-```{r pkcs}
-zDG <- ggplot(DGcan, aes(x = Time1stEntr, y = Prkcz)) +
-  geom_point()  +
-  scale_color_manual(values = c("#f4a582", "#ca0020")) +
-  theme(legend.position = "none") +
-  geom_smooth(method='lm', color = "grey") +
-  labs(title = "DG")
-
-iDG <- ggplot(DGcan, aes(x = Time1stEntr, y = Prkci )) +
-  geom_point() + 
-  scale_color_manual(values = c("#f4a582", "#ca0020")) +
-  theme(legend.position = "none") +
-  geom_smooth(method='lm', color = "grey")  +
-  labs(title = "DG")
-
-
-plot_grid(zDG, iDG, 
-          labels = c("R2 = -0.45" ,"R2 = 0.10"), 
-          label_size = 10)
-```
 
 
 ```{r behav}
