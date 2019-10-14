@@ -24,30 +24,41 @@ head(behav)
 ```
 
 ```{r vsd-all}
-# import varance stabilized data and fix sample names
-DGvsd <- read.csv("../data/02c_DGvsd.csv", stringsAsFactors = F, check.names = F, row.names = 1) 
-names(DGvsd) <- sapply(strsplit(names(DGvsd),"-"), "[", 1)
-
 # import col Data 
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
 a.colData$mouse <- sapply(strsplit(as.character(a.colData$RNAseqID),"-"), "[", 1)
 
-# subset data by subfield and training and create list of samples for substting
-DGcols <- a.colData %>% 
-  filter(Punch == "DG", APA2 %in% c("conflict.trained", "standard.trained")) %>% 
-  droplevels()
-DGtrained <- DGcols$mouse
+# import varance stabilized data and fix sample names
+DGvsd <- read.csv("../data/02c_DGvsd.csv", stringsAsFactors = F, check.names = F, row.names = 1) 
+CA1vsd <- read.csv("../data/02c_CA1vsd.csv", stringsAsFactors = F, check.names = F, row.names = 1) 
 
-# keep only trained varance stabilized data
-DGvsd <- DGvsd %>% select(DGtrained)
 
-# transform and set rownames
-DGvsd <- as.data.frame(t(DGvsd))
-DGvsd$mouse <- row.names(DGvsd)
-DGvsdbehav <- left_join(behav, DGvsd) %>% drop_na()
-row.names(DGvsdbehav) <- DGvsdbehav$mouse
-DGvsdbehav$mouse <- NULL
-#head(DGvsdbehav)
+vsdbehav <- function(mysubfield, myvsd){
+  
+  # subset data by subfield and training and create list of samples for substting
+  mycols <- a.colData %>% 
+    filter(Punch == mysubfield, APA2 %in% c("conflict.trained", "standard.trained")) %>% 
+    droplevels()
+  trained <- mycols$mouse
+
+  #fix samples names to match animal names
+  names(myvsd) <- sapply(strsplit(names(myvsd),"-"), "[", 1)
+  
+  # keep only trained varance stabilized data
+  myvsd <- myvsd %>% select(trained)
+
+  # transform and set rownames
+  myvsd <- as.data.frame(t(myvsd))
+  myvsd$mouse <- row.names(myvsd)
+  myvsdbeahv <- left_join(behav, myvsd) %>% drop_na()
+  row.names(myvsdbeahv) <- myvsdbeahv$mouse
+  myvsdbeahv$mouse <- NULL
+  #head(myvsdbeahv)
+  return(myvsdbeahv)
+}
+
+DGvsdbehav <- vsdbehav("DG", DGvsd)
+CA1vsdbehav <- vsdbehav("CA1", CA1vsd)
 ```
 
 
@@ -70,41 +81,46 @@ DGsigbehav$mouse <- NULL
 ```{r vsd-candidates}
 # subset for sanes genes
 candidates <- c("Gria1", "Gria2", "Grin1", "Grin2a", "Grin2d",  "Prkcz" , "Prkci", "Wwc1")
-DGvsdCan <- DGvsd %>% select(mouse,candidates)
-DGcan <- left_join(behav,DGvsdCan) %>% drop_na()
-DGcan <- as.data.frame(DGcan)
-row.names(DGcan) <- DGcan$mouse 
-DGcan$mouse <- NULL
-#head(DGcan)
+
+head(DGvsd)
+
+vsdcandidates <- function(myvsd){
+  names(myvsd) <- sapply(strsplit(names(myvsd),"-"), "[", 1)
+  myvsd <- as.data.frame(t(myvsd))
+  myvsd$mouse <- row.names(myvsd)
+  vsdCan <- myvsd %>% select(mouse,candidates)
+  vsdCan <- left_join(behav,vsdCan) %>% drop_na()
+  vsdCan <- as.data.frame(vsdCan)
+  row.names(vsdCan) <- vsdCan$mouse 
+  vsdCan$mouse <- NULL
+  return(vsdCan)
+}
+
+DGcan <- vsdcandidates(DGvsd)
+CA1can <- vsdcandidates(DGvsd)
 ```
 
 ```{r corrplot}
-M <- cor(DGvsdbehav)
-M <- as.data.frame(M)
-M$rownames <- row.names(M)
 
-Mslim <- M %>% filter(pTimeTarget > 0.95 | pTimeTarget < -0.95)
-row.names(Mslim) <- Mslim$rownames
-colstokeep <- Mslim$rownames
-Mslim <- Mslim %>% select(colstokeep)
-Mslim <- as.matrix(Mslim)
-corrplot.mixed(Mslim, number.cex = .7)
+makecorplot <- function(myvsd, positivethreshold, negativethreshold){
+  M <- cor(myvsd)
+  print("done making corr matrix")
+  M <- as.data.frame(M)
+  print("done makin df")
+  M$rownames <- row.names(M)
+  Mslim <- M %>% filter(Time1stEntr > positivethreshold | Time1stEntr < negativethreshold)
+  print("done filtering")
+  row.names(Mslim) <- Mslim$rownames
+  colstokeep <- Mslim$rownames
+  Mslim <- Mslim %>% select(colstokeep)
+  Mslim <- as.matrix(Mslim)
+  corrplot.mixed(Mslim, number.cex = .7)
+}
 
-Mslim <- M %>% filter(Time1stEntr > 0.95 | Time1stEntr < -0.95)
-row.names(Mslim) <- Mslim$rownames
-colstokeep <- Mslim$rownames
-Mslim <- Mslim %>% select(colstokeep)
-Mslim <- as.matrix(Mslim)
-corrplot.mixed(Mslim, number.cex = .7)
-
-M <- cor(DGcan)
-M <- as.data.frame(M)
-M$rownames <- row.names(M)
-row.names(M) <- M$rownames
-greatthan05 <- M$rownames
-M <- M %>% select(greatthan05)
-M <- as.matrix(M)
-corrplot.mixed(M, order = "hclust")
+makecorplot(DGvsdbehav,  0.95, -0.95)
+makecorplot(CA1vsdbehav, 0.95, -0.95)
+makecorplot(DGcan, 0.35, -0.35)
+makecorplot(CA1can, 0.35, -0.35)
 ```
 
 
@@ -112,14 +128,14 @@ corrplot.mixed(M, order = "hclust")
 
 ```{r pkcs}
 zDG <- ggplot(DGcan, aes(x = Time1stEntr, y = Prkcz)) +
-  geom_point(aes( color = DGcols$Treatment))  +
+  geom_point()  +
   scale_color_manual(values = c("#f4a582", "#ca0020")) +
   theme(legend.position = "none") +
   geom_smooth(method='lm', color = "grey") +
   labs(title = "DG")
 
 iDG <- ggplot(DGcan, aes(x = Time1stEntr, y = Prkci )) +
-  geom_point(aes(color = DGcols$Treatment)) + 
+  geom_point() + 
   scale_color_manual(values = c("#f4a582", "#ca0020")) +
   theme(legend.position = "none") +
   geom_smooth(method='lm', color = "grey")  +
