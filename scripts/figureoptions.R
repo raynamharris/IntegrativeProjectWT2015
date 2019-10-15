@@ -4,7 +4,7 @@
 ann_colors_APA2 = list(
   APA2 =  c('standard yoked' = "#404040", 
             'standard trained' = "#ca0020",
-            'conflict yoked' = "#bababa",
+            'conflict yoked' = "#969696",
             'conflict trained' = "#f4a582"),
   Session = c(  "T1"      = "#fff7f3",
                 "T2"      = "#fde0dd",
@@ -19,10 +19,10 @@ ann_colors_APA2 = list(
 
 # for beahvior and physiology
 
-colorvalAPA00 <-  c( "#404040","#ca0020", "#bababa", "#f4a582")
+colorvalAPA00 <-  c( "#404040","#ca0020", "#969696", "#f4a582")
 #404040 ## darkgrey - Yoked_NoConflict
 #ca0020 ## red - Trained_NoConflict 
-#bababa ## light grey - Yoked_Conflict
+#969696 ## light grey - Yoked_Conflict
 #f4a582 ## pink - Trained_Conflict
 
 
@@ -54,16 +54,16 @@ pheatmapcolors = list(
               CA1 = (values=c("#7570b3"))),
   treatment = c( 'standard yoked' = (values=c("#404040")), 
             'standard trained' = (values=c("#ca0020")),
-              'conflict yoked' = (values=c("#bababa")),
+              'conflict yoked' = (values=c("#969696")),
             'conflict trained' = (values=c("#f4a582"))))
 
 # for subfield volcano plots
 
 trainedcolors <-  c( "standard-yoked" = "#404040", "standard-trained" = "#ca0020")
-conflictcolors <- c("conflict-yoked" = "#bababa","conflict-trained" = "#f4a582")
+conflictcolors <- c("conflict-yoked" = "#969696","conflict-trained" = "#f4a582")
   
   volcano5 <-  c("conflict.trained" = "#f4a582",
-                 "conflict.yoked" = "#bababa", 
+                 "conflict.yoked" = "#969696", 
                  "NS" = "#d9d9d9")
 
 volcano1 <-  c("standard.trained" = "#ca0020",
@@ -78,23 +78,23 @@ volcano3 <-  c("standard.yoked" = "#404040",
                "home.cage" = "#e0e0e0", 
                "NS" = "#d9d9d9")
 
-volcano4 <-  c("conflict.yoked" = "#bababa",
+volcano4 <-  c("conflict.yoked" = "#969696",
                "home.cage" = "#e0e0e0", 
                "NS" = "#d9d9d9")
 
 volcano5 <-  c("conflict.trained" = "#f4a582",
-               "conflict.yoked" = "#bababa", 
+               "conflict.yoked" = "#969696", 
                "NS" = "#d9d9d9")
 
 volcano6 <-  c("standard.yoked" = "#404040",
-               "conflict.yoked" = "#bababa", 
+               "conflict.yoked" = "#969696", 
                "NS" = "#d9d9d9")
 
 
 # subfield box plots
 
-fivegroups <- c( "#e0e0e0", "#404040",  "#ca0020", "#bababa", "#f4a582")
-fourgroups <- c(           "#404040",  "#ca0020", "#bababa", "#f4a582")
+fivegroups <- c( "#e0e0e0", "#404040",  "#ca0020", "#969696", "#f4a582")
+fourgroups <- c(           "#404040",  "#ca0020", "#969696", "#f4a582")
 
 
 # for integrative correlation anaylsis

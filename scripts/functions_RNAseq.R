@@ -371,7 +371,7 @@ plot.conf.yokconf <- function(mydds, mytissue, mytitle){
                        breaks = c("conflict.yoked", "NS", "conflict.trained"))  + 
     scale_x_continuous(limits=c(-10, 10),
                        name="Log fold difference")+
-    ylim(c(0,3)) +
+   ylim(c(0,7)) +
     ylab(paste(mytitle, "-log10(p)", sep = "\n")) +  
     theme(panel.grid.minor=element_blank(),
                 panel.grid.major=element_blank(),
@@ -410,7 +410,7 @@ theme_minimal(base_size = 8) +
     scale_color_manual(values = volcano2,
                        breaks = c("standard.trained", "NS", "conflict.trained"),
                       name = "higher in")  + 
-     ylim(c(0,3)) +
+    ylim(c(0,7)) +
     scale_x_continuous( name="Log fold difference")+
       labs(y = NULL) + 
     theme(panel.grid.minor=element_blank(),
@@ -456,7 +456,7 @@ plot.yokconf.yokcons <- function(mydds, mytitle){
     scale_x_continuous(limits=c(-10, 10),
                        name="Log fold difference")+
     labs(y = NULL) + 
-    ylim(c(0,3)) +
+   ylim(c(0,7)) +
     theme(panel.grid.minor=element_blank(),
           panel.grid.major=element_blank(),
           legend.position = "none") 

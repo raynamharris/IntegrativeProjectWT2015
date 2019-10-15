@@ -2,14 +2,14 @@ New approach. Behavior-centric analysis figures first.
 
     library(tidyverse) ## for respahing data
 
-    ## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.2.1     ✔ purrr   0.3.2
     ## ✔ tibble  2.1.3     ✔ dplyr   0.8.1
     ## ✔ tidyr   0.8.3     ✔ stringr 1.4.0
     ## ✔ readr   1.3.1     ✔ forcats 0.4.0
 
-    ## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -142,7 +142,7 @@ New approach. Behavior-centric analysis figures first.
     source("functions_RNAseq.R")
     source("figureoptions.R")
 
-    knitr::opts_chunk$set(echo = TRUE, fig.path = '../figures/fig1/')
+    knitr::opts_chunk$set(echo = TRUE, fig.path = '../figures/fig1/', message = F, results = F)
 
     # all behavior data
     behav <- read.csv("../data/01a_behavior.csv") 
@@ -207,12 +207,6 @@ New approach. Behavior-centric analysis figures first.
     j <- plotmeansd(conflict.meandev, "pTimeTarget", "Prop. time in zone" , conflictcolors)
     k <- plotmeansd(conflict.meandev, "NumEntrances", "Num. of entr." , conflictcolors)
 
-
-    top <- plot_grid(h,i,j,k, ncol = 1)
-    top
-
-![](../figures/fig1/behav-1.png)
-
     a.colData <- read.csv("../data/02a_colData.csv", header = T)
     a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -224,438 +218,111 @@ New approach. Behavior-centric analysis figures first.
 
     # trained
     DGdds <- returndds("DG", trained) 
-
-    ## [1] "DG"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
-
     CA1dds <- returndds("CA1", trained) 
-
-    ## [1] "CA1"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
-
     CA3dds <- returndds("CA3", trained) 
 
-    ## [1] "CA3"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
-
     e <-  plot.cons.yokcons(DGdds, "DG", "DG") 
-
-    ## [1] "DG"
-    ## 
-    ## out of 16461 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 106, 0.64%
-    ## LFC < 0 (down)     : 4, 0.024%
-    ## outliers [1]       : 25, 0.15%
-    ## low counts [2]     : 2873, 17%
-    ## (mean count < 2)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
 
 ![](../figures/fig1/DESeq2-1.png)
 
     f <-  plot.cons.yokcons(CA3dds, "CA3", "CA3") 
 
-    ## [1] "CA3"
-    ## 
-    ## out of 15699 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 21, 0.13%
-    ## LFC < 0 (down)     : 3, 0.019%
-    ## outliers [1]       : 0, 0%
-    ## low counts [2]     : 9740, 62%
-    ## (mean count < 88)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
 ![](../figures/fig1/DESeq2-2.png)
 
     g <-  plot.cons.yokcons(CA1dds, "CA1", "CA1") 
-
-    ## [1] "CA1"
-    ## 
-    ## out of 15918 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 305, 1.9%
-    ## LFC < 0 (down)     : 196, 1.2%
-    ## outliers [1]       : 13, 0.082%
-    ## low counts [2]     : 4628, 29%
-    ## (mean count < 6)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
 
 ![](../figures/fig1/DESeq2-3.png)
 
     efg <- plot_grid(e + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
                      f + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
                      g, nrow = 3)
-    efg
-
-![](../figures/fig1/DESeq2-4.png)
 
     # conflict
     DGdds <- returndds("DG", conflict) 
-
-    ## [1] "DG"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
-
     CA1dds <- returndds("CA1", conflict) 
-
-    ## [1] "CA1"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
-
     CA3dds <- returndds("CA3", conflict) 
-
-    ## [1] "CA3"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
 
     l <-  plot.conf.yokconf(DGdds, "DG", "DG") 
 
-    ## [1] "DG"
-    ## 
-    ## out of 16252 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 30, 0.18%
-    ## LFC < 0 (down)     : 13, 0.08%
-    ## outliers [1]       : 28, 0.17%
-    ## low counts [2]     : 7538, 46%
-    ## (mean count < 21)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/fig1/DESeq2-5.png)
+![](../figures/fig1/DESeq2-4.png)
 
     m <-  plot.conf.yokconf(CA3dds, "CA3", "CA3") 
 
-    ## [1] "CA3"
-    ## 
-    ## out of 15884 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 24, 0.15%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/fig1/DESeq2-6.png)
+![](../figures/fig1/DESeq2-5.png)
 
     n <-  plot.conf.yokconf(CA1dds, "CA1", "CA1") 
 
-    ## [1] "CA1"
-    ## 
-    ## out of 16170 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 1, 0.0062%
-    ## LFC < 0 (down)     : 6, 0.037%
-    ## outliers [1]       : 33, 0.2%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/fig1/DESeq2-7.png)
+![](../figures/fig1/DESeq2-6.png)
 
     lmn <- plot_grid(l + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
                      m + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
                      n, nrow = 3)
-    lmn
-
-![](../figures/fig1/DESeq2-8.png)
 
     # trained v conflict
     DGdds <- returndds("DG", trainedconflict) 
-
-    ## [1] "DG"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
-
     CA1dds <- returndds("CA1", trainedconflict) 
-
-    ## [1] "CA1"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
-
     CA3dds <- returndds("CA3", trainedconflict) 
-
-    ## [1] "CA3"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
 
     o <-  plot.conf.cons(DGdds, "DG") 
 
-    ## [1] "DG"
-    ## 
-    ## out of 16556 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 24, 0.14%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/fig1/DESeq2-9.png)
+![](../figures/fig1/DESeq2-7.png)
 
     p <-  plot.conf.cons(CA3dds, "CA3") 
 
-    ## [1] "CA3"
-    ## 
-    ## out of 15721 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 16, 0.1%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/fig1/DESeq2-10.png)
+![](../figures/fig1/DESeq2-8.png)
 
     q <-  plot.conf.cons(CA1dds, "CA1") 
 
-    ## [1] "CA1"
-    ## 
-    ## out of 16595 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 223, 1.3%
-    ## LFC < 0 (down)     : 252, 1.5%
-    ## outliers [1]       : 45, 0.27%
-    ## low counts [2]     : 12184, 73%
-    ## (mean count < 136)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/fig1/DESeq2-11.png)
+![](../figures/fig1/DESeq2-9.png)
 
     opq <- plot_grid(o + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
                      p + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
                      q, nrow = 3)
-    opq
-
-![](../figures/fig1/DESeq2-12.png)
 
     # yoked v yoked
 
     DGdds <- returndds("DG", yokedyoked) 
-
-    ## [1] "DG"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
-
     CA1dds <- returndds("CA1", yokedyoked) 
-
-    ## [1] "CA1"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
-
     CA3dds <- returndds("CA3", yokedyoked) 
-
-    ## [1] "CA3"
-
-    ## estimating size factors
-
-    ## estimating dispersions
-
-    ## gene-wise dispersion estimates: 6 workers
-
-    ## mean-dispersion relationship
-
-    ## final dispersion estimates, fitting model and testing: 6 workers
 
     r <-  plot.yokconf.yokcons(DGdds, "DG") 
 
-    ## [1] "DG"
-    ## 
-    ## out of 16135 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 1, 0.0062%
-    ## LFC < 0 (down)     : 0, 0%
-    ## outliers [1]       : 18, 0.11%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/fig1/DESeq2-13.png)
+![](../figures/fig1/DESeq2-10.png)
 
     s <-  plot.yokconf.yokcons(CA3dds, "CA3") 
 
-    ## [1] "CA3"
-    ## 
-    ## out of 15856 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 1, 0.0063%
-    ## LFC < 0 (down)     : 3, 0.019%
-    ## outliers [1]       : 5, 0.032%
-    ## low counts [2]     : 0, 0%
-    ## (mean count < 0)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/fig1/DESeq2-14.png)
+![](../figures/fig1/DESeq2-11.png)
 
     t <-  plot.yokconf.yokcons(CA1dds, "CA1") 
 
-    ## [1] "CA1"
-    ## 
-    ## out of 15085 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 20, 0.13%
-    ## LFC < 0 (down)     : 4, 0.027%
-    ## outliers [1]       : 12, 0.08%
-    ## low counts [2]     : 6722, 45%
-    ## (mean count < 14)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
-
-![](../figures/fig1/DESeq2-15.png)
+![](../figures/fig1/DESeq2-12.png)
 
     rst <- plot_grid(r + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
                      s + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
                      t, nrow = 3)
-    rst
-
-![](../figures/fig1/DESeq2-16.png)
-
-    opqrst <- plot_grid(opq,rst, ncol = 2)
 
     schematicTrained <- ggdraw() +  draw_image("../figures/figure_fig1a.png")
     schematicConflict <- ggdraw() +  draw_image("../figures/figure_fig2a.png")
 
+    a14 <- plot_grid(a,b,d,d, ncol = 1)
+    b14 <- plot_grid(h + theme(axis.title.y = element_blank()),
+                i + theme(axis.title.y = element_blank()),
+                j + theme(axis.title.y = element_blank()),
+                k + theme(axis.title.y = element_blank()), ncol = 1)
+    c13 <- plot_grid(e + theme(axis.title.x = element_blank()),
+                        f + theme(axis.title.x = element_blank()),
+                     g, ncol = 1)
+    d13 <- plot_grid(l + theme(axis.title = element_blank()),
+                     m + theme( axis.title = element_blank()),
+                     n+ theme( axis.title.y = element_blank()),
+                     ncol = 1)
 
-    left <- plot_grid(schematicTrained,a,b,c, ncol = 1)
-    right <- plot_grid(e,f,g, ncol = 1)
-
-    anotherleft <- plot_grid(schematicConflict,h,i,j, ncol = 1)
-    anotherright <- plot_grid(l,m,n, ncol = 1)
-
-    farleft <- plot_grid(left,right, ncol = 2)
-    farright <- plot_grid(anotherleft,anotherright, ncol = 2)
+    opqrst <- plot_grid(opq,rst, ncol = 2, labels = c( "standard v\nconflict", "yoked v \nyoked"),label_size = 8) 
 
 
-
-    plot_grid(farleft,farright, opqrst, nrow = 1)
+    plot_grid(a14, b14, c13, d13, opqrst, nrow = 1,
+              labels = c("standard training", "conflict training", "standard\nyoked v trained", "conflict\nyoked v trained", NULL),
+              label_size = 8,
+              rel_widths = c(1,0.9,0.75,0.75,1))
 
 ![](../figures/fig1/fig1-1.png)
