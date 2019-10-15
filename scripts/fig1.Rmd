@@ -20,7 +20,7 @@ register(MulticoreParam(6))
 source("functions_RNAseq.R")
 source("figureoptions.R")
 
-knitr::opts_chunk$set(echo = TRUE, fig.path = '../figures/fig1/', message = F, results = F)
+knitr::opts_chunk$set(echo = TRUE, fig.path = '../figures/fig1/', message = F)
 ```
 
 ```{r behav}
@@ -58,23 +58,6 @@ calculatemeandev <- function(mydf){
 standard.meandev <- calculatemeandev(standard)
 conflict.meandev <- calculatemeandev(conflict)
 
-
-plotmeansd <- function(mymeandev, mybehavior, myylab, mycolors){
-  
-  mymeandev %>% 
-    filter(behavior == mybehavior) %>% 
-    ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-      geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-      geom_point(size = 1.5) +
-      geom_line() +
-    theme_minimal(base_size = 8) + 
-    theme(legend.position = "none") + 
-    scale_color_manual(values = mycolors) +
-    scale_x_continuous( breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels = c( "P", "T1", "T2", "T3",
-                                   "Rt", "T4", "T5", "T6", "Rn")) +
-    labs(x = NULL, y = myylab) 
-  }
   
 # Time1stEntr, Path1stEntr, pTimeTarget, NumEntrances
 a <- plotmeansd(standard.meandev, "Time1stEntr", "Time 1st entr. (s)" , trainedcolors)
@@ -86,6 +69,13 @@ h <- plotmeansd(conflict.meandev, "Time1stEntr", "Time 1st entr. (s)" , conflict
 i <- plotmeansd(conflict.meandev, "Path1stEntr", "Path 1st entr. (m)" , conflictcolors)
 j <- plotmeansd(conflict.meandev, "pTimeTarget", "Prop. time in zone" , conflictcolors)
 k <- plotmeansd(conflict.meandev, "NumEntrances", "Num. of entr." , conflictcolors)
+
+A <- plot_grid(a + labs(subtitle = "std. yoked v trained"),
+               h + labs(y = NULL, subtitle = "conf. yoked v trained"),
+               b,i + labs(y = NULL),
+               c,j + labs(y = NULL),
+              d,k + labs(y = NULL), ncol = 2)
+A
 ```
 
 
@@ -94,95 +84,76 @@ k <- plotmeansd(conflict.meandev, "NumEntrances", "Num. of entr." , conflictcolo
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
 a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
-trained <- c("standard.yoked", "standard.trained")
+standard <- c("standard.yoked", "standard.trained")
 conflict <- c("conflict.yoked", "conflict.trained")
-trainedconflict <- c("standard.trained", "conflict.trained")
-yokedyoked <- c("standard.yoked", "conflict.yoked")
+trained <- c("standard.trained", "conflict.trained")
+yoked <- c("standard.yoked", "conflict.yoked")
+
+
+# standard
+DGstandard <- returndds("DG", standard) 
+CA3standard <- returndds("CA3", standard) 
+CA1standard <- returndds("CA1", standard) 
+
+
+a <- plot.volcano(DGstandard, "standard.trained", "standard.yoked", volcano1)
+b <- plot.volcano(CA3standard, "standard.trained", "standard.yoked", volcano1)
+c <- plot.volcano(CA1standard, "standard.trained", "standard.yoked", volcano1)
+
+
+# conflict
+DGconflict <- returndds("DG", conflict) 
+CA3conflict <- returndds("CA3", conflict) 
+CA1conflict <- returndds("CA1", conflict) 
+
+d <- plot.volcano(DGconflict, "conflict.trained", "conflict.yoked", volcano5)
+e <- plot.volcano(CA3conflict, "conflict.trained", "conflict.yoked", volcano5)
+f <- plot.volcano(CA1conflict, "conflict.trained", "conflict.yoked", volcano5)
 
 
 # trained
-DGdds <- returndds("DG", trained) 
-CA1dds <- returndds("CA1", trained) 
-CA3dds <- returndds("CA3", trained) 
+DGtrained <- returndds("DG", trained) 
+CA3trained <- returndds("CA3", trained) 
+CA1trained <- returndds("CA1", trained) 
 
-e <-  plot.cons.yokcons(DGdds, "DG", "DG") 
-f <-  plot.cons.yokcons(CA3dds, "CA3", "CA3") 
-g <-  plot.cons.yokcons(CA1dds, "CA1", "CA1") 
+h <- plot.volcano(DGtrained, "conflict.trained", "standard.trained", volcano2)
+i <- plot.volcano(CA3trained, "conflict.trained", "standard.trained", volcano2)
+j <- plot.volcano(CA1trained, "conflict.trained", "standard.trained", volcano2)
 
-efg <- plot_grid(e + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
-                 f + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
-                 g, nrow = 3)
 
-# conflict
-DGdds <- returndds("DG", conflict) 
-CA1dds <- returndds("CA1", conflict) 
-CA3dds <- returndds("CA3", conflict) 
+# yoked
+DGyoked <- returndds("DG", yoked) 
+CA3yoked <- returndds("CA3", yoked) 
+CA1yoked <- returndds("CA1", yoked) 
 
-l <-  plot.conf.yokconf(DGdds, "DG", "DG") 
-m <-  plot.conf.yokconf(CA3dds, "CA3", "CA3") 
-n <-  plot.conf.yokconf(CA1dds, "CA1", "CA1") 
+k <- plot.volcano(DGyoked, "conflict.yoked", "standard.yoked", volcano6)
+l <- plot.volcano(CA3yoked, "conflict.yoked", "standard.yoked", volcano6)
+m <- plot.volcano(CA1yoked, "conflict.yoked", "standard.yoked", volcano6)
 
-lmn <- plot_grid(l + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
-                 m + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
-                 n, nrow = 3)
 
-# trained v conflict
-DGdds <- returndds("DG", trainedconflict) 
-CA1dds <- returndds("CA1", trainedconflict) 
-CA3dds <- returndds("CA3", trainedconflict) 
-
-o <-  plot.conf.cons(DGdds, "DG") 
-p <-  plot.conf.cons(CA3dds, "CA3") 
-q <-  plot.conf.cons(CA1dds, "CA1") 
-
-opq <- plot_grid(o + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
-                 p + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
-                 q, nrow = 3)
-
-# yoked v yoked
-
-DGdds <- returndds("DG", yokedyoked) 
-CA1dds <- returndds("CA1", yokedyoked) 
-CA3dds <- returndds("CA3", yokedyoked) 
-
-r <-  plot.yokconf.yokcons(DGdds, "DG") 
-s <-  plot.yokconf.yokcons(CA3dds, "CA3") 
-t <-  plot.yokconf.yokcons(CA1dds, "CA1") 
-
-rst <- plot_grid(r + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
-                 s + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
-                 t, nrow = 3)
+B <- plot_grid(a + labs(y = "DG: -log10(p)", subtitle = "std. yoked v trained"),
+               d + labs(subtitle = "conf. yoked v trained"),
+               h + labs(subtitle = "trained v trained"),
+               k + labs(subtitle = "yoked v yoked"),
+          b + labs(y = "CA3: -log10(p)"),e,i,l,
+          c + labs(y = "CA1: -log10(p)", x = "lfc"),
+          f  + labs( x = "lfc"),
+          j + labs( x = "lfc"),
+          m + labs( x = "lfc"), nrow = 3, align = "hv")
+B
 ```
-
-```{r correlations}
-
-```
-
-
 
 ```{r fig1}
+C <- plot_grid(A,B,rel_widths = c(0.3,0.6))
+C
+```
+
+# supplementary fig 1
+
+```{r schematic}
 schematicTrained <- ggdraw() +  draw_image("../figures/figure_fig1a.png")
 schematicConflict <- ggdraw() +  draw_image("../figures/figure_fig2a.png")
 
-a14 <- plot_grid(a,b,d,d, ncol = 1)
-b14 <- plot_grid(h + theme(axis.title.y = element_blank()),
-            i + theme(axis.title.y = element_blank()),
-            j + theme(axis.title.y = element_blank()),
-            k + theme(axis.title.y = element_blank()), ncol = 1)
-c13 <- plot_grid(e + theme(axis.title.x = element_blank()),
-                    f + theme(axis.title.x = element_blank()),
-                 g, ncol = 1)
-d13 <- plot_grid(l + theme(axis.title = element_blank()),
-                 m + theme( axis.title = element_blank()),
-                 n+ theme( axis.title.y = element_blank()),
-                 ncol = 1)
-
-opqrst <- plot_grid(opq,rst, ncol = 2, labels = c( "standard v\nconflict", "yoked v \nyoked"),label_size = 8) 
-
-
-fig1top <- plot_grid(a14, b14, c13, d13, opqrst, nrow = 1,
-          labels = c("standard training", "conflict training", "standard\nyoked v trained", "conflict\nyoked v trained", NULL),
-          label_size = 8,
-          rel_widths = c(1,0.9,0.75,0.75,1))
-fig1top
+plot_grid(schematicTrained, schematicConflict, nrow = 2)
 ```
+

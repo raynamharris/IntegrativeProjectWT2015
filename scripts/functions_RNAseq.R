@@ -293,42 +293,55 @@ plotcorrelationheatmaps2 <- function(mydds, mycoldata, mysubtitle){
   )
 }
 
-# volcano plots - standard trainined v standard yoked
 
-plot.cons.yokcons <- function(mydds, mytissue, mytitle){
-  print(mytissue)
+
+## mean standard deviation plot
+
+plotmeansd <- function(mymeandev, mybehavior, myylab, mycolors){
   
-  res <- results(mydds, contrast =c("APA2", "standard.trained", "standard.yoked"),
+  mymeandev %>% 
+    filter(behavior == mybehavior) %>% 
+    ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
+    geom_point(size = 1.5) +
+    geom_line() +
+    theme_minimal(base_size = 8) + 
+    theme(legend.position = "none",
+          panel.grid.minor=element_blank(),
+          panel.grid.major=element_blank()) + 
+    scale_color_manual(values = mycolors) +
+    scale_x_continuous( breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                        labels = c( "P", "T1", "T2", "T3",
+                                    "Rt", "T4", "T5", "T6", "Rn")) +
+    labs(x = NULL, y = myylab) 
+}
+
+# volcano plots 
+
+
+plot.volcano <- function(mydds,  up, down, mycolors){
+  res <- results(mydds, contrast =c("APA2", up, down),
                  independentFiltering = T, alpha = 0.1)
   print(summary(res))
-  
-  data <- data.frame(gene = row.names(res),
+   data <- data.frame(gene = row.names(res),
                      padj = res$padj, 
                      logpadj = -log10(res$padj),
                      lfc = res$log2FoldChange)
   data <- na.omit(data)
   data <- data %>%
     dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                                     yes = "standard.trained", 
+                                     yes = up, 
                                      no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                                 yes = "standard.yoked", 
+                                                 yes = down, 
                                                  no = "NS")))
-  
-  write.csv(data, file = paste0("../data/02c_", mytissue, "_std.train.yoked.csv", sep = ""), row.names = F)
-  
   volcano <- data %>%
-    #filter(direction != "NS") %>%
     ggplot(aes(x = lfc, y = logpadj)) + 
     geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-theme_minimal(base_size = 8) +
-  
-    scale_color_manual(values = volcano1,
-                       name = "higher in",
-                       breaks = c("standard.yoked", "NS", "standard.trained"))  + 
-    scale_x_continuous(limits=c(-10, 10),
-                       name="Log fold difference")+
+      theme_minimal(base_size = 8) +
+    scale_color_manual(values = mycolors)  + 
     ylim(c(0,7)) +
-    ylab(paste(mytitle, "-log10(p)", sep = "\n")) +  
+    xlim(c(-10,10)) +
+    labs(x = NULL, y = NULL)  +
     theme(panel.grid.minor=element_blank(),
                 panel.grid.major=element_blank(),
                 legend.position = "none") 
@@ -336,132 +349,6 @@ theme_minimal(base_size = 8) +
 }
 
 
-
-# volcano plots - conflict trainined v conflict yoked
-
-plot.conf.yokconf <- function(mydds, mytissue, mytitle){
-  print(mytissue)
-  
-  res <- results(mydds, contrast =c("APA2", "conflict.trained", "conflict.yoked"),
-                 independentFiltering = T, alpha = 0.1)
-  print(summary(res))
-  
-  data <- data.frame(gene = row.names(res),
-                     padj = res$padj, 
-                     logpadj = -log10(res$padj),
-                     lfc = res$log2FoldChange)
-  data <- na.omit(data)
-  data <- data %>%
-    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                                     yes = "standard.trained", 
-                                     no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                                 yes = "standard.yoked", 
-                                                 no = "NS")))
-  
-  write.csv(data, file = paste0("../data/02c_", mytissue, "_con.train.yoked.csv", sep = ""), row.names = F)
-  
-  volcano <- data %>%
-    #filter(direction != "NS") %>%
-    ggplot(aes(x = lfc, y = logpadj)) + 
-    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-    theme_minimal(base_size = 8) +
-    
-    scale_color_manual(values = volcano5,
-                       name = "higher in",
-                       breaks = c("conflict.yoked", "NS", "conflict.trained"))  + 
-    scale_x_continuous(limits=c(-10, 10),
-                       name="Log fold difference")+
-   ylim(c(0,7)) +
-    ylab(paste(mytitle, "-log10(p)", sep = "\n")) +  
-    theme(panel.grid.minor=element_blank(),
-                panel.grid.major=element_blank(),
-                legend.position = "none") 
-  plot(volcano)
-}
-
-# volcano plots - standard trainined v conflict trained
-
-
-plot.conf.cons <- function(mydds, mytitle){
-  
-  print(mytitle)
-  
-  res <- results(mydds, contrast =c("APA2", "conflict.trained", "standard.trained"),
-                 independentFiltering = T, alpha = 0.1)
-  print(summary(res))
-  
-  data <- data.frame(gene = row.names(res),
-                     padj = res$padj, 
-                     logpadj = -log10(res$padj),
-                     lfc = res$log2FoldChange)
-  data <- na.omit(data)
-  
-  data <- data %>%
-    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                                     yes = "conflict.trained", 
-                                     no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                                 yes = "standard.trained", 
-                                                 no = "NS")))
-
-    volcano <- ggplot(data, aes(x = lfc, y = logpadj)) + 
-    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-theme_minimal(base_size = 8) +
-  
-    scale_color_manual(values = volcano2,
-                       breaks = c("standard.trained", "NS", "conflict.trained"),
-                      name = "higher in")  + 
-    ylim(c(0,7)) +
-    scale_x_continuous( name="Log fold difference")+
-      labs(y = NULL) + 
-    theme(panel.grid.minor=element_blank(),
-          panel.grid.major=element_blank(),
-          legend.position = "none") 
-  plot(volcano)
-}
-
-
-# volcano plots - standard yoked v conflict yoked
-
-
-plot.yokconf.yokcons <- function(mydds, mytitle){
-  
-  print(mytitle)
-  
-  res <- results(mydds, contrast =c("APA2", "conflict.yoked", "standard.yoked"),
-                 independentFiltering = T, alpha = 0.1)
-  print(summary(res))
-  
-  data <- data.frame(gene = row.names(res),
-                     padj = res$padj, 
-                     logpadj = -log10(res$padj),
-                     lfc = res$log2FoldChange)
-  data <- na.omit(data)
-  data <- data %>%
-    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                                     yes = "conflict.yoked", 
-                                     no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                                 yes = "standard.yoked", 
-                                                 no = "NS")))
-  
-  data$direction <- factor(data$direction, levels = c("standard.yoked", "NS", "conflict.yoked"))
-  
-  volcano <- data %>%
-    #filter(direction != "NS") %>%
-    ggplot(aes(x = lfc, y = logpadj, color = direction)) + 
-    geom_point(size = 0.5, alpha = 0.75, na.rm = T) + 
-    theme_minimal(base_size = 8) +
-  
-    scale_color_manual(values = volcano6)  + 
-    #scale_y_continuous(limits=c(0, 12.5)) +
-    scale_x_continuous(limits=c(-10, 10),
-                       name="Log fold difference")+
-    labs(y = NULL) + 
-   ylim(c(0,7)) +
-    theme(panel.grid.minor=element_blank(),
-          panel.grid.major=element_blank(),
-          legend.position = "none") 
-  plot(volcano)  
-}
 
 
 returndds <- function(mytissue, mytreatment){
