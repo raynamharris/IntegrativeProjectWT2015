@@ -33,36 +33,35 @@ behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
 behav <-  behav %>% 
   select(mouse,APA2, TrainSessionCombo, TrainSessionComboNum, Time1stEntr, Path1stEntr, pTimeTarget, NumEntrances)
 
-# subset to standard paradigm only
+# subset to standard or conflict paradigm only
 standard <- behav %>% filter(APA2 %in% c("standard-yoked", "standard-trained")) 
 standard$APA2 <- factor(standard$APA2, levels = c("standard-yoked", "standard-trained"))
 
-# gather
-standard <- standard %>% gather(behavior, measure, Time1stEntr:NumEntrances)
-
-standard$behavior <- factor(standard$behavior, levels = c("Path1stEntr", "Time1stEntr", "pTimeTarget", "NumEntrances"))
-
-standard %>%
-  filter(TrainSessionCombo == "Retention") %>%
-    ggplot( aes(x = APA2, y = measure, color = APA2)) + 
-  geom_boxplot() +
-    geom_jitter()  + 
-  facet_wrap(~behavior, scales = "free_y", nrow  = 1) + 
-  theme_minimal() + 
-  theme(legend.position = "none",
-        axis.text.x = element_blank()) + 
-  scale_color_manual(values = trainedcolors) +
-  labs(x = NULL) 
+conflict <- behav %>% filter(APA2 %in% c("conflict-yoked", "conflict-trained")) 
+conflict$APA2 <- factor(conflict$APA2, levels = c("conflict-yoked", "conflict-trained"))
 
 
-meandev <- standard %>%
-  dplyr::group_by(APA2, TrainSessionComboNum, behavior) %>%
-  dplyr::summarise(m = mean(measure), 
-                   se = sd(measure)/sqrt(length(measure)))
+# gather and summarize
 
-plotmeansd <- function(mybehavior, myylab){
+calculatemeandev <- function(mydf){
   
-  meandev %>% 
+  mydf <- mydf %>% gather(behavior, measure, Time1stEntr:NumEntrances)
+  mydf$behavior <- factor(mydf$behavior, levels = c("Path1stEntr", "Time1stEntr", "pTimeTarget", "NumEntrances"))
+
+  meandev <- mydf %>%
+    dplyr::group_by(APA2, TrainSessionComboNum, behavior) %>%
+    dplyr::summarise(m = mean(measure), 
+                   se = sd(measure)/sqrt(length(measure)))
+  return(meandev)
+}
+
+standard.meandev <- calculatemeandev(standard)
+conflict.meandev <- calculatemeandev(conflict)
+
+
+plotmeansd <- function(mymeandev, mybehavior, myylab, mycolors){
+  
+  mymeandev %>% 
     filter(behavior == mybehavior) %>% 
     ggplot(aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
       geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
@@ -70,7 +69,7 @@ plotmeansd <- function(mybehavior, myylab){
       geom_line() +
     theme_minimal(base_size = 8) + 
     theme(legend.position = "none") + 
-    scale_color_manual(values = trainedcolors) +
+    scale_color_manual(values = mycolors) +
     scale_x_continuous( breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels = c( "P", "T1", "T2", "T3",
                                    "Rt", "T4", "T5", "T6", "Rn")) +
@@ -78,12 +77,18 @@ plotmeansd <- function(mybehavior, myylab){
   }
   
 # Time1stEntr, Path1stEntr, pTimeTarget, NumEntrances
-a <- plotmeansd("Time1stEntr", "Time 1st entr. (s)" )
-b <- plotmeansd("Path1stEntr", "Path 1st entr. (m)" )
-c <- plotmeansd("pTimeTarget", "Prop. time in zone" )
-d <- plotmeansd("NumEntrances", "Num. of entr." )
+a <- plotmeansd(standard.meandev, "Time1stEntr", "Time 1st entr. (s)" , trainedcolors)
+b <- plotmeansd(standard.meandev, "Path1stEntr", "Path 1st entr. (m)" , trainedcolors)
+c <- plotmeansd(standard.meandev, "pTimeTarget", "Prop. time in zone" , trainedcolors)
+d <- plotmeansd(standard.meandev, "NumEntrances", "Num. of entr." , trainedcolors)
 
-top <- plot_grid(a,c,b,d, ncol = 1)
+h <- plotmeansd(conflict.meandev, "Time1stEntr", "Time 1st entr. (s)" , conflictcolors)
+i <- plotmeansd(conflict.meandev, "Path1stEntr", "Path 1st entr. (m)" , conflictcolors)
+j <- plotmeansd(conflict.meandev, "pTimeTarget", "Prop. time in zone" , conflictcolors)
+k <- plotmeansd(conflict.meandev, "NumEntrances", "Num. of entr." , conflictcolors)
+
+
+top <- plot_grid(h,i,j,k, ncol = 1)
 top
 
 ```
@@ -95,18 +100,15 @@ a.colData <- read.csv("../data/02a_colData.csv", header = T)
 a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
 trained <- c("standard.yoked", "standard.trained")
+conflict <- c("conflict.yoked", "conflict.trained")
+trainedconflict <- c("standard.trained", "conflict.trained")
+yokedyoked <- c("standard.yoked", "conflict.yoked")
 
+
+# trained
 DGdds <- returndds("DG", trained) 
 CA1dds <- returndds("CA1", trained) 
 CA3dds <- returndds("CA3", trained) 
-
-DGvsd <- returnvsds(DGdds, "../data/fig1.DG.vsd.trained.csv")
-returnvsds(CA1dds, "../data/fig1.CA1.vsd.trained.csv")
-returnvsds(CA3dds, "../data/fig1.CA3.vsd.trained.csv")
-
-res_summary_subfield(DGdds, c("APA2", "standard.trained", "standard.yoked"))
-res_summary_subfield(CA1dds, c("APA2", "standard.trained", "standard.yoked"))
-res_summary_subfield(CA3dds, c("APA2", "standard.trained", "standard.yoked"))
 
 e <-  plot.cons.yokcons(DGdds, "DG", "DG") 
 f <-  plot.cons.yokcons(CA3dds, "CA3", "CA3") 
@@ -116,12 +118,72 @@ efg <- plot_grid(e + theme(axis.text.x = element_blank(), axis.title.x = element
                  f + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
                  g, nrow = 3)
 efg
+
+# conflict
+DGdds <- returndds("DG", conflict) 
+CA1dds <- returndds("CA1", conflict) 
+CA3dds <- returndds("CA3", conflict) 
+
+l <-  plot.conf.yokconf(DGdds, "DG", "DG") 
+m <-  plot.conf.yokconf(CA3dds, "CA3", "CA3") 
+n <-  plot.conf.yokconf(CA1dds, "CA1", "CA1") 
+
+lmn <- plot_grid(l + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
+                 m + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
+                 n, nrow = 3)
+lmn
+
+# trained v conflict
+DGdds <- returndds("DG", trainedconflict) 
+CA1dds <- returndds("CA1", trainedconflict) 
+CA3dds <- returndds("CA3", trainedconflict) 
+
+o <-  plot.conf.cons(DGdds, "DG") 
+p <-  plot.conf.cons(CA3dds, "CA3") 
+q <-  plot.conf.cons(CA1dds, "CA1") 
+
+opq <- plot_grid(o + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
+                 p + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
+                 q, nrow = 3)
+opq
+
+# yoked v yoked
+
+DGdds <- returndds("DG", yokedyoked) 
+CA1dds <- returndds("CA1", yokedyoked) 
+CA3dds <- returndds("CA3", yokedyoked) 
+
+r <-  plot.yokconf.yokcons(DGdds, "DG") 
+s <-  plot.yokconf.yokcons(CA3dds, "CA3") 
+t <-  plot.yokconf.yokcons(CA1dds, "CA1") 
+
+rst <- plot_grid(r + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
+                 s + theme(axis.text.x = element_blank(), axis.title.x = element_blank()),
+                 t, nrow = 3)
+rst
+
+opqrst <- plot_grid(opq,rst, ncol = 2)
 ```
 
 
 ```{r fig1}
-schematic <- ggdraw() +  draw_image("../figures/figure_fig1a.png")
-left <- plot_grid(schematic,a,b,c, ncol = 1)
+schematicTrained <- ggdraw() +  draw_image("../figures/figure_fig1a.png")
+schematicConflict <- ggdraw() +  draw_image("../figures/figure_fig2a.png")
+
+
+left <- plot_grid(schematicTrained,a,b,c, ncol = 1)
 right <- plot_grid(e,f,g, ncol = 1)
-plot_grid(left,right, ncol = 2)
+
+anotherleft <- plot_grid(schematicConflict,h,i,j, ncol = 1)
+anotherright <- plot_grid(l,m,n, ncol = 1)
+
+farleft <- plot_grid(left,right, ncol = 2)
+farright <- plot_grid(anotherleft,anotherright, ncol = 2)
+
+
+
+plot_grid(farleft,farright, opqrst, nrow = 1)
+
+
+
 ```
