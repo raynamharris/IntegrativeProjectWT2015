@@ -180,10 +180,9 @@ d13 <- plot_grid(l + theme(axis.title = element_blank()),
 opqrst <- plot_grid(opq,rst, ncol = 2, labels = c( "standard v\nconflict", "yoked v \nyoked"),label_size = 8) 
 
 
-plot_grid(a14, b14, c13, d13, opqrst, nrow = 1,
+fig1top <- plot_grid(a14, b14, c13, d13, opqrst, nrow = 1,
           labels = c("standard training", "conflict training", "standard\nyoked v trained", "conflict\nyoked v trained", NULL),
           label_size = 8,
           rel_widths = c(1,0.9,0.75,0.75,1))
-
-
+fig1top
 ```

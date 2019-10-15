@@ -59,6 +59,8 @@ vsdbehav <- function(mysubfield, myvsd){
 
 DGvsdbehav <- vsdbehav("DG", DGvsd)
 CA1vsdbehav <- vsdbehav("CA1", CA1vsd)
+
+head(DGvsdbehav)
 ```
 
 
@@ -102,7 +104,7 @@ CA1can <- vsdcandidates(DGvsd)
 
 ```{r corrplot}
 
-makecorplot <- function(myvsd, positivethreshold, negativethreshold){
+makecorMatrix <- function(myvsd, positivethreshold, negativethreshold){
   M <- cor(myvsd)
   print("done making corr matrix")
   M <- as.data.frame(M)
@@ -114,12 +116,103 @@ makecorplot <- function(myvsd, positivethreshold, negativethreshold){
   colstokeep <- Mslim$rownames
   Mslim <- Mslim %>% select(colstokeep)
   Mslim <- as.matrix(Mslim)
-  corrplot.mixed(Mslim, number.cex = .7)
+  return(Mslim)
 }
 
-makecorplot(DGvsdbehav,  0.95, -0.95)
-makecorplot(CA1vsdbehav, 0.95, -0.95)
+DGcormat <- makecorMatrix(DGvsdbehav,  0.95, -0.95)
+CA1cormat <- makecorMatrix(CA1vsdbehav, 0.95, -0.95)
+
+corrplot.mixed(DGcormat, number.cex = .7)
+corrplot.mixed(CA1cormat, number.cex = .7)
+
+
+## DG
+
+aa <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Ccdc158)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+bb <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Dis3l)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+cc <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Uncx)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+dd <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Aard)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+ee <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Folh1)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+ff <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Syt6)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+
+abcdef2 <- plot_grid(aa,bb,cc,dd,ee,ff, nrow = 1)
+
+DGcormat <- as.data.frame(DGcormat)
+
+posDG <- DGcormat %>%
+  mutate(gene = row.names(DGcormat)) %>%
+  select(gene,everything()) %>%
+  arrange(Time1stEntr) %>%
+  top_n(10) 
+mylist2 <- posDG$gene
+
+zz <- DGvsdbehav  %>%
+  mutate(mouse = row.names(DGvsdbehav)) %>% 
+  select(mouse, Time1stEntr, mylist2) %>% 
+  gather("gene", "expression", 3:7) %>%
+  filter(gene != "Aunip")  %>%
+  ggplot(aes(x = Time1stEntr, y = expression, color = gene)) +
+  geom_point() + geom_smooth(method = "lm") +
+  labs(subtitle = "DG")
+
+
+mylist2 <- c("Gria1", "Gria2", "Grin1", "Grin2a", "Grin2d",  "Prkcz" , "Prkci")
+
+yy <- DGvsdbehav  %>%
+  mutate(mouse = row.names(DGvsdbehav)) %>% 
+  select(mouse, Time1stEntr, mylist2) %>% 
+  gather("gene", "expression", 3:9) %>%
+  filter(gene != "Aunip")  %>%
+  ggplot(aes(x = Time1stEntr, y = expression, color = gene)) +
+  geom_point() + geom_smooth(method = "lm") +
+  labs(subtitle = "DG")
+
+
+## CA1
+
+gg <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y = Pear1)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+hh <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y = Ppard)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+ii <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y = Rassf8)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+jj <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y = Ebf3)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+kk <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y = Gm12184)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+ll <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y =  Gm156 )) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+
+ghijkl2 <- plot_grid(gg,hh,ii,jj,kk,ll, nrow = 1)
+ghijkl2
+
+CA1cormat <- as.data.frame(CA1cormat)
+
+posCA1 <- CA1cormat %>%
+  mutate(gene = row.names(CA1cormat)) %>%
+  select(gene,everything()) %>%
+  arrange(Time1stEntr) %>%
+  top_n(10) 
+mylist <- posCA1$gene
+
+ww <- CA1vsdbehav  %>%
+  mutate(mouse = row.names(CA1vsdbehav)) %>% 
+  select(mouse, Time1stEntr, mylist) %>% 
+  gather("gene", "expression", 3:10) %>%
+  filter(gene != "Rassf8")  %>%
+  ggplot(aes(x = Time1stEntr, y = expression, color = gene)) +
+  geom_point() + geom_smooth(method = "lm") +
+  labs(subtitle = "CA1")
+
+xx <- CA1vsdbehav  %>%
+  mutate(mouse = row.names(CA1vsdbehav)) %>% 
+  select(mouse, Time1stEntr, mylist2) %>% 
+  gather("gene", "expression", 3:9) %>%
+  filter(gene != "Aunip")  %>%
+  ggplot(aes(x = Time1stEntr, y = expression, color = gene)) +
+  geom_point() + geom_smooth(method = "lm") +
+  labs(subtitle = "CA1") 
+
+plot_grid(zz + theme(legend.position = "bottom"),
+          yy + theme(legend.position = "bottom"),
+          ww + theme(legend.position = "bottom"),
+          xx + theme(legend.position = "bottom"), nrow = 1)
 ```
+
 
 
 
