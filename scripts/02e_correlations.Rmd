@@ -30,6 +30,9 @@ a.colData$mouse <- sapply(strsplit(as.character(a.colData$RNAseqID),"-"), "[", 1
 
 # import varance stabilized data and fix sample names
 DGvsd <- read.csv("../data/02c_DGvsd.csv", stringsAsFactors = F, check.names = F, row.names = 1) 
+
+CA3vsd <- read.csv("../data/02c_CA3vsd.csv", stringsAsFactors = F, check.names = F, row.names = 1) 
+
 CA1vsd <- read.csv("../data/02c_CA1vsd.csv", stringsAsFactors = F, check.names = F, row.names = 1) 
 
 
@@ -58,48 +61,59 @@ vsdbehav <- function(mysubfield, myvsd){
 }
 
 DGvsdbehav <- vsdbehav("DG", DGvsd)
+CA3vsdbehav <- vsdbehav("CA1", CA1vsd)
 CA1vsdbehav <- vsdbehav("CA1", CA1vsd)
-
-head(DGvsdbehav)
 ```
 
 
 
-```{r vsd-sig, eval = F}
-# subset for genes that are significant
-DGsig <- read.csv("../data/02c_DGforupset.csv", stringsAsFactors = F) %>% select(gene) %>% droplevels()
-DGsig <- DGsig$gene
-DGvsdSig <- DGvsd %>% select(mouse,DGsig) %>% arrange(mouse)
 
-# join significant genes and time to first entrance
-DGsigbehav <- left_join(behav,DGvsdSig) %>% drop_na()  %>% arrange(mouse)
-DGsigbehav <- as.data.frame(DGsigbehav)
 
-row.names(DGsigbehav) <- DGsigbehav$mouse 
-DGsigbehav$mouse <- NULL
-#head(DGsigbehav)
-```
-
-```{r vsd-candidates, eval=F}
+```{r vsd-candidates}
 # subset for sanes genes
-candidates <- c("Gria1", "Gria2", "Grin1", "Grin2a", "Grin2d",  "Prkcz" , "Prkci", "Wwc1")
-
-head(DGvsd)
+candidates <- c("Gria1", "Gria2", "Grin1", "Grin2a", "Grin2d",  "Prkcz" , "Prkci")
 
 vsdcandidates <- function(myvsd){
-  names(myvsd) <- sapply(strsplit(names(myvsd),"-"), "[", 1)
-  myvsd <- as.data.frame(t(myvsd))
   myvsd$mouse <- row.names(myvsd)
   vsdCan <- myvsd %>% select(mouse,candidates)
   vsdCan <- left_join(behav,vsdCan) %>% drop_na()
   vsdCan <- as.data.frame(vsdCan)
-  row.names(vsdCan) <- vsdCan$mouse 
-  vsdCan$mouse <- NULL
+  vsdCan <- vsdCan %>% gather(gene, expression, Gria1:Prkci)
   return(vsdCan)
 }
 
-DGcan <- vsdcandidates(DGvsd)
-CA1can <- vsdcandidates(DGvsd)
+DGcan <- vsdcandidates(DGvsdbehav)
+CA3can <- vsdcandidates(CA3vsdbehav)
+CA1can <- vsdcandidates(CA1vsdbehav)
+
+a <- ggplot(DGcan, aes(x = Time1stEntr, y = expression, color = gene)) + geom_point() + 
+  geom_smooth(method = "lm") + facet_wrap(~gene, scales = "free_y", nrow = 1) + 
+  theme_minimal(base_size = 8) +
+  theme(legend.position = "none",
+          panel.grid.minor=element_blank(),
+          panel.grid.major=element_blank()) + 
+  labs(subtitle = "DG", y = "variance stabilized expression", x = NULL) + 
+  scale_x_continuous(breaks = c(200,600))
+
+c <- ggplot(CA3can, aes(x = Time1stEntr, y = expression, color = gene)) + geom_point() + 
+    theme_minimal(base_size = 8) +
+  geom_smooth(method = "lm") + facet_wrap(~gene, scales = "free_y", nrow = 1)  + 
+  theme(legend.position = "none",
+          panel.grid.minor=element_blank(),
+          panel.grid.major=element_blank()) + 
+  labs(subtitle = "CA3", y = "variance stabilized expression", x = "Rention: Time to 1st entrance (s)") + 
+  scale_x_continuous(breaks = c(200,600))
+
+b <- ggplot(CA1can, aes(x = Time1stEntr, y = expression, color = gene)) + geom_point() + 
+    theme_minimal(base_size = 8) +
+  geom_smooth(method = "lm") + facet_wrap(~gene, scales = "free_y", nrow = 1)  + 
+  theme(legend.position = "none",
+          panel.grid.minor=element_blank(),
+          panel.grid.major=element_blank()) + 
+  labs(subtitle = "CA1", y = "variance stabilized expression", x = "Rention: Time to 1st entrance (s)") + 
+  scale_x_continuous(breaks = c(200,600))
+
+plot_grid(a,b, c, nrow = 3)
 ```
 
 ```{r corrplot}
@@ -137,36 +151,6 @@ ff <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Syt6)) + geom_point() + geom_s
 
 abcdef2 <- plot_grid(aa,bb,cc,dd,ee,ff, nrow = 1)
 
-DGcormat <- as.data.frame(DGcormat)
-
-posDG <- DGcormat %>%
-  mutate(gene = row.names(DGcormat)) %>%
-  select(gene,everything()) %>%
-  arrange(Time1stEntr) %>%
-  top_n(10) 
-mylist2 <- posDG$gene
-
-zz <- DGvsdbehav  %>%
-  mutate(mouse = row.names(DGvsdbehav)) %>% 
-  select(mouse, Time1stEntr, mylist2) %>% 
-  gather("gene", "expression", 3:7) %>%
-  filter(gene != "Aunip")  %>%
-  ggplot(aes(x = Time1stEntr, y = expression, color = gene)) +
-  geom_point() + geom_smooth(method = "lm") +
-  labs(subtitle = "DG")
-
-
-mylist2 <- c("Gria1", "Gria2", "Grin1", "Grin2a", "Grin2d",  "Prkcz" , "Prkci")
-
-yy <- DGvsdbehav  %>%
-  mutate(mouse = row.names(DGvsdbehav)) %>% 
-  select(mouse, Time1stEntr, mylist2) %>% 
-  gather("gene", "expression", 3:9) %>%
-  filter(gene != "Aunip")  %>%
-  ggplot(aes(x = Time1stEntr, y = expression, color = gene)) +
-  geom_point() + geom_smooth(method = "lm") +
-  labs(subtitle = "DG")
-
 
 ## CA1
 
@@ -180,37 +164,6 @@ ll <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y =  Gm156 )) + geom_point() + ge
 ghijkl2 <- plot_grid(gg,hh,ii,jj,kk,ll, nrow = 1)
 ghijkl2
 
-CA1cormat <- as.data.frame(CA1cormat)
-
-posCA1 <- CA1cormat %>%
-  mutate(gene = row.names(CA1cormat)) %>%
-  select(gene,everything()) %>%
-  arrange(Time1stEntr) %>%
-  top_n(10) 
-mylist <- posCA1$gene
-
-ww <- CA1vsdbehav  %>%
-  mutate(mouse = row.names(CA1vsdbehav)) %>% 
-  select(mouse, Time1stEntr, mylist) %>% 
-  gather("gene", "expression", 3:10) %>%
-  filter(gene != "Rassf8")  %>%
-  ggplot(aes(x = Time1stEntr, y = expression, color = gene)) +
-  geom_point() + geom_smooth(method = "lm") +
-  labs(subtitle = "CA1")
-
-xx <- CA1vsdbehav  %>%
-  mutate(mouse = row.names(CA1vsdbehav)) %>% 
-  select(mouse, Time1stEntr, mylist2) %>% 
-  gather("gene", "expression", 3:9) %>%
-  filter(gene != "Aunip")  %>%
-  ggplot(aes(x = Time1stEntr, y = expression, color = gene)) +
-  geom_point() + geom_smooth(method = "lm") +
-  labs(subtitle = "CA1") 
-
-plot_grid(zz + theme(legend.position = "bottom"),
-          yy + theme(legend.position = "bottom"),
-          ww + theme(legend.position = "bottom"),
-          xx + theme(legend.position = "bottom"), nrow = 1)
 ```
 
 
