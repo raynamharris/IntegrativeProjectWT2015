@@ -200,6 +200,10 @@
     ## Acan    7.0491546240938 1.80008035791982e-12 4.53710254213691e-09
     ## Errfi1 6.58641004060308 4.50588351541571e-11 9.08566352048423e-08
 
+    print("CA3")
+
+    ## [1] "CA3"
+
     res_summary_subfield(CA3dds, c("combinedgroups", "trained", "yoked"))
 
     ## [1] "combinedgroups" "trained"        "yoked"         
@@ -233,6 +237,10 @@
     ## Cldn11   3.81467740910062 0.000136360945687631 0.715204813790057
     ## Gm9830   3.59253155671748 0.000327480981566366 0.715204813790057
     ## Hbb-bt   3.60709488006283 0.000309644457522496 0.715204813790057
+
+    print("CA1")
+
+    ## [1] "CA1"
 
     res_summary_subfield(CA1dds, c("combinedgroups", "trained", "yoked"))
 
@@ -269,7 +277,9 @@
     ## Gnaz    -4.61465612601298 3.93746694525317e-06  0.0112083934063577
 
     listofDEGstrainedvyoked <- function(mydds, myitssue){
-      res <- results(mydds, contrast = c("combinedgroups", "trained", "yoked"), independentFiltering = T)
+      res <- results(mydds, 
+                     contrast = c("combinedgroups", "trained", "yoked"), 
+                     independentFiltering = T)
       
       print(paste(myitssue, "trained vs yoked", sep = " "))
       
@@ -281,7 +291,6 @@
       data <- data %>% dplyr::filter(padj < 0.1) %>% droplevels()
       print(head(data))
       return(data)
-      
     }
 
     DGDEGs <- listofDEGstrainedvyoked(DGdds, "DG")
@@ -305,3 +314,44 @@
     ## 4 Fn3krp -1.427451 0.048013887    CA1 trained-yoked
     ## 5 Glcci1  1.982758 0.001438739    CA1 trained-yoked
     ## 6   Gnaz -3.111022 0.011208393    CA1 trained-yoked
+
+    plot.volcano.trainedyoked <- function(mydds){
+      res <- results(mydds, contrast =c("combinedgroups", "trained", "yoked"),
+                     independentFiltering = T, alpha = 0.1)
+       data <- data.frame(gene = row.names(res),
+                         padj = res$padj, 
+                         logpadj = -log10(res$padj),
+                         lfc = res$log2FoldChange)
+      data <- na.omit(data)
+      data <- data %>%
+        dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
+                                         yes = "trained", 
+                                         no = ifelse(data$lfc < 0 & data$padj < 0.1, 
+                                                     yes = "yoked", 
+                                                     no = "NS")))
+      volcano <- data %>%
+        ggplot(aes(x = lfc, y = logpadj)) + 
+        geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
+          theme_minimal(base_size = 8) +
+        scale_color_manual(values = c("grey", "red", "black"))  + 
+        #ylim(c(0,7)) +
+        #xlim(c(-10,10)) +
+        labs(x = "lfc", y = "-log10(p)")  +
+        theme(panel.grid.minor=element_blank(),
+                    panel.grid.major=element_blank(),
+                    legend.position = "none") 
+      plot(volcano)
+    }
+
+    a <- plot.volcano.trainedyoked(DGdds)
+
+![](../figures/02f_trainedvyoked/volcanos-1.png)
+
+    #plot.volcano.trainedyoked(CA3dds)
+    b <- plot.volcano.trainedyoked(CA1dds)
+
+![](../figures/02f_trainedvyoked/volcanos-2.png)
+
+    plot_grid(a,b, labels = c("DG", "CA1"))
+
+![](../figures/02f_trainedvyoked/volcanos-3.png)

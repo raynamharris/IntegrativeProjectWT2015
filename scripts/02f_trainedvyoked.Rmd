@@ -20,7 +20,7 @@ source("functions_RNAseq.R")
 knitr::opts_chunk$set(fig.path = '../figures/02f_trainedvyoked/', cache = F)
 ```
 
-```{r DGdeseq}
+```{r DESeq}
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
 a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -55,7 +55,7 @@ CA3dds <- returndds2("CA3")
 CA1dds <- returndds2("CA1") 
 ```
 
-```{r}
+```{r vsd}
 returnvsds2 <- function(mydds, vsdfilename){
   dds <- mydds
   vsd <- vst(dds, blind=FALSE) ## variance stabilized
@@ -73,14 +73,19 @@ CA1vsd <- returnvsds2(CA1dds)
 ```{r res}
 print("DG")
 res_summary_subfield(DGdds, c("combinedgroups", "trained", "yoked"))
+
+print("CA3")
 res_summary_subfield(CA3dds, c("combinedgroups", "trained", "yoked"))
+
+print("CA1")
 res_summary_subfield(CA1dds, c("combinedgroups", "trained", "yoked"))
 ```
 
 ```{r listofDEGs}
-
 listofDEGstrainedvyoked <- function(mydds, myitssue){
-  res <- results(mydds, contrast = c("combinedgroups", "trained", "yoked"), independentFiltering = T)
+  res <- results(mydds, 
+                 contrast = c("combinedgroups", "trained", "yoked"), 
+                 independentFiltering = T)
   
   print(paste(myitssue, "trained vs yoked", sep = " "))
   
@@ -92,10 +97,45 @@ listofDEGstrainedvyoked <- function(mydds, myitssue){
   data <- data %>% dplyr::filter(padj < 0.1) %>% droplevels()
   print(head(data))
   return(data)
-  
 }
 
 DGDEGs <- listofDEGstrainedvyoked(DGdds, "DG")
 CA1DEGs <- listofDEGstrainedvyoked(CA1dds, "CA1")
+```
 
+
+```{r volcanos}
+plot.volcano.trainedyoked <- function(mydds){
+  res <- results(mydds, contrast =c("combinedgroups", "trained", "yoked"),
+                 independentFiltering = T, alpha = 0.1)
+   data <- data.frame(gene = row.names(res),
+                     padj = res$padj, 
+                     logpadj = -log10(res$padj),
+                     lfc = res$log2FoldChange)
+  data <- na.omit(data)
+  data <- data %>%
+    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
+                                     yes = "trained", 
+                                     no = ifelse(data$lfc < 0 & data$padj < 0.1, 
+                                                 yes = "yoked", 
+                                                 no = "NS")))
+  volcano <- data %>%
+    ggplot(aes(x = lfc, y = logpadj)) + 
+    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
+      theme_minimal(base_size = 8) +
+    scale_color_manual(values = c("grey", "red", "black"))  + 
+    #ylim(c(0,7)) +
+    #xlim(c(-10,10)) +
+    labs(x = "lfc", y = "-log10(p)")  +
+    theme(panel.grid.minor=element_blank(),
+                panel.grid.major=element_blank(),
+                legend.position = "none") 
+  plot(volcano)
+}
+
+a <- plot.volcano.trainedyoked(DGdds)
+#plot.volcano.trainedyoked(CA3dds)
+b <- plot.volcano.trainedyoked(CA1dds)
+
+plot_grid(a,b, labels = c("DG", "CA1"))
 ```
