@@ -1,0 +1,101 @@
+---
+title: "trained v yoked"
+output: md_document
+---
+
+```{r setup, message=F, warning=F}
+library(tidyverse)
+library(forcats)
+library(cowplot) ## for some easy to use themes
+library(DESeq2) ## for gene expression analysis
+
+library(BiocParallel)
+register(MulticoreParam(6))
+
+## load functions 
+source("figureoptions.R")
+source("functions_RNAseq.R")
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/02f_trainedvyoked/', cache = F)
+```
+
+```{r DGdeseq}
+a.colData <- read.csv("../data/02a_colData.csv", header = T)
+a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+
+a.colData <- a.colData %>%
+  mutate(combinedgroups = fct_collapse(Treatment,
+                                       trained = c("conflict", "trained"),
+                                       yoked = c("shocked", "yoked")))
+a.colData$combinedgroups <- factor(a.colData$combinedgroups, levels = c("yoked", "trained"))
+
+returndds2 <- function(mytissue){
+  print(mytissue)
+  colData <- a.colData %>% 
+    filter(Punch %in% c(mytissue))  %>% 
+  droplevels()
+  
+  savecols <- as.character(colData$RNAseqID) 
+  savecols <- as.vector(savecols) 
+  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+
+  ## create DESeq object using the factors Punch and APA
+  dds <- DESeqDataSetFromMatrix(countData = countData,
+                              colData = colData,
+                              design = ~ combinedgroups)
+
+  dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+  dds <- DESeq(dds, parallel = TRUE)
+  return(dds)
+}
+
+DGdds <- returndds2("DG") 
+CA3dds <- returndds2("CA3") 
+CA1dds <- returndds2("CA1") 
+```
+
+```{r}
+returnvsds2 <- function(mydds, vsdfilename){
+  dds <- mydds
+  vsd <- vst(dds, blind=FALSE) ## variance stabilized
+  print(head(assay(vsd),3))
+  myvsd <- assay(vsd)
+  myvsd <- as.data.frame(myvsd)
+  return(myvsd)
+}
+
+DGvsd <- returnvsds2(DGdds)
+CA3vsd <- returnvsds2(CA3dds)
+CA1vsd <- returnvsds2(CA1dds)
+```
+
+```{r res}
+print("DG")
+res_summary_subfield(DGdds, c("combinedgroups", "trained", "yoked"))
+res_summary_subfield(CA3dds, c("combinedgroups", "trained", "yoked"))
+res_summary_subfield(CA1dds, c("combinedgroups", "trained", "yoked"))
+```
+
+```{r listofDEGs}
+
+listofDEGstrainedvyoked <- function(mydds, myitssue){
+  res <- results(mydds, contrast = c("combinedgroups", "trained", "yoked"), independentFiltering = T)
+  
+  print(paste(myitssue, "trained vs yoked", sep = " "))
+  
+  data <- data.frame(gene = row.names(res),
+                     lfc = res$log2FoldChange,
+                     padj = res$padj,
+                     tissue = myitssue,
+                     comparison = paste("trained", "yoked", sep = "-"))
+  data <- data %>% dplyr::filter(padj < 0.1) %>% droplevels()
+  print(head(data))
+  return(data)
+  
+}
+
+DGDEGs <- listofDEGstrainedvyoked(DGdds, "DG")
+CA1DEGs <- listofDEGstrainedvyoked(CA1dds, "CA1")
+
+```

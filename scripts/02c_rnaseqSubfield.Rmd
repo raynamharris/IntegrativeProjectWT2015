@@ -73,15 +73,6 @@ returnvsds(CA3dds, "../data/02c_CA3vsd.csv")
 ## Res summary
 
 ```{r twowaycontrasts}
-res_summary_subfield <- function(mydds, mycontrast){
-  res <- results(mydds, contrast = mycontrast, independentFiltering = T)
-  print(mycontrast)
-  print(sum(res$padj < 0.1, na.rm=TRUE))
-  print(summary(res))
-  print(head((res[order(res$padj),]), 5))
-  cat("\n")
-}
-
 print("DG")
 res_summary_subfield(DGdds, c("APA2", "standard.trained", "standard.yoked"))
 res_summary_subfield(DGdds, c("APA2", "conflict.trained", "conflict.yoked"))
