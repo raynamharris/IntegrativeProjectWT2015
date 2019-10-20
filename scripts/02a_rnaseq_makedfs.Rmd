@@ -12,9 +12,8 @@ This workflow was modified from the DESeq2 tutorial found at: https://www.biocon
 First I load a handful of packages for data wrangling, gene expression analysis, data visualization, and statistics.
 
 ```{r setup, message=F, warning=F}
-library(dplyr) ## for filtering and selecting rows
-library(plyr) ## for renmaing factors
-library(reshape2) ## for melting dataframe
+library(tidyverse) ## for filtering and selecting rows
+library(forcats)  # for renaming factors
 library(DESeq2) ## for gene expression analysis
 library(edgeR)  ## for basic read counts status
 library(magrittr) ## to use the weird pipe
@@ -33,61 +32,51 @@ Now, I create data frames from three csv files
 - geneids: Contains the ensemble ids and gene names for all the transcripts in the counts data frame. This file will be used to convert transcipt counts to gene counts. This file was also created via kallisto.Rmd file
 - colData: This file contains all the information I collected for each sample that was sequenced. Not all columns will be needed, so some are removed later. 
 
-```{r getdata, message=F}
-countData <- read.csv("../data/00_CountData.csv", row.names=1, check.names=FALSE )
-colData <- read.csv("../data/IntegrativeWT2015ColData.csv")
-```
-
-In this next section, I tidy the trait data for each sample so that I can calculate differential gene expression for the colData of interest. I also remove some samples for reasons described within the code blocks.
+I also tidy the trait data for each sample so that I can calculate differential gene expression for the colData of interest. I also remove some samples for reasons described within the code blocks.
 
 ```{r colData}
-rownames(colData) <- colData$RNAseqID    # set $genoAPAsessionInd as rownames
-colData <- colData[c(1,2,5,7:11)]  #keeping informative volumns
+# clean col Data
+colData <- read_csv("../data/IntegrativeWT2015ColData.csv")
+colData$APA_Conflict <- factor(colData$APA_Conflict)
+colData <- colData %>%
+  mutate(ID = gsub("[[:punct:]]", "", colData$Mouse)) %>%
+  filter(APA_Conflict != "NA_NA") %>%
+  mutate(subfield = Region) %>%
+  mutate(treatment = fct_recode(APA_Conflict,
+                                "standard.yoked" = "Yoked_NoConflict",
+                                "standard.trained" = "Trained_NoConflict",
+                                "conflict.yoked" = "Yoked_Conflict",
+                                "conflict.trained" = "Trained_Conflict")) %>%
+  mutate(training = fct_collapse(treatment,
+                                      trained = c("standard.trained", "conflict.trained"),
+                                      yoked = c("standard.yoked", "conflict.yoked"))) %>%
+  select(RNAseqID,ID,subfield, treatment, training) %>%
+  arrange(RNAseqID) %>%
+  droplevels() 
+
+# set factors
+colData$subfield <- factor(colData$subfield, levels = c("DG", "CA3", "CA1"))
+colData$treatment <- factor(colData$treatment, levels = c("standard.yoked", "standard.trained",
+                                                          "conflict.yoked", "conflict.trained"))
+colData$training <- factor(colData$training, levels = c("yoked", "trained"))
+
+#view
 head(colData)
-levels(colData$APA_Conflict)
 
-# changing the analysis to include homecage
-# colData <- colData %>% dplyr::filter(!grepl("147-|148-", RNAseqID))  # remove 147, and 148:  homecage animals 
-colData$ID <- gsub("[[:punct:]]", "", colData$Mouse) #make a column that thas id without the dash
-colData$APA <- NULL ## delete old APA column
-names(colData)[names(colData)=="APA_Conflict"] <- "APA3" #rename  APA3 to match color scheme
-names(colData)[names(colData)=="Region"] <- "Punch" #rename  region to punch
-
-# rename factors & group all Control animals into 1 group
-colData$APA2 <- colData$APA3 
-colData$APA2 <- revalue(colData$APA2, c("NA_NA" = "home.cage")) 
-colData$APA2 <- revalue(colData$APA2, c("Trained_Conflict" = "conflict.trained")) 
-colData$APA2 <- revalue(colData$APA2, c("Trained_NoConflict" = "standard.trained")) 
-colData$APA2 <- revalue(colData$APA2, c("Yoked_Conflict" = "conflict.yoked")) 
-colData$APA2 <- revalue(colData$APA2, c("Yoked_NoConflict" = "standard.yoked")) 
-head(colData)
-
-# reorder 
-colData <- colData[c(1:5,7:9)]
-colData
-# remove home.cage
-colData <- colData %>% filter(APA2 != "home.cage")
+colData %>% select(subfield,treatment)  %>%  summary()
 ```
 
 Now, we are ready to calculate differential gene expression using the DESeq package. For simplicity, I will use the standard nameing of "countData" and "colData" for the gene counts and gene information, respectively.
 
 ```{r prepforDESeq2}
-colData <- colData %>% arrange(RNAseqID) %>% droplevels() #set the coldata to be the countbygene df
+countData <- read.csv("../data/00_CountData.csv", row.names=1, check.names=FALSE )
+head(countData[1:5])
 
-## colData and countData must contain the exact same sample. I'll use the next three lines to make that happen
-savecols <- as.character(colData$RNAseqID) #select the sample name column that corresponds to row names
+## colData and countData must contain the exact same samples. 
+savecols <- as.character(colData$RNAseqID) #select the rowsname 
 savecols <- as.vector(savecols) # make it a vector
-countData <- countData %>% dplyr::select(one_of(savecols)) # select just the columns that match the samples in colData
-
-# colData must be factors
-cols = c(1:8)
-colData[,cols] %<>% lapply(function(x) as.factor(as.character(x)))
-
-# summary data
-colData %>% select(APA2,Punch)  %>%  summary()
-dim(countData)
+countData <- countData %>% dplyr::select(one_of(savecols)) # select just the columns 
 ```
-
 
 ## Total Gene Counts Per Sample 
 this could say something about data before normalization
