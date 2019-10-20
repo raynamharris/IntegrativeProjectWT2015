@@ -88,17 +88,17 @@ colData %>% select(APA2,Punch)  %>%  summary()
 dim(countData)
 ```
 
-## Write the two files
-
-```{r writecsv}
-write.csv(colData, file = "../data/02a_colData.csv", row.names = F)
-write.csv(countData, file = "../data/02a_countData.csv", row.names = T)
-```
 
 ## Total Gene Counts Per Sample 
 this could say something about data before normalization
 
 ```{r totalRNAseqcounts}
+totalCounts <- colSums(countData)
+totalCounts
+
+### on average 1 million gene counts per sample 
+summary((colSums(countData)/1000000))
+
 ## stats
 counts <- countData
 dim( counts )
@@ -115,3 +115,11 @@ ggplot(rowsum, aes(x=millioncounts)) +
   scale_x_continuous(name = "Millions of Gene Counts per Sample") +
   scale_y_continuous(name = "Number of Samples")
 ```
+
+## Write the two files
+
+```{r writecsv}
+write.csv(colData, file = "../data/02a_colData.csv", row.names = F)
+write.csv(countData, file = "../data/02a_countData.csv", row.names = T)
+```
+

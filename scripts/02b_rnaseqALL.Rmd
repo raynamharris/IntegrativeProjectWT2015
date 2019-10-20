@@ -24,7 +24,6 @@ library("RColorBrewer")
 library(BiocParallel)
 register(MulticoreParam(6))
 
-
 ## load functions 
 source("figureoptions.R")
 source("functions_RNAseq.R")
@@ -45,12 +44,6 @@ colData <- read.csv("../data/02a_colData.csv", header = T)
 countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 colData <- colData %>% dplyr::rename(treatment = APA2, subfield = Punch)
 colData %>% select(treatment, subfield)  %>%  summary()
-
-totalCounts <- colSums(countData)
-totalCounts
-
-### on average 1 million gene counts per sample 
-summary((colSums(countData)/1000000))
 
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
