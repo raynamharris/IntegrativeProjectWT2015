@@ -1,8 +1,8 @@
 # this file stores color palettes
 
 # for mean and sd plots of behavior 
-ann_colors_APA2 = list(
-  APA2 =  c('standard yoked' = "#404040", 
+ann_colors_treatment = list(
+  treatment =  c('standard yoked' = "#404040", 
             'standard trained' = "#ca0020",
             'conflict yoked' = "#969696",
             'conflict trained' = "#f4a582"),
@@ -59,10 +59,10 @@ pheatmapcolors = list(
 
 # for subfield volcano plots
 
-trainedcolors <-  c( "standard-yoked" = "#404040", "standard-trained" = "#ca0020")
-conflictcolors <- c("conflict-yoked" = "#969696","conflict-trained" = "#f4a582")
+trainedcolors <-  c( "standard.yoked" = "#404040", "standard.trained" = "#ca0020")
+conflictcolors <- c("conflict.yoked" = "#969696","conflict.trained" = "#f4a582")
   
-  volcano5 <-  c("conflict.trained" = "#f4a582",
+volcano5 <-  c("conflict.trained" = "#f4a582",
                  "conflict.yoked" = "#969696", 
                  "NS" = "#d9d9d9")
 

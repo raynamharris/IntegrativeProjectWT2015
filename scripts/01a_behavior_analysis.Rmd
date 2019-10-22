@@ -31,110 +31,133 @@ knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
 
 ## Sample sizes
 
-The 'APA2' column describes the four behavioral treatment groups.  
+The 'treatment' column describes the four behavioral treatment groups.  
 The 'TrainSessionCombo' column describes the behvioral training sessions. Here I filter by a single session to calculte the number of mice. 
 
 ```{r wrangledata, message=F}
 ## import output from video tracker program 
 behavior <- read.csv("../data/01_behaviordata.csv", header = T)
 
-## set level for APA2 then renmae
-behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "Same", "YokedConflict","Conflict"))
-levels(behavior$APA2) <-  c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained")
+# rename to match RNAseq data, select useful variables
+behavior <- behavior %>%
+  mutate(treatment = fct_recode(APA2,
+                                "standard.yoked" = "YokedSame",
+                                "standard.trained" = "Same",
+                                "conflict.yoked" = "YokedConflict",
+                                "conflict.trained" = "Conflict")) %>%
+  mutate(training = fct_collapse(treatment,
+                                      trained = c("standard.trained", "conflict.trained"),
+                                      yoked = c("standard.yoked", "conflict.yoked"))) %>%
+  select(ID,Day,treatment, training,TrainSessionCombo,TrainSessionComboNum, ShockOnOff, PairedPartner,
+         SdevSpeedArena:Speed2) %>%
+  arrange(ID) 
+
+# set levels
+behavior$treatment <- factor(behavior$treatment, levels = c("standard.yoked", "standard.trained",
+                                                          "conflict.yoked", "conflict.trained"))
+behavior$training <- factor(behavior$training, levels = c("yoked", "trained"))
 
 # sample sizes
 behavior %>% 
-  filter(TrainSessionCombo == "Retention") %>%
-  select(APA2)  %>%  summary()
+  filter(TrainSessionCombo == "Hab") %>%
+  select(treatment)  %>%  summary()
 
-
-# set levels
-behavior$APA2 <- factor(behavior$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
-levels(behavior$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
-
-# keep subset of columns for downstream vizuals
-behavior_slim <- behavior[,c(15,16,14,20:58)] 
-head(behavior_slim)
+head(behavior)
 ```
 
+## Number of shocks
+
+The values in the column "NumShock" are actually measures of the number of entraces into the shock zone. Because, that's what the software records. For standard.trained and conflict.trained animals, the number of shocks equals equals the number of entraces. However, for yoked individuals, the number of entrances does not equal the number of shocks. For them, the number of shocks is equal to their standard.trained or conflict.trained trained partner. 
+
+```{r shockentrplot, width=3.5, height=2.45}
+# supset beahvior to keep only factors and num shocks
+numshocks <- behavior %>%
+  select(ID, TrainSessionCombo, treatment, NumShock) 
+
+# widen datafram, and sum total
+numshocks <- spread(numshocks, key=TrainSessionCombo, value= NumShock)
+numshocks$sums <- rowSums(numshocks[sapply(numshocks, is.numeric)])
+head(numshocks)
+
+# delete values for yoked animals
+numshocks <- numshocks %>%
+  filter(treatment %in% c("standard.trained", "conflict.trained")) %>%
+  droplevels()
+
+# create a tempdataframe with dupclicate values for yoked
+numshockstemp <- numshocks
+levels(numshockstemp$treatment) 
+levels(numshockstemp$treatment) <- c("standard.yoked","conflict.yoked")
+levels(numshockstemp$treatment) 
+
+# combine the two and plot
+
+realnumshocks <- rbind(numshocks, numshockstemp)
+levels(realnumshocks$treatment) 
+
+realnumshocks$treatment <- factor(realnumshocks$treatment, levels = c("standard.yoked", "standard.trained", "conflict.yoked", "conflict.trained"))
+levels(realnumshocks$treatment) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
+
+realnumshocks %>%
+  dplyr::group_by(treatment) %>%
+  dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
+
+# define what levels to compare for stats
+
+a <- ggplot(realnumshocks, aes(x = treatment, y = sums, fill = treatment)) +
+  geom_boxplot(outlier.size = 0.5) +
+  theme_ms() +
+  scale_fill_manual(values = colorvalAPA00,
+                    name = NULL) +
+  labs(x = "treatment", subtitle = " ", y = "Total footshocks") +
+    theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
+          legend.position = "none") 
+a
+```
 
 # Vizualizing Mean and Standard error for num entrace and time 1st entrance
 
 To make the point and line graphs, I must create and join some data frames, then I have a function that makes four plots with specific titles, y labels and limits.
 
 ```{r fourmeasures, fig.width= 6.65, fig.height=2}
-a <- behavior %>%
-  dplyr::group_by(APA2, TrainSessionComboNum) %>%
+dfb <- behavior %>%
+  dplyr::group_by(treatment, TrainSessionComboNum) %>%
   dplyr::summarise(m = mean(NumEntrances), 
                    se = sd(NumEntrances)/sqrt(length(NumEntrances))) %>%
   dplyr::mutate(measure = "Number of target zone entrances")
 
-b <- behavior %>%
-  dplyr::group_by(APA2, TrainSessionComboNum) %>%
-  dplyr::summarise(m = mean(pTimeTarget), 
-                   se = sd(pTimeTarget)/sqrt(length(pTimeTarget))) %>%
-  dplyr::mutate(measure = "Proportion of time in target zone")
-
-c <- behavior %>%
-  dplyr::group_by(APA2, TrainSessionComboNum) %>%
+dfc <- behavior %>%
+  dplyr::group_by(treatment, TrainSessionComboNum) %>%
   dplyr::mutate(minutes = Time1stEntr/60) %>%
   dplyr::summarise(m = mean(minutes), 
                    se = sd(minutes)/sqrt(length(minutes))) %>%
   dplyr::mutate(measure = "Time to 1st target zone entrance (min)")
 
-d <- behavior %>%
-  dplyr::group_by(APA2, TrainSessionComboNum) %>%
-  dplyr::summarise(m = mean(pTimeOPP), 
-                   se = sd(pTimeOPP)/sqrt(length(pTimeOPP))) %>%
-  dplyr::mutate(measure = "Proportion of time opposite the target zone")
+dfd <- behavior %>%
+  dplyr::group_by(treatment, TrainSessionComboNum) %>%
+  dplyr::summarise(m = mean(pTimeTarget), 
+                   se = sd(pTimeTarget)/sqrt(length(pTimeTarget))) %>%
+  dplyr::mutate(measure = "Proportion of time in target zone")
 
-fourmeasures <- rbind(a,b,c,d)
+fourmeasures <- rbind(dfb,dfc,dfd)
 head(fourmeasures)
 
 # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
 
-meansdplots <- function(df, myylab, ybreaks, ylims){
-  myplot <- ggplot(df, 
-                  aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-    geom_point(size = 1.5) +
-    geom_line() +
-    labs(subtitle = " ") +
-    scale_y_continuous(name= myylab,
-                       breaks = ybreaks,
-                       limits = ylims) +
-    scale_x_continuous(name= "Training session", 
-                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels = c( "P", "T1", "T2", "T3",
-                                   "Rt", "T4", "T5", "T6", "Rn")) +
-    theme_cowplot(font_size = 7, line_size = 0.25) +
-    background_grid(major = "y", minor = "y") +
-    scale_color_manual(values = colorvalAPA00,
-                       name  = NULL)  +
-    theme(legend.position = "bottom",
-          legend.justification=c(0,0),
-        legend.text=element_text(size=5))
-  return(myplot)
-}  
 
-A <- meansdplots(a, "Number of entrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
-B <- meansdplots(c, "Latency to 1st entrance (min)",  c(0,2,4,6,8), c(0, 8))
-C <- meansdplots(b, "Prop. time in 60\u00b0 sector", c(0,.12,.25,.37), c(0, .37 ))
-D <- meansdplots(d, "Prop. time opposite 60\u00b0 sector", c(0.25, .5, .75), c(0.1, .75))
+b <- meansdplots(dfb, "Number of entrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
+c <- meansdplots(dfc, "Latency to 1st entrance (min)",  c(0,2,4,6,8), c(0, 8))
+d <- meansdplots(dfd, "Prop. time in 60\u00b0 sector", c(0,.12,.25,.37), c(0, .37 ))
 
-
-plotnolegend <- plot_grid(A + theme(legend.position="none"),
-           B + theme(legend.position="none"),
-           C + theme(legend.position="none"),
-           D + theme(legend.position="none"),
+fourplots <- plot_grid(a + theme(legend.position="none"),
+           b + theme(legend.position="none"),
+           c + theme(legend.position="none"),
+           d + theme(legend.position="none"),
            #align = 'vh',
-           labels = c("(d)", "(e)", "(f)", "(g)"),
+           labels = c("(a)", "(b)", "(c)", "(d)"),
            nrow = 1,
            label_size = 8
            )
-legend <- get_legend(A) 
-
-fourplots <- plot_grid(plotnolegend, legend, ncol = 1, rel_heights = c(1, .1))
 fourplots
 
 pdf(file="../figures/01_behavior/fourmeasures.pdf", width=6.65, height=2)
@@ -164,7 +187,7 @@ scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
 
 ## make annotation df and ann_colors for pheatmap
 ann_cols <- as.data.frame(makecolumnannotations2(scaledaveragedata))
-ann_colors = ann_colors_APA2
+ann_colors = ann_colors_treatment
 
 # set color breaks
 paletteLength <- 30
@@ -210,7 +233,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
 ```{r PCA}
 
-levels(behavior$APA2) <-  c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained")
+levels(behavior$treatment) <-  c("standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained")
 
 dataforpca <- behavior %>%
   filter(TrainSessionCombo != "Hab")
@@ -228,8 +251,8 @@ rotationdf <- mkrotationdf(dataforpca) #loadings for specific factors
 
 behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
 scoresdf$PC1 <- scoresdf$PC1 * -1
-scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
-levels(scoresdf$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
+scoresdf$treatment <- factor(scoresdf$treatment, levels = c("standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained"))
+levels(scoresdf$treatment) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
 
 
 ## data wraningly for pca anlysis
@@ -261,17 +284,17 @@ j <- 0
 for (i in (scoresdf[,c(1:6)])){
   j <- j+1
   print(paste("PC", j, sep = " "))
-  myaov <- aov(i ~ APA2, data=scoresdf)
+  myaov <- aov(i ~ treatment, data=scoresdf)
   print(summary(myaov))
-  print(TukeyHSD(myaov, which = "APA2"))
+  print(TukeyHSD(myaov, which = "treatment"))
 }
 
 
-pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
+pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=treatment)) +
     geom_point(size=2.5, alpha = 0.7) +
     xlab(paste0("PC 1: ", percent[1],"% variance")) +
     ylab(paste0("PC 2: ", percent[2],"% variance")) +
-    stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
+    stat_ellipse(level = 0.95, (aes(color=treatment)),size=0.25) + 
     scale_colour_manual(values=c(colorvalAPA00)) + 
     theme_cowplot(font_size = 7, line_size = 0.25) +
     theme(legend.position="none") 
@@ -281,11 +304,11 @@ pdf(file="../figures/01_behavior/pca12elipse.pdf",  width=2, height=2)
 plot(pca12elipse)
 dev.off()
 
-pcalegend <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
+pcalegend <- ggplot(scoresdf, aes(PC1,PC2, color=treatment)) +
     geom_point(size=2.5, alpha = 0.7) +
     xlab(paste0("PC 1: ", percent[1],"% variance")) +
     ylab(paste0("PC 2: ", percent[2],"% variance")) +
-    stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
+    stat_ellipse(level = 0.95, (aes(color=treatment)),size=0.25) + 
     scale_colour_manual(values=c(colorvalAPA00)) + 
     theme_cowplot(font_size = 7, line_size = 0.25) +
     theme(legend.position="bottom",
@@ -298,18 +321,18 @@ dev.off()
 
 ```
 
-### Comparing standard-trained and conflict-trained behaviors during the T4/C1 training session
+### Comparing standard.trained and conflict.trained behaviors during the T4/C1 training session
 
 ```{r T4consistentconflict}
 filtered <- behavior_slim %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
 exp_factors <- as.data.frame(filtered[,1])
 exp_nums <- filtered[,c(4:42)]
-exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard trained", "conflict trained"))
+exp_factors$treatment <- factor(filtered$treatment, levels = c("standard trained", "conflict trained"))
 head(exp_factors)
 
 # Levene's test for normality
 #for(y in names(exp_nums)){
-#  ymod <- leveneTest(exp_nums[[y]] ~ exp_factors$APA2)
+#  ymod <- leveneTest(exp_nums[[y]] ~ exp_factors$treatment)
 #  cat(paste('\nDependent var:', y, '\n'))
 #  print(ymod)
 #}
@@ -322,7 +345,7 @@ head(exp_factors)
 #    AnnularKurtosis, AnnularSkewnes, AnnularSd, AnnularMaxBin, AnnularMaxVal, AnnularMinBin, AnnularMinVal, Max50.RngLoBin, RayleigLength PolarMaxVal, Min50.RngHiBin , PolarMinBin, PolarSdVal, PolarAvgVal, RayleigLength, pTimeTarget, Speed2ndEntr, MaxTimeAvoid, Dist1stEntr.m, Speed1stEntr.cm.s, Linearity.Arena, SdevSpeedArena
 
 for(y in names(exp_nums)){
-  ymod <- wilcox.test(exp_nums[[y]] ~ exp_factors$APA2 )
+  ymod <- wilcox.test(exp_nums[[y]] ~ exp_factors$treatment )
   cat(paste('\nDependent var:', y, '\n'))
   print(ymod)
 }
@@ -339,7 +362,7 @@ for(y in names(exp_nums)){
  
 par(mfrow=c(3,3))
 for(y in names(exp_nums)){
-  ymod <- boxplot(exp_nums[[y]] ~ exp_factors$APA2,
+  ymod <- boxplot(exp_nums[[y]] ~ exp_factors$treatment,
                main = y,
                xlab = "T4/C1")
 }
@@ -347,16 +370,16 @@ for(y in names(exp_nums)){
 
 ```
 
-### Comparing standard-trained and conflict-trained behaviors during the T6/C3 training session
+### Comparing standard.trained and conflict.trained behaviors during the T6/C3 training session
 
 ```{r T6consistentconflict}
 filtered <- behavior_slim %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
 exp_factors <- as.data.frame(filtered[,1])
 exp_nums <- filtered[,c(4:42)]
-exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard trained", "conflict trained"))
+exp_factors$treatment <- factor(filtered$treatment, levels = c("standard trained", "conflict trained"))
 
 for(y in names(exp_nums)){
-  ymod<- wilcox.test(exp_nums[[y]] ~ exp_factors$APA2 )
+  ymod<- wilcox.test(exp_nums[[y]] ~ exp_factors$treatment )
   cat(paste('\nDependent var:', y, '\n'))
   print(ymod)
 }
@@ -376,95 +399,13 @@ for(y in names(exp_nums)){
 
 par(mfrow=c(3,3))
 for(y in names(exp_nums)){
-  ymod <- boxplot(exp_nums[[y]] ~ exp_factors$APA2,
+  ymod <- boxplot(exp_nums[[y]] ~ exp_factors$treatment,
                main = y,
                xlab = "T6/C3")
 }
 ```
 
-## Number of shocks
 
-The values in the column "NumShock" are actually measures of the number of entraces into the shock zone. Because, that's what the software records. For standard-trained and conflict-trained animals, the number of shocks equals equals the number of entraces. However, for yoked individuals, the number of entrances does not equal the number of shocks. For them, the number of shocks is equal to their standard-trained or conflict-trained trained partner. 
-
-```{r shockentrplot, width=3.5, height=2.45}
-# supset beahvior to keep only factors and num shocks
-numshocks <- behavior %>%
-  select(ID, TrainSessionCombo, APA2, NumShock) 
-
-# widen datafram, and sum total
-numshocks <- spread(numshocks, key=TrainSessionCombo, value= NumShock)
-numshocks$sums <- rowSums(numshocks[sapply(numshocks, is.numeric)])
-
-# copy datafram, add identifer
-numentrances <- numshocks
-head(numshocks)
-
-# delete values for yoked animals
-numshocks <- numshocks %>%
-  filter(APA2 %in% c("standard-trained", "conflict-trained")) %>%
-  droplevels()
-
-# create a tempdataframe with dupclicate values for yoked
-numshockstemp <- numshocks
-levels(numshockstemp$APA2) 
-levels(numshockstemp$APA2) <- c("standard-yoked","conflict-yoked")
-levels(numshockstemp$APA2) 
-
-# combine the two and plot
-
-realnumshocks <- rbind(numshocks, numshockstemp)
-levels(realnumshocks$APA2) 
-
-
-realnumshocks$APA2 <- factor(realnumshocks$APA2, levels = c("standard-yoked", "standard-trained", "conflict-yoked", "conflict-trained"))
-levels(realnumshocks$APA2) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
-
-numentrances$APA2 <- factor(numentrances$APA2, levels = c("standard-yoked", "standard-trained", "conflict-yoked", "conflict-trained"))
-levels(numentrances$APA2) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
-
-numentrances %>%
-  dplyr::group_by(APA2) %>%
-  dplyr::summarise(meanentraces = median(sums, na.rm = TRUE))
-
-realnumshocks %>%
-  dplyr::group_by(APA2) %>%
-  dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
-
-# define what levels to compare for stats
-my_comparisons <- list(c("standard\ntrained", "conflict\ntrained"))
-
-a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
-  geom_boxplot(outlier.size = 0.5) +
-  theme_classic(base_size = 8) +
-  scale_fill_manual(values = colorvalAPA00,
-                    name = NULL) +
-  labs(x = NULL, subtitle = " ", y = "Total footshocks") +
-    theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-          legend.position = "none") 
-
-my_comparisons <- list( c("standard\nyoked", "standard\ntrained"),
-                        c("conflict\nyoked", "conflict\ntrained"))
-
-b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
-  geom_boxplot(outlier.size = 0.5) +
-  theme_classic(base_size = 8) +
-  scale_fill_manual(values = colorvalAPA00,
-                    name = NULL) +
-  labs(x = NULL, subtitle = " ", y = "Total entrances to 60\u00b0 sector") +
-    theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-          legend.position = "none") 
-
-shock.entr.plot <- plot_grid(a,b, labels = c("(b)", "(c)"), label_size = 8)
-shock.entr.plot
-
-pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3.5, height=2.45)
-plot(shock.entr.plot)
-dev.off()
-
-
-summary(aov(numentrances$sums ~ numentrances$APA2))
-summary(aov(realnumshocks$sums ~ realnumshocks$APA2))
-```
 
 
 ```{r writefiles}
