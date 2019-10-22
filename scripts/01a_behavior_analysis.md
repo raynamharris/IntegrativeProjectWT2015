@@ -12,7 +12,9 @@ Setup
     library(plyr) ## for renmaing factors
     library(reshape2) ## for melting dataframe
     library(cowplot) ## for some easy to use themes
-    library(factoextra)  ##pca with vectors
+    library(ggfortify) # pca
+    library(factoextra)  ## pca with vectors
+    library(FactoMineR) # more pca
     library(car) ## stats
     library(pheatmap)  # for pretty heatmap
     library(viridis) # for awesome color pallette
@@ -29,7 +31,7 @@ Setup
 Sample sizes
 ------------
 
-The ‘APA2’ column describes the four behavioral treatment groups.  
+The ‘treatment’ column describes the four behavioral treatment groups.  
 The ‘TrainSessionCombo’ column describes the behvioral training
 sessions. Here I filter by a single session to calculte the number of
 mice.
@@ -37,1463 +39,136 @@ mice.
     ## import output from video tracker program 
     behavior <- read.csv("../data/01_behaviordata.csv", header = T)
 
-    ## set level for APA2 then renmae
-    behavior$APA2 <- factor(behavior$APA2, levels = c("YokedSame", "Same", "YokedConflict","Conflict"))
-    levels(behavior$APA2) <-  c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained")
+    # rename to match RNAseq data, select useful variables
+    behavior <- behavior %>%
+      mutate(treatment = fct_recode(APA2,
+                                    "standard.yoked" = "YokedSame",
+                                    "standard.trained" = "Same",
+                                    "conflict.yoked" = "YokedConflict",
+                                    "conflict.trained" = "Conflict")) %>%
+      mutate(training = fct_collapse(treatment,
+                                          trained = c("standard.trained", "conflict.trained"),
+                                          yoked = c("standard.yoked", "conflict.yoked"))) %>%
+      select(ID,Day,treatment, training,TrainSessionCombo,TrainSessionComboNum, ShockOnOff, PairedPartner,
+             SdevSpeedArena:Speed2) %>%
+      arrange(ID) 
+
+    # set levels
+    behavior$treatment <- factor(behavior$treatment, levels = c("standard.yoked", "standard.trained",
+                                                              "conflict.yoked", "conflict.trained"))
+    behavior$training <- factor(behavior$training, levels = c("yoked", "trained"))
 
     # sample sizes
     behavior %>% 
-      filter(TrainSessionCombo == "Retention") %>%
-      select(APA2)  %>%  summary()
-
-    ##                APA2  
-    ##  standard-yoked  :8  
-    ##  standard-trained:8  
-    ##  conflict-yoked  :9  
-    ##  conflict-trained:9
-
-    # set levels
-    behavior$APA2 <- factor(behavior$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
-    levels(behavior$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
-
-    # keep subset of columns for downstream vizuals
-    behavior_slim <- behavior[,c(15,16,14,20:58)] 
-    head(behavior_slim)
-
-    ##               APA2 TrainSessionCombo  APA SdevSpeedArena Linearity.Arena.
-    ## 1 standard trained               Hab Same           3.19           0.4678
-    ## 2 standard trained                T1 Same           2.34           0.3655
-    ## 3 standard trained                T2 Same           2.85           0.3184
-    ## 4 standard trained                T3 Same           2.94           0.2868
-    ## 5 standard trained            Retest Same           3.41           0.3059
-    ## 6 standard trained             T4_C1 Same           3.21           0.3341
-    ##   NumEntrances Time1stEntr Path1stEntr Speed1stEntr.cm.s. Dist1stEntr.m.
-    ## 1           28        0.53        0.00              -1.00           1.14
-    ## 2            6        1.73        0.02               2.39           0.37
-    ## 3            7        9.80        0.20               9.37           0.38
-    ## 4            6        4.27        0.08               1.89           0.32
-    ## 5            7       17.57        0.72               1.34           0.34
-    ## 6            3      257.83        8.59               9.54           0.15
-    ##   NumShock MaxTimeAvoid Time2ndEntr Path2ndEntr Speed2ndEntr TimeTarget
-    ## 1       62           62       11.30        0.80         9.86    114.934
-    ## 2        6          408       70.67        1.73         5.04      6.333
-    ## 3        7          288       48.47        1.06         2.04      5.766
-    ## 4        8          269       18.47        0.61         1.91     10.334
-    ## 5       10          206       29.00        1.17        16.91     12.901
-    ## 6        3          257      321.23       10.95         1.61      4.500
-    ##   pTimeTarget pTimeCCW pTimeOPP pTimeCW RayleigLength RayleigAngle
-    ## 1      0.2772   0.2821   0.2146  0.2261          0.10        46.70
-    ## 2      0.0166   0.1955   0.5633  0.2246          0.59       180.96
-    ## 3      0.0142   0.2915   0.4241  0.2702          0.45       181.11
-    ## 4      0.0268   0.7740   0.1992  0.0000          0.79       108.38
-    ## 5      0.0310   0.2110   0.5442  0.2138          0.52       183.62
-    ## 6      0.0107   0.1974   0.4619  0.3300          0.52       198.38
-    ##   PolarAvgVal PolarSdVal PolarMinVal PolarMinBin Min50.RngLoBin
-    ## 1      174.07      99.19      0.0179         170            150
-    ## 2      250.18      60.99      0.0001         340            230
-    ## 3      243.45      72.57      0.0001         350            260
-    ## 4      198.75      39.29      0.0000           0            130
-    ## 5      246.97      68.39      0.0010          10            230
-    ## 6      247.00      73.08      0.0001          10            250
-    ##   Min50.RngHiBin PolarMaxVal PolarMaxBin Max50.RngLoBin Max50.RngHiBin
-    ## 1             10      0.0410          10            310            120
-    ## 2            160      0.0697         210            120            220
-    ## 3            180      0.0607         200            160            270
-    ## 4             90      0.1141         120             70            140
-    ## 5            160      0.0716         200            150            250
-    ## 6            180      0.0733         200            160            260
-    ##   AnnularMinVal AnnularMinBin AnnularMaxVal AnnularMaxBin AnnularAvg
-    ## 1        0.0069          18.0        0.3405          13.2      11.95
-    ## 2        0.0421           3.5        0.2551          15.0      13.43
-    ## 3        0.0061          11.1        0.4480          18.0      16.85
-    ## 4        0.0003          11.1        0.3241          18.0      17.12
-    ## 5        0.0030          19.4        0.3993          16.6      15.95
-    ## 6        0.0006           3.5        0.3570          18.0      16.18
-    ##   AnnularSd AnnularSkewnes AnnularKurtosis     Speed1     Speed2
-    ## 1     22.62           1.14            3.89 0.00000000 0.07079646
-    ## 2     20.05           0.88            3.33 0.01156069 0.02447998
-    ## 3     12.74           2.13           10.34 0.02040816 0.02186920
-    ## 4     10.48           0.59            2.58 0.01873536 0.03302653
-    ## 5     14.95           2.30            9.84 0.04097894 0.04034483
-    ## 6     11.21           0.80            3.78 0.03331653 0.03408773
-
-Vizualizing Mean and Standard error for num entrace and time 1st entrance
-=========================================================================
-
-To make the point and line graphs, I must create and join some data
-frames, then I have a function that makes four plots with specific
-titles, y labels and limits.
-
-    a <- behavior %>%
-      dplyr::group_by(APA2, TrainSessionComboNum) %>%
-      dplyr::summarise(m = mean(NumEntrances), 
-                       se = sd(NumEntrances)/sqrt(length(NumEntrances))) %>%
-      dplyr::mutate(measure = "Number of target zone entrances")
-
-    b <- behavior %>%
-      dplyr::group_by(APA2, TrainSessionComboNum) %>%
-      dplyr::summarise(m = mean(pTimeTarget), 
-                       se = sd(pTimeTarget)/sqrt(length(pTimeTarget))) %>%
-      dplyr::mutate(measure = "Proportion of time in target zone")
-
-    c <- behavior %>%
-      dplyr::group_by(APA2, TrainSessionComboNum) %>%
-      dplyr::mutate(minutes = Time1stEntr/60) %>%
-      dplyr::summarise(m = mean(minutes), 
-                       se = sd(minutes)/sqrt(length(minutes))) %>%
-      dplyr::mutate(measure = "Time to 1st target zone entrance (min)")
-
-    d <- behavior %>%
-      dplyr::group_by(APA2, TrainSessionComboNum) %>%
-      dplyr::summarise(m = mean(pTimeOPP), 
-                       se = sd(pTimeOPP)/sqrt(length(pTimeOPP))) %>%
-      dplyr::mutate(measure = "Proportion of time opposite the target zone")
-
-    fourmeasures <- rbind(a,b,c,d)
-    head(fourmeasures)
-
-    ## # A tibble: 6 x 5
-    ## # Groups:   APA2 [1]
-    ##   APA2          TrainSessionComboN…     m    se measure                    
-    ##   <fct>                       <int> <dbl> <dbl> <chr>                      
-    ## 1 standard yok…                   1  31.4 2.32  Number of target zone entr…
-    ## 2 standard yok…                   2  21.4 2.02  Number of target zone entr…
-    ## 3 standard yok…                   3  15.4 1.40  Number of target zone entr…
-    ## 4 standard yok…                   4  14.5 2.01  Number of target zone entr…
-    ## 5 standard yok…                   5  16.9 0.875 Number of target zone entr…
-    ## 6 standard yok…                   6  15   1.56  Number of target zone entr…
-
-    # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
-
-    meansdplots <- function(df, myylab, ybreaks, ylims){
-      myplot <- ggplot(df, 
-                      aes(x=, TrainSessionComboNum, y=m, color=APA2)) + 
-        geom_errorbar(aes(ymin=m-se, ymax=m+se, color=APA2), width=.1) +
-        geom_point(size = 1.5) +
-        geom_line() +
-        labs(subtitle = " ") +
-        scale_y_continuous(name= myylab,
-                           breaks = ybreaks,
-                           limits = ylims) +
-        scale_x_continuous(name= "Training session", 
-                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = c( "P", "T1", "T2", "T3",
-                                       "Rt", "T4", "T5", "T6", "Rn")) +
-        theme_cowplot(font_size = 7, line_size = 0.25) +
-        background_grid(major = "y", minor = "y") +
-        scale_color_manual(values = colorvalAPA00,
-                           name  = NULL)  +
-        theme(legend.position = "bottom",
-              legend.justification=c(0,0),
-            legend.text=element_text(size=5))
-      return(myplot)
-    }  
-
-    A <- meansdplots(a, "Number of entrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
-    B <- meansdplots(c, "Latency to 1st entrance (min)",  c(0,2,4,6,8), c(0, 8))
-    C <- meansdplots(b, "Prop. time in 60\u00b0 sector", c(0,.12,.25,.37), c(0, .37 ))
-    D <- meansdplots(d, "Prop. time opposite 60\u00b0 sector", c(0.25, .5, .75), c(0.1, .75))
-
-
-    plotnolegend <- plot_grid(A + theme(legend.position="none"),
-               B + theme(legend.position="none"),
-               C + theme(legend.position="none"),
-               D + theme(legend.position="none"),
-               #align = 'vh',
-               labels = c("(d)", "(e)", "(f)", "(g)"),
-               nrow = 1,
-               label_size = 8
-               )
-    legend <- get_legend(A) 
-
-    fourplots <- plot_grid(plotnolegend, legend, ncol = 1, rel_heights = c(1, .1))
-    fourplots
-
-![](../figures/01_behavior/fourmeasures-1.png)
-
-    pdf(file="../figures/01_behavior/fourmeasures.pdf", width=6.65, height=2)
-    plot(fourplots)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    pdf(file="../figures/figure_1d.pdf", width=6.65, height=2)
-    plot(fourplots)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-Hierarchical clusering of time series behavioral data
------------------------------------------------------
-
-Here I use heirarhical cluster to identify patterns in the behavioral
-data. On the y axis see three distinct clusters of behaviors that are 1)
-higher in trained animals, 2) higher in yoked animals, and 3) measures
-of speed.
-
-    ## create scaled data frame
-    behavior_slim_heat <- behavior_slim %>%
-      filter(TrainSessionCombo != "Hab")
-
-    behavior_slim_heat$RayleigAngle <- NULL
-    behavior_slim_heat$PolarMinBin <- NULL
-    scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
-
-    ## make annotation df and ann_colors for pheatmap
-    ann_cols <- as.data.frame(makecolumnannotations2(scaledaveragedata))
-    ann_colors = ann_colors_APA2
-
-    # set color breaks
-    paletteLength <- 30
-    myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
-                  seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
-
-    ## pheatmap for markdown
-    pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
-             annotation_col=ann_cols, 
-             annotation_colors = ann_colors,
-             treeheight_row = 0, treeheight_col = 50,
-             border_color = "grey60" ,
-             color = viridis(30, option = "D"),
-             clustering_method="average",
-             breaks=myBreaks,
-             clustering_distance_cols="correlation" ,
-             clustering_distance_rows = "correlation"
-             )
-
-![](../figures/01_behavior/pheatmap2-1.png)
-
-    # pheatmapfor adobe
-    pheatmap(scaledaveragedata, show_colnames=F, show_rownames = F,
-             annotation_col=ann_cols, annotation_colors = ann_colors,
-             annotation_names_col = F,
-             treeheight_row = 0, treeheight_col = 15,
-             fontsize = 6, 
-             border_color = "grey60" ,
-             color = viridis(30),
-              width = 3, height = 2,
-             clustering_method="average",
-             breaks=myBreaks,
-             clustering_distance_cols="correlation",
-             filename = "../figures/01_behavior/pheatmap2.pdf",
-             legend = TRUE,
-             annotation_legend = FALSE
-             )
-
-### Principle component analysis
-
-Next, I next reduced the dimentionality of the data with a PCA anlaysis.
-
-    levels(behavior$APA2) <-  c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained")
-
-    dataforpca <- behavior %>%
-      filter(TrainSessionCombo != "Hab")
-
-    longdata <- makelongdata(dataforpca)
-
-    Z <- longdata[,3:322]
-    Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
-    pc = prcomp(Z, scale.=TRUE)
-    loadings <- pc$rotation
-    scores <- pc$x
-
-    scoresdf <- makepcadf(dataforpca) #create the df of pcas
-    rotationdf <- mkrotationdf(dataforpca) #loadings for specific factors
-
-    behaviormatrix <- behavior[c(20:58)]  # for 2nd pca analysis
-    scoresdf$PC1 <- scoresdf$PC1 * -1
-    scoresdf$APA2 <- factor(scoresdf$APA2, levels = c("standard-yoked" ,"standard-trained", "conflict-yoked", "conflict-trained"))
-    levels(scoresdf$APA2) <-  c("standard yoked" ,"standard trained", "conflict yoked", "conflict trained")
-
-
-    ## data wraningly for pca anlysis
-    behaviormatrix %>% 
-      scale() %>%                 # scale to 0 mean and unit variance
-      prcomp() ->                 # do PCA
-      pca                         # store result as `pca`
-    percent <- round(100*pca$sdev^2/sum(pca$sdev^2),2)
-    perc_data <- data.frame(percent=percent, PC=1:length(percent))
-    res.pca <- prcomp(behaviormatrix,  scale = TRUE)
-
-    # plot of percent contribution
-    ggplot(perc_data, aes(x=PC, y=percent)) + 
-      geom_bar(stat="identity") + 
-      geom_text(aes(label=round(percent, 2)), size=4, vjust=-.5) + 
-      xlim(0, 10)
-
-    ## Warning: Removed 29 rows containing missing values (position_stack).
-
-    ## Warning: Removed 1 rows containing missing values (geom_bar).
-
-    ## Warning: Removed 29 rows containing missing values (geom_text).
-
-![](../figures/01_behavior/PCA-1.png)
-
-    # PCA with contributions
-    res.pca <- prcomp(behaviormatrix, scale = TRUE)
-    fviz_pca_var(res.pca,
-                 col.var = "contrib", # Color by contributions to the PC
-                 gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-                 repel = TRUE,     # Avoid text overlapping
-                 select.var = list(contrib = 8))
-
-![](../figures/01_behavior/PCA-2.png)
-
-    ## print anova and TukeyHSD stats for first 6 PCs
-    j <- 0
-    for (i in (scoresdf[,c(1:6)])){
-      j <- j+1
-      print(paste("PC", j, sep = " "))
-      myaov <- aov(i ~ APA2, data=scoresdf)
-      print(summary(myaov))
-      print(TukeyHSD(myaov, which = "APA2"))
-    }
-
-    ## [1] "PC 1"
-    ##             Df Sum Sq Mean Sq F value  Pr(>F)    
-    ## APA2         3 3132.3  1044.1   73.25 6.6e-14 ***
-    ## Residuals   30  427.6    14.3                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
-    ## 
-    ## $APA2
-    ##                                          diff        lwr        upr
-    ## standard trained-standard yoked    20.7446753  15.611690  25.877661
-    ## conflict yoked-standard yoked       2.7420788  -2.246286   7.730444
-    ## conflict trained-standard yoked    20.3744685  15.386103  25.362833
-    ## conflict yoked-standard trained   -18.0025965 -22.990961 -13.014232
-    ## conflict trained-standard trained  -0.3702068  -5.358572   4.618158
-    ## conflict trained-conflict yoked    17.6323896  12.792965  22.471815
-    ##                                       p adj
-    ## standard trained-standard yoked   0.0000000
-    ## conflict yoked-standard yoked     0.4531408
-    ## conflict trained-standard yoked   0.0000000
-    ## conflict yoked-standard trained   0.0000000
-    ## conflict trained-standard trained 0.9970257
-    ## conflict trained-conflict yoked   0.0000000
-    ## 
-    ## [1] "PC 2"
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## APA2         3  169.1   56.35   3.448 0.0289 *
-    ## Residuals   30  490.3   16.34                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
-    ## 
-    ## $APA2
-    ##                                        diff        lwr         upr
-    ## standard trained-standard yoked    0.796763  -4.699718  6.29324383
-    ## conflict yoked-standard yoked     -4.589406  -9.931025  0.75221345
-    ## conflict trained-standard yoked   -3.270434  -8.612053  2.07118532
-    ## conflict yoked-standard trained   -5.386169 -10.727788 -0.04454954
-    ## conflict trained-standard trained -4.067197  -9.408816  1.27442233
-    ## conflict trained-conflict yoked    1.318972  -3.863160  6.50110370
-    ##                                       p adj
-    ## standard trained-standard yoked   0.9788474
-    ## conflict yoked-standard yoked     0.1123180
-    ## conflict trained-standard yoked   0.3594132
-    ## conflict yoked-standard trained   0.0475311
-    ## conflict trained-standard trained 0.1859178
-    ## conflict trained-conflict yoked   0.8993116
-    ## 
-    ## [1] "PC 3"
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   98.1   32.71   2.217  0.107
-    ## Residuals   30  442.7   14.76               
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
-    ## 
-    ## $APA2
-    ##                                         diff       lwr       upr     p adj
-    ## standard trained-standard yoked    2.1604100 -3.062095 7.3829153 0.6773668
-    ## conflict yoked-standard yoked      1.1861085 -3.889254 6.2614714 0.9197309
-    ## conflict trained-standard yoked   -2.3456865 -7.421049 2.7296764 0.5967281
-    ## conflict yoked-standard trained   -0.9743015 -6.049664 4.1010614 0.9531340
-    ## conflict trained-standard trained -4.5060965 -9.581459 0.5692665 0.0959758
-    ## conflict trained-conflict yoked   -3.5317950 -8.455620 1.3920303 0.2292910
-    ## 
-    ## [1] "PC 4"
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   48.1   16.03    1.17  0.338
-    ## Residuals   30  411.2   13.71               
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
-    ## 
-    ## $APA2
-    ##                                         diff       lwr      upr     p adj
-    ## standard trained-standard yoked   -2.6638939 -7.697074 2.369287 0.4857398
-    ## conflict yoked-standard yoked     -0.3698065 -5.261179 4.521566 0.9968574
-    ## conflict trained-standard yoked    0.4885682 -4.402804 5.379940 0.9928462
-    ## conflict yoked-standard trained    2.2940874 -2.597285 7.185460 0.5852830
-    ## conflict trained-standard trained  3.1524621 -1.738910 8.043834 0.3155405
-    ## conflict trained-conflict yoked    0.8583747 -3.886953 5.603703 0.9603067
-    ## 
-    ## [1] "PC 5"
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## APA2         3   13.2   4.414    0.35  0.789
-    ## Residuals   30  378.4  12.612               
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
-    ## 
-    ## $APA2
-    ##                                          diff       lwr      upr     p adj
-    ## standard trained-standard yoked   -0.32992433 -5.158137 4.498289 0.9976723
-    ## conflict yoked-standard yoked      1.27203715 -3.420142 5.964217 0.8813372
-    ## conflict trained-standard yoked   -0.01866219 -4.710842 4.673517 0.9999995
-    ## conflict yoked-standard trained    1.60196148 -3.090218 6.294141 0.7899669
-    ## conflict trained-standard trained  0.31126214 -4.380917 5.003442 0.9978687
-    ## conflict trained-conflict yoked   -1.29069934 -5.842782 3.261384 0.8668811
-    ## 
-    ## [1] "PC 6"
-    ##             Df Sum Sq Mean Sq F value Pr(>F)   
-    ## APA2         3  128.3   42.77    5.26 0.0049 **
-    ## Residuals   30  243.9    8.13                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = i ~ APA2, data = scoresdf)
-    ## 
-    ## $APA2
-    ##                                         diff        lwr        upr
-    ## standard trained-standard yoked    3.1159850 -0.7607393  6.9927092
-    ## conflict yoked-standard yoked      2.7136161 -1.0538826  6.4811149
-    ## conflict trained-standard yoked   -1.5414934 -5.3089922  2.2260053
-    ## conflict yoked-standard trained   -0.4023688 -4.1698676  3.3651299
-    ## conflict trained-standard trained -4.6574784 -8.4249771 -0.8899797
-    ## conflict trained-conflict yoked   -4.2551096 -7.9101202 -0.6000989
-    ##                                       p adj
-    ## standard trained-standard yoked   0.1504139
-    ## conflict yoked-standard yoked     0.2261477
-    ## conflict trained-standard yoked   0.6847551
-    ## conflict yoked-standard trained   0.9912926
-    ## conflict trained-standard trained 0.0108422
-    ## conflict trained-conflict yoked   0.0176085
-
-    pca12elipse <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
-        geom_point(size=2.5, alpha = 0.7) +
-        xlab(paste0("PC 1: ", percent[1],"% variance")) +
-        ylab(paste0("PC 2: ", percent[2],"% variance")) +
-        stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
-        scale_colour_manual(values=c(colorvalAPA00)) + 
-        theme_cowplot(font_size = 7, line_size = 0.25) +
-        theme(legend.position="none") 
-    pca12elipse
-
-![](../figures/01_behavior/PCA-3.png)
-
-    pdf(file="../figures/01_behavior/pca12elipse.pdf",  width=2, height=2)
-    plot(pca12elipse)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    pcalegend <- ggplot(scoresdf, aes(PC1,PC2, color=APA2)) +
-        geom_point(size=2.5, alpha = 0.7) +
-        xlab(paste0("PC 1: ", percent[1],"% variance")) +
-        ylab(paste0("PC 2: ", percent[2],"% variance")) +
-        stat_ellipse(level = 0.95, (aes(color=APA2)),size=0.25) + 
-        scale_colour_manual(values=c(colorvalAPA00)) + 
-        theme_cowplot(font_size = 7, line_size = 0.25) +
-        theme(legend.position="bottom",
-              legend.title=element_blank()) 
-    pcalegend
-
-![](../figures/01_behavior/PCA-4.png)
-
-    pdf(file="../figures/01_behavior/pcalegend.pdf",  width=4, height=2)
-    plot(pcalegend)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-### Comparing standard-trained and conflict-trained behaviors during the T4/C1 training session
-
-    filtered <- behavior_slim %>% filter(TrainSessionCombo == "T4_C1", APA != "control") 
-    exp_factors <- as.data.frame(filtered[,1])
-    exp_nums <- filtered[,c(4:42)]
-    exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard trained", "conflict trained"))
-    head(exp_factors)
-
-    ##      filtered[, 1]             APA2
-    ## 1 standard trained standard trained
-    ## 2 standard trained standard trained
-    ## 3 standard trained standard trained
-    ## 4 standard trained standard trained
-    ## 5 standard trained standard trained
-    ## 6 standard trained standard trained
-
-    # Levene's test for normality
-    #for(y in names(exp_nums)){
-    #  ymod <- leveneTest(exp_nums[[y]] ~ exp_factors$APA2)
-    #  cat(paste('\nDependent var:', y, '\n'))
-    #  print(ymod)
-    #}
-
-    # Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-    # *** Speed1, Path2ndEntr, Time2ndEntr, Path2ndEntr, Time2ndEntr
-    # ** Path1stEntr, Time1stEntr
-    # *  Max50.RngHiBin ,  PolarMaxBin  , PolarMinVal, RayleigAngle, pTimeCW, pTimeOPP,
-    # .  Speed2, Min50.RngLoBin , TimeTarget, NumShock, NumEntrances
-    #    AnnularKurtosis, AnnularSkewnes, AnnularSd, AnnularMaxBin, AnnularMaxVal, AnnularMinBin, AnnularMinVal, Max50.RngLoBin, RayleigLength PolarMaxVal, Min50.RngHiBin , PolarMinBin, PolarSdVal, PolarAvgVal, RayleigLength, pTimeTarget, Speed2ndEntr, MaxTimeAvoid, Dist1stEntr.m, Speed1stEntr.cm.s, Linearity.Arena, SdevSpeedArena
-
-    for(y in names(exp_nums)){
-      ymod <- wilcox.test(exp_nums[[y]] ~ exp_factors$APA2 )
-      cat(paste('\nDependent var:', y, '\n'))
-      print(ymod)
-    }
-
-    ## Warning in wilcox.test.default(x = c(3.21, 2.82, 2.2, 2.64, 2.88, 2.5, 3, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: SdevSpeedArena 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 33, p-value = 0.8098
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0.3341, 0.2786, 0.3786, 0.3168,
-    ## 0.3158, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Linearity.Arena. 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 52.5, p-value = 0.1234
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(3L, 10L, 0L, 0L, 2L, 4L, 13L, 2L), :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: NumEntrances 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 4.5, p-value = 0.002804
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(257.83, 39.7, 599.97, 599.97, 249.4, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Time1stEntr 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 72, p-value = 0.0006258
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(8.59, 0.92, 14.26, 16.08, 7.75,
-    ## 3.19, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Path1stEntr 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 72, p-value = 0.0005879
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(9.54, 2.04, -1, -1, 13.37, 2.38,
-    ## 1.96, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Speed1stEntr.cm.s. 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 48, p-value = 0.258
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0.15, 0.57, 0, 0, 0.11, 0.24, 0.7, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Dist1stEntr.m. 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 6, p-value = 0.004506
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(3L, 10L, 0L, 0L, 3L, 5L, 13L, 2L), :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: NumShock 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 2.5, p-value = 0.001456
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(257L, 195L, 599L, 599L, 293L, 161L, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: MaxTimeAvoid 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 49.5, p-value = 0.2104
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(321.23, 55, 599.97, 599.97, 543.07, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Time2ndEntr 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 72, p-value = 0.0006306
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: Path2ndEntr 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 72, p-value = 8.227e-05
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(1.61, 1.97, -1, -1, 1.82, 2.47,
-    ## 2.17, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Speed2ndEntr 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 23.5, p-value = 0.2473
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(4.5, 8.064, 0, 0, 4.601, 4.599,
-    ## 10.632, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: TimeTarget 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 1, p-value = 0.0008944
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0.0107, 0.0203, 0, 0, 0.0116,
-    ## 0.0124, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: pTimeTarget 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 3, p-value = 0.001753
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: pTimeCCW 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 37, p-value = 0.9626
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: pTimeOPP 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 64, p-value = 0.005512
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: pTimeCW 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 20, p-value = 0.1388
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0.52, 0.61, 0.86, 0.7, 0.68, 0.67, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: RayleigLength 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 40.5, p-value = 0.6998
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: RayleigAngle 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 38, p-value = 0.8884
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: PolarAvgVal 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 57, p-value = 0.0464
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: PolarSdVal 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 11, p-value = 0.01522
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(1e-04, 1e-04, 0, 0, 0, 0, 0, 0), y =
-    ## c(5e-04, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: PolarMinVal 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 10, p-value = 0.00948
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(10L, 320L, 0L, 0L, 0L, 310L, 0L, 0L:
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: PolarMinBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 22, p-value = 0.1828
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(250L, 160L, 190L, 200L, 150L, 160L, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Min50.RngLoBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 36.5, p-value = 1
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(180L, 100L, 170L, 150L, 110L, 110L, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Min50.RngHiBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 44, p-value = 0.4688
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: PolarMaxVal 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 30, p-value = 0.6058
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(200L, 120L, 170L, 180L, 120L, 130L, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: PolarMaxBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 34.5, p-value = 0.9231
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(160L, 90L, 150L, 140L, 100L, 100L, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Max50.RngLoBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 40.5, p-value = 0.6998
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(260L, 180L, 200L, 220L, 170L, 180L, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Max50.RngHiBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 35, p-value = 0.9615
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(6e-04, 0.0096, 0.0022, 0.005, 9e-04, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: AnnularMinVal 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 40, p-value = 0.736
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(3.5, 3.5, 8.5, 8.5, 19.4, 19.4, 3.5, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: AnnularMinBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 34, p-value = 0.8797
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: AnnularMaxVal 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 24, p-value = 0.2766
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(18, 16.6, 16.6, 16.6, 16.6, 15, 18, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: AnnularMaxBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 40.5, p-value = 0.6614
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(16.18, 15.81, 16.7, 16.39, 16.18,
-    ## 14.94, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: AnnularAvg 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 41, p-value = 0.6648
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: AnnularSd 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 34, p-value = 0.8884
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: AnnularSkewnes 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 34, p-value = 0.8884
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: AnnularKurtosis 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 33, p-value = 0.8148
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0.03331652639336,
-    ## 0.0231738035264484, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Speed1 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 48, p-value = 0.2655
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: Speed2 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 6, p-value = 0.002468
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    # *** Path2ndEntr 
-    # **  Speed2, PolarMinVal, pTimeOPP, pTimeTarget, TimeTarget, Time2ndEntr, NumShock
-    # **  Dist1stEntr.m., Path1stEntr , Time1stEntr, NumEntrances
-    # *   PolarSdVal, PolarAvgVal 
-    # .    
-    #     Speed1, AnnularKurtosis, AnnularSkewnes, AnnularSd, AnnularAvg, AnnularMaxBin,
-    #     AnnularMaxVal, AnnularMinBin, AnnularMinVal, Max50.RngHiBin , PolarMaxBin, 
-    #     PolarMaxVal, Min50.RngHiBin, Min50.RngLoBin, PolarMinBin, RayleigAngle
-    #     RayleigLength, pTimeCW, pTimeCCW, Speed2ndEntr, MaxTimeAvoid, Speed1stEntr.cm.s., #     Linearity.Arena., SdevSpeedArena 
-     
-    par(mfrow=c(3,3))
-    for(y in names(exp_nums)){
-      ymod <- boxplot(exp_nums[[y]] ~ exp_factors$APA2,
-                   main = y,
-                   xlab = "T4/C1")
-    }
-
-![](../figures/01_behavior/T4consistentconflict-1.png)![](../figures/01_behavior/T4consistentconflict-2.png)![](../figures/01_behavior/T4consistentconflict-3.png)![](../figures/01_behavior/T4consistentconflict-4.png)![](../figures/01_behavior/T4consistentconflict-5.png)
-
-### Comparing standard-trained and conflict-trained behaviors during the T6/C3 training session
-
-    filtered <- behavior_slim %>% filter(TrainSessionCombo == "T6_C3", APA != "control") 
-    exp_factors <- as.data.frame(filtered[,1])
-    exp_nums <- filtered[,c(4:42)]
-    exp_factors$APA2 <- factor(filtered$APA2, levels = c("standard trained", "conflict trained"))
-
-    for(y in names(exp_nums)){
-      ymod<- wilcox.test(exp_nums[[y]] ~ exp_factors$APA2 )
-      cat(paste('\nDependent var:', y, '\n'))
-      print(ymod)
-    }
-
-    ## Warning in wilcox.test.default(x = c(2.37, 3.08, 1.96, 2.32, 2.33, 2.55, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: SdevSpeedArena 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 21.5, p-value = 0.1774
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: Linearity.Arena. 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 36, p-value = 1
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0L, 12L, 0L, 0L, 1L, 13L, 8L, 0L), :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: NumEntrances 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 23.5, p-value = 0.2421
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(599.97, 3.13, 599.97, 599.97, 46.53, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Time1stEntr 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 42, p-value = 0.5944
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: Path1stEntr 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 41, p-value = 0.673
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(-1, 2.1, -1, -1, 1.47, 1.96, 2.17, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Speed1stEntr.cm.s. 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 11, p-value = 0.01769
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0, 0.68, 0, 0, 0.07, 0.84, 0.43, 0), :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Dist1stEntr.m. 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 25, p-value = 0.3081
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0L, 12L, 0L, 0L, 1L, 13L, 8L, 0L), :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: NumShock 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 23.5, p-value = 0.2421
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(599L, 113L, 599L, 599L, 553L, 86L, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: MaxTimeAvoid 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 47, p-value = 0.3093
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(599.97, 28.37, 599.97, 599.97,
-    ## 599.97, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Time2ndEntr 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 44.5, p-value = 0.4163
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: Path2ndEntr 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 31, p-value = 0.673
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(-1, 2.17, -1, -1, -1, 1.56, 1.95, -1:
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Speed2ndEntr 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 26.5, p-value = 0.3605
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0, 6, 0, 0, 0.667, 9.401, 7.833, 0), :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: TimeTarget 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 21.5, p-value = 0.175
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0, 0.016, 0, 0, 0.002, 0.0258,
-    ## 0.0201, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: pTimeTarget 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 27, p-value = 0.4102
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: pTimeCCW 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 41, p-value = 0.673
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: pTimeOPP 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 31, p-value = 0.673
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0.3233, 0.0443, 0.0213, 0.3027, 0, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: pTimeCW 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 26, p-value = 0.3603
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0.78, 0.67, 0.87, 0.68, 0.92, 0.72, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: RayleigLength 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 42.5, p-value = 0.5635
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: RayleigAngle 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 35, p-value = 0.9626
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: PolarAvgVal 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 68, p-value = 0.0009872
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: PolarSdVal 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 18, p-value = 0.09272
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0, 0, 0, 0, 0, 0, 1e-04, 0), y =
-    ## c(1e-04, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: PolarMinVal 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 24, p-value = 0.1657
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0L, 310L, 0L, 0L, 0L, 0L, 340L, 0L), :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: PolarMinBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 31, p-value = 0.6121
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(230L, 140L, 190L, 220L, 140L, 120L, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Min50.RngLoBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 34.5, p-value = 0.9229
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(200L, 90L, 160L, 170L, 120L, 70L,
-    ## 70L, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Min50.RngHiBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 37.5, p-value = 0.9226
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: PolarMaxVal 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 37, p-value = 0.9626
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(210L, 140L, 190L, 200L, 120L, 70L, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: PolarMaxBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 35, p-value = 0.9615
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(180L, 70L, 140L, 160L, 100L, 60L,
-    ## 60L, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Max50.RngLoBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 37, p-value = 0.9612
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(240L, 150L, 200L, 240L, 150L, 140L, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: Max50.RngHiBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 35.5, p-value = 1
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(0.009, 0.0034, 0.0059, 0.0218,
-    ## 8e-04, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: AnnularMinVal 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 50.5, p-value = 0.1777
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(3.5, 8.5, 8.5, 8.5, 8.5, 3.5, 3.5, :
-    ## cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: AnnularMinBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 23, p-value = 0.185
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: AnnularMaxVal 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 34, p-value = 0.8884
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    ## Warning in wilcox.test.default(x = c(16.6, 16.6, 16.6, 16.6, 16.6, 18,
-    ## 18, : cannot compute exact p-value with ties
-
-    ## 
-    ## Dependent var: AnnularMaxBin 
-    ## 
-    ##  Wilcoxon rank sum test with continuity correction
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 33, p-value = 0.7609
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: AnnularAvg 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 26, p-value = 0.3704
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: AnnularSd 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 41, p-value = 0.673
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: AnnularSkewnes 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 32, p-value = 0.743
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: AnnularKurtosis 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 31, p-value = 0.673
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: Speed1 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 20, p-value = 0.1388
-    ## alternative hypothesis: true location shift is not equal to 0
-    ## 
-    ## 
-    ## Dependent var: Speed2 
-    ## 
-    ##  Wilcoxon rank sum test
-    ## 
-    ## data:  exp_nums[[y]] by exp_factors$APA2
-    ## W = 22, p-value = 0.1996
-    ## alternative hypothesis: true location shift is not equal to 0
-
-    # Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-    # ***  
-    # **  PolarAvgVal,
-    # *   Speed1stEntr.cm.s. 
-    # .   PolarSdVal,   
-    #     Speed2, Speed1, AnnularKurtosis, AnnularSkewnes, AnnularSd,
-    #     AnnularAvg, AnnularMaxBin, AnnularMaxVal, AnnularMinBin, AnnularMinVal
-    #     Max50.RngHiBin, Max50.RngLoBin, PolarMaxBin, PolarMaxVal, Min50.RngHiBin   
-    #     Min50.RngLoBin, PolarMinBin, PolarMinVal, RayleigAngle, RayleigLength,
-    #     pTimeCW, pTimeOPP, pTimeCCW, pTimeTarget, TimeTarget, Speed2ndEntr, 
-    #     Path2ndEntr, Time2ndEntr, MaxTimeAvoid, NumShock, Dist1stEntr.m. 
-    #     Path1stEntr, Time1stEntr, NumEntrances, Linearity.Arena., SdevSpeedArena
-
-    par(mfrow=c(3,3))
-    for(y in names(exp_nums)){
-      ymod <- boxplot(exp_nums[[y]] ~ exp_factors$APA2,
-                   main = y,
-                   xlab = "T6/C3")
-    }
-
-![](../figures/01_behavior/T6consistentconflict-1.png)![](../figures/01_behavior/T6consistentconflict-2.png)![](../figures/01_behavior/T6consistentconflict-3.png)![](../figures/01_behavior/T6consistentconflict-4.png)![](../figures/01_behavior/T6consistentconflict-5.png)
+      filter(TrainSessionCombo == "Hab") %>%
+      select(treatment)  %>%  summary()
+
+    ##             treatment
+    ##  standard.yoked  :8  
+    ##  standard.trained:8  
+    ##  conflict.yoked  :9  
+    ##  conflict.trained:9
+
+    head(behavior)
+
+    ##       ID Day        treatment training TrainSessionCombo
+    ## 1 15140A   1 conflict.trained  trained               Hab
+    ## 2 15140A   1 conflict.trained  trained                T1
+    ## 3 15140A   1 conflict.trained  trained                T2
+    ## 4 15140A   1 conflict.trained  trained                T3
+    ## 5 15140A   2 conflict.trained  trained            Retest
+    ## 6 15140A   2 conflict.trained  trained             T4_C1
+    ##   TrainSessionComboNum ShockOnOff PairedPartner SdevSpeedArena
+    ## 1                    1        Off        15140B           3.07
+    ## 2                    2         On        15140B           2.78
+    ## 3                    3         On        15140B           2.68
+    ## 4                    4         On        15140B           2.78
+    ## 5                    5         On        15140B           3.11
+    ## 6                    6         On        15140B           2.52
+    ##   Linearity.Arena. NumEntrances Time1stEntr Path1stEntr Speed1stEntr.cm.s.
+    ## 1           0.4790           28       24.63        1.09               4.56
+    ## 2           0.4016            6        9.83        0.62              16.42
+    ## 3           0.3170            2      118.37        3.17               2.31
+    ## 4           0.3122            3      256.53        7.48               4.26
+    ## 5           0.2895            1      432.07       10.56               9.38
+    ## 6           0.3107           10        0.87        0.00              -1.00
+    ##   Dist1stEntr.m. NumShock MaxTimeAvoid Time2ndEntr Path2ndEntr
+    ## 1           1.12       52           53       59.97        2.59
+    ## 2           0.30        7          327       18.30        1.23
+    ## 3           0.11        3          312      287.63        8.54
+    ## 4           0.17        3          256      447.80       12.74
+    ## 5           0.06        1          432      599.97       15.66
+    ## 6           0.56       13          447       25.90        0.75
+    ##   Speed2ndEntr TimeTarget pTimeTarget pTimeCCW pTimeOPP pTimeCW
+    ## 1         7.85     94.665      0.2277   0.2583   0.1788  0.3352
+    ## 2         6.53      8.433      0.0211   0.6961   0.2049  0.0779
+    ## 3         3.73      3.366      0.0092   0.6413   0.3245  0.0250
+    ## 4         1.56      2.498      0.0069   0.5790   0.4018  0.0123
+    ## 5        -1.00      1.067      0.0026   0.2945   0.6300  0.0729
+    ## 6        16.19     17.735      0.0339   0.0195   0.1561  0.7905
+    ##   RayleigLength RayleigAngle PolarAvgVal PolarSdVal PolarMinVal
+    ## 1          0.11       330.67      163.83     106.39      0.0157
+    ## 2          0.65       112.66      198.80      58.56      0.0004
+    ## 3          0.78       124.87      214.13      41.85      0.0000
+    ## 4          0.80       128.39      218.33      38.58      0.0000
+    ## 5          0.72       159.36      246.61      46.73      0.0001
+    ## 6          0.67       257.90      172.75      54.93      0.0005
+    ##   PolarMinBin Min50.RngLoBin Min50.RngHiBin PolarMaxVal PolarMaxBin
+    ## 1         160             60            280      0.0458         280
+    ## 2         330            130             90      0.0976         100
+    ## 3           0            150            120      0.1233         120
+    ## 4           0            150            120      0.1175         140
+    ## 5         340            170            120      0.0911         150
+    ## 6         120            280            240      0.1003         280
+    ##   Max50.RngLoBin Max50.RngHiBin AnnularMinVal AnnularMinBin AnnularMaxVal
+    ## 1            230             40        0.0005          19.4        0.2807
+    ## 2             70            140        0.0098          19.4        0.2773
+    ## 3            100            160        0.0005           3.5        0.4294
+    ## 4            100            160        0.0063           8.5        0.4233
+    ## 5            110            190        0.0100           3.5        0.3537
+    ## 6            230            300        0.0003           3.5        0.4390
+    ##   AnnularMaxBin AnnularAvg AnnularSd AnnularSkewnes AnnularKurtosis
+    ## 1          13.2      11.80     23.93           0.88            3.13
+    ## 2          16.6      15.09     20.26           1.81            6.70
+    ## 3          18.0      16.94     10.91           1.87            8.91
+    ## 4          18.0      16.58     16.83           2.84           12.51
+    ## 5          18.0      16.62     15.14           2.42           11.83
+    ## 6          18.0      17.44      9.49           0.98            4.65
+    ##       Speed1     Speed2
+    ## 1 0.04425497 0.04318826
+    ## 2 0.06307223 0.06721311
+    ## 3 0.02678043 0.02969092
+    ## 4 0.02915838 0.02845020
+    ## 5 0.02444048 0.02610131
+    ## 6 0.00000000 0.02895753
 
 Number of shocks
 ----------------
 
 The values in the column “NumShock” are actually measures of the number
 of entraces into the shock zone. Because, that’s what the software
-records. For standard-trained and conflict-trained animals, the number
+records. For standard.trained and conflict.trained animals, the number
 of shocks equals equals the number of entraces. However, for yoked
 individuals, the number of entrances does not equal the number of
 shocks. For them, the number of shocks is equal to their
-standard-trained or conflict-trained trained partner.
+standard.trained or conflict.trained trained partner.
 
     # supset beahvior to keep only factors and num shocks
     numshocks <- behavior %>%
-      select(ID, TrainSessionCombo, APA2, NumShock) 
+      select(ID, TrainSessionCombo, treatment, NumShock) 
 
     # widen datafram, and sum total
     numshocks <- spread(numshocks, key=TrainSessionCombo, value= NumShock)
     numshocks$sums <- rowSums(numshocks[sapply(numshocks, is.numeric)])
-
-    # copy datafram, add identifer
-    numentrances <- numshocks
     head(numshocks)
 
-    ##       ID             APA2 Hab Retention Retest T1 T2 T3 T4_C1 T5_C2 T6_C3
-    ## 1 15140A conflict-trained  52         9      1  7  3  3    13     6     2
-    ## 2 15140B   conflict-yoked  55        33     71 96 30 71    87    31    32
-    ## 3 15140C standard-trained  62         0     10  6  7  8     3     8     0
-    ## 4 15140D   standard-yoked  61        41     34 58 32 22    32    54    48
-    ## 5 15141C standard-trained  44        21      7  8 19 11    10     7    12
-    ## 6 15141D   standard-yoked  55        52     50 54 48 27    47    36    34
+    ##       ID        treatment Hab Retention Retest T1 T2 T3 T4_C1 T5_C2 T6_C3
+    ## 1 15140A conflict.trained  52         9      1  7  3  3    13     6     2
+    ## 2 15140B   conflict.yoked  55        33     71 96 30 71    87    31    32
+    ## 3 15140C standard.trained  62         0     10  6  7  8     3     8     0
+    ## 4 15140D   standard.yoked  61        41     34 58 32 22    32    54    48
+    ## 5 15141C standard.trained  44        21      7  8 19 11    10     7    12
+    ## 6 15141D   standard.yoked  55        52     50 54 48 27    47    36    34
     ##   sums
     ## 1   96
     ## 2  506
@@ -1504,52 +179,37 @@ standard-trained or conflict-trained trained partner.
 
     # delete values for yoked animals
     numshocks <- numshocks %>%
-      filter(APA2 %in% c("standard-trained", "conflict-trained")) %>%
+      filter(treatment %in% c("standard.trained", "conflict.trained")) %>%
       droplevels()
 
     # create a tempdataframe with dupclicate values for yoked
     numshockstemp <- numshocks
-    levels(numshockstemp$APA2) 
+    levels(numshockstemp$treatment) 
 
-    ## [1] "standard-trained" "conflict-trained"
+    ## [1] "standard.trained" "conflict.trained"
 
-    levels(numshockstemp$APA2) <- c("standard-yoked","conflict-yoked")
-    levels(numshockstemp$APA2) 
+    levels(numshockstemp$treatment) <- c("standard.yoked","conflict.yoked")
+    levels(numshockstemp$treatment) 
 
-    ## [1] "standard-yoked" "conflict-yoked"
+    ## [1] "standard.yoked" "conflict.yoked"
 
     # combine the two and plot
 
     realnumshocks <- rbind(numshocks, numshockstemp)
-    levels(realnumshocks$APA2) 
+    levels(realnumshocks$treatment) 
 
-    ## [1] "standard-trained" "conflict-trained" "standard-yoked"  
-    ## [4] "conflict-yoked"
+    ## [1] "standard.trained" "conflict.trained" "standard.yoked"  
+    ## [4] "conflict.yoked"
 
-    realnumshocks$APA2 <- factor(realnumshocks$APA2, levels = c("standard-yoked", "standard-trained", "conflict-yoked", "conflict-trained"))
-    levels(realnumshocks$APA2) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
-
-    numentrances$APA2 <- factor(numentrances$APA2, levels = c("standard-yoked", "standard-trained", "conflict-yoked", "conflict-trained"))
-    levels(numentrances$APA2) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
-
-    numentrances %>%
-      dplyr::group_by(APA2) %>%
-      dplyr::summarise(meanentraces = median(sums, na.rm = TRUE))
-
-    ## # A tibble: 4 x 2
-    ##   APA2                meanentraces
-    ##   <fct>                      <dbl>
-    ## 1 "standard\nyoked"           452.
-    ## 2 "standard\ntrained"          90 
-    ## 3 "conflict\nyoked"           490 
-    ## 4 "conflict\ntrained"         122
+    realnumshocks$treatment <- factor(realnumshocks$treatment, levels = c("standard.yoked", "standard.trained", "conflict.yoked", "conflict.trained"))
+    levels(realnumshocks$treatment) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
 
     realnumshocks %>%
-      dplyr::group_by(APA2) %>%
+      dplyr::group_by(treatment) %>%
       dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
 
     ## # A tibble: 4 x 2
-    ##   APA2                meanshocks
+    ##   treatment           meanshocks
     ##   <fct>                    <dbl>
     ## 1 "standard\nyoked"          96 
     ## 2 "standard\ntrained"        96 
@@ -1557,59 +217,141 @@ standard-trained or conflict-trained trained partner.
     ## 4 "conflict\ntrained"       125.
 
     # define what levels to compare for stats
-    my_comparisons <- list(c("standard\ntrained", "conflict\ntrained"))
 
-    a <- ggplot(realnumshocks, aes(x = APA2, y = sums, fill = APA2)) +
+    a <- ggplot(realnumshocks, aes(x = treatment, y = sums, fill = treatment)) +
       geom_boxplot(outlier.size = 0.5) +
-      theme_classic(base_size = 8) +
+      theme_ms() +
       scale_fill_manual(values = colorvalAPA00,
                         name = NULL) +
-      labs(x = NULL, subtitle = " ", y = "Total footshocks") +
+      labs(x = "treatment", subtitle = " ", y = "NumShock") +
         theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
               legend.position = "none") 
-
-    my_comparisons <- list( c("standard\nyoked", "standard\ntrained"),
-                            c("conflict\nyoked", "conflict\ntrained"))
-
-    b <- ggplot(numentrances, aes(x = APA2, y = sums, fill = APA2)) +
-      geom_boxplot(outlier.size = 0.5) +
-      theme_classic(base_size = 8) +
-      scale_fill_manual(values = colorvalAPA00,
-                        name = NULL) +
-      labs(x = NULL, subtitle = " ", y = "Total entrances to 60\u00b0 sector") +
-        theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-              legend.position = "none") 
-
-    shock.entr.plot <- plot_grid(a,b, labels = c("(b)", "(c)"), label_size = 8)
-    shock.entr.plot
+    a
 
 ![](../figures/01_behavior/shockentrplot-1.png)
 
-    pdf(file="../figures/01_behavior/shockentrplot.pdf", width=3.5, height=2.45)
-    plot(shock.entr.plot)
+Vizualizing Mean and Standard error for num entrace and time 1st entrance
+=========================================================================
+
+To make the point and line graphs, I must create and join some data
+frames, then I have a function that makes four plots with specific
+titles, y labels and limits.
+
+    dfb <- behavior %>%
+      dplyr::group_by(treatment, TrainSessionComboNum) %>%
+      dplyr::summarise(m = mean(NumEntrances), 
+                       se = sd(NumEntrances)/sqrt(length(NumEntrances))) %>%
+      dplyr::mutate(measure = "Number of target zone entrances")
+
+    dfc <- behavior %>%
+      dplyr::group_by(treatment, TrainSessionComboNum) %>%
+      dplyr::mutate(minutes = Time1stEntr/60) %>%
+      dplyr::summarise(m = mean(minutes), 
+                       se = sd(minutes)/sqrt(length(minutes))) %>%
+      dplyr::mutate(measure = "Time to 1st target zone entrance (min)")
+
+    dfd <- behavior %>%
+      dplyr::group_by(treatment, TrainSessionComboNum) %>%
+      dplyr::summarise(m = mean(pTimeTarget), 
+                       se = sd(pTimeTarget)/sqrt(length(pTimeTarget))) %>%
+      dplyr::mutate(measure = "Proportion of time in target zone")
+
+    fourmeasures <- rbind(dfb,dfc,dfd)
+    head(fourmeasures)
+
+    ## # A tibble: 6 x 5
+    ## # Groups:   treatment [1]
+    ##   treatment      TrainSessionComboN…     m    se measure                   
+    ##   <fct>                        <int> <dbl> <dbl> <chr>                     
+    ## 1 standard.yoked                   1  31.4 2.32  Number of target zone ent…
+    ## 2 standard.yoked                   2  21.4 2.02  Number of target zone ent…
+    ## 3 standard.yoked                   3  15.4 1.40  Number of target zone ent…
+    ## 4 standard.yoked                   4  14.5 2.01  Number of target zone ent…
+    ## 5 standard.yoked                   5  16.9 0.875 Number of target zone ent…
+    ## 6 standard.yoked                   6  15   1.56  Number of target zone ent…
+
+    # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
+
+
+    b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
+    c <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
+    d <- meansdplots(dfd, "pTimeTarget", c(0,.12,.25,.37), c(0, .37 ))
+
+    fourplots <- plot_grid(a + theme(legend.position="none"),
+               b + theme(legend.position="none"),
+               c + theme(legend.position="none"),
+               d + theme(legend.position="none"),
+               #align = 'vh',
+               labels = c("(a)", "(b)", "(c)", "(d)"),
+               nrow = 1,
+               label_size = 8
+               )
+    fourplots
+
+![](../figures/01_behavior/fourmeasures-1.png)
+
+### Principle component analysis
+
+Next, I next reduced the dimentionality of the data with a PCA anlaysis.
+
+    retention <- behavior %>% filter(TrainSessionCombo %in% c("Retention") ) %>% droplevels()
+
+    pcadf <- makepcadf(behavior)
+
+    e <- ggplot(pcadf, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
+      geom_point(aes(alpha = TrainSessionComboNum)) + 
+      theme_ms() +
+        scale_fill_manual(guide = 'none',values = colorvalAPA00) +
+      scale_color_manual(guide = 'none',values = colorvalAPA00) +
+      scale_alpha_continuous( breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                           labels = c( "P", "T1", "T2", "T3",
+                                       "Rt", "T4", "T5", "T6", "Rn")) +
+      theme(legend.position = "none") +
+      labs(y = "PC2: 9.7% variance explained", x = "PC1: 35.7% variance explained",
+           subtitle = " ") 
+    e
+
+![](../figures/01_behavior/PCA-1.png)
+
+    # get contributions
+    df <- behavior %>% select(SdevSpeedArena:Speed2)
+    res.pca <- PCA(df,  graph = FALSE)
+    # Visualize eigenvalues/variances
+    fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))
+
+![](../figures/01_behavior/PCA-2.png)
+
+    # Contributions of variables to PC1
+    f <- fviz_contrib_rmh(res.pca, choice = "var", axes = 1, top = 8, 
+                     ylab = "PC1 contributions (%)", xlab = "estimates of memory", subtitle = " ") +
+      theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
+    # Contributions of variables to PC2
+    g <- fviz_contrib_rmh(res.pca, choice = "var", axes = 2, top = 8, 
+                     ylab = "PC2 contributions (%)" , xlab = "estimates of activity", subtitle = " ") +
+      theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
+
+    threeplots <- plot_grid(e,f,g, labels = c("(e)", "(f)", "(g)"),
+               nrow = 1,
+               label_size = 8,
+              rel_widths = c(0.5,0.25,0.25))
+
+    threeplots
+
+![](../figures/01_behavior/PCA-3.png)
+
+    behaviorfig <- plot_grid(fourplots, threeplots, nrow = 2)
+    behaviorfig
+
+![](../figures/01_behavior/behaviorfig-1.png)
+
+    pdf(file="../figures/01_behavior/behaviorfig.pdf", width=7, height=3.5)
+    plot(behaviorfig)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-    summary(aov(numentrances$sums ~ numentrances$APA2))
-
-    ##                   Df  Sum Sq Mean Sq F value   Pr(>F)    
-    ## numentrances$APA2  3 1137278  379093   91.29 3.52e-15 ***
-    ## Residuals         30  124584    4153                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    summary(aov(realnumshocks$sums ~ realnumshocks$APA2))
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)  
-    ## realnumshocks$APA2  3   7178  2392.8   2.492 0.0791 .
-    ## Residuals          30  28802   960.1                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
     write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
+    write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
     write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
-    write.csv(scoresdf, file = "../data/01a_scoresdf.csv", row.names = FALSE)
-    write.csv(rotationdf, file = "../data/01a_rotationdf.csv", row.names = TRUE)
-    write.csv(behaviormatrix, file = "../data/01a_behaviormatrix.csv", row.names = TRUE)
+    write.csv(pcadf, file = "../data/01a_pcadf.csv", row.names = FALSE)

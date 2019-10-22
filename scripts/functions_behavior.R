@@ -3,100 +3,37 @@ theme_ms <- function () {
     theme(
       panel.grid.major  = element_blank(),  # remove major gridlines
       panel.grid.minor  = element_blank(),  # remove minor gridlines
-      plot.title = element_text(hjust = 0.5, face = "bold") # center & bold 
+      plot.title = element_text(hjust = 0.5, face = "bold"), # center & bold 
+      legend.text=element_text(size=4)
     )
 }
 
 
-
-
-
 ## PCA ----
-makelongdata <- function(data){
-  #first melt the data to make long
-  longdata <- melt(data, id = c(1:18));
-  longdata <- longdata %>% drop_na();
-  longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
-  longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
-  return(longdata)
-}
 
 makepcadf <- function(data){
-  #first melt the data to make long
-  longdata <- melt(data, id = c(1:18));
-  longdata <- longdata %>% drop_na();
-  longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
-  longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
-  # calculate and save PCs
-  Z <- longdata[,3:322]
+  Z <- data %>%
+    select(SdevSpeedArena:Speed2)
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
   loadings <- pc$rotation
   scores <- pc$x
   #get ready for ggplot
   scoresdf <- as.data.frame(scores)
-  scoresdf$ID <-  longdata$ID
-  scoresdf$APA2 <- longdata$APA2
+  scoresdf$ID <-  data$ID
+  scoresdf$treatment <- data$treatment
+  scoresdf$TrainSessionComboNum <- data$TrainSessionComboNum
+  scoresdf <- scoresdf %>% select(ID, treatment,TrainSessionComboNum, PC1:PC10)
   return(scoresdf)
 }
 
-
-makepcaloadingsdf <- function(data){
-  #first melt the data to make long
-  longdata <- melt(data, id = c(1:18));
-  longdata <- longdata %>% drop_na();
-  longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
-  longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
-  # calculate and save PCs
-  Z <- longdata[,3:322]
+getpcsd <- function(data){
+  Z <- rentention %>%
+    select(SdevSpeedArena:Speed2)
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
-  loadings <- pc$rotation
-  return(loadings)
-}
-
-mkrotationdf <- function(data){
-  #first melt the data to make long
-  longdata <- melt(data, id = c(1:18));
-  longdata <- longdata %>% drop_na();
-  longdata$bysession <- as.factor(paste(longdata$TrainSessionCombo, longdata$variable, sep="_"));
-  longdata <- dcast(longdata, ID + APA2 ~ bysession, value.var= "value", fun.aggregate = mean)
-  # calculate and save PCs
-  Z <- longdata[,3:322]
-  Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
-  pc = prcomp(Z, scale.=TRUE)
-  rotationdf <- data.frame(pc$rotation, variable=row.names(pc$rotation))
-  #str(rotationdf)
-  return(rotationdf)
-}
-
-
-makepcaplot <- function(data,xcol,ycol,colorcode){
-  plot <- data %>% 
-    ggplot(aes_string(x=xcol, y=ycol, color=colorcode, label=data$ID)) +
-    geom_point(size = 5) +
-    stat_ellipse(level = 0.95)+
-    theme_cowplot(font_size = 20) + 
-    theme(strip.background = element_blank()) +
-    scale_colour_manual(name=NULL,
-                        values=colorvalAPA) +
-    theme(legend.position="none")
-    
-  return(plot)
-}
-
-makepcaplotwithpercent <- function(data,xcol,ycol,colorcode, newylab, newxlab){
-  plot <- data %>% 
-    ggplot(aes_string(x=xcol, y=ycol, color=colorcode, label=data$ID)) +
-    geom_point(size = 1) +
-    stat_ellipse(level = 0.95) +
-    theme_cowplot(font_size = 15, line_size = 0.5) + 
-    theme(strip.background = element_blank()) +
-    scale_colour_manual(name=NULL,
-                        values=colorvalAPA2) +
-    theme(legend.position="none") +
-    ylab(newylab) + xlab(newxlab)
-  return(plot)
+  pcsummary <- summary(pc)
+  return(pcsummary)
 }
 
 ## make plot of behavior across time
@@ -105,8 +42,8 @@ meansdplots <- function(df, myylab, ybreaks, ylims){
   myplot <- ggplot(df, 
                    aes(x=, TrainSessionComboNum, y=m, color=treatment)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=treatment), width=.1) +
-    geom_point(size = 1.5) +
     geom_line() +
+    geom_point(size = 1.5, aes(alpha = TrainSessionComboNum)) +
     labs(subtitle = " ") +
     scale_y_continuous(name= myylab,
                        breaks = ybreaks,
@@ -115,6 +52,9 @@ meansdplots <- function(df, myylab, ybreaks, ylims){
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels = c( "P", "T1", "T2", "T3",
                                    "Rt", "T4", "T5", "T6", "Rn")) +
+    scale_alpha_continuous( breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                            labels = c( "P", "T1", "T2", "T3",
+                                        "Rt", "T4", "T5", "T6", "Rn")) +
     theme_ms() +
     scale_color_manual(values = colorvalAPA00,
                        name  = NULL)  +
@@ -123,3 +63,51 @@ meansdplots <- function(df, myylab, ybreaks, ylims){
           legend.text=element_text(size=5))
   return(myplot)
 }  
+
+
+## pca from facto extra
+
+
+fviz_contrib_rmh <- function(X, choice = c("row", "col", "var", "ind", "quanti.var", "quali.var", "group", "partial.axes"),
+                         axes=1, fill="steelblue", color = "steelblue", 
+                         sort.val = c("desc", "asc", "none"), top = Inf,
+                         xtickslab.rt = 45, ggtheme = theme_minimal(), ...)
+{
+  
+  sort.val <- match.arg(sort.val)
+  choice = match.arg(choice)
+  
+  
+  dd <- facto_summarize(X, element = choice, result = "contrib", axes = axes)
+  contrib <- dd$contrib
+  names(contrib) <-rownames(dd)
+  
+  # expected Average contribution
+  theo_contrib <- 100/length(contrib)
+  if(length(axes) > 1) {
+    # Adjust variable contributions by the Dimension eigenvalues
+    eig <- get_eigenvalue(X)[axes,1]
+    theo_contrib <- sum(theo_contrib*eig)/sum(eig)
+  }
+  df <- data.frame(name = factor(names(contrib), levels = names(contrib)), contrib = contrib)
+  
+  # Define color if quanti.var
+  if(choice == "quanti.var") {
+    df$Groups <- .get_quanti_var_groups (X)
+    if(missing(fill)) fill <- "Groups"
+    if(missing(color)) color <- "Groups"
+  }
+  
+  p <- ggpubr::ggbarplot(df, x = "name", y = "contrib", fill = fill, color = color,
+                         sort.val = sort.val, top = top,
+                         xtickslab.rt = xtickslab.rt, ggtheme = ggtheme,
+                         sort.by.groups = FALSE, ...
+  )
+  
+  #   p <- .ggbarplot(contrib, fill =fill, color = color,
+  #                   sort.value = sort.val[1], top = top,
+  #                   title = title, ylab ="Contributions (%)")+
+  #     geom_hline(yintercept=theo_contrib, linetype=2, color="red")
+  
+  p
+}
