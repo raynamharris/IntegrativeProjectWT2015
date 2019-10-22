@@ -172,61 +172,6 @@ dev.off()
 
 
 
-## Hierarchical clusering of time series behavioral data
-
-Here I use heirarhical cluster to identify patterns in the behavioral data. On the y axis see three distinct clusters of behaviors that are 1) higher in trained animals, 2) higher in yoked animals, and 3) measures of speed. 
-
-```{r pheatmap2,  message=FALSE}
-## create scaled data frame
-behavior_slim_heat <- behavior_slim %>%
-  filter(TrainSessionCombo != "Hab")
-
-behavior_slim_heat$RayleigAngle <- NULL
-behavior_slim_heat$PolarMinBin <- NULL
-scaledaveragedata <- as.data.frame(makescaledaveragedata(behavior_slim_heat))
-
-## make annotation df and ann_colors for pheatmap
-ann_cols <- as.data.frame(makecolumnannotations2(scaledaveragedata))
-ann_colors = ann_colors_treatment
-
-# set color breaks
-paletteLength <- 30
-myBreaks <- c(seq(min(scaledaveragedata), 0, length.out=ceiling(paletteLength/2) + 1), 
-              seq(max(scaledaveragedata)/paletteLength, max(scaledaveragedata), length.out=floor(paletteLength/2)))
-
-## pheatmap for markdown
-pheatmap(scaledaveragedata, show_colnames=F, show_rownames = T,
-         annotation_col=ann_cols, 
-         annotation_colors = ann_colors,
-         treeheight_row = 0, treeheight_col = 50,
-         border_color = "grey60" ,
-         color = viridis(30, option = "D"),
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation" ,
-         clustering_distance_rows = "correlation"
-         )
-
-# pheatmapfor adobe
-pheatmap(scaledaveragedata, show_colnames=F, show_rownames = F,
-         annotation_col=ann_cols, annotation_colors = ann_colors,
-         annotation_names_col = F,
-         treeheight_row = 0, treeheight_col = 15,
-         fontsize = 6, 
-         border_color = "grey60" ,
-         color = viridis(30),
-          width = 3, height = 2,
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation",
-         filename = "../figures/01_behavior/pheatmap2.pdf",
-         legend = TRUE,
-         annotation_legend = FALSE
-         )
-
-```
-
-
 ### Principle component analysis 
 
 Next, I next reduced the dimentionality of the data with a PCA anlaysis. 

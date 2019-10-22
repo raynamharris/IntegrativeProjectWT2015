@@ -9,57 +9,7 @@ theme_ms <- function () {
 
 
 
-## make a scale data matrix for heatmap from all sessions 
-makescaledaveragedata <- function(data){
-  longdata <- melt(data, id = c(1:3));  #longdata <- melt(behavior, id = c(1:3))
-  longdata <- longdata %>% drop_na();
-  # then widen with group averages, add row names, scale, and transpose
-  longdata$APAsession <- as.factor(paste(longdata$APA2,longdata$TrainSessionCombo, sep="_"))
-  averagedata <- dcast(longdata, APAsession ~ variable, value.var= "value", fun.aggregate=mean);
-  rownames(averagedata) <- averagedata$APAsession;    
-  averagedata[1] <- NULL;
-  scaledaveragedata <- scale(averagedata)
-  scaledaveragedata <- t(scaledaveragedata)
-  scaledaveragedata <- scaledaveragedata[-1,]
-  return(scaledaveragedata)
-}  
 
-
-# make a heat map annotation with only APA2
-makecolumnannotations <- function(data){  
-  columnannotations <- as.data.frame(colnames(data))
-  names(columnannotations)[names(columnannotations)=="colnames(data)"] <- "column"
-  rownames(columnannotations) <- columnannotations$column
-  columnannotations$APA2 <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 1)
-  columnannotations$column <- NULL
-  return(columnannotations)
-}
-
-# make a heat map annotation with session and APA2
-makecolumnannotations2 <- function(data){  
-  columnannotations <- as.data.frame(colnames(data))
-  names(columnannotations)[names(columnannotations)=="colnames(data)"] <- "column"
-  rownames(columnannotations) <- columnannotations$column
-  columnannotations$APA2 <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 1)
-  columnannotations$Session <- sapply(strsplit(as.character(columnannotations$column),'\\_'), "[", 2)
-  columnannotations$Session <- as.factor(columnannotations$Session)
-  columnannotations$Session <- revalue(columnannotations$Session, c("T4" = "T4_C1")) 
-  columnannotations$Session <- revalue(columnannotations$Session, c("T5" = "T5_C2")) 
-  columnannotations$Session <- revalue(columnannotations$Session, c("T6" = "T6_C3")) 
-  columnannotations$column <- NULL
-  return(columnannotations)
-}
-
-## correlation heatmat ----
-makecorrelationheatmap <- function(data, APAgroup, clusterTF){
-  dataslim <- data %>% filter(APA==APAgroup)
-  datacols <- dataslim[c(19:59)];
-  cormat <- cor(datacols);
-  plot <- pheatmap(cormat, 
-                   show_colnames=FALSE, show_rownames=TRUE, border_color ="grey60", 
-                   main=APAgroup, cluster_rows = clusterTF, cluster_cols = clusterTF)
-  return(plot)         
-} 
 
 ## PCA ----
 makelongdata <- function(data){
