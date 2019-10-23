@@ -1,14 +1,3 @@
-theme_ms <- function () { 
-  theme_classic(base_size = 7) +
-    theme(
-      panel.grid.major  = element_blank(),  # remove major gridlines
-      panel.grid.minor  = element_blank(),  # remove minor gridlines
-      plot.title = element_text(hjust = 0.5, face = "bold"), # center & bold 
-      legend.text=element_text(size=4)
-    )
-}
-
-
 ## PCA ----
 
 makepcadf <- function(data){

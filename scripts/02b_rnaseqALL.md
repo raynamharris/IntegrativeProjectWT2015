@@ -12,19 +12,19 @@ The figures made from this script were compiled in Adobe.
     library(magrittr) ## to use the weird pipe
     library(ggrepel) ## for labeling volcano plot
     library(stringr) ## for uppercase gene names
-    library(car)
-    library("RColorBrewer") 
+    library(car) # stats
+    library(RColorBrewer)  # colors
+    library(Rtsne) # for tSNE
 
     library(BiocParallel)
     register(MulticoreParam(6))
-
 
     ## load functions 
     source("figureoptions.R")
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = F)
+    knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = T)
 
 Design
 ------
@@ -47,32 +47,6 @@ The two two catagorical variables are
     ##  conflict.yoked  :12   CA3:13  
     ##  standard.trained: 9   DG :16  
     ##  standard.yoked  : 9
-
-    totalCounts <- colSums(countData)
-    totalCounts
-
-    ## 143A-CA3-1  143A-DG-1 143B-CA1-1  143B-DG-1 143C-CA1-1 143D-CA1-3 
-    ##    3327867    5279392    1719498    2085031    2213452    1091672 
-    ##  143D-DG-3 144A-CA1-2 144A-CA3-2  144A-DG-2 144B-CA1-1 144B-CA3-1 
-    ##    1043885    2980775     421165    3210030    2555909    1027388 
-    ## 144C-CA1-2 144C-CA3-2  144C-DG-2 144D-CA3-2  144D-DG-2 145A-CA1-2 
-    ##    3298825    1238998    2224182    2323243    4691568    4680960 
-    ## 145A-CA3-2  145A-DG-2 145B-CA1-1  145B-DG-1 146A-CA1-2 146A-CA3-2 
-    ##     345619    1435833    2020114    1509310    1715282    2756300 
-    ##  146A-DG-2 146B-CA1-2 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 
-    ##    1201333    1063417    2144771     116106    1360004     492145 
-    ## 146D-CA1-3 146D-CA3-3  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 
-    ##     391369    2994536      90417    3072308    5754581    4350647 
-    ## 147D-CA3-1  147D-DG-1 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 
-    ##    4624995   11700703    5260906    2676397    4019062     337174 
-    ## 148B-CA3-4  148B-DG-4 
-    ##    3486840     798668
-
-    ### on average 1 million gene counts per sample 
-    summary((colSums(countData)/1000000))
-
-    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-    ##  0.09042  1.08461  2.17911  2.52574  3.30608 11.70070
 
     dds <- DESeqDataSetFromMatrix(countData = countData,
                                   colData = colData,
@@ -540,7 +514,7 @@ lots of useful info to a df for downstream dataviz.
 
     df <- as.data.frame(colData(dds)[,c("treatment", "subfield")]) ## matrix to df
     rownames(df) <- names(countData)
-    levels(df$treatment) <- c("standard yoked","standard trained",  "conflict yoked","conflict trained")
+    levels(df$treatment) <- c("standard yoked", "standard trained",  "conflict yoked","conflict trained")
 
 
     DEGes <- as.matrix(DEGes) 
@@ -554,7 +528,7 @@ lots of useful info to a df for downstream dataviz.
              treeheight_row = 0, treeheight_col = 25,
              annotation_row = NA, 
              annotation_legend = TRUE,
-             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             annotation_names_row = FALSE, annotation_names_col = TRUE,
              fontsize = 8, 
              border_color = NA ,
              color = viridis(80),
@@ -582,6 +556,40 @@ lots of useful info to a df for downstream dataviz.
              breaks=myBreaks,
              clustering_distance_cols="correlation", 
              filename = "../figures/02b_RNAseqALL/pheatmap1.pdf"
+             )
+
+    pheatmap(DEGes, show_colnames=F, show_rownames = T,
+             annotation_col=df, 
+             annotation_colors = pheatmapcolors,
+             treeheight_row = 0, treeheight_col = 25,
+             annotation_row = NA, 
+             annotation_legend = TRUE,
+             annotation_names_row = FALSE, annotation_names_col = TRUE,
+             fontsize = 8, 
+             border_color = NA ,
+             color = viridis(80),
+             cellwidth = 6, 
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation" 
+             )
+
+    pheatmap(DEGes, show_colnames=F, show_rownames = T,
+             annotation_col=df, annotation_colors = pheatmapcolors, 
+             annotation_row = NA, 
+             annotation_legend = F,
+             annotation_names_row = FALSE, 
+             annotation_names_col = FALSE,
+             treeheight_row = 0, treeheight_col = 10,
+             fontsize = 4, 
+             border_color = NA ,
+             color = viridis(80),
+             height = 5, 
+             width = 2.5,
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation", 
+             filename = "../figures/02b_RNAseqALL/pheatmap2.pdf"
              )
 
 Principle component analysis
@@ -642,67 +650,13 @@ Principle component analysis
     ## CA1-DG   12.48060  11.25520  13.70600     0
     ## CA1-CA3  24.70229  23.41029  25.99430     0
 
-    summary(aov(PC3 ~ subfield * treatment, data=pcadata)) 
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)  
-    ## subfield            2   19.9    9.95   0.274 0.7618  
-    ## treatment           3  374.6  124.86   3.445 0.0281 *
-    ## subfield:treatment  6  173.3   28.88   0.797 0.5794  
-    ## Residuals          32 1159.9   36.25                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    TukeyHSD((aov(PC3 ~ subfield, data=pcadata)), which = "subfield") 
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC3 ~ subfield, data = pcadata)
-    ## 
-    ## $subfield
-    ##               diff       lwr      upr     p adj
-    ## CA3-DG  -1.6102498 -7.470189 4.249689 0.7831311
-    ## CA1-DG  -1.0834889 -6.723773 4.556796 0.8870184
-    ## CA1-CA3  0.5267609 -5.420096 6.473618 0.9747645
-
-    summary(aov(PC4 ~ subfield * treatment, data=pcadata)) 
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)   
-    ## subfield            2    1.9    0.95   0.087 0.9167   
-    ## treatment           3  156.8   52.28   4.780 0.0073 **
-    ## subfield:treatment  6  150.9   25.16   2.300 0.0586 . 
-    ## Residuals          32  350.0   10.94                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-    summary(aov(PC5 ~ subfield * treatment, data=pcadata)) 
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)
-    ## subfield            2   0.83   0.416   0.043  0.958
-    ## treatment           3  64.30  21.432   2.202  0.107
-    ## subfield:treatment  6  46.84   7.806   0.802  0.576
-    ## Residuals          32 311.42   9.732
-
-    summary(aov(PC6 ~ subfield * treatment, data=pcadata)) 
-
-    ##                    Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## subfield            2   2.31   1.154   0.173 0.84179   
-    ## treatment           3  27.88   9.293   1.395 0.26232   
-    ## subfield:treatment  6 147.14  24.524   3.681 0.00682 **
-    ## Residuals          32 213.22   6.663                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
     PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
         geom_point(size=2, aes(shape=treatment), alpha = 0.8) +
         xlab(paste0("PC1: ", percentVar[1],"%")) +
         ylab(paste0("PC2: ", percentVar[2],"%")) +
         scale_colour_manual(values=c(colorvalsubfield))+ 
-       theme_classic(base_size = 8)  +
-          theme(legend.title=element_blank(), 
-                legend.position=c(0.8,0.825),
-                legend.text = element_text(size=5),
-                legend.key.size = unit(0, 'lines')) +
+       theme_ms()  +
+          theme(legend.position= "none") +
         scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield)) +
       labs(color = "subfield", shape = "treatment") +
       guides(color = FALSE)
@@ -710,30 +664,51 @@ Principle component analysis
 
 ![](../figures/02b_RNAseqAll/pca-1.png)
 
-    pdf(file="../figures/02b_RNAseqALL/PCA12.pdf", width=2.75, height=2.5)
-    plot(PCA12)
+tSNE
+----
+
+    vsddf <- as.data.frame(assay(vsd))
+    vsddf <- as.data.frame(t(vsddf))
+
+    euclidist <- dist(vsddf) # euclidean distances between the rows
+    tsne_model <- Rtsne(euclidist, check_duplicates=FALSE, pca=TRUE, perplexity=2, theta=0.5, dims=2)
+
+    tsne_df = as.data.frame(tsne_model$Y) 
+    tsne_df <- cbind(colData, tsne_df)
+    tsne_df$subfield <- factor(tsne_df$subfield, levels = c("DG", "CA3", "CA1"))
+    tsne_df$treatment <- factor(tsne_df$treatment, levels = c("standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained"))
+
+    tnseplot  <- ggplot(tsne_df, aes(x = V1, y = V2, shape = treatment, color = subfield)) +
+      geom_point(size = 2) +
+      scale_color_manual(guide = FALSE, values = c("#d95f02","#1b9e77", "#7570b3")) +
+      theme_ms()  +
+      theme(legend.position = "bottom",
+            legend.title = element_blank(),
+            legend.spacing.x = unit(0.01, 'cm'),
+            legend.spacing.y = unit(0.01, 'cm')) +
+      labs(x = "tSNE 1", y = "tSNE 2") +
+      scale_shape_manual(aes(colour=colorvalsubfield), values=c(1, 16, 0, 15)) 
+    tnseplot
+
+![](../figures/02b_RNAseqAll/tSNE-1.png)
+
+pca + tsne
+----------
+
+    mylegend <- get_legend(tnseplot)
+
+    top <- plot_grid(PCA12, tnseplot + theme(legend.position = "none"), nrow = 1)
+    topl <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
+    topl
+
+![](../figures/02b_RNAseqAll/PCA-tSNE-1.png)
+
+    pdf(file="../figures/02b_RNAseqALL/PCA-tSNE.pdf", width=4, height=2.5)
+    plot(topl)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
-
-    PCA42 <- ggplot(pcadata, aes(pcadata$PC4, pcadata$PC2)) +
-        geom_point(size=2, aes(colour=subfield, shape=treatment), alpha = 0.8) +
-        xlab(paste0("PC4: ", percentVar[4],"%")) +
-        ylab(paste0("PC2: ", percentVar[2],"%")) +
-        scale_colour_manual(values=c(colorvalsubfield))+ 
-       theme_bw(base_size = 12)  +
-        theme(legend.title=element_blank()) +
-        scale_shape_manual(aes(colour=colorvalsubfield), values=c(1, 16, 0, 15)) +
-      guides(color = guide_legend(order=1),
-             shape = guide_legend(order=2)) 
-    PCA42
-
-![](../figures/02b_RNAseqAll/pca-2.png)
-
-    plot_grid(PCA12, PCA42 ,nrow = 2)
-
-![](../figures/02b_RNAseqAll/pca-3.png)
 
 Volcanos plots and and gene lists
 ---------------------------------
@@ -774,16 +749,16 @@ Volcanos plots and and gene lists
     volcanoplot <- function(mydata, mycolors, mybreaks){
       
       myvolcano <- mydata %>%
-        dplyr::filter(direction != "NS") %>%
+        #dplyr::filter(direction != "NS") %>%
         ggplot(aes(x = lfc, y = logp)) + 
-      geom_point(aes(color = direction), size = 1.5, alpha = 0.5, na.rm = T) + 
+      geom_point(aes(color = direction), alpha = 0.5, na.rm = T) + 
       scale_color_manual(values = mycolors,
                          breaks = mybreaks,
                          name = "higher in") + 
-      theme_cowplot(font_size = 12, line_size = 0.25) +
-      geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
-      #scale_y_continuous(limits=c(0, 60)) +
-      #scale_x_continuous(limits=c(-10, 10)) +
+      theme_ms() +
+      #geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
+      scale_y_continuous(limits=c(0, 60)) +
+      scale_x_continuous(limits=c(-10, 10)) +
       xlab(paste0("log fold difference")) +
       ylab(paste0("log10 p-value")) +       
       theme(panel.grid.minor=element_blank(),
@@ -805,7 +780,7 @@ Volcanos plots and and gene lists
 
 ![](../figures/02b_RNAseqAll/volcanos-1.png)
 
-    pdf(file="../figures/02b_RNAseqALL/volcanoplots.pdf", width=5, height=2)
+    pdf(file="../figures/02b_RNAseqALL/volcanoplots.pdf", width=6.69, height=2)
     plot(myvolcanoplots)
     dev.off()
 
