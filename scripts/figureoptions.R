@@ -68,6 +68,16 @@ pheatmapcolors = list(
               'conflict yoked' = (values=c("#969696")),
             'conflict trained' = (values=c("#f4a582"))))
 
+pheatmapcolors2 = list(
+  combinedgroups = c(yoked = "black",
+                     trained = "red"),
+  subfield = c(DG = "#d95f02"))
+
+pheatmapcolors3 = list(
+  combinedgroups = c(yoked = "black",
+                     trained = "red"),
+  subfield = c(CA1 = "#1b9e77"))
+
 # for subfield volcano plots
 
 trainedcolors <-  c( "standard.yoked" = "#404040", "standard.trained" = "#ca0020")

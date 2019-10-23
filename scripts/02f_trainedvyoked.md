@@ -2,6 +2,8 @@
     library(forcats)
     library(cowplot) ## for some easy to use themes
     library(DESeq2) ## for gene expression analysis
+    library(pheatmap)
+    library(viridis)
 
     library(BiocParallel)
     register(MulticoreParam(6))
@@ -332,10 +334,10 @@
       volcano <- data %>%
         ggplot(aes(x = lfc, y = logpadj)) + 
         geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-          theme_minimal(base_size = 8) +
+          theme_ms() +
         scale_color_manual(values = c("grey", "red", "black"))  + 
-        #ylim(c(0,7)) +
-        #xlim(c(-10,10)) +
+        ylim(c(0,7)) +
+        xlim(c(-10,10)) +
         labs(x = "lfc", y = "-log10(p)")  +
         theme(panel.grid.minor=element_blank(),
                     panel.grid.major=element_blank(),
@@ -355,3 +357,146 @@
     plot_grid(a,b, labels = c("DG", "CA1"))
 
 ![](../figures/02f_trainedvyoked/volcanos-3.png)
+
+    resvals2 <- function(mydds, contrastvector, mypval){
+      res <- results(mydds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = T)
+      sumpvalue <- sum(res$pvalue < mypval, na.rm = TRUE)
+      #print(sumpvalue)
+      sumpadj <- sum(res$padj < mypval, na.rm = TRUE)
+      print(sumpadj)
+      vals <- cbind(res$pvalue, res$padj)
+      pvalcolname <- as.character(paste("pval",contrastvector[1],contrastvector[2],contrastvector[3], sep=""))
+      padjcolname <- as.character(paste("padj",contrastvector[1],contrastvector[2],contrastvector[3], sep=""))
+      colnames(vals) <- c(pvalcolname, padjcolname)
+      return(vals)
+    }
+
+    contrast1 <- resvals2(DGdds, contrastvector = c("combinedgroups", "trained", "yoked"), mypval = 0.1) # 3060
+
+    ## [1] 214
+
+    contrast2 <- resvals2(CA1dds, contrastvector = c("combinedgroups", "trained", "yoked"), mypval = 0.1) # 2388
+
+    ## [1] 16
+
+    ## DG 
+    DEGes <- assay(vst(DGdds))
+    DEGes <- cbind(DEGes, contrast1)
+    DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
+    DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+    DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
+    DEGes$padjmin <- with(DEGes, pmin(padjcombinedgroupstrainedyoked)) 
+    DEGes <- DEGes %>% filter(padjmin < 0.05)
+    rownames(DEGes) <- DEGes$rownames
+    drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
+    DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
+    DEGes <- as.matrix(DEGes)
+    DEGes <- DEGes - rowMeans(DEGes)
+    DEGes <- as.matrix(DEGes)
+    paletteLength <- 10
+    myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+                  seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+    df <- as.data.frame(colData(DGdds)[,c("combinedgroups")]) ## matrix to df
+    rownames(df) <- row.names(colData(DGdds))
+    names(df) <- c("combinedgroups")
+    df$subfield <- "DG"
+    levels(df$combinedgroups) <- c("yoked", "trained")
+
+    pheatmap(DEGes, show_colnames=F, show_rownames = T,
+             annotation_col=df, 
+             annotation_colors = pheatmapcolors2,
+             treeheight_row = 0, treeheight_col = 25,
+             annotation_row = NA, 
+             annotation_legend = TRUE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             fontsize = 8, 
+             border_color = NA ,
+             color = viridis(10),
+             cellwidth = 6, 
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation" 
+             )
+
+![](../figures/02f_trainedvyoked/pheatmap-1.png)
+
+    pheatmap(DEGes, show_colnames=F, show_rownames = T,
+             annotation_col=df, 
+             annotation_colors = pheatmapcolors2,
+             treeheight_row = 25, treeheight_col = 12.5,
+             annotation_row = NA, 
+             annotation_legend = TRUE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             fontsize = 3, 
+             border_color = NA ,
+             color = viridis(10),
+             cellwidth = 6, 
+             cluster_rows = FALSE,
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation", 
+             height = 7, 
+             width = 2.5,
+             filename = "../figures/02f_trainedvyoked/pheatmap-DG.pdf"
+             )
+
+
+    ### CA1
+
+    DEGes <- assay(vst(CA1dds))
+    DEGes <- cbind(DEGes, contrast2)
+    DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
+    DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
+    DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
+    DEGes$padjmin <- with(DEGes, pmin(padjcombinedgroupstrainedyoked)) 
+    DEGes <- DEGes %>% filter(padjmin < 0.1)
+    rownames(DEGes) <- DEGes$rownames
+    drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
+    DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
+    DEGes <- as.matrix(DEGes)
+    DEGes <- DEGes - rowMeans(DEGes)
+    DEGes <- as.matrix(DEGes) 
+    paletteLength <- 10
+    myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
+                  seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
+    df <- as.data.frame(colData(CA1dds)[,c("combinedgroups")]) ## matrix to df
+    rownames(df) <- row.names(colData(CA1dds))
+    names(df) <- c("combinedgroups")
+    df$subfield <- "CA1"
+    levels(df$combinedgroups) <- c("yoked", "trained")
+
+    pheatmap(DEGes, show_colnames=F, show_rownames = T,
+             annotation_col=df, 
+             annotation_colors = pheatmapcolors3,
+             treeheight_row = 0, treeheight_col = 25,
+             annotation_row = NA, 
+             annotation_legend = TRUE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             fontsize = 8, 
+             border_color = NA ,
+             color = viridis(10),
+             cellwidth = 6, 
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation" 
+             )
+
+    pheatmap(DEGes, show_colnames=F, show_rownames = T,
+             annotation_col=df, 
+             annotation_colors = pheatmapcolors3,
+             treeheight_row = 25, treeheight_col = 12.5,
+             annotation_row = NA, 
+             annotation_legend = TRUE,
+             annotation_names_row = FALSE, annotation_names_col = FALSE,
+             fontsize = 3, 
+             border_color = NA ,
+             color = viridis(10),
+             cellwidth = 6, 
+             cluster_rows = FALSE,
+             clustering_method="average",
+             breaks=myBreaks,
+             clustering_distance_cols="correlation", 
+             height = 2.5, 
+             width = 2.5,
+             filename = "../figures/02f_trainedvyoked/pheatmap-CA1.pdf"
+             )
