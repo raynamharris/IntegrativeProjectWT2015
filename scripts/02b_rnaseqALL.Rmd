@@ -456,7 +456,7 @@ Then, I checked to see how many of the markers that Cembrowski found to be enric
 
 ```{r barplot}
 mybarplot <- read.csv("../data/02h_markers.csv")
-head(mybarplot)
+mybarplot
 
 p <- ggplot(data=mybarplot, aes(x=comparison, y=correct, fill = marker)) +
   geom_bar(stat="identity", position=position_dodge()) +
@@ -478,8 +478,8 @@ p
 
 
 ```{r volcanobar}
-
-myvolcanoplots <- plot_grid(d,e + labs(y = NULL),f + labs(y = NULL),p, nrow = 1)
+myvolcanoplots <- plot_grid(d,e + labs(y = NULL),f + labs(y = NULL),p, nrow = 1,
+                            rel_widths = c(0.275,0.225,0.225,0.275))
 myvolcanoplots
 
 pdf(file="../figures/02b_RNAseqALL/volcanoplots.pdf", width=6.69, height=2.5)

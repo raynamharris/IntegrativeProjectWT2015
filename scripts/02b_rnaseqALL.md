@@ -980,7 +980,7 @@ are the results:
 </table>
 
     mybarplot <- read.csv("../data/02h_markers.csv")
-    head(mybarplot)
+    mybarplot
 
     ##   comparison marker correct
     ## 1     CA1vDG    CA1    0.83
@@ -1009,7 +1009,8 @@ are the results:
 
 ![](../figures/02b_RNAseqAll/barplot-1.png)
 
-    myvolcanoplots <- plot_grid(d,e + labs(y = NULL),f + labs(y = NULL),p, nrow = 1)
+    myvolcanoplots <- plot_grid(d,e + labs(y = NULL),f + labs(y = NULL),p, nrow = 1,
+                                rel_widths = c(0.275,0.225,0.225,0.275))
     myvolcanoplots
 
 ![](../figures/02b_RNAseqAll/volcanobar-1.png)
