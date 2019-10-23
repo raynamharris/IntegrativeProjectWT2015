@@ -54,6 +54,11 @@ behavior <- behavior %>%
          SdevSpeedArena:Speed2) %>%
   arrange(ID) 
 
+## rename columns 
+colnames(behavior)[colnames(behavior)=="pTimeTarget"] <- "pTimeShockZone"
+colnames(behavior)[colnames(behavior)=="TimeTarget"] <- "TimeShockZone"
+
+
 # set levels
 behavior$treatment <- factor(behavior$treatment, levels = c("standard.yoked", "standard.trained",
                                                           "conflict.yoked", "conflict.trained"))
@@ -111,7 +116,7 @@ a <- ggplot(realnumshocks, aes(x = treatment, y = sums, fill = treatment)) +
   theme_ms() +
   scale_fill_manual(values = colorvalAPA00,
                     name = NULL) +
-  labs(x = "treatment", subtitle = " ", y = "NumShock") +
+  labs(x = "treatment", subtitle = " ", y = "Total Shocks") +
     theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
           legend.position = "none") 
 a
@@ -137,8 +142,8 @@ dfc <- behavior %>%
 
 dfd <- behavior %>%
   dplyr::group_by(treatment, TrainSessionComboNum) %>%
-  dplyr::summarise(m = mean(pTimeTarget), 
-                   se = sd(pTimeTarget)/sqrt(length(pTimeTarget))) %>%
+  dplyr::summarise(m = mean(pTimeShockZone), 
+                   se = sd(pTimeShockZone)/sqrt(length(pTimeShockZone))) %>%
   dplyr::mutate(measure = "Proportion of time in target zone")
 
 fourmeasures <- rbind(dfb,dfc,dfd)
@@ -149,7 +154,7 @@ head(fourmeasures)
 
 b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
 c <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
-d <- meansdplots(dfd, "pTimeTarget", c(0,.12,.25,.37), c(0, .37 ))
+d <- meansdplots(dfd, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
 
 fourplots <- plot_grid(a + theme(legend.position="none"),
            b + theme(legend.position="none"),
@@ -174,8 +179,19 @@ retention <- behavior %>% filter(TrainSessionCombo %in% c("Retention") ) %>% dro
 
 pcadf <- makepcadf(behavior)
 
+pcadfretention <- pcadf %>% filter(TrainSessionComboNum == 9) %>% 
+  group_by(treatment) %>% 
+  dplyr::summarize(avePC1 = mean(PC1),
+                   avePC2 = mean(PC2),
+                   sePC1 = sd(PC1)/sqrt(length(PC1)),
+                   sePC2 = sd(PC2)/sqrt(length(PC2)))
+pcadfretention
+
+
 e <- ggplot(pcadf, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
-  geom_point(aes(alpha = TrainSessionComboNum)) + 
+
+  geom_point(data = pcadf, aes(alpha = TrainSessionComboNum)) + 
+  geom_point(data = pcadfretention, aes(x = avePC1, y = avePC2), size = 4) +
   theme_ms() +
     scale_fill_manual(guide = 'none',values = colorvalAPA00) +
   scale_color_manual(guide = 'none',values = colorvalAPA00) +
@@ -186,6 +202,8 @@ e <- ggplot(pcadf, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
   labs(y = "PC2: 9.7% variance explained", x = "PC1: 35.7% variance explained",
        subtitle = " ") 
 e
+
+
 
 # get contributions
 df <- behavior %>% select(SdevSpeedArena:Speed2)

@@ -53,6 +53,11 @@ mice.
              SdevSpeedArena:Speed2) %>%
       arrange(ID) 
 
+    ## rename columns 
+    colnames(behavior)[colnames(behavior)=="pTimeTarget"] <- "pTimeShockZone"
+    colnames(behavior)[colnames(behavior)=="TimeTarget"] <- "TimeShockZone"
+
+
     # set levels
     behavior$treatment <- factor(behavior$treatment, levels = c("standard.yoked", "standard.trained",
                                                               "conflict.yoked", "conflict.trained"))
@@ -99,13 +104,13 @@ mice.
     ## 4           0.17        3          256      447.80       12.74
     ## 5           0.06        1          432      599.97       15.66
     ## 6           0.56       13          447       25.90        0.75
-    ##   Speed2ndEntr TimeTarget pTimeTarget pTimeCCW pTimeOPP pTimeCW
-    ## 1         7.85     94.665      0.2277   0.2583   0.1788  0.3352
-    ## 2         6.53      8.433      0.0211   0.6961   0.2049  0.0779
-    ## 3         3.73      3.366      0.0092   0.6413   0.3245  0.0250
-    ## 4         1.56      2.498      0.0069   0.5790   0.4018  0.0123
-    ## 5        -1.00      1.067      0.0026   0.2945   0.6300  0.0729
-    ## 6        16.19     17.735      0.0339   0.0195   0.1561  0.7905
+    ##   Speed2ndEntr TimeShockZone pTimeShockZone pTimeCCW pTimeOPP pTimeCW
+    ## 1         7.85        94.665         0.2277   0.2583   0.1788  0.3352
+    ## 2         6.53         8.433         0.0211   0.6961   0.2049  0.0779
+    ## 3         3.73         3.366         0.0092   0.6413   0.3245  0.0250
+    ## 4         1.56         2.498         0.0069   0.5790   0.4018  0.0123
+    ## 5        -1.00         1.067         0.0026   0.2945   0.6300  0.0729
+    ## 6        16.19        17.735         0.0339   0.0195   0.1561  0.7905
     ##   RayleigLength RayleigAngle PolarAvgVal PolarSdVal PolarMinVal
     ## 1          0.11       330.67      163.83     106.39      0.0157
     ## 2          0.65       112.66      198.80      58.56      0.0004
@@ -223,7 +228,7 @@ standard.trained or conflict.trained trained partner.
       theme_ms() +
       scale_fill_manual(values = colorvalAPA00,
                         name = NULL) +
-      labs(x = "treatment", subtitle = " ", y = "NumShock") +
+      labs(x = "treatment", subtitle = " ", y = "Total Shocks") +
         theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
               legend.position = "none") 
     a
@@ -252,8 +257,8 @@ titles, y labels and limits.
 
     dfd <- behavior %>%
       dplyr::group_by(treatment, TrainSessionComboNum) %>%
-      dplyr::summarise(m = mean(pTimeTarget), 
-                       se = sd(pTimeTarget)/sqrt(length(pTimeTarget))) %>%
+      dplyr::summarise(m = mean(pTimeShockZone), 
+                       se = sd(pTimeShockZone)/sqrt(length(pTimeShockZone))) %>%
       dplyr::mutate(measure = "Proportion of time in target zone")
 
     fourmeasures <- rbind(dfb,dfc,dfd)
@@ -275,7 +280,7 @@ titles, y labels and limits.
 
     b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
     c <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
-    d <- meansdplots(dfd, "pTimeTarget", c(0,.12,.25,.37), c(0, .37 ))
+    d <- meansdplots(dfd, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
 
     fourplots <- plot_grid(a + theme(legend.position="none"),
                b + theme(legend.position="none"),
@@ -298,8 +303,26 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
     pcadf <- makepcadf(behavior)
 
+    pcadfretention <- pcadf %>% filter(TrainSessionComboNum == 9) %>% 
+      group_by(treatment) %>% 
+      dplyr::summarize(avePC1 = mean(PC1),
+                       avePC2 = mean(PC2),
+                       sePC1 = sd(PC1)/sqrt(length(PC1)),
+                       sePC2 = sd(PC2)/sqrt(length(PC2)))
+    pcadfretention
+
+    ## # A tibble: 4 x 5
+    ##   treatment        avePC1  avePC2 sePC1 sePC2
+    ##   <fct>             <dbl>   <dbl> <dbl> <dbl>
+    ## 1 standard.yoked     3.50 -2.19   0.452 0.594
+    ## 2 standard.trained  -4.06 -0.645  0.982 0.292
+    ## 3 conflict.yoked     2.50 -1.14   0.508 0.534
+    ## 4 conflict.trained  -2.28 -0.0208 1.14  0.604
+
     e <- ggplot(pcadf, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
-      geom_point(aes(alpha = TrainSessionComboNum)) + 
+
+      geom_point(data = pcadf, aes(alpha = TrainSessionComboNum)) + 
+      geom_point(data = pcadfretention, aes(x = avePC1, y = avePC2), size = 4) +
       theme_ms() +
         scale_fill_manual(guide = 'none',values = colorvalAPA00) +
       scale_color_manual(guide = 'none',values = colorvalAPA00) +
