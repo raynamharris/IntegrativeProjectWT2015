@@ -346,11 +346,11 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
     # Contributions of variables to PC1
     f <- fviz_contrib_rmh(res.pca, choice = "var", axes = 1, top = 8, 
-                     ylab = "PC1 contributions (%)", xlab = "estimates of memory", subtitle = " ") +
+                     ylab = "PC1 % contributions", xlab = "estimates of memory", subtitle = " ") +
       theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
     # Contributions of variables to PC2
     g <- fviz_contrib_rmh(res.pca, choice = "var", axes = 2, top = 8, 
-                     ylab = "PC2 contributions (%)" , xlab = "estimates of activity", subtitle = " ") +
+                     ylab = "PC2 % contributions" , xlab = "estimates of activity", subtitle = " ") +
       theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
 
     threeplots <- plot_grid(e,f,g, labels = c("(e)", "(f)", "(g)"),
