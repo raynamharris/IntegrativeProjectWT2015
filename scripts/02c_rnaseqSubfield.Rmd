@@ -80,7 +80,7 @@ res_summary_subfield(CA1dds, c("APA2", "conflict.yoked", "standard.yoked"))
 
 ## Volcano plots
 
-```{r volcanos}
+```{r volcanos, fig.width=6.65, fig.height=4}
 plot.volcano <- function(mydds, whichfactor, up, down, mycolors, mysubfield){
   res <- results(mydds, contrast =c(whichfactor, up, down),
                  independentFiltering = T, alpha = 0.1)
