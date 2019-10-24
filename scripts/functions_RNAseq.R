@@ -12,7 +12,7 @@ plot.tSNE.trained <- function(mydds, myperplexity, mysubfield){
   tsne_df$subfield <- factor(tsne_df$subfield, levels = c("DG", "CA3", "CA1"))
   tsne_df$combinedgroups <- factor(tsne_df$combinedgroups, levels = c("yoked", "trained"))
   
-  tnseplot  <- ggplot(tsne_df, aes(x = V1, y = V2, color = combinedgroups)) +
+  tnseplot  <- ggplot(tsne_df, aes(x = V1, y = V2, color = combinedgroups, label = Mouse)) +
     geom_point(size = 2) +
     scale_color_manual(guide = FALSE, values = c("black","darkred")) +
     theme_ms()  +
@@ -20,9 +20,11 @@ plot.tSNE.trained <- function(mydds, myperplexity, mysubfield){
           legend.title = element_blank(),
           legend.spacing.x = unit(0.01, 'cm'),
           legend.spacing.y = unit(0.01, 'cm')) +
-    labs(x = "tSNE 1", y = "tSNE 2") 
+    labs(x = "tSNE 1", y = "tSNE 2") +
+    geom_text(vjust = -0.1)
   return(tnseplot)
 }
+
 
 
 

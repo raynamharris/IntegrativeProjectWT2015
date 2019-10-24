@@ -106,7 +106,7 @@ downCA1
 
 
 
-```{r pheatmap}
+```{r pheatmap-DG}
 ## DG 
 DEGes <- assay(vst(DGdds))
 DEGes <- cbind(DEGes, contrast1)
@@ -122,6 +122,10 @@ DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
 DEGes <- as.matrix(DEGes)
 DEGes <- DEGes - rowMeans(DEGes)
 DEGes <- as.matrix(DEGes)
+
+
+write.csv(DEGes, "../data/02f_DG_DEGs_vsd.csv")
+
 paletteLength <- 10
 myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
@@ -167,7 +171,9 @@ pheatmap(DEGes, show_colnames=F, show_rownames = T,
          width = 2.5,
          filename = "../figures/02f_trainedvyoked/pheatmap-DG.pdf"
          )
+```
 
+```{r pheatmap-CA1}
 
 ### CA1
 
@@ -237,4 +243,5 @@ a <- plot.tSNE.trained(DGdds, 2, "DG")
 b <- plot.tSNE.trained(CA1dds, 2, "CA1")
 
 plot_grid(a,b)
+a
 ```

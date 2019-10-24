@@ -7,6 +7,7 @@ output: md_document
 library(tidyverse) 
 library(corrplot)
 library(cowplot)
+library(corrr)
 
 knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = F)
 ```    
@@ -16,223 +17,63 @@ For this analysis, I want to explor correlations between a behavioral measure an
 # import behavior data, create mouse id, select relvant samples
 behav <- read.csv("../data/01a_behavior.csv") 
 behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
-behav <- behav %>% filter(APA2 %in% c("conflict-trained", "standard-trained"),
-                                  TrainSession == "Retention") %>% 
-                           select(mouse,Time1stEntr,pTimeTarget) 
+behav <- behav %>% filter(treatment %in% c("conflict.trained", "standard.trained"),
+                                  TrainSessionCombo == "Retention") %>% 
+                           select(mouse,Time1stEntr,pTimeShockZone) 
 head(behav)
 ```
 ```{r pca}
-pcadata <- read_csv("../data/01a_scoresdf.csv") %>%
-  filter(APA2 %in% c("conflict trained", "standard trained")) %>%
+pcadata <- read_csv("../data/01a_pcadf.csv") %>%
+  filter(treatment %in% c("conflict.trained", "standard.trained"),
+         TrainSessionComboNum == 9) %>%
   select(ID,PC1,PC2) 
 pcadata$mouse <- sapply(strsplit(as.character(pcadata$ID),"15"), "[", 2)
 pcadata$ID <- NULL
 head(pcadata)
 ```
 
-
-```{r vsd-all}
-# import col Data 
-a.colData <- read.csv("../data/02a_colData.csv", header = T)
-a.colData$mouse <- sapply(strsplit(as.character(a.colData$RNAseqID),"-"), "[", 1)
-
-# import varance stabilized data and fix sample names
-DGvsd <- read.csv("../data/02c_DGvsd.csv", stringsAsFactors = F, check.names = F, row.names = 1) 
-
-CA3vsd <- read.csv("../data/02c_CA3vsd.csv", stringsAsFactors = F, check.names = F, row.names = 1) 
-
-CA1vsd <- read.csv("../data/02c_CA1vsd.csv", stringsAsFactors = F, check.names = F, row.names = 1) 
-
-
-vsdbehav <- function(mysubfield, myvsd, whichbehaviors){
-  
-  # subset data by subfield and training and create list of samples for substting
-  mycols <- a.colData %>% 
-    filter(Punch == mysubfield, APA2 %in% c("conflict.trained", "standard.trained")) %>% 
-    droplevels()
-  trained <- mycols$mouse
-
-  #fix samples names to match animal names
-  names(myvsd) <- sapply(strsplit(names(myvsd),"-"), "[", 1)
-  
-  # keep only trained varance stabilized data
-  myvsd <- myvsd %>% select(trained)
-
-  # transform and set rownames
-  myvsd <- as.data.frame(t(myvsd))
-  myvsd$mouse <- row.names(myvsd)
-  
-  myvsdbeahv <- left_join(whichbehaviors, myvsd) %>% drop_na()
-  myvsdbeahv <- as.data.frame(myvsdbeahv)
-  row.names(myvsdbeahv) <- myvsdbeahv$mouse
-  myvsdbeahv$mouse <- NULL
-  #head(myvsdbeahv)
-  return(myvsdbeahv)
-}
-
-DGvsdbehav <- vsdbehav("DG", DGvsd, behav)
-CA3vsdbehav <- vsdbehav("CA1", CA1vsd, behav)
-CA1vsdbehav <- vsdbehav("CA1", CA1vsd, behav)
-
-DGvsdpcs <- vsdbehav("DG", DGvsd, pcadata)
-CA3vsdpcs <- vsdbehav("CA1", CA1vsd, pcadata)
-CA1vsdpcs <- vsdbehav("CA1", CA1vsd, pcadata)
-
-head(DGvsdpcs)
+```{r DEGs}
+DG_DEGs <- read.csv("../data/02f_DG_DEGs_vsd.csv", row.names = 1, check.names = F)
+DG_DEGs <- as.data.frame(t(DG_DEGs))
+DG_DEGs$sample <- row.names(DG_DEGs)
+DG_DEGs$mouse <- sapply(strsplit(as.character(DG_DEGs$sample),"\\-"), "[", 1)
+DG_DEGs <- DG_DEGs %>% select(mouse,`1190002N15RIK`:ZFP869)
 ```
 
-
-
-
-
-```{r vsd-candidates}
-# subset for sanes genes
-candidates <- c("Gria1", "Gria2", "Grin1", "Grin2a", "Grin2d",  "Prkcz" , "Prkci")
-
-vsdcandidates <- function(myvsd){
-  myvsd$mouse <- row.names(myvsd)
-  vsdCan <- myvsd %>% select(mouse,candidates)
-  vsdCan <- left_join(behav,vsdCan) %>% drop_na()
-  vsdCan <- as.data.frame(vsdCan)
-  vsdCan <- vsdCan %>% gather(gene, expression, Gria1:Prkci)
-  return(vsdCan)
-}
-
-DGcan <- vsdcandidates(DGvsdbehav)
-CA3can <- vsdcandidates(CA3vsdbehav)
-CA1can <- vsdcandidates(CA1vsdbehav)
-
-a <- ggplot(DGcan, aes(x = Time1stEntr, y = expression, color = gene)) + geom_point() + 
-  geom_smooth(method = "lm") + facet_wrap(~gene, scales = "free_y", nrow = 1) + 
-  theme_minimal(base_size = 8) +
-  theme(legend.position = "none",
-          panel.grid.minor=element_blank(),
-          panel.grid.major=element_blank()) + 
-  labs(subtitle = "DG", y = "variance stabilized expression", x = NULL) + 
-  scale_x_continuous(breaks = c(200,600))
-
-c <- ggplot(CA3can, aes(x = Time1stEntr, y = expression, color = gene)) + geom_point() + 
-    theme_minimal(base_size = 8) +
-  geom_smooth(method = "lm") + facet_wrap(~gene, scales = "free_y", nrow = 1)  + 
-  theme(legend.position = "none",
-          panel.grid.minor=element_blank(),
-          panel.grid.major=element_blank()) + 
-  labs(subtitle = "CA3", y = "variance stabilized expression", x = "Rention: Time to 1st entrance (s)") + 
-  scale_x_continuous(breaks = c(200,600))
-
-b <- ggplot(CA1can, aes(x = Time1stEntr, y = expression, color = gene)) + geom_point() + 
-    theme_minimal(base_size = 8) +
-  geom_smooth(method = "lm") + facet_wrap(~gene, scales = "free_y", nrow = 1)  + 
-  theme(legend.position = "none",
-          panel.grid.minor=element_blank(),
-          panel.grid.major=element_blank()) + 
-  labs(subtitle = "CA1", y = "variance stabilized expression", x = "Rention: Time to 1st entrance (s)") + 
-  scale_x_continuous(breaks = c(200,600))
-
-plot_grid(a,b, c, nrow = 3)
+```{r joining}
+DEGsPCA <- left_join(DG_DEGs, pcadata)
+DEGsPCAbeahv <- left_join(DEGsPCA, behav)
+DEGsPCAbeahv <- as.data.frame(DEGsPCAbeahv)
+row.names(DEGsPCAbeahv) <- DEGsPCAbeahv$mouse
+DEGsPCAbeahv$mouse <- NULL
+DEGsPCAbeahv <- as.matrix(DEGsPCAbeahv)
 ```
 
-```{r corrplot-behav}
-makecorMatrix <- function(myvsd, positivethreshold, negativethreshold){
-  M <- cor(myvsd)
-  print("done making corr matrix")
-  M <- as.data.frame(M)
-  print("done makin df")
-  M$rownames <- row.names(M)
-  Mslim <- M %>% filter(Time1stEntr > positivethreshold | Time1stEntr < negativethreshold)
-  print("done filtering")
-  row.names(Mslim) <- Mslim$rownames
-  colstokeep <- Mslim$rownames
-  Mslim <- Mslim %>% select(colstokeep)
-  Mslim <- as.matrix(Mslim)
-  return(Mslim)
-}
+```{r corrr}
+DGcor <- DEGsPCAbeahv %>% correlate() %>% rearrange() %>%  shave()
+DGcor
 
-DGcormat <- makecorMatrix(DGvsdbehav,  0.95, -0.95)
-CA1cormat <- makecorMatrix(CA1vsdbehav, 0.95, -0.95)
+DGcorSlim <- correlate(DEGsPCAbeahv) %>%  
+  focus(PC1,PC2,Time1stEntr, pTimeShockZone)  
 
-corrplot.mixed(DGcormat, number.cex = .7)
-corrplot.mixed(CA1cormat, number.cex = .7)
+DGcorarranged <- fashion(DGcorSlim) %>% arrange(desc(PC1))
+DGcorarranged
 ```
 
-```{r corrplot-PC1}
-makecorMatrixPCA <- function(myvsd, positivethreshold, negativethreshold){
-  M <- cor(myvsd)
-  print("done making corr matrix")
-  M <- as.data.frame(M)
-  print("done makin df")
-  M$rownames <- row.names(M)
-  Mslim <- M %>% filter(PC1 > positivethreshold | PC1 < negativethreshold)
-  print("done filtering")
-  row.names(Mslim) <- Mslim$rownames
-  colstokeep <- Mslim$rownames
-  Mslim <- Mslim %>% select(colstokeep)
-  Mslim <- as.matrix(Mslim)
-  return(Mslim)
-}
+```{r}
+DEGsPCAbeahvDf <- as.data.frame(DEGsPCAbeahv)
+a <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = NAF1, label = rownames(DEGsPCAbeahvDf))) +
+  geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
+b <- ggplot(DEGsPCAbeahvDf, aes(x = Time1stEntr, y = NAF1, label = rownames(DEGsPCAbeahvDf))) +
+  geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
 
-DGcormatPCA <- makecorMatrixPCA(DGvsdpcs,  0.9, -0.9)
-head(DGcormatPCA)
-corrplot.mixed(DGcormatPCA, number.cex = .7)
-
-CA1cormatPCA <- makecorMatrixPCA(CA1vsdpcs, 0.9, -0.9)
-head(DGcormatPCA)
-corrplot.mixed(CA1cormatPCA, number.cex = .7)
-```
+c <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = ARC, label = rownames(DEGsPCAbeahvDf))) +
+  geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
+d <- ggplot(DEGsPCAbeahvDf, aes(x = Time1stEntr, y = ARC, label = rownames(DEGsPCAbeahvDf))) +
+  geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
 
 
-```{r correlations}
-## DG
-aa <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Ccdc158)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-bb <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Dis3l)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-cc <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Uncx)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-dd <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Aard)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-ee <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Folh1)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-ff <- ggplot(DGvsdbehav, aes(x = Time1stEntr, y = Syt6)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
+a
+b
 
-abcdef2 <- plot_grid(aa,bb,dd,ee, nrow = 1)
-abcdef2
-
-ggplot(DGvsdpcs, aes(x = PC1, y = Ube2u)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-
-## CA1
-
-gg <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y = Pear1)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-hh <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y = Ppard)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-ii <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y = Rassf8)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-jj <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y = Ebf3)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-kk <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y = Gm12184)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-ll <- ggplot(CA1vsdbehav, aes(x = Time1stEntr, y =  Gm156 )) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-
-ghijkl2 <- plot_grid(gg,hh,ii,jj,kk,ll, nrow = 1)
-ghijkl2
-
-ggplot(CA1vsdpcs, aes(x = PC1, y = Agtr1b)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-ggplot(CA1vsdpcs, aes(x = PC1, y = Dusp15)) + geom_point() + geom_smooth(method = "lm",colour = "dark grey" ) + theme_classic(base_size = 8)
-
-```
-
-
-```{r behav}
-# retention plot
-behav <- read.csv("../data/01a_behavior.csv") 
-behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
-retention <- behav %>% filter(APA2 %in% c("conflict-trained", "standard-trained"),
-                                 TrainSession == "Retention") %>% 
-                           select(mouse,APA2, Time1stEntr, Path1stEntr, pTimeTarget)
-retention$APA2 <- factor(retention$APA2, levels = c("standard-trained", "conflict-trained"))
-
-a <- ggplot(retention, aes(y = Time1stEntr, x = APA2, color = APA2)) +
-  geom_point() + 
-  scale_color_manual(values = c("#ca0020", "#f4a582")) +
-  theme(legend.position = "none") +
-  labs(y = "reten. time to 1st entr. (s)", x = NULL)
-
-b <- ggplot(retention, aes(y =pTimeTarget, x = APA2, color = APA2)) +
-  geom_point() + 
-  scale_color_manual(values = c("#ca0020", "#f4a582")) +
-  theme(legend.position = "none") +
-  labs(y = "reten. prop. time in shock zone", x = NULL)
-
-plot_grid(a,b)
 ```

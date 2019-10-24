@@ -393,6 +393,10 @@
     DEGes <- as.matrix(DEGes)
     DEGes <- DEGes - rowMeans(DEGes)
     DEGes <- as.matrix(DEGes)
+
+
+    write.csv(DEGes, "../data/02f_DG_DEGs_vsd.csv")
+
     paletteLength <- 10
     myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
                   seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
@@ -419,7 +423,7 @@
              clustering_distance_rows="correlation" 
              )
 
-![](../figures/02f_trainedvyoked/pheatmap-1.png)
+![](../figures/02f_trainedvyoked/pheatmap-DG-1.png)
 
     pheatmap(DEGes, show_colnames=F, show_rownames = T,
              annotation_col=df, 
@@ -440,7 +444,6 @@
              width = 2.5,
              filename = "../figures/02f_trainedvyoked/pheatmap-DG.pdf"
              )
-
 
     ### CA1
 
@@ -482,6 +485,8 @@
              clustering_distance_cols="correlation" 
              )
 
+![](../figures/02f_trainedvyoked/pheatmap-CA1-1.png)
+
     pheatmap(DEGes, show_colnames=F, show_rownames = T,
              annotation_col=df, 
              annotation_colors = pheatmapcolors3,
@@ -511,3 +516,7 @@ tSNE
     plot_grid(a,b)
 
 ![](../figures/02f_trainedvyoked/tSNE-1.png)
+
+    a
+
+![](../figures/02f_trainedvyoked/tSNE-2.png)
