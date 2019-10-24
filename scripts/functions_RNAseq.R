@@ -1,4 +1,31 @@
 
+plot.tSNE.trained <- function(mydds, myperplexity, mysubfield){
+  vsddft <- as.data.frame(t(assay(vst(mydds))))
+  euclidist <- dist(vsddft) # euclidean distances between the rows
+  tsne_model <- Rtsne(euclidist, check_duplicates=FALSE, pca=TRUE, 
+                      perplexity=myperplexity, theta=0.5, dims=2)
+  
+  tsne_df = as.data.frame(tsne_model$Y) 
+  
+  colData <- subsetcolData(a.colData, mysubfield)
+  tsne_df <- cbind(colData, tsne_df)
+  tsne_df$subfield <- factor(tsne_df$subfield, levels = c("DG", "CA3", "CA1"))
+  tsne_df$combinedgroups <- factor(tsne_df$combinedgroups, levels = c("yoked", "trained"))
+  
+  tnseplot  <- ggplot(tsne_df, aes(x = V1, y = V2, color = combinedgroups)) +
+    geom_point(size = 2) +
+    scale_color_manual(guide = FALSE, values = c("black","darkred")) +
+    theme_ms()  +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.spacing.x = unit(0.01, 'cm'),
+          legend.spacing.y = unit(0.01, 'cm')) +
+    labs(x = "tSNE 1", y = "tSNE 2") 
+  return(tnseplot)
+}
+
+
+
 returnddsAPA2 <- function(mytissue){
   print(mytissue)
   colData <- a.colData %>% 
@@ -40,11 +67,41 @@ returnddscombinedgroups <- function(mytissue){
   return(dds)
 }
 
+returndds2 <- function(mytissue){
+  print(mytissue)
+  colData <- a.colData %>% 
+    filter(Punch %in% c(mytissue))  %>% 
+    droplevels()
+  
+  savecols <- as.character(colData$RNAseqID) 
+  savecols <- as.vector(savecols) 
+  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+  
+  ## create DESeq object using the factors Punch and APA
+  dds <- DESeqDataSetFromMatrix(countData = countData,
+                                colData = colData,
+                                design = ~ combinedgroups)
+  
+  dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+  dds <- DESeq(dds, parallel = TRUE)
+  return(dds)
+}
+
+
 returnvsds <- function(mydds, vsdfilename){
   dds <- mydds
   vsd <- vst(dds, blind=FALSE) ## variance stabilized
   print(head(assay(vsd),3))
   return(write.csv(assay(vsd), file = vsdfilename, row.names = T))
+}
+
+returnvsds2 <- function(mydds, vsdfilename){
+  dds <- mydds
+  vsd <- vst(dds, blind=FALSE) ## variance stabilized
+  print(head(assay(vsd),3))
+  myvsd <- assay(vsd)
+  myvsd <- as.data.frame(myvsd)
+  return(myvsd)
 }
 
 
@@ -77,6 +134,22 @@ resvals <- function(contrastvector, mypval){
   colnames(vals) <- c(pvalcolname, padjcolname)
   return(vals)
 }
+
+
+resvals2 <- function(mydds, contrastvector, mypval){
+  res <- results(mydds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = T)
+  sumpvalue <- sum(res$pvalue < mypval, na.rm = TRUE)
+  #print(sumpvalue)
+  sumpadj <- sum(res$padj < mypval, na.rm = TRUE)
+  print(sumpadj)
+  vals <- cbind(res$pvalue, res$padj)
+  pvalcolname <- as.character(paste("pval",contrastvector[1],contrastvector[2],contrastvector[3], sep=""))
+  padjcolname <- as.character(paste("padj",contrastvector[1],contrastvector[2],contrastvector[3], sep=""))
+  colnames(vals) <- c(pvalcolname, padjcolname)
+  return(vals)
+}
+
+
 
 myhistogram <- function(contrastvector, mypval){
   res <- results(dds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = T)

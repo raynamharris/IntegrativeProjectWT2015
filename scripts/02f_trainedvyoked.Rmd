@@ -10,6 +10,8 @@ library(cowplot) ## for some easy to use themes
 library(DESeq2) ## for gene expression analysis
 library(pheatmap)
 library(viridis)
+library(Rtsne) # for tSNE
+
 
 library(BiocParallel)
 register(MulticoreParam(6))
@@ -23,35 +25,15 @@ knitr::opts_chunk$set(fig.path = '../figures/02f_trainedvyoked/', cache = F)
 ```
 
 ```{r DESeq}
-a.colData <- read.csv("../data/02a_colData.csv", header = T)
 a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
+a.colData <- read.csv("../data/02a_colData.csv", header = T)
 a.colData <- a.colData %>%
   mutate(combinedgroups = fct_collapse(Treatment,
                                        trained = c("conflict", "trained"),
-                                       yoked = c("shocked", "yoked")))
+                                       yoked = c("shocked", "yoked")),
+         subfield = Punch)
 a.colData$combinedgroups <- factor(a.colData$combinedgroups, levels = c("yoked", "trained"))
-
-
-returndds2 <- function(mytissue){
-  print(mytissue)
-  colData <- a.colData %>% 
-    filter(Punch %in% c(mytissue))  %>% 
-  droplevels()
-  
-  savecols <- as.character(colData$RNAseqID) 
-  savecols <- as.vector(savecols) 
-  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
-
-  ## create DESeq object using the factors Punch and APA
-  dds <- DESeqDataSetFromMatrix(countData = countData,
-                              colData = colData,
-                              design = ~ combinedgroups)
-
-  dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-  dds <- DESeq(dds, parallel = TRUE)
-  return(dds)
-}
 
 DGdds <- returndds2("DG") 
 CA3dds <- returndds2("CA3") 
@@ -59,15 +41,6 @@ CA1dds <- returndds2("CA1")
 ```
 
 ```{r vsd}
-returnvsds2 <- function(mydds, vsdfilename){
-  dds <- mydds
-  vsd <- vst(dds, blind=FALSE) ## variance stabilized
-  print(head(assay(vsd),3))
-  myvsd <- assay(vsd)
-  myvsd <- as.data.frame(myvsd)
-  return(myvsd)
-}
-
 DGvsd <- returnvsds2(DGdds)
 CA3vsd <- returnvsds2(CA3dds)
 CA1vsd <- returnvsds2(CA1dds)
@@ -82,6 +55,10 @@ res_summary_subfield(CA3dds, c("combinedgroups", "trained", "yoked"))
 
 print("CA1")
 res_summary_subfield(CA1dds, c("combinedgroups", "trained", "yoked"))
+
+contrast1 <- resvals2(DGdds, contrastvector = c("combinedgroups", "trained", "yoked"), mypval = 0.1) # 3060
+contrast2 <- resvals2(CA1dds, contrastvector = c("combinedgroups", "trained", "yoked"), mypval = 0.1) # 2388
+
 ```
 
 ```{r listofDEGs}
@@ -104,37 +81,41 @@ listofDEGstrainedvyoked <- function(mydds, myitssue){
 
 DGDEGs <- listofDEGstrainedvyoked(DGdds, "DG")
 CA1DEGs <- listofDEGstrainedvyoked(CA1dds, "CA1")
+
+write.csv(DGDEGs, "../data/02f_DG_DEGs.csv", row.names = F)
+write.csv(CA1DEGs, "../data/02f_CA1_DEGs.csv", row.names = F)
+
+upDG <- DGDEGs %>% filter(lfc > 0)
+upDG <- as.vector(upDG$gene)
+upDG
+
+downDG <- DGDEGs %>% filter(lfc < 0)
+downDG <- as.vector(downDG$gene)
+downDG
+
+upCA1 <- CA1DEGs %>% filter(lfc > 0)
+upCA1 <- as.vector(upCA1$gene)
+upCA1
+
+downCA1 <- CA1DEGs %>% filter(lfc < 0)
+downCA1 <- as.vector(downCA1$gene)
+downCA1
+
 ```
 
 
 
 
 ```{r pheatmap}
-resvals2 <- function(mydds, contrastvector, mypval){
-  res <- results(mydds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = T)
-  sumpvalue <- sum(res$pvalue < mypval, na.rm = TRUE)
-  #print(sumpvalue)
-  sumpadj <- sum(res$padj < mypval, na.rm = TRUE)
-  print(sumpadj)
-  vals <- cbind(res$pvalue, res$padj)
-  pvalcolname <- as.character(paste("pval",contrastvector[1],contrastvector[2],contrastvector[3], sep=""))
-  padjcolname <- as.character(paste("padj",contrastvector[1],contrastvector[2],contrastvector[3], sep=""))
-  colnames(vals) <- c(pvalcolname, padjcolname)
-  return(vals)
-}
-
-contrast1 <- resvals2(DGdds, contrastvector = c("combinedgroups", "trained", "yoked"), mypval = 0.1) # 3060
-contrast2 <- resvals2(CA1dds, contrastvector = c("combinedgroups", "trained", "yoked"), mypval = 0.1) # 2388
-
-
 ## DG 
 DEGes <- assay(vst(DGdds))
 DEGes <- cbind(DEGes, contrast1)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
+
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
 DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
 DEGes$padjmin <- with(DEGes, pmin(padjcombinedgroupstrainedyoked)) 
-DEGes <- DEGes %>% filter(padjmin < 0.05)
+DEGes <- DEGes %>% filter(padjmin < 0.1)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
 DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
@@ -153,7 +134,7 @@ levels(df$combinedgroups) <- c("yoked", "trained")
 pheatmap(DEGes, show_colnames=F, show_rownames = T,
          annotation_col=df, 
          annotation_colors = pheatmapcolors2,
-         treeheight_row = 0, treeheight_col = 25,
+         treeheight_row = 25, treeheight_col = 25,
          annotation_row = NA, 
          annotation_legend = TRUE,
          annotation_names_row = FALSE, annotation_names_col = FALSE,
@@ -163,7 +144,8 @@ pheatmap(DEGes, show_colnames=F, show_rownames = T,
          cellwidth = 6, 
          clustering_method="average",
          breaks=myBreaks,
-         clustering_distance_cols="correlation" 
+         clustering_distance_cols="correlation" ,
+         clustering_distance_rows="correlation" 
          )
 
 pheatmap(DEGes, show_colnames=F, show_rownames = T,
@@ -246,4 +228,13 @@ pheatmap(DEGes, show_colnames=F, show_rownames = T,
          width = 2.5,
          filename = "../figures/02f_trainedvyoked/pheatmap-CA1.pdf"
          )
+```
+
+## tSNE
+
+```{r tSNE}
+a <- plot.tSNE.trained(DGdds, 2, "DG")
+b <- plot.tSNE.trained(CA1dds, 2, "CA1")
+
+plot_grid(a,b)
 ```

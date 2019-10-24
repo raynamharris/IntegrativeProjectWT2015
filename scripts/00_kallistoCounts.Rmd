@@ -76,6 +76,10 @@ geneids$structure3 <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 10)
 geneids$transcript_lenght <- as.factor(paste(geneids$transcript, geneids$length, sep="_"))
 
 
+genesforgo <- geneids %>% select(gene) %>% distinct(gene) %>% arrange(gene)
+head(genesforgo)
+
+
 # tpm to tpmbytranscript - note: not used for subsequent analyses
 tpmbytranscript <-  full_join(geneids, tpm) # merge tpm and genids
 tpmbytranscript <- tpmbytranscript[-c(1:11)]   ## keep gene name and tpm for samples)
@@ -96,6 +100,7 @@ setwd("../../scripts")
 write.csv(geneids, "../data/00_geneids.csv", row.names=F)
 write.csv(tpmbytranscript, "../data/00_tpmbytranscript.csv", row.names=T)
 write.csv(countbygene, "../data/00_CountData.csv", row.names=T)
+write.csv(genesforgo, "../data/00_genesforgo.csv", row.names = F)
 ```
 
 ## Session Info
