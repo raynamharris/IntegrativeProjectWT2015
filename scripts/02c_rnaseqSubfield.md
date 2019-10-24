@@ -23,7 +23,7 @@ have been inserted just below the subheadings.
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = F)
+    knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = T)
 
 Get varience stabilized gene expression for each tissue
 -------------------------------------------------------
@@ -31,27 +31,15 @@ Get varience stabilized gene expression for each tissue
     a.colData <- read.csv("../data/02a_colData.csv", header = T)
     a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
-    returndds <- function(mytissue){
-      print(mytissue)
-      colData <- a.colData %>% 
-        filter(Punch %in% c(mytissue))  %>% 
-      droplevels()
-      
-      savecols <- as.character(colData$RNAseqID) 
-      savecols <- as.vector(savecols) 
-      countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+    a.colData <- a.colData %>%
+      mutate(combinedgroups = fct_collapse(Treatment,
+                                           trained = c("conflict", "trained"),
+                                           yoked = c("shocked", "yoked")))
+    a.colData$combinedgroups <- factor(a.colData$combinedgroups, levels = c("yoked", "trained"))
+    a.colData$APA2 <- factor(a.colData$APA2, levels = c("standard.yoked","standard.trained",
+                                                      "conflict.yoked", "conflict.trained"))
 
-      ## create DESeq object using the factors Punch and APA
-      dds <- DESeqDataSetFromMatrix(countData = countData,
-                                  colData = colData,
-                                  design = ~ APA2)
-
-      dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-      dds <- DESeq(dds, parallel = TRUE)
-      return(dds)
-    }
-
-    DGdds <- returndds("DG") 
+    DGdds <- returnddsAPA2("DG") 
 
     ## [1] "DG"
 
@@ -65,7 +53,7 @@ Get varience stabilized gene expression for each tissue
 
     ## final dispersion estimates, fitting model and testing: 6 workers
 
-    CA1dds <- returndds("CA1") 
+    CA1dds <- returnddsAPA2("CA1") 
 
     ## [1] "CA1"
 
@@ -79,7 +67,7 @@ Get varience stabilized gene expression for each tissue
 
     ## final dispersion estimates, fitting model and testing: 6 workers
 
-    CA3dds <- returndds("CA3") 
+    CA3dds <- returnddsAPA2("CA3") 
 
     ## [1] "CA3"
 
@@ -93,12 +81,71 @@ Get varience stabilized gene expression for each tissue
 
     ## final dispersion estimates, fitting model and testing: 6 workers
 
-    returnvsds <- function(mydds, vsdfilename){
-      dds <- mydds
-      vsd <- vst(dds, blind=FALSE) ## variance stabilized
-      print(head(assay(vsd),3))
-      return(write.csv(assay(vsd), file = vsdfilename, row.names = T))
-    }
+    DGdds2 <- returnddscombinedgroups("DG") 
+
+    ## [1] "DG"
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates: 6 workers
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates, fitting model and testing: 6 workers
+
+    ## -- replacing outliers and refitting for 54 genes
+    ## -- DESeq argument 'minReplicatesForReplace' = 7 
+    ## -- original counts are preserved in counts(dds)
+
+    ## estimating dispersions
+
+    ## fitting model and testing
+
+    CA1dds2 <- returnddscombinedgroups("CA1") 
+
+    ## [1] "CA1"
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates: 6 workers
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates, fitting model and testing: 6 workers
+
+    ## -- replacing outliers and refitting for 98 genes
+    ## -- DESeq argument 'minReplicatesForReplace' = 7 
+    ## -- original counts are preserved in counts(dds)
+
+    ## estimating dispersions
+
+    ## fitting model and testing
+
+    CA3dds2 <- returnddscombinedgroups("CA3") 
+
+    ## [1] "CA3"
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates: 6 workers
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates, fitting model and testing: 6 workers
+
+    ## -- replacing outliers and refitting for 53 genes
+    ## -- DESeq argument 'minReplicatesForReplace' = 7 
+    ## -- original counts are preserved in counts(dds)
+
+    ## estimating dispersions
+
+    ## fitting model and testing
 
     returnvsds(DGdds, "../data/02c_DGvsd.csv")
 
@@ -115,6 +162,15 @@ Get varience stabilized gene expression for each tissue
     ## 0610009B22Rik  5.910805  5.893873  5.589261  5.492981
     ## 0610009L18Rik  5.257050  5.718223  5.505647  5.349661
 
+    ## class: DESeqTransform 
+    ## dim: 17011 16 
+    ## metadata(36): version version ... version version
+    ## assays(1): ''
+    ## rownames(17011): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(30): baseMean baseVar ... maxCooks dispFit
+    ## colnames(16): 143A-DG-1 143B-DG-1 ... 148A-DG-3 148B-DG-4
+    ## colData names(10): RNAseqID Mouse ... combinedgroups sizeFactor
+
     returnvsds(CA1dds, "../data/02c_CA1vsd.csv")
 
     ##               143B-CA1-1 143C-CA1-1 143D-CA1-3 144A-CA1-2 144B-CA1-1
@@ -129,6 +185,15 @@ Get varience stabilized gene expression for each tissue
     ## 0610007P14Rik   7.401377   7.464466   7.267392   7.328133   7.190380
     ## 0610009B22Rik   6.782624   6.920474   6.787440   6.987979   6.301096
     ## 0610009L18Rik   6.846384   6.301096   6.468607   6.661247   6.301096
+
+    ## class: DESeqTransform 
+    ## dim: 16852 15 
+    ## metadata(36): version version ... version version
+    ## assays(1): ''
+    ## rownames(16852): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(30): baseMean baseVar ... maxCooks dispFit
+    ## colnames(15): 143B-CA1-1 143C-CA1-1 ... 148A-CA1-3 148B-CA1-4
+    ## colData names(10): RNAseqID Mouse ... combinedgroups sizeFactor
 
     returnvsds(CA3dds, "../data/02c_CA3vsd.csv")
 
@@ -145,17 +210,17 @@ Get varience stabilized gene expression for each tissue
     ## 0610009B22Rik   6.586876   6.578744   6.732213
     ## 0610009L18Rik   6.171145   6.223238   6.265907
 
+    ## class: DESeqTransform 
+    ## dim: 16502 13 
+    ## metadata(36): version version ... version version
+    ## assays(1): ''
+    ## rownames(16502): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
+    ## rowData names(30): baseMean baseVar ... maxCooks dispFit
+    ## colnames(13): 143A-CA3-1 144A-CA3-2 ... 148A-CA3-3 148B-CA3-4
+    ## colData names(10): RNAseqID Mouse ... combinedgroups sizeFactor
+
 Res summary
 -----------
-
-    res_summary_subfield <- function(mydds, mycontrast){
-      res <- results(mydds, contrast = mycontrast, independentFiltering = T)
-      print(mycontrast)
-      print(sum(res$padj < 0.1, na.rm=TRUE))
-      print(summary(res))
-      print(head((res[order(res$padj),]), 5))
-      cat("\n")
-    }
 
     print("DG")
 
@@ -182,30 +247,30 @@ Res summary
     ## DataFrame with 5 rows and 6 columns
     ##                baseMean   log2FoldChange             lfcSE
     ##               <numeric>        <numeric>         <numeric>
-    ## Smad7  171.392871064045 3.53587630547506  0.41808526303872
-    ## Sgk1   341.089572273562 2.52942417595992 0.361917138646057
-    ## Lmna   127.261228543472 2.38190944527425 0.360880330406286
-    ## Tiparp 146.843901753813 3.00078251229084 0.456274430143758
-    ## Fzd5   26.8401177227407  4.0565435659187 0.655253175627174
+    ## Smad7  171.392871064045  3.5358760989965 0.418085170674204
+    ## Sgk1   341.089572273562  2.5294242746409 0.361917084520406
+    ## Lmna   127.261228543472 2.38190950336827 0.360880273664825
+    ## Tiparp 146.843901753813 3.00078234375137  0.45627431372274
+    ## Fzd5   26.8401177227407 4.05654223296435  0.65525275568936
     ##                    stat               pvalue                 padj
     ##               <numeric>            <numeric>            <numeric>
-    ## Smad7  8.45730911387707 2.73617919432214e-17 3.38821069632911e-13
-    ## Sgk1   6.98895936628636 2.76932605924933e-12 1.71462822958423e-08
-    ## Lmna    6.6002750623528 4.10395626987666e-11 1.48901360368768e-07
-    ## Tiparp 6.57670540807072 4.80986385750685e-11 1.48901360368768e-07
-    ## Fzd5   6.19080336701305 5.98583433783008e-10   1.482451732107e-06
+    ## Smad7  8.45731048842164 2.73614695350866e-17 3.38817077252977e-13
+    ## Sgk1   6.98896068416544 2.76930004947698e-12 1.71461212563367e-08
+    ## Lmna   6.60027626109738 4.10392308480625e-11 1.48900050391935e-07
+    ## Tiparp 6.57670671677307  4.8098215421767e-11 1.48900050391935e-07
+    ## Fzd5   6.19080530030989 5.98576091336588e-10 1.48243354780419e-06
 
     res_summary_subfield(DGdds, c("APA2", "conflict.trained", "conflict.yoked"))
 
     ## [1] "APA2"             "conflict.trained" "conflict.yoked"  
-    ## [1] 10
+    ## [1] 9
     ## 
     ## out of 17011 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 8, 0.047%
-    ## LFC < 0 (down)     : 2, 0.012%
+    ## LFC < 0 (down)     : 1, 0.0059%
     ## outliers [1]       : 20, 0.12%
-    ## low counts [2]     : 0, 0%
+    ## low counts [2]     : 1320, 7.8%
     ## (mean count < 0)
     ## [1] see 'cooksCutoff' argument of ?results
     ## [2] see 'independentFiltering' argument of ?results
@@ -214,30 +279,30 @@ Res summary
     ## log2 fold change (MLE): APA2 conflict.trained vs conflict.yoked 
     ## Wald test p-value: APA2 conflict.trained vs conflict.yoked 
     ## DataFrame with 5 rows and 6 columns
-    ##                 baseMean    log2FoldChange             lfcSE
-    ##                <numeric>         <numeric>         <numeric>
-    ## Rps12   18.1519752295379 -21.4660372192577  3.98668946398745
-    ## Smad7   171.392871064045  1.75395877648965 0.367789349201327
-    ## Dbpht2  179.735977990203  1.43077032427045  0.32133350449587
-    ## Insm1   9.54062645923209 -4.64275029978559  1.03675452753152
-    ## Slc16a1 51.2786850104172  1.93718965194581  0.44615480868175
-    ##                      stat               pvalue                padj
-    ##                 <numeric>            <numeric>           <numeric>
-    ## Rps12    -5.3844267062094 7.26759098589968e-08 0.00123483638441421
-    ## Smad7    4.76892215693155 1.85214205935404e-06  0.0157348728652423
-    ## Dbpht2   4.45260237184151 8.48357705071016e-06  0.0360361144171541
-    ## Insm1   -4.47815772827133 7.52899657211816e-06  0.0360361144171541
-    ## Slc16a1  4.34196743876774 1.41212464862805e-05  0.0479868198096785
+    ##                  baseMean    log2FoldChange             lfcSE
+    ##                 <numeric>         <numeric>         <numeric>
+    ## Smad7    171.392871064045   1.7539594787851 0.367789397071482
+    ## Dbpht2   179.735977990203  1.43077069539744 0.321333534137563
+    ## Insm1    9.54062645923209 -4.64275532829035   1.0367563258937
+    ## Slc16a1  51.2786850104172  1.93719045615153 0.446154884574157
+    ## Ankrd33b  209.87162559181  1.14656018923675 0.276132392169257
+    ##                       stat               pvalue               padj
+    ##                  <numeric>            <numeric>          <numeric>
+    ## Smad7     4.76892344573002 1.85213021184991e-06 0.0290247325498999
+    ## Dbpht2    4.45260311606609 8.48354763669753e-06 0.0443152250048957
+    ## Insm1    -4.47815481066702 7.52909944975151e-06 0.0443152250048957
+    ## Slc16a1   4.34196850271072 1.41211780872892e-05 0.0553232454514773
+    ## Ankrd33b  4.15221184385338 3.29277232965722e-05 0.0752991661996807
 
     res_summary_subfield(DGdds, c("APA2", "conflict.trained", "standard.trained"))
 
     ## [1] "APA2"             "conflict.trained" "standard.trained"
-    ## [1] 1
+    ## [1] 0
     ## 
     ## out of 17011 with nonzero total read count
     ## adjusted p-value < 0.1
     ## LFC > 0 (up)       : 0, 0%
-    ## LFC < 0 (down)     : 1, 0.0059%
+    ## LFC < 0 (down)     : 0, 0%
     ## outliers [1]       : 20, 0.12%
     ## low counts [2]     : 0, 0%
     ## (mean count < 0)
@@ -250,18 +315,18 @@ Res summary
     ## DataFrame with 5 rows and 6 columns
     ##                       baseMean     log2FoldChange             lfcSE
     ##                      <numeric>          <numeric>         <numeric>
-    ## Rps12         18.1519752295379  -20.9602515356945  4.31657511842761
-    ## 0610007P14Rik 41.0311096797814 -0.147853585332256  0.40193698903432
-    ## 0610009B22Rik 8.74131849081542 -0.757911677382372 0.749958107206416
-    ## 0610009L18Rik 2.61860548764425  0.604880308171301  1.47685825831006
-    ## 0610009O20Rik 48.3693444464377  0.245771257499093 0.338998927487014
-    ##                             stat               pvalue               padj
-    ##                        <numeric>            <numeric>          <numeric>
-    ## Rps12          -4.85575970778651 1.19926059767804e-06 0.0203766368151477
-    ## 0610007P14Rik -0.367852646972064    0.712983110470875                  1
-    ## 0610009B22Rik  -1.01060535261841    0.312205352935413                  1
-    ## 0610009L18Rik  0.409572350472858    0.682119683047902                  1
-    ## 0610009O20Rik  0.724991253869108    0.468457396038969                  1
+    ## 0610007P14Rik 41.0311096797814 -0.147853335262028 0.401937040950673
+    ## 0610009B22Rik 8.74131849081542 -0.757911133533248  0.74995847367117
+    ## 0610009L18Rik 2.61860548764425  0.604880984136428   1.4768606644782
+    ## 0610009O20Rik 48.3693444464377  0.245771530197495 0.338998958367419
+    ## 0610010F05Rik 60.2560857800178 -0.366265357273305 0.337328972569671
+    ##                             stat            pvalue      padj
+    ##                        <numeric>         <numeric> <numeric>
+    ## 0610007P14Rik -0.367851977295552 0.712983609840105         1
+    ## 0610009B22Rik  -1.01060413361709 0.312205936604904         1
+    ## 0610009L18Rik  0.409572140883136 0.682119836822188         1
+    ## 0610009O20Rik  0.724991992250072  0.46845694305256         1
+    ## 0610010F05Rik   -1.0857809054562 0.277575936193222         1
 
     res_summary_subfield(DGdds, c("APA2", "conflict.yoked", "standard.yoked"))
 
@@ -284,18 +349,18 @@ Res summary
     ## DataFrame with 5 rows and 6 columns
     ##                baseMean   log2FoldChange             lfcSE
     ##               <numeric>        <numeric>         <numeric>
-    ## Nlrp3  20.9424446578681 4.09843296363232 0.779233741328829
-    ## Kcnc2  22.0989714545398 4.08535721746691 0.828862391056504
-    ## Gm2115 18.9055674115327 3.48302773153955 0.740349228153146
-    ## Rnase4 15.5820343950564 3.55390988656487 0.842613820540234
-    ## Cxcl14 58.4698286328215 1.83345102741098 0.452447198853329
+    ## Nlrp3  20.9424446578681 4.09842938285025 0.779232882507923
+    ## Kcnc2  22.0989714545398 4.08535594133634 0.828861517280234
+    ## Gm2115 18.9055674115327 3.48302658316895 0.740348611631996
+    ## Rnase4 15.5820343950564 3.55390680749815 0.842612847725316
+    ## Cxcl14 58.4698286328215 1.83345110176946 0.452447077111697
     ##                    stat               pvalue                padj
     ##               <numeric>            <numeric>           <numeric>
-    ## Nlrp3  5.25956814529521 1.44394111647505e-07 0.00245340035100275
-    ## Kcnc2  4.92887270739783 8.27054360272546e-07 0.00702624031769541
-    ## Gm2115 4.70457400249908 2.54396580238634e-06  0.0144081743161154
-    ## Rnase4 4.21772085851418   2.467840582522e-05   0.104827698344078
-    ## Cxcl14 4.05229832797648 5.07169366555326e-05   0.172346294142831
+    ## Nlrp3  5.25956934679099  1.4439316822894e-07 0.00245338432137792
+    ## Kcnc2  4.92887636374014 8.27038884428016e-07 0.00702610884265821
+    ## Gm2115 4.70457636908523  2.5439362946098e-06   0.014408007193905
+    ## Rnase4  4.2177220737758 2.46782728594936e-05   0.104827133538914
+    ## Cxcl14 4.05229958269092 5.07166645843307e-05   0.172345369590473
 
     print("CA3")
 
@@ -322,18 +387,18 @@ Res summary
     ## DataFrame with 5 rows and 6 columns
     ##                 baseMean    log2FoldChange             lfcSE
     ##                <numeric>         <numeric>         <numeric>
-    ## Sco2     16.986291670521  7.92174450889184  1.50710763233514
-    ## Gm4724  26.6657624126106 -3.76035421007666 0.945534529476208
-    ## Timm8a1 20.5957841890406 -4.89346615840032   1.2488404570656
-    ## Cxcl16  8.21166206646085  6.23926422663909  1.62628041398624
-    ## Slc9a2  110.174378859642 -1.43724299352791 0.380113842295082
-    ##                      stat               pvalue               padj
-    ##                 <numeric>            <numeric>          <numeric>
-    ## Sco2     5.25625664612801  1.4701709146683e-07 0.0024244588553795
-    ## Gm4724  -3.97696127729969 6.98015262057288e-05  0.489979606162154
-    ## Timm8a1 -3.91840777636118 8.91358206589329e-05  0.489979606162154
-    ## Cxcl16   3.83652423836661 0.000124787885120601  0.514469253380959
-    ## Slc9a2  -3.78108564752605 0.000156145939354006  0.515000537177384
+    ## Sco2     16.986291670521  7.92170821989591  1.50710048300043
+    ## Gm4724  26.6657624126106 -3.76035086262371 0.945533905297016
+    ## Timm8a1 20.5957841890406 -4.89346309390806  1.24883957922689
+    ## Cxcl16  8.21166206646085   6.2392342798603  1.62626978323348
+    ## Slc9a2  110.174378859642 -1.43724258468348 0.380113797569017
+    ##                      stat               pvalue                padj
+    ##                 <numeric>            <numeric>           <numeric>
+    ## Sco2     5.25625750190518 1.47016407704756e-07 0.00242444757945912
+    ## Gm4724  -3.97696036234945 6.98017946719033e-05   0.489978995495488
+    ## Timm8a1 -3.91840807683036 8.91357095680349e-05   0.489978995495488
+    ## Cxcl16   3.83653090292004 0.000124784500320077   0.514455298694599
+    ## Slc9a2  -3.78108501684293 0.000156146334978033    0.51500184202455
 
     res_summary_subfield(CA3dds, c("APA2", "conflict.trained", "conflict.yoked"))
 
@@ -356,18 +421,18 @@ Res summary
     ## DataFrame with 5 rows and 6 columns
     ##                       baseMean     log2FoldChange             lfcSE
     ##                      <numeric>          <numeric>         <numeric>
-    ## 0610007P14Rik 50.0970679173046 0.0655194925678776 0.438705242691406
-    ## 0610009B22Rik 21.5320776710641 -0.380549726690321 0.666530809010441
-    ## 0610009L18Rik  5.9297800747599   0.44296923957109   1.0527471158624
-    ## 0610009O20Rik 54.9226365635042  0.659303979047601 0.371673115786175
-    ## 0610010F05Rik 81.1189135690452 -0.128908330830839 0.367548236468482
+    ## 0610007P14Rik 50.0970679173046 0.0655200062324803 0.438705319123211
+    ## 0610009B22Rik 21.5320776710641 -0.380548839458527 0.666531089819032
+    ## 0610009L18Rik  5.9297800747599  0.442971224916382  1.05274817073983
+    ## 0610009O20Rik 54.9226365635042  0.659304388434853 0.371673160251766
+    ## 0610010F05Rik 81.1189135690452 -0.128908062081345 0.367548281673222
     ##                             stat             pvalue      padj
     ##                        <numeric>          <numeric> <numeric>
-    ## 0610007P14Rik  0.149347411865705  0.881279505484552         1
-    ## 0610009B22Rik -0.570940940082426  0.568039677980193         1
-    ## 0610009L18Rik  0.420774593344021  0.673919685718428         1
-    ## 0610009O20Rik   1.77388127105459 0.0760827913081367         1
-    ## 0610010F05Rik -0.350724933601724  0.725794718038016         1
+    ## 0610007P14Rik  0.149348556710977  0.881278602160808         1
+    ## 0610009B22Rik -0.570939368427433  0.568040743381473         1
+    ## 0610009L18Rik  0.420776057587525  0.673918616400024         1
+    ## 0610009O20Rik   1.77388216030517 0.0760826441865248         1
+    ## 0610010F05Rik  -0.35072415927101  0.725795299010767         1
 
     res_summary_subfield(CA3dds, c("APA2", "conflict.trained", "standard.trained"))
 
@@ -390,18 +455,18 @@ Res summary
     ## DataFrame with 5 rows and 6 columns
     ##                baseMean    log2FoldChange             lfcSE
     ##               <numeric>         <numeric>         <numeric>
-    ## Oprd1  32.4628391128719  -2.6054295356723  0.59719635196684
-    ## Slc9a2 110.174378859642  1.57516503162597 0.358342515343683
-    ## Crnkl1 21.7428570562243  3.14654963431251 0.786655505470721
-    ## Erdr1  262.410626549465  1.89155691179592  0.48620849732585
-    ## Rbms3   43.042274770408 -2.03862535371239 0.533990516252202
+    ## Oprd1  32.4628391128719 -2.60542974560345 0.597196537814467
+    ## Slc9a2 110.174378859642   1.5751653517535 0.358342542934521
+    ## Crnkl1 21.7428570562243  3.14655086646214 0.786655735256783
+    ## Erdr1  262.410626549465  1.89155758931392 0.486208570016143
+    ## Rbms3   43.042274770408 -2.03862516340634 0.533990636287225
     ##                     stat               pvalue              padj
     ##                <numeric>            <numeric>         <numeric>
-    ## Oprd1  -4.36276867246666 1.28426719131902e-05  0.10589425126021
-    ## Slc9a2   4.3956967543057 1.10417994795374e-05  0.10589425126021
-    ## Crnkl1   3.9999079805965 6.33671181547187e-05 0.348329048496489
-    ## Erdr1   3.89042339284381 0.000100069465948346  0.37019987439438
-    ## Rbms3  -3.81771827713425 0.000134691604291206  0.37019987439438
+    ## Oprd1  -4.36276766630032 1.28427309991641e-05 0.105894738453608
+    ## Slc9a2  4.39569730921211 1.10417712692366e-05 0.105894738453608
+    ## Crnkl1  3.99990837851711 6.33670116079849e-05 0.348328462809093
+    ## Erdr1   3.89042420468054  0.00010006913113791 0.370201696368351
+    ## Rbms3  -3.81771706256998 0.000134692267188776 0.370201696368351
 
     res_summary_subfield(CA3dds, c("APA2", "conflict.yoked", "standard.yoked"))
 
@@ -424,18 +489,18 @@ Res summary
     ## DataFrame with 5 rows and 6 columns
     ##                       baseMean    log2FoldChange             lfcSE
     ##                      <numeric>         <numeric>         <numeric>
-    ## Sco2           16.986291670521  7.47695593197555   1.4502533655352
-    ## Tbc1d16       68.3028549856526 -1.99890215328692  0.44909646177636
-    ## Morc2b        5.34636409120379  6.80409230403272  1.68163601384674
-    ## 0610007P14Rik 50.0970679173046 0.358662109467357  0.47745882139484
-    ## 0610009B22Rik 21.5320776710641  0.89073601751818 0.725707229781272
+    ## Sco2           16.986291670521  7.47692090654817  1.45024632680045
+    ## Tbc1d16       68.3028549856526 -1.99890124400372   0.4490963629713
+    ## Morc2b        5.34636409120379  6.80405549237289  1.68162650915043
+    ## 0610007P14Rik 50.0970679173046 0.358662587390852 0.477458692270943
+    ## 0610009B22Rik 21.5320776710641 0.890736471238269 0.725706759621894
     ##                            stat               pvalue                padj
     ##                       <numeric>            <numeric>           <numeric>
-    ## Sco2           5.15562046581857 2.52792459600585e-07 0.00416880045127324
-    ## Tbc1d16       -4.45094166491637 8.54945657511891e-06   0.070494544190143
-    ## Morc2b         4.04611476443607 5.20747103349916e-05   0.286254682711449
-    ## 0610007P14Rik  0.75118961760842    0.452538547668911                   1
-    ## 0610009B22Rik  1.22740408385713    0.219670752237398                   1
+    ## Sco2           5.15562133713094 2.52791284033051e-07 0.00416878106498904
+    ## Tbc1d16        -4.4509406194667 8.54949820123592e-06  0.0704948874182908
+    ## Morc2b         4.04611574291271 5.20744927832921e-05   0.286253486829757
+    ## 0610007P14Rik 0.751190821733585    0.452537823102189                   1
+    ## 0610009B22Rik  1.22740550425954    0.219670218639327                   1
 
     print("CA1")
 
@@ -462,18 +527,18 @@ Res summary
     ## DataFrame with 5 rows and 6 columns
     ##                 baseMean    log2FoldChange             lfcSE
     ##                <numeric>         <numeric>         <numeric>
-    ## Agap1   141.608762023137  2.77875046323612 0.429199296181746
-    ## Mga     103.422400328703  2.88512466619048 0.476961395186377
-    ## Adamts1  114.05510912055  3.03089016770632 0.542440999549247
-    ## Gpd1    249.757427758137 -1.22793747874215 0.227810028896675
-    ## Sdhaf2  77.6262495970029  -1.8844420193014 0.348951742790374
+    ## Agap1   141.608762023137  2.77875026050017 0.429199092743363
+    ## Mga     103.422400328703  2.88512443338324 0.476961117752627
+    ## Adamts1  114.05510912055  3.03088953835947 0.542440564476154
+    ## Gpd1    249.757427758137 -1.22793706924937 0.227810011229156
+    ## Sdhaf2  77.6262495970029 -1.88444102477687 0.348951680634145
     ##                      stat               pvalue                 padj
     ##                 <numeric>            <numeric>            <numeric>
-    ## Agap1     6.4742661228863 9.52738559918102e-11 1.13642655427031e-06
-    ## Mga      6.04896894236711 1.45775755596203e-09 8.69406606375754e-06
-    ## Adamts1  5.58750199602335 2.30359111480667e-08 9.15907827247132e-05
-    ## Gpd1    -5.39018183127968 7.03864291874896e-08 0.000167913865469675
-    ## Sdhaf2  -5.40029404705809 6.65317532902417e-08 0.000167913865469675
+    ## Agap1     6.4742687192997 9.52722178931815e-11 1.13640701502987e-06
+    ## Mga      6.04897197276276 1.45773013943867e-09 8.69390255161221e-06
+    ## Adamts1  5.58750531735484  2.3035470722401e-08 9.15890315922665e-05
+    ## Gpd1    -5.39018045178962 7.03869695077408e-08 0.000167915154457666
+    ## Sdhaf2  -5.40029215893816 6.65324535653559e-08 0.000167915154457666
 
     res_summary_subfield(CA1dds, c("APA2", "conflict.trained", "conflict.yoked"))
 
@@ -494,20 +559,20 @@ Res summary
     ## log2 fold change (MLE): APA2 conflict.trained vs conflict.yoked 
     ## Wald test p-value: APA2 conflict.trained vs conflict.yoked 
     ## DataFrame with 5 rows and 6 columns
-    ##                 baseMean     log2FoldChange             lfcSE
-    ##                <numeric>          <numeric>         <numeric>
-    ## Gm20390  47.871821328339   3.00058138879834 0.573131448878749
-    ## Il4ra   21.8885208760384  -5.08358235079083  1.03917819122759
-    ## Gm21949 21.1841188999619  -17.0604246293031  3.93136294528735
-    ## Fgfr1   235.947946420033 -0.733099701563004 0.171563329082572
-    ## Pde6a   16883.7614383138  -3.64420078429742  0.88908514837003
-    ##                      stat               pvalue                padj
-    ##                 <numeric>            <numeric>           <numeric>
-    ## Gm20390  5.23541570553938  1.6461394018171e-07 0.00276880647385636
-    ## Il4ra   -4.89192555589102 9.98542154074302e-07 0.00839773951576488
-    ## Gm21949  -4.3395699829124 1.42761798468555e-05  0.0800417816747032
-    ## Fgfr1   -4.27305593499046 1.92812063923862e-05   0.081077472879984
-    ## Pde6a    -4.0988208958145 4.15260209913119e-05   0.139693534614773
+    ##                 baseMean    log2FoldChange             lfcSE
+    ##                <numeric>         <numeric>         <numeric>
+    ## Gm20390  47.871821328339  3.00058274250914 0.573131645431281
+    ## Il4ra   21.8885208760384  -5.0835877937273   1.0391802378148
+    ## Gm21949 21.1841188999619 -18.6248905555661  3.93144706939238
+    ## Fgfr1   235.947946420033 -0.73309960892136 0.171563335558483
+    ## Pde6a   16883.7614383138 -3.64419999525875 0.889086146121556
+    ##                      stat               pvalue               padj
+    ##                 <numeric>            <numeric>          <numeric>
+    ## Gm20390  5.23541627203503 1.64613435262556e-07 0.0027687979811162
+    ## Il4ra   -4.89192115933335 9.98564465167824e-07 0.0083979271520614
+    ## Gm21949 -4.73741353420907 2.16463165354542e-06 0.0121363681375447
+    ## Fgfr1   -4.27305523371255 1.92812670573403e-05 0.0810777279761159
+    ## Pde6a    -4.0988154085583 4.15270053520493e-05  0.139696846004294
 
     res_summary_subfield(CA1dds, c("APA2", "conflict.trained", "standard.trained"))
 
@@ -530,18 +595,18 @@ Res summary
     ## DataFrame with 5 rows and 6 columns
     ##                       baseMean     log2FoldChange             lfcSE
     ##                      <numeric>          <numeric>         <numeric>
-    ## Atp6v0c       940.742611922084  0.608861459800305 0.163727606156611
-    ## Csmd2         143.250109872935 -0.914103831503957 0.235968419984527
-    ## Gm21949       21.1841188999619  -16.6146223609643  4.11997084163542
-    ## Rps3          244.145124987844   0.82185434891441 0.220612501440676
-    ## 0610007P14Rik 40.5190246487219  0.196321727886423 0.352801109023019
+    ## Gm21949       21.1841188999619   -18.179250790651  4.12005064567001
+    ## Atp6v0c       940.742611922084  0.608861612596471 0.163727611506087
+    ## Csmd2         143.250109872935 -0.914103694226625 0.235968436048275
+    ## Rps3          244.145124987844  0.821854595026323 0.220612514200053
+    ## 0610007P14Rik 40.5190246487219  0.196322043077828 0.352801159531243
     ##                            stat               pvalue              padj
     ##                       <numeric>            <numeric>         <numeric>
-    ## Atp6v0c        3.71874648443776 0.000200213866062913 0.841899306794548
-    ## Csmd2          -3.8738396924635 0.000107133899318794 0.841899306794548
-    ## Gm21949       -4.03270387087718 5.51387439276908e-05 0.841899306794548
-    ## Rps3           3.72532990445881 0.000195059947309981 0.841899306794548
-    ## 0610007P14Rik 0.556465733427198    0.577892513316997                 1
+    ## Gm21949       -4.41238527243752 1.02237973124919e-05 0.171964270796114
+    ## Atp6v0c        3.71874729616901 0.000200213222773945 0.841896601764438
+    ## Csmd2         -3.87383884698721 0.000107134271190422 0.841896601764438
+    ## Rps3           3.72533080458463 0.000195059251236407 0.841896601764438
+    ## 0610007P14Rik 0.556466547158392    0.577891957181788                 1
 
     res_summary_subfield(CA1dds, c("APA2", "conflict.yoked", "standard.yoked"))
 
@@ -564,83 +629,152 @@ Res summary
     ## DataFrame with 5 rows and 6 columns
     ##                 baseMean    log2FoldChange             lfcSE
     ##                <numeric>         <numeric>         <numeric>
-    ## Agap1   141.608762023137  2.68968384471464 0.425950937241183
-    ## Pcdhb12  28.059174402023 -4.44059921537541 0.793522420613002
-    ## Sdc3    215.373472922264  1.85322249231441 0.337204018813347
-    ## Gm20390  47.871821328339 -3.80408224976639 0.702192890502889
-    ## Adamts1  114.05510912055   2.8822106380576 0.537733929657063
+    ## Agap1   141.608762023137  2.68968364863864 0.425950734371789
+    ## Pcdhb12  28.059174402023 -4.44059275454257 0.793521648819902
+    ## Sdc3    215.373472922264  1.85322269856341 0.337203942719263
+    ## Gm20390  47.871821328339  -3.8040781305691 0.702192362886461
+    ## Adamts1  114.05510912055  2.88221002504138 0.537733495667342
     ##                      stat               pvalue                 padj
     ##                 <numeric>            <numeric>            <numeric>
-    ## Agap1    6.31453909254268 2.70967823793605e-10 3.23210420221013e-06
-    ## Pcdhb12 -5.59606017426075 2.19277621357827e-08 0.000130777173377808
-    ## Sdc3     5.49584936394316 3.88834321529214e-08 0.000154600526240016
-    ## Gm20390 -5.41743202076857 6.04611256811406e-08 0.000180295076781161
-    ## Adamts1  5.35991961655779 8.32589898418354e-08 0.000198622646166682
+    ## Agap1    6.31454163966992 2.70963361197779e-10 3.23205097236711e-06
+    ## Pcdhb12 -5.59605747511296 2.19281033373432e-08 0.000130779208303915
+    ## Sdc3     5.49585121579168 3.88830240686847e-08  0.00015459890369709
+    ## Gm20390 -5.41743022514784 6.04617326911433e-08 0.000180296886884989
+    ## Adamts1  5.35992280239951 8.32575216111643e-08 0.000198619143555594
 
 Volcano plots
 -------------
 
-    DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DG: standard yoked v. trained") 
+    plot.volcano <- function(mydds, whichfactor, up, down, mycolors, mysubfield){
+      res <- results(mydds, contrast =c(whichfactor, up, down),
+                     independentFiltering = T, alpha = 0.1)
+       data <- data.frame(gene = row.names(res),
+                         padj = res$padj, 
+                         logpadj = -log10(res$padj),
+                         lfc = res$log2FoldChange)
+      data <- na.omit(data)
+      data <- data %>%
+        dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
+                                         yes = up, 
+                                         no = ifelse(data$lfc < 0 & data$padj < 0.1, 
+                                                     yes = down, 
+                                                     no = "NS")))
+      volcano <- data %>%
+        ggplot(aes(x = lfc, y = logpadj)) + 
+        geom_point(aes(color = factor(direction)), size = 1, alpha = 0.75, na.rm = T) + 
+         theme_ms() +
+        scale_color_manual(values = mycolors,
+                           name = "higher in",
+                           breaks=c(down, up))  + 
+       # ylim(c(0,7)) +
+        #xlim(c(-10,10)) +
+        labs(y = "-log10(p)", x = "log fold change", title = mysubfield)  +
+        theme(legend.position = "bottom",
+              legend.spacing.x = unit(-0.1, 'cm'),
+              legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
+      plot(volcano)
+    }
+
+
+
+    DGdds2 <- returnddscombinedgroups("DG") 
 
     ## [1] "DG"
-    ## 
-    ## out of 17011 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 119, 0.7%
-    ## LFC < 0 (down)     : 6, 0.035%
-    ## outliers [1]       : 20, 0.12%
-    ## low counts [2]     : 4608, 27%
-    ## (mean count < 4)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates: 6 workers
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates, fitting model and testing: 6 workers
+
+    ## -- replacing outliers and refitting for 54 genes
+    ## -- DESeq argument 'minReplicatesForReplace' = 7 
+    ## -- original counts are preserved in counts(dds)
+
+    ## estimating dispersions
+
+    ## fitting model and testing
+
+    CA1dds2 <- returnddscombinedgroups("CA1") 
+
+    ## [1] "CA1"
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates: 6 workers
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates, fitting model and testing: 6 workers
+
+    ## -- replacing outliers and refitting for 98 genes
+    ## -- DESeq argument 'minReplicatesForReplace' = 7 
+    ## -- original counts are preserved in counts(dds)
+
+    ## estimating dispersions
+
+    ## fitting model and testing
+
+    CA3dds2 <- returnddscombinedgroups("CA3") 
+
+    ## [1] "CA3"
+
+    ## estimating size factors
+
+    ## estimating dispersions
+
+    ## gene-wise dispersion estimates: 6 workers
+
+    ## mean-dispersion relationship
+
+    ## final dispersion estimates, fitting model and testing: 6 workers
+
+    ## -- replacing outliers and refitting for 53 genes
+    ## -- DESeq argument 'minReplicatesForReplace' = 7 
+    ## -- original counts are preserved in counts(dds)
+
+    ## estimating dispersions
+
+    ## fitting model and testing
+
+    DGconsyokcons <-  plot.volcano(DGdds, "APA2", "standard.trained", "standard.yoked", volcano1, "DG") 
 
 ![](../figures/02c_rnaseqSubfield/volcanos-1.png)
 
-    CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "CA1: standard yoked v. trained")  
-
-    ## [1] "CA1"
-    ## 
-    ## out of 16852 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 522, 3.1%
-    ## LFC < 0 (down)     : 360, 2.1%
-    ## outliers [1]       : 32, 0.19%
-    ## low counts [2]     : 4892, 29%
-    ## (mean count < 5)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
+    DGconflicttrained <-  plot.volcano(DGdds, "APA2", "conflict.trained", "conflict.yoked", volcano5, "DG") 
 
 ![](../figures/02c_rnaseqSubfield/volcanos-2.png)
 
-    CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1", "CA1: standard v. conflict yoked")  
-
-    ## [1] "CA1"
-    ## 
-    ## out of 16852 with nonzero total read count
-    ## adjusted p-value < 0.1
-    ## LFC > 0 (up)       : 545, 3.2%
-    ## LFC < 0 (down)     : 372, 2.2%
-    ## outliers [1]       : 32, 0.19%
-    ## low counts [2]     : 4892, 29%
-    ## (mean count < 5)
-    ## [1] see 'cooksCutoff' argument of ?results
-    ## [2] see 'independentFiltering' argument of ?results
-    ## 
-    ## NULL
+    DGtrained <- plot.volcano(DGdds2, "combinedgroups", "trained", "yoked", volcano7, "DG") 
 
 ![](../figures/02c_rnaseqSubfield/volcanos-3.png)
 
-    volcanos <- plot_grid(DGconsyokcons, CA1consyokcons, CA1yoked , nrow = 1,
-                          labels = c("(d)", "(e)", "(f)"), label_size = 8) 
-    volcanos
+    CA1consyokcons <-  plot.volcano(CA1dds, "APA2", "standard.trained", "standard.yoked", volcano1,  "CA1")  
 
 ![](../figures/02c_rnaseqSubfield/volcanos-4.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=6.65, height=2)
+    CA1yoked <-  plot.volcano(CA1dds, "APA2","conflict.yoked", "standard.yoked", volcano6,  "CA1") 
+
+![](../figures/02c_rnaseqSubfield/volcanos-5.png)
+
+    CA1trained <- plot.volcano(CA1dds2, "combinedgroups", "trained", "yoked", volcano7, "CA1") 
+
+![](../figures/02c_rnaseqSubfield/volcanos-6.png)
+
+    volcanos <- plot_grid(DGconsyokcons, DGconflicttrained, DGtrained,
+                          CA1consyokcons, CA1yoked , CA1trained, nrow = 2,
+                          labels = c("(a)", "(b)","(c)" ,"(d)", "(e)", "(f)"), label_size = 8) 
+    volcanos
+
+![](../figures/02c_rnaseqSubfield/volcanos-7.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=6.65, height=4)
     plot(volcanos)    
     dev.off()
 

@@ -24,6 +24,7 @@
                                            yoked = c("shocked", "yoked")))
     a.colData$combinedgroups <- factor(a.colData$combinedgroups, levels = c("yoked", "trained"))
 
+
     returndds2 <- function(mytissue){
       print(mytissue)
       colData <- a.colData %>% 
@@ -316,47 +317,6 @@
     ## 4 Fn3krp -1.427451 0.048013887    CA1 trained-yoked
     ## 5 Glcci1  1.982758 0.001438739    CA1 trained-yoked
     ## 6   Gnaz -3.111022 0.011208393    CA1 trained-yoked
-
-    plot.volcano.trainedyoked <- function(mydds){
-      res <- results(mydds, contrast =c("combinedgroups", "trained", "yoked"),
-                     independentFiltering = T, alpha = 0.1)
-       data <- data.frame(gene = row.names(res),
-                         padj = res$padj, 
-                         logpadj = -log10(res$padj),
-                         lfc = res$log2FoldChange)
-      data <- na.omit(data)
-      data <- data %>%
-        dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                                         yes = "trained", 
-                                         no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                                     yes = "yoked", 
-                                                     no = "NS")))
-      volcano <- data %>%
-        ggplot(aes(x = lfc, y = logpadj)) + 
-        geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-          theme_ms() +
-        scale_color_manual(values = c("grey", "red", "black"))  + 
-        ylim(c(0,7)) +
-        xlim(c(-10,10)) +
-        labs(x = "lfc", y = "-log10(p)")  +
-        theme(panel.grid.minor=element_blank(),
-                    panel.grid.major=element_blank(),
-                    legend.position = "none") 
-      plot(volcano)
-    }
-
-    a <- plot.volcano.trainedyoked(DGdds)
-
-![](../figures/02f_trainedvyoked/volcanos-1.png)
-
-    #plot.volcano.trainedyoked(CA3dds)
-    b <- plot.volcano.trainedyoked(CA1dds)
-
-![](../figures/02f_trainedvyoked/volcanos-2.png)
-
-    plot_grid(a,b, labels = c("DG", "CA1"))
-
-![](../figures/02f_trainedvyoked/volcanos-3.png)
 
     resvals2 <- function(mydds, contrastvector, mypval){
       res <- results(mydds, contrast = c(contrastvector[1],contrastvector[2],contrastvector[3]), independentFiltering = T)

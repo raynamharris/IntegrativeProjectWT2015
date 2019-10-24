@@ -83,9 +83,6 @@ pheatmapcolors3 = list(
 trainedcolors <-  c( "standard.yoked" = "#404040", "standard.trained" = "#ca0020")
 conflictcolors <- c("conflict.yoked" = "#969696","conflict.trained" = "#f4a582")
 
-volcano5 <-  c("conflict.trained" = "#f4a582",
-               "conflict.yoked" = "#969696", 
-               "NS" = "#d9d9d9")
 
 volcano1 <-  c("standard.trained" = "#ca0020",
                "standard.yoked" = "#404040", 
@@ -110,6 +107,12 @@ volcano5 <-  c("conflict.trained" = "#f4a582",
 volcano6 <-  c("standard.yoked" = "#404040",
                "conflict.yoked" = "#969696", 
                "NS" = "#d9d9d9")
+
+volcano7 <-  c("trained" = "darkred",
+               "yoked" = "black", 
+               "NS" = "#d9d9d9")
+
+
 
 
 # subfield box plots

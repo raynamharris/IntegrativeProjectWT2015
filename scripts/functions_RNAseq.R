@@ -1,3 +1,53 @@
+
+returnddsAPA2 <- function(mytissue){
+  print(mytissue)
+  colData <- a.colData %>% 
+    filter(Punch %in% c(mytissue))  %>% 
+    droplevels()
+  
+  savecols <- as.character(colData$RNAseqID) 
+  savecols <- as.vector(savecols) 
+  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+  
+  ## create DESeq object using the factors Punch and APA
+  dds <- DESeqDataSetFromMatrix(countData = countData,
+                                colData = colData,
+                                design = ~ APA2)
+  
+  dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+  dds <- DESeq(dds, parallel = TRUE)
+  return(dds)
+}
+
+
+returnddscombinedgroups <- function(mytissue){
+  print(mytissue)
+  colData <- a.colData %>% 
+    filter(Punch %in% c(mytissue))  %>% 
+    droplevels()
+  
+  savecols <- as.character(colData$RNAseqID) 
+  savecols <- as.vector(savecols) 
+  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+  
+  ## create DESeq object using the factors Punch and APA
+  dds <- DESeqDataSetFromMatrix(countData = countData,
+                                colData = colData,
+                                design = ~ combinedgroups)
+  
+  dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
+  dds <- DESeq(dds, parallel = TRUE)
+  return(dds)
+}
+
+returnvsds <- function(mydds, vsdfilename){
+  dds <- mydds
+  vsd <- vst(dds, blind=FALSE) ## variance stabilized
+  print(head(assay(vsd),3))
+  return(write.csv(assay(vsd), file = vsdfilename, row.names = T))
+}
+
+
 res_summary <- function(mycontrast){
   res <- results(dds, contrast = mycontrast, independentFiltering = T)
   print(mycontrast)
@@ -318,8 +368,7 @@ plotmeansd <- function(mymeandev, mybehavior, myylab, mycolors){
 
 # volcano plots 
 
-
-plot.volcano <- function(mydds,  up, down, mycolors){
+plot.volcano <- function(mydds, up, down, mycolors){
   res <- results(mydds, contrast =c("APA2", up, down),
                  independentFiltering = T, alpha = 0.1)
   print(summary(res))
@@ -347,8 +396,6 @@ plot.volcano <- function(mydds,  up, down, mycolors){
                 legend.position = "none") 
   plot(volcano)
 }
-
-
 
 
 returndds <- function(mytissue, mytreatment){

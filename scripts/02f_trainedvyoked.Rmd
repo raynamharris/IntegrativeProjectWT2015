@@ -32,6 +32,7 @@ a.colData <- a.colData %>%
                                        yoked = c("shocked", "yoked")))
 a.colData$combinedgroups <- factor(a.colData$combinedgroups, levels = c("yoked", "trained"))
 
+
 returndds2 <- function(mytissue){
   print(mytissue)
   colData <- a.colData %>% 
@@ -106,41 +107,7 @@ CA1DEGs <- listofDEGstrainedvyoked(CA1dds, "CA1")
 ```
 
 
-```{r volcanos}
-plot.volcano.trainedyoked <- function(mydds){
-  res <- results(mydds, contrast =c("combinedgroups", "trained", "yoked"),
-                 independentFiltering = T, alpha = 0.1)
-   data <- data.frame(gene = row.names(res),
-                     padj = res$padj, 
-                     logpadj = -log10(res$padj),
-                     lfc = res$log2FoldChange)
-  data <- na.omit(data)
-  data <- data %>%
-    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                                     yes = "trained", 
-                                     no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                                 yes = "yoked", 
-                                                 no = "NS")))
-  volcano <- data %>%
-    ggplot(aes(x = lfc, y = logpadj)) + 
-    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-      theme_ms() +
-    scale_color_manual(values = c("grey", "red", "black"))  + 
-    ylim(c(0,7)) +
-    xlim(c(-10,10)) +
-    labs(x = "lfc", y = "-log10(p)")  +
-    theme(panel.grid.minor=element_blank(),
-                panel.grid.major=element_blank(),
-                legend.position = "none") 
-  plot(volcano)
-}
 
-a <- plot.volcano.trainedyoked(DGdds)
-#plot.volcano.trainedyoked(CA3dds)
-b <- plot.volcano.trainedyoked(CA1dds)
-
-plot_grid(a,b, labels = c("DG", "CA1"))
-```
 
 ```{r pheatmap}
 resvals2 <- function(mydds, contrastvector, mypval){

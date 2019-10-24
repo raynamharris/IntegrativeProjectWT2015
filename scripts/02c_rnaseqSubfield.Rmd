@@ -25,7 +25,7 @@ source("figureoptions.R")
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = F)
+knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = T)
 ```
 
 ## Get varience stabilized gene expression for each tissue
@@ -34,36 +34,21 @@ knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = F)
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
 a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
-returndds <- function(mytissue){
-  print(mytissue)
-  colData <- a.colData %>% 
-    filter(Punch %in% c(mytissue))  %>% 
-  droplevels()
-  
-  savecols <- as.character(colData$RNAseqID) 
-  savecols <- as.vector(savecols) 
-  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+a.colData <- a.colData %>%
+  mutate(combinedgroups = fct_collapse(Treatment,
+                                       trained = c("conflict", "trained"),
+                                       yoked = c("shocked", "yoked")))
+a.colData$combinedgroups <- factor(a.colData$combinedgroups, levels = c("yoked", "trained"))
+a.colData$APA2 <- factor(a.colData$APA2, levels = c("standard.yoked","standard.trained",
+                                                  "conflict.yoked", "conflict.trained"))
 
-  ## create DESeq object using the factors Punch and APA
-  dds <- DESeqDataSetFromMatrix(countData = countData,
-                              colData = colData,
-                              design = ~ APA2)
+DGdds <- returnddsAPA2("DG") 
+CA1dds <- returnddsAPA2("CA1") 
+CA3dds <- returnddsAPA2("CA3") 
 
-  dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-  dds <- DESeq(dds, parallel = TRUE)
-  return(dds)
-}
-
-DGdds <- returndds("DG") 
-CA1dds <- returndds("CA1") 
-CA3dds <- returndds("CA3") 
-
-returnvsds <- function(mydds, vsdfilename){
-  dds <- mydds
-  vsd <- vst(dds, blind=FALSE) ## variance stabilized
-  print(head(assay(vsd),3))
-  return(write.csv(assay(vsd), file = vsdfilename, row.names = T))
-}
+DGdds2 <- returnddscombinedgroups("DG") 
+CA1dds2 <- returnddscombinedgroups("CA1") 
+CA3dds2 <- returnddscombinedgroups("CA3") 
 
 returnvsds(DGdds, "../data/02c_DGvsd.csv")
 returnvsds(CA1dds, "../data/02c_CA1vsd.csv")
@@ -96,15 +81,58 @@ res_summary_subfield(CA1dds, c("APA2", "conflict.yoked", "standard.yoked"))
 ## Volcano plots
 
 ```{r volcanos}
-DGconsyokcons <-  plot.cons.yokcons(DGdds, "DG", "DG: standard yoked v. trained") 
-CA1consyokcons <-  plot.cons.yokcons(CA1dds, "CA1", "CA1: standard yoked v. trained")  
-CA1yoked <-  plot.yokconf.yokcons(CA1dds, "CA1", "CA1: standard v. conflict yoked")  
+plot.volcano <- function(mydds, whichfactor, up, down, mycolors, mysubfield){
+  res <- results(mydds, contrast =c(whichfactor, up, down),
+                 independentFiltering = T, alpha = 0.1)
+   data <- data.frame(gene = row.names(res),
+                     padj = res$padj, 
+                     logpadj = -log10(res$padj),
+                     lfc = res$log2FoldChange)
+  data <- na.omit(data)
+  data <- data %>%
+    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
+                                     yes = up, 
+                                     no = ifelse(data$lfc < 0 & data$padj < 0.1, 
+                                                 yes = down, 
+                                                 no = "NS")))
+  volcano <- data %>%
+    ggplot(aes(x = lfc, y = logpadj)) + 
+    geom_point(aes(color = factor(direction)), size = 1, alpha = 0.75, na.rm = T) + 
+     theme_ms() +
+    scale_color_manual(values = mycolors,
+                       name = "higher in",
+                       breaks=c(down, up))  + 
+   # ylim(c(0,7)) +
+    #xlim(c(-10,10)) +
+    labs(y = "-log10(p)", x = "log fold change", title = mysubfield)  +
+    theme(legend.position = "bottom",
+          legend.spacing.x = unit(-0.1, 'cm'),
+          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
+  plot(volcano)
+}
 
-volcanos <- plot_grid(DGconsyokcons, CA1consyokcons, CA1yoked , nrow = 1,
-                      labels = c("(d)", "(e)", "(f)"), label_size = 8) 
+
+
+DGdds2 <- returnddscombinedgroups("DG") 
+CA1dds2 <- returnddscombinedgroups("CA1") 
+CA3dds2 <- returnddscombinedgroups("CA3") 
+
+
+DGconsyokcons <-  plot.volcano(DGdds, "APA2", "standard.trained", "standard.yoked", volcano1, "DG") 
+DGconflicttrained <-  plot.volcano(DGdds, "APA2", "conflict.trained", "conflict.yoked", volcano5, "DG") 
+DGtrained <- plot.volcano(DGdds2, "combinedgroups", "trained", "yoked", volcano7, "DG") 
+
+CA1consyokcons <-  plot.volcano(CA1dds, "APA2", "standard.trained", "standard.yoked", volcano1,  "CA1")  
+CA1yoked <-  plot.volcano(CA1dds, "APA2","conflict.yoked", "standard.yoked", volcano6,  "CA1") 
+CA1trained <- plot.volcano(CA1dds2, "combinedgroups", "trained", "yoked", volcano7, "CA1") 
+
+
+volcanos <- plot_grid(DGconsyokcons, DGconflicttrained, DGtrained,
+                      CA1consyokcons, CA1yoked , CA1trained, nrow = 2,
+                      labels = c("(a)", "(b)","(c)" ,"(d)", "(e)", "(f)"), label_size = 8) 
 volcanos
 
-pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=6.65, height=2)
+pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=6.65, height=4)
 plot(volcanos)    
 dev.off()
 ```
