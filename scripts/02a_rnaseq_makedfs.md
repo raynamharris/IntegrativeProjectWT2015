@@ -69,13 +69,10 @@ some samples for reasons described within the code blocks.
       arrange(RNAseqID) %>%
       droplevels() 
 
-    colData <-  colData %>% filter(RNAseqID != "148B-DG-4") %>% filter(RNAseqID != "143B-DG-1") %>% filter(RNAseqID != "145A-DG-2")
-
     # reset levels
     colData$treatment <- factor(colData$treatment, levels = c("standard.yoked", "standard.trained",
                                                               "conflict.yoked", "conflict.trained"))
     colData$training <- factor(colData$training, levels = c("yoked", "trained"))
-
 
 
     # set factors
@@ -93,17 +90,17 @@ some samples for reasons described within the code blocks.
     ## 1 143A-CA3-1 15143A CA3      conflict.trained trained 
     ## 2 143A-DG-1  15143A DG       conflict.trained trained 
     ## 3 143B-CA1-1 15143B CA1      conflict.yoked   yoked   
-    ## 4 143C-CA1-1 15143C CA1      standard.trained trained 
-    ## 5 143D-CA1-3 15143D CA1      standard.yoked   yoked   
-    ## 6 143D-DG-3  15143D DG       standard.yoked   yoked
+    ## 4 143B-DG-1  15143B DG       conflict.yoked   yoked   
+    ## 5 143C-CA1-1 15143C CA1      standard.trained trained 
+    ## 6 143D-CA1-3 15143D CA1      standard.yoked   yoked
 
     colData %>% select(subfield,treatment)  %>%  summary()
 
     ##  subfield            treatment 
-    ##  DG :13   standard.yoked  : 9  
+    ##  DG :16   standard.yoked  : 9  
     ##  CA3:13   standard.trained: 9  
-    ##  CA1:15   conflict.yoked  :10  
-    ##           conflict.trained:13
+    ##  CA1:15   conflict.yoked  :12  
+    ##           conflict.trained:14
 
 Now, we are ready to calculate differential gene expression using the
 DESeq package. For simplicity, I will use the standard nameing of
@@ -134,57 +131,61 @@ this could say something about data before normalization
     totalCounts <- colSums(countData)
     totalCounts
 
-    ## 143A-CA3-1  143A-DG-1 143B-CA1-1 143C-CA1-1 143D-CA1-3  143D-DG-3 
-    ##    3327867    5279392    1719498    2213452    1091672    1043885 
-    ## 144A-CA1-2 144A-CA3-2  144A-DG-2 144B-CA1-1 144B-CA3-1 144C-CA1-2 
-    ##    2980775     421165    3210030    2555909    1027388    3298825 
-    ## 144C-CA3-2  144C-DG-2 144D-CA3-2  144D-DG-2 145A-CA1-2 145A-CA3-2 
-    ##    1238998    2224182    2323243    4691568    4680960     345619 
-    ## 145B-CA1-1  145B-DG-1 146A-CA1-2 146A-CA3-2  146A-DG-2 146B-CA1-2 
-    ##    2020114    1509310    1715282    2756300    1201333    1063417 
-    ## 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 146D-CA1-3 146D-CA3-3 
-    ##    2144771     116106    1360004     492145     391369    2994536 
-    ##  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 147D-CA3-1  147D-DG-1 
-    ##      90417    3072308    5754581    4350647    4624995   11700703 
-    ## 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 148B-CA3-4 
-    ##    5260906    2676397    4019062     337174    3486840
+    ## 143A-CA3-1  143A-DG-1 143B-CA1-1  143B-DG-1 143C-CA1-1 143D-CA1-3 
+    ##    3327867    5279392    1719498    2085031    2213452    1091672 
+    ##  143D-DG-3 144A-CA1-2 144A-CA3-2  144A-DG-2 144B-CA1-1 144B-CA3-1 
+    ##    1043885    2980775     421165    3210030    2555909    1027388 
+    ## 144C-CA1-2 144C-CA3-2  144C-DG-2 144D-CA3-2  144D-DG-2 145A-CA1-2 
+    ##    3298825    1238998    2224182    2323243    4691568    4680960 
+    ## 145A-CA3-2  145A-DG-2 145B-CA1-1  145B-DG-1 146A-CA1-2 146A-CA3-2 
+    ##     345619    1435833    2020114    1509310    1715282    2756300 
+    ##  146A-DG-2 146B-CA1-2 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 
+    ##    1201333    1063417    2144771     116106    1360004     492145 
+    ## 146D-CA1-3 146D-CA3-3  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 
+    ##     391369    2994536      90417    3072308    5754581    4350647 
+    ## 147D-CA3-1  147D-DG-1 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 
+    ##    4624995   11700703    5260906    2676397    4019062     337174 
+    ## 148B-CA3-4  148B-DG-4 
+    ##    3486840     798668
 
     ### on average 1 million gene counts per sample 
     summary((colSums(countData)/1000000))
 
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-    ##  0.09042  1.09167  2.22418  2.60520  3.32787 11.70070
+    ##  0.09042  1.08461  2.17911  2.52574  3.30608 11.70070
 
     ## stats
     counts <- countData
     dim( counts )
 
-    ## [1] 22485    41
+    ## [1] 22485    44
 
     colSums( counts ) / 1e06  # in millions of reads
 
-    ## 143A-CA3-1  143A-DG-1 143B-CA1-1 143C-CA1-1 143D-CA1-3  143D-DG-3 
-    ##   3.327867   5.279392   1.719498   2.213452   1.091672   1.043885 
-    ## 144A-CA1-2 144A-CA3-2  144A-DG-2 144B-CA1-1 144B-CA3-1 144C-CA1-2 
-    ##   2.980775   0.421165   3.210030   2.555909   1.027388   3.298825 
-    ## 144C-CA3-2  144C-DG-2 144D-CA3-2  144D-DG-2 145A-CA1-2 145A-CA3-2 
-    ##   1.238998   2.224182   2.323243   4.691568   4.680960   0.345619 
-    ## 145B-CA1-1  145B-DG-1 146A-CA1-2 146A-CA3-2  146A-DG-2 146B-CA1-2 
-    ##   2.020114   1.509310   1.715282   2.756300   1.201333   1.063417 
-    ## 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 146D-CA1-3 146D-CA3-3 
-    ##   2.144771   0.116106   1.360004   0.492145   0.391369   2.994536 
-    ##  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 147D-CA3-1  147D-DG-1 
-    ##   0.090417   3.072308   5.754581   4.350647   4.624995  11.700703 
-    ## 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 148B-CA3-4 
-    ##   5.260906   2.676397   4.019062   0.337174   3.486840
+    ## 143A-CA3-1  143A-DG-1 143B-CA1-1  143B-DG-1 143C-CA1-1 143D-CA1-3 
+    ##   3.327867   5.279392   1.719498   2.085031   2.213452   1.091672 
+    ##  143D-DG-3 144A-CA1-2 144A-CA3-2  144A-DG-2 144B-CA1-1 144B-CA3-1 
+    ##   1.043885   2.980775   0.421165   3.210030   2.555909   1.027388 
+    ## 144C-CA1-2 144C-CA3-2  144C-DG-2 144D-CA3-2  144D-DG-2 145A-CA1-2 
+    ##   3.298825   1.238998   2.224182   2.323243   4.691568   4.680960 
+    ## 145A-CA3-2  145A-DG-2 145B-CA1-1  145B-DG-1 146A-CA1-2 146A-CA3-2 
+    ##   0.345619   1.435833   2.020114   1.509310   1.715282   2.756300 
+    ##  146A-DG-2 146B-CA1-2 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 
+    ##   1.201333   1.063417   2.144771   0.116106   1.360004   0.492145 
+    ## 146D-CA1-3 146D-CA3-3  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 
+    ##   0.391369   2.994536   0.090417   3.072308   5.754581   4.350647 
+    ## 147D-CA3-1  147D-DG-1 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 
+    ##   4.624995  11.700703   5.260906   2.676397   4.019062   0.337174 
+    ## 148B-CA3-4  148B-DG-4 
+    ##   3.486840   0.798668
 
     table( rowSums( counts ) )[ 1:30 ] # Number of genes with low counts
 
     ## 
     ##    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14 
-    ## 4234  348  239  229  167  155  119  110  114  111   84   75   81   68   76 
+    ## 4203  353  236  225  168  145  118  119  110  111   81   82   77   75   71 
     ##   15   16   17   18   19   20   21   22   23   24   25   26   27   28   29 
-    ##   52   51   70   64   51   55   48   51   55   39   46   44   44   27   28
+    ##   48   56   65   58   55   55   55   51   48   38   47   48   37   32   26
 
     rowsum <- as.data.frame(colSums( counts ) / 1e06 )
     names(rowsum)[1] <- "millioncounts"
