@@ -14,9 +14,9 @@ theme_ms <- function () {
 # for mean and sd plots of behavior 
 ann_colors_treatment = list(
   treatment =  c('standard yoked' = "#404040", 
-            'standard trained' = "#ca0020",
-            'conflict yoked' = "#969696",
-            'conflict trained' = "#f4a582"),
+                 'standard trained' = "#ca0020",
+                 'conflict yoked' = "#969696",
+                 'conflict trained' = "#f4a582"),
   Session = c(  "T1"      = "#fff7f3",
                 "T2"      = "#fde0dd",
                 "T3"      = "#fcc5c0",
@@ -24,8 +24,8 @@ ann_colors_treatment = list(
                 "T4_C1"   = "#f768a1",
                 "T5_C2"   = "#dd3497",
                 "T6_C3"   = "#ae017e",
-              "Retention" = "#7a0177"   )
-  )
+                "Retention" = "#7a0177"   )
+)
 
 
 # for beahvior and physiology
@@ -61,12 +61,12 @@ volcanoCA3vCA1 <-  c("CA1" = "#7570b3",
 
 pheatmapcolors = list(
   subfield = c(DG = (values=c("#d95f02")),
-              CA3 = (values=c("#1b9e77")),
-              CA1 = (values=c("#7570b3"))),
+               CA3 = (values=c("#1b9e77")),
+               CA1 = (values=c("#7570b3"))),
   treatment = c( 'standard yoked' = (values=c("#404040")), 
-            'standard trained' = (values=c("#ca0020")),
-              'conflict yoked' = (values=c("#969696")),
-            'conflict trained' = (values=c("#f4a582"))))
+                 'standard trained' = (values=c("#ca0020")),
+                 'conflict yoked' = (values=c("#969696")),
+                 'conflict trained' = (values=c("#f4a582"))))
 
 pheatmapcolors2 = list(
   combinedgroups = c(yoked = "black",
@@ -82,14 +82,14 @@ pheatmapcolors3 = list(
 
 trainedcolors <-  c( "standard.yoked" = "#404040", "standard.trained" = "#ca0020")
 conflictcolors <- c("conflict.yoked" = "#969696","conflict.trained" = "#f4a582")
-  
+
 volcano5 <-  c("conflict.trained" = "#f4a582",
-                 "conflict.yoked" = "#969696", 
-                 "NS" = "#d9d9d9")
+               "conflict.yoked" = "#969696", 
+               "NS" = "#d9d9d9")
 
 volcano1 <-  c("standard.trained" = "#ca0020",
-           "standard.yoked" = "#404040", 
-           "NS" = "#d9d9d9")
+               "standard.yoked" = "#404040", 
+               "NS" = "#d9d9d9")
 
 volcano2 <-  c("standard.trained" = "#ca0020",
                "conflict.trained" = "#f4a582", 
