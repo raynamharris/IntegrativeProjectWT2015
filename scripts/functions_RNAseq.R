@@ -28,41 +28,20 @@ plot.tSNE.trained <- function(mydds, myperplexity, mysubfield){
 
 
 
-returnddsAPA2 <- function(mytissue){
+returnddstreatment <- function(mytissue){
   print(mytissue)
   colData <- a.colData %>% 
-    filter(Punch %in% c(mytissue))  %>% 
+    filter(subfield %in% c(mytissue))  %>% 
     droplevels()
   
   savecols <- as.character(colData$RNAseqID) 
   savecols <- as.vector(savecols) 
   countData <- a.countData %>% dplyr::select(one_of(savecols)) 
   
-  ## create DESeq object using the factors Punch and APA
+  ## create DESeq object using the factors subfield and APA
   dds <- DESeqDataSetFromMatrix(countData = countData,
                                 colData = colData,
-                                design = ~ APA2)
-  
-  dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-  dds <- DESeq(dds, parallel = TRUE)
-  return(dds)
-}
-
-
-returnddscombinedgroups <- function(mytissue){
-  print(mytissue)
-  colData <- a.colData %>% 
-    filter(Punch %in% c(mytissue))  %>% 
-    droplevels()
-  
-  savecols <- as.character(colData$RNAseqID) 
-  savecols <- as.vector(savecols) 
-  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
-  
-  ## create DESeq object using the factors Punch and APA
-  dds <- DESeqDataSetFromMatrix(countData = countData,
-                                colData = colData,
-                                design = ~ combinedgroups)
+                                design = ~ treatment)
   
   dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
   dds <- DESeq(dds, parallel = TRUE)
@@ -72,17 +51,17 @@ returnddscombinedgroups <- function(mytissue){
 returndds2 <- function(mytissue){
   print(mytissue)
   colData <- a.colData %>% 
-    filter(Punch %in% c(mytissue))  %>% 
+    filter(subfield %in% c(mytissue))  %>% 
     droplevels()
   
   savecols <- as.character(colData$RNAseqID) 
   savecols <- as.vector(savecols) 
   countData <- a.countData %>% dplyr::select(one_of(savecols)) 
   
-  ## create DESeq object using the factors Punch and APA
+  ## create DESeq object using the factors subfield and APA
   dds <- DESeqDataSetFromMatrix(countData = countData,
                                 colData = colData,
-                                design = ~ combinedgroups)
+                                design = ~ training)
   
   dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
   dds <- DESeq(dds, parallel = TRUE)
@@ -476,7 +455,7 @@ plot.volcano <- function(mydds, up, down, mycolors){
 returndds <- function(mytissue, mytreatment){
   print(mytissue)
   colData <- a.colData %>% 
-    filter(Punch %in% c(mytissue),
+    filter(subfield %in% c(mytissue),
            APA2 %in% c(mytreatment))  %>% 
     droplevels()
   
@@ -484,7 +463,7 @@ returndds <- function(mytissue, mytreatment){
   savecols <- as.vector(savecols) 
   countData <- a.countData %>% dplyr::select(one_of(savecols)) 
   
-  ## create DESeq object using the factors Punch and APA
+  ## create DESeq object using the factors subfield and APA
   dds <- DESeqDataSetFromMatrix(countData = countData,
                                 colData = colData,
                                 design = ~ APA2)

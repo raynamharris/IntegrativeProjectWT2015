@@ -38,6 +38,8 @@ DG_DEGs <- as.data.frame(t(DG_DEGs))
 DG_DEGs$sample <- row.names(DG_DEGs)
 DG_DEGs$mouse <- sapply(strsplit(as.character(DG_DEGs$sample),"\\-"), "[", 1)
 DG_DEGs <- DG_DEGs %>% select(mouse,`1190002N15RIK`:ZFP869)
+DG_DEGs
+
 ```
 
 ```{r joining}

@@ -7,9 +7,8 @@ This workflow was modified from the DESeq2 tutorial found at:
 First I load a handful of packages for data wrangling, gene expression
 analysis, data visualization, and statistics.
 
-    library(dplyr) ## for filtering and selecting rows
-    library(plyr) ## for renmaing factors
-    library(reshape2) ## for melting dataframe
+    library(tidyverse) ## for filtering and selecting rows
+    library(forcats)  # for renaming factors
     library(DESeq2) ## for gene expression analysis
     library(edgeR)  ## for basic read counts status
     library(magrittr) ## to use the weird pipe
@@ -31,250 +30,161 @@ counts. This file was also created via kallisto.Rmd file - colData: This
 file contains all the information I collected for each sample that was
 sequenced. Not all columns will be needed, so some are removed later.
 
-    countData <- read.csv("../data/00_CountData.csv", row.names=1, check.names=FALSE )
-    colData <- read.csv("../data/IntegrativeWT2015ColData.csv")
+I also tidy the trait data for each sample so that I can calculate
+differential gene expression for the colData of interest. I also remove
+some samples for reasons described within the code blocks.
 
-In this next section, I tidy the trait data for each sample so that I
-can calculate differential gene expression for the colData of interest.
-I also remove some samples for reasons described within the code blocks.
+    # clean col Data
+    colData <- read_csv("../data/IntegrativeWT2015ColData.csv")
 
-    rownames(colData) <- colData$RNAseqID    # set $genoAPAsessionInd as rownames
-    colData <- colData[c(1,2,5,7:11)]  #keeping informative volumns
+    ## Parsed with column specification:
+    ## cols(
+    ##   RNAseqID = col_character(),
+    ##   Mouse = col_character(),
+    ##   year = col_double(),
+    ##   Genotype = col_character(),
+    ##   Region = col_character(),
+    ##   jobnumber = col_character(),
+    ##   Group = col_character(),
+    ##   APA = col_character(),
+    ##   Conflict = col_character(),
+    ##   APA_Conflict = col_character(),
+    ##   Treatment = col_character()
+    ## )
+
+    colData$APA_Conflict <- factor(colData$APA_Conflict)
+    colData <- colData %>%
+      mutate(ID = gsub("[[:punct:]]", "", colData$Mouse)) %>%
+      filter(APA_Conflict != "NA_NA") %>%
+      mutate(subfield = Region) %>%
+      mutate(treatment = fct_recode(APA_Conflict,
+                                    "standard.yoked" = "Yoked_NoConflict",
+                                    "standard.trained" = "Trained_NoConflict",
+                                    "conflict.yoked" = "Yoked_Conflict",
+                                    "conflict.trained" = "Trained_Conflict")) %>%
+      mutate(training = fct_collapse(treatment,
+                                          trained = c("standard.trained", "conflict.trained"),
+                                          yoked = c("standard.yoked", "conflict.yoked"))) %>%
+      select(RNAseqID,ID,subfield, treatment, training) %>%
+      arrange(RNAseqID) %>%
+      droplevels() 
+
+    colData <-  colData %>% filter(RNAseqID != "148B-DG-4") %>% filter(RNAseqID != "143B-DG-1") %>% filter(RNAseqID != "145A-DG-2")
+
+    # reset levels
+    colData$treatment <- factor(colData$treatment, levels = c("standard.yoked", "standard.trained",
+                                                              "conflict.yoked", "conflict.trained"))
+    colData$training <- factor(colData$training, levels = c("yoked", "trained"))
+
+
+
+    # set factors
+    colData$subfield <- factor(colData$subfield, levels = c("DG", "CA3", "CA1"))
+    colData$treatment <- factor(colData$treatment, levels = c("standard.yoked", "standard.trained",
+                                                              "conflict.yoked", "conflict.trained"))
+    colData$training <- factor(colData$training, levels = c("yoked", "trained"))
+
+    #view
     head(colData)
 
-    ##              RNAseqID   Mouse Region      Group     APA   Conflict
-    ## 143A-CA3-1 143A-CA3-1 15-143A    CA3   conflict Trained   Conflict
-    ## 143A-DG-1   143A-DG-1 15-143A     DG   conflict Trained   Conflict
-    ## 143B-CA1-1 143B-CA1-1 15-143B    CA1    control   Yoked   Conflict
-    ## 143B-DG-1   143B-DG-1 15-143B     DG    control   Yoked   Conflict
-    ## 143C-CA1-1 143C-CA1-1 15-143C    CA1 consistent Trained NoConflict
-    ## 143D-CA1-3 143D-CA1-3 15-143D    CA1    control   Yoked NoConflict
-    ##                  APA_Conflict Treatment
-    ## 143A-CA3-1   Trained_Conflict  conflict
-    ## 143A-DG-1    Trained_Conflict  conflict
-    ## 143B-CA1-1     Yoked_Conflict   shocked
-    ## 143B-DG-1      Yoked_Conflict   shocked
-    ## 143C-CA1-1 Trained_NoConflict   trained
-    ## 143D-CA1-3   Yoked_NoConflict     yoked
+    ## # A tibble: 6 x 5
+    ##   RNAseqID   ID     subfield treatment        training
+    ##   <chr>      <chr>  <fct>    <fct>            <fct>   
+    ## 1 143A-CA3-1 15143A CA3      conflict.trained trained 
+    ## 2 143A-DG-1  15143A DG       conflict.trained trained 
+    ## 3 143B-CA1-1 15143B CA1      conflict.yoked   yoked   
+    ## 4 143C-CA1-1 15143C CA1      standard.trained trained 
+    ## 5 143D-CA1-3 15143D CA1      standard.yoked   yoked   
+    ## 6 143D-DG-3  15143D DG       standard.yoked   yoked
 
-    levels(colData$APA_Conflict)
+    colData %>% select(subfield,treatment)  %>%  summary()
 
-    ## [1] "NA_NA"              "Trained_Conflict"   "Trained_NoConflict"
-    ## [4] "Yoked_Conflict"     "Yoked_NoConflict"
-
-    # changing the analysis to include homecage
-    # colData <- colData %>% dplyr::filter(!grepl("147-|148-", RNAseqID))  # remove 147, and 148:  homecage animals 
-    colData$ID <- gsub("[[:punct:]]", "", colData$Mouse) #make a column that thas id without the dash
-    colData$APA <- NULL ## delete old APA column
-    names(colData)[names(colData)=="APA_Conflict"] <- "APA3" #rename  APA3 to match color scheme
-    names(colData)[names(colData)=="Region"] <- "Punch" #rename  region to punch
-
-    # rename factors & group all Control animals into 1 group
-    colData$APA2 <- colData$APA3 
-    colData$APA2 <- revalue(colData$APA2, c("NA_NA" = "home.cage")) 
-    colData$APA2 <- revalue(colData$APA2, c("Trained_Conflict" = "conflict.trained")) 
-    colData$APA2 <- revalue(colData$APA2, c("Trained_NoConflict" = "standard.trained")) 
-    colData$APA2 <- revalue(colData$APA2, c("Yoked_Conflict" = "conflict.yoked")) 
-    colData$APA2 <- revalue(colData$APA2, c("Yoked_NoConflict" = "standard.yoked")) 
-    head(colData)
-
-    ##              RNAseqID   Mouse Punch      Group   Conflict
-    ## 143A-CA3-1 143A-CA3-1 15-143A   CA3   conflict   Conflict
-    ## 143A-DG-1   143A-DG-1 15-143A    DG   conflict   Conflict
-    ## 143B-CA1-1 143B-CA1-1 15-143B   CA1    control   Conflict
-    ## 143B-DG-1   143B-DG-1 15-143B    DG    control   Conflict
-    ## 143C-CA1-1 143C-CA1-1 15-143C   CA1 consistent NoConflict
-    ## 143D-CA1-3 143D-CA1-3 15-143D   CA1    control NoConflict
-    ##                          APA3 Treatment     ID             APA2
-    ## 143A-CA3-1   Trained_Conflict  conflict 15143A conflict.trained
-    ## 143A-DG-1    Trained_Conflict  conflict 15143A conflict.trained
-    ## 143B-CA1-1     Yoked_Conflict   shocked 15143B   conflict.yoked
-    ## 143B-DG-1      Yoked_Conflict   shocked 15143B   conflict.yoked
-    ## 143C-CA1-1 Trained_NoConflict   trained 15143C standard.trained
-    ## 143D-CA1-3   Yoked_NoConflict     yoked 15143D   standard.yoked
-
-    # reorder 
-    colData <- colData[c(1:5,7:9)]
-    colData
-
-    ##              RNAseqID   Mouse Punch      Group   Conflict Treatment     ID
-    ## 143A-CA3-1 143A-CA3-1 15-143A   CA3   conflict   Conflict  conflict 15143A
-    ## 143A-DG-1   143A-DG-1 15-143A    DG   conflict   Conflict  conflict 15143A
-    ## 143B-CA1-1 143B-CA1-1 15-143B   CA1    control   Conflict   shocked 15143B
-    ## 143B-DG-1   143B-DG-1 15-143B    DG    control   Conflict   shocked 15143B
-    ## 143C-CA1-1 143C-CA1-1 15-143C   CA1 consistent NoConflict   trained 15143C
-    ## 143D-CA1-3 143D-CA1-3 15-143D   CA1    control NoConflict     yoked 15143D
-    ## 143D-DG-3   143D-DG-3 15-143D    DG    control NoConflict     yoked 15143D
-    ## 144A-CA1-2 144A-CA1-2 15-144A   CA1   conflict   Conflict  conflict 15144A
-    ## 144A-CA3-2 144A-CA3-2 15-144A   CA3   conflict   Conflict  conflict 15144A
-    ## 144A-DG-2   144A-DG-2 15-144A    DG   conflict   Conflict  conflict 15144A
-    ## 144B-CA1-1 144B-CA1-1 15-144B   CA1    control   Conflict   shocked 15144B
-    ## 144B-CA3-1 144B-CA3-1 15-144B   CA3    control   Conflict   shocked 15144B
-    ## 144C-CA1-2 144C-CA1-2 15-144C   CA1 consistent NoConflict   trained 15144C
-    ## 144C-CA3-2 144C-CA3-2 15-144C   CA3 consistent NoConflict   trained 15144C
-    ## 144C-DG-2   144C-DG-2 15-144C    DG consistent NoConflict   trained 15144C
-    ## 144D-CA3-2 144D-CA3-2 15-144D   CA3    control NoConflict     yoked 15144D
-    ## 144D-DG-2   144D-DG-2 15-144D    DG    control NoConflict     yoked 15144D
-    ## 145A-CA1-2 145A-CA1-2 15-145A   CA1   conflict   Conflict  conflict 15145A
-    ## 145A-CA3-2 145A-CA3-2 15-145A   CA3   conflict   Conflict  conflict 15145A
-    ## 145A-DG-2   145A-DG-2 15-145A    DG   conflict   Conflict  conflict 15145A
-    ## 145B-CA1-1 145B-CA1-1 15-145B   CA1    control   Conflict   shocked 15145B
-    ## 145B-DG-1   145B-DG-1 15-145B    DG    control   Conflict   shocked 15145B
-    ## 146A-CA1-2 146A-CA1-2 15-146A   CA1   conflict   Conflict  conflict 15146A
-    ## 146A-CA3-2 146A-CA3-2 15-146A   CA3   conflict   Conflict  conflict 15146A
-    ## 146A-DG-2   146A-DG-2 15-146A    DG   conflict   Conflict  conflict 15146A
-    ## 146B-CA1-2 146B-CA1-2 15-146B   CA1    control   Conflict   shocked 15146B
-    ## 146B-CA3-2 146B-CA3-2 15-146B   CA3    control   Conflict   shocked 15146B
-    ## 146B-DG-2   146B-DG-2 15-146B    DG    control   Conflict   shocked 15146B
-    ## 146C-CA1-4 146C-CA1-4 15-146C   CA1 consistent NoConflict   trained 15146C
-    ## 146C-DG-4   146C-DG-4 15-146C    DG consistent NoConflict   trained 15146C
-    ## 146D-CA1-3 146D-CA1-3 15-146D   CA1    control NoConflict     yoked 15146D
-    ## 146D-CA3-3 146D-CA3-3 15-146D   CA3    control NoConflict     yoked 15146D
-    ## 146D-DG-3   146D-DG-3 15-146D    DG    control NoConflict     yoked 15146D
-    ## 147-CA1-4   147-CA1-4  15-147   CA1   homecage       <NA>  homecage  15147
-    ## 147-CA3-4   147-CA3-4  15-147   CA3   homecage       <NA>  homecage  15147
-    ## 147-DG-4     147-DG-4  15-147    DG   homecage       <NA>  homecage  15147
-    ## 147C-CA1-3 147C-CA1-3 15-147C   CA1 consistent NoConflict   trained 15147C
-    ## 147C-CA3-3 147C-CA3-3 15-147C   CA3 consistent NoConflict   trained 15147C
-    ## 147C-DG-3   147C-DG-3 15-147C    DG consistent NoConflict   trained 15147C
-    ## 147D-CA3-1 147D-CA3-1 15-147D   CA3    control NoConflict     yoked 15147D
-    ## 147D-DG-1   147D-DG-1 15-147D    DG    control NoConflict     yoked 15147D
-    ## 148-CA1-2   148-CA1-2  15-148   CA1   homecage       <NA>  homecage  15148
-    ## 148-CA3-2   148-CA3-2  15-148   CA3   homecage       <NA>  homecage  15148
-    ## 148-DG-2     148-DG-2  15-148    DG   homecage       <NA>  homecage  15148
-    ## 148A-CA1-3 148A-CA1-3 15-148A   CA1   conflict   Conflict  conflict 15148A
-    ## 148A-CA3-3 148A-CA3-3 15-148A   CA3   conflict   Conflict  conflict 15148A
-    ## 148A-DG-3   148A-DG-3 15-148A    DG   conflict   Conflict  conflict 15148A
-    ## 148B-CA1-4 148B-CA1-4 15-148B   CA1    control   Conflict   shocked 15148B
-    ## 148B-CA3-4 148B-CA3-4 15-148B   CA3    control   Conflict   shocked 15148B
-    ## 148B-DG-4   148B-DG-4 15-148B    DG    control   Conflict   shocked 15148B
-    ##                        APA2
-    ## 143A-CA3-1 conflict.trained
-    ## 143A-DG-1  conflict.trained
-    ## 143B-CA1-1   conflict.yoked
-    ## 143B-DG-1    conflict.yoked
-    ## 143C-CA1-1 standard.trained
-    ## 143D-CA1-3   standard.yoked
-    ## 143D-DG-3    standard.yoked
-    ## 144A-CA1-2 conflict.trained
-    ## 144A-CA3-2 conflict.trained
-    ## 144A-DG-2  conflict.trained
-    ## 144B-CA1-1   conflict.yoked
-    ## 144B-CA3-1   conflict.yoked
-    ## 144C-CA1-2 standard.trained
-    ## 144C-CA3-2 standard.trained
-    ## 144C-DG-2  standard.trained
-    ## 144D-CA3-2   standard.yoked
-    ## 144D-DG-2    standard.yoked
-    ## 145A-CA1-2 conflict.trained
-    ## 145A-CA3-2 conflict.trained
-    ## 145A-DG-2  conflict.trained
-    ## 145B-CA1-1   conflict.yoked
-    ## 145B-DG-1    conflict.yoked
-    ## 146A-CA1-2 conflict.trained
-    ## 146A-CA3-2 conflict.trained
-    ## 146A-DG-2  conflict.trained
-    ## 146B-CA1-2   conflict.yoked
-    ## 146B-CA3-2   conflict.yoked
-    ## 146B-DG-2    conflict.yoked
-    ## 146C-CA1-4 standard.trained
-    ## 146C-DG-4  standard.trained
-    ## 146D-CA1-3   standard.yoked
-    ## 146D-CA3-3   standard.yoked
-    ## 146D-DG-3    standard.yoked
-    ## 147-CA1-4         home.cage
-    ## 147-CA3-4         home.cage
-    ## 147-DG-4          home.cage
-    ## 147C-CA1-3 standard.trained
-    ## 147C-CA3-3 standard.trained
-    ## 147C-DG-3  standard.trained
-    ## 147D-CA3-1   standard.yoked
-    ## 147D-DG-1    standard.yoked
-    ## 148-CA1-2         home.cage
-    ## 148-CA3-2         home.cage
-    ## 148-DG-2          home.cage
-    ## 148A-CA1-3 conflict.trained
-    ## 148A-CA3-3 conflict.trained
-    ## 148A-DG-3  conflict.trained
-    ## 148B-CA1-4   conflict.yoked
-    ## 148B-CA3-4   conflict.yoked
-    ## 148B-DG-4    conflict.yoked
-
-    # remove home.cage
-    colData <- colData %>% filter(APA2 != "home.cage")
+    ##  subfield            treatment 
+    ##  DG :13   standard.yoked  : 9  
+    ##  CA3:13   standard.trained: 9  
+    ##  CA1:15   conflict.yoked  :10  
+    ##           conflict.trained:13
 
 Now, we are ready to calculate differential gene expression using the
 DESeq package. For simplicity, I will use the standard nameing of
 “countData” and “colData” for the gene counts and gene information,
 respectively.
 
-    colData <- colData %>% arrange(RNAseqID) %>% droplevels() #set the coldata to be the countbygene df
+    countData <- read.csv("../data/00_CountData.csv", row.names=1, check.names=FALSE )
+    head(countData[1:5])
 
-    ## colData and countData must contain the exact same sample. I'll use the next three lines to make that happen
-    savecols <- as.character(colData$RNAseqID) #select the sample name column that corresponds to row names
+    ##               142C_CA1 142C_DG 143A-CA3-1 143A-DG-1 143B-CA1-1
+    ## 0610007P14Rik      120      88         85       112         60
+    ## 0610009B22Rik       62      27         24        34         21
+    ## 0610009L18Rik        0       0          4         9         10
+    ## 0610009O20Rik      128     112         85       185         44
+    ## 0610010F05Rik      110     132        142       155         54
+    ## 0610010K14Rik       21      11         24        74         14
+
+    ## colData and countData must contain the exact same samples. 
+    savecols <- as.character(colData$RNAseqID) #select the rowsname 
     savecols <- as.vector(savecols) # make it a vector
-    countData <- countData %>% dplyr::select(one_of(savecols)) # select just the columns that match the samples in colData
-
-    # colData must be factors
-    cols = c(1:8)
-    colData[,cols] %<>% lapply(function(x) as.factor(as.character(x)))
-
-    # summary data
-    colData %>% select(APA2,Punch)  %>%  summary()
-
-    ##                APA2    Punch   
-    ##  conflict.trained:14   CA1:15  
-    ##  conflict.yoked  :12   CA3:13  
-    ##  standard.trained: 9   DG :16  
-    ##  standard.yoked  : 9
-
-    dim(countData)
-
-    ## [1] 22485    44
-
-Write the two files
--------------------
-
-    write.csv(colData, file = "../data/02a_colData.csv", row.names = F)
-    write.csv(countData, file = "../data/02a_countData.csv", row.names = T)
+    countData <- countData %>% dplyr::select(one_of(savecols)) # select just the columns 
 
 Total Gene Counts Per Sample
 ----------------------------
 
 this could say something about data before normalization
 
+    totalCounts <- colSums(countData)
+    totalCounts
+
+    ## 143A-CA3-1  143A-DG-1 143B-CA1-1 143C-CA1-1 143D-CA1-3  143D-DG-3 
+    ##    3327867    5279392    1719498    2213452    1091672    1043885 
+    ## 144A-CA1-2 144A-CA3-2  144A-DG-2 144B-CA1-1 144B-CA3-1 144C-CA1-2 
+    ##    2980775     421165    3210030    2555909    1027388    3298825 
+    ## 144C-CA3-2  144C-DG-2 144D-CA3-2  144D-DG-2 145A-CA1-2 145A-CA3-2 
+    ##    1238998    2224182    2323243    4691568    4680960     345619 
+    ## 145B-CA1-1  145B-DG-1 146A-CA1-2 146A-CA3-2  146A-DG-2 146B-CA1-2 
+    ##    2020114    1509310    1715282    2756300    1201333    1063417 
+    ## 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 146D-CA1-3 146D-CA3-3 
+    ##    2144771     116106    1360004     492145     391369    2994536 
+    ##  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 147D-CA3-1  147D-DG-1 
+    ##      90417    3072308    5754581    4350647    4624995   11700703 
+    ## 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 148B-CA3-4 
+    ##    5260906    2676397    4019062     337174    3486840
+
+    ### on average 1 million gene counts per sample 
+    summary((colSums(countData)/1000000))
+
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    ##  0.09042  1.09167  2.22418  2.60520  3.32787 11.70070
+
     ## stats
     counts <- countData
     dim( counts )
 
-    ## [1] 22485    44
+    ## [1] 22485    41
 
     colSums( counts ) / 1e06  # in millions of reads
 
-    ## 143A-CA3-1  143A-DG-1 143B-CA1-1  143B-DG-1 143C-CA1-1 143D-CA1-3 
-    ##   3.327867   5.279392   1.719498   2.085031   2.213452   1.091672 
-    ##  143D-DG-3 144A-CA1-2 144A-CA3-2  144A-DG-2 144B-CA1-1 144B-CA3-1 
-    ##   1.043885   2.980775   0.421165   3.210030   2.555909   1.027388 
-    ## 144C-CA1-2 144C-CA3-2  144C-DG-2 144D-CA3-2  144D-DG-2 145A-CA1-2 
-    ##   3.298825   1.238998   2.224182   2.323243   4.691568   4.680960 
-    ## 145A-CA3-2  145A-DG-2 145B-CA1-1  145B-DG-1 146A-CA1-2 146A-CA3-2 
-    ##   0.345619   1.435833   2.020114   1.509310   1.715282   2.756300 
-    ##  146A-DG-2 146B-CA1-2 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 
-    ##   1.201333   1.063417   2.144771   0.116106   1.360004   0.492145 
-    ## 146D-CA1-3 146D-CA3-3  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 
-    ##   0.391369   2.994536   0.090417   3.072308   5.754581   4.350647 
-    ## 147D-CA3-1  147D-DG-1 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 
-    ##   4.624995  11.700703   5.260906   2.676397   4.019062   0.337174 
-    ## 148B-CA3-4  148B-DG-4 
-    ##   3.486840   0.798668
+    ## 143A-CA3-1  143A-DG-1 143B-CA1-1 143C-CA1-1 143D-CA1-3  143D-DG-3 
+    ##   3.327867   5.279392   1.719498   2.213452   1.091672   1.043885 
+    ## 144A-CA1-2 144A-CA3-2  144A-DG-2 144B-CA1-1 144B-CA3-1 144C-CA1-2 
+    ##   2.980775   0.421165   3.210030   2.555909   1.027388   3.298825 
+    ## 144C-CA3-2  144C-DG-2 144D-CA3-2  144D-DG-2 145A-CA1-2 145A-CA3-2 
+    ##   1.238998   2.224182   2.323243   4.691568   4.680960   0.345619 
+    ## 145B-CA1-1  145B-DG-1 146A-CA1-2 146A-CA3-2  146A-DG-2 146B-CA1-2 
+    ##   2.020114   1.509310   1.715282   2.756300   1.201333   1.063417 
+    ## 146B-CA3-2  146B-DG-2 146C-CA1-4  146C-DG-4 146D-CA1-3 146D-CA3-3 
+    ##   2.144771   0.116106   1.360004   0.492145   0.391369   2.994536 
+    ##  146D-DG-3 147C-CA1-3 147C-CA3-3  147C-DG-3 147D-CA3-1  147D-DG-1 
+    ##   0.090417   3.072308   5.754581   4.350647   4.624995  11.700703 
+    ## 148A-CA1-3 148A-CA3-3  148A-DG-3 148B-CA1-4 148B-CA3-4 
+    ##   5.260906   2.676397   4.019062   0.337174   3.486840
 
     table( rowSums( counts ) )[ 1:30 ] # Number of genes with low counts
 
     ## 
     ##    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14 
-    ## 4203  353  236  225  168  145  118  119  110  111   81   82   77   75   71 
+    ## 4234  348  239  229  167  155  119  110  114  111   84   75   81   68   76 
     ##   15   16   17   18   19   20   21   22   23   24   25   26   27   28   29 
-    ##   48   56   65   58   55   55   55   51   48   38   47   48   37   32   26
+    ##   52   51   70   64   51   55   48   51   55   39   46   44   44   27   28
 
     rowsum <- as.data.frame(colSums( counts ) / 1e06 )
     names(rowsum)[1] <- "millioncounts"
@@ -287,3 +197,9 @@ this could say something about data before normalization
       scale_y_continuous(name = "Number of Samples")
 
 ![](../figures/02a_makedfs/totalRNAseqcounts-1.png)
+
+Write the two files
+-------------------
+
+    write.csv(colData, file = "../data/02a_colData.csv", row.names = F)
+    write.csv(countData, file = "../data/02a_countData.csv", row.names = T)

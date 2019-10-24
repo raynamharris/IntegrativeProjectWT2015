@@ -29,42 +29,38 @@ a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F
 
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
 a.colData <- a.colData %>%
-  mutate(combinedgroups = fct_collapse(Treatment,
-                                       trained = c("conflict", "trained"),
-                                       yoked = c("shocked", "yoked")),
-         subfield = Punch)
-a.colData$combinedgroups <- factor(a.colData$combinedgroups, levels = c("yoked", "trained"))
+a.colData$training <- factor(a.colData$training, levels = c("yoked", "trained"))
 
-DGdds <- returndds2("DG") 
-CA3dds <- returndds2("CA3") 
-CA1dds <- returndds2("CA1") 
+DGdds2 <- returndds2("DG") 
+CA3dds2 <- returndds2("CA3") 
+CA1dds2 <- returndds2("CA1") 
 ```
 
 ```{r vsd}
-DGvsd <- returnvsds2(DGdds)
-CA3vsd <- returnvsds2(CA3dds)
-CA1vsd <- returnvsds2(CA1dds)
+DGvsd <- returnvsds2(DGdds2)
+CA3vsd <- returnvsds2(CA3dds2)
+CA1vsd <- returnvsds2(CA1dds2)
 ```
 
 ```{r res}
 print("DG")
-res_summary_subfield(DGdds, c("combinedgroups", "trained", "yoked"))
+res_summary_subfield(DGdds2, c("training", "trained", "yoked"))
 
 print("CA3")
-res_summary_subfield(CA3dds, c("combinedgroups", "trained", "yoked"))
+res_summary_subfield(CA3dds2, c("training", "trained", "yoked"))
 
 print("CA1")
-res_summary_subfield(CA1dds, c("combinedgroups", "trained", "yoked"))
+res_summary_subfield(CA1dds2, c("training", "trained", "yoked"))
 
-contrast1 <- resvals2(DGdds, contrastvector = c("combinedgroups", "trained", "yoked"), mypval = 0.1) # 3060
-contrast2 <- resvals2(CA1dds, contrastvector = c("combinedgroups", "trained", "yoked"), mypval = 0.1) # 2388
+contrast1 <- resvals2(DGdds2, contrastvector = c("training", "trained", "yoked"), mypval = 0.1) # 206
+contrast2 <- resvals2(CA1dds2, contrastvector = c("training", "trained", "yoked"), mypval = 0.1) # 16
 
 ```
 
 ```{r listofDEGs}
 listofDEGstrainedvyoked <- function(mydds, myitssue){
   res <- results(mydds, 
-                 contrast = c("combinedgroups", "trained", "yoked"), 
+                 contrast = c("training", "trained", "yoked"), 
                  independentFiltering = T)
   
   print(paste(myitssue, "trained vs yoked", sep = " "))
@@ -79,7 +75,7 @@ listofDEGstrainedvyoked <- function(mydds, myitssue){
   return(data)
 }
 
-DGDEGs <- listofDEGstrainedvyoked(DGdds, "DG")
+DGDEGs <- listofDEGstrainedvyoked(DGdds2, "DG")
 CA1DEGs <- listofDEGstrainedvyoked(CA1dds, "CA1")
 
 write.csv(DGDEGs, "../data/02f_DG_DEGs.csv", row.names = F)
@@ -108,7 +104,7 @@ downCA1
 
 ```{r pheatmap-DG}
 ## DG 
-DEGes <- assay(vst(DGdds))
+DEGes <- assay(vst(DGdds2))
 DEGes <- cbind(DEGes, contrast1)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 
@@ -129,8 +125,8 @@ write.csv(DEGes, "../data/02f_DG_DEGs_vsd.csv")
 paletteLength <- 10
 myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
-df <- as.data.frame(colData(DGdds)[,c("combinedgroups")]) ## matrix to df
-rownames(df) <- row.names(colData(DGdds))
+df <- as.data.frame(colData(DGdds2)[,c("combinedgroups")]) ## matrix to df
+rownames(df) <- row.names(colData(DGdds2))
 names(df) <- c("combinedgroups")
 df$subfield <- "DG"
 levels(df$combinedgroups) <- c("yoked", "trained")
@@ -239,7 +235,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = T,
 ## tSNE
 
 ```{r tSNE}
-a <- plot.tSNE.trained(DGdds, 2, "DG")
+a <- plot.tSNE.trained(DGdds2, 2, "DG")
 b <- plot.tSNE.trained(CA1dds, 2, "CA1")
 
 plot_grid(a,b)

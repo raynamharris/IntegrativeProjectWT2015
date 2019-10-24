@@ -54,6 +54,15 @@ colData <- colData %>%
   arrange(RNAseqID) %>%
   droplevels() 
 
+colData <-  colData %>% filter(RNAseqID != "148B-DG-4") %>% filter(RNAseqID != "143B-DG-1") %>% filter(RNAseqID != "145A-DG-2")
+
+# reset levels
+colData$treatment <- factor(colData$treatment, levels = c("standard.yoked", "standard.trained",
+                                                          "conflict.yoked", "conflict.trained"))
+colData$training <- factor(colData$training, levels = c("yoked", "trained"))
+
+
+
 # set factors
 colData$subfield <- factor(colData$subfield, levels = c("DG", "CA3", "CA1"))
 colData$treatment <- factor(colData$treatment, levels = c("standard.yoked", "standard.trained",

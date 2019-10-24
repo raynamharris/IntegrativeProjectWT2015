@@ -34,21 +34,17 @@ knitr::opts_chunk$set(fig.path = '../figures/02c_rnaseqSubfield/', cache = T)
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
 a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
-a.colData <- a.colData %>%
-  mutate(combinedgroups = fct_collapse(Treatment,
-                                       trained = c("conflict", "trained"),
-                                       yoked = c("shocked", "yoked")))
-a.colData$combinedgroups <- factor(a.colData$combinedgroups, levels = c("yoked", "trained"))
-a.colData$APA2 <- factor(a.colData$APA2, levels = c("standard.yoked","standard.trained",
+a.colData$training <- factor(a.colData$training, levels = c("yoked", "trained"))
+a.colData$treatment <- factor(a.colData$treatment, levels = c("standard.yoked","standard.trained",
                                                   "conflict.yoked", "conflict.trained"))
 
-DGdds <- returnddsAPA2("DG") 
-CA1dds <- returnddsAPA2("CA1") 
-CA3dds <- returnddsAPA2("CA3") 
+DGdds <- returnddstreatment("DG") 
+CA1dds <- returnddstreatment("CA1") 
+CA3dds <- returnddstreatment("CA3") 
 
-DGdds2 <- returnddscombinedgroups("DG") 
-CA1dds2 <- returnddscombinedgroups("CA1") 
-CA3dds2 <- returnddscombinedgroups("CA3") 
+DGdds2 <- returndds2("DG") 
+CA1dds2 <- returndds2("CA1") 
+CA3dds2 <- returndds2("CA3") 
 
 returnvsds(DGdds, "../data/02c_DGvsd.csv")
 returnvsds(CA1dds, "../data/02c_CA1vsd.csv")
@@ -59,22 +55,22 @@ returnvsds(CA3dds, "../data/02c_CA3vsd.csv")
 
 ```{r twowaycontrasts}
 print("DG")
-res_summary_subfield(DGdds, c("APA2", "standard.trained", "standard.yoked"))
-res_summary_subfield(DGdds, c("APA2", "conflict.trained", "conflict.yoked"))
-res_summary_subfield(DGdds, c("APA2", "conflict.trained", "standard.trained"))
-res_summary_subfield(DGdds, c("APA2", "conflict.yoked", "standard.yoked"))
+res_summary_subfield(DGdds, c("treatment", "standard.trained", "standard.yoked"))
+res_summary_subfield(DGdds, c("treatment", "conflict.trained", "conflict.yoked"))
+res_summary_subfield(DGdds, c("treatment", "conflict.trained", "standard.trained"))
+res_summary_subfield(DGdds, c("treatment", "conflict.yoked", "standard.yoked"))
 
 print("CA3")
-res_summary_subfield(CA3dds, c("APA2", "standard.trained", "standard.yoked"))
-res_summary_subfield(CA3dds, c("APA2", "conflict.trained", "conflict.yoked"))
-res_summary_subfield(CA3dds, c("APA2", "conflict.trained", "standard.trained"))
-res_summary_subfield(CA3dds, c("APA2", "conflict.yoked", "standard.yoked"))
+res_summary_subfield(CA3dds, c("treatment", "standard.trained", "standard.yoked"))
+res_summary_subfield(CA3dds, c("treatment", "conflict.trained", "conflict.yoked"))
+res_summary_subfield(CA3dds, c("treatment", "conflict.trained", "standard.trained"))
+res_summary_subfield(CA3dds, c("treatment", "conflict.yoked", "standard.yoked"))
 
 print("CA1")
-res_summary_subfield(CA1dds, c("APA2", "standard.trained", "standard.yoked"))
-res_summary_subfield(CA1dds, c("APA2", "conflict.trained", "conflict.yoked"))
-res_summary_subfield(CA1dds, c("APA2", "conflict.trained", "standard.trained"))
-res_summary_subfield(CA1dds, c("APA2", "conflict.yoked", "standard.yoked"))
+res_summary_subfield(CA1dds, c("treatment", "standard.trained", "standard.yoked"))
+res_summary_subfield(CA1dds, c("treatment", "conflict.trained", "conflict.yoked"))
+res_summary_subfield(CA1dds, c("treatment", "conflict.trained", "standard.trained"))
+res_summary_subfield(CA1dds, c("treatment", "conflict.yoked", "standard.yoked"))
 
 ```
 
@@ -113,17 +109,13 @@ plot.volcano <- function(mydds, whichfactor, up, down, mycolors, mysubfield){
 
 
 
-DGdds2 <- returnddscombinedgroups("DG") 
-CA1dds2 <- returnddscombinedgroups("CA1") 
-CA3dds2 <- returnddscombinedgroups("CA3") 
 
-
-DGconsyokcons <-  plot.volcano(DGdds, "APA2", "standard.trained", "standard.yoked", volcano1, "DG") 
-DGconflicttrained <-  plot.volcano(DGdds, "APA2", "conflict.trained", "conflict.yoked", volcano5, "DG") 
+DGconsyokcons <-  plot.volcano(DGdds, "treatment", "standard.trained", "standard.yoked", volcano1, "DG") 
+DGconflicttrained <-  plot.volcano(DGdds, "treatment", "conflict.trained", "conflict.yoked", volcano5, "DG") 
 DGtrained <- plot.volcano(DGdds2, "combinedgroups", "trained", "yoked", volcano7, "DG") 
 
-CA1consyokcons <-  plot.volcano(CA1dds, "APA2", "standard.trained", "standard.yoked", volcano1,  "CA1")  
-CA1yoked <-  plot.volcano(CA1dds, "APA2","conflict.yoked", "standard.yoked", volcano6,  "CA1") 
+CA1consyokcons <-  plot.volcano(CA1dds, "treatment", "standard.trained", "standard.yoked", volcano1,  "CA1")  
+CA1yoked <-  plot.volcano(CA1dds, "treatment","conflict.yoked", "standard.yoked", volcano6,  "CA1") 
 CA1trained <- plot.volcano(CA1dds2, "combinedgroups", "trained", "yoked", volcano7, "CA1") 
 
 
@@ -141,7 +133,7 @@ dev.off()
 
 ```{r DG_boxplots}
 betterPlotCounts <- function(mygene, mydds, mysubfield){
-  df <- plotCounts(mydds, mygene, intgroup = "APA2",  transform = F, replaced = F, returnData = T)
+  df <- plotCounts(mydds, mygene, intgroup = "treatment",  transform = F, replaced = F, returnData = T)
   names(df) <- c("count", "treatment")
   df$treatment <- factor(df$treatment, levels = c("standard.yoked","standard.trained",
                                                   "conflict.yoked", "conflict.trained"))
@@ -204,12 +196,12 @@ plot_grid(a,b,c,d,e,f)
 Requires anlaysis of `04_integration.Rmd` first.
 
 ```{r DGcorrelations}
-plotCounts(DGdds, "Acan", intgroup = "APA2", normalized = TRUE, main="Acan in DG")
-plotCounts(DGdds, "Amigo2", intgroup = "APA2", normalized = TRUE, main="Amigo2 in DG")
-plotCounts(DGdds, "Armcx5", intgroup = "APA2", normalized = TRUE, main="Armcx5 in DG")
-plotCounts(DGdds, "Ptgs2", intgroup = "APA2", normalized = TRUE, main="Ptgs2 in DG")
-plotCounts(DGdds, "Rgs2", intgroup = "APA2", normalized = TRUE, main="Rgs2 in DG")
-plotCounts(DGdds, "Syt4", intgroup = "APA2", normalized = TRUE, main="Syt4 in DG")
+plotCounts(DGdds, "Acan", intgroup = "treatment", normalized = TRUE, main="Acan in DG")
+plotCounts(DGdds, "Amigo2", intgroup = "treatment", normalized = TRUE, main="Amigo2 in DG")
+plotCounts(DGdds, "Armcx5", intgroup = "treatment", normalized = TRUE, main="Armcx5 in DG")
+plotCounts(DGdds, "Ptgs2", intgroup = "treatment", normalized = TRUE, main="Ptgs2 in DG")
+plotCounts(DGdds, "Rgs2", intgroup = "treatment", normalized = TRUE, main="Rgs2 in DG")
+plotCounts(DGdds, "Syt4", intgroup = "treatment", normalized = TRUE, main="Syt4 in DG")
 ```
 
 ## Upset plots
@@ -223,7 +215,7 @@ a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F
 eachsubfield <- levels(a.colData$Punch)
 
 listofDEGs <- function(group1, group2){
-  res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
+  res <- results(dds, contrast = c("treatment", group1, group2), independentFiltering = T)
   
   print(paste(group1,group2, sep = " vs "))
   print(summary(res))
@@ -251,7 +243,7 @@ for(i in eachsubfield){
 ## create DESeq object using the factors Punch and APA
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
-                              design = ~ APA2)
+                              design = ~ treatment)
 
 dds # view the DESeq object - note numnber of genes
 dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
