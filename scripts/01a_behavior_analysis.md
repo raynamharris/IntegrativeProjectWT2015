@@ -295,6 +295,37 @@ titles, y labels and limits.
 
 ![](../figures/01_behavior/fourmeasures-1.png)
 
+### individual variation in behavior
+
+    behavior %>% 
+        ggplot(aes(x=, TrainSessionComboNum, y=NumEntrances, color=ID)) + 
+        geom_line() +
+        geom_point(size = 1.5) +
+        labs(subtitle = " ") +
+        scale_x_continuous(name= "training session", 
+                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                           labels = c( "P", "T1", "T2", "T3",
+                                       "Rt", "T4", "T5", "T6", "Rn")) +
+        theme_ms() +
+      facet_wrap(~treatment)
+
+![](../figures/01_behavior/individualbehavior-1.png)
+
+    behavior %>% 
+        filter(ID %in% c("15148B", "15143B","15148A", "15143A", "15145A"))  %>%
+        ggplot(aes(x=, TrainSessionComboNum, y=NumEntrances, color=treatment, shape = ID)) + 
+        geom_line() +
+        geom_point(size = 1.5) +
+        labs(subtitle = " ") +
+        scale_x_continuous(name= "training session", 
+                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                           labels = c( "P", "T1", "T2", "T3",
+                                       "Rt", "T4", "T5", "T6", "Rn")) +
+        theme_ms() +
+      scale_color_manual(values = treatmentcolors)
+
+![](../figures/01_behavior/individualbehavior-2.png)
+
 ### Principle component analysis
 
 Next, I next reduced the dimentionality of the data with a PCA anlaysis.

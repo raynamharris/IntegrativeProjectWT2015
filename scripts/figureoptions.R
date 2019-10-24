@@ -82,6 +82,8 @@ pheatmapcolors3 = list(
 
 trainedcolors <-  c( "standard.yoked" = "#404040", "standard.trained" = "#ca0020")
 conflictcolors <- c("conflict.yoked" = "#969696","conflict.trained" = "#f4a582")
+treatmentcolors <- c( "standard.yoked" = "#404040", "standard.trained" = "#ca0020",
+                      "conflict.yoked" = "#969696","conflict.trained" = "#f4a582")
 
 
 volcano1 <-  c("standard.trained" = "#ca0020",
