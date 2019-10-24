@@ -34,21 +34,21 @@ measure and gene expression.
     # import behavior data, create mouse id, select relvant samples
     behav <- read.csv("../data/01a_behavior.csv") 
     behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
-    behav <- behav %>% filter(treatment %in% c("conflict.trained", "standard.trained"),
+    behav <- behav %>% filter( #treatment %in% c("conflict.trained", "standard.trained"),
                                       TrainSessionCombo == "Retention") %>% 
                                select(mouse,Time1stEntr,pTimeShockZone) 
     head(behav)
 
     ##   mouse Time1stEntr pTimeShockZone
     ## 1  140A      102.43         0.0286
-    ## 2  140C      599.97         0.0021
-    ## 3  141C       30.53         0.0909
-    ## 4  142A      140.20         0.0203
-    ## 5  142C      482.43         0.0445
-    ## 6  143A       44.20         0.1122
+    ## 2  140B       65.80         0.1094
+    ## 3  140C      599.97         0.0021
+    ## 4  140D       48.93         0.1617
+    ## 5  141C       30.53         0.0909
+    ## 6  141D       19.13         0.3379
 
     pcadata <- read_csv("../data/01a_pcadf.csv") %>%
-      filter(treatment %in% c("conflict.trained", "standard.trained"),
+      filter(#treatment %in% c("conflict.trained", "standard.trained"),
              TrainSessionComboNum == 9) %>%
       select(ID,PC1,PC2) 
 
@@ -77,11 +77,11 @@ measure and gene expression.
     ##      PC1    PC2 mouse
     ##    <dbl>  <dbl> <chr>
     ## 1 -1.97   0.880 140A 
-    ## 2 -5.44  -2.13  140C 
-    ## 3 -0.199 -0.760 141C 
-    ## 4 -2.81   0.425 142A 
-    ## 5 -5.10  -0.575 142C 
-    ## 6  0.814 -1.66  143A
+    ## 2  1.56   1.43  140B 
+    ## 3 -5.44  -2.13  140C 
+    ## 4  1.56  -1.32  140D 
+    ## 5 -0.199 -0.760 141C 
+    ## 6  3.40  -1.71  141D
 
     DG_DEGs <- read.csv("../data/02f_DG_DEGs_vsd.csv", row.names = 1, check.names = F)
     DG_DEGs <- as.data.frame(t(DG_DEGs))
@@ -115,39 +115,40 @@ measure and gene expression.
     DGcor
 
     ## # A tibble: 218 x 219
-    ##    rowname  SNX18  PCDH8  NPAS4  KCNJ2 ERRFI1   SGK1  NFIL3 TIPARP GADD45G
-    ##    <chr>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>
-    ##  1 SNX18   NA     NA     NA     NA     NA     NA     NA     NA      NA    
-    ##  2 PCDH8    0.946 NA     NA     NA     NA     NA     NA     NA      NA    
-    ##  3 NPAS4    0.943  0.920 NA     NA     NA     NA     NA     NA      NA    
-    ##  4 KCNJ2    0.944  0.927  0.952 NA     NA     NA     NA     NA      NA    
-    ##  5 ERRFI1   0.955  0.906  0.974  0.964 NA     NA     NA     NA      NA    
-    ##  6 SGK1     0.961  0.920  0.953  0.925  0.940 NA     NA     NA      NA    
-    ##  7 NFIL3    0.932  0.902  0.983  0.962  0.961  0.919 NA     NA      NA    
-    ##  8 TIPARP   0.935  0.898  0.967  0.924  0.956  0.936  0.959 NA      NA    
-    ##  9 GADD45G  0.936  0.932  0.920  0.955  0.947  0.870  0.933  0.904  NA    
-    ## 10 PLK2     0.954  0.902  0.973  0.932  0.970  0.977  0.943  0.951   0.885
-    ## # … with 208 more rows, and 209 more variables: PLK2 <dbl>, SLC16A1 <dbl>,
-    ## #   FAM107B <dbl>, KCNF1 <dbl>, GPR19 <dbl>, KITL <dbl>, FBXO33 <dbl>,
-    ## #   MEST <dbl>, PTGS2 <dbl>, APAF1 <dbl>, JUN <dbl>, CWC25 <dbl>,
-    ## #   PAK6 <dbl>, FZD5 <dbl>, ZDBF2 <dbl>, SMAD7 <dbl>, CXADR <dbl>,
-    ## #   A830010M20RIK <dbl>, TSC22D2 <dbl>, ARID5B <dbl>, EGR4 <dbl>,
-    ## #   PIGA <dbl>, KCNA4 <dbl>, IRF2BP2 <dbl>, SIAH2 <dbl>, HMGCR <dbl>,
-    ## #   AHR <dbl>, PLK3 <dbl>, RFX2 <dbl>, C2CD4B <dbl>, ARL4A <dbl>,
-    ## #   BTG2 <dbl>, ARL13B <dbl>, MARCH11 <dbl>, FZD4 <dbl>, ING2 <dbl>,
-    ## #   FOSB <dbl>, RASD1 <dbl>, KLF2 <dbl>, JUNB <dbl>, LONRF1 <dbl>,
-    ## #   LEMD3 <dbl>, PPP1R15A <dbl>, DUSP16 <dbl>, FOS <dbl>, NR4A3 <dbl>,
-    ## #   CTNND1 <dbl>, MYC <dbl>, EGR3 <dbl>, PEG10 <dbl>, SH2D3C <dbl>,
-    ## #   SCG2 <dbl>, SLC2A3 <dbl>, FOXG1 <dbl>, FRMD6 <dbl>, GM13889 <dbl>,
-    ## #   FOSL2 <dbl>, ABHD2 <dbl>, ERF <dbl>, LCMT2 <dbl>, MED7 <dbl>,
-    ## #   CNNM1 <dbl>, TRIB1 <dbl>, GMEB2 <dbl>, STMN4 <dbl>, DYRK2 <dbl>,
-    ## #   ANKRD28 <dbl>, LMNA <dbl>, ODC1 <dbl>, B3GNT2 <dbl>, RASL11A <dbl>,
-    ## #   KLF6 <dbl>, LRRTM2 <dbl>, PER1 <dbl>, RGS2 <dbl>, ACAN <dbl>,
-    ## #   HECA <dbl>, KDM6B <dbl>, OTUD1 <dbl>, ADAMTS1 <dbl>, FERMT2 <dbl>,
-    ## #   ARC <dbl>, EIF5 <dbl>, IRS2 <dbl>, LBH <dbl>, RASL11B <dbl>,
-    ## #   IL16 <dbl>, MN1 <dbl>, DUSP14 <dbl>, SLC25A25 <dbl>, ZFP654 <dbl>,
-    ## #   NAF1 <dbl>, ZFP275 <dbl>, HS6ST1 <dbl>, NR4A2 <dbl>, ZFP869 <dbl>,
-    ## #   `1190002N15RIK` <dbl>, POU3F3 <dbl>, DNAJB1 <dbl>, FBXW7 <dbl>, …
+    ##    rowname  SNX18  PCDH8  NPAS4  KCNJ2 ERRFI1   SGK1  NFIL3 TIPARP   PLK2
+    ##    <chr>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
+    ##  1 SNX18   NA     NA     NA     NA     NA     NA     NA     NA     NA    
+    ##  2 PCDH8    0.946 NA     NA     NA     NA     NA     NA     NA     NA    
+    ##  3 NPAS4    0.943  0.920 NA     NA     NA     NA     NA     NA     NA    
+    ##  4 KCNJ2    0.944  0.927  0.952 NA     NA     NA     NA     NA     NA    
+    ##  5 ERRFI1   0.955  0.906  0.974  0.964 NA     NA     NA     NA     NA    
+    ##  6 SGK1     0.961  0.920  0.953  0.925  0.940 NA     NA     NA     NA    
+    ##  7 NFIL3    0.932  0.902  0.983  0.962  0.961  0.919 NA     NA     NA    
+    ##  8 TIPARP   0.935  0.898  0.967  0.924  0.956  0.936  0.959 NA     NA    
+    ##  9 PLK2     0.954  0.902  0.973  0.932  0.970  0.977  0.943  0.951 NA    
+    ## 10 GADD45G  0.936  0.932  0.920  0.955  0.947  0.870  0.933  0.904  0.885
+    ## # … with 208 more rows, and 209 more variables: GADD45G <dbl>,
+    ## #   SLC16A1 <dbl>, FAM107B <dbl>, KCNF1 <dbl>, FBXO33 <dbl>, KITL <dbl>,
+    ## #   GPR19 <dbl>, MEST <dbl>, PTGS2 <dbl>, JUN <dbl>, APAF1 <dbl>,
+    ## #   FZD5 <dbl>, CWC25 <dbl>, PAK6 <dbl>, SMAD7 <dbl>, ZDBF2 <dbl>,
+    ## #   CXADR <dbl>, TSC22D2 <dbl>, EGR4 <dbl>, A830010M20RIK <dbl>,
+    ## #   ARID5B <dbl>, PLK3 <dbl>, KCNA4 <dbl>, PIGA <dbl>, IRF2BP2 <dbl>,
+    ## #   HMGCR <dbl>, SIAH2 <dbl>, RFX2 <dbl>, AHR <dbl>, BTG2 <dbl>,
+    ## #   FZD4 <dbl>, MARCH11 <dbl>, ARL4A <dbl>, C2CD4B <dbl>, ARL13B <dbl>,
+    ## #   FOSB <dbl>, ING2 <dbl>, RASD1 <dbl>, JUNB <dbl>, LONRF1 <dbl>,
+    ## #   KLF2 <dbl>, NR4A3 <dbl>, LEMD3 <dbl>, PPP1R15A <dbl>, DUSP16 <dbl>,
+    ## #   FOS <dbl>, MYC <dbl>, CTNND1 <dbl>, EGR3 <dbl>, PEG10 <dbl>,
+    ## #   SLC2A3 <dbl>, SH2D3C <dbl>, FRMD6 <dbl>, FOXG1 <dbl>, SCG2 <dbl>,
+    ## #   FOSL2 <dbl>, GM13889 <dbl>, ERF <dbl>, MED7 <dbl>, LCMT2 <dbl>,
+    ## #   ABHD2 <dbl>, CNNM1 <dbl>, TRIB1 <dbl>, STMN4 <dbl>, GMEB2 <dbl>,
+    ## #   LMNA <dbl>, ANKRD28 <dbl>, DYRK2 <dbl>, ODC1 <dbl>, RASL11A <dbl>,
+    ## #   PER1 <dbl>, RGS2 <dbl>, KLF6 <dbl>, ACAN <dbl>, B3GNT2 <dbl>,
+    ## #   LRRTM2 <dbl>, OTUD1 <dbl>, KDM6B <dbl>, HECA <dbl>, ADAMTS1 <dbl>,
+    ## #   ARC <dbl>, EIF5 <dbl>, FERMT2 <dbl>, IRS2 <dbl>, LBH <dbl>,
+    ## #   RASL11B <dbl>, IL16 <dbl>, MN1 <dbl>, DUSP14 <dbl>, SLC25A25 <dbl>,
+    ## #   NAF1 <dbl>, ZFP654 <dbl>, HS6ST1 <dbl>, ZFP275 <dbl>, DNAJB1 <dbl>,
+    ## #   NR4A2 <dbl>, POU3F3 <dbl>, NPTX2 <dbl>, ZFP869 <dbl>,
+    ## #   `1190002N15RIK` <dbl>, …
 
     DGcorSlim <- correlate(DEGsPCAbeahv) %>%  
       focus(PC1,PC2,Time1stEntr, pTimeShockZone)  
@@ -160,226 +161,226 @@ measure and gene expression.
     DGcorarranged
 
     ##           rowname  PC1  PC2 Time1stEntr pTimeShockZone
-    ## 1            NAF1 -.76 -.14         .62           -.74
-    ## 2           TNIP2 -.68 -.04         .36           -.73
-    ## 3          NAP1L5 -.67 -.04         .43           -.70
-    ## 4           ADRB1 -.62 -.51         .53           -.71
-    ## 5           NPAS4 -.62 -.51         .53           -.72
-    ## 6          ERRFI1 -.58 -.33         .46           -.66
-    ## 7           PTGS2 -.58 -.38         .50           -.65
-    ## 8          PRUNE2 -.57 -.13         .58           -.50
-    ## 9          LRRTM2 -.55 -.39         .63           -.55
-    ## 10           PAK6 -.55 -.42         .58           -.58
-    ## 11        SPTY2D1 -.54  .03         .33           -.55
-    ## 12          FLRT3 -.53 -.47         .47           -.61
-    ## 13        GADD45G -.53 -.39         .43           -.63
-    ## 14          GPR19 -.53 -.34         .30           -.66
-    ## 15           RGS2 -.53 -.40         .38           -.65
-    ## 16  1190002N15RIK -.52 -.28         .42           -.57
-    ## 17          KCNA4 -.52 -.47         .54           -.58
-    ## 18           CCNK -.51 -.19         .50           -.51
-    ## 19            LBH -.51  .38         .24           -.45
-    ## 20          ABHD2 -.50 -.30         .40           -.56
-    ## 21         ARMCX5 -.50 -.55         .43           -.62
-    ## 22           MEST -.50  .15         .28           -.49
-    ## 23          FOXO1 -.49 -.03         .30           -.52
-    ## 24        SLC16A1 -.49 -.60         .60           -.56
-    ## 25          GMEB2 -.48  .05         .08           -.57
-    ## 26         LONRF1 -.48 -.07         .45           -.46
-    ## 27           SYT4 -.48 -.12         .24           -.55
-    ## 28           KLF6 -.47 -.48         .35           -.59
-    ## 29           SCG2 -.47 -.31         .25           -.59
-    ## 30          USPL1 -.47 -.29         .47           -.49
-    ## 31  A830010M20RIK -.46 -.07         .22           -.53
-    ## 32          CNNM1 -.46 -.12         .24           -.52
-    ## 33          FBXW7 -.46 -.18         .22           -.54
-    ## 34          CXADR -.45  .22         .03           -.50
-    ## 35           FZD5 -.45 -.30         .37           -.50
-    ## 36          PCDH8 -.45 -.22         .20           -.57
-    ## 37         ARPP21 -.44  .19         .06           -.49
-    ## 38         CITED2 -.44 -.61         .51           -.51
-    ## 39        MARCH11 -.44  .19         .19           -.44
-    ## 40           PIGA -.44 -.18         .23           -.54
-    ## 41            AHR -.43 -.07         .16           -.51
-    ## 42           ING2 -.43 -.16         .10           -.56
-    ## 43         RANBP2 -.43  .13         .19           -.45
-    ## 44          RASD1 -.43 -.42         .33           -.53
-    ## 45          STAC2 -.43 -.35         .62           -.38
-    ## 46          DUSP8 -.42 -.06         .28           -.44
-    ## 47           PLK2 -.42 -.29         .22           -.54
-    ## 48         SH2D3C -.42 -.04         .16           -.50
-    ## 49        TMEM170 -.42  .26         .26           -.35
-    ## 50         ZFAND5 -.42 -.08         .10           -.52
-    ## 51           CUL3 -.41 -.06         .21           -.46
-    ## 52          NFIL3 -.41 -.55         .44           -.50
-    ## 53         ZBTB33 -.41  .10         .01           -.50
-    ## 54          ARL4A -.40  .05         .15           -.43
-    ## 55          FOSL2 -.40 -.10         .23           -.46
-    ## 56         B3GNT2 -.39 -.30         .07           -.55
-    ## 57         DNAJB4 -.39  .00         .10           -.47
-    ## 58          ARL4D -.38 -.34         .39           -.42
-    ## 59           ATF3 -.38 -.17         .20           -.46
-    ## 60          CPEB4 -.38  .14         .25           -.35
-    ## 61           EPRS -.38  .11         .09           -.42
-    ## 62          PELI1 -.38  .16         .15           -.40
-    ## 63            SRF -.38  .01         .03           -.49
-    ## 64           BDNF -.37 -.20         .17           -.48
-    ## 65          KCNJ2 -.37 -.37         .40           -.43
-    ## 66         TSPYL3 -.37 -.22         .10           -.47
-    ## 67         AMIGO2 -.36 -.45         .55           -.37
-    ## 68       ANKRD33B -.36 -.24         .35           -.39
-    ## 69          APAF1 -.36  .02         .21           -.37
-    ## 70          ARL5B -.36  .12         .00           -.44
-    ## 71         TIPARP -.36 -.16         .19           -.43
-    ## 72         CLDN12 -.35  .09         .08           -.40
-    ## 73          CWC25 -.35 -.32         .18           -.47
-    ## 74         DUSP16 -.35 -.13         .22           -.40
-    ## 75         SLC2A3 -.35  .43         .11           -.29
-    ## 76         FBXO33 -.34 -.02         .07           -.42
-    ## 77         ZFP869 -.34  .01         .59           -.18
-    ## 78          NR4A2 -.33 -.10         .12           -.41
-    ## 79           RGMB -.33 -.30         .37           -.37
-    ## 80         ZFP668 -.33 -.00         .05           -.40
-    ## 81            ARC -.32 -.30         .29           -.38
-    ## 82           BTG2 -.32 -.09         .14           -.39
-    ## 83          HMGCR -.32  .17        -.01           -.39
-    ## 84           KLF2 -.32 -.33         .16           -.44
-    ## 85         MFAP3L -.32 -.63         .57           -.36
-    ## 86       SLC25A25 -.32 -.44         .20           -.46
-    ## 87        GM13889 -.31 -.16         .05           -.42
-    ## 88         ARL13B -.30  .16         .05           -.33
-    ## 89          NPTX2 -.30 -.05         .04           -.39
-    ## 90           PER1 -.30  .09         .01           -.37
-    ## 91           RGS4 -.30 -.25         .10           -.43
-    ## 92          SMAD7 -.30 -.24         .08           -.43
-    ## 93           EIF5 -.29  .34         .06           -.26
-    ## 94        PRPF38B -.29  .38         .01           -.27
-    ## 95          FRMD6 -.28  .10         .01           -.33
-    ## 96       PPP1R15A -.28 -.38         .18           -.39
-    ## 97            UBC -.28 -.15         .10           -.36
-    ## 98           FOSB -.27  .03         .01           -.35
-    ## 99           JUNB -.27 -.07         .01           -.37
-    ## 100        LYSMD4 -.27  .57        -.06           -.19
-    ## 101         SIAH2 -.27 -.08        -.05           -.40
-    ## 102        ZFP275 -.27  .18         .14           -.26
-    ## 103          IRS1 -.26 -.09         .23           -.27
-    ## 104          SCOC -.26  .22         .28           -.13
-    ## 105         TRIB1 -.26 -.30         .16           -.36
-    ## 106         NR4A3 -.24  .09         .01           -.29
-    ## 107        ZFP654 -.24  .64         .06           -.11
-    ## 108       ADAMTS1 -.23 -.28         .32           -.25
-    ## 109          EGR3 -.23  .23         .02           -.22
-    ## 110         CYP51 -.22  .11        -.01           -.27
-    ## 111           JUN -.22 -.09         .11           -.27
-    ## 112          SGK1 -.22 -.14        -.03           -.34
-    ## 113        HOMER1 -.21  .26        -.04           -.22
-    ## 114       SLITRK5 -.21  .14         .01           -.25
-    ## 115        DBPHT2 -.20  .30        -.10           -.22
-    ## 116          EGR4 -.20  .11        -.09           -.27
-    ## 117           MN1 -.20 -.45         .52           -.17
-    ## 118         DUSP4 -.19 -.18         .01           -.30
-    ## 119         FOXG1 -.18 -.05         .17           -.17
-    ## 120         PEG10 -.18 -.15         .30           -.15
-    ## 121      ANKRD13A -.17 -.18         .07           -.25
-    ## 122          FZD4 -.17 -.15         .31           -.14
-    ## 123          IRS2 -.17  .04        -.06           -.24
-    ## 124          JUND -.17 -.09        -.10           -.29
-    ## 125         KCNF1 -.17 -.35         .03           -.32
-    ## 126         SENP8 -.17 -.30         .20           -.19
-    ## 127        C2CD4B -.16 -.29         .21           -.22
-    ## 128        DNAJA1 -.16  .24         .08           -.11
-    ## 129         LCMT2 -.16  .10        -.20           -.26
-    ## 130         TRA2B -.16  .15        -.23           -.27
-    ## 131          BMT2 -.15  .31        -.19           -.18
-    ## 132         DUSP6 -.15 -.17        -.04           -.26
-    ## 133         HSPH1 -.15  .24         .08           -.11
-    ## 134         NR4A1 -.15 -.10        -.02           -.24
-    ## 135         ZDBF2 -.15 -.30         .35           -.13
-    ## 136         DYRK2 -.14 -.68         .43           -.20
-    ## 137       OLFML2B -.14  .10         .27           -.03
-    ## 138          RFX2 -.14  .21        -.17           -.21
-    ## 139         STMN4 -.14 -.40         .17           -.22
-    ## 140        DNAJB1 -.13  .47        -.11           -.09
-    ## 141       IRF2BP2 -.13 -.20         .01           -.23
-    ## 142          KITL -.12  .17        -.10           -.16
-    ## 143         NUAK1 -.12 -.10         .28           -.08
-    ## 144         SNX18 -.12  .05        -.15           -.22
-    ## 145         CIART -.11  .35        -.26           -.15
-    ## 146          EGR1 -.10  .12        -.10           -.14
-    ## 147         CTCFL -.09  .10        -.20           -.16
-    ## 148           ERF -.09  .08        -.16           -.17
-    ## 149         LEMD3 -.09  .33        -.29           -.16
-    ## 150         RBM47 -.09 -.25         .29           -.05
-    ## 151        FERMT2 -.08 -.03         .05           -.11
-    ## 152         KLKB1 -.08  .35        -.32           -.13
-    ## 153          NEFM -.08 -.39        -.01           -.22
-    ## 154       TSC22D2 -.08  .02        -.13           -.15
-    ## 155       RASL11B -.07 -.34        -.01           -.18
-    ## 156        CTNND1 -.06  .28        -.27           -.13
-    ## 157        ARID5B -.05 -.25         .13           -.09
-    ## 158       FAM107B -.05  .04        -.28           -.18
-    ## 159           FOS -.05  .01        -.12           -.13
-    ## 160        SLC5A5 -.05  .19         .20            .06
-    ## 161         CPNE7 -.03  .08         .09            .02
-    ## 162        HSPA1A -.03 -.07         .38            .10
-    ## 163        JMJD1C -.03  .31        -.10           -.02
-    ## 164        DUSP14 -.02 -.44        -.21           -.23
-    ## 165          IL16 -.02  .18        -.40           -.14
-    ## 166       NEUROD6 -.02  .49        -.13            .06
-    ## 167          ACAN -.01 -.19        -.04           -.09
-    ## 168         PGAM2 -.00 -.22         .41            .11
-    ## 169          SV2B -.00 -.37         .23           -.02
-    ## 170          MC1R  .77  .30        -.86            .72
-    ## 171        TUBB4A  .70 -.09        -.53            .64
-    ## 172          COQ2  .55  .58        -.75            .53
-    ## 173          PLK3  .52  .11        -.53            .47
-    ## 174          JDP2  .50 -.41        -.30            .40
-    ## 175         CECR6  .42 -.22        -.06            .46
-    ## 176       SLC45A4  .42  .04        -.04            .53
-    ## 177        CCDC32  .32  .05        -.38            .27
-    ## 178        PHLDA1  .31 -.40        -.26            .18
-    ## 179          MED7  .30  .42        -.51            .27
-    ## 180          ODC1  .29  .33        -.57            .22
-    ## 181           PXN  .28  .53        -.22            .40
-    ## 182         PLCH2  .27 -.67         .11            .20
-    ## 183           GYG  .26  .46        -.62            .20
-    ## 184        HS6ST1  .26  .02        -.23            .25
-    ## 185       RASL11A  .22 -.06        -.20            .20
-    ## 186        DPYSL2  .19  .44        -.41            .19
-    ## 187          PER2  .19  .27        -.42            .13
-    ## 188        ZFP207  .18  .37         .08            .36
-    ## 189       IGF2BP2  .17  .17        -.37            .11
-    ## 190         BACH1  .15 -.36         .02            .10
-    ## 191         OTUD1  .15 -.03         .04            .19
-    ## 192         PDE6A  .15 -.01        -.33            .06
-    ## 193          GAD1  .14 -.07        -.30            .03
-    ## 194          GPI1  .14 -.01        -.12            .16
-    ## 195          SOX9  .14 -.07         .17            .22
-    ## 196       ANKRD28  .13  .28        -.31            .09
-    ## 197          NXF1  .13  .52        -.22            .22
-    ## 198       FAM118A  .12  .42        -.49            .06
-    ## 199        POU3F3  .12  .14        -.44            .02
-    ## 200        SRGAP1  .12  .01        -.05            .13
-    ## 201        EEF1E1  .11 -.32         .34            .19
-    ## 202        SOWAHC  .11 -.34         .22            .14
-    ## 203           MYC  .08 -.30        -.25           -.08
-    ## 204         NEDD9  .08 -.41         .22            .06
-    ## 205      BC048403  .07 -.16         .24            .16
-    ## 206          GNAZ  .07  .20        -.35            .00
-    ## 207          LMNA  .06  .22        -.42           -.04
-    ## 208       ANKRD27  .04  .54        -.13            .12
-    ## 209        PLAGL1  .04  .38        -.30            .02
-    ## 210         THBS1  .04  .03         .15            .11
-    ## 211          HECA  .03  .54        -.25            .09
-    ## 212         KDM6B  .03  .36        -.38           -.04
-    ## 213        LRRC45  .02  .34        -.11            .07
-    ## 214         KDM7A  .00  .50        -.36           -.01
+    ## 1            NAF1 -.86  .38         .81           -.76
+    ## 2            RGS2 -.84  .41         .72           -.77
+    ## 3           PTGS2 -.83  .40         .74           -.82
+    ## 4             ARC -.82  .56         .67           -.81
+    ## 5            FZD5 -.82  .48         .72           -.76
+    ## 6            ACAN -.81  .52         .63           -.82
+    ## 7          ARMCX5 -.79  .22         .68           -.77
+    ## 8            ATF3 -.79  .69         .60           -.77
+    ## 9           CPEB4 -.79  .36         .65           -.72
+    ## 10          FOSL2 -.78  .49         .65           -.70
+    ## 11          FRMD6 -.78  .54         .58           -.73
+    ## 12          NPAS4 -.78  .39         .71           -.80
+    ## 13            UBC -.78  .58         .61           -.71
+    ## 14          ARL5B -.77  .63         .53           -.67
+    ## 15           SYT4 -.77  .34         .60           -.81
+    ## 16          ARL4D -.76  .44         .67           -.68
+    ## 17          PELI1 -.76  .54         .57           -.69
+    ## 18        ADAMTS1 -.75  .55         .67           -.71
+    ## 19           EGR4 -.75  .57         .58           -.72
+    ## 20         HOMER1 -.75  .67         .53           -.70
+    ## 21           PER1 -.75  .67         .54           -.72
+    ## 22           BDNF -.74  .43         .58           -.60
+    ## 23           EGR1 -.74  .73         .54           -.72
+    ## 24          NR4A3 -.74  .61         .58           -.70
+    ## 25          SMAD7 -.74  .40         .60           -.81
+    ## 26         FBXO33 -.73  .44         .58           -.72
+    ## 27          NPTX2 -.73  .47         .56           -.61
+    ## 28          PCDH8 -.73  .30         .63           -.70
+    ## 29       SLC25A25 -.73  .33         .59           -.80
+    ## 30          TRIB1 -.73  .59         .60           -.70
+    ## 31         DNAJB1 -.72  .63         .53           -.65
+    ## 32           FOSB -.72  .57         .56           -.68
+    ## 33          NR4A1 -.72  .71         .55           -.66
+    ## 34           PLK2 -.72  .38         .62           -.76
+    ## 35          RASD1 -.72  .30         .64           -.78
+    ## 36           JUND -.71  .57         .51           -.61
+    ## 37           RGS4 -.71  .38         .55           -.61
+    ## 38           SGK1 -.71  .44         .57           -.74
+    ## 39        SLC16A1 -.71  .25         .70           -.68
+    ## 40        SPTY2D1 -.71  .47         .59           -.73
+    ## 41            SRF -.71  .58         .44           -.62
+    ## 42         TIPARP -.71  .46         .62           -.72
+    ## 43         DBPHT2 -.70  .44         .50           -.58
+    ## 44          DUSP8 -.70  .42         .59           -.69
+    ## 45          NFIL3 -.70  .34         .66           -.72
+    ## 46         AMIGO2 -.69  .14         .69           -.76
+    ## 47       ANKRD33B -.69  .20         .61           -.58
+    ## 48           BTG2 -.69  .49         .57           -.72
+    ## 49         DNAJA1 -.69  .68         .52           -.65
+    ## 50           MEST -.69  .38         .61           -.71
+    ## 51         SLC2A3 -.69  .35         .59           -.63
+    ## 52         ERRFI1 -.68  .31         .63           -.72
+    ## 53          FLRT3 -.68  .16         .66           -.57
+    ## 54           FZD4 -.68  .35         .63           -.69
+    ## 55            JUN -.68  .45         .58           -.68
+    ## 56         LONRF1 -.68  .41         .66           -.65
+    ## 57        MARCH11 -.68  .26         .58           -.67
+    ## 58          NR4A2 -.68  .56         .53           -.72
+    ## 59         RANBP2 -.68  .37         .52           -.71
+    ## 60          FOXO1 -.67  .30         .52           -.68
+    ## 61         CLDN12 -.66  .17         .52           -.60
+    ## 62          KCNJ2 -.66  .31         .63           -.66
+    ## 63           KLF6 -.66  .36         .61           -.60
+    ## 64            AHR -.65  .18         .54           -.65
+    ## 65          CYP51 -.65  .49         .48           -.57
+    ## 66          DUSP6 -.65  .53         .50           -.67
+    ## 67           EPRS -.65  .31         .48           -.51
+    ## 68         HS6ST1 -.65  .37         .53           -.60
+    ## 69         HSPA1A -.65  .46         .60           -.63
+    ## 70           JUNB -.65  .43         .52           -.70
+    ## 71          KCNA4 -.65  .09         .67           -.65
+    ## 72         ARPP21 -.64  .41         .41           -.60
+    ## 73          DUSP4 -.64  .55         .46           -.49
+    ## 74           EIF5 -.64  .51         .50           -.66
+    ## 75          GPR19 -.64  .23         .59           -.58
+    ## 76         PLAGL1 -.64  .46         .48           -.57
+    ## 77        RASL11A -.64  .35         .53           -.69
+    ## 78           RFX2 -.64  .38         .46           -.62
+    ## 79          ZDBF2 -.64  .32         .61           -.68
+    ## 80  1190002N15RIK -.63  .31         .56           -.69
+    ## 81          SNX18 -.63  .35         .49           -.67
+    ## 82          TNIP2 -.63  .26         .52           -.47
+    ## 83          CXADR -.62  .37         .52           -.57
+    ## 84         DUSP16 -.62  .29         .56           -.63
+    ## 85           IRS1 -.62  .35         .55           -.67
+    ## 86           IRS2 -.62  .48         .49           -.65
+    ## 87         MFAP3L -.62  .26         .63           -.66
+    ## 88           PAK6 -.62  .19         .64           -.65
+    ## 89         SH2D3C -.62  .24         .56           -.54
+    ## 90        TSC22D2 -.62  .31         .46           -.64
+    ## 91           CUL3 -.61  .16         .51           -.74
+    ## 92        GADD45G -.61  .18         .59           -.61
+    ## 93          HSPH1 -.61  .54         .44           -.53
+    ## 94           KITL -.61  .36         .48           -.57
+    ## 95            LBH -.61  .42         .51           -.70
+    ## 96          NUAK1 -.61  .47         .53           -.66
+    ## 97        OLFML2B -.61  .31         .56           -.46
+    ## 98           RGMB -.61  .29         .56           -.54
+    ## 99  A830010M20RIK -.60  .26         .53           -.68
+    ## 100         CWC25 -.60  .36         .52           -.66
+    ## 101        JMJD1C -.60  .62         .39           -.56
+    ## 102          PIGA -.60  .23         .55           -.58
+    ## 103         APAF1 -.59  .28         .54           -.53
+    ## 104         CIART -.59  .37         .49           -.42
+    ## 105          IL16 -.59  .29         .44           -.59
+    ## 106         KCNF1 -.59  .21         .50           -.65
+    ## 107        LRRTM2 -.59  .13         .66           -.58
+    ## 108          NEFM -.59  .15         .48           -.57
+    ## 109         OTUD1 -.59  .39         .54           -.66
+    ## 110          PLK3 -.59  .49         .50           -.53
+    ## 111         THBS1 -.59  .26         .53           -.68
+    ## 112        ZFAND5 -.59  .32         .45           -.64
+    ## 113       FAM107B -.58  .33         .42           -.62
+    ## 114           FOS -.58  .47         .48           -.62
+    ## 115         FOXG1 -.58  .30         .55           -.62
+    ## 116          ING2 -.58  .18         .49           -.57
+    ## 117          LMNA -.58  .53         .35           -.64
+    ## 118          ODC1 -.58  .52         .34           -.53
+    ## 119        POU3F3 -.58  .51         .38           -.58
+    ## 120        ZFP869 -.58  .14         .62           -.60
+    ## 121         ARL4A -.57  .23         .48           -.62
+    ## 122       GM13889 -.57  .25         .48           -.67
+    ## 123      PPP1R15A -.57  .30         .53           -.56
+    ## 124         GMEB2 -.56  .28         .48           -.49
+    ## 125       SLITRK5 -.56  .19         .42           -.45
+    ## 126         STMN4 -.56  .36         .54           -.53
+    ## 127        ARL13B -.55  .37         .46           -.53
+    ## 128         CNNM1 -.55  .26         .50           -.61
+    ## 129        DUSP14 -.55  .12         .45           -.54
+    ## 130          KLF2 -.55  .21         .51           -.53
+    ## 131         LCMT2 -.55  .23         .44           -.54
+    ## 132         SIAH2 -.55  .23         .44           -.57
+    ## 133        SOWAHC -.55  .39         .53           -.63
+    ## 134          SOX9 -.55  .47         .51           -.42
+    ## 135         USPL1 -.55  .16         .54           -.47
+    ## 136        C2CD4B -.54  .22         .53           -.52
+    ## 137         DYRK2 -.54  .04         .57           -.55
+    ## 138         NEDD9 -.54  .17         .51           -.53
+    ## 139       RASL11B -.54  .23         .43           -.66
+    ## 140         ADRB1 -.53  .16         .52           -.62
+    ## 141      ANKRD13A -.53  .41         .43           -.34
+    ## 142        CITED2 -.53  .20         .56           -.59
+    ## 143          GAD1 -.53  .53         .37           -.49
+    ## 144         HMGCR -.53  .27         .46           -.58
+    ## 145           MN1 -.53  .17         .61           -.62
+    ## 146        B3GNT2 -.52 -.02         .46           -.53
+    ## 147           ERF -.52  .29         .40           -.62
+    ## 148          CCNK -.51  .30         .46           -.31
+    ## 149        DNAJB4 -.51  .20         .40           -.35
+    ## 150         TRA2B -.51  .48         .31           -.30
+    ## 151        ZFP275 -.51  .35         .45           -.55
+    ## 152         KDM7A -.50  .29         .32           -.46
+    ## 153        ARID5B -.49  .14         .48           -.57
+    ## 154           MYC -.49  .27         .42           -.46
+    ## 155        PHLDA1 -.49  .45         .29           -.45
+    ## 156        NAP1L5 -.48  .26         .46           -.54
+    ## 157         PEG10 -.48  .25         .53           -.48
+    ## 158       IRF2BP2 -.47  .20         .44           -.50
+    ## 159         KDM6B -.47  .42         .34           -.55
+    ## 160        ZFP654 -.47  .21         .42           -.57
+    ## 161         LEMD3 -.46  .24         .33           -.51
+    ## 162          SCG2 -.46  .10         .45           -.54
+    ## 163          HECA -.45  .15         .40           -.47
+    ## 164          PER2 -.45  .57         .22           -.47
+    ## 165        ZBTB33 -.45  .11         .38           -.58
+    ## 166         ABHD2 -.44  .05         .46           -.52
+    ## 167       ANKRD28 -.44  .27         .33           -.54
+    ## 168          EGR3 -.44  .21         .42           -.48
+    ## 169          JDP2 -.44  .27         .29           -.50
+    ## 170       PRPF38B -.44  .22         .39           -.31
+    ## 171       SLC45A4 -.44  .25         .47           -.50
+    ## 172        CTNND1 -.43  .25         .32           -.50
+    ## 173          MED7 -.43  .17         .35           -.45
+    ## 174         BACH1 -.41  .32         .40           -.52
+    ## 175         FBXW7 -.39  .13         .38           -.50
+    ## 176       FAM118A -.38  .36         .19           -.51
+    ## 177        FERMT2 -.38  .06         .39           -.47
+    ## 178          COQ2  .57 -.09        -.62            .61
+    ## 179          GPI1  .56 -.14        -.51            .52
+    ## 180        TUBB4A  .56 -.34        -.52            .54
+    ## 181          NXF1  .55  .03        -.55            .51
+    ## 182        ZFP207  .53 -.16        -.44            .62
+    ## 183           PXN  .50 -.07        -.43            .39
+    ## 184        EEF1E1  .45 -.15        -.33            .40
+    ## 185         PLCH2  .45 -.43        -.30            .26
+    ## 186        LRRC45  .42 -.06        -.38            .54
+    ## 187        CCDC32  .41 -.30        -.36            .49
+    ## 188        SRGAP1  .37 -.10        -.31            .23
+    ## 189         PGAM2  .36 -.23        -.24            .44
+    ## 190          SCOC  .35 -.03        -.36            .33
+    ## 191       NEUROD6  .34 -.16        -.35            .28
+    ## 192         CECR6  .33 -.34        -.19            .11
+    ## 193         SENP8  .33 -.11        -.34            .41
+    ## 194        SLC5A5  .33  .09        -.31            .44
+    ## 195          SV2B  .33 -.32        -.30            .22
+    ## 196        LYSMD4  .32 -.26        -.22            .14
+    ## 197        TSPYL3  .32 -.14        -.34            .44
+    ## 198          MC1R  .30  .03        -.39            .25
+    ## 199       ANKRD27  .29 -.02        -.31            .46
+    ## 200         CPNE7  .29 -.19        -.27            .18
+    ## 201        DPYSL2  .29 -.02        -.37            .28
+    ## 202      BC048403  .28 -.15        -.22            .41
+    ## 203          GNAZ  .28  .02        -.38            .23
+    ## 204         KLKB1  .28  .03        -.36            .26
+    ## 205         CTCFL  .26 -.01        -.34            .24
+    ## 206           GYG  .26  .08        -.32            .38
+    ## 207         STAC2  .26 -.10        -.23            .28
+    ## 208          BMT2  .25  .03        -.33            .22
+    ## 209       IGF2BP2  .25  .04        -.38            .20
+    ## 210        PRUNE2  .22 -.06        -.24            .22
+    ## 211         RBM47  .19 -.02        -.22            .27
+    ## 212         PDE6A  .17  .11        -.29            .11
+    ## 213        ZFP668  .12 -.22        -.07            .29
+    ## 214       TMEM170  .11  .05        -.17            .11
 
     DEGsPCAbeahvDf <- as.data.frame(DEGsPCAbeahv)
     a <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = NAF1, label = rownames(DEGsPCAbeahvDf))) +
-      geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
+      geom_point( ) + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
     b <- ggplot(DEGsPCAbeahvDf, aes(x = Time1stEntr, y = NAF1, label = rownames(DEGsPCAbeahvDf))) +
-      geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
+      geom_point( ) + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
 
     c <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = ARC, label = rownames(DEGsPCAbeahvDf))) +
       geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
@@ -389,20 +390,8 @@ measure and gene expression.
 
     a
 
-    ## Warning: Removed 8 rows containing non-finite values (stat_smooth).
-
-    ## Warning: Removed 8 rows containing missing values (geom_point).
-
-    ## Warning: Removed 8 rows containing missing values (geom_text).
-
 ![](../figures/02e_correlations/unnamed-chunk-1-1.png)
 
     b
-
-    ## Warning: Removed 8 rows containing non-finite values (stat_smooth).
-
-    ## Warning: Removed 8 rows containing missing values (geom_point).
-
-    ## Warning: Removed 8 rows containing missing values (geom_text).
 
 ![](../figures/02e_correlations/unnamed-chunk-1-2.png)

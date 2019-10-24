@@ -17,14 +17,14 @@ For this analysis, I want to explor correlations between a behavioral measure an
 # import behavior data, create mouse id, select relvant samples
 behav <- read.csv("../data/01a_behavior.csv") 
 behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
-behav <- behav %>% filter(treatment %in% c("conflict.trained", "standard.trained"),
+behav <- behav %>% filter( #treatment %in% c("conflict.trained", "standard.trained"),
                                   TrainSessionCombo == "Retention") %>% 
                            select(mouse,Time1stEntr,pTimeShockZone) 
 head(behav)
 ```
 ```{r pca}
 pcadata <- read_csv("../data/01a_pcadf.csv") %>%
-  filter(treatment %in% c("conflict.trained", "standard.trained"),
+  filter(#treatment %in% c("conflict.trained", "standard.trained"),
          TrainSessionComboNum == 9) %>%
   select(ID,PC1,PC2) 
 pcadata$mouse <- sapply(strsplit(as.character(pcadata$ID),"15"), "[", 2)
@@ -63,9 +63,9 @@ DGcorarranged
 ```{r}
 DEGsPCAbeahvDf <- as.data.frame(DEGsPCAbeahv)
 a <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = NAF1, label = rownames(DEGsPCAbeahvDf))) +
-  geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
+  geom_point( ) + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
 b <- ggplot(DEGsPCAbeahvDf, aes(x = Time1stEntr, y = NAF1, label = rownames(DEGsPCAbeahvDf))) +
-  geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
+  geom_point( ) + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
 
 c <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = ARC, label = rownames(DEGsPCAbeahvDf))) +
   geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
