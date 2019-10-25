@@ -297,10 +297,17 @@ titles, y labels and limits.
 
 ### individual variation in behavior
 
-    behavior %>% 
-        ggplot(aes(x=, TrainSessionComboNum, y=NumEntrances, color=ID)) + 
-        geom_line() +
-        geom_point(size = 1.5) +
+    problemsamples1 <- behavior %>%   filter(ID %in% c("15148A", "15143A")) 
+    problemsamples2 <- behavior %>%   filter(ID %in% c("15148B", "15143B")) 
+
+    behav1 <- behavior %>% filter(treatment %in% "conflict.trained")
+    behav2 <- behavior %>% filter(treatment %in% "conflict.yoked")
+
+
+    ggplot(data = behav1, aes(x=TrainSessionComboNum, y= Time1stEntr, color=ID)) + 
+      geom_point(data = problemsamples1, aes(x=TrainSessionComboNum, y=Time1stEntr, shape=ID, size = 1.5)) +
+         geom_line(data = behav1, aes(x=TrainSessionComboNum, y=Time1stEntr)) +
+        # geom_line() +
         labs(subtitle = " ") +
         scale_x_continuous(name= "training session", 
                            breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
@@ -311,20 +318,47 @@ titles, y labels and limits.
 
 ![](../figures/01_behavior/individualbehavior-1.png)
 
-    behavior %>% 
-        filter(ID %in% c("15148B", "15143B","15148A", "15143A", "15145A"))  %>%
-        ggplot(aes(x=, TrainSessionComboNum, y=NumEntrances, color=treatment, shape = ID)) + 
-        geom_line() +
-        geom_point(size = 1.5) +
+    ggplot(data = behav1, aes(x=TrainSessionComboNum, y= NumEntrances, color=ID)) + 
+      geom_point(data = problemsamples1, aes(x=TrainSessionComboNum, y=NumEntrances, shape=ID, size = 1.5)) +
+         geom_line(data = behav1, aes(x=TrainSessionComboNum, y=NumEntrances)) +
+        # geom_line() +
         labs(subtitle = " ") +
         scale_x_continuous(name= "training session", 
                            breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                            labels = c( "P", "T1", "T2", "T3",
                                        "Rt", "T4", "T5", "T6", "Rn")) +
         theme_ms() +
-      scale_color_manual(values = treatmentcolors)
+      facet_wrap(~treatment)
 
 ![](../figures/01_behavior/individualbehavior-2.png)
+
+    ggplot(data = behav1, aes(x=TrainSessionComboNum, y= pTimeShockZone, color=ID)) + 
+      geom_point(data = problemsamples1, aes(x=TrainSessionComboNum, y=pTimeShockZone, shape=ID, size = 1.5)) +
+         geom_line(data = behav1, aes(x=TrainSessionComboNum, y=pTimeShockZone)) +
+        # geom_line() +
+        labs(subtitle = " ") +
+        scale_x_continuous(name= "training session", 
+                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                           labels = c( "P", "T1", "T2", "T3",
+                                       "Rt", "T4", "T5", "T6", "Rn")) +
+        theme_ms() +
+      facet_wrap(~treatment)
+
+![](../figures/01_behavior/individualbehavior-3.png)
+
+    ggplot(data = behav1, aes(x=TrainSessionComboNum, y= Time2ndEntr, color=ID)) + 
+      geom_point(data = problemsamples1, aes(x=TrainSessionComboNum, y=Time2ndEntr, shape=ID, size = 1.5)) +
+         geom_line(data = behav1, aes(x=TrainSessionComboNum, y=Time2ndEntr)) +
+        # geom_line() +
+        labs(subtitle = " ") +
+        scale_x_continuous(name= "training session", 
+                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                           labels = c( "P", "T1", "T2", "T3",
+                                       "Rt", "T4", "T5", "T6", "Rn")) +
+        theme_ms() +
+      facet_wrap(~treatment)
+
+![](../figures/01_behavior/individualbehavior-4.png)
 
 ### Principle component analysis
 
