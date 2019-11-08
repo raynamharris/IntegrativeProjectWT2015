@@ -95,6 +95,13 @@ res_summary <- function(mycontrast){
   cat("\n")
 }
 
+res_summary_subfield <- function(mydds, mycontrast){
+  res <- results(mydds, contrast = mycontrast, independentFiltering = T)
+  print(mycontrast)
+  print(sum(res$padj < 0.1, na.rm=TRUE))
+  print(summary(res))
+  cat("\n")
+}
 
 numDEGs <- function(group1, group2){
   res <- results(dds, contrast = c("APA2", group1, group2), independentFiltering = T)
@@ -482,11 +489,3 @@ returnvsds <- function(mydds, vsdfilename){
   return(vsd)
 }
 
-res_summary_subfield <- function(mydds, mycontrast){
-  res <- results(mydds, contrast = mycontrast, independentFiltering = T)
-  print(mycontrast)
-  print(sum(res$padj < 0.1, na.rm=TRUE))
-  print(summary(res))
-  print(head((res[order(res$padj),]), 5))
-  cat("\n")
-}

@@ -12,9 +12,6 @@ library(tidyverse)
 library(cowplot) ## for some easy to use themes
 library(DESeq2) ## for gene expression analysis
 library(UpSetR)
-#devtools::install_github("clauswilke/ggtextures")
-library(ggtextures)
-library(magick)
 library(ggtext) # for markdown in plots
 
 library(BiocParallel)
@@ -46,38 +43,34 @@ DGdds2 <- returndds2("DG")
 CA1dds2 <- returndds2("CA1") 
 CA3dds2 <- returndds2("CA3") 
 
-returnvsds(DGdds, "../data/02c_DGvsd.csv")
-returnvsds(CA1dds, "../data/02c_CA1vsd.csv")
-returnvsds(CA3dds, "../data/02c_CA3vsd.csv")
+returnvsds(DGdds2, "../data/02c_DGvsd.csv")
+returnvsds(CA1dds2, "../data/02c_CA1vsd.csv")
+returnvsds(CA3dds2, "../data/02c_CA3vsd.csv")
 ```
 
-## Res summary
+## Results to compare with volcano plots
 
 ```{r twowaycontrasts}
 print("DG")
-res_summary_subfield(DGdds, c("treatment", "standard.trained", "standard.yoked"))
-res_summary_subfield(DGdds, c("treatment", "conflict.trained", "conflict.yoked"))
+res_summary_subfield(DGdds2, c("training", "trained", "yoked"))
 res_summary_subfield(DGdds, c("treatment", "conflict.trained", "standard.trained"))
 res_summary_subfield(DGdds, c("treatment", "conflict.yoked", "standard.yoked"))
 
 print("CA3")
-res_summary_subfield(CA3dds, c("treatment", "standard.trained", "standard.yoked"))
-res_summary_subfield(CA3dds, c("treatment", "conflict.trained", "conflict.yoked"))
+res_summary_subfield(CA3dds2, c("training", "trained", "yoked"))
 res_summary_subfield(CA3dds, c("treatment", "conflict.trained", "standard.trained"))
 res_summary_subfield(CA3dds, c("treatment", "conflict.yoked", "standard.yoked"))
 
 print("CA1")
-res_summary_subfield(CA1dds, c("treatment", "standard.trained", "standard.yoked"))
-res_summary_subfield(CA1dds, c("treatment", "conflict.trained", "conflict.yoked"))
+res_summary_subfield(CA1dds2, c("training", "trained", "yoked"))
 res_summary_subfield(CA1dds, c("treatment", "conflict.trained", "standard.trained"))
 res_summary_subfield(CA1dds, c("treatment", "conflict.yoked", "standard.yoked"))
-
 ```
 
 ## Volcano plots
 
 ```{r volcanos, fig.width=6.65, fig.height=4}
-plot.volcano <- function(mydds, whichfactor, up, down, mycolors, mysubfield){
+plot.volcano <- function(mydds, whichfactor, up, down, mycolors){
   res <- results(mydds, contrast =c(whichfactor, up, down),
                  independentFiltering = T, alpha = 0.1)
    data <- data.frame(gene = row.names(res),
@@ -87,41 +80,59 @@ plot.volcano <- function(mydds, whichfactor, up, down, mycolors, mysubfield){
   data <- na.omit(data)
   data <- data %>%
     dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                                     yes = up, 
-                                     no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                                 yes = down, 
-                                                 no = "NS")))
+                                     yes = up, no = ifelse(data$lfc < 0 & data$padj < 0.1, 
+                                                 yes = down, no = "NS")))
+  data$direction <- factor(data$direction, levels = c(down, "NS", up))
   volcano <- data %>%
     ggplot(aes(x = lfc, y = logpadj)) + 
-    geom_point(aes(color = factor(direction)), size = 1, alpha = 0.75, na.rm = T) + 
+    geom_point(aes(color = direction), size = 1, alpha = 0.75, na.rm = T) + 
      theme_ms() +
     scale_color_manual(values = mycolors,
-                       name = "higher in",
-                       breaks=c(down, up))  + 
-   # ylim(c(0,7)) +
-    #xlim(c(-10,10)) +
-    labs(y = "-log10(p)", x = "log fold change", title = mysubfield)  +
-    theme(legend.position = "bottom",
+                       name = " ",
+                       drop = FALSE) +
+    ylim(c(0,12.5)) +  
+    xlim(c(-8,8)) +
+    labs(y = "-log10(p)", x = "log fold change")  +
+    theme(legend.position = "top",
           legend.spacing.x = unit(-0.1, 'cm'),
-          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
-  plot(volcano)
+          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
+          panel.grid = element_blank()) 
+  return(volcano)
 }
 
+# usage: mydds, whichfactor, up, down, mycolors, mysubfield
+DG1 <- plot.volcano(DGdds2, "training", "trained", "yoked", volcano7) 
+DG2 <-  plot.volcano(DGdds, "treatment", "conflict.trained", "standard.trained",  volcano2) 
+DG3 <-  plot.volcano(DGdds, "treatment", "conflict.yoked", "standard.yoked",  volcano6) 
+
+CA31 <- plot.volcano(CA3dds2, "training", "trained", "yoked", volcano7) 
+CA32 <-  plot.volcano(CA3dds, "treatment", "conflict.trained", "standard.trained", volcano2) 
+CA33 <-  plot.volcano(CA3dds, "treatment", "conflict.yoked", "standard.yoked", volcano6) 
+
+CA11 <- plot.volcano(CA1dds2, "training", "trained", "yoked", volcano7) 
+CA12 <-  plot.volcano(CA1dds, "treatment", "conflict.trained", "standard.trained", volcano2) 
+CA13 <-  plot.volcano(CA1dds, "treatment", "conflict.yoked", "standard.yoked", volcano6) 
 
 
 
-DGconsyokcons <-  plot.volcano(DGdds, "treatment", "standard.trained", "standard.yoked", volcano1, "DG") 
-DGconflicttrained <-  plot.volcano(DGdds, "treatment", "conflict.trained", "conflict.yoked", volcano5, "DG") 
-DGtrained <- plot.volcano(DGdds2, "combinedgroups", "trained", "yoked", volcano7, "DG") 
-
-CA1consyokcons <-  plot.volcano(CA1dds, "treatment", "standard.trained", "standard.yoked", volcano1,  "CA1")  
-CA1yoked <-  plot.volcano(CA1dds, "treatment","conflict.yoked", "standard.yoked", volcano6,  "CA1") 
-CA1trained <- plot.volcano(CA1dds2, "combinedgroups", "trained", "yoked", volcano7, "CA1") 
-
-
-volcanos <- plot_grid(DGconsyokcons, DGconflicttrained, DGtrained,
-                      CA1consyokcons, CA1yoked , CA1trained, nrow = 2,
-                      labels = c("(a)", "(b)","(c)" ,"(d)", "(e)", "(f)"), label_size = 8) 
+volcanos <- plot_grid(DG1 +  labs(x= NULL) + annotate("text", x = -7, y = 12, label = "DG"),
+                      DG2  +  labs(x= NULL, y = " "), 
+                      DG3 +  labs(x= NULL, y = " "),
+                      
+                      CA31 + theme(legend.position = "none") + labs(x= NULL) + 
+                              annotate("text", x = -7, y = 12, label = "CA3"),
+                      CA32 + theme(legend.position = "none") +  labs(x= NULL, y = " " ), 
+                      CA33 + theme(legend.position = "none") +  labs(x= NULL, y = " "), 
+                      
+                      CA11 + theme(legend.position = "none") + 
+                              annotate("text", x = -7, y = 12, label = "CA1"), 
+                      CA12 + theme(legend.position = "none") +  labs(y= " " ), 
+                      CA13 + theme(legend.position = "none") +  labs(y= " "), 
+                      nrow = 3, rel_heights =  c(0.35,0.3,0.35) ,
+                      labels =  c("a1", "b1", "c1",
+                                  "a2", "b2", "c2",
+                                  "a3", "b3", "c3"),
+                      label_size = 7) 
 volcanos
 
 pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=6.65, height=4)
@@ -129,7 +140,7 @@ plot(volcanos)
 dev.off()
 ```
 
-# candidate gnees
+# candidate genes
 
 ```{r DG_boxplots}
 betterPlotCounts <- function(mygene, mydds, mysubfield){

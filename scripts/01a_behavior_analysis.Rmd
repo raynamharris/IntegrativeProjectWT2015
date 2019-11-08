@@ -11,7 +11,6 @@ This markdown file is used for behavioral data wrangling, statistical analysis, 
 ```{r setup, message=F}
 ## load libraries 
 library(tidyverse) ## for respahing data
-library(plyr) ## for renmaing factors
 library(reshape2) ## for melting dataframe
 library(cowplot) ## for some easy to use themes
 library(ggfortify) # pca
@@ -72,6 +71,7 @@ behavior %>%
 head(behavior)
 ```
 
+
 ## Number of shocks
 
 The values in the column "NumShock" are actually measures of the number of entraces into the shock zone. Because, that's what the software records. For standard.trained and conflict.trained animals, the number of shocks equals equals the number of entraces. However, for yoked individuals, the number of entrances does not equal the number of shocks. For them, the number of shocks is equal to their standard.trained or conflict.trained trained partner. 
@@ -85,6 +85,10 @@ numshocks <- behavior %>%
 numshocks <- spread(numshocks, key=TrainSessionCombo, value= NumShock)
 numshocks$sums <- rowSums(numshocks[sapply(numshocks, is.numeric)])
 head(numshocks)
+
+grouped <- numshocks %>% group_by(treatment)
+summarise(grouped, mean=mean(sums), sd=sd(sums))
+
 
 # delete values for yoked animals
 numshocks <- numshocks %>%
@@ -120,13 +124,17 @@ a <- ggplot(realnumshocks, aes(x = treatment, y = sums, fill = treatment)) +
     theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
           legend.position = "none") 
 a
+
+trainedonly <- realnumshocks %>% filter(treatment %in% c("conflict\ntrained", "standard\ntrained"))
+summary(trainedonly)
+summary(aov(sums ~ treatment, data=trainedonly))
 ```
 
 # Vizualizing Mean and Standard error for num entrace and time 1st entrance
 
 To make the point and line graphs, I must create and join some data frames, then I have a function that makes four plots with specific titles, y labels and limits.
 
-```{r fourmeasures, fig.width= 6.65, fig.height=2}
+```{r fourmeasures}
 dfb <- behavior %>%
   dplyr::group_by(treatment, TrainSessionComboNum) %>%
   dplyr::summarise(m = mean(NumEntrances), 
@@ -146,8 +154,11 @@ dfd <- behavior %>%
                    se = sd(pTimeShockZone)/sqrt(length(pTimeShockZone))) %>%
   dplyr::mutate(measure = "Proportion of time in target zone")
 
-fourmeasures <- rbind(dfb,dfc,dfd)
-head(fourmeasures)
+dfa <- behavior %>%
+  dplyr::group_by(treatment, TrainSessionComboNum) %>%
+  dplyr::summarise(m = mean(Dist1stEntr.m.), 
+                   se = sd(Dist1stEntr.m.)/sqrt(length(Dist1stEntr.m.))) %>%
+  dplyr::mutate(measure = "Distance 1st entr")
 
 # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
 
@@ -156,16 +167,6 @@ b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.
 c <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
 d <- meansdplots(dfd, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
 
-fourplots <- plot_grid(a + theme(legend.position="none"),
-           b + theme(legend.position="none"),
-           c + theme(legend.position="none"),
-           d + theme(legend.position="none"),
-           #align = 'vh',
-           labels = c("(a)", "(b)", "(c)", "(d)"),
-           nrow = 1,
-           label_size = 8
-           )
-fourplots
 ```
 
 
@@ -266,8 +267,6 @@ e <- ggplot(pcadf, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
        subtitle = " ") 
 e
 
-
-
 # get contributions
 df <- behavior %>% select(SdevSpeedArena:Speed2)
 res.pca <- PCA(df,  graph = FALSE)
@@ -299,6 +298,24 @@ behaviorfig
 pdf(file="../figures/01_behavior/behaviorfig.pdf", width=7, height=3.5)
 plot(behaviorfig)
 dev.off()
+```
+
+## now all the stats
+
+```{r stats}
+# pretraining
+hab <- behavior %>% filter(TrainSessionCombo == "Hab")
+summary(aov(NumEntrances ~ treatment, data=hab))
+
+
+# pca
+pc1aov <- aov(PC1 ~ treatment, data = pcadf)
+summary(pc1aov)
+TukeyHSD(pc1aov)
+
+pc2aov <- aov(PC2 ~ treatment, data = pcadf)
+summary(pc2aov)
+TukeyHSD(pc2aov)
 ```
 
 ```{r writefiles}
