@@ -8,6 +8,10 @@ library(tidyverse)
 library(corrplot)
 library(cowplot)
 library(corrr)
+#devtools::install_github("clauswilke/ggtext")
+library(ggtext)
+
+source("figureoptions.R")
 
 knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = F)
 ```    
@@ -39,7 +43,6 @@ DG_DEGs$sample <- row.names(DG_DEGs)
 DG_DEGs$mouse <- sapply(strsplit(as.character(DG_DEGs$sample),"\\-"), "[", 1)
 DG_DEGs <- DG_DEGs %>% select(mouse,`1190002N15RIK`:ZFP869)
 DG_DEGs
-
 ```
 
 ```{r joining}
@@ -63,19 +66,45 @@ DGcorarranged
 ```
 
 ```{r}
+mousetreatment <- read_csv("../data/01a_behavior.csv")  %>%
+  filter(TrainSessionCombo == "Retention") %>%
+  mutate(mouse = sapply(strsplit(as.character(ID),"15"), "[", 2)) %>%
+  select(mouse, treatment)
+mousetreatment
+
+
 DEGsPCAbeahvDf <- as.data.frame(DEGsPCAbeahv)
-a <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = NAF1, label = rownames(DEGsPCAbeahvDf))) +
-  geom_point( ) + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
-b <- ggplot(DEGsPCAbeahvDf, aes(x = Time1stEntr, y = NAF1, label = rownames(DEGsPCAbeahvDf))) +
-  geom_point( ) + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
+DEGsPCAbeahvDf$mouse <- row.names(DEGsPCAbeahvDf)
+DEGsPCAbeahvDf <- left_join(mousetreatment, DEGsPCAbeahvDf)
 
-c <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = ARC, label = rownames(DEGsPCAbeahvDf))) +
-  geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
-d <- ggplot(DEGsPCAbeahvDf, aes(x = Time1stEntr, y = ARC, label = rownames(DEGsPCAbeahvDf))) +
-  geom_point(colour = "darkred") + geom_smooth(method='lm', colour = "darkgrey") + geom_text(vjust = -0.1)
+theme_ms <- function () { 
+  theme_classic(base_size = 10) +
+    theme(
+      panel.grid.major  = element_blank(),  # remove major gridlines
+      panel.grid.minor  = element_blank(),  # remove minor gridlines
+      plot.title = element_text(hjust = 0.5, face = "bold") # center & bold 
+    )
+}
 
+a <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = ARC)) +
+  geom_point(aes(color = treatment)) + geom_smooth(method='lm', colour = "darkgrey")  +
+  labs(y = "ARC expression in DG (variance stabilized)", 
+       x = "behavior PC1 \n decreasing avoidance behavior -->",
+       subtitle = "R2 = 0.5864, p = 0.0003") +
+  theme_ms() +
+  scale_color_manual(values = treatmentcolors) + theme(legend.position = "none")
+  
+b <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = FOSL2)) +
+  geom_point(aes(color = treatment)) + geom_smooth(method='lm', colour = "darkgrey") +
+  labs(y = "FOSL2 expression in DG (variance stabilized)", 
+       x = "behavior PC1 \n decreasing avoidance behavior -->",
+       subtitle = "R2 = 0.6412, p = 0.0001") +
+    theme_ms() +
+  scale_color_manual(values = treatmentcolors) + theme(legend.position = "none")
 
-a
-b
+plot_grid(a,b)
+
+summary(lm(ARC ~ PC1, data = DEGsPCAbeahvDf))
+summary(lm(FOSL2 ~ PC1, data = DEGsPCAbeahvDf))
 
 ```

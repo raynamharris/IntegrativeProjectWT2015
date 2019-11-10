@@ -2,7 +2,7 @@
 
 makepcadf <- function(data){
   Z <- data %>%
-    select(SdevSpeedArena:Speed2)
+    select(SdevSpeedArena:Speed2) # columns 9 to 47
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
   loadings <- pc$rotation

@@ -167,6 +167,11 @@ b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.
 c <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
 d <- meansdplots(dfd, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
 
+fourplots <- plot_grid(a + theme(legend.position = "none"),
+                       b + theme(legend.position = "none"),
+                       c + theme(legend.position = "none"), 
+                       d + theme(legend.position = "none"), nrow = 1)
+fourplots
 ```
 
 
@@ -239,9 +244,11 @@ ggplot(data = behav1, aes(x=TrainSessionComboNum, y= Time2ndEntr, color=ID)) +
 Next, I next reduced the dimentionality of the data with a PCA anlaysis. 
 
 ```{r PCA}
-retention <- behavior %>% filter(TrainSessionCombo %in% c("Retention") ) %>% droplevels()
+names(behavior)[9:47] # measures included in analysis
 
 pcadf <- makepcadf(behavior)
+
+retention <- behavior %>% filter(TrainSessionCombo %in% c("Retention") ) %>% droplevels()
 
 pcadfretention <- pcadf %>% filter(TrainSessionComboNum == 9) %>% 
   group_by(treatment) %>% 
