@@ -1189,7 +1189,7 @@ measure and gene expression.
 
     ## Warning: Removed 18 rows containing missing values (geom_point).
 
-![](../figures/02e_correlations/unnamed-chunk-1-1.png)
+![](../figures/02e_correlations/DEGvPCA-1.png)
 
     summary(lm(ARC ~ PC1, data = DEGsPCAbeahvDf))
 

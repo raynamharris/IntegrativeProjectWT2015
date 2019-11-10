@@ -65,7 +65,7 @@ DGcorarranged <- fashion(DGcorSlim) %>% arrange(desc(PC1))
 DGcorarranged
 ```
 
-```{r}
+```{r DEGvPCA}
 mousetreatment <- read_csv("../data/01a_behavior.csv")  %>%
   filter(TrainSessionCombo == "Retention") %>%
   mutate(mouse = sapply(strsplit(as.character(ID),"15"), "[", 2)) %>%
