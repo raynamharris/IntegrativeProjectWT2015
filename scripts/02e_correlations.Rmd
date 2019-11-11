@@ -40,7 +40,7 @@ behav <- read.csv("../data/01a_behavior.csv")
 behav$mouse <- sapply(strsplit(as.character(behav$ID),"15"), "[", 2)
 behav <- behav %>% filter( #treatment %in% c("conflict.trained", "standard.trained"),
                                   TrainSessionCombo == "Retention") %>% 
-                           select(mouse,Time1stEntr,pTimeShockZone) 
+                           select(mouse,Entr.Dist.1.m.,MaxTimeAvoid) 
 head(behav)
 ```
 ```{r pca}
@@ -59,7 +59,7 @@ DG_DEGs <- as.data.frame(t(DG_DEGs))
 DG_DEGs$sample <- row.names(DG_DEGs)
 DG_DEGs$mouse <- sapply(strsplit(as.character(DG_DEGs$sample),"\\-"), "[", 1)
 DG_DEGs <- DG_DEGs %>% select(mouse,`1190002N15RIK`:ZFP869)
-#head(DG_DEGs)
+head(DG_DEGs)[1:5]
 ```
 
 ```{r joining}
@@ -76,7 +76,9 @@ DGcor <- DEGsPCAbeahv %>% correlate() %>% rearrange() %>%  shave()
 DGcor
 
 DGcorSlim <- correlate(DEGsPCAbeahv) %>%  
-  focus(PC1,PC2,Time1stEntr, pTimeShockZone)  
+  focus(PC1)   %>%  
+  arrange(PC1)
+DGcorSlim
 
 DGcorarranged <- fashion(DGcorSlim) %>% arrange(desc(PC1))
 head(DGcorarranged)
@@ -93,28 +95,27 @@ DEGsPCAbeahvDf <- as.data.frame(DEGsPCAbeahv)
 DEGsPCAbeahvDf$mouse <- row.names(DEGsPCAbeahvDf)
 DEGsPCAbeahvDf <- left_join(mousetreatment, DEGsPCAbeahvDf)
 
+summary(lm(ARC ~ PC1, data = DEGsPCAbeahvDf))
+summary(lm(FOSL2 ~ PC1, data = DEGsPCAbeahvDf))
+
 
 a <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = ARC)) +
   geom_point(aes(color = treatment)) + geom_smooth(method='lm', colour = "darkgrey")  +
   labs(y = "ARC expression in DG \n (variance stabilized)", 
-       x = "behavior PC1 \n decreasing avoidance behavior -->",
-       subtitle = "R2 = 0.5864, p = 0.0003") +
+       x = "behavior PC1 \n increasing avoidance behavior -->",
+       subtitle = "R2 = 0.6235, p = 0.00016693") +
   theme_ms() +
   scale_color_manual(values = treatmentcolors) + theme(legend.position = "none")
   
 b <- ggplot(DEGsPCAbeahvDf, aes(x = PC1, y = FOSL2)) +
   geom_point(aes(color = treatment)) + geom_smooth(method='lm', colour = "darkgrey") +
   labs(y = "FOSL2 expression in DG \n (variance stabilized)", 
-       x = "behavior PC1 \n decreasing avoidance behavior -->",
-       subtitle = "R2 = 0.6412, p = 0.0001") +
+       x = "behavior PC1 \n increasing avoidance behavior -->",
+       subtitle = "R2 = 0.5433, p = 0.0006778") +
     theme_ms() +
   scale_color_manual(values = treatmentcolors) + theme(legend.position = "none")
 
 plot_grid(a,b)
-
-summary(lm(ARC ~ PC1, data = DEGsPCAbeahvDf))
-summary(lm(FOSL2 ~ PC1, data = DEGsPCAbeahvDf))
-
 ```
 ```{r DEGnCandidatesvPCA}
 
@@ -127,12 +128,13 @@ allDGvsd <- left_join(mousetreatment, allDGvsd)
 allDGvsd <- left_join(pcadata, allDGvsd)
 
 summary(lm(Prkcz ~ PC1, data = allDGvsd))
+summary(lm(Camk2a ~ PC1, data = allDGvsd))
 
 c <- ggplot(allDGvsd, aes(x = PC1, y = Prkcz)) +
   geom_point(aes(color = treatment)) + geom_smooth(method='lm', colour = "darkgrey") +
   labs(y = "PRKCZ expression in DG \n (variance stabilized)", 
-       x = "behavior PC1 \n decreasing avoidance behavior -->",
-       subtitle = "R2 = 0.04177, p = 0.22") +
+       x = "behavior PC1 \n increasing avoidance behavior -->",
+       subtitle = "R2 = 0.06323 , p = 0.1779") +
     theme_ms() +
   scale_color_manual(values = treatmentcolors) + theme(legend.position = "none")
 
@@ -141,8 +143,8 @@ summary(lm(Camk2a ~ PC1, data = allDGvsd))
 d <- ggplot(allDGvsd, aes(x = PC1, y = Camk2a)) +
   geom_point(aes(color = treatment)) + geom_smooth(method='lm', colour = "darkgrey") +
   labs(y = "CAMK2A expression in DG \n (variance stabilized)", 
-       x = "behavior PC1 \n decreasing avoidance behavior -->",
-       subtitle = "R2 = -0.005178, p = 0.35") +
+       x = "behavior PC1 \n increasing avoidance behavior -->",
+       subtitle = "R2 = 0.01841, p = 0.2767") +
     theme_ms() +
   scale_color_manual(values = treatmentcolors) + theme(legend.position = "none")
 
@@ -163,7 +165,7 @@ plotPCAvcandidates <- function(filename){
   allvsd <- left_join(mousetreatment, allvsd)
   allvsd <- left_join(pcadata, allvsd)
   
-  print(summary(lm(Arc ~ PC1, data = allDGvsd)))
+  print(summary(lm(Arc ~ PC1, data = allvsd)))
   print(summary(lm(Camk2a ~ PC1, data = allvsd)))
   print(summary(lm(Gria1 ~ PC1, data = allvsd)))
   print(summary(lm(Grin1 ~ PC1, data = allvsd)))
@@ -177,7 +179,7 @@ plotPCAvcandidates <- function(filename){
   p <- ggplot(candidatevsdPCA, aes(x = PC1, y = expression)) +
     geom_point(aes(color = treatment)) + geom_smooth(method='lm', colour = "darkgrey") +
     labs(y = "gene expression", 
-        x = "PC1 (estimate of decreasing avoidance behavior)") +
+        x = "PC1 (estimate of increasing avoidance behavior)") +
       theme_ms() +
     scale_color_manual(values = treatmentcolors) + theme(legend.position = "none") +
     facet_wrap(~gene, scales = "free_y", nrow = 1) +
