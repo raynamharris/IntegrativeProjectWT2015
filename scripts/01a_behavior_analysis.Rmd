@@ -37,26 +37,7 @@ The 'TrainSessionCombo' column describes the behvioral training sessions. Here I
 
 ```{r wrangledata, message=F}
 ## import output from video tracker program 
-behavior <- read.csv("../data/01_behaviordata.csv", header = T)
-
-# rename to match RNAseq data, select useful variables
-behavior <- behavior %>%
-  mutate(treatment = fct_recode(APA2,
-                                "standard.yoked" = "YokedSame",
-                                "standard.trained" = "Same",
-                                "conflict.yoked" = "YokedConflict",
-                                "conflict.trained" = "Conflict")) %>%
-  mutate(training = fct_collapse(treatment,
-                                      trained = c("standard.trained", "conflict.trained"),
-                                      yoked = c("standard.yoked", "conflict.yoked"))) %>%
-  select(ID,Day,treatment, training,TrainSessionCombo,TrainSessionComboNum, ShockOnOff, PairedPartner,
-         SdevSpeedArena:Speed2) %>%
-  arrange(ID) 
-
-## rename columns 
-colnames(behavior)[colnames(behavior)=="pTimeTarget"] <- "pTimeShockZone"
-colnames(behavior)[colnames(behavior)=="TimeTarget"] <- "TimeShockZone"
-
+behavior <- read.csv("../data/00_behaviordata.csv", header = T)
 
 # set levels
 behavior$treatment <- factor(behavior$treatment, levels = c("standard.yoked", "standard.trained",
@@ -156,9 +137,9 @@ dfd <- behavior %>%
 
 dfa <- behavior %>%
   dplyr::group_by(treatment, TrainSessionComboNum) %>%
-  dplyr::summarise(m = mean(Dist1stEntr.m.), 
-                   se = sd(Dist1stEntr.m.)/sqrt(length(Dist1stEntr.m.))) %>%
-  dplyr::mutate(measure = "Distance 1st entr")
+  dplyr::summarise(m = mean(Entr.Dist.1.m.), 
+                   se = sd(Entr.Dist.1.m.)/sqrt(length(Entr.Dist.1.m.))) %>%
+  dplyr::mutate(measure = "Entrance / Distance")
 
 # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
 
@@ -235,8 +216,6 @@ ggplot(data = behav1, aes(x=TrainSessionComboNum, y= Time2ndEntr, color=ID)) +
                                    "Rt", "T4", "T5", "T6", "Rn")) +
     theme_ms() +
   facet_wrap(~treatment)
-
-
 ```
 
 ### Principle component analysis 
@@ -244,8 +223,23 @@ ggplot(data = behav1, aes(x=TrainSessionComboNum, y= Time2ndEntr, color=ID)) +
 Next, I next reduced the dimentionality of the data with a PCA anlaysis. 
 
 ```{r PCA}
-names(behavior)[9:47] # measures included in analysis
+names(behavior)
 
+makepcadf <- function(data){
+  Z <- behavior %>%
+    select(TotalPath.Arena.:AnnularKurtosis) # columns 9 to 47
+  Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
+  pc = prcomp(Z, scale.=TRUE)
+  loadings <- pc$rotation
+  scores <- pc$x
+  #get ready for ggplot
+  scoresdf <- as.data.frame(scores)
+  scoresdf$ID <-  data$ID
+  scoresdf$treatment <- data$treatment
+  scoresdf$TrainSessionComboNum <- data$TrainSessionComboNum
+  scoresdf <- scoresdf %>% select(ID, treatment,TrainSessionComboNum, PC1:PC10)
+  return(scoresdf)
+}
 pcadf <- makepcadf(behavior)
 
 retention <- behavior %>% filter(TrainSessionCombo %in% c("Retention") ) %>% droplevels()
@@ -270,12 +264,12 @@ e <- ggplot(pcadf, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
                        labels = c( "P", "T1", "T2", "T3",
                                    "Rt", "T4", "T5", "T6", "Rn")) +
   theme(legend.position = "none") +
-  labs(y = "PC2: 9.7% variance explained", x = "PC1: 35.7% variance explained",
+  labs(y = "PC2: 16.7variance explained", x = "PC1: 41.3% variance explained",
        subtitle = " ") 
 e
 
 # get contributions
-df <- behavior %>% select(SdevSpeedArena:Speed2)
+df <- behavior %>% select(TotalPath.Arena.:AnnularKurtosis)
 res.pca <- PCA(df,  graph = FALSE)
 # Visualize eigenvalues/variances
 fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))
@@ -328,6 +322,5 @@ TukeyHSD(pc2aov)
 ```{r writefiles}
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
 write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
-write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
 write.csv(pcadf, file = "../data/01a_pcadf.csv", row.names = FALSE)
 ```

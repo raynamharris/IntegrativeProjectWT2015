@@ -1,0 +1,104 @@
+---
+title: "Behavior data wrangle"
+output: html_document
+---
+
+```{r setup, message=F}
+## load libraries 
+library(tidyverse) ## for respahing data
+
+## set output file for figures 
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# because this csv file has some rows with text, I have to specific which columns should be double
+mycols <- cols(
+  "Year"  = col_integer(),  "ID"  = col_character(), "Genotype" = col_character(), "TrainProtocol"  = col_character(), 
+"TrainSequence"  = col_factor(),     "TrainGroup"  = col_factor(),        "Day"   = col_integer(),  "TrainSession"   = col_factor(),    
+"ShockOnOff"  = col_character(),       "PairedPartner" = col_character(),     "Experimenter"  = col_character(),     "Housing"  = col_character(),         
+ "TestLocation" = col_character(),      "filename" = col_character(),          "p-miss" = col_double(),            "TotalTime(s)"  = col_double(),     
+"TotalPath(Arena)" = col_double(),   "Speed (Arena)" = col_double(),      "sd Speed(Arena)" = col_double(),    "Linearity(Arena)"  = col_double(), 
+ "TotalPath(m)"= col_double(),        "#Entrances"  = col_double(),        "Time1stEntr" = col_double(),        "Path1stEntr"  = col_double(),      
+ "Speed1stEntr(cm/s)" = col_double(), "Entr/Dist(1/m)" = col_double(),     "#Shock"  = col_double(),            "Time1stShock"  = col_double(),     
+ "Path1stShock"  = col_double(),      "Speed (cm/s)"   = col_double(),     "SdSpeed"  = col_double(),           "Linearity" = col_double(),         
+ "MaxTimeAvoid" = col_double(),       "MaxPathAvoid"  = col_double(),      "Time2ndEntr"   = col_double(),      "Path2ndEntr" = col_double(),       
+"Speed2ndEntr"   = col_double(),     "TimeTarget" = col_double(),         "pTimeTarget"  = col_double(),       "pTimeCCW" = col_double(),          
+ "pTimeOPP"    = col_double(),        "pTimeCW" = col_double(),            "RayleigLength" = col_double(),      "RayleigAngle"   = col_double(),    
+ "PolarAvgVal"  = col_double(),       "PolarSdVal"= col_double(),          "PolarMinVal"  = col_double(),       "PolarMinBin"   = col_double(),     
+ "Min50%RngLoBin" = col_double(),     "Min50%RngHiBin" = col_double(),     "PolarMaxVal"  = col_double(),       "PolarMaxBin" = col_double(),       
+ "Max50%RngLoBin" = col_double(),     "Max50%RngHiBin" = col_double(),     "AnnularMinVal"    = col_double(),   "AnnularMinBin"  = col_double(),    
+ "AnnularMaxVal"  = col_double(),     "AnnularMaxBin" = col_double(),      "AnnularAvg"  = col_double(),        "AnnularSd"  = col_double(),        
+ "AnnularSkewnes"  = col_double(),    "AnnularKurtosis"= col_double() 
+)
+
+# import raw data
+behav <- read_csv("../data/00_Data2013_2016_forAnalysis.csv", col_types = mycols) 
+behav <- as.data.frame(behav)
+names(behav)
+
+
+# remove some columns that are not behavioral measures
+columnstoremove <- c("PolarAvgVal" , "PolarSdVal", "PolarMinVal" ,
+                     "PolarMinBin", "Max50%RngLoBin", "Min50%RngHiBin" , 
+                     "PolarMaxVal", "PolarMaxBin", "Max50%RngLoBin", "Max50%RngHiBin",
+                     "p-miss", "TotalTime(s)", "TotalPath(m)",  "Time1stShock",  
+                     "Path1stShock", "Speed (cm/s)", "SdSpeed", "Linearity",
+                     "AnnularMinVal" , "AnnularMinBin" , "AnnularMaxVal" , 
+                     "AnnularMaxBin", "AnnularAvg"  , "AnnularSd" )
+
+# rename some columns
+names(behav)[names(behav)=="#Shock"] <- "NumShock"
+names(behav)[names(behav)=="#Entrances"] <- "NumEntrances"
+names(behav)[names(behav)=="pTimeTarget"] <- "pTimeShockZone"
+names(behav)[names(behav)=="TimeTarget"] <- "TimeShockZone"
+names(behav)[names(behav)=="Speed (Arena)"] <- "SpeedArena.cm.s"
+
+
+# keep only 2015 animals and remove unnecessary columns
+behav <- behav %>% dplyr::filter(Year == "2015") %>% 
+                   dplyr::select(-columnstoremove) %>% 
+                   dplyr::mutate(ShockPerEntrance = NumShock / NumEntrances) %>% 
+                  droplevels()
+
+# check which measures are included
+measures <- behav %>% select(`TotalPath(Arena)`:ShockPerEntrance)
+names(measures)
+
+# make new factors
+behav <- behav %>%
+  mutate(APA = paste(TrainSequence, TrainGroup, sep = "-")) %>%
+  mutate(treatment = fct_recode(APA,
+                                "standard.yoked" = "train-train-yoked",
+                                "standard.trained" = "train-train-trained",
+                                "conflict.yoked" = "train-conflict-yoked",
+                                "conflict.trained" = "train-conflict-trained")) %>%
+  mutate(training = fct_collapse(treatment,
+                                      trained = c("standard.trained", "conflict.trained"),
+                                      yoked = c("standard.yoked", "conflict.yoked")))  %>%
+  mutate(TrainSessionCombo = fct_collapse(TrainSession,
+                                      "T4_C1" = c("T4", "C1"),
+                                      "T5_C2" = c("T5", "C2"),
+                                      "T6_C3" = c("T6", "C3"),
+                                      "Hab"  = "Hab",
+                                      "T1" = "T1",
+                                      "T2"= "T2",
+                                      "T3"= "T3",
+                                      "Retest" = "Retest",
+                                      "Retention" = "Retention"))
+
+behav$TrainSessionCombo <- factor(behav$TrainSessionCombo, 
+                                  levels = c("Hab", "T1","T2","T3","Retest",
+                                   "T4_C1","T5_C2","T6_C3","Retention"))
+behav$TrainSessionComboNum <- as.numeric(behav$TrainSessionCombo)
+
+behav <- behav %>%  dplyr::select(ID,Day,treatment, training,TrainSessionCombo,
+                                 TrainSessionComboNum, ShockOnOff, PairedPartner,
+                                 `TotalPath(Arena)`:ShockPerEntrance) %>%
+                    dplyr::arrange(ID)
+
+head(behav)
+
+write.csv(behav, "../data/00_behaviordata.csv", row.names = F)
+```
+
