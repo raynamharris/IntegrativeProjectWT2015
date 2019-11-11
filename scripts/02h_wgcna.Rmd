@@ -1,0 +1,236 @@
+---
+title: "02h_wgcna"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+
+knitr::opts_chunk$set(fig.path = '../figures/02h_wgcna//', cache = T)
+```
+
+```{r}
+# Load the packages
+library(tidyverse)
+library(WGCNA)
+library(dplyr)
+library(magrittr)
+library(forcats)
+
+```
+
+```{r}
+
+# read the count data
+countData <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F)
+
+# read the sample meta data or column data
+colData <- read.csv("../data/02a_colData.csv", row.names = 1, stringsAsFactors = T)
+colData <- colData %>% filter(subfield == "DG")
+
+colData$treatment <- factor(colData$treatment, levels = c("standard.yoked", "standard.trained", 
+                                                 "conflict.yoked", "conflict.trained"))
+colData$training <- factor(colData$training, levels = c("yoked", "trained"))
+
+# wgcna needs numeric identifiers
+colData$ntreatment <- as.numeric(colData$treatment)
+colData$ntraining <- as.numeric(colData$training)
+
+# create a short sample desctiption, make it the row and columns names of colData and countData
+colData$sample <- paste(colData$treatment, colData$ID, sep = ".")
+
+# set row and count names to be the same
+row.names(colData) <- colData$sample
+colnames(countData) <- colData$sample
+
+head(colData)
+head(countData)
+
+``` 
+
+```{r}
+
+#=====================================================================================
+#
+#  Code chunk 2
+#
+#=====================================================================================
+
+
+datExpr0 <- as.data.frame(t(countData))
+
+head(names(datExpr0))  # columns are genes
+head(rownames(datExpr0)) # rows are samples
+
+
+
+#=====================================================================================
+#
+#  Code chunk 3
+#
+#=====================================================================================
+
+
+gsg = goodSamplesGenes(datExpr0, verbose = 0);
+gsg$allOK
+
+
+
+
+#=====================================================================================
+#
+#  Code chunk 4 removing genes
+#
+#=====================================================================================
+
+
+if (!gsg$allOK)
+{
+  # Optionally, print the gene and sample names that were removed:
+  #if (sum(!gsg$goodGenes)>0) 
+  #  printFlush(paste("Removing genes:", paste(names(datExpr0)[!gsg$goodGenes], collapse = ", ")));
+  #if (sum(!gsg$goodSamples)>0) 
+  #  printFlush(paste("Removing samples:", paste(rownames(datExpr0)[!gsg$goodSamples], collapse = ", ")));
+  # Remove the offending genes and samples from the data:
+  datExpr0 = datExpr0[gsg$goodSamples, gsg$goodGenes]
+}
+
+
+
+
+#=====================================================================================
+#
+#  Code chunk 5
+#
+#=====================================================================================
+
+
+sampleTree = hclust(dist(datExpr0), method = "average");
+
+# Plot the sample tree: Open a graphic output window of size 12 by 9 inches
+# The user should change the dimensions if the window is too large or too small.
+
+plot(sampleTree, main = "Sample clustering to detect outliers", 
+     sub="", xlab="", cex.main = 1, cex = 0.4)
+
+
+
+#=====================================================================================
+#
+#  Code chunk 6
+#
+#=====================================================================================
+
+
+# Plot a line to show the cut
+
+# Determine cluster under the line
+clust = cutreeStatic(sampleTree, cutHeight = 200, minSize = 3)
+table(clust)
+
+# clust 1 contains the samples we want to keep.
+keepSamples = (clust==1)
+datExpr = datExpr0[keepSamples, ]
+nGenes = ncol(datExpr)
+nSamples = nrow(datExpr)
+
+
+#=====================================================================================
+#
+#  Code chunk 7
+#
+#=====================================================================================
+
+# keep only numberic columns
+datTraits <- colData %>% select(ntraining, ntreatment)
+datTraits
+collectGarbage()
+```
+
+
+```{r}
+# Re-cluster samples
+sampleTree2 = hclust(dist(datExpr), method = "average")
+# Convert traits to a color representation: white means low, red means high, grey means missing entry
+traitColors = numbers2colors(datTraits, signed = TRUE);
+# Plot the sample dendrogram and the colors underneath.
+plotDendroAndColors(sampleTree2, traitColors,
+                    groupLabels = names(datTraits), 
+                    main = "DG dendrogram with trait heatmap",
+                    cex.dendroLabels = 0.4
+                    )
+```
+
+```{r}
+powers = c(c(1:10), seq(from = 12, to=20, by=2))
+# Call the network topology analysis function
+sft = pickSoftThreshold(datExpr, powerVector = powers, verbose = 5)
+# Plot the results:
+sizeGrWindow(9, 5)
+par(mfrow = c(1,2));
+cex1 = 0.9;
+# Scale-free topology fit index as a function of the soft-thresholding power
+plot(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+     xlab="Soft Threshold (power)",ylab="Scale Free Topology Model Fit,signed R^2",type="n",
+     main = paste("Scale independence"));
+text(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+     labels=powers,cex=cex1,col="red");
+# this line corresponds to using an R^2 cut-off of h
+abline(h=0.60,col="red")
+# Mean connectivity as a function of the soft-thresholding power
+plot(sft$fitIndices[,1], sft$fitIndices[,5],
+     xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
+     main = paste("Mean connectivity"))
+text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
+
+enableWGCNAThreads()
+
+
+# this is my attempt to solve an error
+datExpr %<>% mutate_if(is.integer,as.numeric)
+
+net = blockwiseModules(datExpr, power = 10,
+                                verbose = 5)
+names(net)
+head(net$colors)
+head(net$unmergedColors)
+
+sizeGrWindow(12, 9)
+# Convert labels to colors for plotting
+mergedColors = labels2colors(net$colors)
+mergedColors
+# Plot the dendrogram and the module colors underneath
+plotDendroAndColors(net$dendrograms[[1]], mergedColors[net$blockGenes[[1]]],
+                    "Module colors",
+                    dendroLabels = FALSE)
+
+# save data frame with genes and their module colors
+genes_modules <- as.data.frame(net$colors)
+
+genes_modules %>% 
+  group_by(`net$colors`) %>%
+  summarise(no_genes = length(`net$colors`))  %>%
+  arrange(desc(no_genes))
+
+genes_modules$gene <- row.names(genes_modules)
+
+candidate_modules <- genes_modules %>%
+  filter(gene %in% c("Camk2a", "Gria1", "Grin1", "Prkci", "Prkcz", 
+                     "Arc", "Fosl2", "Egr1", "Npas4",
+                     "Neurod6"))
+candidate_modules
+
+ARC_associated <- genes_modules %>% filter(`net$colors` %in% c("darkred"))
+ARC_associated$gene
+
+Neurod6_associated <- genes_modules %>% filter(`net$colors` %in% c("lightyellow"))
+Neurod6_associated$gene
+
+Prkcz_associated <- genes_modules %>% filter(`net$colors` %in% c("black"))
+Prkcz_associated$gene
+
+Prkci_associated <- genes_modules %>% filter(`net$colors` %in% c("yellow"))
+Prkci_associated$gene
+
+```
+
