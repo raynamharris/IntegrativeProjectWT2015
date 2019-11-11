@@ -283,6 +283,8 @@ titles, y labels and limits.
     # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
 
 
+    fourmeasures <- rbind(dfb,dfc,dfd)
+
     b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
     c <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
     d <- meansdplots(dfd, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
@@ -290,7 +292,9 @@ titles, y labels and limits.
     fourplots <- plot_grid(a + theme(legend.position = "none"),
                            b + theme(legend.position = "none"),
                            c + theme(legend.position = "none"), 
-                           d + theme(legend.position = "none"), nrow = 1)
+                           d + theme(legend.position = "none"), nrow = 1,
+                           label_size = 8,
+                           labels = c("(a)", "(b)", "(c)", "(d)"))
     fourplots
 
 ![](../figures/01_behavior/fourmeasures-1.png)
@@ -379,21 +383,6 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## [31] "Min50.RngLoBin"       "AnnularSkewnes"       "AnnularKurtosis"     
     ## [34] "ShockPerEntrance"
 
-    makepcadf <- function(data){
-      Z <- behavior %>%
-        select(TotalPath.Arena.:AnnularKurtosis) # columns 9 to 47
-      Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
-      pc = prcomp(Z, scale.=TRUE)
-      loadings <- pc$rotation
-      scores <- pc$x
-      #get ready for ggplot
-      scoresdf <- as.data.frame(scores)
-      scoresdf$ID <-  data$ID
-      scoresdf$treatment <- data$treatment
-      scoresdf$TrainSessionComboNum <- data$TrainSessionComboNum
-      scoresdf <- scoresdf %>% select(ID, treatment,TrainSessionComboNum, PC1:PC10)
-      return(scoresdf)
-    }
     pcadf <- makepcadf(behavior)
 
     retention <- behavior %>% filter(TrainSessionCombo %in% c("Retention") ) %>% droplevels()
@@ -425,7 +414,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
                            labels = c( "P", "T1", "T2", "T3",
                                        "Rt", "T4", "T5", "T6", "Rn")) +
       theme(legend.position = "none") +
-      labs(y = "PC2: 16.7variance explained", x = "PC1: 41.3% variance explained",
+      labs(y = "PC2: 16.7% \n variance explained", x = "PC1: 41.3% variance explained",
            subtitle = " ") 
     e
 
@@ -548,3 +537,4 @@ now all the stats
     write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
     write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
     write.csv(pcadf, file = "../data/01a_pcadf.csv", row.names = FALSE)
+    write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)

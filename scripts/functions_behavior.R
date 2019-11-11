@@ -1,8 +1,8 @@
 ## PCA ----
 
 makepcadf <- function(data){
-  Z <- data %>%
-    select(`TotalPath.Arena.`:`ShockPerEntrance`) # columns 9 to 47
+  Z <- behavior %>%
+    select(TotalPath.Arena.:AnnularKurtosis) # columns 9 to 47
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
   loadings <- pc$rotation
