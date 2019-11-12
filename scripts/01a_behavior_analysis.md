@@ -15,10 +15,6 @@ Setup
     library(factoextra)  ## pca with vectors
     library(FactoMineR) # more pca
     library(car) ## stats
-    library(pheatmap)  # for pretty heatmap
-    library(viridis) # for awesome color pallette
-    library(kableExtra) # for better markdown tables
-    library(ggpubr) # for stats on figures
 
     ## load user-written functions 
     source("functions_behavior.R")
@@ -383,30 +379,23 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     ## [31] "Min50.RngLoBin"       "AnnularSkewnes"       "AnnularKurtosis"     
     ## [34] "ShockPerEntrance"
 
-    pcadf <- makepcadf(behavior)
+    pca.all <- makepcadf(behavior)
 
-    retention <- behavior %>% filter(TrainSessionCombo %in% c("Retention") ) %>% droplevels()
+    retention <- behavior %>% filter(TrainSessionComboNum == 9)
+    pca.Rn <- makepcadf(retention)
 
-    pcadfretention <- pcadf %>% filter(TrainSessionComboNum == 9) %>% 
+    pca.Rn.summary <- pca.all %>% filter(TrainSessionComboNum == 9) %>% 
       group_by(treatment) %>% 
       dplyr::summarize(avePC1 = mean(PC1),
                        avePC2 = mean(PC2),
                        sePC1 = sd(PC1)/sqrt(length(PC1)),
                        sePC2 = sd(PC2)/sqrt(length(PC2)))
-    pcadfretention
 
-    ## # A tibble: 4 x 5
-    ##   treatment        avePC1  avePC2 sePC1 sePC2
-    ##   <fct>             <dbl>   <dbl> <dbl> <dbl>
-    ## 1 standard.yoked    -2.70  1.84   0.283 0.714
-    ## 2 standard.trained   4.24 -0.535  1.02  0.359
-    ## 3 conflict.yoked    -1.63  0.961  0.351 0.583
-    ## 4 conflict.trained   2.52  0.0570 1.16  0.568
 
-    e <- ggplot(pcadf, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
+    e <- ggplot(pca.all, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
 
-      geom_point(data = pcadf, aes(alpha = TrainSessionComboNum)) + 
-      geom_point(data = pcadfretention, aes(x = avePC1, y = avePC2), size = 4) +
+      geom_point(data = pca.all, aes(alpha = TrainSessionComboNum)) + 
+      geom_point(data = pca.Rn.summary, aes(x = avePC1, y = avePC2), size = 4) +
       theme_ms() +
         scale_fill_manual(guide = 'none',values = colorvalAPA00) +
       scale_color_manual(guide = 'none',values = colorvalAPA00) +
@@ -470,7 +459,7 @@ now all the stats
     ## Residuals   30  820.8  27.358
 
     # pca
-    pc1aov <- aov(PC1 ~ treatment, data = pcadf)
+    pc1aov <- aov(PC1 ~ treatment, data = pca.all)
     summary(pc1aov)
 
     ##              Df Sum Sq Mean Sq F value Pr(>F)    
@@ -484,7 +473,7 @@ now all the stats
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC1 ~ treatment, data = pcadf)
+    ## Fit: aov(formula = PC1 ~ treatment, data = pca.all)
     ## 
     ## $treatment
     ##                                         diff        lwr        upr
@@ -502,7 +491,7 @@ now all the stats
     ## conflict.trained-standard.trained 0.4489594
     ## conflict.trained-conflict.yoked   0.0000000
 
-    pc2aov <- aov(PC2 ~ treatment, data = pcadf)
+    pc2aov <- aov(PC2 ~ treatment, data = pca.all)
     summary(pc2aov)
 
     ##              Df Sum Sq Mean Sq F value   Pr(>F)    
@@ -516,7 +505,7 @@ now all the stats
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = PC2 ~ treatment, data = pcadf)
+    ## Fit: aov(formula = PC2 ~ treatment, data = pca.all)
     ## 
     ## $treatment
     ##                                            diff        lwr         upr
@@ -534,7 +523,12 @@ now all the stats
     ## conflict.trained-standard.trained 1.0000000
     ## conflict.trained-conflict.yoked   0.0210425
 
+save files
+----------
+
     write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
-    write.csv(retention, file = "../data/01a_retention.csv", row.names = FALSE)
-    write.csv(pcadf, file = "../data/01a_pcadf.csv", row.names = FALSE)
+    write.csv(pca.all, file = "../data/01a_pca.all.csv", row.names = FALSE)
+    write.csv(pca.Rn.summary, file = "../data/01a_pca.Rn.summary.csv", row.names = FALSE)
+    write.csv(pca.Rn, file = "../data/01a_pca.Rn.csv", row.names = FALSE)
+
     write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
