@@ -1,0 +1,168 @@
+---
+title: "02e_morecorrelations"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = F)
+```
+
+
+```{r packages}
+library(tidyverse)
+library(corrr)
+library(cowplot)
+
+source("./figureoptions.R")
+
+```
+
+
+```{r DGDEGs}
+ARC_associated <- read_csv("../data/02h_ARC_associated.csv")  %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
+
+Neurod6_associated <- read_csv("../data/02h_Neurod6_associated.csv") %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
+Prkcz_associated <- read_csv("../data/02h_Prkcz_associated.csv") %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
+
+
+DG_DEGs <- read.csv("../data/02f_DG_DEGs_vsd.csv", row.names = 1, check.names = F)
+DG_DEGs <- as.data.frame(t(DG_DEGs))
+DG_DEGs$sample <- row.names(DG_DEGs)
+DG_DEGs <- DG_DEGs %>% select(`1190002N15RIK`:ZFP869)
+head(DG_DEGs)[1:5]
+
+DG_DEGs <- as.data.frame(t(DG_DEGs))
+DG_DEGs$gene <- row.names(DG_DEGs)
+
+DG_ARC <- DG_DEGs %>% filter(gene %in% ARC_associated) %>% select(gene, everything())
+row.names(DG_ARC) <- DG_ARC$gene
+DG_ARC$gene <- NULL
+
+
+DG_ARC <- as.data.frame(t(DG_ARC))
+DG_ARC$sample  <- row.names(DG_ARC)
+DG_ARC$mouse <- sapply(strsplit(as.character(DG_ARC$sample),"\\-"), "[", 1)
+DG_ARC$ID <- paste(15, DG_ARC$mouse, sep = "")
+
+# read the sample data, set levels
+colData <- read.csv("../data/02a_colData.csv", row.names = 1, stringsAsFactors = T)
+colData <- colData %>% filter(subfield == "DG")
+
+# join with pca data for retention
+
+pca.Rn <- read_csv("../data/01a_pca.all.csv") %>% filter(TrainSessionComboNum == 9)
+pca.Rn <- pca.Rn %>% select(ID:PC2)
+head(pca.Rn)
+
+colData <- left_join(colData, pca.Rn)
+colData
+
+alldata <- left_join(colData, DG_ARC)
+forcorplots <- alldata %>% select(PC1:UBC)
+forcorplots
+
+x <- correlate(forcorplots)
+
+x %>% filter(PC1 > 0.755) %>% arrange(desc(PC1)) 
+
+
+plotmycors <- function(df, whichgene, mysubtitle){
+ p <- ggplot(alldata, aes(x = PC1, y = whichgene)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+   labs(y = mysubtitle,  x = "PC1") +
+   theme(legend.position = "none")
+ return(p) 
+}  
+
+
+p1 <- plotmycors(alldata, alldata$NAF1, "NAF1")
+p2 <- plotmycors(alldata, alldata$RGS2, "RGS2")
+p3 <- plotmycors(alldata, alldata$ARC, "ARC")
+p4 <- plotmycors(alldata, alldata$ACAN, "ACAN")
+p5 <- plotmycors(alldata, alldata$SYT4, "SYT4")
+p6 <- plotmycors(alldata, alldata$ARMCX5, "ARMCX5")
+p7 <- plotmycors(alldata, alldata$ATF3, "ATF3")
+p8 <- plotmycors(alldata, alldata$FOSL2, "FOSL2")
+p9 <- plotmycors(alldata,alldata$CPEB4, "CPEB4")
+
+plot_grid(p1,p2,p3,p4,p5,p6,p7,p8,p9)
+
+ggplot(alldata, aes(x = ARC, y = FOSL2)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+   theme(legend.position = "none")
+
+ggplot(alldata, aes(x = NAF1, y = CPEB4)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+   theme(legend.position = "none")
+```
+
+
+```{r DGvsd}
+vsd <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F)
+vsd <- as.data.frame(t(vsd))
+vsd$sample <- row.names(vsd)
+head(vsd)[1]
+head(vsd)[17010]
+vsd <- vsd %>% select(`0610007P14Rik`:Zzef1)
+
+vsd$sample  <- row.names(vsd)
+vsd$mouse <- sapply(strsplit(as.character(vsd$sample),"\\-"), "[", 1)
+vsd$ID <- paste(15, vsd$mouse, sep = "")
+vsd <- vsd %>% select(ID, `0610007P14Rik`:Zzef1)
+head(vsd)[1:5]
+
+vsd <- left_join(colData, vsd)
+
+forcorall <-  vsd %>% select(PC1:Zzef1)
+y <- correlate(forcorall) 
+
+
+y %>% filter(PC1 > 0.6) %>% arrange(desc(PC1)) 
+y %>% filter(PC1 < -0.6) %>% arrange(desc(PC1)) 
+
+y %>% 
+  focus(PC1, PC2, Naf1, Ptgs2, Rgs2, Hist1h1d, Col10a1,  Arc, 
+            Nme1, Mettl7a1, Lsm7, Coq2, Uqcr11, Mrps23, 
+        mirror = TRUE)  %>% 
+        rplot(shape = 15, colors = c("#67a9cf", "#ef8a62") ) 
+
+plotmycors(vsd, vsd$Arc, "ARC")
+plotmycors(vsd, vsd$Nme1, "NME1")
+
+y %>% filter(PC2 > 0.5) %>% arrange(desc(PC2)) 
+y %>% filter(PC2 < -0.5) %>% arrange(desc(PC2)) 
+
+y %>% 
+  focus(PC1,PC2, Cabp7,  Traf3ip3, Cox7a2, Ndufv2, Trim65, Frmd7,
+            Mybl2,Gm10750, Cluap1,Snrpd3,Mapk6, Gabra2,
+        mirror = TRUE)  %>% 
+        rplot(shape = 15, colors = c("#67a9cf", "#ef8a62") ) 
+
+
+ggplot(vsd, aes(x = PC2, y = Gabra2)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+   theme(legend.position = "none")
+ggplot(vsd, aes(x = PC2, y = Cabp7)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+   theme(legend.position = "none")
+ggplot(vsd, aes(x = PC2, y = Mapk6)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+   theme(legend.position = "none")
+
+```
+
+

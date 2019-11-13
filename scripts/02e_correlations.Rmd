@@ -44,7 +44,7 @@ behav <- behav %>% filter( #treatment %in% c("conflict.trained", "standard.train
 head(behav)
 ```
 ```{r pca}
-pcadata <- read_csv("../data/01a_pcadf.csv") %>%
+pcadata <- read_csv("../data/01a_pca.all.csv") %>%
   filter(#treatment %in% c("conflict.trained", "standard.trained"),
          TrainSessionComboNum == 9) %>%
   select(ID,PC1,PC2) 
