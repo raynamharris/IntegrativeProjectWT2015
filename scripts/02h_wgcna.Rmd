@@ -4,26 +4,27 @@ output: md_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T, fig.path = '../figures/02h_wgcna/', cache = F)
+knitr::opts_chunk$set(echo = T, fig.path = '../figures/02h_wgcna/', cache = T)
 ```
 
-```{r}
+```{r, warning=F}
 # Load the packages
 library(tidyverse)
 library(WGCNA)
 library(dplyr)
 library(magrittr)
 library(forcats)
+library(flashClust)
 
-enableWGCNAThreads()
+
+#enableWGCNAThreads()
+allowWGCNAThreads()
 ```
 
 ```{r}
-
 # read the count data
 countData <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F)
-head(countData)
-
+head(countData)[1:3]
 
 # read the sample data, set levels
 colData <- read.csv("../data/02a_colData.csv", row.names = 1, stringsAsFactors = T)
@@ -31,9 +32,11 @@ colData <- colData %>% filter(subfield == "DG")
 
 # join with pca data for retention
 
-pca.Rn <- read.csv("../data/01a_pca.Rn.csv")
+pca.Rn <- read_csv("../data/01a_pca.all.csv") %>% 
+  filter(TrainSessionComboNum == 9)
+
 pca.Rn <- pca.Rn %>% select(ID:PC2)
-head(pca.Rn)
+head(pca.Rn)[1:4]
 
 colData <- left_join(colData, pca.Rn)
 
@@ -46,48 +49,29 @@ colData$ntreatment <- as.numeric(colData$treatment)
 colData$ntraining <- as.numeric(colData$training)
 
 # create a short sample desctiption, make it the row and columns names of colData and countData
-colData$sample <- paste(colData$treatment, colData$ID, sep = ".")
+colData$sample <- paste(colData$subfield, colData$treatment, colData$ID, sep = ".")
 
 # set row and count names to be the same
 row.names(colData) <- colData$sample
 colnames(countData) <- colData$sample
-
-head(colData)
-head(countData)[1:3]
-
 ``` 
 
 ```{r}
-
-#=====================================================================================
-#
 #  Code chunk 2
-#
-#=====================================================================================
-
 
 datExpr0 <- as.data.frame(t(countData))
-
-head(names(datExpr0))  # columns are genes
 head(rownames(datExpr0)) # rows are samples
+```
 
-#=====================================================================================
-#
+```{r}
 #  Code chunk 3
-#
-#=====================================================================================
-
 
 gsg = goodSamplesGenes(datExpr0, verbose = 0);
 gsg$allOK
+```
 
-
-#=====================================================================================
-#
+```{r}
 #  Code chunk 4 removing genes
-#
-#=====================================================================================
-
 
 if (!gsg$allOK)
 {
@@ -99,14 +83,11 @@ if (!gsg$allOK)
   # Remove the offending genes and samples from the data:
   datExpr0 = datExpr0[gsg$goodSamples, gsg$goodGenes]
 }
+```
 
-
-#=====================================================================================
-#
+```{r sampleclustering}
 #  Code chunk 5
 #
-#=====================================================================================
-
 
 sampleTree = hclust(dist(datExpr0), method = "average");
 
@@ -115,16 +96,10 @@ sampleTree = hclust(dist(datExpr0), method = "average");
 
 plot(sampleTree, main = "Sample clustering", 
      sub="", xlab="", cex.main = 1, cex = 0.4)
+```
 
-
-
-#=====================================================================================
-#
+```{r}
 #  Code chunk 6
-#
-#=====================================================================================
-
-
 # Plot a line to show the cut
 
 # Determine cluster under the line
@@ -136,13 +111,10 @@ keepSamples = (clust==1)
 datExpr = datExpr0[keepSamples, ]
 nGenes = ncol(datExpr)
 nSamples = nrow(datExpr)
+```
 
-
-#=====================================================================================
-#
+```{r}
 #  Code chunk 7
-#
-#=====================================================================================
 
 # keep only numberic columns
 datTraits <- colData %>% select(ntraining, ntreatment, PC1, PC2)
@@ -151,7 +123,7 @@ collectGarbage()
 ```
 
 
-```{r}
+```{r dendrogramwithtraits}
 # Re-cluster samples
 sampleTree2 = hclust(dist(datExpr), method = "average")
 # Convert traits to a color representation: white means low, red means high, grey means missing entry
@@ -165,11 +137,11 @@ plotDendroAndColors(sampleTree2, traitColors,
 ```
 
 ```{r SoftThreshold}
-powers = c(c(1:10), seq(from = 12, to=20, by=2))
+powers = c(c(1:10), seq(from = 12, to=20, by=1))
 # Call the network topology analysis function
 sft = pickSoftThreshold(datExpr, powerVector = powers, verbose = 5)
 # Plot the results:
-sizeGrWindow(9, 5)
+#sizeGrWindow(9, 5)
 par(mfrow = c(1,2));
 cex1 = 0.9;
 # Scale-free topology fit index as a function of the soft-thresholding power
@@ -180,6 +152,7 @@ text(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
      labels=powers,cex=cex1,col="red");
 # this line corresponds to using an R^2 cut-off of h
 abline(h=0.60,col="red")
+
 # Mean connectivity as a function of the soft-thresholding power
 plot(sft$fitIndices[,1], sft$fitIndices[,5],
      xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
@@ -191,18 +164,22 @@ text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
 # this is my attempt to solve an error
 datExpr %<>% mutate_if(is.integer,as.numeric)
 
-net = blockwiseModules(datExpr, power = 10,
-                                verbose = 5)
+minModuleSize = 30
 
-sizeGrWindow(12, 9)
+net = blockwiseModules(datExpr, power = 6, verbose = 1)
+
+names(net)
+#sizeGrWindow(12, 9)
+par(mfrow = c(1,2));
+
 # Convert labels to colors for plotting
-mergedColors = labels2colors(net$colors)
-mergedColors
+moduleColors = labels2colors(net$colors)
 
 # Plot the dendrogram and the module colors underneath
-plotDendroAndColors(net$dendrograms[[1]], mergedColors[net$blockGenes[[1]]],
+plotDendroAndColors(net$dendrograms[[1]], moduleColors[net$blockGenes[[1]]],
                     "Module colors",
                     dendroLabels = FALSE)
+
 ```
 
 
@@ -210,40 +187,262 @@ plotDendroAndColors(net$dendrograms[[1]], mergedColors[net$blockGenes[[1]]],
 ```{r candidategene}
 # save data frame with genes and their module colors
 genes_modules <- as.data.frame(net$colors)
+write.csv(genes_modules, "../data/02h_genemodules.csv", row.names = F)
 
 genes_modules %>% 
   group_by(`net$colors`) %>%
   summarise(no_genes = length(`net$colors`))  %>%
   arrange(desc(no_genes))
 
+table(net$colors)
+
 genes_modules$gene <- row.names(genes_modules)
 
 candidate_modules <- genes_modules %>%
   filter(gene %in% c("Camk2a", "Gria1", "Grin1", "Prkci", "Prkcz", 
                      "Arc", "Fosl2", "Egr1", "Npas4",
-                     "Neurod6"))
+                     "Neurod6"))  %>%
+  arrange(`net$colors`)
+
 candidate_modules
 
-ARC_associated <- genes_modules %>% filter(`net$colors` %in% c("darkred")) %>% droplevels()
+genes_modules
+ARC_associated <- genes_modules %>% filter(`net$colors` %in% c("cyan")) %>% pull(gene)
 str(ARC_associated)
-ARC_associated$gene
+write.csv(ARC_associated, "../data/02h_cyangenes.csv", row.names = F)
 
-Neurod6_associated <- genes_modules %>% filter(`net$colors` %in% c("lightyellow")) %>% droplevels()
+
+Neurod6_associated <- genes_modules %>% filter(`net$colors` %in% c("darkred")) %>% droplevels()
 str(Neurod6_associated)
-Neurod6_associated$gene
 
-Prkcz_associated <- genes_modules %>% filter(`net$colors` %in% c("black")) %>% droplevels()
+Prkcz_associated <- genes_modules %>% filter(`net$colors` %in% c("brown")) %>% droplevels()
 str(Prkcz_associated)
 
-Prkci_associated <- genes_modules %>% filter(`net$colors` %in% c("yellow")) %>% droplevels()
-str(Prkci_associated)
+Camk2a_associated <- genes_modules %>% filter(`net$colors` %in% c("turquoise")) %>% droplevels()
+str(Camk2a_associated)
+
+yellowgenes <- genes_modules %>% filter(`net$colors` %in% c("yellow")) %>% droplevels()
+str(yellowgenes)
+
+paleturquoisegenes <- genes_modules %>% filter(`net$colors` %in% c("paleturquoise")) %>% pull(gene)
+paleturquoisegenes
+write.csv(paleturquoisegenes, "../data/02h_paleturquoisegenes.csv", row.names = F)
+
+purpplegenes <- genes_modules %>% filter(`net$colors` %in% c("purple"),
+                                        !grepl("-|Rik",gene)) %>% pull(gene)
+purpplegenes
+write.csv(purpplegenes, "../data/02h_purpplegenes.csv", row.names = F)
+
 ```
 
-```{r rachelsway}
-adjacency <- adjacency(datExpr0, power=5, type="signed") 
-TOM <- TOMsimilarity(adjacency, TOMType="signed")
-dissTOM <- 1-TOM
-library(flashClust)
-geneTree <- flashClust(as.dist(dissTOM), method="average")
-plot(geneTree, xlab="", sub="", main= "Gene Clustering on TOM-based dissimilarity", labels= FALSE, hang=0.04)
+
+```{r moduletraits}
+# https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-03-relateModsToExt.pdf
+# Define numbers of genes and samples
+nGenes = ncol(datExpr);
+nSamples = nrow(datExpr);
+# Recalculate MEs with color labels
+MEs0 = moduleEigengenes(datExpr, moduleColors)$eigengenes
+MEs = orderMEs(MEs0)
+moduleTraitCor = cor(MEs, datTraits, use = "p");
+moduleTraitPvalue = corPvalueStudent(moduleTraitCor, nSamples)
+
+#sizeGrWindow(10,10)
+# Will display correlations and their p-values
+textMatrix = paste(signif(moduleTraitCor, 2), "\n(",
+signif(moduleTraitPvalue, 1), ")", sep = "");
+dim(textMatrix) = dim(moduleTraitCor)
+
+par(mar = c(6, 8.5, 3, 3));
+# Display the correlation values within a heatmap plot
+labeledHeatmap(Matrix = moduleTraitCor,
+xLabels = names(datTraits),
+yLabels = names(MEs),
+ySymbols = names(MEs),
+colorLabels = FALSE,
+colors = blueWhiteRed(50),
+textMatrix = textMatrix,
+setStdMargins = FALSE,
+cex.text = 0.25,
+cex.lab = 0.5,
+zlim = c(-1,1),
+main = paste("Module-trait relationships"))
+
+# Define variable weight containing the weight column of datTrait
+weight = as.data.frame(datTraits$PC1);
+names(weight) = "weight"
+# names (colors) of the modules
+modNames = substring(names(MEs), 3)
+geneModuleMembership = as.data.frame(cor(datExpr, MEs, use = "p"));
+MMPvalue = as.data.frame(corPvalueStudent(as.matrix(geneModuleMembership), nSamples))
+names(geneModuleMembership) = paste("MM", modNames, sep="");
+names(MMPvalue) = paste("p.MM", modNames, sep="");
+geneTraitSignificance = as.data.frame(cor(datExpr, weight, use = "p"));
+GSPvalue = as.data.frame(corPvalueStudent(as.matrix(geneTraitSignificance), nSamples));
+names(geneTraitSignificance) = paste("GS.", names(weight), sep="");
+names(GSPvalue) = paste("p.GS.", names(weight), sep="")
+
+module = "cyan"
+column = match(module, modNames);
+moduleGenes = moduleColors==module;
+sizeGrWindow(7, 7);
+par(mfrow = c(1,1));
+verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+                   abs(geneTraitSignificance[moduleGenes, 1]),
+xlab = paste("Module Membership in", module, "module"),
+ylab = "Gene significance for PC1",
+main = paste("Module membership vs. gene significance\n"),
+cex.main = 1.2, cex.lab = 1.2, cex.axis = 1.2, col = module)
+
+module = "brown"
+column = match(module, modNames);
+moduleGenes = moduleColors==module;
+sizeGrWindow(7, 7);
+par(mfrow = c(1,1));
+verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+                   abs(geneTraitSignificance[moduleGenes, 1]),
+xlab = paste("Module Membership in", module, "module"),
+ylab = "Gene significance for PC1",
+main = paste("Module membership vs. gene significance\n"),
+cex.main = 1.2, cex.lab = 1.2, cex.axis = 1.2, col = module)
+
+
+module = "turquoise"
+column = match(module, modNames);
+moduleGenes = moduleColors==module;
+#sizeGrWindow(7, 7);
+par(mfrow = c(1,1));
+verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+                   abs(geneTraitSignificance[moduleGenes, 1]),
+xlab = paste("Module Membership in", module, "module"),
+ylab = "Gene significance for PC1",
+main = paste("Module membership vs. gene significance\n"),
+cex.main = 1.2, cex.lab = 1.2, cex.axis = 1.2, col = module)
+
+module = "darkred"
+column = match(module, modNames);
+moduleGenes = moduleColors==module;
+#sizeGrWindow(7, 7);
+par(mfrow = c(1,1));
+verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+                   abs(geneTraitSignificance[moduleGenes, 1]),
+xlab = paste("Module Membership in", module, "module"),
+ylab = "Gene significance for PC1",
+main = paste("Module membership vs. gene significance\n"),
+cex.main = 1.2, cex.lab = 1.2, cex.axis = 1.2, col = module)
+
+module = "yellow"
+column = match(module, modNames);
+moduleGenes = moduleColors==module;
+#sizeGrWindow(7, 7);
+par(mfrow = c(1,1));
+verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+                   abs(geneTraitSignificance[moduleGenes, 1]),
+xlab = paste("Module Membership in", module, "module"),
+ylab = "Gene significance for PC1",
+main = paste("Module membership vs. gene significance\n"),
+cex.main = 1.2, cex.lab = 1.2, cex.axis = 1.2, col = module)
+
+module = "paleturquoise"
+column = match(module, modNames);
+moduleGenes = moduleColors==module;
+#sizeGrWindow(7, 7);
+par(mfrow = c(1,1));
+verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+                   abs(geneTraitSignificance[moduleGenes, 1]),
+xlab = paste("Module Membership in", module, "module"),
+ylab = "Gene significance for PC1",
+main = paste("Module membership vs. gene significance\n"),
+cex.main = 1.2, cex.lab = 1.2, cex.axis = 1.2, col = module)
+
+
+## PC2
+
+# Define variable weight containing the weight column of datTrait
+weight = as.data.frame(datTraits$PC2);
+names(weight) = "PC2"
+# names (colors) of the modules
+modNames = substring(names(MEs), 3)
+geneModuleMembership = as.data.frame(cor(datExpr, MEs, use = "p"));
+MMPvalue = as.data.frame(corPvalueStudent(as.matrix(geneModuleMembership), nSamples))
+names(geneModuleMembership) = paste("MM", modNames, sep="");
+names(MMPvalue) = paste("p.MM", modNames, sep="");
+geneTraitSignificance = as.data.frame(cor(datExpr, weight, use = "p"));
+GSPvalue = as.data.frame(corPvalueStudent(as.matrix(geneTraitSignificance), nSamples));
+names(geneTraitSignificance) = paste("GS.", names(weight), sep="");
+names(GSPvalue) = paste("p.GS.", names(weight), sep="")
+
+
+module = "purple"
+column = match(module, modNames);
+moduleGenes = moduleColors==module;
+#sizeGrWindow(7, 7);
+par(mfrow = c(1,1));
+verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
+                   abs(geneTraitSignificance[moduleGenes, 1]),
+xlab = paste("Module Membership in", module, "module"),
+ylab = "Gene significance for PC2",
+main = paste("Module membership vs. gene significance\n"),
+cex.main = 1.2, cex.lab = 1.2, cex.axis = 1.2, col = module)
+```
+
+```{r networks, eval = F}
+#https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-05-Visualization.pdf
+
+# Calculate topological overlap anew: this could be done more efficiently by saving the TOM
+# calculated during module detection, but let us do it again here.
+dissTOM = 1-TOMsimilarityFromExpr(datExpr, power = 6);
+# Transform dissTOM with a power to make moderately strong connections more visible in the heatmap
+plotTOM = dissTOM^7;
+# Set diagonal to NA for a nicer plot
+diag(plotTOM) = NA;
+# Call the plot function
+geneTree = flashClust(as.dist(dissTOM),method="average")
+#sizeGrWindow(9,9)
+
+nSelect = 1000
+# For reproducibility, we set the random seed
+set.seed(10);
+select = sample(nGenes, size = nSelect);
+selectTOM = dissTOM[select, select];
+# There’s no simple way of restricting a clustering tree to a subset of genes, so we must re-cluster.
+selectTree = hclust(as.dist(selectTOM), method = "average")
+selectColors = moduleColors[select];
+# Open a graphical window
+#sizeGrWindow(9,9)
+# Taking the dissimilarity to a power, say 10, makes the plot more informative by effectively changing
+# the color palette; setting the diagonal to NA also improves the clarity of the plot
+plotDiss = selectTOM^7;
+diag(plotDiss) = NA;
+TOMplot(plotDiss, selectTree, selectColors, main = "Network heatmap plot, 1000 selected genes")
+
+
+# Recalculate module eigengenes
+MEs = moduleEigengenes(datExpr, moduleColors)$eigengenes
+# Isolate weight from the clinical traits
+weight = as.data.frame(datTraits$PC1);
+names(weight) = "PC1"
+# Add the weight to existing module eigengenes
+MET = orderMEs(cbind(MEs, weight))
+# Plot the relationships among the eigengenes and the trait
+#sizeGrWindow(5,7.5);
+par(cex = 0.9)
+plotEigengeneNetworks(MET, "", marDendro = c(0,4,1,2), marHeatmap = c(3,4,1,2), cex.lab = 0.8, xLabelsAngle
+= 90)
+```
+
+```{r networks2, eval = F}
+# Plot the dendrogram
+#sizeGrWindow(6,6);
+par(cex = 1.0)
+plotEigengeneNetworks(MET, "Eigengene dendrogram", marDendro = c(0,4,2,0),
+plotHeatmaps = FALSE)
+```
+
+```{r networks3, eval = F}
+
+# Plot the heatmap matrix (note: this plot will overwrite the dendrogram plot)
+par(cex = 1.0)
+plotEigengeneNetworks(MET, "Eigengene adjacency heatmap", marHeatmap = c(3,4,2,2),
+plotDendrograms = FALSE, xLabelsAngle = 90)
 ```
