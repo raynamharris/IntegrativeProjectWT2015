@@ -4,7 +4,7 @@ output: md_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T, fig.path = '../figures/02h_wgcna/', cache = T)
+knitr::opts_chunk$set(echo = T, fig.path = '../figures/02h_wgcna/', cache = T, cache.lazy = FALSE)
 ```
 
 ```{r, warning=F}
@@ -332,7 +332,7 @@ labeledHeatmap(Matrix = moduleTraitCor,
               main = paste("Module-trait relationships"))
 ```
 
-```{r eigengenes}
+```{r eigengenes, eval = F}
 # Define variable weight containing the weight column of datTrait
 weight = as.data.frame(datTraits$PC1);
 names(weight) = "weight"
@@ -350,7 +350,7 @@ names(GSPvalue) = paste("p.GS.", names(weight), sep="")
 module = "cyan"
 column = match(module, modNames);
 moduleGenes = moduleColors==module;
-sizeGrWindow(7, 7);
+#sizeGrWindow(7, 7);
 par(mfrow = c(1,1));
 verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
                    abs(geneTraitSignificance[moduleGenes, 1]),
@@ -362,7 +362,7 @@ cex.main = 1.2, cex.lab = 1.2, cex.axis = 1.2, col = module)
 module = "brown"
 column = match(module, modNames);
 moduleGenes = moduleColors==module;
-sizeGrWindow(7, 7);
+#sizeGrWindow(7, 7);
 par(mfrow = c(1,1));
 verboseScatterplot(abs(geneModuleMembership[moduleGenes, column]),
                    abs(geneTraitSignificance[moduleGenes, 1]),

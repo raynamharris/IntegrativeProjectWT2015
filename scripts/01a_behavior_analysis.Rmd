@@ -46,6 +46,7 @@ behavior %>%
   select(treatment)  %>%  summary()
 
 head(behavior)
+names(behavior[9:34])
 ```
 
 
@@ -86,6 +87,7 @@ levels(realnumshocks$treatment)
 realnumshocks$treatment <- factor(realnumshocks$treatment, levels = c("standard.yoked", "standard.trained", "conflict.yoked", "conflict.trained"))
 levels(realnumshocks$treatment) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
 
+head(realnumshocks)
 realnumshocks %>%
   dplyr::group_by(treatment) %>%
   dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
@@ -102,9 +104,6 @@ a <- ggplot(realnumshocks, aes(x = treatment, y = sums, fill = treatment)) +
           legend.position = "none") 
 a
 
-trainedonly <- realnumshocks %>% filter(treatment %in% c("conflict\ntrained", "standard\ntrained"))
-summary(trainedonly)
-summary(aov(sums ~ treatment, data=trainedonly))
 ```
 
 # Vizualizing Mean and Standard error for num entrace and time 1st entrance
@@ -141,6 +140,7 @@ dfa <- behavior %>%
 
 
 fourmeasures <- rbind(dfb,dfc,dfd)
+head(fourmeasures)
 
 b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
 c <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
@@ -289,10 +289,29 @@ dev.off()
 ## now all the stats
 
 ```{r stats}
-# pretraining
-hab <- behavior %>% filter(TrainSessionCombo == "Hab")
-summary(aov(NumEntrances ~ treatment, data=hab))
+# 3 behavioral measures
+names(behavior)
+summary(aov(NumEntrances ~ treatment * TrainSessionCombo, data=behavior))
+summary(aov(Time1stEntr ~ treatment * TrainSessionCombo, data=behavior))
+summary(aov(pTimeShockZone ~ treatment * TrainSessionCombo, data=behavior))
 
+
+## retest
+
+retest <- behavior %>% filter(TrainSessionCombo == "Retest")
+summary(aov(NumEntrances ~ treatment, data=retest))
+TukeyHSD(aov(NumEntrances ~ treatment, data=retest))
+
+## T4
+
+T4 <- behavior %>% filter(TrainSessionCombo == "T4_C1")
+summary(aov(NumEntrances ~ treatment, data=T4))
+TukeyHSD(aov(NumEntrances ~ treatment, data=T4))
+
+# T5 - retention
+reten <- behavior %>% filter(TrainSessionCombo %in% c("T5_C2", "T6_C3", "Retention" ) )
+summary(aov(NumEntrances ~ treatment, data=reten))
+TukeyHSD(aov(NumEntrances ~ treatment, data=reten))
 
 # pca
 pc1aov <- aov(PC1 ~ treatment, data = pca.all)
@@ -312,5 +331,6 @@ write.csv(pca.all, file = "../data/01a_pca.all.csv", row.names = FALSE)
 write.csv(pca.Rn.summary, file = "../data/01a_pca.Rn.summary.csv", row.names = FALSE)
 write.csv(pca.Rn, file = "../data/01a_pca.Rn.csv", row.names = FALSE)
 
+write.csv(realnumshocks, file = "../data/01a_realnumshocks.csv", row.names = FALSE)
 write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
 ```
