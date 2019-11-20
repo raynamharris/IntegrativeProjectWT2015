@@ -109,6 +109,18 @@ mice.
     ## 5         1.000000
     ## 6         1.300000
 
+    names(behavior[9:34])
+
+    ##  [1] "TotalPath.Arena."   "SpeedArena.cm.s"    "sd.Speed.Arena."   
+    ##  [4] "Linearity.Arena."   "NumEntrances"       "Time1stEntr"       
+    ##  [7] "Path1stEntr"        "Speed1stEntr.cm.s." "Entr.Dist.1.m."    
+    ## [10] "NumShock"           "MaxTimeAvoid"       "MaxPathAvoid"      
+    ## [13] "Time2ndEntr"        "Path2ndEntr"        "Speed2ndEntr"      
+    ## [16] "TimeShockZone"      "pTimeShockZone"     "pTimeCCW"          
+    ## [19] "pTimeOPP"           "pTimeCW"            "RayleigLength"     
+    ## [22] "RayleigAngle"       "Min50.RngLoBin"     "AnnularSkewnes"    
+    ## [25] "AnnularKurtosis"    "ShockPerEntrance"
+
 Number of shocks
 ----------------
 
@@ -182,6 +194,23 @@ standard.trained or conflict.trained trained partner.
     realnumshocks$treatment <- factor(realnumshocks$treatment, levels = c("standard.yoked", "standard.trained", "conflict.yoked", "conflict.trained"))
     levels(realnumshocks$treatment) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
 
+    head(realnumshocks)
+
+    ##       ID         treatment Hab Retention Retest T1 T2 T3 T4_C1 T5_C2 T6_C3
+    ## 1 15140A conflict\ntrained  52         9      1  7  3  3    13     6     2
+    ## 2 15140C standard\ntrained  62         0     10  6  7  8     3     8     0
+    ## 3 15141C standard\ntrained  44        21      7  8 19 11    10     7    12
+    ## 4 15142A conflict\ntrained  60         6      0  7  4  2     7     3     3
+    ## 5 15142C standard\ntrained  57         8      1  5  1  1     0     0     0
+    ## 6 15143A conflict\ntrained  56        33      2 10  3  1    14     2     1
+    ##   sums
+    ## 1   96
+    ## 2  104
+    ## 3  139
+    ## 4   92
+    ## 5   73
+    ## 6  122
+
     realnumshocks %>%
       dplyr::group_by(treatment) %>%
       dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
@@ -207,42 +236,6 @@ standard.trained or conflict.trained trained partner.
     a
 
 ![](../figures/01_behavior/shockentrplot-1.png)
-
-    trainedonly <- realnumshocks %>% filter(treatment %in% c("conflict\ntrained", "standard\ntrained"))
-    summary(trainedonly)
-
-    ##        ID                treatment       Hab          Retention    
-    ##  15140A : 1   standard\nyoked  :0   Min.   :44.00   Min.   : 0.00  
-    ##  15140C : 1   standard\ntrained:8   1st Qu.:52.00   1st Qu.: 0.00  
-    ##  15141C : 1   conflict\nyoked  :0   Median :57.00   Median : 6.00  
-    ##  15142A : 1   conflict\ntrained:9   Mean   :56.24   Mean   :13.06  
-    ##  15142C : 1                         3rd Qu.:61.00   3rd Qu.:28.00  
-    ##  15143A : 1                         Max.   :66.00   Max.   :40.00  
-    ##  (Other):11                                                        
-    ##      Retest         T1               T2           T3        
-    ##  Min.   : 0   Min.   : 4.000   Min.   : 1   Min.   : 1.000  
-    ##  1st Qu.: 1   1st Qu.: 6.000   1st Qu.: 2   1st Qu.: 1.000  
-    ##  Median : 2   Median : 7.000   Median : 3   Median : 1.000  
-    ##  Mean   : 3   Mean   : 8.471   Mean   : 4   Mean   : 3.294  
-    ##  3rd Qu.: 5   3rd Qu.:10.000   3rd Qu.: 4   3rd Qu.: 3.000  
-    ##  Max.   :10   Max.   :25.000   Max.   :19   Max.   :15.000  
-    ##                                                             
-    ##      T4_C1           T5_C2            T6_C3             sums      
-    ##  Min.   : 0.00   Min.   : 0.000   Min.   : 0.000   Min.   : 65.0  
-    ##  1st Qu.: 3.00   1st Qu.: 1.000   1st Qu.: 1.000   1st Qu.: 92.0  
-    ##  Median :13.00   Median : 4.000   Median : 2.000   Median :111.0  
-    ##  Mean   :13.12   Mean   : 5.118   Mean   : 5.118   Mean   :111.4  
-    ##  3rd Qu.:24.00   3rd Qu.: 6.000   3rd Qu.: 9.000   3rd Qu.:123.0  
-    ##  Max.   :33.00   Max.   :28.000   Max.   :23.000   Max.   :200.0  
-    ## 
-
-    summary(aov(sums ~ treatment, data=trainedonly))
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## treatment    1   3589    3589   3.739 0.0723 .
-    ## Residuals   15  14401     960                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Vizualizing Mean and Standard error for num entrace and time 1st entrance
 =========================================================================
@@ -280,6 +273,18 @@ titles, y labels and limits.
 
 
     fourmeasures <- rbind(dfb,dfc,dfd)
+    head(fourmeasures)
+
+    ## # A tibble: 6 x 5
+    ## # Groups:   treatment [1]
+    ##   treatment      TrainSessionComboN…     m    se measure                   
+    ##   <fct>                        <int> <dbl> <dbl> <chr>                     
+    ## 1 standard.yoked                   1  31.4 2.32  Number of target zone ent…
+    ## 2 standard.yoked                   2  21.4 2.02  Number of target zone ent…
+    ## 3 standard.yoked                   3  15.4 1.40  Number of target zone ent…
+    ## 4 standard.yoked                   4  14.5 2.01  Number of target zone ent…
+    ## 5 standard.yoked                   5  16.9 0.875 Number of target zone ent…
+    ## 6 standard.yoked                   6  15   1.56  Number of target zone ent…
 
     b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
     c <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
@@ -291,74 +296,22 @@ titles, y labels and limits.
                            d + theme(legend.position = "none"), nrow = 1,
                            label_size = 8,
                            labels = c("(a)", "(b)", "(c)", "(d)"))
+
+    b
+
+![](../figures/01_behavior/behavmeanstdev-1.png)
+
+    c
+
+![](../figures/01_behavior/behavmeanstdev-2.png)
+
+    d
+
+![](../figures/01_behavior/behavmeanstdev-3.png)
+
     fourplots
 
-![](../figures/01_behavior/fourmeasures-1.png)
-
-### individual variation in behavior
-
-    problemsamples1 <- behavior %>%   filter(ID %in% c("15148A", "15143A")) 
-    problemsamples2 <- behavior %>%   filter(ID %in% c("15148B", "15143B")) 
-
-    behav1 <- behavior %>% filter(treatment %in% "conflict.trained")
-    behav2 <- behavior %>% filter(treatment %in% "conflict.yoked")
-
-
-    ggplot(data = behav1, aes(x=TrainSessionComboNum, y= Time1stEntr, color=ID)) + 
-      geom_point(data = problemsamples1, aes(x=TrainSessionComboNum, y=Time1stEntr, shape=ID, size = 1.5)) +
-         geom_line(data = behav1, aes(x=TrainSessionComboNum, y=Time1stEntr)) +
-        # geom_line() +
-        labs(subtitle = " ") +
-        scale_x_continuous(name= "training session", 
-                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = c( "P", "T1", "T2", "T3",
-                                       "Rt", "T4", "T5", "T6", "Rn")) +
-        theme_ms() +
-      facet_wrap(~treatment)
-
-![](../figures/01_behavior/individualbehavior-1.png)
-
-    ggplot(data = behav1, aes(x=TrainSessionComboNum, y= NumEntrances, color=ID)) + 
-      geom_point(data = problemsamples1, aes(x=TrainSessionComboNum, y=NumEntrances, shape=ID, size = 1.5)) +
-         geom_line(data = behav1, aes(x=TrainSessionComboNum, y=NumEntrances)) +
-        # geom_line() +
-        labs(subtitle = " ") +
-        scale_x_continuous(name= "training session", 
-                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = c( "P", "T1", "T2", "T3",
-                                       "Rt", "T4", "T5", "T6", "Rn")) +
-        theme_ms() +
-      facet_wrap(~treatment)
-
-![](../figures/01_behavior/individualbehavior-2.png)
-
-    ggplot(data = behav1, aes(x=TrainSessionComboNum, y= pTimeShockZone, color=ID)) + 
-      geom_point(data = problemsamples1, aes(x=TrainSessionComboNum, y=pTimeShockZone, shape=ID, size = 1.5)) +
-         geom_line(data = behav1, aes(x=TrainSessionComboNum, y=pTimeShockZone)) +
-        # geom_line() +
-        labs(subtitle = " ") +
-        scale_x_continuous(name= "training session", 
-                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = c( "P", "T1", "T2", "T3",
-                                       "Rt", "T4", "T5", "T6", "Rn")) +
-        theme_ms() +
-      facet_wrap(~treatment)
-
-![](../figures/01_behavior/individualbehavior-3.png)
-
-    ggplot(data = behav1, aes(x=TrainSessionComboNum, y= Time2ndEntr, color=ID)) + 
-      geom_point(data = problemsamples1, aes(x=TrainSessionComboNum, y=Time2ndEntr, shape=ID, size = 1.5)) +
-         geom_line(data = behav1, aes(x=TrainSessionComboNum, y=Time2ndEntr)) +
-        # geom_line() +
-        labs(subtitle = " ") +
-        scale_x_continuous(name= "training session", 
-                           breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                           labels = c( "P", "T1", "T2", "T3",
-                                       "Rt", "T4", "T5", "T6", "Rn")) +
-        theme_ms() +
-      facet_wrap(~treatment)
-
-![](../figures/01_behavior/individualbehavior-4.png)
+![](../figures/01_behavior/behavmeanstdev-4.png)
 
 ### Principle component analysis
 
@@ -426,6 +379,15 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
                      ylab = "PC2 % contributions" , xlab = "estimates of activity", subtitle = " ") +
       theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
 
+
+    f
+
+![](../figures/01_behavior/PCA-3.png)
+
+    g
+
+![](../figures/01_behavior/PCA-4.png)
+
     threeplots <- plot_grid(e,f,g, labels = c("(e)", "(f)", "(g)"),
                nrow = 1,
                label_size = 8,
@@ -433,7 +395,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
     threeplots
 
-![](../figures/01_behavior/PCA-3.png)
+![](../figures/01_behavior/PCA-5.png)
 
     behaviorfig <- plot_grid(fourplots, threeplots, nrow = 2)
     behaviorfig
@@ -450,13 +412,152 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 now all the stats
 -----------------
 
-    # pretraining
-    hab <- behavior %>% filter(TrainSessionCombo == "Hab")
-    summary(aov(NumEntrances ~ treatment, data=hab))
+    # 3 behavioral measures
+    names(behavior)
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## treatment    3    7.0   2.338   0.085  0.967
-    ## Residuals   30  820.8  27.358
+    ##  [1] "ID"                   "Day"                  "treatment"           
+    ##  [4] "training"             "TrainSessionCombo"    "TrainSessionComboNum"
+    ##  [7] "ShockOnOff"           "PairedPartner"        "TotalPath.Arena."    
+    ## [10] "SpeedArena.cm.s"      "sd.Speed.Arena."      "Linearity.Arena."    
+    ## [13] "NumEntrances"         "Time1stEntr"          "Path1stEntr"         
+    ## [16] "Speed1stEntr.cm.s."   "Entr.Dist.1.m."       "NumShock"            
+    ## [19] "MaxTimeAvoid"         "MaxPathAvoid"         "Time2ndEntr"         
+    ## [22] "Path2ndEntr"          "Speed2ndEntr"         "TimeShockZone"       
+    ## [25] "pTimeShockZone"       "pTimeCCW"             "pTimeOPP"            
+    ## [28] "pTimeCW"              "RayleigLength"        "RayleigAngle"        
+    ## [31] "Min50.RngLoBin"       "AnnularSkewnes"       "AnnularKurtosis"     
+    ## [34] "ShockPerEntrance"
+
+    summary(aov(NumEntrances ~ treatment * TrainSessionCombo, data=behavior))
+
+    ##                              Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## treatment                     3   6851  2283.6  94.877  < 2e-16 ***
+    ## TrainSessionCombo             8  14274  1784.3  74.134  < 2e-16 ***
+    ## treatment:TrainSessionCombo  24   2296    95.7   3.976 9.81e-09 ***
+    ## Residuals                   270   6499    24.1                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(Time1stEntr ~ treatment * TrainSessionCombo, data=behavior))
+
+    ##                              Df  Sum Sq Mean Sq F value   Pr(>F)    
+    ## treatment                     3 1521083  507028  28.656 4.06e-16 ***
+    ## TrainSessionCombo             8  987917  123490   6.979 2.29e-08 ***
+    ## treatment:TrainSessionCombo  24 1182020   49251   2.784 3.25e-05 ***
+    ## Residuals                   270 4777188   17693                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(pTimeShockZone ~ treatment * TrainSessionCombo, data=behavior))
+
+    ##                              Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## treatment                     3  3.315  1.1050 294.336  < 2e-16 ***
+    ## TrainSessionCombo             8  0.583  0.0729  19.414  < 2e-16 ***
+    ## treatment:TrainSessionCombo  24  0.549  0.0229   6.095 5.37e-15 ***
+    ## Residuals                   270  1.014  0.0038                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    ## retest
+
+    retest <- behavior %>% filter(TrainSessionCombo == "Retest")
+    summary(aov(NumEntrances ~ treatment, data=retest))
+
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## treatment    3 1604.8   534.9   45.44 2.84e-11 ***
+    ## Residuals   30  353.2    11.8                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    TukeyHSD(aov(NumEntrances ~ treatment, data=retest))
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = NumEntrances ~ treatment, data = retest)
+    ## 
+    ## $treatment
+    ##                                          diff        lwr        upr
+    ## standard.trained-standard.yoked   -13.5000000 -18.164907  -8.835093
+    ## conflict.yoked-standard.yoked      -0.7638889  -5.297364   3.769586
+    ## conflict.trained-standard.yoked   -14.6527778 -19.186252 -10.119303
+    ## conflict.yoked-standard.trained    12.7361111   8.202636  17.269586
+    ## conflict.trained-standard.trained  -1.1527778  -5.686252   3.380697
+    ## conflict.trained-conflict.yoked   -13.8888889 -18.287005  -9.490772
+    ##                                       p adj
+    ## standard.trained-standard.yoked   0.0000001
+    ## conflict.yoked-standard.yoked     0.9675015
+    ## conflict.trained-standard.yoked   0.0000000
+    ## conflict.yoked-standard.trained   0.0000001
+    ## conflict.trained-standard.trained 0.8995626
+    ## conflict.trained-conflict.yoked   0.0000000
+
+    ## T4
+
+    T4 <- behavior %>% filter(TrainSessionCombo == "T4_C1")
+    summary(aov(NumEntrances ~ treatment, data=T4))
+
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## treatment    3  939.2  313.05   9.348 0.000161 ***
+    ## Residuals   30 1004.6   33.49                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    TukeyHSD(aov(NumEntrances ~ treatment, data=T4))
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = NumEntrances ~ treatment, data = T4)
+    ## 
+    ## $treatment
+    ##                                          diff        lwr       upr
+    ## standard.trained-standard.yoked   -10.7500000 -18.617469 -2.882531
+    ## conflict.yoked-standard.yoked      -0.1111111  -7.756917  7.534694
+    ## conflict.trained-standard.yoked     3.4444444  -4.201361 11.090250
+    ## conflict.yoked-standard.trained    10.6388889   2.993083 18.284694
+    ## conflict.trained-standard.trained  14.1944444   6.548639 21.840250
+    ## conflict.trained-conflict.yoked     3.5555556  -3.861965 10.973077
+    ##                                       p adj
+    ## standard.trained-standard.yoked   0.0043699
+    ## conflict.yoked-standard.yoked     0.9999773
+    ## conflict.trained-standard.yoked   0.6162617
+    ## conflict.yoked-standard.trained   0.0036531
+    ## conflict.trained-standard.trained 0.0001147
+    ## conflict.trained-conflict.yoked   0.5679926
+
+    # T5 - retention
+    reten <- behavior %>% filter(TrainSessionCombo %in% c("T5_C2", "T6_C3", "Retention" ) )
+    summary(aov(NumEntrances ~ treatment, data=reten))
+
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## treatment    3   2751   917.0   33.45 5.67e-15 ***
+    ## Residuals   98   2687    27.4                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    TukeyHSD(aov(NumEntrances ~ treatment, data=reten))
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = NumEntrances ~ treatment, data = reten)
+    ## 
+    ## $treatment
+    ##                                         diff        lwr       upr
+    ## standard.trained-standard.yoked   -11.541667 -15.492323 -7.591011
+    ## conflict.yoked-standard.yoked      -0.250000  -4.089348  3.589348
+    ## conflict.trained-standard.yoked    -9.398148 -13.237496 -5.558801
+    ## conflict.yoked-standard.trained    11.291667   7.452319 15.131014
+    ## conflict.trained-standard.trained   2.143519  -1.695829  5.982866
+    ## conflict.trained-conflict.yoked    -9.148148 -12.872862 -5.423434
+    ##                                       p adj
+    ## standard.trained-standard.yoked   0.0000000
+    ## conflict.yoked-standard.yoked     0.9982358
+    ## conflict.trained-standard.yoked   0.0000000
+    ## conflict.yoked-standard.trained   0.0000000
+    ## conflict.trained-standard.trained 0.4659963
+    ## conflict.trained-conflict.yoked   0.0000000
 
     # pca
     pc1aov <- aov(PC1 ~ treatment, data = pca.all)
@@ -531,4 +632,5 @@ save files
     write.csv(pca.Rn.summary, file = "../data/01a_pca.Rn.summary.csv", row.names = FALSE)
     write.csv(pca.Rn, file = "../data/01a_pca.Rn.csv", row.names = FALSE)
 
+    write.csv(realnumshocks, file = "../data/01a_realnumshocks.csv", row.names = FALSE)
     write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
