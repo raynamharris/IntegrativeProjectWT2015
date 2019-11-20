@@ -1,0 +1,40 @@
+---
+title: "My hippocampus kids book"
+output: slidy_presentation
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.width = 6)
+```
+
+## Here's our experimental design. I wish I could zoom in and out on parts of this image on command. 
+
+![](../figures/00_schematics/figure_1.png)
+
+
+
+
+## Fig 2
+
+![](../figures/01_behavior/behaviorfig-1.png)
+
+
+## Fig 3
+
+![](../figures/02c_rnaseqSubfield/volcanos-1.png)
+
+
+## Alt. Fig 3
+
+![](../figures/figure_3.png)
+
+
+
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
