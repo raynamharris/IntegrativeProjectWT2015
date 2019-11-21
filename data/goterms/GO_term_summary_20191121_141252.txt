@@ -1,0 +1,235 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:1919900	2810006K23Rik	RIKEN cDNA 2810006K23 gene	5		translation release factor activity			IEA	IPR000352 	J:72247 	
+MGI:2384560	Aars	alanyl-tRNA synthetase	8		translation regulator activity	is a part of regulation of cytoplasmic translational fidelity		IMP		J:216802 	
+MGI:1351658	Abcf1	ATP-binding cassette, sub-family F (GCN20), member 1	17		translation activator activity			ISO	Q8NE71 	J:164563 	
+MGI:1933148	Abtb1	ankyrin repeat and  BTB (POZ) domain containing 1	6		translation elongation factor activity			IEA	KW-0251 	J:60000 	
+MGI:1338803	Aire	autoimmune regulator (autoimmune polyendocrinopathy candidiasis ectodermal dystrophy)	10		translation regulator activity			IEA	IPR008087 	J:72247 	
+MGI:104905	Bc1	brain cytoplasmic RNA 1	7		translation repressor activity, non-nucleic acid binding			ISO	M16113 	J:73065 	
+MGI:1922638	Boll	boule homolog, RNA binding protein	1		translation activator activity			IBA	PTN000877352 	J:265628 	
+MGI:1922638	Boll	boule homolog, RNA binding protein	1		translation activator activity			ISO	Q8N9W6 	J:164563 	
+MGI:1194505	C1qbp	complement component 1, q subcomponent binding protein	11		translation activator activity			IBA	PTN000088828 	J:265628 	
+MGI:893588	Cirbp	cold inducible RNA binding protein	10		translation repressor activity			IDA		J:156048 	
+MGI:88431	Cnbp	cellular nucleic acid binding protein	6		translation regulator activity			IBA	PTN000543537 	J:265628 	
+MGI:108442	Cpeb1	cytoplasmic polyadenylation element binding protein 1	7		translation factor activity, RNA binding			IBA	PTN000286163 	J:265628 	
+MGI:108442	Cpeb1	cytoplasmic polyadenylation element binding protein 1	7		translation regulator activity			IEA	IPR034819 	J:72247 	
+MGI:108442	Cpeb1	cytoplasmic polyadenylation element binding protein 1	7		translation repressor activity, mRNA regulatory element binding			IBA	PTN000286163 	J:265628 	
+MGI:108442	Cpeb1	cytoplasmic polyadenylation element binding protein 1	7		translation repressor activity, mRNA regulatory element binding			IDA		J:204958 	
+MGI:2442640	Cpeb2	cytoplasmic polyadenylation element binding protein 2	5		translation factor activity, RNA binding			IBA	PTN000286163 	J:265628 	
+MGI:2442640	Cpeb2	cytoplasmic polyadenylation element binding protein 2	5		translation regulator activity			IEA	IPR034819 	J:72247 	
+MGI:2442640	Cpeb2	cytoplasmic polyadenylation element binding protein 2	5		translation repressor activity, mRNA regulatory element binding			IBA	PTN000286163 	J:265628 	
+MGI:2442640	Cpeb2	cytoplasmic polyadenylation element binding protein 2	5		translation repressor activity, mRNA regulatory element binding			IDA		J:204958 	
+MGI:2443075	Cpeb3	cytoplasmic polyadenylation element binding protein 3	19		translation factor activity, RNA binding			IBA	PTN000286163 	J:265628 	
+MGI:2443075	Cpeb3	cytoplasmic polyadenylation element binding protein 3	19		translation factor activity, RNA binding			IDA		J:178916 J:202741 	
+MGI:2443075	Cpeb3	cytoplasmic polyadenylation element binding protein 3	19		translation factor activity, RNA binding			ISO	Q8NE35 	J:164563 	
+MGI:2443075	Cpeb3	cytoplasmic polyadenylation element binding protein 3	19		translation regulator activity			IEA	IPR034819 	J:72247 	
+MGI:2443075	Cpeb3	cytoplasmic polyadenylation element binding protein 3	19		translation repressor activity, mRNA regulatory element binding			IBA	PTN000286163 	J:265628 	
+MGI:2443075	Cpeb3	cytoplasmic polyadenylation element binding protein 3	19		translation repressor activity, mRNA regulatory element binding			IDA		J:181762 	
+MGI:1914829	Cpeb4	cytoplasmic polyadenylation element binding protein 4	11		translation factor activity, RNA binding			IBA	PTN000286163 	J:265628 	
+MGI:1914829	Cpeb4	cytoplasmic polyadenylation element binding protein 4	11		translation regulator activity			IEA	IPR034819 	J:72247 	
+MGI:1914829	Cpeb4	cytoplasmic polyadenylation element binding protein 4	11		translation repressor activity, mRNA regulatory element binding			IBA	PTN000286163 	J:265628 	
+MGI:2685518	Ctif	CBP80/20-dependent translation initiation factor	18		translation activator activity			IBA	PTN000583582 	J:265628 	
+MGI:1338801	Cyfip1	cytoplasmic FMR1 interacting protein 1	7		translation regulator activity	is a part of regulation of translation at postsynapse, modulating synaptic transmission,happens in UBERON:0001950		EXP		J:201819 	
+MGI:1338801	Cyfip1	cytoplasmic FMR1 interacting protein 1	7		translation regulator activity	happens in UBERON:0001950,is a part of regulation of translation at postsynapse, modulating synaptic transmission		IDA		J:201819 	
+MGI:1338801	Cyfip1	cytoplasmic FMR1 interacting protein 1	7		translation regulator activity	is a part of regulation of translation at postsynapse, modulating synaptic transmission,happens in UBERON:0001950		IMP		J:201819 	
+MGI:1338801	Cyfip1	cytoplasmic FMR1 interacting protein 1	7		translation regulator activity	is a part of regulation of translation at postsynapse, modulating synaptic transmission,happens in UBERON:0001950		IPI		J:201819 	
+MGI:1342328	Dazl	deleted in azoospermia-like	17		translation activator activity			IBA	PTN000877352 	J:265628 	
+MGI:1342328	Dazl	deleted in azoospermia-like	17		translation activator activity			IDA		J:114722 	
+MGI:1915434	Denr	density-regulated protein	5		translation initiation factor activity			IEA	IPR001950 IPR036877 	J:72247 	
+MGI:1915434	Denr	density-regulated protein	5		translation initiation factor activity			IEA	KW-0396 	J:60000 	
+MGI:94890	Dhfr	dihydrofolate reductase	13		translation repressor activity, mRNA regulatory element binding			ISO	P00374 	J:164563 	
+MGI:2145374	Dhx29	DEAH (Asp-Glu-Ala-His) box polypeptide 29	13		translation initiation factor activity			IEA	KW-0396 	J:60000 	
+MGI:1096881	Eef1a1	eukaryotic translation elongation factor 1 alpha 1	9		translation elongation factor activity			IBA	PTN000562490 	J:265628 	
+MGI:1096317	Eef1a2	eukaryotic translation elongation factor 1 alpha 2	2		translation elongation factor activity			IBA	PTN000562490 	J:265628 	
+MGI:1096317	Eef1a2	eukaryotic translation elongation factor 1 alpha 2	2		translation elongation factor activity			IDA		J:47340 	
+MGI:1929520	Eef1b2	eukaryotic translation elongation factor 1 beta 2	1		translation elongation factor activity			ISS		J:65628 	
+MGI:1913906	Eef1d	eukaryotic translation elongation factor 1 delta (guanine nucleotide exchange protein)	15		translation elongation factor activity			IEA	IPR001326 IPR014038 	J:72247 	
+MGI:1913906	Eef1d	eukaryotic translation elongation factor 1 delta (guanine nucleotide exchange protein)	15		translation elongation factor activity			IEA	KW-0251 	J:60000 	
+MGI:1914410	Eef1g	eukaryotic translation elongation factor 1 gamma	19		translation elongation factor activity			IEA	IPR001662 IPR036433 	J:72247 	
+MGI:1914410	Eef1g	eukaryotic translation elongation factor 1 gamma	19		translation elongation factor activity			IEA	KW-0251 	J:60000 	
+MGI:95288	Eef2	eukaryotic translation elongation factor 2	10		translation elongation factor activity			IBA	PTN000562747 	J:265628 	
+MGI:1195261	Eef2k	eukaryotic elongation factor-2 kinase	7		translation factor activity, RNA binding			TAS		J:40333 	
+MGI:2137092	Eefsec	eukaryotic elongation factor, selenocysteine-tRNA-specific	6		translation elongation factor activity			IBA	PTN001500717 	J:265628 	
+MGI:2137092	Eefsec	eukaryotic elongation factor, selenocysteine-tRNA-specific	6		translation elongation factor activity			IDA		J:192960 	
+MGI:2141969	Efl1	elongation factor like GTPase 1	7		translation elongation factor activity			IEA	KW-0251 	J:60000 	
+MGI:105125	Eif1	eukaryotic translation initiation factor 1	11		translation initiation factor activity			IBA	PTN000044132 	J:265628 	
+MGI:95298	Eif1a	eukaryotic translation initiation factor 1A	18		translation initiation factor activity			IEA	IPR001253 IPR006196 IPR018104 	J:72247 	
+MGI:95298	Eif1a	eukaryotic translation initiation factor 1A	18		translation initiation factor activity			IEA	KW-0396 	J:60000 	
+MGI:1917110	Eif1ad	eukaryotic translation initiation factor 1A domain containing	19		translation initiation factor activity			IEA	IPR001253 IPR006196 	J:72247 	
+MGI:1913485	Eif1ax	eukaryotic translation initiation factor 1A, X-linked	X		translation initiation factor activity			IEA	IPR001253 IPR006196 IPR018104 	J:72247 	
+MGI:1913485	Eif1ax	eukaryotic translation initiation factor 1A, X-linked	X		translation initiation factor activity			IEA	KW-0396 	J:60000 	
+MGI:1916219	Eif1b	eukaryotic translation initiation factor 1B	9		translation initiation factor activity			IBA	PTN000044132 	J:265628 	
+MGI:1098684	Eif2a	eukaryotic translation initiation factor 2A	3		translation initiation factor activity			IBA	PTN000325517 	J:265628 	
+MGI:1098684	Eif2a	eukaryotic translation initiation factor 2A	3		translation initiation factor activity			ISO	Q9BY44 	J:164563 	
+MGI:1353448	Eif2ak1	eukaryotic translation initiation factor 2 alpha kinase 1	5		eukaryotic translation initiation factor 2alpha kinase activity			IBA	PTN000867953 	J:265628 	
+MGI:1353448	Eif2ak1	eukaryotic translation initiation factor 2 alpha kinase 1	5		eukaryotic translation initiation factor 2alpha kinase activity			ISO	Q9BQI3 	J:164563 	
+MGI:1353448	Eif2ak1	eukaryotic translation initiation factor 2 alpha kinase 1	5		eukaryotic translation initiation factor 2alpha kinase activity			ISO	RGD:70883 	J:155856 	
+MGI:1353449	Eif2ak2	eukaryotic translation initiation factor 2-alpha kinase 2	17		eukaryotic translation initiation factor 2alpha kinase activity			IBA	PTN000867953 	J:265628 	
+MGI:1353449	Eif2ak2	eukaryotic translation initiation factor 2-alpha kinase 2	17		eukaryotic translation initiation factor 2alpha kinase activity			ISO	P19525 	J:164563 	
+MGI:1341830	Eif2ak3	eukaryotic translation initiation factor 2 alpha kinase 3	6		eukaryotic translation initiation factor 2alpha kinase activity			IBA	PTN000867953 	J:265628 	
+MGI:1341830	Eif2ak3	eukaryotic translation initiation factor 2 alpha kinase 3	6		eukaryotic translation initiation factor 2alpha kinase activity	uses UniProtKB:Q6ZWX6,is a part of negative regulation of translation		IDA		J:51759 	
+MGI:1341830	Eif2ak3	eukaryotic translation initiation factor 2 alpha kinase 3	6		eukaryotic translation initiation factor 2alpha kinase activity	is a part of response to endoplasmic reticulum stress		IMP		J:124910 	
+MGI:1341830	Eif2ak3	eukaryotic translation initiation factor 2 alpha kinase 3	6		eukaryotic translation initiation factor 2alpha kinase activity			ISO	RGD:70884 	J:155856 	
+MGI:1341830	Eif2ak3	eukaryotic translation initiation factor 2 alpha kinase 3	6		eukaryotic translation initiation factor 2alpha kinase activity			ISO	Q9NZJ5 	J:164563 	
+MGI:1353427	Eif2ak4	eukaryotic translation initiation factor 2 alpha kinase 4	2		eukaryotic translation initiation factor 2alpha kinase activity			IDA		J:58015 J:71261 J:227388 J:227395 	
+MGI:1353427	Eif2ak4	eukaryotic translation initiation factor 2 alpha kinase 4	2		eukaryotic translation initiation factor 2alpha kinase activity	is a part of response to endoplasmic reticulum stress|is a part of cellular response to amino acid starvation		IGI	Q9Z2B5 	J:124910 	
+MGI:1353427	Eif2ak4	eukaryotic translation initiation factor 2 alpha kinase 4	2		eukaryotic translation initiation factor 2alpha kinase activity			IMP		J:100646 J:129841 	
+MGI:1353427	Eif2ak4	eukaryotic translation initiation factor 2 alpha kinase 4	2		eukaryotic translation initiation factor 2alpha kinase activity			ISO	Q9P2K8 	J:164563 	
+MGI:2384802	Eif2b1	eukaryotic translation initiation factor 2B, subunit 1 (alpha)	5	contributes_to	translation initiation factor activity			IBA	PTN000028064 	J:265628 	
+MGI:2384802	Eif2b1	eukaryotic translation initiation factor 2B, subunit 1 (alpha)	5		translation initiation factor activity			ISO	RGD:620819 	J:155856 	
+MGI:2384802	Eif2b1	eukaryotic translation initiation factor 2B, subunit 1 (alpha)	5	contributes_to	translation initiation factor activity			ISO	Q14232 	J:164563 	
+MGI:2145118	Eif2b2	eukaryotic translation initiation factor 2B, subunit 2 beta	12		translation initiation factor activity			IBA	PTN000027996 	J:265628 	
+MGI:2145118	Eif2b2	eukaryotic translation initiation factor 2B, subunit 2 beta	12	contributes_to	translation initiation factor activity			ISO	P49770 	J:164563 	
+MGI:1313286	Eif2b3	eukaryotic translation initiation factor 2B, subunit 3	4	contributes_to	translation factor activity, RNA binding			ISO	Q9NR50 	J:164563 	
+MGI:1313286	Eif2b3	eukaryotic translation initiation factor 2B, subunit 3	4		translation initiation factor activity			IBA	PTN000501033 	J:265628 	
+MGI:1313286	Eif2b3	eukaryotic translation initiation factor 2B, subunit 3	4	contributes_to	translation initiation factor activity			ISO	Q9NR50 	J:164563 	
+MGI:95300	Eif2b4	eukaryotic translation initiation factor 2B, subunit 4 delta	5	contributes_to	translation initiation factor activity			ISO	Q9UI10 	J:164563 	
+MGI:2446176	Eif2b5	eukaryotic translation initiation factor 2B, subunit 5 epsilon	16		translation initiation factor activity			IBA	PTN000500978 	J:265628 	
+MGI:2446176	Eif2b5	eukaryotic translation initiation factor 2B, subunit 5 epsilon	16	contributes_to	translation initiation factor activity			ISO	Q13144 	J:164563 	
+MGI:109342	Eif2d	eukaryotic translation initiation factor 2D	1		translation initiation factor activity			IBA	PTN000259347 	J:265628 	
+MGI:109342	Eif2d	eukaryotic translation initiation factor 2D	1		translation initiation factor activity			ISO	P41214 	J:164563 	
+MGI:95299	Eif2s1	eukaryotic translation initiation factor 2, subunit 1 alpha	12		translation initiation factor activity			IBA	PTN000063907 	J:265628 	
+MGI:95299	Eif2s1	eukaryotic translation initiation factor 2, subunit 1 alpha	12		translation initiation factor activity			ISO	P05198 	J:164563 	
+MGI:1914454	Eif2s2	eukaryotic translation initiation factor 2, subunit 2 (beta)	2		translation initiation factor activity			IBA	PTN000543393 	J:265628 	
+MGI:1914454	Eif2s2	eukaryotic translation initiation factor 2, subunit 2 (beta)	2		translation initiation factor activity			ISO	P20042 	J:164563 	
+MGI:1349431	Eif2s3x	eukaryotic translation initiation factor 2, subunit 3, structural gene X-linked	X		translation factor activity, RNA binding			ISO	P41091 	J:164563 	
+MGI:1349431	Eif2s3x	eukaryotic translation initiation factor 2, subunit 3, structural gene X-linked	X		translation initiation factor activity			IBA	PTN000562153 	J:265628 	
+MGI:1349431	Eif2s3x	eukaryotic translation initiation factor 2, subunit 3, structural gene X-linked	X		translation initiation factor activity			ISO	P41091 	J:164563 	
+MGI:1349430	Eif2s3y	eukaryotic translation initiation factor 2, subunit 3, structural gene Y-linked	Y		translation initiation factor activity			IBA	PTN000562153 	J:265628 	
+MGI:95301	Eif3a	eukaryotic translation initiation factor 3, subunit A	19	contributes_to	translation initiation factor activity			IBA	PTN000360893 	J:265628 	
+MGI:95301	Eif3a	eukaryotic translation initiation factor 3, subunit A	19	contributes_to	translation initiation factor activity			IDA		J:148056 	
+MGI:95301	Eif3a	eukaryotic translation initiation factor 3, subunit A	19	contributes_to	translation initiation factor activity			ISO	Q14152 	J:164563 	
+MGI:106478	Eif3b	eukaryotic translation initiation factor 3, subunit B	5	contributes_to	translation initiation factor activity			IBA	PTN000362658 	J:265628 	
+MGI:106478	Eif3b	eukaryotic translation initiation factor 3, subunit B	5	contributes_to	translation initiation factor activity			IDA		J:148056 	
+MGI:106478	Eif3b	eukaryotic translation initiation factor 3, subunit B	5	contributes_to	translation initiation factor activity			ISO	P55884 	J:164563 	
+MGI:106478	Eif3b	eukaryotic translation initiation factor 3, subunit B	5		translation initiation factor activity			ISO	P55884 	J:164563 	
+MGI:1926966	Eif3c	eukaryotic translation initiation factor 3, subunit C	7	contributes_to	translation initiation factor activity			IBA	PTN000358559 	J:265628 	
+MGI:1926966	Eif3c	eukaryotic translation initiation factor 3, subunit C	7		translation initiation factor activity			IDA		J:148056 	
+MGI:1926966	Eif3c	eukaryotic translation initiation factor 3, subunit C	7	contributes_to	translation initiation factor activity			ISO	Q99613 	J:164563 	
+MGI:1933181	Eif3d	eukaryotic translation initiation factor 3, subunit D	15		translation initiation factor activity			IBA	PTN000273956 	J:265628 	
+MGI:1933181	Eif3d	eukaryotic translation initiation factor 3, subunit D	15	contributes_to	translation initiation factor activity			IDA		J:148056 	
+MGI:1933181	Eif3d	eukaryotic translation initiation factor 3, subunit D	15	contributes_to	translation initiation factor activity			ISO	O15371 	J:164563 	
+MGI:99257	Eif3e	eukaryotic translation initiation factor 3, subunit E	15	contributes_to	translation initiation factor activity			IDA		J:148056 	
+MGI:99257	Eif3e	eukaryotic translation initiation factor 3, subunit E	15	contributes_to	translation initiation factor activity			ISO	P60228 	J:164563 	
+MGI:1913335	Eif3f	eukaryotic translation initiation factor 3, subunit F	7	contributes_to	translation initiation factor activity			IBA	PTN000056988 	J:265628 	
+MGI:1913335	Eif3f	eukaryotic translation initiation factor 3, subunit F	7	contributes_to	translation initiation factor activity			IDA		J:148056 	
+MGI:1913335	Eif3f	eukaryotic translation initiation factor 3, subunit F	7	contributes_to	translation initiation factor activity			ISO	O00303 	J:164563 	
+MGI:1858258	Eif3g	eukaryotic translation initiation factor 3, subunit G	9	contributes_to	translation initiation factor activity			IDA		J:148056 	
+MGI:1858258	Eif3g	eukaryotic translation initiation factor 3, subunit G	9	contributes_to	translation initiation factor activity			ISO	O75821 	J:164563 	
+MGI:1915385	Eif3h	eukaryotic translation initiation factor 3, subunit H	15	contributes_to	translation initiation factor activity			IBA	PTN000045506 	J:265628 	
+MGI:1915385	Eif3h	eukaryotic translation initiation factor 3, subunit H	15	contributes_to	translation initiation factor activity			IDA		J:148056 	
+MGI:1915385	Eif3h	eukaryotic translation initiation factor 3, subunit H	15	contributes_to	translation initiation factor activity			ISO	O15372 	J:164563 	
+MGI:1860763	Eif3i	eukaryotic translation initiation factor 3, subunit I	4	contributes_to	translation initiation factor activity			IDA		J:148056 	
+MGI:1860763	Eif3i	eukaryotic translation initiation factor 3, subunit I	4		translation initiation factor activity			ISO	Q13347 	J:164563 	
+MGI:1860763	Eif3i	eukaryotic translation initiation factor 3, subunit I	4	contributes_to	translation initiation factor activity			ISO	Q13347 	J:164563 	
+MGI:1921080	Eif3k	eukaryotic translation initiation factor 3, subunit K	7	contributes_to	translation initiation factor activity			IBA	PTN000314720 	J:265628 	
+MGI:1921080	Eif3k	eukaryotic translation initiation factor 3, subunit K	7	contributes_to	translation initiation factor activity			IDA		J:148056 	
+MGI:1921080	Eif3k	eukaryotic translation initiation factor 3, subunit K	7	contributes_to	translation initiation factor activity			ISO	Q9UBQ5 	J:164563 	
+MGI:2386251	Eif3l	eukaryotic translation initiation factor 3, subunit L	15	contributes_to	translation initiation factor activity			IDA		J:148056 	
+MGI:2386251	Eif3l	eukaryotic translation initiation factor 3, subunit L	15	contributes_to	translation initiation factor activity			ISO	Q9Y262 	J:164563 	
+MGI:1351744	Eif3m	eukaryotic translation initiation factor 3, subunit M	2	contributes_to	translation initiation factor activity			ISO	Q7L2H7 	J:164563 	
+MGI:95303	Eif4a1	eukaryotic translation initiation factor 4A1	11		translation initiation factor activity			IBA	PTN002777147 	J:265628 	
+MGI:106906	Eif4a2	eukaryotic translation initiation factor 4A2	16		translation initiation factor activity			IBA	PTN002777147 	J:265628 	
+MGI:1923731	Eif4a3	eukaryotic translation initiation factor 4A3	11		translation regulator activity			ISO	RGD:1591139 	J:155856 	
+MGI:95304	Eif4b	eukaryotic translation initiation factor 4B	15		translation initiation factor activity			IEA	KW-0396 	J:60000 	
+MGI:95305	Eif4e	eukaryotic translation initiation factor 4E	3		translation initiation factor activity			IBA	PTN000238660 	J:265628 	
+MGI:95305	Eif4e	eukaryotic translation initiation factor 4E	3		translation initiation factor activity			IDA		J:114812 	
+MGI:95305	Eif4e	eukaryotic translation initiation factor 4E	3		translation initiation factor activity			ISO	P06730 	J:164563 	
+MGI:95305	Eif4e	eukaryotic translation initiation factor 4E	3		translation regulator activity	is a part of regulation of translation at postsynapse, modulating synaptic transmission,happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:194400 	
+MGI:95305	Eif4e	eukaryotic translation initiation factor 4E	3		translation regulator activity	is a part of regulation of translation at postsynapse, modulating synaptic transmission,happens in glutamatergic synapse,happens in corpus striatum		IDA		J:194400 	
+MGI:95305	Eif4e	eukaryotic translation initiation factor 4E	3		translation regulator activity	is a part of regulation of translation at postsynapse, modulating synaptic transmission,happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:194400 	
+MGI:95305	Eif4e	eukaryotic translation initiation factor 4E	3		translation regulator activity	is a part of regulation of translation at postsynapse, modulating synaptic transmission,happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:194400 	
+MGI:95305	Eif4e	eukaryotic translation initiation factor 4E	3		translation regulator activity	is a part of regulation of translation at postsynapse, modulating synaptic transmission,happens in glutamatergic synapse,happens in corpus striatum		IMP		J:194400 	
+MGI:95305	Eif4e	eukaryotic translation initiation factor 4E	3		translation regulator activity	is a part of regulation of translation at postsynapse, modulating synaptic transmission,happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:194400 	
+MGI:2685119	Eif4e1b	eukaryotic translation initiation factor 4E family member 1B	13		translation initiation factor activity			IBA	PTN000238660 	J:265628 	
+MGI:1914440	Eif4e2	eukaryotic translation initiation factor 4E member 2	1		translation initiation factor activity			IBA	PTN000238660 	J:265628 	
+MGI:1914142	Eif4e3	eukaryotic translation initiation factor 4E member 3	6		translation initiation factor activity			IBA	PTN000238660 	J:265628 	
+MGI:103267	Eif4ebp1	eukaryotic translation initiation factor 4E binding protein 1	8		translation repressor activity			ISO	Q13541 	J:164563 	
+MGI:103267	Eif4ebp1	eukaryotic translation initiation factor 4E binding protein 1	8		translation repressor activity			TAS		J:27764 	
+MGI:109198	Eif4ebp2	eukaryotic translation initiation factor 4E binding protein 2	10		translation repressor activity			IMP		J:102163 J:162956 J:194221 	
+MGI:2384784	Eif4g1	eukaryotic translation initiation factor 4, gamma 1	16		translation factor activity, RNA binding			ISO	Q04637 	J:164563 	
+MGI:2384784	Eif4g1	eukaryotic translation initiation factor 4, gamma 1	16		translation initiation factor activity			IBA	PTN000583430 	J:265628 	
+MGI:109207	Eif4g2	eukaryotic translation initiation factor 4, gamma 2	7		translation factor activity, RNA binding			ISO	P78344 	J:164563 	
+MGI:109207	Eif4g2	eukaryotic translation initiation factor 4, gamma 2	7		translation initiation factor activity			IBA	PTN000583430 	J:265628 	
+MGI:109207	Eif4g2	eukaryotic translation initiation factor 4, gamma 2	7		translation initiation factor activity			IDA		J:38320 	
+MGI:109207	Eif4g2	eukaryotic translation initiation factor 4, gamma 2	7		translation initiation factor activity			ISO	P78344 	J:164563 	
+MGI:1923935	Eif4g3	eukaryotic translation initiation factor 4 gamma, 3	4		translation initiation factor activity			IBA	PTN000583430 	J:265628 	
+MGI:1341822	Eif4h	eukaryotic translation initiation factor 4H	5		translation initiation factor activity			IEA	KW-0396 	J:60000 	
+MGI:95309	Eif5	eukaryotic translation initiation factor 5	12		translation initiation factor activity			IBA	PTN000543393 	J:265628 	
+MGI:95309	Eif5	eukaryotic translation initiation factor 5	12		translation initiation factor activity			ISO	RGD:619861 	J:155856 	
+MGI:106248	Eif5a	eukaryotic translation initiation factor 5A	11		translation elongation factor activity			IBA	PTN000186902 	J:265628 	
+MGI:1933735	Eif5a2	eukaryotic translation initiation factor 5A2	3		translation elongation factor activity			IBA	PTN000186902 	J:265628 	
+MGI:2441772	Eif5b	eukaryotic translation initiation factor 5B	1		translation initiation factor activity			IBA	PTN000561881 	J:265628 	
+MGI:2441772	Eif5b	eukaryotic translation initiation factor 5B	1		translation initiation factor activity			ISO	O60841 	J:164563 	
+MGI:1196288	Eif6	eukaryotic translation initiation factor 6	2		translation initiation factor activity			IEA	KW-0396 	J:60000 	
+MGI:107427	Elavl4	ELAV like RNA binding protein 4	4		translation regulator activity			ISO	RGD:1560027 	J:155856 	
+MGI:2385071	Etf1	eukaryotic translation termination factor 1	18		translation release factor activity			ISO	X81625 	J:73065 	
+MGI:2385071	Etf1	eukaryotic translation termination factor 1	18		translation release factor activity, codon specific			IBA	PTN000012041 	J:265628 	
+MGI:2385071	Etf1	eukaryotic translation termination factor 1	18		translation termination factor activity			ISO	P62495 	J:164563 	
+MGI:95564	Fmr1	fragile X mental retardation 1	X		translation regulator activity			IBA	PTN001318100 	J:265628 	
+MGI:95564	Fmr1	fragile X mental retardation 1	X		translation regulator activity	is a part of regulation of translation at postsynapse, modulating synaptic transmission,happens in Schaffer collateral - CA1 synapse		IMP		J:76865 	
+MGI:95564	Fmr1	fragile X mental retardation 1	X		translation regulator activity			ISO	RGD:2623 	J:155856 	
+MGI:95564	Fmr1	fragile X mental retardation 1	X		translation repressor activity			IDA		J:231207 	
+MGI:95564	Fmr1	fragile X mental retardation 1	X		translation repressor activity			ISO	Q06787 	J:164563 	
+MGI:104860	Fxr1	fragile X mental retardation gene 1, autosomal homolog	3		translation regulator activity			IBA	PTN001318100 	J:265628 	
+MGI:1346074	Fxr2	fragile X mental retardation, autosomal homolog 2	11		translation regulator activity			IBA	PTN001318100 	J:265628 	
+MGI:107339	Gfm1	G elongation factor, mitochondrial 1	3		translation elongation factor activity			IBA	PTN002462411 	J:265628 	
+MGI:107339	Gfm1	G elongation factor, mitochondrial 1	3		translation elongation factor activity			ISO	Q96RP9 	J:164563 	
+MGI:2444783	Gfm2	G elongation factor, mitochondrial 2	13		translation elongation factor activity			IBA	PTN000754007 	J:265628 	
+MGI:5313143	Gm20696	predicted gene 20696	6		translation initiation factor activity			IBA	PTN000238660 	J:265628 	
+MGI:1316728	Gspt1	G1 to S phase transition 1	16		translation release factor activity			IBA	PTN000562411 	J:265628 	
+MGI:1316728	Gspt1	G1 to S phase transition 1	16		translation release factor activity			ISO	P15170 	J:164563 	
+MGI:1316727	Gspt2	G1 to S phase transition 2	X		translation release factor activity			IBA	PTN000562411 	J:265628 	
+MGI:109443	Gtpbp1	GTP binding protein 1	15		translation elongation factor activity			IBA	PTN001500717 	J:265628 	
+MGI:1860138	Gtpbp2	GTP binding protein 2	17		translation elongation factor activity			IBA	PTN001500717 	J:265628 	
+MGI:1891704	Hbs1l	Hbs1-like (S. cerevisiae)	10		translation elongation factor activity			IEA	KW-0251 	J:60000 	
+MGI:1890357	Igf2bp1	insulin-like growth factor 2 mRNA binding protein 1	11		translation regulator activity			ISO	Q9NZI8 	J:164563 	
+MGI:1928268	Ireb2	iron responsive element binding protein 2	9		translation repressor activity			TAS		J:67313 	
+MGI:1890165	Larp1	La ribonucleoprotein domain family, member 1	11		translation activator activity			ISO	Q6PKG0 	J:164563 	
+MGI:1916245	Mcts1	malignant T cell amplified sequence 1	X		translation initiation factor activity			IEA	KW-0396 	J:60000 	
+MGI:1916924	Mif4gd	MIF4G domain containing	11		translation activator activity			IBA	PTN000583582 	J:265628 	
+MGI:1915822	Mrpl58	mitochondrial ribosomal protein L58	11		translation release factor activity			IEA	IPR000352 	J:72247 	
+MGI:1915822	Mrpl58	mitochondrial ribosomal protein L58	11		translation release factor activity, codon nonspecific			ISO	Q14197 	J:164563 	
+MGI:1924034	Mtif2	mitochondrial translational initiation factor 2	11		translation initiation factor activity			IEA	IPR000178 	J:72247 	
+MGI:1924034	Mtif2	mitochondrial translational initiation factor 2	11		translation initiation factor activity			IEA	KW-0396 	J:60000 	
+MGI:1923616	Mtif3	mitochondrial translational initiation factor 3	5		translation factor activity, RNA binding			ISO	Q9H2K0 	J:164563 	
+MGI:1923616	Mtif3	mitochondrial translational initiation factor 3	5		translation factor activity, RNA binding			ISS	Q9H2K0 	J:79114 	
+MGI:1923616	Mtif3	mitochondrial translational initiation factor 3	5		translation initiation factor activity			IBA	PTN000101471 	J:265628 	
+MGI:1928394	Mtor	mechanistic target of rapamycin kinase	4		translation regulator activity			ISO	RGD:68371 	J:155856 	
+MGI:2384815	Mtrf1	mitochondrial translational release factor 1	14		translation release factor activity			IEA	IPR000352 	J:72247 	
+MGI:2384815	Mtrf1	mitochondrial translational release factor 1	14		translation release factor activity, codon specific			IBA	PTN000117596 	J:265628 	
+MGI:1918830	Mtrf1l	mitochondrial translational release factor 1-like	10		translation release factor activity			IEA	IPR000352 	J:72247 	
+MGI:1918830	Mtrf1l	mitochondrial translational release factor 1-like	10		translation release factor activity, codon specific			IBA	PTN000117596 	J:265628 	
+MGI:1334263	Neurl1a	neuralized E3 ubiquitin protein ligase 1A	19		translation factor activity, non-nucleic acid binding			IDA		J:178916 	
+MGI:2384993	Paip1	polyadenylate binding protein-interacting protein 1	13		translation activator activity			IBA	PTN000583582 	J:265628 	
+MGI:2384993	Paip1	polyadenylate binding protein-interacting protein 1	13		translation activator activity			ISO	Q9H074 	J:164563 	
+MGI:1915119	Paip2	polyadenylate-binding protein-interacting protein 2	18		translation repressor activity			ISO	Q9BPZ3 	J:164563 	
+MGI:1915119	Paip2	polyadenylate-binding protein-interacting protein 2	18		translation repressor activity, mRNA regulatory element binding			ISO	NP_057564 	J:124723 	
+MGI:2386865	Paip2b	poly(A) binding protein interacting protein 2B	6		translation repressor activity, mRNA regulatory element binding			ISO	NP_065192 	J:124723 	
+MGI:2386865	Paip2b	poly(A) binding protein interacting protein 2B	6		translation repressor activity, mRNA regulatory element binding			ISO	Q9ULR5 	J:164563 	
+MGI:2147679	Patl1	protein associated with topoisomerase II homolog 1 (yeast)	19		translation repressor activity			ISO	Q4V7K4 	J:168659 	
+MGI:1914828	Patl2	protein associated with topoisomerase II homolog 2 (yeast)	2		translation repressor activity			ISO	Q32N92 	J:168659 	
+MGI:1345635	Pcbp1	poly(rC) binding protein 1	6		translation activator activity			TAS		J:57023 	
+MGI:103079	Pura	purine rich element binding protein A	18		translation repressor activity, mRNA regulatory element binding			IDA		J:114102 	
+MGI:1338779	Purb	purine rich element binding protein B	11		translation repressor activity, mRNA regulatory element binding			ISO	RGD:1559465 	J:155856 	
+MGI:97856	Rara	retinoic acid receptor, alpha	11		translation repressor activity, mRNA regulatory element binding			ISO	RGD:3534 	J:155856 	
+MGI:105943	Rpl10	ribosomal protein L10	X		translation regulator activity			ISO	P27635 	J:164563 	
+MGI:99262	Rpl22	ribosomal protein L22	4		translation regulator activity	is a part of regulation of translation at presynapse, modulating synaptic transmission,happens in glutamatergic synapse,happens in retina		IDA		J:234647 	
+MGI:99262	Rpl22	ribosomal protein L22	4		translation regulator activity	is a part of regulation of translation at presynapse, modulating synaptic transmission,happens in glutamatergic synapse,happens in retina		IMP		J:234647 	
+MGI:99262	Rpl22	ribosomal protein L22	4		translation regulator activity	is a part of regulation of translation at presynapse, modulating synaptic transmission,happens in glutamatergic synapse,happens in retina		IPI		J:234647 	
+MGI:1924096	Rps9	ribosomal protein S9	7		translation regulator activity			ISO	P46781 	J:164563 	
+MGI:98107	Rps14	ribosomal protein S14	18		translation regulator activity			ISO	P62263 	J:164563 	
+MGI:1915191	Rps27l	ribosomal protein S27-like	9		translation activator activity			ISO	Q71UM5 	J:164563 	
+MGI:1921730	Samd4	sterile alpha motif domain containing 4	14		translation repressor activity			IBA	PTN000282210 	J:265628 	
+MGI:1921730	Samd4	sterile alpha motif domain containing 4	14		translation repressor activity			ISO	Q9UPU9 	J:73065 	
+MGI:2448542	Samd4b	sterile alpha motif domain containing 4B	7		translation repressor activity			IBA	PTN000282210 	J:265628 	
+MGI:98299	Shmt1	serine hydroxymethyltransferase 1 (soluble)	11		translation repressor activity, mRNA regulatory element binding			IBA	PTN000913301 	J:265628 	
+MGI:98299	Shmt1	serine hydroxymethyltransferase 1 (soluble)	11		translation repressor activity, mRNA regulatory element binding			ISO	P34896 	J:164563 	
+MGI:2685973	Trim71	tripartite motif-containing 71	9		translation repressor activity			IBA	PTN000647790 	J:265628 	
+MGI:2685973	Trim71	tripartite motif-containing 71	9		translation repressor activity			ISO	Q2Q1W2 	J:164563 	
+MGI:1913649	Tsfm	Ts translation elongation factor, mitochondrial	10		translation elongation factor activity			IBA	PTN000201459 	J:265628 	
+MGI:1923686	Tufm	Tu translation elongation factor, mitochondrial	7		translation elongation factor activity			IBA	PTN001500717 	J:265628 	
+MGI:1923686	Tufm	Tu translation elongation factor, mitochondrial	7		translation elongation factor activity			ISO	P49411 	J:164563 	
+MGI:98878	Tyms	thymidylate synthase	5		translation repressor activity, mRNA regulatory element binding			ISO	P04818 	J:164563 	
+MGI:1096372	Ybx2	Y box protein 2	11		translation regulator activity			IDA		J:79199 	
+MGI:1922314	Zcchc13	zinc finger, CCHC domain containing 13	X		translation regulator activity			IBA	PTN000543537 	J:265628 	
+

@@ -1,0 +1,503 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:2443767	Aaas	achalasia, adrenocortical insufficiency, alacrimia	15		learning			IMP	MGI:3621812 	J:106908 	
+MGI:87855	Aal	active avoidance learning	1		associative learning			IMP	MGI:1889306 	J:5380 	
+MGI:1351646	Abca7	ATP-binding cassette, sub-family A (ABC1), member 7	10		memory			IMP		J:196282 	
+MGI:1352629	Abcc8	ATP-binding cassette, sub-family C (CFTR/MRP), member 8	7		memory			ISO	RGD:3786 	J:155856 	
+MGI:1352629	Abcc8	ATP-binding cassette, sub-family C (CFTR/MRP), member 8	7		visual learning			ISO	RGD:3786 	J:155856 	
+MGI:106913	Abi2	abl-interactor 2	1		learning or memory			IMP	MGI:3526871 	J:95254 	
+MGI:87860	Abl2	v-abl Abelson murine leukemia viral oncogene 2 (arg, Abelson-related gene)	1		learning			IMP	MGI:2153719 	J:153211 	
+MGI:87860	Abl2	v-abl Abelson murine leukemia viral oncogene 2 (arg, Abelson-related gene)	1		visual learning			IGI	MGI:96610 	J:182501 	
+MGI:1340894	Adam2	a disintegrin and metallopeptidase domain 2	14		visual learning			IMP	MGI:3625523 	J:107127 	
+MGI:99677	Adcy1	adenylate cyclase 1	11		long-term memory			IGI	MGI:2176596 	J:57343 	
+MGI:99675	Adcy3	adenylate cyclase 3	12		olfactory learning			IMP		J:64745 	
+MGI:1341110	Adcy8	adenylate cyclase 8	15		long-term memory			IGI	MGI:99677 	J:57343 	
+MGI:1341110	Adcy8	adenylate cyclase 8	15		memory			IMP		J:134966 	
+MGI:2441837	Adgrb3	adhesion G protein-coupled receptor B3	1		motor learning			IGI	MGI:1344400 	J:219706 	
+MGI:1924846	Adgrf1	adhesion G protein-coupled receptor F1	17		memory			IMP	MGI:4362398 	J:240496 	
+MGI:1338758	Adnp	activity-dependent neuroprotective protein	2		short-term memory			ISO	RGD:71030 	J:155856 	
+MGI:104774	Adra1b	adrenergic receptor, alpha 1b	11		visual learning			IMP	MGI:2148638 	J:68177 	
+MGI:87937	Adrb1	adrenergic receptor, beta 1	19		memory			ISO	RGD:2059 	J:155856 	
+MGI:87938	Adrb2	adrenergic receptor, beta 2	18		associative learning			ISO	RGD:2060 	J:155856 	
+MGI:1202294	Aff2	AF4/FMR2 family, member 2	X		learning or memory			IMP	MGI:2182641 	J:76005 	
+MGI:893592	Ager	advanced glycosylation end product-specific receptor	17		learning or memory			ISO	Q15109 	J:164563 	
+MGI:87963	Agt	angiotensinogen (serpin peptidase inhibitor, clade A, member 8)	8		associative learning			ISO	RGD:2069 	J:155856 	
+MGI:87963	Agt	angiotensinogen (serpin peptidase inhibitor, clade A, member 8)	8		operant conditioning			ISO	RGD:2069 	J:155856 	
+MGI:103574	Amph	amphiphysin	13		learning			IMP	MGI:2388118 	J:75306 	
+MGI:1889383	Ap1s2	adaptor-related protein complex 1, sigma 2 subunit	X		visual learning			IMP	MGI:5620801 	J:218588 	
+MGI:107765	Apbb1	amyloid beta (A4) precursor protein-binding, family B, member 1	7		visual learning		PR:Q9QXJ1-1	IMP	MGI:3514266 	J:94887 	
+MGI:88057	Apoe	apolipoprotein E	7		long-term memory			ISO	P02649 	J:164563 	
+MGI:88059	App	amyloid beta (A4) precursor protein	16		associative learning			ISO	P05067 	J:164563 	
+MGI:88059	App	amyloid beta (A4) precursor protein	16		learning			ISO	P05067 	J:164563 	
+MGI:88059	App	amyloid beta (A4) precursor protein	16		learning or memory			ISO	P05067 	J:164563 	
+MGI:88059	App	amyloid beta (A4) precursor protein	16		memory			ISO	P05067 	J:164563 	
+MGI:88059	App	amyloid beta (A4) precursor protein	16		memory			TAS		J:239203 	
+MGI:88059	App	amyloid beta (A4) precursor protein	16		visual learning			IMP	MGI:2136847 	J:57197 	
+MGI:88067	Arc	activity regulated cytoskeletal-associated protein	15		long-term memory			IMP		J:276388 	
+MGI:88067	Arc	activity regulated cytoskeletal-associated protein	15		long-term memory			ISO	RGD:62037 	J:155856 	
+MGI:99433	Arf4	ADP-ribosylation factor 4	14		learning			IMP	MGI:3879059 	J:192108 	
+MGI:1194915	Asic1	acid-sensing (proton-gated) ion channel 1	15		associative learning			IMP	MGI:2179834 	J:76361 	
+MGI:1194915	Asic1	acid-sensing (proton-gated) ion channel 1	15		memory			IMP	MGI:2179834 	J:76361 	
+MGI:1915229	Atad1	ATPase family, AAA domain containing 1	19		learning			IMP		J:173768 	
+MGI:1915229	Atad1	ATPase family, AAA domain containing 1	19		memory			IMP		J:173768 	
+MGI:88106	Atp1a2	ATPase, Na+/K+ transporting, alpha 2 polypeptide	1		visual learning			IMP	MGI:2451291 	J:117414 	
+MGI:88107	Atp1a3	ATPase, Na+/K+ transporting, alpha 3 polypeptide	7		memory			IMP	MGI:3696954 	J:117414 	
+MGI:88107	Atp1a3	ATPase, Na+/K+ transporting, alpha 3 polypeptide	7		visual learning			IMP	MGI:3696954 	J:117414 	
+MGI:1330848	Atp8a1	ATPase, aminophospholipid transporter (APLT), class I, type 8A, member 1	5		learning			IMP		J:179412 	
+MGI:104783	Atxn1	ataxin 1	13		learning			IMP		J:240674 	
+MGI:104783	Atxn1	ataxin 1	13		memory			IMP		J:240674 	
+MGI:104783	Atxn1	ataxin 1	13		visual learning			IMP	MGI:2181805 	J:48508 	
+MGI:104783	Atxn1	ataxin 1	13		visual learning			IMP	MGI:2429435 	J:162235 	
+MGI:3694797	Atxn1l	ataxin 1-like	8		learning			IMP		J:240674 	
+MGI:3694797	Atxn1l	ataxin 1-like	8		memory			IMP		J:240674 	
+MGI:88127	B2m	beta-2 microglobulin	2		learning or memory	happens in hippocampal formation		IMP		J:250585 	
+MGI:88127	B2m	beta-2 microglobulin	2		learning or memory	is a part of aging,happens in hippocampal formation		IMP		J:228654 	
+MGI:88127	B2m	beta-2 microglobulin	2		learning or memory			ISO	P61769 	J:164563 	
+MGI:1858493	B4galt2	UDP-Gal:betaGlcNAc beta 1,4- galactosyltransferase, polypeptide 2	4		memory			IMP	MGI:3849305 	J:149762 	
+MGI:1858493	B4galt2	UDP-Gal:betaGlcNAc beta 1,4- galactosyltransferase, polypeptide 2	4		visual learning			IMP	MGI:3849305 	J:149762 	
+MGI:1346542	Bace1	beta-site APP cleaving enzyme 1	9		memory			TAS		J:239203 	
+MGI:894278	Bche	butyrylcholinesterase	3		learning			ISO	RGD:619996 	J:155856 	
+MGI:88145	Bdnf	brain derived neurotrophic factor	2		learning			ISO	RGD:2202 	J:155856 	
+MGI:88145	Bdnf	brain derived neurotrophic factor	2		learning or memory	has the participant hippocampus		IMP	MGI:2176750 	J:91563 	
+MGI:88145	Bdnf	brain derived neurotrophic factor	2		memory			IBA	PTN000173497 	J:265628 	
+MGI:1917487	Bhlhb9	basic helix-loop-helix domain containing, class B9	X		learning or memory			IDA		J:205664 	
+MGI:88190	Braf	Braf transforming gene	6		visual learning			IMP	MGI:3620008 MGI:3622450 	J:107042 	
+MGI:1928478	Brinp1	bone morphogenic protein/retinoic acid inducible neural specific 1	4		short-term memory			IMP	MGI:5604542 	J:231288 	
+MGI:2685946	Brsk1	BR serine/threonine kinase 1	7		associative learning			IMP		J:228521 	
+MGI:1916625	Btbd9	BTB (POZ) domain containing 9	17		long-term memory			IMP	MGI:4127237 	J:187734 	
+MGI:108384	Btg2	BTG anti-proliferation factor 2	1		associative learning			IMP	MGI:3525505 	J:155952 	
+MGI:1344400	C1ql1	complement component 1, q subcomponent-like 1	11		motor learning			IGI	MGI:2441837 	J:219706 	
+MGI:103013	Cacna1c	calcium channel, voltage-dependent, L type, alpha 1C subunit	6		visual learning			IMP	MGI:2674114 	J:102188 	
+MGI:106217	Cacna1e	calcium channel, voltage-dependent, R type, alpha 1E subunit	1		visual learning			IMP	MGI:2179732 	J:68192 	
+MGI:88248	Calb1	calbindin 1	4		long-term memory			ISO	P05937 	J:164563 	
+MGI:88248	Calb1	calbindin 1	4		short-term memory			ISO	P05937 	J:164563 	
+MGI:88258	Camk4	calcium/calmodulin-dependent protein kinase IV	18		long-term memory			ISO	Q16566 	J:164563 	
+MGI:96544	Casp1	caspase 1	9		memory			ISO	RGD:2274 	J:155856 	
+MGI:107739	Casp3	caspase 3	8		learning or memory			ISO	RGD:2275 	J:155856 	
+MGI:88297	Cck	cholecystokinin	9		memory			ISO	RGD:2288 	J:155856 	
+MGI:88297	Cck	cholecystokinin	9		visual learning			ISO	RGD:2288 	J:155856 	
+MGI:88314	Ccnd2	cyclin D2	6		long-term memory			IMP	MGI:2180642 	J:199107 	
+MGI:101765	Cdk5	cyclin-dependent kinase 5	5		associative learning			IMP		J:76252 	
+MGI:101765	Cdk5	cyclin-dependent kinase 5	5		visual learning			IMP	MGI:3720892 MGI:3720937 	J:124046 	
+MGI:88392	Chat	choline acetyltransferase	14		memory			ISO	RGD:1304627 	J:155856 	
+MGI:1915022	Chd8	chromodomain helicase DNA binding protein 8	14		long-term memory		PR:Q09XV5-1	IMP	MGI:6144040 	J:235128 	
+MGI:99779	Chrna7	cholinergic receptor, nicotinic, alpha polypeptide 7	7		associative learning			IGI	MGI:87891 	J:94667 	
+MGI:99779	Chrna7	cholinergic receptor, nicotinic, alpha polypeptide 7	7		associative learning			IMP	MGI:1888407 	J:98842 	
+MGI:99779	Chrna7	cholinergic receptor, nicotinic, alpha polypeptide 7	7		learning or memory	happens in hippocampal formation,is a part of response to amyloid-beta		IGI	CPX-1134 P05067 	J:239203 	
+MGI:99779	Chrna7	cholinergic receptor, nicotinic, alpha polypeptide 7	7		learning or memory	uses UniProtKB:P12023,happens at the same time as UBERON:0007222		IGI	P05067 	J:151080 	
+MGI:99779	Chrna7	cholinergic receptor, nicotinic, alpha polypeptide 7	7		learning or memory	uses UniProtKB:P12023,happens at the same time as UBERON:0018241		IGI	P05067 	J:157839 	
+MGI:99779	Chrna7	cholinergic receptor, nicotinic, alpha polypeptide 7	7		memory			IMP	MGI:1888407 	J:123663 	
+MGI:99779	Chrna7	cholinergic receptor, nicotinic, alpha polypeptide 7	7		memory			ISO	RGD:2348 	J:155856 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		associative learning			IGI	MGI:99779 	J:94667 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		conditioned taste aversion			IMP	MGI:1926253 	J:97341 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		learning			IMP	MGI:1926253 	J:97376 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		learning			ISO	P17787 	J:164563 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		memory			IMP	MGI:1926253 	J:23256 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		memory			ISO	P17787 	J:164563 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		visual learning			IMP	MGI:1926253 	J:53601 J:99880 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		visual learning			ISO	P17787 	J:164563 	
+MGI:2138283	Chst10	carbohydrate sulfotransferase 10	1		learning			IMP	MGI:2388475 	J:79015 	
+MGI:2138283	Chst10	carbohydrate sulfotransferase 10	1		long-term memory			IMP	MGI:2388475 	J:79015 	
+MGI:1918972	Cic	capicua transcriptional repressor	7		learning			IMP		J:240674 	
+MGI:1918972	Cic	capicua transcriptional repressor	7		memory			IMP		J:240674 	
+MGI:107537	Cln3	ceroid lipofuscinosis, neuronal 3, juvenile (Batten, Spielmeyer-Vogt disease)	7		associative learning			IMP	MGI:2388888 	J:98844 	
+MGI:1349447	Cln8	CLN8 transmembrane ER and ERGIC protein	8		associative learning			IMP	MGI:1856959 	J:98844 	
+MGI:104615	Cnr1	cannabinoid receptor 1 (brain)	4		learning or memory			ISO	RGD:2369 	J:155856 	
+MGI:104615	Cnr1	cannabinoid receptor 1 (brain)	4		memory			ISO	RGD:2369 	J:155856 	
+MGI:104518	Cntn2	contactin 2	1		learning			IMP	MGI:2181052 	J:142445 	
+MGI:1914047	Cntnap2	contactin associated protein-like 2	6		learning			ISO	Q9UHC6 	J:164563 	
+MGI:1914047	Cntnap2	contactin associated protein-like 2	6		vocal learning			ISO	Q9UHC6 	J:164563 	
+MGI:88470	Comt	catechol-O-methyltransferase	16		learning			ISO	RGD:2379 	J:155856 	
+MGI:88470	Comt	catechol-O-methyltransferase	16		short-term memory			ISO	RGD:2379 	J:155856 	
+MGI:2443075	Cpeb3	cytoplasmic polyadenylation element binding protein 3	19		long-term memory			IMP		J:202741 J:223363 	
+MGI:88494	Creb1	cAMP responsive element binding protein 1	1		memory	happens in dentate gyrus		IMP		J:193188 	
+MGI:88494	Creb1	cAMP responsive element binding protein 1	1		memory			ISO	RGD:620218 	J:155856 	
+MGI:88494	Creb1	cAMP responsive element binding protein 1	1		visual learning			ISO	RGD:620218 	J:155856 	
+MGI:88496	Crh	corticotropin releasing hormone	3		associative learning			ISO	RGD:620505 	J:155856 	
+MGI:88496	Crh	corticotropin releasing hormone	3		learning or memory			ISO	RGD:620505 	J:155856 	
+MGI:88498	Crhr1	corticotropin releasing hormone receptor 1	11		memory			ISO	RGD:61276 	J:155856 	
+MGI:88498	Crhr1	corticotropin releasing hormone receptor 1	11		visual learning			ISO	RGD:61276 	J:155856 	
+MGI:2142523	Crtc1	CREB regulated transcription coactivator 1	8		memory	happens in dentate gyrus		IMP		J:193188 	
+MGI:1195966	Ctnnd2	catenin (cadherin associated protein), delta 2	15		learning			IMP	MGI:3056606 	J:93226 	
+MGI:1932872	Ctns	cystinosis, nephropathic	11		long-term memory			IMP	MGI:2388945 	J:149574 	
+MGI:1932872	Ctns	cystinosis, nephropathic	11		visual learning			IMP	MGI:2388945 	J:149574 	
+MGI:107321	Cux2	cut-like homeobox 2	5		short-term memory			IMP		J:165046 	
+MGI:1333815	Cx3cr1	chemokine (C-X3-C motif) receptor 1	9		memory			ISO	RGD:620137 	J:155856 	
+MGI:104978	Cyp7b1	cytochrome P450, family 7, subfamily b, polypeptide 1	3		memory			ISO	RGD:2483 	J:155856 	
+MGI:94864	Dbh	dopamine beta hydroxylase	2		associative learning			IMP	MGI:1857556 	J:41331 	
+MGI:94864	Dbh	dopamine beta hydroxylase	2		memory			IMP	MGI:1857556 	J:41331 J:89376 	
+MGI:94864	Dbh	dopamine beta hydroxylase	2		visual learning			IMP	MGI:1857556 	J:41331 	
+MGI:94865	Dbi	diazepam binding inhibitor	1		learning or memory			IDA		J:123254 	
+MGI:2652818	Dcdc2a	doublecortin domain containing 2a	13		visual learning			IMP	MGI:5288003 	J:188826 J:226731 	
+MGI:1919358	Ddhd2	DDHD domain containing 2	8		visual learning			IMP	MGI:5662251 	J:216446 	
+MGI:1858496	Deaf1	DEAF1, transcription factor	7		visual learning			IMP		J:211699 	
+MGI:2443430	Dgki	diacylglycerol kinase, iota	6		habituation			IMP	MGI:3584141 	J:168713 	
+MGI:1329040	Dkk1	dickkopf WNT signaling pathway inhibitor 1	19		learning or memory	happens at the same time as UBERON:0007222		IDA		J:241059 	
+MGI:1329040	Dkk1	dickkopf WNT signaling pathway inhibitor 1	19		motor learning			IDA		J:225337 	
+MGI:1914935	Dnaaf4	dynein axonemal assembly factor 4	9		learning or memory			IMP	MGI:5547587 	J:225195 	
+MGI:1100864	Dnah11	dynein, axonemal, heavy chain 11	12		learning or memory			IMP	MGI:1856917 	J:166986 	
+MGI:99578	Drd1	dopamine receptor D1	13		associative learning			IMP	MGI:1857158 	J:48769 	
+MGI:99578	Drd1	dopamine receptor D1	13		associative learning			ISO	RGD:2518 	J:155856 	
+MGI:99578	Drd1	dopamine receptor D1	13		conditioned taste aversion			IMP	MGI:1857158 	J:101069 	
+MGI:99578	Drd1	dopamine receptor D1	13		habituation			IMP	MGI:1857158 	J:97339 	
+MGI:99578	Drd1	dopamine receptor D1	13		learning			IMP	MGI:2159306 	J:96505 	
+MGI:99578	Drd1	dopamine receptor D1	13		memory			IMP	MGI:1857158 	J:102603 	
+MGI:99578	Drd1	dopamine receptor D1	13		operant conditioning			IMP	MGI:1857158 	J:107997 	
+MGI:99578	Drd1	dopamine receptor D1	13		operant conditioning			ISO	RGD:2518 	J:155856 	
+MGI:99578	Drd1	dopamine receptor D1	13		sensitization			IGI	MGI:94927 	J:103950 	
+MGI:99578	Drd1	dopamine receptor D1	13		visual learning			IMP	MGI:1857158 	J:48769 J:102603 	
+MGI:99578	Drd1	dopamine receptor D1	13		visual learning			IMP	MGI:1857159 	J:102600 	
+MGI:99578	Drd1	dopamine receptor D1	13		visual learning			IMP	MGI:2159306 	J:96505 	
+MGI:99578	Drd1	dopamine receptor D1	13		visual learning			ISO	RGD:2518 	J:155856 	
+MGI:94924	Drd2	dopamine receptor D2	9		associative learning			IMP	MGI:1857875 	J:90593 	
+MGI:94924	Drd2	dopamine receptor D2	9		associative learning			IMP	MGI:2388386 	J:77342 	
+MGI:94924	Drd2	dopamine receptor D2	9		associative learning			IMP	MGI:2656648 	J:97757 	
+MGI:94924	Drd2	dopamine receptor D2	9		long-term memory			ISO	RGD:2520 	J:155856 	
+MGI:94924	Drd2	dopamine receptor D2	9		visual learning			IMP	MGI:2388386 	J:109223 	
+MGI:94925	Drd3	dopamine receptor D3	16		visual learning			IMP	MGI:2388387 	J:109223 	
+MGI:94926	Drd4	dopamine receptor D4	7		associative learning			ISO	RGD:2522 	J:155856 	
+MGI:94926	Drd4	dopamine receptor D4	7		olfactory learning			ISO	RGD:2522 	J:155856 	
+MGI:94926	Drd4	dopamine receptor D4	7		short-term memory			ISO	RGD:2522 	J:155856 	
+MGI:94927	Drd5	dopamine receptor D5	5		associative learning			IMP	MGI:3528074 	J:114239 	
+MGI:94927	Drd5	dopamine receptor D5	5		sensitization			IGI	MGI:99578 	J:103950 	
+MGI:94927	Drd5	dopamine receptor D5	5		visual learning			ISO	RGD:2523 	J:155856 	
+MGI:95294	Egfr	epidermal growth factor receptor	11		learning or memory			ISO	RGD:2543 	J:155856 	
+MGI:95295	Egr1	early growth response 1	18		learning or memory			ISO	RGD:2544 	J:155856 	
+MGI:95295	Egr1	early growth response 1	18		long-term memory			ISO	RGD:2544 	J:155856 	
+MGI:2148922	Ehmt2	euchromatic histone lysine N-methyltransferase 2	17		long-term memory			ISO	RGD:1302972 	J:155856 	
+MGI:1353427	Eif2ak4	eukaryotic translation initiation factor 2 alpha kinase 4	2		learning			IMP		J:100646 	
+MGI:1353427	Eif2ak4	eukaryotic translation initiation factor 2 alpha kinase 4	2		long-term memory			IMP		J:100646 	
+MGI:109198	Eif4ebp2	eukaryotic translation initiation factor 4E binding protein 2	10		memory			IMP		J:102163 	
+MGI:107427	Elavl4	ELAV like RNA binding protein 4	4		learning			IMP	MGI:3664094 	J:209618 	
+MGI:95389	En1	engrailed 1	1		motor learning			IMP		J:117895 	
+MGI:1276116	Ep300	E1A binding protein p300	15		learning or memory			IMP		J:156907 	
+MGI:99611	Ephb2	Eph receptor B2	4		learning			IMP	MGI:2149765 	J:73508 	
+MGI:99611	Ephb2	Eph receptor B2	4		learning or memory	happens in dentate gyrus		IGI	P05067 	J:167228 	
+MGI:1341085	Epm2a	epilepsy, progressive myoclonic epilepsy, type 2 gene alpha	10		habituation			IMP	MGI:2182627 	J:76688 	
+MGI:109392	Esr2	estrogen receptor 2 (beta)	12		learning or memory			ISO	RGD:2582 	J:155856 	
+MGI:3614654	Fbxw7as1	F-box and WD-40 domain protein 7 antisense transcript 1	3		learning or memory			IMP	MGI:3623969 	J:145462 	
+MGI:102779	Fen1	flap structure specific endonuclease 1	19		memory			ISO	RGD:621821 	J:155856 	
+MGI:109178	Fgf13	fibroblast growth factor 13	X		learning			IMP		J:186253 	
+MGI:109178	Fgf13	fibroblast growth factor 13	X		memory			IMP		J:186253 	
+MGI:1927549	Foxb1	forkhead box B1	9		visual learning			IMP		J:100811 	
+MGI:2676586	Foxo6	forkhead box O6	4		memory			IMP		J:191193 	
+MGI:2148705	Foxp2	forkhead box P2	6		vocal learning			IMP	MGI:3584266 	J:99864 	
+MGI:1313278	Fzd9	frizzled class receptor 9	5		learning or memory			IMP	MGI:3586504 	J:99893 	
+MGI:95617	Gabra5	gamma-aminobutyric acid (GABA) A receptor, subunit alpha 5	7		associative learning			IMP	MGI:2183170 	J:77343 	
+MGI:1914342	Gatm	glycine amidinotransferase (L-arginine:glycine amidinotransferase)	2		learning or memory			ISO	P50440 	J:164563 	
+MGI:1930008	Ghrl	ghrelin	6		visual learning			ISO	Q5Y391 	J:73065 	
+MGI:2441906	Ghsr	growth hormone secretagogue receptor	3		learning or memory			ISO	RGD:621397 	J:155856 	
+MGI:107504	Gip	gastric inhibitory polypeptide	11		memory			IDA		J:129288 	
+MGI:99571	Glp1r	glucagon-like peptide 1 receptor	17		associative learning			ISO	RGD:2703 	J:155856 	
+MGI:99571	Glp1r	glucagon-like peptide 1 receptor	17		learning or memory			IMP		J:85361 	
+MGI:99571	Glp1r	glucagon-like peptide 1 receptor	17		learning or memory			ISO	RGD:2703 	J:155856 	
+MGI:99571	Glp1r	glucagon-like peptide 1 receptor	17		memory			ISO	RGD:2703 	J:155856 	
+MGI:95762	Gm2a	GM2 ganglioside activator protein	11		learning or memory			IMP	MGI:1861930 	J:41950 	
+MGI:1927133	Gmfb	glia maturation factor, beta	14		learning			IMP	MGI:3056591 	J:92932 	
+MGI:1927653	Gpr88	G-protein coupled receptor 88	3		motor learning			IMP		J:236208 	
+MGI:95808	Gria1	glutamate receptor, ionotropic, AMPA1 (alpha 1)	11		long-term memory			IMP		J:82443 	
+MGI:95808	Gria1	glutamate receptor, ionotropic, AMPA1 (alpha 1)	11		long-term memory			ISO	RGD:621531 	J:155856 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		associative learning			IMP	MGI:1928279 MGI:2387441 	J:77718 J:107692 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		associative learning			IMP	MGI:99578 	J:174588 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		conditioned taste aversion			IMP	MGI:1928279 MGI:3038374 	J:100903 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		learning	has the participant corpus striatum		IMP	MGI:3692441 	J:115299 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		learning or memory	has the participant hippocampus CA3,has the participant pyramidal neuron		IMP	MGI:1928279 MGI:2387441 	J:112944 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		long-term memory			IMP	MGI:1928279 MGI:2177650 	J:88689 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		memory			IMP	MGI:1928279 	J:60770 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		memory	has the participant dentate gyrus,has the participant granule cell		IMP	MGI:1928279 	J:122763 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		memory			IMP	MGI:1928279 MGI:2177650 	J:60730 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		olfactory learning			IMP	MGI:1928279 MGI:2177650 	J:60730 J:68059 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		visual learning			IGI	MGI:97306 	J:38703 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		visual learning			IMP	MGI:1928279 	J:108400 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		visual learning	has the participant hippocampus CA1,has the participant pyramidal neuron		IMP	MGI:1928279 	J:41316 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		visual learning			IMP	MGI:1928279 MGI:2177650 	J:37457 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		visual learning			IMP	MGI:1928283 MGI:1928284 	J:62289 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		visual learning	has the participant dentate gyrus		IMP	MGI:2448952 MGI:3611337 	J:119834 	
+MGI:95820	Grin2a	glutamate receptor, ionotropic, NMDA2A (epsilon 1)	16		learning			IMP	MGI:1928285 	J:78374 	
+MGI:95820	Grin2a	glutamate receptor, ionotropic, NMDA2A (epsilon 1)	16		learning			IMP	MGI:1928506 	J:103735 	
+MGI:95820	Grin2a	glutamate receptor, ionotropic, NMDA2A (epsilon 1)	16		learning or memory			IMP		J:101085 	
+MGI:95820	Grin2a	glutamate receptor, ionotropic, NMDA2A (epsilon 1)	16		learning or memory			IMP	MGI:1928285 	J:49227 	
+MGI:95820	Grin2a	glutamate receptor, ionotropic, NMDA2A (epsilon 1)	16		memory			IMP	MGI:1928287 	J:45446 	
+MGI:95820	Grin2a	glutamate receptor, ionotropic, NMDA2A (epsilon 1)	16		memory			ISO	RGD:2737 	J:155856 	
+MGI:95820	Grin2a	glutamate receptor, ionotropic, NMDA2A (epsilon 1)	16		visual learning			IMP	MGI:1928285 	J:22295 	
+MGI:95821	Grin2b	glutamate receptor, ionotropic, NMDA2B (epsilon 2)	6		associative learning			ISO	RGD:2738 	J:155856 	
+MGI:95821	Grin2b	glutamate receptor, ionotropic, NMDA2B (epsilon 2)	6		learning			IDA		J:57250 	
+MGI:95821	Grin2b	glutamate receptor, ionotropic, NMDA2B (epsilon 2)	6		learning			IMP	MGI:3701351 	J:119025 	
+MGI:95821	Grin2b	glutamate receptor, ionotropic, NMDA2B (epsilon 2)	6		learning or memory			ISO	RGD:2738 	J:155856 	
+MGI:95821	Grin2b	glutamate receptor, ionotropic, NMDA2B (epsilon 2)	6		learning or memory			TAS		J:114138 	
+MGI:95821	Grin2b	glutamate receptor, ionotropic, NMDA2B (epsilon 2)	6		memory			IDA		J:57250 	
+MGI:95821	Grin2b	glutamate receptor, ionotropic, NMDA2B (epsilon 2)	6		memory			IMP		J:114728 J:204131 	
+MGI:95821	Grin2b	glutamate receptor, ionotropic, NMDA2B (epsilon 2)	6		memory			ISO	RGD:2738 	J:155856 	
+MGI:95821	Grin2b	glutamate receptor, ionotropic, NMDA2B (epsilon 2)	6		sensitization			ISO	RGD:2738 	J:155856 	
+MGI:1351341	Grm4	glutamate receptor, metabotropic 4	17		learning			IMP	MGI:1857980 	J:35793 	
+MGI:1351342	Grm5	glutamate receptor, metabotropic 5	7		learning			IMP	MGI:1857437 	J:41096 	
+MGI:1351342	Grm5	glutamate receptor, metabotropic 5	7		learning or memory	is a part of modulation of age-related behavioral decline,happens at the same time as aging		IGI	P12023 P49769 	J:201741 	
+MGI:1351344	Grm7	glutamate receptor, metabotropic 7	6		associative learning			IMP	MGI:1857984 	J:109594 	
+MGI:1351344	Grm7	glutamate receptor, metabotropic 7	6		conditioned taste aversion			IMP	MGI:1857984 	J:52411 	
+MGI:1351344	Grm7	glutamate receptor, metabotropic 7	6		memory			IMP	MGI:1857984 	J:109594 J:114435 	
+MGI:1351344	Grm7	glutamate receptor, metabotropic 7	6		short-term memory			IMP	MGI:1857984 	J:96176 	
+MGI:95836	Grpr	gastrin releasing peptide receptor	X		learning or memory			ISO	RGD:2750 	J:155856 	
+MGI:106918	Hif1a	hypoxia inducible factor 1, alpha subunit	12		visual learning			IMP	MGI:2677899 	J:85763 	
+MGI:96159	Hmgcr	3-hydroxy-3-methylglutaryl-Coenzyme A reductase	13		visual learning			IGI	MGI:97306 	J:103961 	
+MGI:107619	Hrh1	histamine receptor H1	6		memory			IMP	MGI:2182945 	J:119930 	
+MGI:107619	Hrh1	histamine receptor H1	6		visual learning			IMP	MGI:2182945 	J:119930 	
+MGI:108482	Hrh2	histamine receptor H2	13		memory			IMP	MGI:2182949 	J:119930 	
+MGI:108482	Hrh2	histamine receptor H2	13		visual learning			IMP	MGI:2182949 	J:119930 	
+MGI:2139279	Hrh3	histamine receptor H3	2		learning			ISO	RGD:620630 	J:155856 	
+MGI:2139279	Hrh3	histamine receptor H3	2		memory			ISO	RGD:620630 	J:155856 	
+MGI:109521	Htr2a	5-hydroxytryptamine (serotonin) receptor 2A	14		memory			ISO	RGD:61800 	J:155856 	
+MGI:1196627	Htr6	5-hydroxytryptamine (serotonin) receptor 6	4		learning			ISO	RGD:62044 	J:155856 	
+MGI:99841	Htr7	5-hydroxytryptamine (serotonin) receptor 7	19		memory			ISO	RGD:71034 	J:155856 	
+MGI:96067	Htt	huntingtin	5		associative learning			IMP	MGI:1861934 	J:118627 	
+MGI:96067	Htt	huntingtin	5		learning			IMP	MGI:2177757 	J:112811 	
+MGI:96067	Htt	huntingtin	5		learning or memory			IMP	MGI:3603606 	J:106763 	
+MGI:96067	Htt	huntingtin	5		visual learning			IMP	MGI:2177743 	J:25941 	
+MGI:96067	Htt	huntingtin	5		vocal learning			ISO	P42858 	J:164563 	
+MGI:96418	Idua	iduronidase, alpha-L	5		memory			IMP	MGI:2176236 	J:130215 	
+MGI:96418	Idua	iduronidase, alpha-L	5		visual learning			IMP	MGI:2176236 	J:130215 	
+MGI:1915585	Ift20	intraflagellar transport 20	11		visual learning			IMP	MGI:3817268 	J:174559 	
+MGI:96432	Igf1	insulin-like growth factor 1	10		memory			ISO	RGD:2868 	J:155856 	
+MGI:96434	Igf2	insulin-like growth factor 2	7		memory			ISO	RGD:2870 	J:155856 	
+MGI:96543	Il1b	interleukin 1 beta	2		memory			ISO	RGD:2891 	J:155856 	
+MGI:96547	Il1rn	interleukin 1 receptor antagonist	2		memory			ISO	RGD:621159 	J:155856 	
+MGI:96602	Itga3	integrin alpha 3	11		memory			IMP	MGI:1857792 	J:84858 	
+MGI:96604	Itga5	integrin alpha 5 (fibronectin receptor alpha)	15		memory			IMP	MGI:1857207 	J:84858 	
+MGI:109442	Itga8	integrin alpha 8	2		memory			IMP	MGI:2181699 	J:84858 	
+MGI:96610	Itgb1	integrin beta 1 (fibronectin receptor beta)	8		visual learning			IGI	MGI:87860 	J:182501 	
+MGI:96610	Itgb1	integrin beta 1 (fibronectin receptor beta)	8		visual learning			IMP	MGI:2156945 MGI:2668659 	J:182501 	
+MGI:96624	Itpr3	inositol 1,4,5-triphosphate receptor 3	17		memory			IMP	MGI:1857070 	J:136821 	
+MGI:1891497	Jph3	junctophilin 3	8		learning			IGI	MGI:2443113 	J:122513 	
+MGI:1891497	Jph3	junctophilin 3	8		memory			IMP		J:111805 	
+MGI:2443113	Jph4	junctophilin 4	14		learning			IGI	MGI:1891497 	J:122513 	
+MGI:96646	Jun	jun proto-oncogene	4		learning			ISO	RGD:2943 	J:155856 	
+MGI:2685385	Kalrn	kalirin, RhoGEF kinase	16		habituation			IMP	MGI:5551305 	J:206512 	
+MGI:2685385	Kalrn	kalirin, RhoGEF kinase	16		memory			IMP	MGI:4358076 	J:152011 	
+MGI:1343101	Kat2a	K(lysine) acetyltransferase 2A	11		long-term memory			IMP		J:214847 	
+MGI:109155	Kcnab1	potassium voltage-gated channel, shaker-related subfamily, beta member 1	3		learning or memory			IMP	MGI:2181771 	J:89719 	
+MGI:96677	Kit	KIT proto-oncogene receptor tyrosine kinase	5		visual learning			ISO	RGD:620568 	J:155856 	
+MGI:1343327	Klk8	kallikrein related-peptidase 8	7		memory			IBA	PTN000668850 	J:265628 	
+MGI:1343327	Klk8	kallikrein related-peptidase 8	7		memory			IMP		J:130005 	
+MGI:96995	Kmt2a	lysine (K)-specific methyltransferase 2A	9		visual learning			IMP	MGI:3839794 	J:221335 	
+MGI:109565	Kmt2b	lysine (K)-specific methyltransferase 2B	7		memory			IMP	MGI:3623310 	J:221335 	
+MGI:96680	Kras	Kirsten rat sarcoma viral oncogene homolog	6		visual learning			IGI	MGI:97306 	J:74257 	
+MGI:96743	Lamb1	laminin B1	12		learning or memory			NAS		J:91354 	
+MGI:96765	Ldlr	low density lipoprotein receptor	9		long-term memory			IGI	P02649 	J:211613 	
+MGI:96765	Ldlr	low density lipoprotein receptor	9		long-term memory			ISO	P01130 	J:164563 	
+MGI:1330838	Lgmn	legumain	12		associative learning			IGI	P10636 	J:227814 	
+MGI:1330838	Lgmn	legumain	12		memory			IGI	P10636 	J:227814 	
+MGI:1096343	Lhx8	LIM homeobox protein 8	3		learning or memory			IMP	MGI:3603531 	J:101205 	
+MGI:1888519	Lmx1a	LIM homeobox transcription factor 1 alpha	1		memory			IGI	O88609 	J:222854 	
+MGI:1100513	Lmx1b	LIM homeobox transcription factor 1 beta	2		memory			IGI	Q9JKU8 	J:222854 	
+MGI:2445154	Lrrn4	leucine rich repeat neuronal 4	2		long-term memory	has the participant hippocampus		IMP	MGI:5428888 	J:185491 	
+MGI:2445154	Lrrn4	leucine rich repeat neuronal 4	2		visual learning	has the participant hippocampus		IMP	MGI:5428888 	J:185491 	
+MGI:107286	Man2b1	mannosidase 2, alpha B1	8		learning or memory			IMP	MGI:3584185 	J:99812 	
+MGI:1306776	Map1a	microtubule-associated protein 1 A	2		associative learning			IMP		J:227842 	
+MGI:1306776	Map1a	microtubule-associated protein 1 A	2		memory			IMP		J:227842 	
+MGI:1926555	Mapk8ip2	mitogen-activated protein kinase 8 interacting protein 2	15		nonassociative learning			IMP		J:166700 	
+MGI:97180	Mapt	microtubule-associated protein tau	11		learning or memory			ISO	P10636 	J:164563 	
+MGI:97180	Mapt	microtubule-associated protein tau	11		memory			ISO	P10636 	J:164563 	
+MGI:96949	Mdk	midkine	2		short-term memory			IMP		J:76278 	
+MGI:99918	Mecp2	methyl CpG binding protein 2	X		learning			IMP	MGI:2137555 	J:135825 	
+MGI:99918	Mecp2	methyl CpG binding protein 2	X		learning			IMP	MGI:3800596 	J:137513 	
+MGI:99918	Mecp2	methyl CpG binding protein 2	X		long-term memory			IMP	MGI:2183727 	J:104113 	
+MGI:99918	Mecp2	methyl CpG binding protein 2	X		memory			IMP	MGI:2183727 	J:104113 	
+MGI:99918	Mecp2	methyl CpG binding protein 2	X		visual learning			IMP	MGI:2183727 	J:104113 	
+MGI:99458	Mef2c	myocyte enhancer factor 2C	13		learning or memory			IMP		J:138188 J:138189 	
+MGI:108564	Meis2	Meis homeobox 2	2		visual learning			IMP		J:221335 	
+MGI:97004	Mme	membrane metallo endopeptidase	3		learning or memory			ISO	P08473 	J:164563 	
+MGI:1928394	Mtor	mechanistic target of rapamycin kinase	4		long-term memory			ISO	RGD:68371 	J:155856 	
+MGI:1928394	Mtor	mechanistic target of rapamycin kinase	4		visual learning			ISO	RGD:68371 	J:155856 	
+MGI:3651981	Mup20	major urinary protein 20	4		olfactory learning			IDA		J:160965 	
+MGI:103581	Musk	muscle, skeletal, receptor tyrosine kinase	4		memory			ISO	RGD:3211 	J:155856 	
+MGI:97281	Ncam1	neural cell adhesion molecule 1	9		learning or memory			ISO	RGD:67378 	J:155856 	
+MGI:1891700	Ncstn	nicastrin	1		learning or memory			IMP	MGI:3796837 	J:149506 	
+MGI:2384590	Ndrg4	N-myc downstream regulated gene 4	8		visual learning			IMP		J:175573 	
+MGI:2180216	Neto1	neuropilin (NRP) and tolloid (TLL)-like 1	18		memory			IMP		J:145953 	
+MGI:2180216	Neto1	neuropilin (NRP) and tolloid (TLL)-like 1	18		visual learning			IMP		J:145953 	
+MGI:107755	Neurod2	neurogenic differentiation 2	11		associative learning			IMP	MGI:2385828 	J:102471 	
+MGI:107754	Neurog1	neurogenin 1	13		learned vocalization behavior			ISO	Q92886 	J:164563 	
+MGI:97306	Nf1	neurofibromin 1	11		observational learning			IGI	MGI:1339975 	J:219424 	
+MGI:97306	Nf1	neurofibromin 1	11		visual learning			IGI	MGI:95819 	J:38703 	
+MGI:97306	Nf1	neurofibromin 1	11		visual learning			IGI	MGI:96159 	J:103691 	
+MGI:97306	Nf1	neurofibromin 1	11		visual learning			IGI	MGI:96680 	J:74257 	
+MGI:97306	Nf1	neurofibromin 1	11		visual learning			IMP	MGI:1857478 	J:74257 	
+MGI:97306	Nf1	neurofibromin 1	11		visual learning		PR:Q04690	IMP	MGI:2137365 	J:68489 	
+MGI:1920431	Nfatc4	nuclear factor of activated T cells, cytoplasmic, calcineurin dependent 4	14		long-term memory			IMP		J:184759 	
+MGI:97321	Ngf	nerve growth factor	3		memory			IBA	PTN000173497 	J:265628 	
+MGI:97321	Ngf	nerve growth factor	3		memory			ISO	RGD:1598328 	J:155856 	
+MGI:2444609	Nlgn3	neuroligin 3	X		learning			ISO	Q9NZ94 	J:164563 	
+MGI:2444609	Nlgn3	neuroligin 3	X		visual learning			IMP	MGI:3758949 	J:125344 	
+MGI:104327	Nog	noggin	11		memory			ISO	RGD:3183 	J:155856 	
+MGI:104327	Nog	noggin	11		visual learning			ISO	RGD:3183 	J:155856 	
+MGI:2664186	Npas4	neuronal PAS domain protein 4	19		learning			IMP		J:179046 	
+MGI:2664186	Npas4	neuronal PAS domain protein 4	19		long-term memory			IMP		J:179046 J:192118 	
+MGI:2664186	Npas4	neuronal PAS domain protein 4	19		short-term memory			IMP		J:179046 	
+MGI:3642232	Nps	neuropeptide S	7		visual learning			IDA		J:150446 	
+MGI:1858209	Nptx2	neuronal pentraxin 2	5		associative learning			IMP	MGI:3765981 	J:127807 	
+MGI:97375	nr	nervous	8		visual learning			IMP	MGI:1856971 	J:81630 	
+MGI:1096391	Nrxn1	neurexin I	17		learning			IMP		J:153748 	
+MGI:1096391	Nrxn1	neurexin I	17		learning			ISO	P58400 	J:164563 	
+MGI:1096391	Nrxn1	neurexin I	17		learning			ISO	Q9ULB1 	J:164563 	
+MGI:1096391	Nrxn1	neurexin I	17		vocal learning			ISO	Q9ULB1 	J:164563 	
+MGI:1096362	Nrxn2	neurexin II	19		vocal learning			ISO	Q9P2S2 	J:164563 	
+MGI:108471	Ntan1	N-terminal Asn amidase	16		memory			IMP	MGI:2449464 	J:62140 	
+MGI:97380	Ntf3	neurotrophin 3	6		memory			IBA	PTN000173497 	J:265628 	
+MGI:97381	Ntf5	neurotrophin 5	7		long-term memory			IMP		J:63270 	
+MGI:97381	Ntf5	neurotrophin 5	7		memory			IBA	PTN000173497 	J:265628 	
+MGI:97383	Ntrk1	neurotrophic tyrosine kinase, receptor, type 1	3		learning or memory			ISO	RGD:620144 	J:155856 	
+MGI:97384	Ntrk2	neurotrophic tyrosine kinase, receptor, type 2	13		learning			IMP		J:58229 	
+MGI:97384	Ntrk2	neurotrophic tyrosine kinase, receptor, type 2	13		long-term memory			ISO	RGD:3213 	J:155856 	
+MGI:1328351	Nts	neurotensin	10		visual learning			ISO	RGD:621612 	J:155856 	
+MGI:97386	Ntsr1	neurotensin receptor 1	2		learning			ISO	RGD:1306076 	J:155856 	
+MGI:97439	Oprk1	opioid receptor, kappa 1	1		conditioned place preference			ISO	RGD:69426 	J:155856 	
+MGI:97440	Oprl1	opioid receptor-like 1	2		conditioned place preference			ISO	RGD:68438 	J:155856 	
+MGI:109147	Oxtr	oxytocin receptor	6		memory			ISO	RGD:3239 	J:155856 	
+MGI:109520	Pafah1b1	platelet-activating factor acetylhydrolase, isoform 1b, subunit 1	11		learning or memory			IMP	MGI:2384054 	J:59817 	
+MGI:1915119	Paip2	polyadenylate-binding protein-interacting protein 2	18		memory			IMP		J:197896 	
+MGI:1339975	Pak1	p21 (RAC1) activated kinase 1	7		observational learning			IGI	MGI:97306 	J:219424 	
+MGI:2679420	Pak6	p21 (RAC1) activated kinase 6	2		learning			IGI	MGI:1920334 	J:141962 J:200575 	
+MGI:2679420	Pak6	p21 (RAC1) activated kinase 6	2		memory			IGI	MGI:1920334 	J:141962 J:200575 	
+MGI:1920334	Pak7	p21 (RAC1) activated kinase 7	2		learning			IGI	MGI:2679420 	J:141962 J:200575 	
+MGI:1920334	Pak7	p21 (RAC1) activated kinase 7	2		memory			IGI	MGI:2679420 	J:141962 J:200575 	
+MGI:97490	Pax6	paired box 6	2		learned vocalization behavior or vocal learning			ISO	RGD:3258 	J:155856 	
+MGI:97523	Pde1b	phosphodiesterase 1B, Ca2+-calmodulin dependent	15		visual learning			IGI	MGI:94860 	J:126492 	
+MGI:97523	Pde1b	phosphodiesterase 1B, Ca2+-calmodulin dependent	15		visual learning			IMP	MGI:2676625 	J:77514 	
+MGI:2651499	Pde5a	phosphodiesterase 5A, cGMP-specific	3		short-term memory			ISO	RGD:620995 	J:155856 	
+MGI:2443999	Pde8b	phosphodiesterase 8B	13		operant conditioning			IMP		J:203250 	
+MGI:2443999	Pde8b	phosphodiesterase 8B	13		visual learning			IMP		J:203250 	
+MGI:1858305	Pgrmc1	progesterone receptor membrane component 1	X		associative learning			ISO	RGD:70890 	J:155856 	
+MGI:1858305	Pgrmc1	progesterone receptor membrane component 1	X		memory			ISO	RGD:70890 	J:155856 	
+MGI:1913125	Pias1	protein inhibitor of activated STAT 1	9		visual learning			ISO	RGD:1307843 	J:155856 	
+MGI:2385902	Picalm	phosphatidylinositol binding clathrin assembly protein	7		learning or memory			IGI	P05067 	J:221101 	
+MGI:894311	Pirb	paired Ig-like receptor B	7		learning or memory	happens at the same time as UBERON:0018241,happens in UBERON:0007023		IGI	P05067 P49768 	J:201126 	
+MGI:2159342	Pja2	praja ring finger ubiquitin ligase 2	17		long-term memory			ISO	RGD:620273 	J:155856 	
+MGI:1859152	Pla2g6	phospholipase A2, group VI	15		memory			ISO	RGD:628867 	J:155856 	
+MGI:97613	Plcb1	phospholipase C, beta 1	2		memory			IBA	PTN002569936 	J:265628 	
+MGI:97613	Plcb1	phospholipase C, beta 1	2		memory			IMP		J:169989 	
+MGI:1099790	Plk2	polo like kinase 2	13		memory			IMP		J:174739 	
+MGI:1921903	Pomk	protein-O-mannose kinase	8		learning or memory			IMP	MGI:4247868 	J:185566 	
+MGI:97745	Pp	passive performance	UN		associative learning			IDA		J:5473 	
+MGI:97745	Pp	passive performance	UN		associative learning			IMP		J:5473 	
+MGI:94860	Ppp1r1b	protein phosphatase 1, regulatory inhibitor subunit 1B	11		memory			ISO	RGD:621859 	J:155856 	
+MGI:94860	Ppp1r1b	protein phosphatase 1, regulatory inhibitor subunit 1B	11		visual learning			IGI	MGI:97523 	J:126492 	
+MGI:1298204	Ppt1	palmitoyl-protein thioesterase 1	4		associative learning			IMP	MGI:2176390 	J:98844 	
+MGI:97759	Prkar1b	protein kinase, cAMP dependent regulatory, type I beta	5		learning or memory			IMP	MGI:2158640 	J:28735 	
+MGI:97760	Prkar2b	protein kinase, cAMP dependent regulatory, type II beta	12		learning			IMP	MGI:2158642 	J:47453 	
+MGI:97595	Prkca	protein kinase C, alpha	11		learning or memory			ISO	RGD:3395 	J:155856 	
+MGI:97602	Prkcz	protein kinase C, zeta	4		long-term memory			ISO	RGD:3399 	J:155856 	
+MGI:1355296	Prkn	parkin RBR E3 ubiquitin protein ligase	17		learning			IMP	MGI:2678247 	J:85561 	
+MGI:1355296	Prkn	parkin RBR E3 ubiquitin protein ligase	17	NOT	learning			IMP	MGI:3055212 	J:95204 	
+MGI:97769	Prnp	prion protein	2		learning or memory	is a part of modulation of age-related behavioral decline,happens at the same time as aging		IGI	P12023 P49769 	J:160557 	
+MGI:97769	Prnp	prion protein	2		learning or memory			ISO	RGD:3410 	J:155856 	
+MGI:1202717	Psen1	presenilin 1	12		learning or memory			IGI	MGI:109284 	J:89760 	
+MGI:1202717	Psen1	presenilin 1	12		learning or memory			ISO	P49768 	J:164563 	
+MGI:1202717	Psen1	presenilin 1	12		memory			IGI	MGI:109284 	J:90685 J:125930 	
+MGI:1202717	Psen1	presenilin 1	12		memory			IMP	MGI:2179062 MGI:2449304 	J:71606 	
+MGI:1202717	Psen1	presenilin 1	12		memory			IMP	MGI:2155978 	J:73252 	
+MGI:1202717	Psen1	presenilin 1	12		memory			ISO	P49768 	J:164563 	
+MGI:1202717	Psen1	presenilin 1	12		memory			TAS		J:239203 	
+MGI:109284	Psen2	presenilin 2	1		learning or memory			IGI	MGI:1202717 	J:89760 	
+MGI:109284	Psen2	presenilin 2	1		memory			IGI	MGI:1202717 	J:90685 J:125930 	
+MGI:109583	Pten	phosphatase and tensin homolog	19		learning or memory			IMP		J:109635 	
+MGI:109583	Pten	phosphatase and tensin homolog	19		memory			ISO	RGD:61995 	J:155856 	
+MGI:97797	Ptgs1	prostaglandin-endoperoxide synthase 1	2		learning			ISO	RGD:3439 	J:155856 	
+MGI:97797	Ptgs1	prostaglandin-endoperoxide synthase 1	2		memory			ISO	RGD:3439 	J:155856 	
+MGI:97798	Ptgs2	prostaglandin-endoperoxide synthase 2	1		learning			ISO	RGD:620349 	J:155856 	
+MGI:97798	Ptgs2	prostaglandin-endoperoxide synthase 2	1		memory			ISO	RGD:620349 	J:155856 	
+MGI:97804	Ptn	pleiotrophin	6		learning			IMP		J:218928 	
+MGI:97804	Ptn	pleiotrophin	6		learning			IMP	MGI:2183157 	J:77465 	
+MGI:97804	Ptn	pleiotrophin	6		memory			IMP		J:218928 	
+MGI:97816	Ptprz1	protein tyrosine phosphatase, receptor type Z, polypeptide 1	6		learning or memory			IMP		J:107976 	
+MGI:97848	Rag1	recombination activating 1	2		visual learning			ISO	RGD:619790 	J:155856 	
+MGI:1890564	Rcan1	regulator of calcineurin 1	16		short-term memory	happens in brain		IGI	MGI:1858219 	J:109586 	
+MGI:1858219	Rcan2	regulator of calcineurin 2	17		short-term memory	happens in brain		IGI	MGI:1890564 	J:109586 	
+MGI:103022	Reln	reelin	5		associative learning			IDA		J:184736 	
+MGI:103022	Reln	reelin	5		associative learning			IMP		J:184736 	
+MGI:103022	Reln	reelin	5		learning			IMP		J:184736 	
+MGI:103022	Reln	reelin	5		long-term memory			IDA		J:184736 	
+MGI:103022	Reln	reelin	5		long-term memory			IMP		J:184736 	
+MGI:1859709	Rgs14	regulator of G-protein signaling 14	13		learning			IMP		J:164681 	
+MGI:1859709	Rgs14	regulator of G-protein signaling 14	13		long-term memory			IMP		J:164681 	
+MGI:1859709	Rgs14	regulator of G-protein signaling 14	13		visual learning			ISO	RGD:620003 	J:155856 	
+MGI:2141866	Ric8a	RIC8 guanine nucleotide exchange factor A	7		visual learning			IMP	MGI:3608888 	J:115754 	
+MGI:2385695	Rin1	Ras and Rab interactor 1	19		associative learning	happens in amygdala		IMP	MGI:2451226 	J:81922 	
+MGI:2385695	Rin1	Ras and Rab interactor 1	19		memory	happens in amygdala		IMP	MGI:2451226 	J:81922 	
+MGI:98217	S100b	S100 protein, beta polypeptide, neural	10		learning or memory			IMP		J:81786 	
+MGI:98217	S100b	S100 protein, beta polypeptide, neural	10		memory			IMP	MGI:2451049 	J:81786 	
+MGI:98248	Scn2a	sodium channel, voltage-gated, type II, alpha	2		memory			IMP		J:264736 	
+MGI:99466	Sct	secretin	7		visual learning			IMP	MGI:3815315 	J:169029 	
+MGI:108080	Serpinf1	serine (or cysteine) peptidase inhibitor, clade F, member 1	11		short-term memory			ISO	RGD:631369 	J:155856 	
+MGI:1340062	Sgk1	serum/glucocorticoid regulated kinase 1	10		long-term memory			ISO	RGD:3668 	J:155856 	
+MGI:1340062	Sgk1	serum/glucocorticoid regulated kinase 1	10		visual learning			ISO	RGD:3668 	J:155856 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		associative learning			IMP		J:132277 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		habituation			IMP		J:174446 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		long-term memory			IMP		J:132277 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		learning			IMP		J:186718 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		learning			ISO	Q9UPX8 	J:164563 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		memory			IMP		J:186718 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		learning			IMP		J:173402 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		learning			ISO	Q9BYB0 	J:164563 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		learning or memory			IMP	MGI:5056336 	J:173402 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		memory			IMP		J:173402 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		vocal learning			ISO	Q9BYB0 	J:164563 	
+MGI:106179	Shc3	src homology 2 domain-containing transforming protein C3	13		learning or memory			IMP	MGI:1933356 	J:98227 	
+MGI:3605641	Shisa7	shisa family member 7	7		memory			IMP		J:255015 	
+MGI:95627	Slc6a1	solute carrier family 6 (neurotransmitter transporter, GABA), member 1	6		learning			ISO	RGD:620533 	J:155856 	
+MGI:96285	Slc6a4	solute carrier family 6 (neurotransmitter transporter, serotonin), member 4	11		memory			ISO	RGD:3714 	J:155856 	
+MGI:1347355	Slc7a11	solute carrier family 7 (cationic amino acid transporter, y+ system), member 11	3		visual learning			IMP		J:208250 	
+MGI:1347355	Slc7a11	solute carrier family 7 (cationic amino acid transporter, y+ system), member 11	3		visual learning			IMP	MGI:3608695 	J:170967 	
+MGI:107996	Slc8a2	solute carrier family 8 (sodium/calcium exchanger), member 2	7		learning			IMP		J:84050 	
+MGI:107996	Slc8a2	solute carrier family 8 (sodium/calcium exchanger), member 2	7		memory			IMP		J:84050 	
+MGI:107976	Slc8a3	solute carrier family 8 (sodium/calcium exchanger), member 3	12		learning			IMP		J:173357 	
+MGI:107976	Slc8a3	solute carrier family 8 (sodium/calcium exchanger), member 3	12		memory			IMP		J:173357 	
+MGI:1345279	Slc11a2	solute carrier family 11 (proton-coupled divalent metal ion transporters), member 2	15		learning or memory			IMP	MGI:2177768 MGI:3577916 	J:146816 	
+MGI:1862037	Slc12a5	solute carrier family 12, member 5	2		learning			IMP	MGI:3762883 	J:101079 	
+MGI:1920211	Slc17a7	solute carrier family 17 (sodium-dependent inorganic phosphate cotransporter), member 7	7		long-term memory			IMP	MGI:3051945 	J:118618 	
+MGI:1923626	Slc24a2	solute carrier family 24 (sodium/potassium/calcium exchanger), member 2	4		learning			IMP	MGI:3663782 	J:110313 	
+MGI:1923626	Slc24a2	solute carrier family 24 (sodium/potassium/calcium exchanger), member 2	4		memory			IMP	MGI:3663782 	J:110313 	
+MGI:98331	Snap25	synaptosomal-associated protein 25	2		associative learning			IMP	MGI:2180178 	J:217856 	
+MGI:98331	Snap25	synaptosomal-associated protein 25	2		long-term memory			ISO	RGD:3728 	J:155856 	
+MGI:1913923	Sorcs3	sortilin-related VPS10 domain containing receptor 3	19		learning			IMP	MGI:5562419 	J:207532 	
+MGI:1913923	Sorcs3	sortilin-related VPS10 domain containing receptor 3	19		memory			IMP	MGI:5562419 	J:207532 	
+MGI:106658	Srf	serum response factor	17		associative learning			IMP	MGI:2385465 MGI:2678305 	J:110972 	
+MGI:106658	Srf	serum response factor	17		long-term memory			ISO	RGD:1559787 	J:155856 	
+MGI:107742	Stra6	stimulated by retinoic acid gene 6	9		learning			ISO	Q9BX79 	J:164563 	
+MGI:107742	Stra6	stimulated by retinoic acid gene 6	9		vocal learning			ISO	Q9BX79 	J:164563 	
+MGI:3039785	Syngap1	synaptic Ras GTPase activating protein 1 homolog (rat)	17		visual learning			IMP	MGI:3580631 	J:98903 	
+MGI:1354961	Synj1	synaptojanin 1	16		learning			IBA	PTN000128367 	J:265628 	
+MGI:1354961	Synj1	synaptojanin 1	16		learning			IMP	MGI:3512067 	J:137826 	
+MGI:1354961	Synj1	synaptojanin 1	16		learning			ISO	O43426 	J:164563 	
+MGI:1099446	Synpo	synaptopodin	18		visual learning			IMP		J:85310 	
+MGI:101759	Syt4	synaptotagmin IV	18		memory			IMP		J:235426 	
+MGI:1859547	Syt11	synaptotagmin XI	3		learning			IMP		J:274868 	
+MGI:1859547	Syt11	synaptotagmin XI	3		memory			IMP		J:274868 	
+MGI:98474	Tac1	tachykinin 1	6		associative learning			ISO	RGD:3807 	J:155856 	
+MGI:98474	Tac1	tachykinin 1	6		long-term memory			ISO	RGD:3807 	J:155856 	
+MGI:98475	Tacr1	tachykinin receptor 1	6		associative learning			ISO	RGD:3811 	J:155856 	
+MGI:98475	Tacr1	tachykinin receptor 1	6		learning or memory			ISO	RGD:3811 	J:155856 	
+MGI:98475	Tacr1	tachykinin receptor 1	6		long-term memory			ISO	RGD:3811 	J:155856 	
+MGI:98475	Tacr1	tachykinin receptor 1	6		operant conditioning			ISO	RGD:3811 	J:155856 	
+MGI:98477	Tacr2	tachykinin receptor 2	10		operant conditioning			ISO	RGD:3812 	J:155856 	
+MGI:2143691	Tafa2	TAFA chemokine like family member 2	10		memory			IMP		J:271697 	
+MGI:2143691	Tafa2	TAFA chemokine like family member 2	10		visual learning			IMP		J:271697 	
+MGI:1914110	Tanc1	tetratricopeptide repeat, ankyrin repeat and coiled-coil containing 1	2		visual learning			IMP	MGI:4125076 	J:166453 	
+MGI:107404	Tbr1	T-box brain gene 1	2		conditioned taste aversion			IMP	MGI:2179766 	J:208050 	
+MGI:98735	Th	tyrosine hydroxylase	7		learning			IMP	MGI:1928960 	J:87763 	
+MGI:98735	Th	tyrosine hydroxylase	7		memory			IMP	MGI:1928960 	J:87763 	
+MGI:98742	Thra	thyroid hormone receptor alpha	11		learning or memory			IMP	MGI:1860442 	J:143849 	
+MGI:2385852	Tifab	TRAF-interacting protein with forkhead-associated domain, family member B	13		learned vocalization behavior			ISO	Q6ZNK6 	J:164563 	
+MGI:1346060	Tlr2	toll-like receptor 2	3		learning	happens in brain		IGI	P05067 P49768 	J:180762 	
+MGI:1355335	Tmod2	tropomodulin 2	9		learning or memory			IMP	MGI:2664502 	J:83752 	
+MGI:99516	Tnr	tenascin R	1		associative learning			IMP	MGI:2154583 	J:101839 	
+MGI:1929996	Trpm7	transient receptor potential cation channel, subfamily M, member 7	2		memory			ISO	RGD:620053 	J:155856 	
+MGI:2147036	Ttbk1	tau tubulin kinase 1	17		learning or memory			ISO	Q5TCY1 	J:164563 	
+MGI:1913894	Uba6	ubiquitin-like modifier activating enzyme 6	5		learning			IMP	MGI:2176173 MGI:5509054 	J:198126 	
+MGI:1276123	Ucn	urocortin	5		associative learning			ISO	RGD:3929 	J:155856 	
+MGI:1276123	Ucn	urocortin	5		learning or memory			ISO	RGD:3929 	J:155856 	
+MGI:106919	Vdac1	voltage-dependent anion channel 1	11		learning			IMP	MGI:2182154 	J:76838 	
+MGI:106922	Vdac3	voltage-dependent anion channel 3	8		learning			IMP	MGI:2182182 	J:76838 	
+MGI:98933	Vip	vasoactive intestinal polypeptide	10		learning or memory			IBA	PTN002598709 	J:265628 	
+MGI:98933	Vip	vasoactive intestinal polypeptide	10		learning or memory			ISO	RGD:621647 	J:155856 	
+MGI:1917431	Ythdf1	YTH N6-methyladenosine RNA binding protein 1	2		learning			IMP		J:267186 	
+MGI:1917431	Ythdf1	YTH N6-methyladenosine RNA binding protein 1	2		memory			IMP		J:267186 	
+MGI:1352495	Zfp385a	zinc finger protein 385A	15		learning or memory			IMP	MGI:3510440 	J:122544 	
+

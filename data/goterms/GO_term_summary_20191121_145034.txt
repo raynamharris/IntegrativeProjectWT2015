@@ -1,0 +1,1131 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:1914305	2610042L04Rik	RIKEN cDNA 2610042L04 gene	14		synapse assembly			IDA		J:201575 	
+MGI:1914305	2610042L04Rik	RIKEN cDNA 2610042L04 gene	14		synapse assembly			IMP		J:201575 	
+MGI:106388	Abhd17a	abhydrolase domain containing 17A	10		regulation of postsynapse organization			ISO	RGD:1359682 	J:155856 	
+MGI:1917816	Abhd17b	abhydrolase domain containing 17B	19		regulation of dendritic spine maintenance	regulates UniProtKB:P31016		IMP		J:248443 	
+MGI:1917816	Abhd17b	abhydrolase domain containing 17B	19		regulation of postsynapse organization			ISO	RGD:1305246 	J:155856 	
+MGI:1917428	Abhd17c	abhydrolase domain containing 17C	7		regulation of postsynapse organization			ISO	RGD:1308210 	J:155856 	
+MGI:106913	Abi2	abl-interactor 2	1		postsynaptic actin cytoskeleton organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:95254 	
+MGI:106913	Abi2	abl-interactor 2	1		postsynaptic actin cytoskeleton organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:95254 	
+MGI:106913	Abi2	abl-interactor 2	1		regulation of dendritic spine morphogenesis			IMP		J:95254 	
+MGI:87859	Abl1	c-abl oncogene 1, non-receptor tyrosine kinase	2		regulation of modification of synaptic structure	regulates a function/process that happens in hippocampal neuron,is upstream of regulation of long-term synaptic potentiation,regulates a function/process that happens in dendritic spine		IGI	CPX-1134 Q03137 	J:214156 	
+MGI:87860	Abl2	v-abl Abelson murine leukemia viral oncogene 2 (arg, Abelson-related gene)	1		dendritic spine maintenance	happens in hippocampal neuron		IGI	MGI:99695 	J:193891 	
+MGI:87860	Abl2	v-abl Abelson murine leukemia viral oncogene 2 (arg, Abelson-related gene)	1		dendritic spine maintenance	happens in hippocampal neuron		IMP		J:193891 	
+MGI:87860	Abl2	v-abl Abelson murine leukemia viral oncogene 2 (arg, Abelson-related gene)	1		synapse maturation	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:234334 	
+MGI:87860	Abl2	v-abl Abelson murine leukemia viral oncogene 2 (arg, Abelson-related gene)	1		synapse maturation	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:234334 	
+MGI:87876	Ache	acetylcholinesterase	5		synapse assembly			ISO	RGD:69313 	J:155856 	
+MGI:87904	Actb	actin, beta	5		postsynaptic actin cytoskeleton organization			ISO	P60709 	J:164563 	
+MGI:2137706	Actn1	actinin, alpha 1	12		postsynapse organization			ISO	P12814 	J:164563 	
+MGI:2137706	Actn1	actinin, alpha 1	12		synapse organization			ISO	P12814 	J:164563 	
+MGI:1913963	Actr2	ARP2 actin-related protein 2	11		positive regulation of dendritic spine morphogenesis			ISO	RGD:1310826 	J:155856 	
+MGI:1921367	Actr3	ARP3 actin-related protein 3	1		positive regulation of dendritic spine morphogenesis			ISO	RGD:71024 	J:155856 	
+MGI:1921367	Actr3	ARP3 actin-related protein 3	1		positive regulation of synapse assembly			ISO	RGD:71024 	J:155856 	
+MGI:1921367	Actr3	ARP3 actin-related protein 3	1		postsynaptic actin cytoskeleton organization			ISO	RGD:71024 	J:155856 	
+MGI:109548	Adam10	a disintegrin and metallopeptidase domain 10	9		postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		EXP		J:263409 	
+MGI:109548	Adam10	a disintegrin and metallopeptidase domain 10	9		postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:263409 	
+MGI:109548	Adam10	a disintegrin and metallopeptidase domain 10	9		regulation of dendritic spine morphogenesis			ISO	RGD:2032 	J:155856 	
+MGI:87919	Add2	adducin 2 (beta)	6		synapse assembly			IDA		J:174730 	
+MGI:87919	Add2	adducin 2 (beta)	6		synapse assembly			IMP		J:174730 	
+MGI:1933736	Adgrb1	adhesion G protein-coupled receptor B1	15		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:1933736	Adgrb1	adhesion G protein-coupled receptor B1	15		postsynaptic actin cytoskeleton organization			ISO	RGD:1305608 	J:155856 	
+MGI:1933736	Adgrb1	adhesion G protein-coupled receptor B1	15		regulation of synapse assembly			ISO	RGD:1305608 	J:155856 	
+MGI:2451244	Adgrb2	adhesion G protein-coupled receptor B2	4		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2441837	Adgrb3	adhesion G protein-coupled receptor B3	1		maintenance of synapse structure	happens in cerebellum molecular layer		IMP	MGI:5708584 	J:219706 	
+MGI:2441837	Adgrb3	adhesion G protein-coupled receptor B3	1		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:1347095	Adgre5	adhesion G protein-coupled receptor E5	8		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:1924846	Adgrf1	adhesion G protein-coupled receptor F1	17		synapse assembly	happens in neuron		IMP	MGI:4362398 	J:240496 	
+MGI:1929461	Adgrl1	adhesion G protein-coupled receptor L1	8		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:1929461	Adgrl1	adhesion G protein-coupled receptor L1	8		positive regulation of synapse maturation			ISO	RGD:620768 	J:155856 	
+MGI:2139714	Adgrl2	adhesion G protein-coupled receptor L2	3		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2139714	Adgrl2	adhesion G protein-coupled receptor L2	3		synapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:246190 	
+MGI:2139714	Adgrl2	adhesion G protein-coupled receptor L2	3		synapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:246190 	
+MGI:2441950	Adgrl3	adhesion G protein-coupled receptor L3	5		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2441950	Adgrl3	adhesion G protein-coupled receptor L3	5		synapse assembly			IBA	PTN000245509 	J:265628 	
+MGI:2441950	Adgrl3	adhesion G protein-coupled receptor L3	5		synapse assembly			IMP		J:224730 	
+MGI:2441950	Adgrl3	adhesion G protein-coupled receptor L3	5		synapse organization	happens in glutamatergic synapse,happens in UBERON:0001950		IDA		J:211177 	
+MGI:2441950	Adgrl3	adhesion G protein-coupled receptor L3	5		synapse organization	happens in glutamatergic synapse,happens in UBERON:0001950		IMP		J:211177 	
+MGI:1338758	Adnp	activity-dependent neuroprotective protein	2		positive regulation of synapse assembly			ISO	RGD:71030 	J:155856 	
+MGI:1314653	Afdn	afadin, adherens junction formation factor	17		positive regulation of dendritic spine morphogenesis			ISO	RGD:708561 	J:155856 	
+MGI:1916847	Afg3l2	AFG3-like AAA ATPase 2	18		neuromuscular junction development	has the participant gastrocnemius muscle,has the participant muscle cell		IMP	MGI:1856984 	J:106411 	
+MGI:87961	Agrn	agrin	4		neuromuscular junction development			IBA	PTN002471729 	J:265628 	
+MGI:87961	Agrn	agrin	4		neuromuscular junction development	has the participant cell of skeletal muscle		IGI	MGI:103581 MGI:1339975 MGI:94941 	J:78399 	
+MGI:87961	Agrn	agrin	4		positive regulation of synaptic growth at neuromuscular junction			IMP		J:55407 	
+MGI:87961	Agrn	agrin	4		regulation of synapse organization			ISO	RGD:2067 	J:155856 	
+MGI:87961	Agrn	agrin	4		regulation of synaptic growth at neuromuscular junction		PR:M0QWP1	IMP	MGI:2136176 	J:64996 	
+MGI:87961	Agrn	agrin	4		skeletal muscle acetylcholine-gated channel clustering			ISO	RGD:2067 	J:155856 	
+MGI:87961	Agrn	agrin	4		synapse assembly			ISO	RGD:2067 	J:155856 	
+MGI:1921268	Als2	alsin Rho guanine nucleotide exchange factor	1		neuromuscular junction development	has the participant gastrocnemius muscle		IMP	MGI:3612978 	J:104446 	
+MGI:2653612	Amigo1	adhesion molecule with Ig like domain 1	3		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2145995	Amigo2	adhesion molecule with Ig like domain 2	15		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2444854	Amigo3	adhesion molecule with Ig like domain 3	9		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2139135	Anapc2	anaphase promoting complex subunit 2	2		positive regulation of synapse maturation			IDA		J:172950 	
+MGI:88026	Ank3	ankyrin 3, epithelial	10		synapse organization			IMP	MGI:2179751 	J:93895 	
+MGI:107765	Apbb1	amyloid beta (A4) precursor protein-binding, family B, member 1	7		synapse organization	happens in neuromuscular junction		IDA		J:263434 	
+MGI:107765	Apbb1	amyloid beta (A4) precursor protein-binding, family B, member 1	7		synapse organization	happens in Schaffer collateral - CA1 synapse		IDA		J:263434 	
+MGI:107765	Apbb1	amyloid beta (A4) precursor protein-binding, family B, member 1	7		synapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:263434 	
+MGI:107765	Apbb1	amyloid beta (A4) precursor protein-binding, family B, member 1	7		synapse organization	happens in neuromuscular junction		IMP		J:263434 	
+MGI:107765	Apbb1	amyloid beta (A4) precursor protein-binding, family B, member 1	7		synapse organization	happens in Schaffer collateral - CA1 synapse		IMP		J:263434 	
+MGI:107765	Apbb1	amyloid beta (A4) precursor protein-binding, family B, member 1	7		synapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:263434 	
+MGI:88057	Apoe	apolipoprotein E	7		AMPA glutamate receptor clustering			ISO	P02649 	J:164563 	
+MGI:88057	Apoe	apolipoprotein E	7		negative regulation of dendritic spine maintenance			ISO	P02649 	J:164563 	
+MGI:88057	Apoe	apolipoprotein E	7		negative regulation of postsynaptic membrane organization			ISO	P02649 	J:164563 	
+MGI:88057	Apoe	apolipoprotein E	7		NMDA glutamate receptor clustering			ISO	P02649 	J:164563 	
+MGI:88057	Apoe	apolipoprotein E	7		positive regulation of dendritic spine maintenance			ISO	P02649 	J:164563 	
+MGI:88057	Apoe	apolipoprotein E	7		positive regulation of presynaptic membrane organization			ISO	P02649 	J:164563 	
+MGI:88057	Apoe	apolipoprotein E	7		regulation of synapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:235715 	
+MGI:88057	Apoe	apolipoprotein E	7		regulation of synapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:235715 	
+MGI:88059	App	amyloid beta (A4) precursor protein	16		regulation of dendritic spine maintenance			ISO	P05067 	J:164563 	
+MGI:88059	App	amyloid beta (A4) precursor protein	16		regulation of presynapse assembly			ISO	P05067 	J:164563 	
+MGI:88059	App	amyloid beta (A4) precursor protein	16		synapse organization			ISO	P05067 	J:164563 	
+MGI:88059	App	amyloid beta (A4) precursor protein	16		synaptic growth at neuromuscular junction	has the participant sterno-mastoid,has the participant motor neuron		IGI	MGI:88047 	J:98108 	
+MGI:88067	Arc	activity regulated cytoskeletal-associated protein	15		regulation of dendritic spine morphogenesis			ISO	RGD:62037 	J:155856 	
+MGI:99431	Arf1	ADP-ribosylation factor 1	11		dendritic spine organization			ISO	RGD:621270 	J:155856 	
+MGI:99431	Arf1	ADP-ribosylation factor 1	11		postsynaptic actin cytoskeleton organization			ISO	RGD:621270 	J:155856 	
+MGI:99433	Arf4	ADP-ribosylation factor 4	14		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:192108 	
+MGI:99433	Arf4	ADP-ribosylation factor 4	14		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:192108 	
+MGI:99433	Arf4	ADP-ribosylation factor 4	14		regulation of synapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:192108 	
+MGI:99433	Arf4	ADP-ribosylation factor 4	14		regulation of synapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:192108 	
+MGI:99435	Arf6	ADP-ribosylation factor 6	12		maintenance of postsynaptic density structure			ISO	RGD:621279 	J:155856 	
+MGI:99435	Arf6	ADP-ribosylation factor 6	12		regulation of presynapse assembly			ISO	RGD:621279 	J:155856 	
+MGI:2443418	Arhgap22	Rho GTPase activating protein 22	14		regulation of postsynapse organization			ISO	Q7Z5H3 	J:164563 	
+MGI:2673998	Arhgap33	Rho GTPase activating protein 33	7		regulation of dendritic spine morphogenesis			ISO	RGD:2318374 	J:155856 	
+MGI:107858	Arhgap39	Rho GTPase activating protein 39	15		postsynapse organization			ISO	Q9C0H5 	J:164563 	
+MGI:2144423	Arhgap44	Rho GTPase activating protein 44	11		modification of dendritic spine			IBA	PTN000716326 	J:265628 	
+MGI:2144423	Arhgap44	Rho GTPase activating protein 44	11		modification of dendritic spine	happens in hippocampal neuron		IMP		J:198646 	
+MGI:2144423	Arhgap44	Rho GTPase activating protein 44	11		modification of postsynaptic structure	happens in hippocampal formation		IDA		J:198646 	
+MGI:2144423	Arhgap44	Rho GTPase activating protein 44	11		regulation of dendritic spine morphogenesis			IBA	PTN000716326 	J:265628 	
+MGI:2144423	Arhgap44	Rho GTPase activating protein 44	11		regulation of dendritic spine morphogenesis	regulates a function/process that happens in hippocampal neuron		IMP		J:213034 	
+MGI:1860493	Arhgef7	Rho guanine nucleotide exchange factor (GEF7)	8		postsynaptic actin cytoskeleton organization			ISO	RGD:620624 	J:155856 	
+MGI:1860493	Arhgef7	Rho guanine nucleotide exchange factor (GEF7)	8		presynaptic actin cytoskeleton organization			ISO	RGD:620624 	J:155856 	
+MGI:2442233	Arhgef9	CDC42 guanine nucleotide exchange factor (GEF) 9	X		regulation of postsynaptic specialization assembly	happens in GABA-ergic synapse,happens in brain		IDA		J:124926 	
+MGI:2442233	Arhgef9	CDC42 guanine nucleotide exchange factor (GEF) 9	X		regulation of postsynaptic specialization assembly	happens in GABA-ergic synapse,happens in brain		IMP		J:124926 	
+MGI:3045246	Arhgef15	Rho guanine nucleotide exchange factor (GEF) 15	11		negative regulation of synapse maturation			IMP		J:167914 	
+MGI:1100867	Asic2	acid-sensing (proton-gated) ion channel 2	11		positive regulation of synapse assembly	regulates a function/process that happens in hippocampus		IMP	MGI:2180111 	J:150806 	
+MGI:105368	Atp2b2	ATPase, Ca++ transporting, plasma membrane 2	6		synapse organization	happens in cerebellum molecular layer,has the participant Purkinje cell|happens in cerebellum molecular layer,has the participant CNS neuron (sensu Vertebrata)		IMP	MGI:1857092 	J:13355 	
+MGI:2137336	Baiap2	brain-specific angiogenesis inhibitor 1-associated protein 2	11		modification of synaptic structure, modulating synaptic transmission	happens in Schaffer collateral - CA1 synapse		IDA		J:144939 	
+MGI:2137336	Baiap2	brain-specific angiogenesis inhibitor 1-associated protein 2	11		modification of synaptic structure, modulating synaptic transmission	happens in Schaffer collateral - CA1 synapse		IMP		J:144939 	
+MGI:2137336	Baiap2	brain-specific angiogenesis inhibitor 1-associated protein 2	11		positive regulation of dendritic spine morphogenesis			ISO	RGD:619814 	J:155856 	
+MGI:2137336	Baiap2	brain-specific angiogenesis inhibitor 1-associated protein 2	11		regulation of modification of postsynaptic actin cytoskeleton			ISO	RGD:619814 	J:155856 	
+MGI:1096385	Bcan	brevican	3		synapse maturation	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:256086 	
+MGI:1096385	Bcan	brevican	3		synapse maturation	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:256086 	
+MGI:1096385	Bcan	brevican	3		synapse maturation	happens in glutamatergic synapse,happens in hippocampal formation		IPI		J:256086 	
+MGI:88145	Bdnf	brain derived neurotrophic factor	2		positive regulation of synapse assembly			ISO	P23560 	J:164563 	
+MGI:88145	Bdnf	brain derived neurotrophic factor	2		synapse assembly			ISO	P23560 	J:164563 	
+MGI:1917487	Bhlhb9	basic helix-loop-helix domain containing, class B9	X		positive regulation of dendritic spine morphogenesis	happens in cerebral cortex|happens in UBERON:0001954		IDA		J:205664 	
+MGI:1917487	Bhlhb9	basic helix-loop-helix domain containing, class B9	X		positive regulation of synapse assembly	happens in cerebral cortex|happens in UBERON:0001954		IDA		J:205664 	
+MGI:1277955	Bsn	bassoon	9		presynaptic active zone assembly			ISO	RGD:2223 	J:155856 	
+MGI:1277955	Bsn	bassoon	9		synapse assembly			IEA	IPR030627 	J:72247 	
+MGI:1277955	Bsn	bassoon	9		synapse organization			ISO	RGD:2223 	J:155856 	
+MGI:88223	C1qa	complement component 1, q subcomponent, alpha polypeptide	4		complement-mediated synapse pruning	is a part of vertebrate eye-specific patterning,is a part of neuron remodeling,happens in dorsal lateral geniculate nucleus		IMP		J:137589 	
+MGI:88223	C1qa	complement component 1, q subcomponent, alpha polypeptide	4		synapse organization	happens in hippocampal formation		IGI	CPX-1180 	J:269645 	
+MGI:88223	C1qa	complement component 1, q subcomponent, alpha polypeptide	4		synapse pruning	happens in frontal cortex,is caused by the action of ComplexPortal:CPX-1180|happens in hippocampal formation,is caused by the action of ComplexPortal:CPX-1180		IGI	P14106 Q02105 	J:269645 	
+MGI:88224	C1qb	complement component 1, q subcomponent, beta polypeptide	4		synapse pruning	happens in frontal cortex,is caused by the action of ComplexPortal:CPX-1180|happens in hippocampal formation,is caused by the action of ComplexPortal:CPX-1180		IGI	P98086 Q02105 	J:269645 	
+MGI:88225	C1qc	complement component 1, q subcomponent, C chain	4		synapse pruning	happens in frontal cortex,is caused by the action of ComplexPortal:CPX-1180|happens in hippocampal formation,is caused by the action of ComplexPortal:CPX-1180		IGI	P14106 P98086 	J:269645 	
+MGI:1344400	C1ql1	complement component 1, q subcomponent-like 1	11		maintenance of synapse structure	happens in cerebellum molecular layer		IMP	MGI:5708580 	J:219706 	
+MGI:2387350	C1ql3	C1q-like 3	2		regulation of synapse organization	regulates a function/process that has the participant hippocampus,regulates a function/process that has the participant CNS neuron (sensu Vertebrata)		IDA		J:169094 	
+MGI:88227	C3	complement component 3	17		complement-mediated synapse pruning	is a part of vertebrate eye-specific patterning,is a part of neuron remodeling,happens in dorsal lateral geniculate nucleus		IMP		J:137589 	
+MGI:88232	C5ar1	complement component 5a receptor 1	7		presynapse organization	happens in hippocampal formation		IGI	P05067 	J:151661 	
+MGI:1352750	Cabp1	calcium binding protein 1	5		modification of postsynaptic actin cytoskeleton	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:261692 	
+MGI:1352750	Cabp1	calcium binding protein 1	5		modification of postsynaptic actin cytoskeleton	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:261692 	
+MGI:1352750	Cabp1	calcium binding protein 1	5		modification of postsynaptic actin cytoskeleton	happens in glutamatergic synapse,happens in hippocampal formation		IPI		J:261692 	
+MGI:109482	Cacna1a	calcium channel, voltage-dependent, P/Q type, alpha 1A subunit	8		synapse assembly	happens in cerebellum,happens in Purkinje cell		IMP	MGI:1856211 	J:55268 	
+MGI:109482	Cacna1a	calcium channel, voltage-dependent, P/Q type, alpha 1A subunit	8		synapse assembly	happens in cerebellum,happens in Purkinje cell		IMP	MGI:2181384 	J:90116 	
+MGI:88294	Cacna1s	calcium channel, voltage-dependent, L type, alpha 1S subunit	1		neuromuscular junction development			IMP	MGI:1856326 	J:6592 J:7295 J:7296 	
+MGI:1929813	Cacna2d2	calcium channel, voltage-dependent, alpha 2/delta subunit 2	9		neuromuscular junction development			IMP	MGI:1856022 	J:121463 	
+MGI:102522	Cacnb1	calcium channel, voltage-dependent, beta 1 subunit	11		neuromuscular junction development			IBA	PTN000930213 	J:265628 	
+MGI:894644	Cacnb2	calcium channel, voltage-dependent, beta 2 subunit	2		neuromuscular junction development			IBA	PTN000930213 	J:265628 	
+MGI:103307	Cacnb3	calcium channel, voltage-dependent, beta 3 subunit	15		neuromuscular junction development			IBA	PTN000930213 	J:265628 	
+MGI:103301	Cacnb4	calcium channel, voltage-dependent, beta 4 subunit	2		neuromuscular junction development			IBA	PTN000930213 	J:265628 	
+MGI:103301	Cacnb4	calcium channel, voltage-dependent, beta 4 subunit	2		neuromuscular junction development			IMP	MGI:1856936 	J:121463 	
+MGI:1316660	Cacng2	calcium channel, voltage-dependent, gamma subunit 2	15		neuromuscular junction development			IMP	MGI:1856548 	J:121463 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		maintenance of postsynaptic specialization structure	happens in Schaffer collateral - CA1 synapse		IDA		J:167742 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		maintenance of postsynaptic specialization structure	happens in hippocampal formation		IDA		J:167742 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		maintenance of postsynaptic specialization structure	happens in hippocampal formation		IMP		J:167742 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		maintenance of postsynaptic specialization structure	happens in Schaffer collateral - CA1 synapse		IMP		J:167742 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:78720 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:78720 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		synapse assembly			IDA		J:78720 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		synapse assembly	happens in hippocampal formation		IDA		J:167742 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		synapse assembly	happens in Schaffer collateral - CA1 synapse		IDA		J:167742 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		synapse assembly	happens in hippocampal formation		IMP		J:167742 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		synapse assembly	happens in Schaffer collateral - CA1 synapse		IMP		J:167742 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		synaptic membrane adhesion	happens in forebrain		IDA		J:263432 	
+MGI:1889272	Cadm1	cell adhesion molecule 1	9		synaptic membrane adhesion	happens in forebrain		IPI		J:263432 	
+MGI:2151253	Calca	calcitonin/calcitonin-related polypeptide, alpha	7	NOT	neuromuscular junction development	has the participant skeletal musculature	PR:Q99JA0-1	IMP	MGI:2148538 	J:57708 	
+MGI:1098535	Camk1	calcium/calmodulin-dependent protein kinase I	6		positive regulation of synapse structural plasticity			ISO	Q14012 	J:164563 	
+MGI:1098535	Camk1	calcium/calmodulin-dependent protein kinase I	6		regulation of synapse organization			ISO	RGD:629473 	J:155856 	
+MGI:88257	Camk2b	calcium/calmodulin-dependent protein kinase II, beta	11		positive regulation of dendritic spine morphogenesis			ISO	RGD:2262 	J:155856 	
+MGI:88257	Camk2b	calcium/calmodulin-dependent protein kinase II, beta	11		positive regulation of synapse maturation			ISO	RGD:2262 	J:155856 	
+MGI:2384296	Camkv	CaM kinase-like vesicle-associated	9		regulation of modification of postsynaptic structure	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:242635 	
+MGI:2384296	Camkv	CaM kinase-like vesicle-associated	9		regulation of modification of postsynaptic structure	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:242635 	
+MGI:1858234	Caprin1	cell cycle associated protein 1	2		positive regulation of dendritic spine morphogenesis			IMP		J:168380 	
+MGI:2448541	Caprin2	caprin family member 2	6		positive regulation of dendritic spine morphogenesis			IMP		J:168380 	
+MGI:1309489	Cask	calcium/calmodulin-dependent serine protein kinase (MAGUK family)	X		positive regulation of dendritic spine morphogenesis			ISO	RGD:62004 	J:155856 	
+MGI:88281	Cbln1	cerebellin 1 precursor protein	8		positive regulation of synapse assembly	regulates a function/process that happens in cerebral cortex,regulates a function/process that happens in CNS neuron (sensu Vertebrata)		IDA		J:171950 	
+MGI:88281	Cbln1	cerebellin 1 precursor protein	8		positive regulation of synapse assembly	regulates a function/process that happens in cerebral cortex,regulates a function/process that happens in CNS neuron (sensu Vertebrata)		IGI	MGI:1096391 	J:171950 	
+MGI:88281	Cbln1	cerebellin 1 precursor protein	8		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebellum		IDA		J:159100 	
+MGI:88281	Cbln1	cerebellin 1 precursor protein	8		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebellum		IMP		J:159100 	
+MGI:88281	Cbln1	cerebellin 1 precursor protein	8		regulation of presynapse assembly	happens in glutamatergic synapse,happens in cerebellum		IDA		J:159100 J:177327 	
+MGI:88281	Cbln1	cerebellin 1 precursor protein	8		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:177327 	
+MGI:88281	Cbln1	cerebellin 1 precursor protein	8		regulation of presynapse assembly	happens in glutamatergic synapse,happens in cerebellum		IMP		J:159100 J:177327 	
+MGI:88281	Cbln1	cerebellin 1 precursor protein	8		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:177327 	
+MGI:88282	Cbln2	cerebellin 2 precursor protein	18		positive regulation of synapse assembly	regulates a function/process that happens in cerebral cortex,regulates a function/process that happens in CNS neuron (sensu Vertebrata)		IDA		J:171950 	
+MGI:88282	Cbln2	cerebellin 2 precursor protein	18		regulation of presynapse assembly	happens in glutamatergic synapse,happens in cerebellum		IDA		J:177327 	
+MGI:88282	Cbln2	cerebellin 2 precursor protein	18		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:177327 	
+MGI:88282	Cbln2	cerebellin 2 precursor protein	18		regulation of presynapse assembly	happens in glutamatergic synapse,happens in cerebellum		IMP		J:177327 	
+MGI:88282	Cbln2	cerebellin 2 precursor protein	18		regulation of presynapse assembly	happens in hippocampal formation,happens in glutamatergic synapse		IMP		J:177327 	
+MGI:88282	Cbln2	cerebellin 2 precursor protein	18		regulation of presynapse assembly	happens in glutamatergic synapse,happens in cerebellum		IPI		J:177327 	
+MGI:88282	Cbln2	cerebellin 2 precursor protein	18		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IPI		J:177327 	
+MGI:1859866	Cdc20	cell division cycle 20	4		positive regulation of synapse maturation			IDA		J:172950 	
+MGI:106211	Cdc42	cell division cycle 42	4		dendritic spine morphogenesis			IMP		J:239194 	
+MGI:106211	Cdc42	cell division cycle 42	4		modification of synaptic structure			IBA	PTN000633069 	J:265628 	
+MGI:106211	Cdc42	cell division cycle 42	4		modification of synaptic structure			ISO	RGD:71043 	J:155856 	
+MGI:106211	Cdc42	cell division cycle 42	4		positive regulation of synapse structural plasticity			ISO	RGD:71043 	J:155856 	
+MGI:106211	Cdc42	cell division cycle 42	4		regulation of modification of postsynaptic structure			ISO	RGD:71043 	J:155856 	
+MGI:88354	Cdh1	cadherin 1	8		synapse assembly			IBA	PTN000616413 	J:265628 	
+MGI:88354	Cdh1	cadherin 1	8		synapse assembly			ISO	RGD:69279 	J:155856 	
+MGI:88355	Cdh2	cadherin 2	18		neuroligin clustering involved in postsynaptic membrane assembly	happens in hippocampal pyramidal neuron,happens in hippocampus CA3		IMP		J:161278 	
+MGI:88355	Cdh2	cadherin 2	18		regulation of postsynaptic density protein 95 clustering	happens in neuron		IMP		J:161278 	
+MGI:88355	Cdh2	cadherin 2	18		synapse assembly			IBA	PTN001167473 	J:265628 	
+MGI:88355	Cdh2	cadherin 2	18		synapse assembly			ISO	RGD:69280 	J:155856 	
+MGI:107434	Cdh8	cadherin 8	8		regulation of synapse organization	happens in retina		IDA		J:214586 	
+MGI:107434	Cdh8	cadherin 8	8		regulation of synapse organization	happens in retina		IMP		J:214586 	
+MGI:107433	Cdh9	cadherin 9	15		synapse assembly	happens in hippocampal mossy fiber to CA3 synapse		IDA		J:245243 	
+MGI:107433	Cdh9	cadherin 9	15		synapse assembly	happens in hippocampal mossy fiber to CA3 synapse		IMP		J:245243 	
+MGI:107433	Cdh9	cadherin 9	15		synapse assembly			ISO	RGD:1308343 	J:155856 	
+MGI:107433	Cdh9	cadherin 9	15		synaptic membrane adhesion	happens in hippocampal mossy fiber to CA3 synapse		IDA		J:245243 	
+MGI:107433	Cdh9	cadherin 9	15		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:245243 	
+MGI:107433	Cdh9	cadherin 9	15		synaptic membrane adhesion	happens in hippocampal mossy fiber to CA3 synapse		IMP		J:245243 	
+MGI:107433	Cdh9	cadherin 9	15		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:245243 	
+MGI:107433	Cdh9	cadherin 9	15		synaptic membrane adhesion			ISO	RGD:1308343 	J:155856 	
+MGI:101765	Cdk5	cyclin-dependent kinase 5	5		regulation of dendritic spine morphogenesis			IMP		J:117343 	
+MGI:101765	Cdk5	cyclin-dependent kinase 5	5		synapse assembly	happens in brain		IMP		J:169741 	
+MGI:101765	Cdk5	cyclin-dependent kinase 5	5		synapse pruning			ISO	RGD:70514 	J:155856 	
+MGI:101764	Cdk5r1	cyclin-dependent kinase 5, regulatory subunit 1 (p35)	11		regulation of dendritic spine morphogenesis			IMP		J:117343 	
+MGI:1278336	Cdkl5	cyclin-dependent kinase-like 5	X		regulation of postsynapse organization			ISO	O76039 	J:164563 	
+MGI:88374	Cel	carboxyl ester lipase	2		postsynaptic membrane assembly			IBA	PTN000168538 	J:265628 	
+MGI:88374	Cel	carboxyl ester lipase	2		presynaptic membrane assembly			IBA	PTN000168538 	J:265628 	
+MGI:101757	Cfl1	cofilin 1, non-muscle	19		modification of postsynaptic actin cytoskeleton			ISO	RGD:69285 	J:155856 	
+MGI:101757	Cfl1	cofilin 1, non-muscle	19		negative regulation of dendritic spine maintenance			ISO	RGD:69285 	J:155856 	
+MGI:101757	Cfl1	cofilin 1, non-muscle	19		negative regulation of postsynaptic density organization			ISO	RGD:69285 	J:155856 	
+MGI:101757	Cfl1	cofilin 1, non-muscle	19		regulation of dendritic spine morphogenesis			ISO	P23528 	J:164563 	
+MGI:88392	Chat	choline acetyltransferase	14		establishment of synaptic specificity at neuromuscular junction			IMP	MGI:2450310 	J:81738 	
+MGI:2143558	Chchd10	coiled-coil-helix-coiled-coil-helix domain containing 10	10		maintenance of synapse structure	is a part of neuron		IMP		J:250353 	
+MGI:1344380	Chd4	chromodomain helicase DNA binding protein 4	6		terminal button organization			ISO	RGD:620064 	J:155856 	
+MGI:1916192	Chmp2b	charged multivesicular body protein 2B	16		regulation of modification of postsynaptic structure			ISO	RGD:1306781 	J:155856 	
+MGI:1916192	Chmp2b	charged multivesicular body protein 2B	16		regulation of postsynapse organization			ISO	RGD:1306781 	J:155856 	
+MGI:1922858	Chmp4b	charged multivesicular body protein 4B	2		regulation of postsynapse organization			ISO	RGD:1583604 	J:155856 	
+MGI:87885	Chrna1	cholinergic receptor, nicotinic, alpha polypeptide 1 (muscle)	2		neuromuscular junction development			ISO	P02708 	J:73065 	
+MGI:99779	Chrna7	cholinergic receptor, nicotinic, alpha polypeptide 7	7		dendritic spine organization	happens in hippocampus CA1,happens in hippocampal neuron,happens in postsynapse		IMP		J:196426 	
+MGI:99779	Chrna7	cholinergic receptor, nicotinic, alpha polypeptide 7	7		regulation of synapse structural plasticity	happens at the same time as UBERON:0018241,happens in hippocampal formation		IC	GO:0051247 	J:157839 	
+MGI:99779	Chrna7	cholinergic receptor, nicotinic, alpha polypeptide 7	7		synapse organization	happens in frontal cortex,happens at the same time as UBERON:0007222,uses UniProtKB:P12023|happens in hippocampal formation,happens at the same time as UBERON:0007222,uses UniProtKB:P12023		IGI	P05067 	J:151080 	
+MGI:87890	Chrnb1	cholinergic receptor, nicotinic, beta polypeptide 1 (muscle)	11		postsynaptic membrane organization			ISO	P11230 	J:164563 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		regulation of synapse assembly	regulates a function/process that has the participant superior colliculus,regulates a function/process that has the participant neuron		IMP	MGI:2158714 	J:118361 	
+MGI:1929895	Clstn1	calsyntenin 1	4		positive regulation of synapse assembly			IBA	PTN001020450 	J:265628 	
+MGI:1929895	Clstn1	calsyntenin 1	4		positive regulation of synapse assembly			IGI	MGI:1929897 MGI:2178323 	J:211830 	
+MGI:1929895	Clstn1	calsyntenin 1	4		regulation of synapse maturation	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:212386 	
+MGI:1929895	Clstn1	calsyntenin 1	4		regulation of synapse maturation	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:212386 	
+MGI:1929897	Clstn2	calsyntenin 2	9		positive regulation of synapse assembly			IBA	PTN001020450 	J:265628 	
+MGI:1929897	Clstn2	calsyntenin 2	9		positive regulation of synapse assembly			IGI	MGI:1929895 MGI:2178323 	J:211830 	
+MGI:2178323	Clstn3	calsyntenin 3	6		positive regulation of synapse assembly			IBA	PTN001020450 	J:265628 	
+MGI:2178323	Clstn3	calsyntenin 3	6		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2178323	Clstn3	calsyntenin 3	6		positive regulation of synapse assembly			IGI	MGI:1929895 MGI:1929897 	J:211830 	
+MGI:2178323	Clstn3	calsyntenin 3	6		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:211830 	
+MGI:2178323	Clstn3	calsyntenin 3	6		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in UBERON:0001950		IDA		J:211830 	
+MGI:2178323	Clstn3	calsyntenin 3	6		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:211830 	
+MGI:2178323	Clstn3	calsyntenin 3	6		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:211830 	
+MGI:2178323	Clstn3	calsyntenin 3	6		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in UBERON:0001950		IMP		J:211830 	
+MGI:2178323	Clstn3	calsyntenin 3	6		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:211830 	
+MGI:2178323	Clstn3	calsyntenin 3	6		synapse assembly			IDA		J:201987 	
+MGI:2178323	Clstn3	calsyntenin 3	6		synapse assembly	happens in dentate gyrus|happens in CA1 pyramidal cell layer		IMP	MGI:5521290 	J:201987 	
+MGI:2661175	Cnksr2	connector enhancer of kinase suppressor of Ras 2	X		postsynapse organization			ISO	RGD:708454 	J:155856 	
+MGI:104518	Cntn2	contactin 2	1		presynaptic membrane organization			ISO	Q02246 	J:164563 	
+MGI:3042287	Cntn5	contactin 5	9		presynapse assembly	happens in GABA-ergic synapse,happens in spinal cord		IDA		J:220652 	
+MGI:3042287	Cntn5	contactin 5	9		presynapse assembly	happens in GABA-ergic synapse,happens in spinal cord		IMP		J:220652 	
+MGI:2183572	Cntnap4	contactin associated protein-like 4	8		regulation of synapse organization	happens in GABA-ergic synapse,happens in cerebral cortex		IDA		J:211338 	
+MGI:2183572	Cntnap4	contactin associated protein-like 4	8		regulation of synapse organization	happens in GABA-ergic synapse,happens in cerebral cortex		IMP		J:211338 	
+MGI:88454	Col4a1	collagen, type IV, alpha 1	8		neuromuscular junction development			IMP	MGI:3579521 	J:126496 	
+MGI:88456	Col4a5	collagen, type IV, alpha 5	X		neuromuscular junction development	has the participant diaphragm,has the participant motor neuron		IMP	MGI:3609047 	J:126496 	
+MGI:1338761	Colq	collagen-like tail subunit (single strand of homotrimer) of asymmetric acetylcholinesterase	14		regulation of synaptic growth at neuromuscular junction			IMP	MGI:1857733 	J:157644 	
+MGI:1338761	Colq	collagen-like tail subunit (single strand of homotrimer) of asymmetric acetylcholinesterase	14		skeletal muscle acetylcholine-gated channel clustering			IDA		J:157644 	
+MGI:1338761	Colq	collagen-like tail subunit (single strand of homotrimer) of asymmetric acetylcholinesterase	14		skeletal muscle acetylcholine-gated channel clustering			IMP	MGI:1857733 	J:157644 	
+MGI:1929655	Cript	cysteine-rich PDZ-binding protein	17		regulation of postsynaptic density protein 95 clustering			ISO	RGD:621545 	J:155856 	
+MGI:104686	Crkl	v-crk avian sarcoma virus CT10 oncogene homolog-like	16		regulation of skeletal muscle acetylcholine-gated channel clustering			IGI	MGI:1924574 MGI:700014 	J:235913 	
+MGI:104686	Crkl	v-crk avian sarcoma virus CT10 oncogene homolog-like	16		synapse assembly	happens in neuromuscular junction		IDA		J:165470 	
+MGI:104686	Crkl	v-crk avian sarcoma virus CT10 oncogene homolog-like	16		synapse assembly	happens in neuromuscular junction		IMP		J:165470 	
+MGI:88275	Ctnna2	catenin (cadherin associated protein), alpha 2	6		modification of postsynaptic actin cytoskeleton	happens in hippocampal formation		IDA		J:109440 	
+MGI:88275	Ctnna2	catenin (cadherin associated protein), alpha 2	6		modification of postsynaptic actin cytoskeleton	happens in hippocampal formation		IMP		J:109440 	
+MGI:88275	Ctnna2	catenin (cadherin associated protein), alpha 2	6		regulation of synapse structural plasticity			IMP		J:109440 	
+MGI:88276	Ctnnb1	catenin (cadherin associated protein), beta 1	9		synapse organization			IMP	MGI:2148594 	J:86623 	
+MGI:1195966	Ctnnd2	catenin (cadherin associated protein), delta 2	15		dendritic spine morphogenesis			IBA	PTN000042913 	J:265628 	
+MGI:1195966	Ctnnd2	catenin (cadherin associated protein), delta 2	15		dendritic spine morphogenesis			ISO	Q9UQB3 	J:164563 	
+MGI:1195966	Ctnnd2	catenin (cadherin associated protein), delta 2	15		synapse organization			IBA	PTN000042913 	J:265628 	
+MGI:1195966	Ctnnd2	catenin (cadherin associated protein), delta 2	15		synapse organization			ISO	Q9UQB3 	J:164563 	
+MGI:99695	Cttn	cortactin	7		dendritic spine maintenance			IGI	MGI:87860 	J:193891 	
+MGI:99695	Cttn	cortactin	7		modification of postsynaptic actin cytoskeleton			ISO	RGD:619839 	J:155856 	
+MGI:99695	Cttn	cortactin	7		positive regulation of dendritic spine morphogenesis			IBA	PTN000850962 	J:265628 	
+MGI:99695	Cttn	cortactin	7		postsynaptic actin cytoskeleton organization			IBA	PTN000850962 	J:265628 	
+MGI:1353467	Cttnbp2	cortactin binding protein 2	6		regulation of modification of postsynaptic actin cytoskeleton			ISO	RGD:628691 	J:155856 	
+MGI:1353467	Cttnbp2	cortactin binding protein 2	6		regulation of synapse organization			ISO	RGD:628691 	J:155856 	
+MGI:107321	Cux2	cut-like homeobox 2	5		positive regulation of dendritic spine morphogenesis	happens in cortical layer II|happens in cortical layer III		IMP		J:165046 	
+MGI:107321	Cux2	cut-like homeobox 2	5		positive regulation of synapse assembly	happens in cortical layer II|happens in cortical layer III		IMP		J:165046 	
+MGI:1333815	Cx3cr1	chemokine (C-X3-C motif) receptor 1	9		multiple spine synapse organization, single dendrite			IMP		J:211924 	
+MGI:1333815	Cx3cr1	chemokine (C-X3-C motif) receptor 1	9		synapse maturation	is a part of central nervous system maturation		IMP		J:211924 	
+MGI:1338801	Cyfip1	cytoplasmic FMR1 interacting protein 1	7		modification of synaptic structure			IBA	PTN000257572 	J:265628 	
+MGI:1338801	Cyfip1	cytoplasmic FMR1 interacting protein 1	7		modification of synaptic structure	happens in neuron,happens in UBERON:0001950		IMP		J:201819 	
+MGI:1338801	Cyfip1	cytoplasmic FMR1 interacting protein 1	7		regulation of modification of postsynaptic actin cytoskeleton	happens in UBERON:0001950		IDA		J:201819 	
+MGI:1338801	Cyfip1	cytoplasmic FMR1 interacting protein 1	7		regulation of modification of postsynaptic actin cytoskeleton	happens in UBERON:0001950		IMP		J:201819 	
+MGI:1916851	Dab2ip	disabled 2 interacting protein	2		positive regulation of synapse maturation			IMP		J:195873 	
+MGI:1891740	Dact1	dishevelled-binding antagonist of beta-catenin 1	12		synapse organization	has the participant CNS neuron (sensu Vertebrata)		IMP	MGI:4360072 	J:159217 	
+MGI:101864	Dag1	dystroglycan 1	9		regulation of synapse organization	happens in GABA-ergic synapse,happens in UBERON:0001950		IDA		J:235935 	
+MGI:101864	Dag1	dystroglycan 1	9		regulation of synapse organization	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:235935 	
+MGI:101864	Dag1	dystroglycan 1	9		regulation of synapse organization	happens in GABA-ergic synapse,happens in UBERON:0001950		IMP		J:235935 	
+MGI:101864	Dag1	dystroglycan 1	9		regulation of synapse organization	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:235935 	
+MGI:1931838	Dbn1	drebrin 1	13		positive regulation of dendritic spine morphogenesis			IBA	PTN000850962 	J:265628 	
+MGI:1931838	Dbn1	drebrin 1	13		positive regulation of dendritic spine morphogenesis			IMP		J:224553 	
+MGI:1931838	Dbn1	drebrin 1	13		positive regulation of dendritic spine morphogenesis			ISO	RGD:70885 	J:155856 	
+MGI:1931838	Dbn1	drebrin 1	13		postsynaptic actin cytoskeleton organization			IBA	PTN000850962 	J:265628 	
+MGI:1931838	Dbn1	drebrin 1	13		postsynaptic actin cytoskeleton organization			ISO	RGD:70885 	J:155856 	
+MGI:1931838	Dbn1	drebrin 1	13		regulation of postsynaptic density protein 95 clustering			ISO	RGD:70885 	J:155856 	
+MGI:700006	Dbnl	drebrin-like	11		positive regulation of dendritic spine morphogenesis			IBA	PTN000850962 	J:265628 	
+MGI:700006	Dbnl	drebrin-like	11		postsynaptic actin cytoskeleton organization			IBA	PTN000850962 	J:265628 	
+MGI:700006	Dbnl	drebrin-like	11		synapse assembly			IMP		J:196092 	
+MGI:107745	Dctn1	dynactin 1	6		neuromuscular junction development			ISO	Q14203 	J:164563 	
+MGI:107745	Dctn1	dynactin 1	6		positive regulation of neuromuscular junction development			ISO	Q14203 	J:164563 	
+MGI:2442474	Dgkb	diacylglycerol kinase, beta	12		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:163104 	
+MGI:2442474	Dgkb	diacylglycerol kinase, beta	12		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:163104 	
+MGI:1278339	Dgkz	diacylglycerol kinase zeta	2		maintenance of postsynaptic density structure	happens in Schaffer collateral - CA1 synapse		IDA		J:148043 	
+MGI:1278339	Dgkz	diacylglycerol kinase zeta	2		maintenance of postsynaptic density structure	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:148043 	
+MGI:1278339	Dgkz	diacylglycerol kinase zeta	2		maintenance of postsynaptic density structure	happens in Schaffer collateral - CA1 synapse		IMP		J:148043 	
+MGI:1278339	Dgkz	diacylglycerol kinase zeta	2		maintenance of postsynaptic density structure	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:148043 	
+MGI:1919412	Dhx36	DEAH (Asp-Glu-Ala-His) box polypeptide 36	3		positive regulation of dendritic spine morphogenesis			ISO	RGD:1308767 	J:155856 	
+MGI:2447658	Disc1	disrupted in schizophrenia 1	8		regulation of synapse maturation			IMP		J:159140 	
+MGI:1329040	Dkk1	dickkopf WNT signaling pathway inhibitor 1	19		negative regulation of presynapse assembly	happens in hippocampal neuron		IDA		J:269539 	
+MGI:1329040	Dkk1	dickkopf WNT signaling pathway inhibitor 1	19		regulation of synapse organization	happens in UBERON:6003624,happens in corpus striatum,happens in glutamatergic neuron,happens in presynapse		IDA		J:225337 	
+MGI:1277959	Dlg4	discs large MAGUK scaffold protein 4	11		AMPA glutamate receptor clustering			IBA	PTN001501209 	J:265628 	
+MGI:1277959	Dlg4	discs large MAGUK scaffold protein 4	11		AMPA glutamate receptor clustering			ISO	RGD:68424 	J:155856 	
+MGI:1277959	Dlg4	discs large MAGUK scaffold protein 4	11		dendritic spine morphogenesis			IDA		J:175436 	
+MGI:1277959	Dlg4	discs large MAGUK scaffold protein 4	11		dendritic spine morphogenesis			ISO	RGD:68424 	J:155856 	
+MGI:1277959	Dlg4	discs large MAGUK scaffold protein 4	11		dendritic spine organization			ISO	RGD:68424 	J:155856 	
+MGI:1918478	Dlg5	discs large MAGUK scaffold protein 5	14		positive regulation of synapse assembly			IMP		J:216499 	
+MGI:3039563	Dlgap3	DLG associated protein 3	4		modification of synaptic structure	happens in glutamatergic synapse,happens in corpus striatum		IDA		J:125181 	
+MGI:3039563	Dlgap3	DLG associated protein 3	4		modification of synaptic structure	happens in glutamatergic synapse,happens in corpus striatum		IMP		J:125181 	
+MGI:94906	Dmpk	dystrophia myotonica-protein kinase	7		regulation of synapse structural plasticity			IMP		J:103029 	
+MGI:1933786	Dnaja3	DnaJ heat shock protein family (Hsp40) member A3	16		neuromuscular junction development			IMP		J:145549 	
+MGI:1933786	Dnaja3	DnaJ heat shock protein family (Hsp40) member A3	16		neuromuscular junction development			ISO	Q96EY1 	J:164563 	
+MGI:1933786	Dnaja3	DnaJ heat shock protein family (Hsp40) member A3	16		skeletal muscle acetylcholine-gated channel clustering			IMP		J:145549 	
+MGI:1921256	Dnm1l	dynamin 1-like	16		positive regulation of dendritic spine morphogenesis			ISO	RGD:620416 	J:155856 	
+MGI:1341299	Dnm3	dynamin 3	1		negative regulation of dendritic spine morphogenesis			ISO	RGD:727949 	J:155856 	
+MGI:1341299	Dnm3	dynamin 3	1		regulation of dendritic spine morphogenesis			ISO	RGD:727949 	J:155856 	
+MGI:1341299	Dnm3	dynamin 3	1		synapse assembly			ISO	RGD:727949 	J:155856 	
+MGI:2146320	Dock10	dedicator of cytokinesis 10	1		dendritic spine morphogenesis			IMP		J:239194 	
+MGI:3584043	Dok7	docking protein 7	5		neuromuscular junction development			IDA		J:110011 	
+MGI:3584043	Dok7	docking protein 7	5		neuromuscular junction development	has the participant skeletal musculature,has the participant cell of skeletal muscle		IGI	MGI:103581 	J:110011 	
+MGI:99578	Drd1	dopamine receptor D1	13		modification of postsynaptic structure	happens in glutamatergic synapse,happens in corpus striatum		EXP		J:263447 	
+MGI:94924	Drd2	dopamine receptor D2	9		regulation of synapse structural plasticity			ISO	RGD:2520 	J:155856 	
+MGI:107432	Drp2	dystrophin related protein 2	X		synapse organization			ISO	RGD:621750 	J:155856 	
+MGI:2137586	Dtnbp1	dystrobrevin binding protein 1	13		negative regulation of dendritic spine morphogenesis			ISO	RGD:1590759 	J:155856 	
+MGI:94941	Dvl1	dishevelled segment polarity protein 1	4		dendritic spine morphogenesis			ISO	RGD:620632 	J:155856 	
+MGI:94941	Dvl1	dishevelled segment polarity protein 1	4		neuromuscular junction development	has the participant cell of skeletal muscle		IGI	MGI:103581 MGI:1339975 MGI:87961 	J:78399 	
+MGI:94941	Dvl1	dishevelled segment polarity protein 1	4		postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:173542 	
+MGI:94941	Dvl1	dishevelled segment polarity protein 1	4		postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:173542 	
+MGI:94941	Dvl1	dishevelled segment polarity protein 1	4		presynapse assembly	happens in cerebellum		IDA		J:111190 	
+MGI:94941	Dvl1	dishevelled segment polarity protein 1	4		presynapse assembly	happens in cerebellum		IMP		J:111190 	
+MGI:94941	Dvl1	dishevelled segment polarity protein 1	4		skeletal muscle acetylcholine-gated channel clustering	happens in diaphragm,happens in cell of skeletal muscle		IMP	MGI:2137230 	J:142354 	
+MGI:94941	Dvl1	dishevelled segment polarity protein 1	4		synapse organization	happens in cerebellum,has the participant CNS neuron (sensu Vertebrata)		IGI	MGI:98961 	J:111190 	
+MGI:94941	Dvl1	dishevelled segment polarity protein 1	4		synapse organization	happens in cerebellum,has the participant CNS neuron (sensu Vertebrata)		IMP	MGI:2137230 	J:111190 	
+MGI:1195261	Eef2k	eukaryotic elongation factor-2 kinase	7		positive regulation of dendritic spine morphogenesis			ISO	RGD:2538 	J:155856 	
+MGI:1195261	Eef2k	eukaryotic elongation factor-2 kinase	7		positive regulation of synapse assembly			ISO	RGD:2538 	J:155856 	
+MGI:103236	Efna1	ephrin A1	3		negative regulation of dendritic spine morphogenesis			IDA		J:117343 	
+MGI:107444	Efna5	ephrin A5	17		positive regulation of synapse assembly	is a part of hippocampus stratum radiatum		IDA		J:184958 	
+MGI:107444	Efna5	ephrin A5	17		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in cerebral cortex		IDA		J:204427 	
+MGI:107444	Efna5	ephrin A5	17		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in cerebral cortex		IMP		J:204427 	
+MGI:107444	Efna5	ephrin A5	17		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in cerebral cortex		IPI		J:204427 	
+MGI:102708	Efnb1	ephrin B1	X		presynapse assembly			ISO	RGD:2540 	J:155856 	
+MGI:105097	Efnb2	ephrin B2	8		presynapse assembly			ISO	RGD:1309497 	J:155856 	
+MGI:1932286	Egln1	egl-9 family hypoxia-inducible factor 1	8		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:234716 	
+MGI:1932286	Egln1	egl-9 family hypoxia-inducible factor 1	8		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:234716 	
+MGI:2384784	Eif4g1	eukaryotic translation initiation factor 4, gamma 1	16		regulation of presynapse assembly			ISO	Q04637 	J:164563 	
+MGI:2442479	Elfn1	leucine rich repeat and fibronectin type III, extracellular 1	5		synapse organization			IMP		J:190381 	
+MGI:99612	Epha3	Eph receptor A3	16		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in cerebral cortex		IDA		J:204427 	
+MGI:99612	Epha3	Eph receptor A3	16		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in cerebral cortex		IMP		J:204427 	
+MGI:99612	Epha3	Eph receptor A3	16		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in cerebral cortex		IPI		J:204427 	
+MGI:98277	Epha4	Eph receptor A4	1		regulation of dendritic spine morphogenesis			IMP		J:117343 	
+MGI:98277	Epha4	Eph receptor A4	1		regulation of modification of synaptic structure	regulates a function/process that happens in hippocampal neuron,is upstream of regulation of long-term synaptic potentiation,regulates a function/process that happens in dendritic spine		IGI	CPX-1134 P00520 	J:214156 	
+MGI:98277	Epha4	Eph receptor A4	1		regulation of modification of synaptic structure			ISO	RGD:1560587 	J:155856 	
+MGI:98277	Epha4	Eph receptor A4	1		synapse pruning	happens in glutamatergic synapse,happens in hippocampal formation		EXP		J:81695 	
+MGI:98277	Epha4	Eph receptor A4	1		synapse pruning	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:81695 	
+MGI:98277	Epha4	Eph receptor A4	1		synapse pruning	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:81695 	
+MGI:98277	Epha4	Eph receptor A4	1		synapse pruning			ISO	RGD:1560587 	J:155856 	
+MGI:99654	Epha5	Eph receptor A5	5		dendritic spine morphogenesis			ISO	RGD:620831 	J:155856 	
+MGI:95276	Epha7	Eph receptor A7	4		negative regulation of synapse assembly	is a part of hippocampus stratum radiatum		IDA		J:184958 	
+MGI:95276	Epha7	Eph receptor A7	4		regulation of postsynapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:208865 	
+MGI:95276	Epha7	Eph receptor A7	4		regulation of postsynapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:208865 	
+MGI:1096337	Ephb1	Eph receptor B1	9		dendritic spine morphogenesis			IMP		J:87071 J:120748 	
+MGI:1096337	Ephb1	Eph receptor B1	9		positive regulation of synapse assembly			IMP		J:87071 	
+MGI:99611	Ephb2	Eph receptor B2	4		dendritic spine morphogenesis			IDA		J:120748 	
+MGI:99611	Ephb2	Eph receptor B2	4		dendritic spine morphogenesis			IMP		J:87071 	
+MGI:99611	Ephb2	Eph receptor B2	4		positive regulation of synapse assembly			IDA		J:167914 	
+MGI:99611	Ephb2	Eph receptor B2	4		positive regulation of synapse assembly			IMP		J:87071 	
+MGI:99611	Ephb2	Eph receptor B2	4		postsynaptic membrane assembly			ISO	RGD:1564232 	J:155856 	
+MGI:99611	Ephb2	Eph receptor B2	4		regulation of synapse assembly	happens in glutamatergic synapse,happens in UBERON:0001950		EXP		J:116171 	
+MGI:99611	Ephb2	Eph receptor B2	4		regulation of synapse assembly	happens in glutamatergic synapse,happens in UBERON:0001950		IDA		J:116171 	
+MGI:99611	Ephb2	Eph receptor B2	4		regulation of synapse assembly	happens in glutamatergic synapse,happens in UBERON:0001950		IMP		J:116171 	
+MGI:104770	Ephb3	Eph receptor B3	16		dendritic spine morphogenesis			IMP		J:87071 	
+MGI:104770	Ephb3	Eph receptor B3	16		positive regulation of synapse assembly			IMP		J:87071 	
+MGI:95410	Erbb2	erb-b2 receptor tyrosine kinase 2	11		neuromuscular junction development	has the participant diaphragm,has the participant motor neuron|has the participant phrenic nerve,has the participant motor neuron		IMP	MGI:1929070 	J:60191 	
+MGI:104771	Erbb4	erb-b2 receptor tyrosine kinase 4	1		synapse assembly	happens in GABA-ergic synapse,happens in UBERON:0001950		IDA		J:159459 	
+MGI:104771	Erbb4	erb-b2 receptor tyrosine kinase 4	1		synapse assembly	happens in GABA-ergic synapse,happens in UBERON:0001950		IMP		J:159459 	
+MGI:104771	Erbb4	erb-b2 receptor tyrosine kinase 4	1		synapse maturation			ISO	RGD:620486 	J:155856 	
+MGI:1096867	Etv5	ets variant 5	16		regulation of synapse organization	regulates a function/process that has the participant diaphragm,regulates a function/process that has the participant cell of skeletal muscle		IMP	MGI:3589421 	J:126807 	
+MGI:1096867	Etv5	ets variant 5	16		skeletal muscle acetylcholine-gated channel clustering	happens in diaphragm,happens in cell of skeletal muscle		IMP	MGI:3589421 	J:126807 	
+MGI:101802	F2r	coagulation factor II (thrombin) receptor	13		establishment of synaptic specificity at neuromuscular junction			ISO	RGD:2586 	J:155856 	
+MGI:2446173	Farp1	FERM, RhoGEF (Arhgef) and pleckstrin domain protein 1 (chondrocyte-derived)	14		postsynaptic actin cytoskeleton organization			ISO	RGD:1305346 	J:155856 	
+MGI:2446173	Farp1	FERM, RhoGEF (Arhgef) and pleckstrin domain protein 1 (chondrocyte-derived)	14		regulation of presynapse assembly			ISO	RGD:1305346 	J:155856 	
+MGI:2446173	Farp1	FERM, RhoGEF (Arhgef) and pleckstrin domain protein 1 (chondrocyte-derived)	14		synapse assembly			ISO	RGD:1305346 	J:155856 	
+MGI:2447775	Fbxo45	F-box protein 45	16		synapse assembly involved in innervation			IBA	PTN000261681 	J:265628 	
+MGI:2447775	Fbxo45	F-box protein 45	16		synapse assembly involved in innervation	happens in peripheral nervous system		IMP	MGI:3849742 	J:149890 	
+MGI:95499	Fcgr2b	Fc receptor, IgG, low affinity IIb	1		regulation of dendritic spine maintenance	happens in hippocampal neuron,is a part of cellular response to amyloid-beta,regulates a function/process that happens in hippocampal neuron		IMP		J:201623 	
+MGI:95499	Fcgr2b	Fc receptor, IgG, low affinity IIb	1		regulation of dendritic spine maintenance			ISO	P31994 	J:164563 	
+MGI:95523	Fgfr2	fibroblast growth factor receptor 2	7		neuromuscular junction development			IMP	MGI:2183527 	J:126496 	
+MGI:1917848	Filip1	filamin A interacting protein 1	9		modification of postsynaptic structure	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:260692 	
+MGI:1917848	Filip1	filamin A interacting protein 1	9		modification of postsynaptic structure	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:260692 	
+MGI:95556	Flna	filamin, alpha	X		synapse organization			IDA		J:234716 	
+MGI:95556	Flna	filamin, alpha	X		synapse organization			IMP		J:234716 	
+MGI:3026647	Flrt1	fibronectin leucine rich transmembrane protein 1	19		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:3603594	Flrt2	fibronectin leucine rich transmembrane protein 2	12		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:1918686	Flrt3	fibronectin leucine rich transmembrane protein 3	2		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:1918686	Flrt3	fibronectin leucine rich transmembrane protein 3	2		synapse assembly			IMP		J:224730 	
+MGI:1918686	Flrt3	fibronectin leucine rich transmembrane protein 3	2		synapse organization			ISO	RGD:1566005 	J:155856 	
+MGI:1918686	Flrt3	fibronectin leucine rich transmembrane protein 3	2		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:224730 	
+MGI:1918686	Flrt3	fibronectin leucine rich transmembrane protein 3	2		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:224730 	
+MGI:95564	Fmr1	fragile X mental retardation 1	X		regulation of modification of synaptic structure	happens in Purkinje cell		IMP		J:101021 	
+MGI:3042378	Frmpd4	FERM and PDZ domain containing 4	X		positive regulation of synapse structural plasticity			ISO	Q14CM0 	J:164563 	
+MGI:3042378	Frmpd4	FERM and PDZ domain containing 4	X		postsynaptic actin cytoskeleton organization			ISO	RGD:1566031 	J:155856 	
+MGI:95602	Fyn	Fyn proto-oncogene	10		negative regulation of dendritic spine maintenance	happens in neuron of cerebral cortex,is a part of response to amyloid-beta		IGI	P04925 Q01097 	J:190064 	
+MGI:1196625	Fzd1	frizzled class receptor 1	5		regulation of presynapse assembly	happens in hippocampal formation		IDA		J:263449 	
+MGI:1196625	Fzd1	frizzled class receptor 1	5		regulation of presynapse assembly	happens in hippocampal formation		IMP		J:263449 	
+MGI:108571	Fzd5	frizzled class receptor 5	1		presynapse assembly			ISO	RGD:631406 	J:155856 	
+MGI:1313278	Fzd9	frizzled class receptor 9	5		negative regulation of skeletal muscle acetylcholine-gated channel clustering			IMP		J:236211 	
+MGI:1313278	Fzd9	frizzled class receptor 9	5		postsynapse organization			ISO	RGD:628817 	J:155856 	
+MGI:1313278	Fzd9	frizzled class receptor 9	5		regulation of skeletal muscle acetylcholine-gated channel clustering			IDA		J:236211 	
+MGI:95613	Gabra1	gamma-aminobutyric acid (GABA) A receptor, subunit alpha 1	11		inhibitory synapse assembly			ISO	P14867 	J:164563 	
+MGI:95620	Gabrb2	gamma-aminobutyric acid (GABA) A receptor, subunit beta 2	11		inhibitory synapse assembly			ISO	P47870 	J:164563 	
+MGI:95621	Gabrb3	gamma-aminobutyric acid (GABA) A receptor, subunit beta 3	7		inhibitory synapse assembly			ISO	P28472 	J:164563 	
+MGI:95623	Gabrg2	gamma-aminobutyric acid (GABA) A receptor, subunit gamma 2	11		inhibitory synapse assembly			ISO	P18507 	J:164563 	
+MGI:95639	Gap43	growth associated protein 43	16		regulation of postsynaptic specialization assembly			ISO	RGD:62071 	J:155856 	
+MGI:107430	Gdnf	glial cell line derived neurotrophic factor	15		postsynaptic membrane organization	happens in muscle cell		IDA		J:93581 	
+MGI:2136882	Get1	guided entry of tail-anchored proteins factor 1	16		synapse organization	uses ribbon synapse,happens in cochlear inner hair cell		IMP	MGI:5911419 MGI:6117117 	J:237954 	
+MGI:1930008	Ghrl	ghrelin	6		positive regulation of synapse assembly	regulates a function/process that happens in hippocampus CA1,regulates a function/process that happens in CNS neuron (sensu Vertebrata)		IMP	MGI:3045041 	J:107095 	
+MGI:1930008	Ghrl	ghrelin	6		positive regulation of synapse assembly			ISO	Q9UBU3 	J:73065 	
+MGI:1930008	Ghrl	ghrelin	6		regulation of postsynapse organization			ISO	RGD:632283 	J:155856 	
+MGI:2441906	Ghsr	growth hormone secretagogue receptor	3		regulation of postsynapse organization			ISO	RGD:621397 	J:155856 	
+MGI:2441906	Ghsr	growth hormone secretagogue receptor	3		regulation of synapse assembly	regulates a function/process that has the participant ventral tegmental nucleus,regulates a function/process that has the participant dopaminergic neuron		IMP	MGI:3040440 	J:117370 	
+MGI:1339969	Gja10	gap junction protein, alpha 10	4		synapse assembly	happens in retina layer,happens in retina horizontal cell		IMP	MGI:3043946 	J:111597 	
+MGI:95749	Glra3	glycine receptor, alpha 3 subunit	8		glutamate receptor clustering	happens in hippocampal neuron,happens in dendrite	PR:Q91XP5-1	IMP		J:153519 	
+MGI:95751	Glrb	glycine receptor, beta subunit	3		gamma-aminobutyric acid receptor clustering	happens in hippocampal neuron,happens in dendrite,uses PR:Q91XP5-1|happens in hippocampal neuron,happens in dendrite,uses PR:000044498		IGI	MGI:95749 	J:153519 	
+MGI:1343460	Gnpat	glyceronephosphate O-acyltransferase	8		synapse assembly			IMP	MGI:2670461 	J:148119 	
+MGI:104902	Gpc4	glypican 4	X		regulation of presynapse assembly			IBA	PTN002585530 	J:265628 	
+MGI:104902	Gpc4	glypican 4	X		regulation of presynapse assembly			ISO	RGD:1359399 	J:155856 	
+MGI:104902	Gpc4	glypican 4	X		synaptic membrane adhesion			IBA	PTN002585530 	J:265628 	
+MGI:104902	Gpc4	glypican 4	X		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:201656 	
+MGI:104902	Gpc4	glypican 4	X		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:201656 	
+MGI:1346322	Gpc6	glypican 6	14		regulation of presynapse assembly			IBA	PTN002585530 	J:265628 	
+MGI:1346322	Gpc6	glypican 6	14		synaptic membrane adhesion			IBA	PTN002585530 	J:265628 	
+MGI:109602	Gphn	gephyrin	12		establishment of synaptic specificity at neuromuscular junction			IBA	PTN000022764 	J:265628 	
+MGI:109602	Gphn	gephyrin	12		establishment of synaptic specificity at neuromuscular junction			IMP	MGI:2182559 	J:58210 	
+MGI:109602	Gphn	gephyrin	12		gamma-aminobutyric acid receptor clustering			IBA	PTN000022764 	J:265628 	
+MGI:109602	Gphn	gephyrin	12		gamma-aminobutyric acid receptor clustering	happens in dendrite,uses PR:000044498,happens in hippocampus|happens in dendrite,uses PR:Q91XP5-1,happens in hippocampus		IGI	MGI:95749 MGI:95751 	J:153519 	
+MGI:109602	Gphn	gephyrin	12		gamma-aminobutyric acid receptor clustering			ISO	Q9NQX3 	J:164563 	
+MGI:109602	Gphn	gephyrin	12		glycine receptor clustering			IBA	PTN000022764 	J:265628 	
+MGI:109602	Gphn	gephyrin	12		glycine receptor clustering	happens in motor neuron,happens in spinal cord		IMP	MGI:2182559 	J:77775 	
+MGI:107671	Gpm6a	glycoprotein m6a	8		regulation of synapse organization			ISO	RGD:631368 	J:155856 	
+MGI:107671	Gpm6a	glycoprotein m6a	8		synapse assembly			ISO	RGD:631368 	J:155856 	
+MGI:95813	Grid2	glutamate receptor, ionotropic, delta 2	6		excitatory synapse assembly			ISO	O43424 	J:164563 	
+MGI:95813	Grid2	glutamate receptor, ionotropic, delta 2	6		positive regulation of synapse assembly			ISO	O43424 	J:164563 	
+MGI:95813	Grid2	glutamate receptor, ionotropic, delta 2	6		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebellum		IDA		J:159100 	
+MGI:95813	Grid2	glutamate receptor, ionotropic, delta 2	6		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebellum		IMP		J:159100 	
+MGI:95813	Grid2	glutamate receptor, ionotropic, delta 2	6		regulation of presynapse assembly			ISO	RGD:68368 	J:155856 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		positive regulation of dendritic spine maintenance			ISO	RGD:2736 	J:155856 	
+MGI:95819	Grin1	glutamate receptor, ionotropic, NMDA1 (zeta 1)	2		regulation of synapse assembly	regulates a function/process that has the participant barrel cortex,regulates a function/process that has the participant CNS neuron (sensu Vertebrata)		IMP	MGI:2655232 MGI:2655237 	J:82670 	
+MGI:95820	Grin2a	glutamate receptor, ionotropic, NMDA2A (epsilon 1)	16		dendritic spine organization			ISO	RGD:2737 	J:155856 	
+MGI:95821	Grin2b	glutamate receptor, ionotropic, NMDA2B (epsilon 2)	6		negative regulation of dendritic spine maintenance	happens in neuron of cerebral cortex,is a part of response to amyloid-beta		IGI	P04925 P39688 	J:190064 	
+MGI:2681173	Grip2	glutamate receptor interacting protein 2	6		positive regulation of AMPA glutamate receptor clustering			ISO	RGD:621668 	J:155856 	
+MGI:1859616	Gripap1	GRIP1 associated protein 1	X		regulation of modification of synaptic structure			IBA	PTN001056987 	J:265628 	
+MGI:1859616	Gripap1	GRIP1 associated protein 1	X		regulation of modification of synaptic structure			ISO	RGD:621249 	J:155856 	
+MGI:1351342	Grm5	glutamate receptor, metabotropic 5	7		synapse organization	is a part of modulation of age-related behavioral decline,happens at the same time as aging,happens in dentate gyrus		IGI	P12023 P49769 	J:201741 	
+MGI:1861437	Gsk3b	glycogen synthase kinase 3 beta	16		regulation of modification of postsynaptic structure			ISO	RGD:70982 	J:155856 	
+MGI:104568	Hcls1	hematopoietic cell specific Lyn substrate 1	16		positive regulation of dendritic spine morphogenesis			IBA	PTN000850962 	J:265628 	
+MGI:104568	Hcls1	hematopoietic cell specific Lyn substrate 1	16		postsynaptic actin cytoskeleton organization			IBA	PTN000850962 	J:265628 	
+MGI:1333752	Hdac6	histone deacetylase 6	X		dendritic spine morphogenesis	happens in cerebral cortex neuron		IMP		J:205987 	
+MGI:99894	Hnrnpk	heterogeneous nuclear ribonucleoprotein K	13		positive regulation of synapse maturation			ISO	RGD:71058 	J:155856 	
+MGI:99894	Hnrnpk	heterogeneous nuclear ribonucleoprotein K	13		regulation of postsynapse organization			ISO	RGD:71058 	J:155856 	
+MGI:1347345	Homer1	homer scaffolding protein 1	13		regulation of dendritic spine maintenance			ISO	RGD:628725 	J:155856 	
+MGI:105384	Hspa8	heat shock protein 8	9		maintenance of postsynaptic specialization structure			ISO	RGD:621725 	J:155856 	
+MGI:105384	Hspa8	heat shock protein 8	9		regulation of postsynapse organization	happens in glutamatergic synapse,happens in olfactory cortex		EXP		J:263412 	
+MGI:105384	Hspa8	heat shock protein 8	9		regulation of postsynapse organization	happens in glutamatergic synapse,happens in olfactory cortex		IDA		J:263412 	
+MGI:96273	Htr1a	5-hydroxytryptamine (serotonin) receptor 1A	13		NMDA glutamate receptor clustering			ISO	RGD:2845 	J:155856 	
+MGI:96433	Igf1r	insulin-like growth factor I receptor	7		dendritic spine maintenance			ISO	RGD:2869 	J:155856 	
+MGI:2135283	Igsf9	immunoglobulin superfamily, member 9	1		regulation of synapse organization	regulates a function/process that happens in hippocampus		IMP	MGI:3784989 	J:209586 	
+MGI:2685354	Igsf9b	immunoglobulin superfamily, member 9B	9		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:201532 	
+MGI:2685354	Igsf9b	immunoglobulin superfamily, member 9B	9		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:201532 	
+MGI:2681842	Igsf21	immunoglobulin superfamily, member 21	4		synapse maturation			IMP		J:249826 	
+MGI:104975	Il1rap	interleukin 1 receptor accessory protein	16		positive regulation of synapse assembly			IDA		J:222796 	
+MGI:104975	Il1rap	interleukin 1 receptor accessory protein	16		positive regulation of synapse assembly	happens in neuron of cerebral cortex	PR:Q61730-1	IDA		J:182360 	
+MGI:104975	Il1rap	interleukin 1 receptor accessory protein	16		positive regulation of synapse assembly	happens in neuron of cerebral cortex	PR:Q61730-2	IDA		J:182360 	
+MGI:104975	Il1rap	interleukin 1 receptor accessory protein	16		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:182360 	
+MGI:104975	Il1rap	interleukin 1 receptor accessory protein	16		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:182360 	
+MGI:104975	Il1rap	interleukin 1 receptor accessory protein	16		regulation of presynapse assembly	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:182360 	
+MGI:104975	Il1rap	interleukin 1 receptor accessory protein	16		regulation of presynapse assembly	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:182360 	
+MGI:104975	Il1rap	interleukin 1 receptor accessory protein	16		synaptic membrane adhesion	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:182360 	
+MGI:104975	Il1rap	interleukin 1 receptor accessory protein	16		synaptic membrane adhesion	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:182360 	
+MGI:2687319	Il1rapl1	interleukin 1 receptor accessory protein-like 1	X		positive regulation of synapse assembly			IDA		J:222796 	
+MGI:2687319	Il1rapl1	interleukin 1 receptor accessory protein-like 1	X		presynaptic membrane assembly			IMP		J:177124 	
+MGI:2687319	Il1rapl1	interleukin 1 receptor accessory protein-like 1	X		regulation of postsynapse organization			ISO	Q9NZN1 	J:164563 	
+MGI:2687319	Il1rapl1	interleukin 1 receptor accessory protein-like 1	X		regulation of presynapse assembly			ISO	Q9NZN1 	J:164563 	
+MGI:1913106	Il1rapl2	interleukin 1 receptor accessory protein-like 2	X		regulation of presynapse assembly			ISO	Q9NP60 	J:164563 	
+MGI:96537	Il10	interleukin 10	1		regulation of synapse organization			ISO	RGD:2886 	J:155856 	
+MGI:96538	Il10ra	interleukin 10 receptor, alpha	9		regulation of synapse organization			ISO	RGD:620138 	J:155856 	
+MGI:96573	Ins2	insulin II	7		positive regulation of dendritic spine maintenance			ISO	P01308 	J:164563 	
+MGI:96575	Insr	insulin receptor	8		dendritic spine maintenance			ISO	RGD:2917 	J:155856 	
+MGI:2677208	Iqsec3	IQ motif and Sec7 domain 3	6		synapse organization			ISO	RGD:1593191 	J:155856 	
+MGI:96602	Itga3	integrin alpha 3	11		dendritic spine maintenance	happens in hippocampal neuron		IGI	MGI:87860 	J:196653 	
+MGI:96602	Itga3	integrin alpha 3	11		dendritic spine maintenance	happens in hippocampal neuron		IMP	MGI:1857792 	J:196653 	
+MGI:96607	Itgam	integrin alpha M	7		complement-mediated synapse pruning	happens in dorsal lateral geniculate nucleus,is caused by the action of microglial cell,results in the maturation of retinal ganglion cell,is a part of vertebrate eye-specific patterning,happens in UBERON:0009953		IMP		J:263413 	
+MGI:1333822	Itpka	inositol 1,4,5-trisphosphate 3-kinase A	2		dendritic spine maintenance			ISO	P17105 	J:73065 	
+MGI:1333822	Itpka	inositol 1,4,5-trisphosphate 3-kinase A	2		positive regulation of dendritic spine morphogenesis			ISO	P17105 	J:73065 	
+MGI:1338069	Itsn1	intersectin 1 (SH3 domain protein 1A)	16		regulation of modification of postsynaptic actin cytoskeleton			ISO	RGD:2935 	J:155856 	
+MGI:2685385	Kalrn	kalirin, RhoGEF kinase	16		modification of postsynaptic actin cytoskeleton			ISO	RGD:621865 	J:155856 	
+MGI:2685385	Kalrn	kalirin, RhoGEF kinase	16		neuromuscular junction development			IMP	MGI:5551305 	J:206512 	
+MGI:2685385	Kalrn	kalirin, RhoGEF kinase	16		positive regulation of dendritic spine morphogenesis	happens in frontal cortex,happens in pyramidal neuron|happens in pyramidal neuron		IMP	MGI:4358076 	J:152011 	
+MGI:2685385	Kalrn	kalirin, RhoGEF kinase	16		regulation of modification of postsynaptic actin cytoskeleton			ISO	RGD:621865 	J:155856 	
+MGI:1914953	Kirrel3	kirre like nephrin family adhesion molecule 3	9		synapse assembly			IDA		J:228054 	
+MGI:1343327	Klk8	kallikrein related-peptidase 8	7		regulation of synapse organization			IMP		J:68653 	
+MGI:1343327	Klk8	kallikrein related-peptidase 8	7		synapse organization			IMP	MGI:2678312 	J:106989 	
+MGI:96709	Ky	kyphoscoliosis peptidase	9		neuromuscular junction development			IMP	MGI:1856928 	J:66943 	
+MGI:96721	L1cam	L1 cell adhesion molecule	X		synapse organization			IBA	PTN002895063 	J:265628 	
+MGI:96721	L1cam	L1 cell adhesion molecule	X		synapse organization			ISO	P32004 	J:164563 	
+MGI:99916	Lamb2	laminin, beta 2	9		neuromuscular junction development	has the participant diaphragm		IMP	MGI:2138070 	J:126496 	
+MGI:99916	Lamb2	laminin, beta 2	9		neuromuscular junction development	has the participant skeletal muscle tissue,has the participant motor neuron|has the participant skeletal muscle tissue,has the participant cell of skeletal muscle|has the participant skeletal muscle tissue,has the participant myelinating Schwann cell		IMP	MGI:2138070 	J:23783 	
+MGI:99916	Lamb2	laminin, beta 2	9		synapse organization	happens in hippocampus,has the participant CNS neuron (sensu Vertebrata)|happens in cerebellum,has the participant CNS neuron (sensu Vertebrata)		IMP	MGI:2138070 	J:123242 	
+MGI:1330838	Lgmn	legumain	12		dendritic spine organization	happens in apical dendrite,happens in hippocampus CA1		IGI	P10636 	J:227814 	
+MGI:3057108	Lhfpl4	lipoma HMGIC fusion partner-like protein 4	6		gamma-aminobutyric acid receptor clustering			IMP		J:254795 J:256156 	
+MGI:3057108	Lhfpl4	lipoma HMGIC fusion partner-like protein 4	6		regulation of inhibitory synapse assembly			IMP		J:265620 	
+MGI:2442298	Lingo2	leucine rich repeat and Ig domain containing 2	4		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2444651	Lingo4	leucine rich repeat and Ig domain containing 4	3		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:1888519	Lmx1a	LIM homeobox transcription factor 1 alpha	1		synapse organization	happens near presynapse,happens in midbrain dopaminergic neuron		IGI	O88609 	J:222854 	
+MGI:1100513	Lmx1b	LIM homeobox transcription factor 1 beta	2		synapse organization	happens near presynapse,happens in midbrain dopaminergic neuron		IGI	Q9JKU8 	J:222854 	
+MGI:2136810	Lrfn1	leucine rich repeat and fibronectin type III domain containing 1	7		regulation of postsynaptic density assembly			ISO	RGD:1304707 	J:155856 	
+MGI:1917780	Lrfn2	leucine rich repeat and fibronectin type III domain containing 2	17		regulation of postsynapse organization	happens in hippocampal formation		IDA		J:241916 	
+MGI:1917780	Lrfn2	leucine rich repeat and fibronectin type III domain containing 2	17		regulation of postsynapse organization	happens in hippocampal formation		IMP		J:241916 	
+MGI:2442512	Lrfn3	leucine rich repeat and fibronectin type III domain containing 3	7		regulation of presynapse assembly			IBA	PTN002911874 	J:265628 	
+MGI:2442512	Lrfn3	leucine rich repeat and fibronectin type III domain containing 3	7		regulation of presynapse assembly			ISO	RGD:1305567 	J:155856 	
+MGI:2442512	Lrfn3	leucine rich repeat and fibronectin type III domain containing 3	7		regulation of synaptic membrane adhesion			IBA	PTN002911874 	J:265628 	
+MGI:2442512	Lrfn3	leucine rich repeat and fibronectin type III domain containing 3	7		regulation of synaptic membrane adhesion			ISO	RGD:1305567 	J:155856 	
+MGI:2442512	Lrfn3	leucine rich repeat and fibronectin type III domain containing 3	7		synaptic membrane adhesion			IBA	PTN002911874 	J:265628 	
+MGI:2442512	Lrfn3	leucine rich repeat and fibronectin type III domain containing 3	7		synaptic membrane adhesion			ISO	RGD:1305567 	J:155856 	
+MGI:2385612	Lrfn4	leucine rich repeat and fibronectin type III domain containing 4	19		regulation of postsynaptic density assembly			IBA	PTN002911881 	J:265628 	
+MGI:2385612	Lrfn4	leucine rich repeat and fibronectin type III domain containing 4	19		regulation of postsynaptic density assembly			ISO	RGD:1585286 	J:155856 	
+MGI:2385612	Lrfn4	leucine rich repeat and fibronectin type III domain containing 4	19		regulation of presynapse assembly			IBA	PTN002911881 	J:265628 	
+MGI:2385612	Lrfn4	leucine rich repeat and fibronectin type III domain containing 4	19		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:165063 	
+MGI:2385612	Lrfn4	leucine rich repeat and fibronectin type III domain containing 4	19		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:165063 	
+MGI:2385612	Lrfn4	leucine rich repeat and fibronectin type III domain containing 4	19		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:165063 	
+MGI:2385612	Lrfn4	leucine rich repeat and fibronectin type III domain containing 4	19		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:165063 	
+MGI:2385612	Lrfn4	leucine rich repeat and fibronectin type III domain containing 4	19		synaptic membrane adhesion			IBA	PTN002911881 	J:265628 	
+MGI:2385612	Lrfn4	leucine rich repeat and fibronectin type III domain containing 4	19		synaptic membrane adhesion	happens in hippocampal formation		IDA		J:165063 	
+MGI:2385612	Lrfn4	leucine rich repeat and fibronectin type III domain containing 4	19		synaptic membrane adhesion	happens in hippocampal formation		IMP		J:165063 	
+MGI:2144814	Lrfn5	leucine rich repeat and fibronectin type III domain containing 5	12		regulation of presynapse assembly			IBA	PTN000690489 	J:265628 	
+MGI:2144814	Lrfn5	leucine rich repeat and fibronectin type III domain containing 5	12		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:165063 	
+MGI:2144814	Lrfn5	leucine rich repeat and fibronectin type III domain containing 5	12		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:165063 	
+MGI:2144814	Lrfn5	leucine rich repeat and fibronectin type III domain containing 5	12		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:165063 	
+MGI:2144814	Lrfn5	leucine rich repeat and fibronectin type III domain containing 5	12		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:165063 	
+MGI:2144814	Lrfn5	leucine rich repeat and fibronectin type III domain containing 5	12		synaptic membrane adhesion			IBA	PTN000690489 	J:265628 	
+MGI:2144814	Lrfn5	leucine rich repeat and fibronectin type III domain containing 5	12		synaptic membrane adhesion			ISO	RGD:1309357 	J:155856 	
+MGI:2442252	Lrp4	low density lipoprotein receptor-related protein 4	2		positive regulation of presynaptic membrane organization	is a part of neuromuscular junction development		IDA		J:188149 	
+MGI:2442252	Lrp4	low density lipoprotein receptor-related protein 4	2		positive regulation of skeletal muscle acetylcholine-gated channel clustering	happens in myotube		IMP		J:144064 	
+MGI:2442252	Lrp4	low density lipoprotein receptor-related protein 4	2		postsynaptic membrane assembly	happens in neuromuscular junction		IMP		J:177552 	
+MGI:2442252	Lrp4	low density lipoprotein receptor-related protein 4	2		presynaptic membrane assembly	happens in neuromuscular junction		IMP		J:177552 	
+MGI:2442252	Lrp4	low density lipoprotein receptor-related protein 4	2		skeletal muscle acetylcholine-gated channel clustering			IMP		J:177552 J:188149 	
+MGI:2442252	Lrp4	low density lipoprotein receptor-related protein 4	2		synapse organization			ISO	RGD:619731 	J:155856 	
+MGI:2442252	Lrp4	low density lipoprotein receptor-related protein 4	2		synaptic growth at neuromuscular junction			IDA		J:144064 	
+MGI:2442252	Lrp4	low density lipoprotein receptor-related protein 4	2		synaptic growth at neuromuscular junction	has the participant diaphragm		IMP	MGI:2661383 MGI:3580702 	J:119654 	
+MGI:1278315	Lrp5	low density lipoprotein receptor-related protein 5	19	NOT	positive regulation of skeletal muscle acetylcholine-gated channel clustering			IMP		J:144064 	
+MGI:1340044	Lrp8	low density lipoprotein receptor-related protein 8, apolipoprotein e receptor	4		positive regulation of dendritic spine morphogenesis			IMP		J:184736 	
+MGI:2182081	Lrrc4	leucine rich repeat containing 4	6		excitatory synapse assembly			IMP		J:113153 	
+MGI:2182081	Lrrc4	leucine rich repeat containing 4	6		postsynaptic density protein 95 clustering			IDA		J:113153 	
+MGI:2182081	Lrrc4	leucine rich repeat containing 4	6		synapse organization			IDA		J:113153 	
+MGI:2182081	Lrrc4	leucine rich repeat containing 4	6		synaptic membrane adhesion			ISO	RGD:1560026 	J:155856 	
+MGI:3027390	Lrrc4b	leucine rich repeat containing 4B	7		positive regulation of synapse assembly			IDA		J:177124 	
+MGI:3027390	Lrrc4b	leucine rich repeat containing 4B	7		regulation of postsynaptic density assembly			ISO	RGD:1307121 	J:155856 	
+MGI:3027390	Lrrc4b	leucine rich repeat containing 4B	7		regulation of presynapse assembly			ISO	RGD:1307121 	J:155856 	
+MGI:3027390	Lrrc4b	leucine rich repeat containing 4B	7		synaptic membrane adhesion			ISO	RGD:1307121 	J:155856 	
+MGI:2442636	Lrrc4c	leucine rich repeat containing 4C	2		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:218200 	
+MGI:2442636	Lrrc4c	leucine rich repeat containing 4C	2		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:218200 	
+MGI:2442636	Lrrc4c	leucine rich repeat containing 4C	2		synaptic membrane adhesion			ISO	Q9HCJ2 	J:164563 	
+MGI:3605040	Lrrc24	leucine rich repeat containing 24	15		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:1913975	Lrrk2	leucine-rich repeat kinase 2	15		neuromuscular junction development			ISO	Q5S007 	J:164563 	
+MGI:1913975	Lrrk2	leucine-rich repeat kinase 2	15		regulation of dendritic spine morphogenesis			IBA	PTN000585172 	J:265628 	
+MGI:1913975	Lrrk2	leucine-rich repeat kinase 2	15		regulation of dendritic spine morphogenesis	happens in striatum neuron		IGI	P23528 	J:206832 	
+MGI:1913975	Lrrk2	leucine-rich repeat kinase 2	15		regulation of dendritic spine morphogenesis			ISO	Q5S007 	J:164563 	
+MGI:106038	Lrrn1	leucine rich repeat protein 1, neuronal	6		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:106036	Lrrn3	leucine rich repeat protein 3, neuronal	12		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2389173	Lrrtm1	leucine rich repeat transmembrane neuronal 1	6		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2389173	Lrrtm1	leucine rich repeat transmembrane neuronal 1	6		regulation of postsynaptic density assembly			ISO	RGD:1585921 	J:155856 	
+MGI:2389173	Lrrtm1	leucine rich repeat transmembrane neuronal 1	6		regulation of presynapse assembly			ISO	RGD:1585921 	J:155856 	
+MGI:2389173	Lrrtm1	leucine rich repeat transmembrane neuronal 1	6		synapse organization	happens in hippocampus,has the participant CNS neuron (sensu Vertebrata)		IGI	MGI:2179435 MGI:2389174 MGI:2444609 	J:176974 	
+MGI:2389173	Lrrtm1	leucine rich repeat transmembrane neuronal 1	6		synapse organization	happens in hippocampus CA1		IMP	MGI:5085889 	J:145907 J:174350 	
+MGI:2389173	Lrrtm1	leucine rich repeat transmembrane neuronal 1	6		synapse organization			ISO	D4A6D8 	J:73065 	
+MGI:2389174	Lrrtm2	leucine rich repeat transmembrane neuronal 2	18		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2389174	Lrrtm2	leucine rich repeat transmembrane neuronal 2	18		regulation of postsynaptic density assembly			ISO	RGD:1593785 	J:155856 	
+MGI:2389174	Lrrtm2	leucine rich repeat transmembrane neuronal 2	18		synapse organization	happens in hippocampus,has the participant CNS neuron (sensu Vertebrata)		IGI	MGI:2179435 MGI:2389173 MGI:2444609 	J:176974 	
+MGI:2389174	Lrrtm2	leucine rich repeat transmembrane neuronal 2	18		synapse organization			ISO	D4A7P2 	J:73065 	
+MGI:2389177	Lrrtm3	leucine rich repeat transmembrane neuronal 3	10		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2389177	Lrrtm3	leucine rich repeat transmembrane neuronal 3	10		presynapse assembly			ISO	Q86VH5 	J:164563 	
+MGI:2389180	Lrrtm4	leucine rich repeat transmembrane neuronal 4	6		AMPA glutamate receptor clustering	happens in dentate gyrus,happens in hippocampal granule cell		IMP	MGI:5521326 	J:201655 	
+MGI:2389180	Lrrtm4	leucine rich repeat transmembrane neuronal 4	6		neurotransmitter-gated ion channel clustering			IDA		J:201655 	
+MGI:2389180	Lrrtm4	leucine rich repeat transmembrane neuronal 4	6		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2389180	Lrrtm4	leucine rich repeat transmembrane neuronal 4	6		regulation of presynaptic membrane organization			IDA		J:201655 	
+MGI:2389180	Lrrtm4	leucine rich repeat transmembrane neuronal 4	6		regulation of synapse assembly	happens in glutamatergic synapse,happens in UBERON:0001950		IDA		J:201656 	
+MGI:2389180	Lrrtm4	leucine rich repeat transmembrane neuronal 4	6		regulation of synapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:201656 	
+MGI:2389180	Lrrtm4	leucine rich repeat transmembrane neuronal 4	6		regulation of synapse assembly	happens in glutamatergic synapse,happens in UBERON:0001950		IMP		J:201656 	
+MGI:2389180	Lrrtm4	leucine rich repeat transmembrane neuronal 4	6		regulation of synapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:201656 	
+MGI:2389180	Lrrtm4	leucine rich repeat transmembrane neuronal 4	6		synapse organization			ISO	B4F7C5 	J:73065 	
+MGI:2442106	Lrtm1	leucine-rich repeats and transmembrane domains 1	14		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2141485	Lrtm2	leucine-rich repeats and transmembrane domains 2	6		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2656976	Lzts3	leucine zipper, putative tumor suppressor family member 3	2		regulation of dendritic spine morphogenesis			ISO	RGD:631327 	J:155856 	
+MGI:1354953	Magi2	membrane associated guanylate kinase, WW and PDZ domain containing 2	5		neuroligin clustering involved in postsynaptic membrane assembly	happens in neuron of cerebral cortex,happens in dendrite		IDA		J:161278 	
+MGI:1354953	Magi2	membrane associated guanylate kinase, WW and PDZ domain containing 2	5		regulation of synaptic membrane adhesion			ISO	RGD:621855 	J:155856 	
+MGI:1919539	Malat1	metastasis associated lung adenocarcinoma transcript 1 (non-coding RNA)	19		regulation of synapse organization	regulates a function/process that has the participant hippocampus|regulates a function/process that has the participant CNS neuron (sensu Vertebrata)		IMP		J:164388 	
+MGI:1346865	Mapk14	mitogen-activated protein kinase 14	17		regulation of synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		EXP		J:263465 	
+MGI:1346865	Mapk14	mitogen-activated protein kinase 14	17		regulation of synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:263465 	
+MGI:1346865	Mapk14	mitogen-activated protein kinase 14	17		regulation of synaptic membrane adhesion	happens in hippocampal formation,happens in glutamatergic synapse		IMP		J:263465 	
+MGI:97180	Mapt	microtubule-associated protein tau	11		synapse assembly			ISO	P10636 	J:164563 	
+MGI:97180	Mapt	microtubule-associated protein tau	11		synapse organization			ISO	P10636 	J:164563 	
+MGI:1922012	Mdga1	MAM domain containing glycosylphosphatidylinositol anchor 1	17		negative regulation of synapse assembly			ISO	RGD:1307031 	J:155856 	
+MGI:1922012	Mdga1	MAM domain containing glycosylphosphatidylinositol anchor 1	17		regulation of presynapse assembly			ISO	Q8NFP4 	J:164563 	
+MGI:1922012	Mdga1	MAM domain containing glycosylphosphatidylinositol anchor 1	17		regulation of synaptic membrane adhesion			ISO	Q8NFP4 	J:164563 	
+MGI:2444706	Mdga2	MAM domain containing glycosylphosphatidylinositol anchor 2	12		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:253274 	
+MGI:2444706	Mdga2	MAM domain containing glycosylphosphatidylinositol anchor 2	12		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:253274 	
+MGI:2444706	Mdga2	MAM domain containing glycosylphosphatidylinositol anchor 2	12		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:253274 	
+MGI:2444706	Mdga2	MAM domain containing glycosylphosphatidylinositol anchor 2	12		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:253274 	
+MGI:2444706	Mdga2	MAM domain containing glycosylphosphatidylinositol anchor 2	12		regulation of synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:253274 	
+MGI:2444706	Mdga2	MAM domain containing glycosylphosphatidylinositol anchor 2	12		regulation of synaptic membrane adhesion	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:253274 	
+MGI:2444706	Mdga2	MAM domain containing glycosylphosphatidylinositol anchor 2	12		regulation of synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:253274 	
+MGI:2444706	Mdga2	MAM domain containing glycosylphosphatidylinositol anchor 2	12		regulation of synaptic membrane adhesion	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:253274 	
+MGI:99918	Mecp2	methyl CpG binding protein 2	X		regulation of synapse organization			ISO	RGD:3075 	J:155856 	
+MGI:99918	Mecp2	methyl CpG binding protein 2	X		synapse assembly			IMP	MGI:2137311 	J:126964 	
+MGI:99918	Mecp2	methyl CpG binding protein 2	X		synapse assembly			IMP	MGI:2183727 	J:135669 	
+MGI:99458	Mef2c	myocyte enhancer factor 2C	13		regulation of synapse assembly	happens in dentate gyrus		IMP		J:138188 	
+MGI:1891421	Mesd	mesoderm development LRP chaperone	7		positive regulation of skeletal muscle acetylcholine-gated channel clustering			IMP		J:202742 	
+MGI:1914664	Mfn1	mitofusin 1	3		positive regulation of dendritic spine morphogenesis			ISO	RGD:621460 	J:155856 	
+MGI:1924366	Mtmr2	myotubularin related protein 2	9		dendritic spine maintenance			ISO	RGD:1311865 	J:155856 	
+MGI:103581	Musk	muscle, skeletal, receptor tyrosine kinase	4		neuromuscular junction development	has the participant skeletal musculature,has the participant cell of skeletal muscle		IGI	MGI:3584043 	J:110011 	
+MGI:103581	Musk	muscle, skeletal, receptor tyrosine kinase	4		neuromuscular junction development	has the participant cell of skeletal muscle		IGI	MGI:87961 MGI:94941 	J:78399 	
+MGI:103581	Musk	muscle, skeletal, receptor tyrosine kinase	4		neuromuscular junction development			ISO	O15146 	J:164563 	
+MGI:103581	Musk	muscle, skeletal, receptor tyrosine kinase	4		positive regulation of skeletal muscle acetylcholine-gated channel clustering	happens in myotube		IMP		J:144064 	
+MGI:103581	Musk	muscle, skeletal, receptor tyrosine kinase	4		positive regulation of synaptic growth at neuromuscular junction			ISO	RGD:3211 	J:155856 	
+MGI:103581	Musk	muscle, skeletal, receptor tyrosine kinase	4		regulation of synaptic growth at neuromuscular junction			IMP	MGI:1929066 	J:33132 	
+MGI:103581	Musk	muscle, skeletal, receptor tyrosine kinase	4		skeletal muscle acetylcholine-gated channel clustering			IMP		J:83827 	
+MGI:1930780	Myh10	myosin, heavy polypeptide 10, non-muscle	11		modification of postsynaptic actin cytoskeleton			ISO	RGD:71000 	J:155856 	
+MGI:1930780	Myh10	myosin, heavy polypeptide 10, non-muscle	11		postsynaptic actin cytoskeleton organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:260692 	
+MGI:1930780	Myh10	myosin, heavy polypeptide 10, non-muscle	11		postsynaptic actin cytoskeleton organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:260692 	
+MGI:1930780	Myh10	myosin, heavy polypeptide 10, non-muscle	11		regulation of modification of postsynaptic actin cytoskeleton			ISO	RGD:71000 	J:155856 	
+MGI:105976	Myo5a	myosin VA	9		synapse organization			IMP	MGI:1856005 	J:92181 	
+MGI:106598	Myo5b	myosin VB	18		dendritic spine morphogenesis			ISO	RGD:621347 	J:155856 	
+MGI:106598	Myo5b	myosin VB	18		regulation of modification of postsynaptic structure			ISO	RGD:621347 	J:155856 	
+MGI:104785	Myo6	myosin VI	9		synapse assembly			IMP	MGI:1856555 	J:95877 	
+MGI:104694	Ncan	neurocan	8		regulation of synapse structural plasticity	regulates a function/process that happens in hippocampus		IMP	MGI:2182149 	J:70858 	
+MGI:1341799	Ndrg1	N-myc downstream regulated gene 1	15		postsynapse organization			ISO	RGD:1307303 	J:155856 	
+MGI:1352498	Ndrg2	N-myc downstream regulated gene 2	14		postsynapse organization			ISO	RGD:621874 	J:155856 	
+MGI:1926483	Nectin1	nectin cell adhesion molecule 1	9		regulation of synapse assembly			ISO	RGD:620791 	J:155856 	
+MGI:97297	Nedd4	neural precursor cell expressed, developmentally down-regulated 4	9		neuromuscular junction development			IBA	PTN000135098 	J:265628 	
+MGI:97297	Nedd4	neural precursor cell expressed, developmentally down-regulated 4	9		neuromuscular junction development			IMP	MGI:3529811 	J:149227 	
+MGI:97297	Nedd4	neural precursor cell expressed, developmentally down-regulated 4	9		regulation of synapse organization			IBA	PTN000135098 	J:265628 	
+MGI:97297	Nedd4	neural precursor cell expressed, developmentally down-regulated 4	9		regulation of synapse organization			IMP	MGI:3529811 	J:149227 	
+MGI:97313	Nefl	neurofilament, light polypeptide	14		synapse maturation	happens in neuromuscular junction		IDA		J:216616 	
+MGI:97313	Nefl	neurofilament, light polypeptide	14		synapse maturation	happens in cholinergic synapse		IDA		J:216616 	
+MGI:97313	Nefl	neurofilament, light polypeptide	14		synapse maturation	happens in neuromuscular junction		IMP		J:216616 	
+MGI:97313	Nefl	neurofilament, light polypeptide	14		synapse maturation	happens in cholinergic synapse		IMP		J:216616 	
+MGI:1334263	Neurl1a	neuralized E3 ubiquitin protein ligase 1A	19		positive regulation of synapse maturation			IDA		J:178916 	
+MGI:107755	Neurod2	neurogenic differentiation 2	11		negative regulation of synapse maturation			IDA		J:172950 	
+MGI:107755	Neurod2	neurogenic differentiation 2	11		positive regulation of synapse maturation			IMP		J:107599 	
+MGI:107755	Neurod2	neurogenic differentiation 2	11		regulation of synapse maturation			IEA	IPR032649 	J:72247 	
+MGI:104753	Nfasc	neurofascin	1		synapse organization			IMP		J:93895 	
+MGI:1920431	Nfatc4	nuclear factor of activated T cells, cytoplasmic, calcineurin dependent 4	14		negative regulation of synapse maturation	regulates a function/process that happens in cerebellar granule cell		IMP		J:194263 	
+MGI:108056	Nfia	nuclear factor I/A	4		synapse maturation	happens in cerebellar granule cell		IMP		J:194263 	
+MGI:1858414	Ngef	neuronal guanine nucleotide exchange factor	1		negative regulation of dendritic spine morphogenesis			IDA		J:117343 	
+MGI:1858414	Ngef	neuronal guanine nucleotide exchange factor	1		synapse pruning	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:117343 	
+MGI:1858414	Ngef	neuronal guanine nucleotide exchange factor	1		synapse pruning	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:117343 	
+MGI:2179435	Nlgn1	neuroligin 1	3		AMPA glutamate receptor clustering			IDA		J:84070 	
+MGI:2179435	Nlgn1	neuroligin 1	3		AMPA glutamate receptor clustering			IMP		J:184102 	
+MGI:2179435	Nlgn1	neuroligin 1	3		AMPA glutamate receptor clustering			ISO	RGD:621117 	J:155856 	
+MGI:2179435	Nlgn1	neuroligin 1	3		excitatory synapse assembly			IDA		J:232984 	
+MGI:2179435	Nlgn1	neuroligin 1	3		excitatory synapse assembly	results in the development of glutamatergic synapse		IMP		J:243525 	
+MGI:2179435	Nlgn1	neuroligin 1	3		negative regulation of dendritic spine morphogenesis	happens in hippocampal pyramidal neuron		IMP		J:197488 	
+MGI:2179435	Nlgn1	neuroligin 1	3		negative regulation of dendritic spine morphogenesis			ISO	Q8N2Q7 	J:164563 	
+MGI:2179435	Nlgn1	neuroligin 1	3		neurexin clustering involved in presynaptic membrane assembly			IDA		J:84070 	
+MGI:2179435	Nlgn1	neuroligin 1	3		NMDA glutamate receptor clustering			ISO	RGD:621117 	J:155856 	
+MGI:2179435	Nlgn1	neuroligin 1	3		positive regulation of presynaptic active zone assembly			ISO	RGD:621117 	J:155856 	
+MGI:2179435	Nlgn1	neuroligin 1	3		positive regulation of synapse assembly	regulates a function/process that happens in cerebral cortex,regulates a function/process that happens in CNS neuron (sensu Vertebrata)		IDA		J:171950 	
+MGI:2179435	Nlgn1	neuroligin 1	3		positive regulation of synapse assembly			ISO	RGD:621117 	J:155856 	
+MGI:2179435	Nlgn1	neuroligin 1	3		positive regulation of synapse assembly			ISO	Q8N2Q7 	J:211830 	
+MGI:2179435	Nlgn1	neuroligin 1	3		postsynaptic density protein 95 clustering			IDA		J:84070 J:175189 J:180545 	
+MGI:2179435	Nlgn1	neuroligin 1	3		postsynaptic density protein 95 clustering			ISO	RGD:621117 	J:155856 	
+MGI:2179435	Nlgn1	neuroligin 1	3		postsynaptic membrane assembly			IBA	PTN000168538 	J:265628 	
+MGI:2179435	Nlgn1	neuroligin 1	3		postsynaptic membrane assembly			IDA		J:84070 J:175189 	
+MGI:2179435	Nlgn1	neuroligin 1	3		postsynaptic specialization assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:175189 	
+MGI:2179435	Nlgn1	neuroligin 1	3		postsynaptic specialization assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:175189 	
+MGI:2179435	Nlgn1	neuroligin 1	3		presynaptic membrane assembly			IBA	PTN000168538 	J:265628 	
+MGI:2179435	Nlgn1	neuroligin 1	3		presynaptic membrane assembly			IDA		J:84070 J:116404 J:175189 	
+MGI:2179435	Nlgn1	neuroligin 1	3		presynaptic membrane assembly			ISO	RGD:621117 	J:155856 	
+MGI:2179435	Nlgn1	neuroligin 1	3		regulation of presynapse organization			ISO	RGD:621117 	J:155856 	
+MGI:2179435	Nlgn1	neuroligin 1	3		synapse assembly			IDA		J:116404 	
+MGI:2179435	Nlgn1	neuroligin 1	3		synapse assembly			ISO	RGD:621117 	J:155856 	
+MGI:2179435	Nlgn1	neuroligin 1	3		synapse organization			IGI	MGI:2389173 MGI:2389174 MGI:2444609 	J:176974 	
+MGI:2179435	Nlgn1	neuroligin 1	3		synapse organization			ISO	Q62765 	J:96464 	
+MGI:2179435	Nlgn1	neuroligin 1	3		synaptic membrane adhesion	happens in hippocampal formation		IDA		J:84070 	
+MGI:2179435	Nlgn1	neuroligin 1	3		synaptic membrane adhesion			IMP		J:230665 	
+MGI:2179435	Nlgn1	neuroligin 1	3		synaptic membrane adhesion	happens in hippocampal formation		IMP		J:84070 	
+MGI:2179435	Nlgn1	neuroligin 1	3		terminal button organization			IMP		J:152008 	
+MGI:2179435	Nlgn1	neuroligin 1	3		terminal button organization			ISO	RGD:621117 	J:155856 	
+MGI:2681835	Nlgn2	neuroligin 2	11		gephyrin clustering involved in postsynaptic density assembly			IDA		J:175189 	
+MGI:2681835	Nlgn2	neuroligin 2	11		inhibitory synapse assembly			IDA		J:232984 	
+MGI:2681835	Nlgn2	neuroligin 2	11		positive regulation of synapse assembly			ISO	RGD:621118 	J:155856 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic density protein 95 clustering			IDA		J:175189 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic membrane assembly			IBA	PTN000168538 	J:265628 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic membrane assembly			IDA		J:175189 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic specialization assembly	happens in glycinergic synapse,happens in brainstem		IDA		J:154925 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic specialization assembly	happens in GABA-ergic synapse,happens in brainstem		IDA		J:154925 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic specialization assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:154925 J:175189 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic specialization assembly	happens in glycinergic synapse,happens in brainstem		IMP		J:154925 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic specialization assembly	happens in GABA-ergic synapse,happens in brainstem		IMP		J:154925 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic specialization assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:154925 J:175189 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic specialization assembly	happens in glycinergic synapse,happens in brainstem		IPI		J:154925 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic specialization assembly	happens in GABA-ergic synapse,happens in brainstem		IPI		J:154925 	
+MGI:2681835	Nlgn2	neuroligin 2	11		postsynaptic specialization assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IPI		J:154925 	
+MGI:2681835	Nlgn2	neuroligin 2	11		presynaptic membrane assembly			IBA	PTN000168538 	J:265628 	
+MGI:2681835	Nlgn2	neuroligin 2	11		presynaptic membrane assembly			IDA		J:175189 	
+MGI:2681835	Nlgn2	neuroligin 2	11		presynaptic membrane assembly			IMP		J:151145 	
+MGI:2681835	Nlgn2	neuroligin 2	11		presynaptic membrane assembly			ISO	RGD:621118 	J:155856 	
+MGI:2681835	Nlgn2	neuroligin 2	11		regulation of presynapse assembly			ISO	RGD:621118 	J:155856 	
+MGI:2681835	Nlgn2	neuroligin 2	11		synapse assembly			ISO	RGD:621118 	J:155856 	
+MGI:2681835	Nlgn2	neuroligin 2	11		synapse organization			ISO	Q62888 	J:73065 J:96464 	
+MGI:2681835	Nlgn2	neuroligin 2	11		terminal button organization			ISO	RGD:621118 	J:155856 	
+MGI:2444609	Nlgn3	neuroligin 3	X		negative regulation of dendritic spine morphogenesis			IMP		J:175606 	
+MGI:2444609	Nlgn3	neuroligin 3	X		positive regulation of synapse assembly			IMP		J:184114 	
+MGI:2444609	Nlgn3	neuroligin 3	X		positive regulation of synapse assembly			ISO	RGD:621119 	J:155856 	
+MGI:2444609	Nlgn3	neuroligin 3	X		postsynaptic membrane assembly			IBA	PTN000168538 	J:265628 	
+MGI:2444609	Nlgn3	neuroligin 3	X		postsynaptic membrane assembly			IMP		J:184114 	
+MGI:2444609	Nlgn3	neuroligin 3	X		postsynaptic specialization assembly			ISO	RGD:621119 	J:155856 	
+MGI:2444609	Nlgn3	neuroligin 3	X		presynaptic membrane assembly			IBA	PTN000168538 	J:265628 	
+MGI:2444609	Nlgn3	neuroligin 3	X		presynaptic membrane assembly			ISO	RGD:621119 	J:155856 	
+MGI:2444609	Nlgn3	neuroligin 3	X		regulation of dendritic spine morphogenesis	happens in hippocampal neuron|happens in hippocampus CA1		IMP		J:175606 	
+MGI:2444609	Nlgn3	neuroligin 3	X		regulation of terminal button organization			IMP		J:175606 	
+MGI:2444609	Nlgn3	neuroligin 3	X		regulation of terminal button organization	happens in hippocampus CA1|happens in hippocampal neuron		IMP		J:175606 	
+MGI:2444609	Nlgn3	neuroligin 3	X		synapse assembly			ISO	RGD:621119 	J:155856 	
+MGI:2444609	Nlgn3	neuroligin 3	X		synapse organization			IGI	MGI:2179435 MGI:2389173 MGI:2389174 	J:176974 	
+MGI:2444609	Nlgn3	neuroligin 3	X		synapse organization			ISO	Q62889 	J:96464 	
+MGI:2444609	Nlgn3	neuroligin 3	X		synapse organization			ISO	Q9NZ94 	J:164563 	
+MGI:3775191	Nlgn4l	neuroligin 4-like	UN		postsynaptic membrane assembly			IBA	PTN000168538 	J:265628 	
+MGI:3775191	Nlgn4l	neuroligin 4-like	UN		presynaptic membrane assembly			IBA	PTN000168538 	J:265628 	
+MGI:2664186	Npas4	neuronal PAS domain protein 4	19		inhibitory synapse assembly			IMP		J:143367 	
+MGI:108077	Nptn	neuroplastin	9		excitatory synapse assembly		PR:P97300-2	IMP		J:212431 	
+MGI:108077	Nptn	neuroplastin	9		excitatory synapse assembly			IMP	MGI:5621191 	J:212431 	
+MGI:108077	Nptn	neuroplastin	9		synapse organization	happens in CA1 pyramidal cell layer|happens in CA2 pyramidal cell layer		IMP	MGI:5621191 	J:212431 	
+MGI:107811	Nptx1	neuronal pentraxin 1	11		regulation of postsynaptic density assembly			ISO	RGD:628894 	J:155856 	
+MGI:1920590	Nptxr	neuronal pentraxin receptor	15		regulation of postsynaptic specialization assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:263375 	
+MGI:1920590	Nptxr	neuronal pentraxin receptor	15		regulation of postsynaptic specialization assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:263375 	
+MGI:1920590	Nptxr	neuronal pentraxin receptor	15		regulation of postsynaptic specialization assembly	happens in glutamatergic synapse,happens in hippocampal formation		IPI		J:263375 	
+MGI:104750	Nrcam	neuronal cell adhesion molecule	12		regulation of postsynapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:216166 	
+MGI:104750	Nrcam	neuronal cell adhesion molecule	12		regulation of postsynapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:216166 	
+MGI:96083	Nrg1	neuregulin 1	8		synapse assembly	happens in GABA-ergic synapse,happens in UBERON:0001950		IDA		J:159459 	
+MGI:96083	Nrg1	neuregulin 1	8		synapse assembly	happens in GABA-ergic synapse,happens in UBERON:0001950		IMP		J:159459 	
+MGI:96083	Nrg1	neuregulin 1	8		synapse assembly			IMP	MGI:1928831 	J:60159 	
+MGI:1098246	Nrg2	neuregulin 2	18		regulation of synapse assembly			ISO	RGD:1303302 	J:155856 	
+MGI:1098246	Nrg2	neuregulin 2	18		regulation of synapse maturation			ISO	RGD:1303302 	J:155856 	
+MGI:106206	Nrp1	neuropilin 1	8		postsynapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:106639 	
+MGI:106206	Nrp1	neuropilin 1	8		postsynapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:106639 	
+MGI:1100492	Nrp2	neuropilin 2	1		regulation of postsynapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:156473 	
+MGI:1100492	Nrp2	neuropilin 2	1		regulation of postsynapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:156473 	
+MGI:1096391	Nrxn1	neurexin I	17		gamma-aminobutyric acid receptor clustering			IDA		J:175189 	
+MGI:1096391	Nrxn1	neurexin I	17		gephyrin clustering involved in postsynaptic density assembly			IDA		J:175189 J:175310 	
+MGI:1096391	Nrxn1	neurexin I	17		guanylate kinase-associated protein clustering			IDA		J:175189 	
+MGI:1096391	Nrxn1	neurexin I	17		neuroligin clustering involved in postsynaptic membrane assembly			IDA		J:175189 J:175310 	
+MGI:1096391	Nrxn1	neurexin I	17		NMDA glutamate receptor clustering			IDA		J:175189 	
+MGI:1096391	Nrxn1	neurexin I	17		positive regulation of synapse assembly	regulates a function/process that happens in cerebral cortex,regulates a function/process that happens in CNS neuron (sensu Vertebrata)		IGI	MGI:88281 MGI:88282 	J:171950 	
+MGI:1096391	Nrxn1	neurexin I	17		positive regulation of synapse maturation	regulates a function/process that has the participant neuron		IDA		J:153439 	
+MGI:1096391	Nrxn1	neurexin I	17		postsynaptic density protein 95 clustering			IDA		J:175189 J:175310 	
+MGI:1096391	Nrxn1	neurexin I	17		postsynaptic membrane assembly			IDA		J:175189 J:175310 	
+MGI:1096391	Nrxn1	neurexin I	17		presynapse assembly			ISO	RGD:628659 	J:155856 	
+MGI:1096391	Nrxn1	neurexin I	17		presynaptic membrane assembly			IDA		J:84070 	
+MGI:1096391	Nrxn1	neurexin I	17		protein-containing complex assembly involved in synapse maturation			IDA		J:84070 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebellum		IDA		J:177327 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebellum		IMP		J:177327 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of postsynaptic specialization assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:175189 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of postsynaptic specialization assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:175189 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of postsynaptic specialization assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:175189 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of postsynaptic specialization assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:175189 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of presynapse assembly	happens in glutamatergic synapse,happens in cerebellum		IDA		J:177327 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:263410 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of presynapse assembly	happens in glutamatergic synapse,happens in cerebellum		IMP		J:177327 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:263410 	
+MGI:1096391	Nrxn1	neurexin I	17		regulation of presynapse assembly	happens in glutamatergic synapse,happens in cerebellum		IPI		J:177327 	
+MGI:1096391	Nrxn1	neurexin I	17		synapse assembly			IGI	MGI:1096362 MGI:1096389 	J:89452 	
+MGI:1096391	Nrxn1	neurexin I	17		synaptic membrane adhesion	happens in hippocampal formation		IDA		J:84070 	
+MGI:1096391	Nrxn1	neurexin I	17		synaptic membrane adhesion			IMP		J:230665 	
+MGI:1096391	Nrxn1	neurexin I	17		synaptic membrane adhesion	happens in hippocampal formation		IMP		J:84070 	
+MGI:1096362	Nrxn2	neurexin II	19		gephyrin clustering involved in postsynaptic density assembly			IDA		J:175310 	
+MGI:1096362	Nrxn2	neurexin II	19		neuroligin clustering involved in postsynaptic membrane assembly			IDA		J:175310 	
+MGI:1096362	Nrxn2	neurexin II	19		postsynaptic density protein 95 clustering			IDA		J:175310 	
+MGI:1096362	Nrxn2	neurexin II	19		postsynaptic membrane assembly			IDA		J:175310 	
+MGI:1096362	Nrxn2	neurexin II	19		synapse assembly			IGI	MGI:1096389 MGI:1096391 	J:89452 	
+MGI:1096389	Nrxn3	neurexin III	12		synapse assembly			IGI	MGI:1096362 MGI:1096391 	J:89452 	
+MGI:105088	Ntn1	netrin 1	11		regulation of synapse assembly	happens in cerebral cortex		EXP		J:204665 	
+MGI:105088	Ntn1	netrin 1	11		regulation of synapse assembly	happens in cerebral cortex		IDA		J:204665 	
+MGI:105088	Ntn1	netrin 1	11		regulation of synapse assembly	happens in cerebral cortex		IMP		J:204665 	
+MGI:1934028	Ntng1	netrin G1	3		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:218200 	
+MGI:1934028	Ntng1	netrin G1	3		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:218200 	
+MGI:1934028	Ntng1	netrin G1	3		synaptic membrane adhesion			ISO	Q9Y2I2 	J:164563 	
+MGI:2159341	Ntng2	netrin G2	2		postsynaptic specialization assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:113153 	
+MGI:2159341	Ntng2	netrin G2	2		postsynaptic specialization assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:113153 	
+MGI:2159341	Ntng2	netrin G2	2		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:113153 	
+MGI:2159341	Ntng2	netrin G2	2		regulation of presynapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:113153 	
+MGI:2159341	Ntng2	netrin G2	2		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:113153 	
+MGI:2159341	Ntng2	netrin G2	2		synaptic membrane adhesion	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:113153 	
+MGI:97383	Ntrk1	neurotrophic tyrosine kinase, receptor, type 1	3		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:97384	Ntrk2	neurotrophic tyrosine kinase, receptor, type 2	13		neuromuscular junction development		PR:P15209-1	IMP	MGI:1857814 	J:58563 	
+MGI:97384	Ntrk2	neurotrophic tyrosine kinase, receptor, type 2	13		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:97385	Ntrk3	neurotrophic tyrosine kinase, receptor, type 3	7		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:97385	Ntrk3	neurotrophic tyrosine kinase, receptor, type 3	7		regulation of postsynaptic density assembly			ISO	RGD:3214 	J:155856 	
+MGI:97385	Ntrk3	neurotrophic tyrosine kinase, receptor, type 3	7		regulation of presynapse assembly			ISO	RGD:3214 	J:155856 	
+MGI:107423	Numb	NUMB endocytic adaptor protein	12		regulation of postsynaptic specialization assembly			ISO	RGD:620107 	J:155856 	
+MGI:1921393	Opa1	OPA1, mitochondrial dynamin like GTPase	16		positive regulation of dendritic spine morphogenesis			ISO	RGD:708423 	J:155856 	
+MGI:2151070	Ophn1	oligophrenin 1	X		maintenance of postsynaptic specialization structure			ISO	RGD:1563435 	J:155856 	
+MGI:97453	Oxt	oxytocin	2		positive regulation of synapse assembly			ISO	RGD:3238 	J:155856 	
+MGI:109147	Oxtr	oxytocin receptor	6		positive regulation of synapse assembly			ISO	RGD:3239 	J:155856 	
+MGI:2665170	P2rx2	purinergic receptor P2X, ligand-gated ion channel, 2	5		neuromuscular junction development			IMP	MGI:2687349 	J:128394 	
+MGI:109520	Pafah1b1	platelet-activating factor acetylhydrolase, isoform 1b, subunit 1	11		positive regulation of dendritic spine morphogenesis			IMP		J:219053 	
+MGI:1339975	Pak1	p21 (RAC1) activated kinase 1	7		neuromuscular junction development			IGI	MGI:87961 MGI:94941 	J:78399 	
+MGI:1339656	Pak3	p21 (RAC1) activated kinase 3	X		dendritic spine morphogenesis			IMP		J:239194 	
+MGI:1339656	Pak3	p21 (RAC1) activated kinase 3	X		positive regulation of dendritic spine morphogenesis			ISO	RGD:3251 	J:155856 	
+MGI:1919583	Palld	palladin, cytoskeletal associated protein	8		synapse organization			IBA	PTN002895063 	J:265628 	
+MGI:1261814	Palm	paralemmin	10		synapse maturation			IDA		J:172971 	
+MGI:1306800	Pcdh8	protocadherin 8	14		regulation of synaptic membrane adhesion			ISO	RGD:69350 	J:155856 	
+MGI:2684924	Pcdh17	protocadherin 17	14		presynaptic active zone assembly			IMP		J:201552 	
+MGI:2684924	Pcdh17	protocadherin 17	14		synaptic membrane adhesion	happens in glutamatergic synapse,happens in corpus striatum		IDA		J:201552 	
+MGI:2684924	Pcdh17	protocadherin 17	14		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in globus pallidus		IDA		J:201552 	
+MGI:2684924	Pcdh17	protocadherin 17	14		synaptic membrane adhesion	happens in glutamatergic synapse,happens in corpus striatum		IMP		J:201552 	
+MGI:2684924	Pcdh17	protocadherin 17	14		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in globus pallidus		IMP		J:201552 	
+MGI:2684924	Pcdh17	protocadherin 17	14		synaptic membrane adhesion	happens in glutamatergic synapse,happens in corpus striatum		IPI		J:201552 	
+MGI:2684924	Pcdh17	protocadherin 17	14		synaptic membrane adhesion	happens in GABA-ergic synapse,happens in globus pallidus		IPI		J:201552 	
+MGI:2136752	Pcdhb16	protocadherin beta 16	18		synapse assembly			TAS		J:135492 	
+MGI:1935201	Pcdhgc3	protocadherin gamma subfamily C, 3	18		synapse organization	has the participant sensory neuron of spinal nerve|happens in spinal cord		IGI	MGI:1935203 MGI:1935205 	J:188341 	
+MGI:1935203	Pcdhgc4	protocadherin gamma subfamily C, 4	18		synapse organization	happens in spinal cord,has the participant sensory neuron of spinal nerve		IGI	MGI:1935201 MGI:1935205 	J:188341 	
+MGI:1935205	Pcdhgc5	protocadherin gamma subfamily C, 5	18		synapse organization	happens in spinal cord,has the participant sensory neuron of spinal nerve		IGI	MGI:1935201 MGI:1935205 	J:188341 	
+MGI:1349390	Pclo	piccolo (presynaptic cytomatrix protein)	5		presynaptic active zone assembly			ISO	RGD:69406 	J:155856 	
+MGI:1349390	Pclo	piccolo (presynaptic cytomatrix protein)	5		synapse assembly			IEA	IPR030629 	J:72247 	
+MGI:1349390	Pclo	piccolo (presynaptic cytomatrix protein)	5		synapse organization			ISO	RGD:69406 	J:155856 	
+MGI:97528	Pdgfb	platelet derived growth factor, B polypeptide	15		synapse assembly			IMP	MGI:2670574 	J:215977 	
+MGI:1927489	Pdlim5	PDZ and LIM domain 5	3		regulation of dendritic spine morphogenesis			ISO	RGD:621076 	J:155856 	
+MGI:1927489	Pdlim5	PDZ and LIM domain 5	3		regulation of synapse assembly			ISO	RGD:621076 	J:155856 	
+MGI:1933157	Pdzrn3	PDZ domain containing RING finger 3	6		neuromuscular junction development			IBA	PTN002694419 	J:265628 	
+MGI:1933157	Pdzrn3	PDZ domain containing RING finger 3	6		neuromuscular junction development			IMP		J:134925 	
+MGI:97549	Pfn1	profilin 1	11		modification of postsynaptic actin cytoskeleton	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:231072 	
+MGI:97549	Pfn1	profilin 1	11		modification of postsynaptic actin cytoskeleton	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:231072 	
+MGI:97549	Pfn1	profilin 1	11		synapse maturation	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:231072 	
+MGI:97549	Pfn1	profilin 1	11		synapse maturation	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:231072 	
+MGI:97550	Pfn2	profilin 2	3		modification of postsynaptic actin cytoskeleton	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:231072 	
+MGI:97550	Pfn2	profilin 2	3		modification of postsynaptic actin cytoskeleton	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:231072 	
+MGI:1858305	Pgrmc1	progesterone receptor membrane component 1	X		modification of synaptic structure			ISO	RGD:70890 	J:155856 	
+MGI:1858305	Pgrmc1	progesterone receptor membrane component 1	X		negative regulation of synapse organization			ISO	RGD:70890 	J:155856 	
+MGI:2385902	Picalm	phosphatidylinositol binding clathrin assembly protein	7		regulation of terminal button organization			ISO	RGD:621054 	J:155856 	
+MGI:894645	Pick1	protein interacting with C kinase 1	15		dendritic spine maintenance			IBA	PTN000254194 	J:265628 	
+MGI:894645	Pick1	protein interacting with C kinase 1	15		dendritic spine maintenance			ISO	RGD:69437 	J:155856 	
+MGI:894645	Pick1	protein interacting with C kinase 1	15		dendritic spine organization			IBA	PTN000254194 	J:265628 	
+MGI:894645	Pick1	protein interacting with C kinase 1	15		dendritic spine organization			ISO	RGD:69437 	J:155856 	
+MGI:1346036	Pin1	protein (peptidyl-prolyl cis/trans isomerase) NIMA-interacting 1	9		synapse organization			IMP		J:186644 	
+MGI:2154238	Plxnb1	plexin B1	9		inhibitory synapse assembly			IMP		J:198674 J:268255 	
+MGI:2154239	Plxnb2	plexin B2	15		excitatory synapse assembly			IMP		J:268255 	
+MGI:2154244	Plxnd1	plexin D1	6		synapse assembly			IMP		J:181566 	
+MGI:97631	Pmp22	peripheral myelin protein 22	11		neuromuscular junction development, skeletal muscle fiber			IMP	MGI:1856217 	J:215632 	
+MGI:1924750	Ppfia1	protein tyrosine phosphatase, receptor type, f polypeptide (PTPRF), interacting protein (liprin), alpha 1	7		synapse organization			IBA	PTN000971714 	J:265628 	
+MGI:2443834	Ppfia2	protein tyrosine phosphatase, receptor type, f polypeptide (PTPRF), interacting protein (liprin), alpha 2	10		regulation of dendritic spine morphogenesis			ISO	O75334 	J:164563 	
+MGI:2443834	Ppfia2	protein tyrosine phosphatase, receptor type, f polypeptide (PTPRF), interacting protein (liprin), alpha 2	10		synapse organization			IBA	PTN000971714 	J:265628 	
+MGI:1924037	Ppfia3	protein tyrosine phosphatase, receptor type, f polypeptide (PTPRF), interacting protein (liprin), alpha 3	7		synapse organization			IBA	PTN000971714 	J:265628 	
+MGI:1915757	Ppfia4	protein tyrosine phosphatase, receptor type, f polypeptide (PTPRF), interacting protein (liprin), alpha 4	1		synapse organization			IBA	PTN000971714 	J:265628 	
+MGI:1914783	Ppfibp1	PTPRF interacting protein, binding protein 1 (liprin beta 1)	6		neuromuscular junction development			IBA	PTN000287218 	J:265628 	
+MGI:1914783	Ppfibp1	PTPRF interacting protein, binding protein 1 (liprin beta 1)	6		synapse organization			IBA	PTN000971714 	J:265628 	
+MGI:894649	Ppfibp2	PTPRF interacting protein, binding protein 2 (liprin beta 2)	7		neuromuscular junction development			IBA	PTN000287218 	J:265628 	
+MGI:894649	Ppfibp2	PTPRF interacting protein, binding protein 2 (liprin beta 2)	7		synapse organization			IBA	PTN000971714 	J:265628 	
+MGI:2442401	Ppp1r9a	protein phosphatase 1, regulatory subunit 9A	6		postsynaptic actin cytoskeleton organization			ISO	RGD:632280 	J:155856 	
+MGI:2442401	Ppp1r9a	protein phosphatase 1, regulatory subunit 9A	6		regulation of dendritic spine morphogenesis			ISO	RGD:632280 	J:155856 	
+MGI:2442401	Ppp1r9a	protein phosphatase 1, regulatory subunit 9A	6		regulation of synapse assembly			ISO	RGD:632280 	J:155856 	
+MGI:2442401	Ppp1r9a	protein phosphatase 1, regulatory subunit 9A	6		regulation of synapse structural plasticity			ISO	RGD:632280 	J:155856 	
+MGI:97595	Prkca	protein kinase C, alpha	11		positive regulation of synapse assembly			ISO	RGD:3395 	J:155856 	
+MGI:1919224	Prmt3	protein arginine N-methyltransferase 3	7		dendritic spine morphogenesis			ISO	RGD:620413 	J:155856 	
+MGI:97769	Prnp	prion protein	2		negative regulation of dendritic spine maintenance	happens in neuron of cerebral cortex,is a part of cellular response to amyloid-beta		IGI	P39688 Q01097 	J:190064 	
+MGI:97769	Prnp	prion protein	2		negative regulation of dendritic spine maintenance	regulates a function/process that happens in hippocampal neuron		IGI	CPX-1134 	J:201741 	
+MGI:1202717	Psen1	presenilin 1	12		synapse organization			ISO	P49768 	J:164563 	
+MGI:109583	Pten	phosphatase and tensin homolog	19		dendritic spine morphogenesis			IMP		J:130843 J:184118 	
+MGI:109583	Pten	phosphatase and tensin homolog	19		negative regulation of dendritic spine morphogenesis			IMP		J:109635 	
+MGI:109583	Pten	phosphatase and tensin homolog	19		postsynaptic density assembly			IMP		J:130843 	
+MGI:109583	Pten	phosphatase and tensin homolog	19		presynaptic membrane assembly			IMP		J:130843 	
+MGI:109583	Pten	phosphatase and tensin homolog	19		synapse assembly			IMP		J:109635 	
+MGI:109583	Pten	phosphatase and tensin homolog	19		synapse maturation			IMP		J:130843 	
+MGI:95481	Ptk2	PTK2 protein tyrosine kinase 2	15		negative regulation of synapse assembly	regulates a function/process that has the participant cerebellum,regulates a function/process that has the participant Purkinje cell		IMP	MGI:1857596 	J:93215 	
+MGI:97804	Ptn	pleiotrophin	6		negative regulation of neuromuscular junction development			ISO	RGD:3444 	J:155856 	
+MGI:97804	Ptn	pleiotrophin	6		positive regulation of skeletal muscle acetylcholine-gated channel clustering			ISO	RGD:3444 	J:155856 	
+MGI:97812	Ptprd	protein tyrosine phosphatase, receptor type, D	4		positive regulation of synapse assembly			IDA		J:222796 J:241468 	
+MGI:97812	Ptprd	protein tyrosine phosphatase, receptor type, D	4		presynaptic membrane assembly			IDA		J:177124 	
+MGI:97812	Ptprd	protein tyrosine phosphatase, receptor type, D	4		presynaptic membrane assembly			IMP		J:177124 	
+MGI:97812	Ptprd	protein tyrosine phosphatase, receptor type, D	4		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:182360 	
+MGI:97812	Ptprd	protein tyrosine phosphatase, receptor type, D	4		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:182360 	
+MGI:97812	Ptprd	protein tyrosine phosphatase, receptor type, D	4		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in cerebral cortex		IPI		J:182360 	
+MGI:97812	Ptprd	protein tyrosine phosphatase, receptor type, D	4		synaptic membrane adhesion			IBA	PTN000760418 	J:265628 	
+MGI:102695	Ptprf	protein tyrosine phosphatase, receptor type, F	4		regulation of postsynapse organization			ISO	RGD:3453 	J:155856 	
+MGI:102695	Ptprf	protein tyrosine phosphatase, receptor type, F	4		synaptic membrane adhesion			IBA	PTN000760418 	J:265628 	
+MGI:102695	Ptprf	protein tyrosine phosphatase, receptor type, F	4		synaptic membrane adhesion			ISO	RGD:3453 	J:155856 	
+MGI:102695	Ptprf	protein tyrosine phosphatase, receptor type, F	4		synaptic membrane adhesion			ISO	P10586 	J:164563 	
+MGI:1097152	Ptpro	protein tyrosine phosphatase, receptor type, O	6		regulation of synapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:248929 	
+MGI:1097152	Ptpro	protein tyrosine phosphatase, receptor type, O	6		regulation of synapse organization	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:248929 	
+MGI:1097152	Ptpro	protein tyrosine phosphatase, receptor type, O	6		regulation of synapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:248929 	
+MGI:1097152	Ptpro	protein tyrosine phosphatase, receptor type, O	6		regulation of synapse organization	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:248929 	
+MGI:97815	Ptprs	protein tyrosine phosphatase, receptor type, S	17		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:168143 	
+MGI:97815	Ptprs	protein tyrosine phosphatase, receptor type, S	17		regulation of postsynaptic density assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:168143 	
+MGI:97815	Ptprs	protein tyrosine phosphatase, receptor type, S	17		regulation of postsynaptic density assembly			ISO	RGD:3452 	J:155856 	
+MGI:97815	Ptprs	protein tyrosine phosphatase, receptor type, S	17		regulation of presynapse assembly			ISO	RGD:3452 	J:155856 	
+MGI:97815	Ptprs	protein tyrosine phosphatase, receptor type, S	17		synapse organization	happens in Schaffer collateral - CA1 synapse		IDA		J:186269 	
+MGI:97815	Ptprs	protein tyrosine phosphatase, receptor type, S	17		synapse organization	happens in Schaffer collateral - CA1 synapse		IMP		J:186269 	
+MGI:97815	Ptprs	protein tyrosine phosphatase, receptor type, S	17		synaptic membrane adhesion			IBA	PTN002709329 	J:265628 	
+MGI:97815	Ptprs	protein tyrosine phosphatase, receptor type, S	17		synaptic membrane adhesion			ISO	RGD:3452 	J:155856 	
+MGI:97815	Ptprs	protein tyrosine phosphatase, receptor type, S	17		synaptic membrane adhesion			ISO	Q13332 	J:164563 	
+MGI:97843	Rab3a	RAB3A, member RAS oncogene family	8		maintenance of presynaptic active zone structure			IBA	PTN000635510 	J:265628 	
+MGI:97843	Rab3a	RAB3A, member RAS oncogene family	8		maintenance of presynaptic active zone structure	has the participant embryo|has the participant diaphragm		IMP	MGI:3762127 	J:126869 	
+MGI:104640	Rab17	RAB17, member RAS oncogene family	1		regulation of synapse assembly			IMP		J:196245 	
+MGI:2385107	Rab29	RAB29, member RAS oncogene family	1		synapse assembly			ISO	O14966 	J:164563 	
+MGI:1915040	Rab39b	RAB39B, member RAS oncogene family	X		synapse organization			IMP		J:161174 	
+MGI:1917723	Rapgef4	Rap guanine nucleotide exchange factor (GEF) 4	2		regulation of postsynapse organization			ISO	RGD:621886 	J:155856 	
+MGI:99422	Rapsn	receptor-associated protein of the synapse	2		regulation of postsynaptic membrane organization			ISO	RGD:1311592 	J:155856 	
+MGI:103022	Reln	reelin	5		NMDA glutamate receptor clustering			IMP		J:175650 	
+MGI:103022	Reln	reelin	5		positive regulation of dendritic spine morphogenesis			IDA		J:184736 	
+MGI:103022	Reln	reelin	5		positive regulation of dendritic spine morphogenesis			IMP		J:175650 J:184736 	
+MGI:103022	Reln	reelin	5		positive regulation of synapse maturation			IDA		J:128028 	
+MGI:103022	Reln	reelin	5		positive regulation of synapse maturation			IMP		J:128028 	
+MGI:103022	Reln	reelin	5		postsynaptic density assembly			IC	GO:0035418 	J:175650 	
+MGI:103022	Reln	reelin	5		postsynaptic density protein 95 clustering			IMP		J:175650 	
+MGI:1915080	Rer1	retention in endoplasmic reticulum sorting receptor 1	4		neuromuscular junction development			IMP	MGI:4329578 	J:169417 	
+MGI:1915080	Rer1	retention in endoplasmic reticulum sorting receptor 1	4		skeletal muscle acetylcholine-gated channel clustering			IMP	MGI:4329578 	J:169417 	
+MGI:104897	Rest	RE1-silencing transcription factor	5		modification of synaptic structure			ISO	RGD:621069 	J:155856 	
+MGI:97912	Rheb	Ras homolog enriched in brain	5		regulation of postsynapse organization			ISO	RGD:621840 	J:155856 	
+MGI:1096342	Rhoa	ras homolog family member A	9		regulation of modification of postsynaptic actin cytoskeleton			ISO	P61586 	J:164563 	
+MGI:1096342	Rhoa	ras homolog family member A	9		regulation of modification of synaptic structure			ISO	RGD:619921 	J:155856 	
+MGI:2443331	Rims3	regulating synaptic membrane exocytosis 3	4		regulation of synapse organization			ISO	RGD:628762 	J:155856 	
+MGI:2674366	Rims4	regulating synaptic membrane exocytosis 4	2		regulation of synapse organization			ISO	RGD:628695 	J:155856 	
+MGI:107926	Rock2	Rho-associated coiled-coil containing protein kinase 2	12		postsynaptic actin cytoskeleton organization	happens in Schaffer collateral - CA1 synapse		IDA		J:225274 	
+MGI:107926	Rock2	Rho-associated coiled-coil containing protein kinase 2	12		postsynaptic actin cytoskeleton organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:225274 	
+MGI:107926	Rock2	Rho-associated coiled-coil containing protein kinase 2	12		postsynaptic actin cytoskeleton organization	happens in Schaffer collateral - CA1 synapse		IMP		J:225274 	
+MGI:107926	Rock2	Rho-associated coiled-coil containing protein kinase 2	12		postsynaptic actin cytoskeleton organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:225274 	
+MGI:102788	Rph3a	rabphilin 3A	5		dendritic spine organization			ISO	RGD:620073 	J:155856 	
+MGI:1337026	Sdcbp	syndecan binding protein	4		presynapse assembly			ISO	RGD:621497 	J:155856 	
+MGI:2444413	Sdk1	sidekick cell adhesion molecule 1	5		synapse assembly			IBA	PTN002236006 	J:265628 	
+MGI:2443847	Sdk2	sidekick cell adhesion molecule 2	11		synapse assembly			IBA	PTN002236006 	J:265628 	
+MGI:2443847	Sdk2	sidekick cell adhesion molecule 2	11		synapse assembly			IMP		J:225578 	
+MGI:1340034	Sema3e	sema domain, immunoglobulin domain (Ig), short basic domain, secreted, (semaphorin) 3E	5		synapse organization			IMP		J:181566 	
+MGI:1096347	Sema3f	sema domain, immunoglobulin domain (Ig), short basic domain, secreted, (semaphorin) 3F	9		regulation of postsynapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IDA		J:156473 J:216166 	
+MGI:1096347	Sema3f	sema domain, immunoglobulin domain (Ig), short basic domain, secreted, (semaphorin) 3F	9		regulation of postsynapse organization	happens in glutamatergic synapse,happens in cerebral cortex		IMP		J:156473 J:216166 	
+MGI:107560	Sema4a	sema domain, immunoglobulin domain (Ig), transmembrane domain (TM) and short cytoplasmic domain, (semaphorin) 4A	3		positive regulation of excitatory synapse assembly			IMP		J:268255 	
+MGI:107560	Sema4a	sema domain, immunoglobulin domain (Ig), transmembrane domain (TM) and short cytoplasmic domain, (semaphorin) 4A	3		positive regulation of inhibitory synapse assembly			IMP		J:268255 	
+MGI:109244	Sema4d	sema domain, immunoglobulin domain (Ig), transmembrane domain (TM) and short cytoplasmic domain, (semaphorin) 4D	13		positive regulation of inhibitory synapse assembly			IDA		J:198674 	
+MGI:109244	Sema4d	sema domain, immunoglobulin domain (Ig), transmembrane domain (TM) and short cytoplasmic domain, (semaphorin) 4D	13		positive regulation of inhibitory synapse assembly			IMP		J:268255 	
+MGI:1335094	Septin7	septin 7	9		dendritic spine morphogenesis	happens in brain|happens in cerebral cortex neuron		IMP		J:205987 	
+MGI:1335094	Septin7	septin 7	9		postsynapse organization			ISO	RGD:620469 	J:155856 	
+MGI:1277214	Septin11	septin 11	5		regulation of synapse organization			ISO	RGD:1307405 	J:155856 	
+MGI:104745	Sez6	seizure related gene 6	11		synapse maturation	happens in cerebellum		IGI	MGI:1935121 MGI:2385295 	J:111556 	
+MGI:1935121	Sez6l	seizure related 6 homolog like	5		synapse maturation	happens in cerebellum		IGI	MGI:104745 MGI:2385295 	J:111556 	
+MGI:2385295	Sez6l2	seizure related 6 homolog like 2	7		synapse maturation	happens in cerebellum		IGI	MGI:104745 MGI:1935121 	J:111556 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		dendritic spine morphogenesis			IBA	PTN001191880 	J:265628 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		dendritic spine morphogenesis			IMP		J:132277 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		postsynapse organization	happens in Schaffer collateral - CA1 synapse		IDA		J:132277 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:132277 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		postsynapse organization	happens in Schaffer collateral - CA1 synapse		IMP		J:132277 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:132277 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		postsynaptic density assembly			IBA	PTN001191880 	J:265628 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		synapse assembly			IBA	PTN001191880 	J:265628 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		synapse maturation			ISO	RGD:621011 	J:155856 	
+MGI:3613677	Shank1	SH3 and multiple ankyrin repeat domains 1	7		synaptic growth at neuromuscular junction			IBA	PTN001191880 	J:265628 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		dendritic spine morphogenesis			IBA	PTN001191880 	J:265628 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		maintenance of postsynaptic density structure			IDA		J:186718 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		maintenance of postsynaptic density structure			IMP		J:186718 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		postsynaptic density assembly			IBA	PTN001191880 	J:265628 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		regulation of synapse organization			ISO	RGD:628772 	J:155856 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		synapse assembly			IBA	PTN001191880 	J:265628 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		synapse assembly	happens in hippocampus CA1		IMP		J:186718 	
+MGI:2671987	Shank2	SH3 and multiple ankyrin repeat domains 2	7		synaptic growth at neuromuscular junction			IBA	PTN001191880 	J:265628 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		AMPA glutamate receptor clustering			IMP		J:173402 J:184110 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		AMPA glutamate receptor clustering	happens in hippocampal neuron		IMP		J:184110 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		dendritic spine morphogenesis			IBA	PTN001191880 	J:265628 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		dendritic spine morphogenesis			IMP		J:171113 J:175320 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		dendritic spine morphogenesis			IMP	MGI:5056336 	J:173402 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		guanylate kinase-associated protein clustering			IMP		J:173402 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		NMDA glutamate receptor clustering			IMP		J:173402 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		positive regulation of synapse structural plasticity			IMP		J:175320 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		postsynaptic density assembly			IBA	PTN001191880 	J:265628 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		postsynaptic density assembly			IMP		J:171113 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		regulation of AMPA glutamate receptor clustering			IMP	MGI:5056336 	J:173402 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		regulation of dendritic spine morphogenesis			IMP		J:184110 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		regulation of dendritic spine morphogenesis	happens in hippocampal neuron		IMP		J:184110 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		regulation of synapse organization			ISO	RGD:69264 	J:155856 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		synapse assembly			IBA	PTN001191880 	J:265628 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		synapse assembly			IMP		J:171113 	
+MGI:1930016	Shank3	SH3 and multiple ankyrin repeat domains 3	15		synaptic growth at neuromuscular junction			IBA	PTN001191880 	J:265628 	
+MGI:2685725	Shisa6	shisa family member 6	11		regulation of AMPA glutamate receptor clustering			IMP		J:236346 	
+MGI:3605641	Shisa7	shisa family member 7	7		regulation of AMPA glutamate receptor clustering			IMP		J:255015 	
+MGI:2443679	Sipa1l1	signal-induced proliferation-associated 1 like 1	12		postsynaptic actin cytoskeleton organization			ISO	RGD:708497 	J:155856 	
+MGI:2443679	Sipa1l1	signal-induced proliferation-associated 1 like 1	12		regulation of dendritic spine morphogenesis			ISO	RGD:708497 	J:155856 	
+MGI:2443679	Sipa1l1	signal-induced proliferation-associated 1 like 1	12		regulation of postsynaptic density assembly			ISO	RGD:708497 	J:155856 	
+MGI:102780	Six1	sine oculis-related homeobox 1	12		regulation of synaptic growth at neuromuscular junction			IGI	MGI:106034 	J:178379 	
+MGI:106034	Six4	sine oculis-related homeobox 4	12		regulation of synaptic growth at neuromuscular junction			IGI	MGI:102780 	J:178379 	
+MGI:1347355	Slc7a11	solute carrier family 7 (cationic amino acid transporter, y+ system), member 11	3		regulation of AMPA glutamate receptor clustering			IMP	MGI:3608695 	J:218184 	
+MGI:1347355	Slc7a11	solute carrier family 7 (cationic amino acid transporter, y+ system), member 11	3		regulation of synapse organization			IMP	MGI:3608695 	J:218184 	
+MGI:2443511	Slc9a6	solute carrier family 9 (sodium/hydrogen exchanger), member 6	X		synapse organization			IMP	MGI:3604561 	J:201826 	
+MGI:1914703	Slc25a46	solute carrier family 25, member 46	18		synapse assembly	happens in glutamatergic synapse,happens in cerebellum internal granule cell layer		IMP	MGI:6118180 	J:242350 	
+MGI:1914703	Slc25a46	solute carrier family 25, member 46	18		synapse assembly	happens in glutamatergic synapse,happens in cerebellum molecular layer		IMP	MGI:6118180 	J:242350 	
+MGI:2679446	Slitrk1	SLIT and NTRK-like family, member 1	14		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2679446	Slitrk1	SLIT and NTRK-like family, member 1	14		regulation of presynapse assembly			ISO	Q96PX8 	J:164563 	
+MGI:2679446	Slitrk1	SLIT and NTRK-like family, member 1	14		regulation of synapse organization			ISO	RGD:1308858 	J:155856 	
+MGI:2679446	Slitrk1	SLIT and NTRK-like family, member 1	14		synapse assembly			ISO	Q96PX8 	J:164563 	
+MGI:2679446	Slitrk1	SLIT and NTRK-like family, member 1	14		synaptic membrane adhesion			ISO	Q96PX8 	J:164563 	
+MGI:2679449	Slitrk2	SLIT and NTRK-like family, member 2	X		positive regulation of synapse assembly			IDA		J:211830 J:241468 	
+MGI:2679449	Slitrk2	SLIT and NTRK-like family, member 2	X		regulation of presynapse assembly			ISO	Q9H156 	J:164563 	
+MGI:2679449	Slitrk2	SLIT and NTRK-like family, member 2	X		regulation of synapse organization			ISO	Q9H156 	J:164563 	
+MGI:2679449	Slitrk2	SLIT and NTRK-like family, member 2	X		synaptic membrane adhesion			ISO	Q9H156 	J:164563 	
+MGI:2679447	Slitrk3	SLIT and NTRK-like family, member 3	3		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2679447	Slitrk3	SLIT and NTRK-like family, member 3	3		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IDA		J:232385 	
+MGI:2679447	Slitrk3	SLIT and NTRK-like family, member 3	3		regulation of presynapse assembly	happens in GABA-ergic synapse,happens in hippocampal formation		IMP		J:232385 	
+MGI:2679447	Slitrk3	SLIT and NTRK-like family, member 3	3		regulation of presynapse assembly			ISO	O94933 	J:164563 	
+MGI:2679447	Slitrk3	SLIT and NTRK-like family, member 3	3		synaptic membrane adhesion			ISO	O94933 	J:164563 	
+MGI:2442509	Slitrk4	SLIT and NTRK-like family, member 4	X		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2442509	Slitrk4	SLIT and NTRK-like family, member 4	X		regulation of synapse organization			ISO	Q8IW52 	J:164563 	
+MGI:2679448	Slitrk5	SLIT and NTRK-like family, member 5	14		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2443198	Slitrk6	SLIT and NTRK-like family, member 6	14		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:2443198	Slitrk6	SLIT and NTRK-like family, member 6	14		synapse assembly			IMP	MGI:4417931 	J:201352 	
+MGI:2443198	Slitrk6	SLIT and NTRK-like family, member 6	14		synapse assembly			ISO	Q9H5Y7 	J:201352 	
+MGI:109132	Snap91	synaptosomal-associated protein 91	9		regulation of terminal button organization			ISO	RGD:69276 	J:155856 	
+MGI:1333745	Snapin	SNAP-associated protein	3		terminal button organization			IMP	MGI:3608768 	J:157371 	
+MGI:1277151	Snca	synuclein, alpha	6		regulation of presynapse assembly			ISO	P37840 	J:164563 	
+MGI:1277151	Snca	synuclein, alpha	6		synapse organization	happens in hippocampus CA3		IGI	MGI:1298397 MGI:1889011 	J:167549 	
+MGI:1889011	Sncb	synuclein, beta	13		synapse organization	happens in hippocampus CA3		IGI	MGI:1277151 MGI:1298397 	J:167549 	
+MGI:1298397	Sncg	synuclein, gamma	14		synapse organization	happens in hippocampus CA3		IGI	MGI:1277151 MGI:1889011 	J:167549 	
+MGI:101772	Snta1	syntrophin, acidic 1	2		neuromuscular junction development			IMP	MGI:2179769 	J:76455 	
+MGI:1923992	Snx27	sorting nexin family member 27	3		positive regulation of AMPA glutamate receptor clustering			ISO	RGD:628705 	J:155856 	
+MGI:700014	Sorbs1	sorbin and SH3 domain containing 1	19		regulation of skeletal muscle acetylcholine-gated channel clustering			IGI	MGI:104686 MGI:1924574 	J:235913 	
+MGI:1924574	Sorbs2	sorbin and SH3 domain containing 2	8		regulation of skeletal muscle acetylcholine-gated channel clustering			IGI	MGI:104686 MGI:700014 	J:235913 	
+MGI:98373	Sparc	secreted acidic cysteine rich glycoprotein	11		regulation of synapse organization			ISO	RGD:3742 	J:155856 	
+MGI:108110	Sparcl1	SPARC-like 1	5		regulation of synapse organization			ISO	RGD:2531 	J:155856 	
+MGI:108110	Sparcl1	SPARC-like 1	5		synaptic membrane adhesion	happens in glutamatergic synapse,happens in thalamus		IDA		J:230665 	
+MGI:108110	Sparcl1	SPARC-like 1	5		synaptic membrane adhesion	happens in glutamatergic synapse,happens in thalamus		IMP		J:230665 	
+MGI:108110	Sparcl1	SPARC-like 1	5		synaptic membrane adhesion	happens in glutamatergic synapse,happens in thalamus		IPI		J:230665 	
+MGI:1313261	Sptbn2	spectrin beta, non-erythrocytic 2	19		postsynapse organization	happens in parallel fiber to Purkinje cell synapse		IDA		J:177913 	
+MGI:1313261	Sptbn2	spectrin beta, non-erythrocytic 2	19		postsynapse organization	happens in glutamatergic synapse,happens in cerebellum		IDA		J:177913 	
+MGI:1313261	Sptbn2	spectrin beta, non-erythrocytic 2	19		postsynapse organization	happens in parallel fiber to Purkinje cell synapse		IMP		J:177913 	
+MGI:1313261	Sptbn2	spectrin beta, non-erythrocytic 2	19		postsynapse organization	happens in glutamatergic synapse,happens in cerebellum		IMP		J:177913 	
+MGI:1313261	Sptbn2	spectrin beta, non-erythrocytic 2	19		synapse assembly			IMP	MGI:4127354 	J:158494 	
+MGI:1933179	Srcin1	SRC kinase signaling inhibitor 1	11		regulation of dendritic spine morphogenesis			ISO	Q9C0H9 	J:164563 	
+MGI:97756	Srgn	serglycin	10		regulation of postsynapse organization	happens in Schaffer collateral - CA1 synapse		IDA		J:263401 	
+MGI:97756	Srgn	serglycin	10		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:263401 	
+MGI:97756	Srgn	serglycin	10		regulation of postsynapse organization	happens in Schaffer collateral - CA1 synapse		IMP		J:263401 	
+MGI:97756	Srgn	serglycin	10		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:263401 	
+MGI:1916042	Srpx2	sushi-repeat-containing protein, X-linked 2	X		positive regulation of synapse assembly			ISO	RGD:1562444 	J:155856 	
+MGI:1916042	Srpx2	sushi-repeat-containing protein, X-linked 2	X		positive regulation of synapse assembly			ISO	O60687 	J:164563 	
+MGI:2686240	Ssh1	slingshot protein phosphatase 1	5		positive regulation of AMPA glutamate receptor clustering			ISO	RGD:1306038 	J:155856 	
+MGI:1338864	Stau1	staufen double-stranded RNA binding protein 1	2		modification of postsynaptic structure			ISO	RGD:621778 	J:155856 	
+MGI:1352508	Stau2	staufen double-stranded RNA binding protein 2	1		positive regulation of dendritic spine morphogenesis			ISO	RGD:621479 	J:155856 	
+MGI:1352508	Stau2	staufen double-stranded RNA binding protein 2	1		positive regulation of synapse assembly			ISO	RGD:621479 	J:155856 	
+MGI:2442392	Sybu	syntabulin (syntaxin-interacting)	15		synapse maturation			ISO	RGD:1564335 	J:155856 	
+MGI:98460	Syn1	synapsin I	X		synapse organization			ISO	RGD:3797 	J:155856 	
+MGI:3702158	Syndig1	synapse differentiation inducing 1	2		positive regulation of synapse assembly			IDA		J:158601 	
+MGI:3702158	Syndig1	synapse differentiation inducing 1	2		positive regulation of synapse assembly			ISO	RGD:1310753 	J:155856 	
+MGI:3702158	Syndig1	synapse differentiation inducing 1	2		positive regulation of synapse assembly			ISO	Q9H7V2 	J:164563 	
+MGI:3039785	Syngap1	synaptic Ras GTPase activating protein 1 homolog (rat)	17		maintenance of postsynaptic specialization structure	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:263446 	
+MGI:3039785	Syngap1	synaptic Ras GTPase activating protein 1 homolog (rat)	17		maintenance of postsynaptic specialization structure	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:263446 	
+MGI:3039785	Syngap1	synaptic Ras GTPase activating protein 1 homolog (rat)	17		maintenance of postsynaptic specialization structure	happens in glutamatergic synapse,happens in hippocampal formation		IPI		J:263446 	
+MGI:1099446	Synpo	synaptopodin	18		modification of dendritic spine			IBA	PTN001542122 	J:265628 	
+MGI:1099446	Synpo	synaptopodin	18		modification of dendritic spine			ISO	Q8N3V7 	J:164563 	
+MGI:1914110	Tanc1	tetratricopeptide repeat, ankyrin repeat and coiled-coil containing 1	2		dendritic spine maintenance	happens in hippocampus CA3		IMP	MGI:4125076 	J:166453 	
+MGI:1914110	Tanc1	tetratricopeptide repeat, ankyrin repeat and coiled-coil containing 1	2		regulation of postsynapse organization			ISO	RGD:1302949 	J:155856 	
+MGI:98738	Thbs2	thrombospondin 2	17		positive regulation of synapse assembly			ISO	RGD:1310979 	J:155856 	
+MGI:103306	Tiam1	T cell lymphoma invasion and metastasis 1	16		positive regulation of dendritic spine morphogenesis			ISO	RGD:1307455 	J:155856 	
+MGI:103306	Tiam1	T cell lymphoma invasion and metastasis 1	16		regulation of modification of postsynaptic actin cytoskeleton			ISO	RGD:1307455 	J:155856 	
+MGI:1346060	Tlr2	toll-like receptor 2	3		negative regulation of synapse assembly	happens in brain		IGI	P05067 P49768 	J:180762 	
+MGI:1926810	Tmeff1	transmembrane protein with EGF-like and two follistatin-like domains 1	4		neuromuscular junction development			IBA	PTN002471729 	J:265628 	
+MGI:1861735	Tmeff2	transmembrane protein with EGF-like and two follistatin-like domains 2	1		neuromuscular junction development			IBA	PTN002471729 	J:265628 	
+MGI:1932411	Tmem108	transmembrane protein 108	9		postsynaptic density organization			IBA	PTN002823788 	J:265628 	
+MGI:1932411	Tmem108	transmembrane protein 108	9		postsynaptic density organization			IMP		J:239156 	
+MGI:101922	Tnc	tenascin C	4		neuromuscular junction development			IMP	MGI:2148540 	J:47799 	
+MGI:104798	Tnf	tumor necrosis factor	17		regulation of synapse organization	regulates a function/process that happens in hippocampal formation,happens in hippocampal formation,happens in glial cell,regulates a function/process that happens in hippocampal neuron		IMP		J:265635 	
+MGI:99516	Tnr	tenascin R	1		synapse organization	happens in hippocampus CA1|happens in cerebral cortex		IMP	MGI:2154583 	J:102919 	
+MGI:1341264	Tpbg	trophoblast glycoprotein	9		positive regulation of synapse assembly			IDA		J:211830 	
+MGI:1913150	Trem2	triggering receptor expressed on myeloid cells 2	17		complement-mediated synapse pruning			IMP		J:273253 	
+MGI:1929183	Tsc1	TSC complex subunit 1	2		synapse organization			IMP	MGI:2656240 	J:103933 	
+MGI:102548	Tsc2	TSC complex subunit 2	17		regulation of postsynapse organization			ISO	RGD:3908 	J:155856 	
+MGI:98869	Tuba1a	tubulin, alpha 1A	15		regulation of synapse organization	happens in neuromuscular junction		IDA		J:228874 	
+MGI:98869	Tuba1a	tubulin, alpha 1A	15		regulation of synapse organization	happens in neuromuscular junction		IMP		J:228874 	
+MGI:107812	Tubb5	tubulin, beta 5 class I	17		regulation of synapse organization	happens in UBERON:0001950		IDA		J:214318 	
+MGI:107812	Tubb5	tubulin, beta 5 class I	17		regulation of synapse organization	happens in UBERON:0001950		IMP		J:214318 	
+MGI:1917870	Ube2v2	ubiquitin-conjugating enzyme E2 variant 2	16		positive regulation of synapse assembly			ISO	RGD:727838 	J:155856 	
+MGI:105098	Ube3a	ubiquitin protein ligase E3A	7		negative regulation of dendritic spine morphogenesis			ISO	RGD:1306361 	J:155856 	
+MGI:3051532	Unc13a	unc-13 homolog A	8		neuromuscular junction development			IBA	PTN000049880 	J:265628 	
+MGI:3051532	Unc13a	unc-13 homolog A	8		neuromuscular junction development	has the participant diaphragm		IGI	MGI:1342278 	J:99336 	
+MGI:1342278	Unc13b	unc-13 homolog B	4		neuromuscular junction development			IBA	PTN000049880 	J:265628 	
+MGI:1342278	Unc13b	unc-13 homolog B	4		neuromuscular junction development	has the participant diaphragm		IGI	MGI:3051532 	J:99336 	
+MGI:2149021	Unc13c	unc-13 homolog C	9		neuromuscular junction development			IBA	PTN000049880 	J:265628 	
+MGI:104631	Utrn	utrophin	10		neuromuscular junction development			ISO	RGD:3947 	J:155856 	
+MGI:99919	Vcp	valosin containing protein	4		regulation of synapse organization			ISO	RGD:621595 	J:155856 	
+MGI:103223	Vhl	von Hippel-Lindau tumor suppressor	6		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:234716 	
+MGI:103223	Vhl	von Hippel-Lindau tumor suppressor	6		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:234716 	
+MGI:103223	Vhl	von Hippel-Lindau tumor suppressor	6		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IPI		J:234716 	
+MGI:1890467	Vps35	VPS35 retromer complex component	8		regulation of dendritic spine maintenance			ISO	Q96QK1 	J:164563 	
+MGI:1890467	Vps35	VPS35 retromer complex component	8		regulation of terminal button organization			ISO	Q96QK1 	J:164563 	
+MGI:1890467	Vps35	VPS35 retromer complex component	8		synapse assembly	happens in cerebral cortex		IDA		J:263408 	
+MGI:1890467	Vps35	VPS35 retromer complex component	8		synapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:263408 	
+MGI:1890467	Vps35	VPS35 retromer complex component	8		synapse assembly	happens in cerebral cortex		IMP		J:263408 	
+MGI:1890467	Vps35	VPS35 retromer complex component	8		synapse assembly	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:263408 	
+MGI:1916387	Vstm5	V-set and transmembrane domain containing 5	9		positive regulation of excitatory synapse assembly			IMP		J:235713 	
+MGI:1890563	Wasf1	WAS protein family, member 1	10		modification of postsynaptic actin cytoskeleton	happens in corpus striatum		IDA		J:263395 	
+MGI:1890563	Wasf1	WAS protein family, member 1	10		modification of postsynaptic actin cytoskeleton	happens in hippocampal formation		IDA		J:263395 	
+MGI:1890563	Wasf1	WAS protein family, member 1	10		modification of postsynaptic actin cytoskeleton	happens in corpus striatum		IMP		J:263395 	
+MGI:1890563	Wasf1	WAS protein family, member 1	10		modification of postsynaptic actin cytoskeleton	happens in hippocampal formation		IMP		J:263395 	
+MGI:1890563	Wasf1	WAS protein family, member 1	10		modification of postsynaptic actin cytoskeleton	happens in corpus striatum		IPI		J:263395 	
+MGI:1890563	Wasf1	WAS protein family, member 1	10		modification of postsynaptic actin cytoskeleton	happens in hippocampal formation		IPI		J:263395 	
+MGI:1098641	Wasf2	WAS protein family, member 2	4		postsynaptic actin cytoskeleton organization	happens in hippocampal formation		IDA		J:263380 	
+MGI:1098641	Wasf2	WAS protein family, member 2	4		postsynaptic actin cytoskeleton organization	happens in hippocampal formation		IMP		J:263380 	
+MGI:2658986	Wasf3	WAS protein family, member 3	5		modification of postsynaptic actin cytoskeleton	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:263433 	
+MGI:2658986	Wasf3	WAS protein family, member 3	5		modification of postsynaptic actin cytoskeleton	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:263433 	
+MGI:1920428	Wasl	Wiskott-Aldrich syndrome-like (human)	6		dendritic spine morphogenesis			IMP		J:239194 	
+MGI:1920428	Wasl	Wiskott-Aldrich syndrome-like (human)	6		postsynaptic actin cytoskeleton organization			ISO	RGD:735144 	J:155856 	
+MGI:98956	Wnt3a	wingless-type MMTV integration site family, member 3A	11		regulation of presynapse assembly			ISO	P56704 	J:164563 	
+MGI:98956	Wnt3a	wingless-type MMTV integration site family, member 3A	11		regulation of synapse organization			ISO	P56704 	J:164563 	
+MGI:98958	Wnt5a	wingless-type MMTV integration site family, member 5A	14		negative regulation of synapse assembly			IDA		J:162983 	
+MGI:98958	Wnt5a	wingless-type MMTV integration site family, member 5A	14		regulation of postsynapse organization			ISO	P41221 	J:164563 	
+MGI:98958	Wnt5a	wingless-type MMTV integration site family, member 5A	14		regulation of synapse organization			ISO	P41221 	J:164563 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		dendritic spine morphogenesis	happens in hippocampal neuron		IGI	Q9WVB9 	J:173542 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		dendritic spine morphogenesis			ISO	O00755 	J:164563 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		positive regulation of excitatory synapse assembly			ISO	O00755 	J:164563 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		positive regulation of synapse assembly	regulates a function/process that happens in cerebellum,regulates a function/process that happens in granule cell		IDA		J:45351 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		positive regulation of synapse assembly			ISO	O00755 	J:164563 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IDA		J:173542 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		regulation of postsynapse organization	happens in glutamatergic synapse,happens in hippocampal formation		IMP		J:173542 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		regulation of presynapse assembly			ISO	O00755 	J:164563 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		synapse organization	happens in cerebellum,has the participant CNS neuron (sensu Vertebrata)		IGI	MGI:94941 	J:111190 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		synapse organization	happens in cerebellum,has the participant CNS neuron (sensu Vertebrata)		IMP	MGI:1857704 	J:111190 	
+MGI:98962	Wnt7b	wingless-type MMTV integration site family, member 7B	15		synapse organization	happens in cerebellum,has the participant CNS neuron (sensu Vertebrata)		IGI	MGI:98961 	J:111190 	
+MGI:109505	Xlr3b	X-linked lymphocyte-regulated 3B	X		positive regulation of dendritic spine morphogenesis	happens in cortical layer II|happens in cortical layer III		IMP		J:165046 	
+MGI:109505	Xlr3b	X-linked lymphocyte-regulated 3B	X		positive regulation of synapse assembly	happens in cortical layer II|happens in cortical layer III		IMP		J:165046 	
+MGI:1350975	Xlr4b	X-linked lymphocyte-regulated 4B	X		positive regulation of dendritic spine morphogenesis	happens in cortical layer II|happens in cortical layer III		IMP		J:165046 	
+MGI:1350975	Xlr4b	X-linked lymphocyte-regulated 4B	X		positive regulation of synapse assembly	happens in cortical layer II|happens in cortical layer III		IMP		J:165046 	
+MGI:109484	Ywhaz	tyrosine 3-monooxygenase/tryptophan 5-monooxygenase activation protein, zeta polypeptide	15		regulation of synapse maturation			ISO	P63104 	J:164563 	
+MGI:2143676	Zfp365	zinc finger protein 365	10		dendritic spine morphogenesis			IMP		J:243476 	
+MGI:2442949	Zfp804a	zinc finger protein 804A	2		positive regulation of dendritic spine maintenance			ISO	RGD:1305239 	J:155856 	
+MGI:1918025	Zmynd8	zinc finger, MYND-type containing 8	2		positive regulation of dendritic spine maintenance			ISO	RGD:1309544 	J:155856 	
+MGI:1918025	Zmynd8	zinc finger, MYND-type containing 8	2		regulation of postsynaptic density protein 95 clustering			ISO	RGD:1309544 	J:155856 	
+

@@ -220,7 +220,7 @@
                          padj = res$padj,
                          tissue = myitssue)
       data <- data %>% 
-            dplyr::mutate_each(funs(toupper)) %>% 
+        dplyr::mutate(gene = toupper(gene)) %>% 
         dplyr::filter(padj < 0.1) %>% 
         dplyr::mutate(direction = ifelse(lfc >0, "increased", "decreased"),
                       comparison = paste("trained", "yoked", sep = "-")) %>% 
@@ -234,35 +234,24 @@
     DGDEGs <- listofDEGstrainedvyoked(DGdds2, "DG")
 
     ## [1] "DG trained vs yoked"
-
-    ## Warning: funs() is soft deprecated as of dplyr 0.8.0
-    ## please use list() instead
-    ## 
-    ##   # Before:
-    ##   funs(name = f(.))
-    ## 
-    ##   # After: 
-    ##   list(name = ~ f(.))
-    ## This warning is displayed once per session.
-
-    ##            gene  lfc                 padj direction tissue    comparison
-    ## 1 1190002N15RIK 1.64 0.000245166241490228 increased     DG trained-yoked
-    ## 2         ABHD2 0.86   0.0153326673524323 increased     DG trained-yoked
-    ## 3       ADAMTS1 1.88  0.00187777546749527 increased     DG trained-yoked
-    ## 4         ADRB1 0.98   0.0311012281104977 increased     DG trained-yoked
-    ## 5           AHR 1.59   0.0191420911940072 increased     DG trained-yoked
-    ## 6        AMIGO2 1.36   0.0254399458003005 increased     DG trained-yoked
+    ##            gene  lfc     padj direction tissue    comparison
+    ## 1 1190002N15RIK 1.64 2.45e-04 increased     DG trained-yoked
+    ## 2 A830010M20RIK 1.53 7.89e-07 increased     DG trained-yoked
+    ## 3         ABHD2 0.86 1.53e-02 increased     DG trained-yoked
+    ## 4          ACAN 1.97 4.54e-09 increased     DG trained-yoked
+    ## 5       ADAMTS1 1.88 1.88e-03 increased     DG trained-yoked
+    ## 6         ADRB1 0.98 3.11e-02 increased     DG trained-yoked
 
     CA1DEGs <- listofDEGstrainedvyoked(CA1dds2, "CA1")
 
     ## [1] "CA1 trained vs yoked"
-    ##     gene   lfc                padj direction tissue    comparison
-    ## 1 GLCCI1  1.98 0.00143873897497547 increased    CA1 trained-yoked
-    ## 2  AHDC1 -1.61  0.0650203882596328 decreased    CA1 trained-yoked
-    ## 3   BMT2 -2.48  0.0566256621961535 decreased    CA1 trained-yoked
-    ## 4  CTCFL -2.61  0.0363254357303014 decreased    CA1 trained-yoked
-    ## 5 FN3KRP -1.43  0.0480138873382015 decreased    CA1 trained-yoked
-    ## 6   GNAZ -3.11  0.0112083934063577 decreased    CA1 trained-yoked
+    ##     gene   lfc    padj direction tissue    comparison
+    ## 1 GLCCI1  1.98 0.00144 increased    CA1 trained-yoked
+    ## 2  AHDC1 -1.61 0.06502 decreased    CA1 trained-yoked
+    ## 3   BMT2 -2.48 0.05663 decreased    CA1 trained-yoked
+    ## 4  CTCFL -2.61 0.03633 decreased    CA1 trained-yoked
+    ## 5 FN3KRP -1.43 0.04801 decreased    CA1 trained-yoked
+    ## 6   GNAZ -3.11 0.01121 decreased    CA1 trained-yoked
 
     write.csv(DGDEGs, "../data/02f_DG_DEGs.csv", row.names = F)
     write.csv(CA1DEGs, "../data/02f_CA1_DEGs.csv", row.names = F)
@@ -271,42 +260,51 @@
     upDG <- as.vector(upDG$gene)
     upDG
 
-    ##   [1] "1190002N15RIK" "ABHD2"         "ADAMTS1"       "ADRB1"        
-    ##   [5] "AHR"           "AMIGO2"        "ANKRD13A"      "ANKRD28"      
-    ##   [9] "ANKRD33B"      "APAF1"         "ARID5B"        "ARL13B"       
-    ##  [13] "ARL4A"         "ARL4D"         "ARL5B"         "ARMCX5"       
-    ##  [17] "ARPP21"        "ATF3"          "B3GNT2"        "BACH1"        
-    ##  [21] "BTG2"          "C2CD4B"        "CCNK"          "CIART"        
-    ##  [25] "CITED2"        "CLDN12"        "CNNM1"         "CPEB4"        
-    ##  [29] "CTNND1"        "CUL3"          "CWC25"         "CXADR"        
-    ##  [33] "CYP51"         "DNAJA1"        "DNAJB1"        "DNAJB4"       
-    ##  [37] "DUSP14"        "DUSP16"        "DUSP4"         "DUSP6"        
-    ##  [41] "DUSP8"         "DYRK2"         "EGR1"          "EGR3"         
-    ##  [45] "EIF5"          "EPRS"          "ERF"           "FAM107B"      
-    ##  [49] "FAM118A"       "FBXW7"         "FERMT2"        "FLRT3"        
-    ##  [53] "FOS"           "FOSB"          "FOXG1"         "FOXO1"        
-    ##  [57] "FZD4"          "GAD1"          "GM13889"       "GMEB2"        
-    ##  [61] "GPR19"         "HECA"          "HMGCR"         "HS6ST1"       
-    ##  [65] "HSPA1A"        "HSPH1"         "IL16"          "ING2"         
-    ##  [69] "IRF2BP2"       "IRS1"          "JDP2"          "JMJD1C"       
-    ##  [73] "JUNB"          "JUND"          "KCNA4"         "KDM6B"        
-    ##  [77] "KDM7A"         "KLF2"          "KLF6"          "LBH"          
-    ##  [81] "LCMT2"         "LEMD3"         "LMNA"          "LONRF1"       
-    ##  [85] "LRRTM2"        "MARCH11"       "MED7"          "MFAP3L"       
-    ##  [89] "MN1"           "MYC"           "NAF1"          "NAP1L5"       
-    ##  [93] "NEDD9"         "NEFM"          "NFIL3"         "NR4A1"        
-    ##  [97] "NR4A2"         "NR4A3"         "NUAK1"         "ODC1"         
-    ## [101] "OLFML2B"       "PAK6"          "PEG10"         "PELI1"        
-    ## [105] "PER1"          "PER2"          "PHLDA1"        "PIGA"         
-    ## [109] "PLAGL1"        "PLK3"          "POU3F3"        "PPP1R15A"     
-    ## [113] "PRPF38B"       "RANBP2"        "RASL11A"       "RASL11B"      
-    ## [117] "RGMB"          "RGS4"          "SCG2"          "SH2D3C"       
-    ## [121] "SIAH2"         "SLC25A25"      "SLC2A3"        "SLC45A4"      
-    ## [125] "SLITRK5"       "SOWAHC"        "SOX9"          "SRF"          
-    ## [129] "STMN4"         "SYT4"          "THBS1"         "TIPARP"       
-    ## [133] "TNIP2"         "TRA2B"         "TRIB1"         "TSC22D2"      
-    ## [137] "USPL1"         "ZBTB33"        "ZFAND5"        "ZFP275"       
-    ## [141] "ZFP654"        "ZFP869"
+    ##   [1] "1190002N15RIK" "A830010M20RIK" "ABHD2"         "ACAN"         
+    ##   [5] "ADAMTS1"       "ADRB1"         "AHR"           "AMIGO2"       
+    ##   [9] "ANKRD13A"      "ANKRD28"       "ANKRD33B"      "APAF1"        
+    ##  [13] "ARC"           "ARID5B"        "ARL13B"        "ARL4A"        
+    ##  [17] "ARL4D"         "ARL5B"         "ARMCX5"        "ARPP21"       
+    ##  [21] "ATF3"          "B3GNT2"        "BACH1"         "BDNF"         
+    ##  [25] "BTG2"          "C2CD4B"        "CCNK"          "CIART"        
+    ##  [29] "CITED2"        "CLDN12"        "CNNM1"         "CPEB4"        
+    ##  [33] "CTNND1"        "CUL3"          "CWC25"         "CXADR"        
+    ##  [37] "CYP51"         "DBPHT2"        "DNAJA1"        "DNAJB1"       
+    ##  [41] "DNAJB4"        "DUSP14"        "DUSP16"        "DUSP4"        
+    ##  [45] "DUSP6"         "DUSP8"         "DYRK2"         "EGR1"         
+    ##  [49] "EGR3"          "EGR4"          "EIF5"          "EPRS"         
+    ##  [53] "ERF"           "ERRFI1"        "FAM107B"       "FAM118A"      
+    ##  [57] "FBXO33"        "FBXW7"         "FERMT2"        "FLRT3"        
+    ##  [61] "FOS"           "FOSB"          "FOSL2"         "FOXG1"        
+    ##  [65] "FOXO1"         "FRMD6"         "FZD4"          "FZD5"         
+    ##  [69] "GAD1"          "GADD45G"       "GM13889"       "GMEB2"        
+    ##  [73] "GPR19"         "HECA"          "HMGCR"         "HOMER1"       
+    ##  [77] "HS6ST1"        "HSPA1A"        "HSPH1"         "IL16"         
+    ##  [81] "ING2"          "IRF2BP2"       "IRS1"          "IRS2"         
+    ##  [85] "JDP2"          "JMJD1C"        "JUN"           "JUNB"         
+    ##  [89] "JUND"          "KCNA4"         "KCNF1"         "KCNJ2"        
+    ##  [93] "KDM6B"         "KDM7A"         "KITL"          "KLF2"         
+    ##  [97] "KLF6"          "LBH"           "LCMT2"         "LEMD3"        
+    ## [101] "LMNA"          "LONRF1"        "LRRTM2"        "MARCH11"      
+    ## [105] "MED7"          "MEST"          "MFAP3L"        "MN1"          
+    ## [109] "MYC"           "NAF1"          "NAP1L5"        "NEDD9"        
+    ## [113] "NEFM"          "NFIL3"         "NPAS4"         "NPTX2"        
+    ## [117] "NR4A1"         "NR4A2"         "NR4A3"         "NUAK1"        
+    ## [121] "ODC1"          "OLFML2B"       "OTUD1"         "PAK6"         
+    ## [125] "PCDH8"         "PEG10"         "PELI1"         "PER1"         
+    ## [129] "PER2"          "PHLDA1"        "PIGA"          "PLAGL1"       
+    ## [133] "PLK2"          "PLK3"          "POU3F3"        "PPP1R15A"     
+    ## [137] "PRPF38B"       "PTGS2"         "RANBP2"        "RASD1"        
+    ## [141] "RASL11A"       "RASL11B"       "RFX2"          "RGMB"         
+    ## [145] "RGS2"          "RGS4"          "SCG2"          "SGK1"         
+    ## [149] "SH2D3C"        "SIAH2"         "SLC16A1"       "SLC25A25"     
+    ## [153] "SLC2A3"        "SLC45A4"       "SLITRK5"       "SMAD7"        
+    ## [157] "SNX18"         "SOWAHC"        "SOX9"          "SPTY2D1"      
+    ## [161] "SRF"           "STMN4"         "SYT4"          "THBS1"        
+    ## [165] "TIPARP"        "TNIP2"         "TRA2B"         "TRIB1"        
+    ## [169] "TSC22D2"       "UBC"           "USPL1"         "ZBTB33"       
+    ## [173] "ZDBF2"         "ZFAND5"        "ZFP275"        "ZFP654"       
+    ## [177] "ZFP869"
 
     downDG <- DGDEGs %>% filter(lfc < 0)
     downDG <- as.vector(downDG$gene)
@@ -476,3 +474,73 @@ tSNE
     a
 
 ![](../figures/02f_trainedvyoked/tSNE-2.png)
+
+Go terms
+--------
+
+    GO_response <- read.table("../data/goterms/GO_term_summary_20191121_150656.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+    GO_response$GO <- "1. response to stimulus"
+
+
+    GO_translation <- read.table("../data/goterms/GO_term_summary_20191121_141252.txt", sep = "\t", row.names = NULL)
+    GO_translation$GO <- "2. translation"
+
+    GO_synapse <- read.table("../data/goterms/GO_term_summary_20191121_145034.txt", sep = "\t", row.names = NULL)
+    GO_synapse$GO <- "3. synapse organization"
+
+    GO_learningormemory <- read.table("../data/goterms/GO_term_summary_20191121_142500.txt", sep = "\t", row.names = NULL)
+    GO_learningormemory$GO <- "4. learning or memory"
+
+    GOterms <- rbind(GO_learningormemory, GO_response, GO_translation, GO_synapse)
+
+    GOterms <- GOterms %>%
+      dplyr::mutate(gene = toupper(MGI.Gene.Marker.ID)) %>% 
+      dplyr::select(gene, GO) %>% 
+      dplyr::distinct(gene, GO) %>% 
+     group_by(gene) 
+
+    GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
+      arrange(GO,gene)
+
+    ## Joining, by = "gene"
+
+    GOtermsDEGs
+
+    ## # A tibble: 106 x 7
+    ## # Groups:   gene [90]
+    ##    gene    GO                   lfc      padj direction tissue comparison  
+    ##    <chr>   <chr>              <dbl>     <dbl> <chr>     <fct>  <chr>       
+    ##  1 ABHD2   1. response to st…  0.86   1.53e-2 increased DG     trained-yok…
+    ##  2 ADRB1   1. response to st…  0.98   3.11e-2 increased DG     trained-yok…
+    ##  3 AHR     1. response to st…  1.59   1.91e-2 increased DG     trained-yok…
+    ##  4 ANKRD27 1. response to st… -1.09   5.93e-2 decreased DG     trained-yok…
+    ##  5 APAF1   1. response to st…  1.26   4.55e-3 increased DG     trained-yok…
+    ##  6 ARC     1. response to st…  2.1    4.72e-6 increased DG     trained-yok…
+    ##  7 ARID5B  1. response to st…  1.06   5.36e-3 increased DG     trained-yok…
+    ##  8 ARL13B  1. response to st…  1.23   9.92e-2 increased DG     trained-yok…
+    ##  9 ARPP21  1. response to st…  0.5    8.67e-2 increased DG     trained-yok…
+    ## 10 ATF3    1. response to st…  1.78   5.23e-3 increased DG     trained-yok…
+    ## # … with 96 more rows
+
+    GOtermsDEGs2  <- GOtermsDEGs %>%
+      dplyr::select(gene, GO) %>% 
+     group_by(GO) %>%
+     summarize(genes = str_c(gene, collapse = ", "))
+    GOtermsDEGs2
+
+    ## # A tibble: 4 x 2
+    ##   GO                 genes                                                 
+    ##   <chr>              <chr>                                                 
+    ## 1 1. response to st… ABHD2, ADRB1, AHR, ANKRD27, APAF1, ARC, ARID5B, ARL13…
+    ## 2 2. translation     CPEB4, EIF5                                           
+    ## 3 3. synapse organi… AMIGO2, ARC, BDNF, FLRT3, FZD5, HOMER1, LRRTM2, NPAS4…
+    ## 4 4. learning or me… ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX…
+
+    GOtermsDEGs2$genes
+
+    ## [1] "ABHD2, ADRB1, AHR, ANKRD27, APAF1, ARC, ARID5B, ARL13B, ARPP21, ATF3, B3GNT2, BACH1, BC048403, BMT2, BTG2, C2CD4B, CCNK, CITED2, FBXW7, FERMT2, FLRT3, FOS, FOSB, FOSL2, FOXG1, FOXO1, FZD4, FZD5, GADD45G, GNAZ, GPI1, GPR19, HMGCR, HOMER1, HSPA1A, HSPH1, IL16, ING2, IRS1, IRS2, JUN, JUNB, JUND, KDM6B, KITL, KLF2, KLF6, KLKB1, LBH, LEMD3, LMNA, MC1R, MEST, MYC, NEDD9, NFIL3, NPAS4, NPTX2, NR4A1, NR4A2, NR4A3, PPP1R15A, SLC16A1, SLC25A25, SLITRK5, SMAD7, SOX9, SRF, SRGAP1, STAC2, SYT4, THBS1, TIPARP, TNIP2, TRA2B, TRIB1, TSC22D2, ZBTB33, ZFAND5"
+    ## [2] "CPEB4, EIF5"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+    ## [3] "AMIGO2, ARC, BDNF, FLRT3, FZD5, HOMER1, LRRTM2, NPAS4, PCDH8, SLITRK5"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+    ## [4] "ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2, PAK6, PLK2, PTGS2, SGK1, SRF, SYT4"
+
+    write.csv(GOtermsDEGs2, "../data/goterms/GOtermsDEGs2.csv", row.names = F)

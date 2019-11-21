@@ -73,7 +73,7 @@ listofDEGstrainedvyoked <- function(mydds, myitssue){
                      padj = res$padj,
                      tissue = myitssue)
   data <- data %>% 
-        dplyr::mutate_each(funs(toupper)) %>% 
+    dplyr::mutate(gene = toupper(gene)) %>% 
     dplyr::filter(padj < 0.1) %>% 
     dplyr::mutate(direction = ifelse(lfc >0, "increased", "decreased"),
                   comparison = paste("trained", "yoked", sep = "-")) %>% 
@@ -250,4 +250,43 @@ b <- plot.tSNE.trained(CA1dds2, 2, "CA1")
 
 plot_grid(a,b)
 a
+```
+
+## Go terms
+
+```{r}
+GO_response <- read.table("../data/goterms/GO_term_summary_20191121_150656.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+GO_response$GO <- "1. response to stimulus"
+
+
+GO_translation <- read.table("../data/goterms/GO_term_summary_20191121_141252.txt", sep = "\t", row.names = NULL)
+GO_translation$GO <- "2. translation"
+
+GO_synapse <- read.table("../data/goterms/GO_term_summary_20191121_145034.txt", sep = "\t", row.names = NULL)
+GO_synapse$GO <- "3. synapse organization"
+
+GO_learningormemory <- read.table("../data/goterms/GO_term_summary_20191121_142500.txt", sep = "\t", row.names = NULL)
+GO_learningormemory$GO <- "4. learning or memory"
+
+GOterms <- rbind(GO_learningormemory, GO_response, GO_translation, GO_synapse)
+
+GOterms <- GOterms %>%
+  dplyr::mutate(gene = toupper(MGI.Gene.Marker.ID)) %>% 
+  dplyr::select(gene, GO) %>% 
+  dplyr::distinct(gene, GO) %>% 
+ group_by(gene) 
+
+GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
+  arrange(GO,gene)
+GOtermsDEGs
+
+GOtermsDEGs2  <- GOtermsDEGs %>%
+  dplyr::select(gene, GO) %>% 
+ group_by(GO) %>%
+ summarize(genes = str_c(gene, collapse = ", "))
+GOtermsDEGs2
+
+GOtermsDEGs2$genes
+
+write.csv(GOtermsDEGs2, "../data/goterms/GOtermsDEGs2.csv", row.names = F)
 ```
