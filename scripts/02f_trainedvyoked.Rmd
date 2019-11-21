@@ -11,6 +11,7 @@ library(DESeq2) ## for gene expression analysis
 library(pheatmap)
 library(viridis)
 library(Rtsne) # for tSNE
+library(scales)
 
 
 library(BiocParallel)
@@ -28,7 +29,7 @@ knitr::opts_chunk$set(fig.path = '../figures/02f_trainedvyoked/', cache = F)
 a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
 a.colData <- read.csv("../data/02a_colData.csv", header = T)
-a.colData <- a.colData %>%
+a.colData <- a.colData 
 a.colData$training <- factor(a.colData$training, levels = c("yoked", "trained"))
 
 DGdds2 <- returndds2("DG") 
@@ -58,6 +59,8 @@ contrast2 <- resvals2(CA1dds2, contrastvector = c("training", "trained", "yoked"
 ```
 
 ```{r listofDEGs}
+options(digits = 3)
+
 listofDEGstrainedvyoked <- function(mydds, myitssue){
   res <- results(mydds, 
                  contrast = c("training", "trained", "yoked"), 
@@ -66,17 +69,24 @@ listofDEGstrainedvyoked <- function(mydds, myitssue){
   print(paste(myitssue, "trained vs yoked", sep = " "))
   
   data <- data.frame(gene = row.names(res),
-                     lfc = res$log2FoldChange,
+                     lfc = round(res$log2FoldChange,2),
                      padj = res$padj,
-                     tissue = myitssue,
-                     comparison = paste("trained", "yoked", sep = "-"))
-  data <- data %>% dplyr::filter(padj < 0.1) %>% droplevels()
+                     tissue = myitssue)
+  data <- data %>% 
+        dplyr::mutate_each(funs(toupper)) %>% 
+    dplyr::filter(padj < 0.1) %>% 
+    dplyr::mutate(direction = ifelse(lfc >0, "increased", "decreased"),
+                  comparison = paste("trained", "yoked", sep = "-")) %>% 
+    dplyr::select(gene, lfc,padj, direction, tissue, comparison )  %>% 
+    dplyr::arrange(desc(direction), gene) %>% 
+    droplevels()
   print(head(data))
   return(data)
 }
 
 DGDEGs <- listofDEGstrainedvyoked(DGdds2, "DG")
-CA1DEGs <- listofDEGstrainedvyoked(CA1dds, "CA1")
+CA1DEGs <- listofDEGstrainedvyoked(CA1dds2, "CA1")
+
 
 write.csv(DGDEGs, "../data/02f_DG_DEGs.csv", row.names = F)
 write.csv(CA1DEGs, "../data/02f_CA1_DEGs.csv", row.names = F)
@@ -110,7 +120,7 @@ DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
 DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
-DEGes$padjmin <- with(DEGes, pmin(padjcombinedgroupstrainedyoked)) 
+DEGes$padjmin <- with(DEGes, pmin(padjtrainingtrainedyoked)) 
 DEGes <- DEGes %>% filter(padjmin < 0.1)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -125,11 +135,11 @@ write.csv(DEGes, "../data/02f_DG_DEGs_vsd.csv")
 paletteLength <- 10
 myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
-df <- as.data.frame(colData(DGdds2)[,c("combinedgroups")]) ## matrix to df
+df <- as.data.frame(colData(DGdds2)[,c("training")]) ## matrix to df
 rownames(df) <- row.names(colData(DGdds2))
-names(df) <- c("combinedgroups")
+names(df) <- c("training")
 df$subfield <- "DG"
-levels(df$combinedgroups) <- c("yoked", "trained")
+levels(df$training) <- c("yoked", "trained")
 
 pheatmap(DEGes, show_colnames=F, show_rownames = T,
          annotation_col=df, 
@@ -173,12 +183,12 @@ pheatmap(DEGes, show_colnames=F, show_rownames = T,
 
 ### CA1
 
-DEGes <- assay(vst(CA1dds))
+DEGes <- assay(vst(CA1dds2))
 DEGes <- cbind(DEGes, contrast2)
 DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
 DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
-DEGes$padjmin <- with(DEGes, pmin(padjcombinedgroupstrainedyoked)) 
+DEGes$padjmin <- with(DEGes, pmin(padjtrainingtrainedyoked)) 
 DEGes <- DEGes %>% filter(padjmin < 0.1)
 rownames(DEGes) <- DEGes$rownames
 drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -189,11 +199,11 @@ DEGes <- as.matrix(DEGes)
 paletteLength <- 10
 myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
-df <- as.data.frame(colData(CA1dds)[,c("combinedgroups")]) ## matrix to df
-rownames(df) <- row.names(colData(CA1dds))
-names(df) <- c("combinedgroups")
+df <- as.data.frame(colData(CA1dds2)[,c("training")]) ## matrix to df
+rownames(df) <- row.names(colData(CA1dds2))
+names(df) <- c("training")
 df$subfield <- "CA1"
-levels(df$combinedgroups) <- c("yoked", "trained")
+levels(df$training) <- c("yoked", "trained")
 
 pheatmap(DEGes, show_colnames=F, show_rownames = T,
          annotation_col=df, 
@@ -236,7 +246,7 @@ pheatmap(DEGes, show_colnames=F, show_rownames = T,
 
 ```{r tSNE}
 a <- plot.tSNE.trained(DGdds2, 2, "DG")
-b <- plot.tSNE.trained(CA1dds, 2, "CA1")
+b <- plot.tSNE.trained(CA1dds2, 2, "CA1")
 
 plot_grid(a,b)
 a

@@ -104,6 +104,14 @@ a <- ggplot(realnumshocks, aes(x = treatment, y = sums, fill = treatment)) +
           legend.position = "none") 
 a
 
+
+dfa <- realnumshocks %>%
+  dplyr::group_by(treatment, TrainSessionComboNum) %>%
+  dplyr::summarise(m = mean(Entr.Dist.1.m.), 
+                   se = sd(Entr.Dist.1.m.)/sqrt(length(Entr.Dist.1.m.))) %>%
+  dplyr::mutate(measure = "Entrance / Distance")
+
+
 ```
 
 # Vizualizing Mean and Standard error for num entrace and time 1st entrance

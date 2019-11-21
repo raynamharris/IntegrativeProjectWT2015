@@ -5,6 +5,7 @@
     library(pheatmap)
     library(viridis)
     library(Rtsne) # for tSNE
+    library(scales)
 
 
     library(BiocParallel)
@@ -20,14 +21,10 @@
     a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
     a.colData <- read.csv("../data/02a_colData.csv", header = T)
-    a.colData <- a.colData %>%
-      mutate(combinedgroups = fct_collapse(Treatment,
-                                           trained = c("conflict", "trained"),
-                                           yoked = c("shocked", "yoked")),
-             subfield = Punch)
-    a.colData$combinedgroups <- factor(a.colData$combinedgroups, levels = c("yoked", "trained"))
+    a.colData <- a.colData 
+    a.colData$training <- factor(a.colData$training, levels = c("yoked", "trained"))
 
-    DGdds <- returndds2("DG") 
+    DGdds2 <- returndds2("DG") 
 
     ## [1] "DG"
 
@@ -49,7 +46,7 @@
 
     ## fitting model and testing
 
-    CA3dds <- returndds2("CA3") 
+    CA3dds2 <- returndds2("CA3") 
 
     ## [1] "CA3"
 
@@ -71,7 +68,7 @@
 
     ## fitting model and testing
 
-    CA1dds <- returndds2("CA1") 
+    CA1dds2 <- returndds2("CA1") 
 
     ## [1] "CA1"
 
@@ -93,7 +90,7 @@
 
     ## fitting model and testing
 
-    DGvsd <- returnvsds2(DGdds)
+    DGvsd <- returnvsds2(DGdds2)
 
     ##               143A-DG-1 143B-DG-1 143D-DG-3 144A-DG-2 144C-DG-2 144D-DG-2
     ## 0610007P14Rik  6.497231  6.520310  6.927199  6.622006  6.516323  6.739843
@@ -108,7 +105,7 @@
     ## 0610009B22Rik  6.054862  6.038992  5.754020  5.664124
     ## 0610009L18Rik  5.444089  5.874552  5.675946  5.530425
 
-    CA3vsd <- returnvsds2(CA3dds)
+    CA3vsd <- returnvsds2(CA3dds2)
 
     ##               143A-CA3-1 144A-CA3-2 144B-CA3-1 144C-CA3-2 144D-CA3-2
     ## 0610007P14Rik   7.053774   7.561649   7.233758   6.996898   6.880131
@@ -123,7 +120,7 @@
     ## 0610009B22Rik   6.540744   6.532445   6.689017
     ## 0610009L18Rik   6.116202   6.169424   6.213015
 
-    CA1vsd <- returnvsds2(CA1dds)
+    CA1vsd <- returnvsds2(CA1dds2)
 
     ##               143B-CA1-1 143C-CA1-1 143D-CA1-3 144A-CA1-2 144B-CA1-1
     ## 0610007P14Rik   7.415967   7.026659   7.234953   7.242002   7.278148
@@ -142,9 +139,9 @@
 
     ## [1] "DG"
 
-    res_summary_subfield(DGdds, c("combinedgroups", "trained", "yoked"))
+    res_summary_subfield(DGdds2, c("training", "trained", "yoked"))
 
-    ## [1] "combinedgroups" "trained"        "yoked"         
+    ## [1] "training" "trained"  "yoked"   
     ## [1] 214
     ## 
     ## out of 17006 with nonzero total read count
@@ -158,31 +155,14 @@
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): combinedgroups trained vs yoked 
-    ## Wald test p-value: combinedgroups trained vs yoked 
-    ## DataFrame with 5 rows and 6 columns
-    ##                baseMean   log2FoldChange             lfcSE
-    ##               <numeric>        <numeric>         <numeric>
-    ## Smad7  171.392871064045 2.52915045290283 0.300055947411442
-    ## Sgk1   341.089572273562 1.86437254406297  0.25434038097016
-    ## Fzd5   26.8401177227407 3.21028367726372  0.45125074708102
-    ## Acan   50.8597490321187 1.97329538674358  0.27993362211107
-    ## Errfi1  196.30327794802  1.6626205039142 0.252431976397565
-    ##                    stat               pvalue                 padj
-    ##               <numeric>            <numeric>            <numeric>
-    ## Smad7  8.42892958703734  3.4884140023949e-17 3.51701899721454e-13
-    ## Sgk1   7.33022627768143 2.29764457026629e-13 1.15824262787124e-09
-    ## Fzd5   7.11419027675832  1.1257175900809e-12 3.78316158106521e-09
-    ## Acan    7.0491546240938 1.80008035791982e-12 4.53710254213691e-09
-    ## Errfi1 6.58641004060308 4.50588351541571e-11 9.08566352048423e-08
 
     print("CA3")
 
     ## [1] "CA3"
 
-    res_summary_subfield(CA3dds, c("combinedgroups", "trained", "yoked"))
+    res_summary_subfield(CA3dds2, c("training", "trained", "yoked"))
 
-    ## [1] "combinedgroups" "trained"        "yoked"         
+    ## [1] "training" "trained"  "yoked"   
     ## [1] 0
     ## 
     ## out of 16497 with nonzero total read count
@@ -196,31 +176,14 @@
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): combinedgroups trained vs yoked 
-    ## Wald test p-value: combinedgroups trained vs yoked 
-    ## DataFrame with 5 rows and 6 columns
-    ##                  baseMean   log2FoldChange             lfcSE
-    ##                 <numeric>        <numeric>         <numeric>
-    ## AW011738 9.17276939908517 2.75526103220329 0.744391234682857
-    ## Ccl4     20.1742899726882 2.17694386734611 0.608574059817134
-    ## Cldn11   224.152887308636 1.14258100212196 0.299522313314391
-    ## Gm9830    5.2365659464215  3.8500083682701  1.07167002084399
-    ## Hbb-bt   13.3724700406441 3.05189602672508 0.846081438997779
-    ##                      stat               pvalue              padj
-    ##                 <numeric>            <numeric>         <numeric>
-    ## AW011738 3.70136146669855 0.000214445727305785 0.715204813790057
-    ## Ccl4     3.57712234399252 0.000347397602326682 0.715204813790057
-    ## Cldn11   3.81467740910062 0.000136360945687631 0.715204813790057
-    ## Gm9830   3.59253155671748 0.000327480981566366 0.715204813790057
-    ## Hbb-bt   3.60709488006283 0.000309644457522496 0.715204813790057
 
     print("CA1")
 
     ## [1] "CA1"
 
-    res_summary_subfield(CA1dds, c("combinedgroups", "trained", "yoked"))
+    res_summary_subfield(CA1dds2, c("training", "trained", "yoked"))
 
-    ## [1] "combinedgroups" "trained"        "yoked"         
+    ## [1] "training" "trained"  "yoked"   
     ## [1] 16
     ## 
     ## out of 16846 with nonzero total read count
@@ -234,70 +197,72 @@
     ## [2] see 'independentFiltering' argument of ?results
     ## 
     ## NULL
-    ## log2 fold change (MLE): combinedgroups trained vs yoked 
-    ## Wald test p-value: combinedgroups trained vs yoked 
-    ## DataFrame with 5 rows and 6 columns
-    ##                 baseMean    log2FoldChange             lfcSE
-    ##                <numeric>         <numeric>         <numeric>
-    ## Glcci1  27.9431361099374  1.98275767136008  0.37236542908503
-    ## Igf2bp2  8908.7711010914 -3.85162178226654 0.796911109754504
-    ## Pde6a   16883.7614383138 -3.38908219974529 0.719364141096424
-    ## Stox2   4433.92096042267 -3.79057173334957 0.812056110081023
-    ## Gnaz    4292.66609719128 -3.11102225995498 0.674161232170265
-    ##                      stat               pvalue                padj
-    ##                 <numeric>            <numeric>           <numeric>
-    ## Glcci1   5.32476303246537 1.01084730905324e-07 0.00143873897497547
-    ## Igf2bp2 -4.83318871467743 1.34363305890186e-06 0.00956196466367509
-    ## Pde6a   -4.71121926452964 2.46239128592003e-06  0.0108291598219097
-    ## Stox2   -4.66786923501058  3.0433948772317e-06  0.0108291598219097
-    ## Gnaz    -4.61465612601298 3.93746694525317e-06  0.0112083934063577
 
-    contrast1 <- resvals2(DGdds, contrastvector = c("combinedgroups", "trained", "yoked"), mypval = 0.1) # 3060
+    contrast1 <- resvals2(DGdds2, contrastvector = c("training", "trained", "yoked"), mypval = 0.1) # 206
 
     ## [1] 214
 
-    contrast2 <- resvals2(CA1dds, contrastvector = c("combinedgroups", "trained", "yoked"), mypval = 0.1) # 2388
+    contrast2 <- resvals2(CA1dds2, contrastvector = c("training", "trained", "yoked"), mypval = 0.1) # 16
 
     ## [1] 16
 
+    options(digits = 3)
+
     listofDEGstrainedvyoked <- function(mydds, myitssue){
       res <- results(mydds, 
-                     contrast = c("combinedgroups", "trained", "yoked"), 
+                     contrast = c("training", "trained", "yoked"), 
                      independentFiltering = T)
       
       print(paste(myitssue, "trained vs yoked", sep = " "))
       
       data <- data.frame(gene = row.names(res),
-                         lfc = res$log2FoldChange,
+                         lfc = round(res$log2FoldChange,2),
                          padj = res$padj,
-                         tissue = myitssue,
-                         comparison = paste("trained", "yoked", sep = "-"))
-      data <- data %>% dplyr::filter(padj < 0.1) %>% droplevels()
+                         tissue = myitssue)
+      data <- data %>% 
+            dplyr::mutate_each(funs(toupper)) %>% 
+        dplyr::filter(padj < 0.1) %>% 
+        dplyr::mutate(direction = ifelse(lfc >0, "increased", "decreased"),
+                      comparison = paste("trained", "yoked", sep = "-")) %>% 
+        dplyr::select(gene, lfc,padj, direction, tissue, comparison )  %>% 
+        dplyr::arrange(desc(direction), gene) %>% 
+        droplevels()
       print(head(data))
       return(data)
     }
 
-    DGDEGs <- listofDEGstrainedvyoked(DGdds, "DG")
+    DGDEGs <- listofDEGstrainedvyoked(DGdds2, "DG")
 
     ## [1] "DG trained vs yoked"
-    ##            gene       lfc         padj tissue    comparison
-    ## 1 1190002N15Rik 1.6390074 2.451662e-04     DG trained-yoked
-    ## 2 A830010M20Rik 1.5256191 7.889227e-07     DG trained-yoked
-    ## 3         Abhd2 0.8633871 1.533267e-02     DG trained-yoked
-    ## 4          Acan 1.9732954 4.537103e-09     DG trained-yoked
-    ## 5       Adamts1 1.8771209 1.877775e-03     DG trained-yoked
-    ## 6         Adrb1 0.9763798 3.110123e-02     DG trained-yoked
 
-    CA1DEGs <- listofDEGstrainedvyoked(CA1dds, "CA1")
+    ## Warning: funs() is soft deprecated as of dplyr 0.8.0
+    ## please use list() instead
+    ## 
+    ##   # Before:
+    ##   funs(name = f(.))
+    ## 
+    ##   # After: 
+    ##   list(name = ~ f(.))
+    ## This warning is displayed once per session.
+
+    ##            gene  lfc                 padj direction tissue    comparison
+    ## 1 1190002N15RIK 1.64 0.000245166241490228 increased     DG trained-yoked
+    ## 2         ABHD2 0.86   0.0153326673524323 increased     DG trained-yoked
+    ## 3       ADAMTS1 1.88  0.00187777546749527 increased     DG trained-yoked
+    ## 4         ADRB1 0.98   0.0311012281104977 increased     DG trained-yoked
+    ## 5           AHR 1.59   0.0191420911940072 increased     DG trained-yoked
+    ## 6        AMIGO2 1.36   0.0254399458003005 increased     DG trained-yoked
+
+    CA1DEGs <- listofDEGstrainedvyoked(CA1dds2, "CA1")
 
     ## [1] "CA1 trained vs yoked"
-    ##     gene       lfc        padj tissue    comparison
-    ## 1  Ahdc1 -1.607378 0.065020388    CA1 trained-yoked
-    ## 2   Bmt2 -2.478179 0.056625662    CA1 trained-yoked
-    ## 3  Ctcfl -2.612072 0.036325436    CA1 trained-yoked
-    ## 4 Fn3krp -1.427451 0.048013887    CA1 trained-yoked
-    ## 5 Glcci1  1.982758 0.001438739    CA1 trained-yoked
-    ## 6   Gnaz -3.111022 0.011208393    CA1 trained-yoked
+    ##     gene   lfc                padj direction tissue    comparison
+    ## 1 GLCCI1  1.98 0.00143873897497547 increased    CA1 trained-yoked
+    ## 2  AHDC1 -1.61  0.0650203882596328 decreased    CA1 trained-yoked
+    ## 3   BMT2 -2.48  0.0566256621961535 decreased    CA1 trained-yoked
+    ## 4  CTCFL -2.61  0.0363254357303014 decreased    CA1 trained-yoked
+    ## 5 FN3KRP -1.43  0.0480138873382015 decreased    CA1 trained-yoked
+    ## 6   GNAZ -3.11  0.0112083934063577 decreased    CA1 trained-yoked
 
     write.csv(DGDEGs, "../data/02f_DG_DEGs.csv", row.names = F)
     write.csv(CA1DEGs, "../data/02f_CA1_DEGs.csv", row.names = F)
@@ -306,86 +271,77 @@
     upDG <- as.vector(upDG$gene)
     upDG
 
-    ##   [1] "1190002N15Rik" "A830010M20Rik" "Abhd2"         "Acan"         
-    ##   [5] "Adamts1"       "Adrb1"         "Ahr"           "Amigo2"       
-    ##   [9] "Ankrd13a"      "Ankrd28"       "Ankrd33b"      "Apaf1"        
-    ##  [13] "Arc"           "Arid5b"        "Arl13b"        "Arl4a"        
-    ##  [17] "Arl4d"         "Arl5b"         "Armcx5"        "Arpp21"       
-    ##  [21] "Atf3"          "B3gnt2"        "Bach1"         "Bdnf"         
-    ##  [25] "Btg2"          "C2cd4b"        "Ccnk"          "Ciart"        
-    ##  [29] "Cited2"        "Cldn12"        "Cnnm1"         "Cpeb4"        
-    ##  [33] "Ctnnd1"        "Cul3"          "Cwc25"         "Cxadr"        
-    ##  [37] "Cyp51"         "Dbpht2"        "Dnaja1"        "Dnajb1"       
-    ##  [41] "Dnajb4"        "Dusp14"        "Dusp16"        "Dusp4"        
-    ##  [45] "Dusp6"         "Dusp8"         "Dyrk2"         "Egr1"         
-    ##  [49] "Egr3"          "Egr4"          "Eif5"          "Eprs"         
-    ##  [53] "Erf"           "Errfi1"        "Fam107b"       "Fam118a"      
-    ##  [57] "Fbxo33"        "Fbxw7"         "Fermt2"        "Flrt3"        
-    ##  [61] "Fos"           "Fosb"          "Fosl2"         "Foxg1"        
-    ##  [65] "Foxo1"         "Frmd6"         "Fzd4"          "Fzd5"         
-    ##  [69] "Gad1"          "Gadd45g"       "Gm13889"       "Gmeb2"        
-    ##  [73] "Gpr19"         "Heca"          "Hmgcr"         "Homer1"       
-    ##  [77] "Hs6st1"        "Hspa1a"        "Hsph1"         "Il16"         
-    ##  [81] "Ing2"          "Irf2bp2"       "Irs1"          "Irs2"         
-    ##  [85] "Jdp2"          "Jmjd1c"        "Jun"           "Junb"         
-    ##  [89] "Jund"          "Kcna4"         "Kcnf1"         "Kcnj2"        
-    ##  [93] "Kdm6b"         "Kdm7a"         "Kitl"          "Klf2"         
-    ##  [97] "Klf6"          "Lbh"           "Lcmt2"         "Lemd3"        
-    ## [101] "Lmna"          "Lonrf1"        "Lrrtm2"        "March11"      
-    ## [105] "Med7"          "Mest"          "Mfap3l"        "Mn1"          
-    ## [109] "Myc"           "Naf1"          "Nap1l5"        "Nedd9"        
-    ## [113] "Nefm"          "Nfil3"         "Npas4"         "Nptx2"        
-    ## [117] "Nr4a1"         "Nr4a2"         "Nr4a3"         "Nuak1"        
-    ## [121] "Odc1"          "Olfml2b"       "Otud1"         "Pak6"         
-    ## [125] "Pcdh8"         "Peg10"         "Peli1"         "Per1"         
-    ## [129] "Per2"          "Phlda1"        "Piga"          "Plagl1"       
-    ## [133] "Plk2"          "Plk3"          "Pou3f3"        "Ppp1r15a"     
-    ## [137] "Prpf38b"       "Ptgs2"         "Ranbp2"        "Rasd1"        
-    ## [141] "Rasl11a"       "Rasl11b"       "Rfx2"          "Rgmb"         
-    ## [145] "Rgs2"          "Rgs4"          "Scg2"          "Sgk1"         
-    ## [149] "Sh2d3c"        "Siah2"         "Slc16a1"       "Slc25a25"     
-    ## [153] "Slc2a3"        "Slc45a4"       "Slitrk5"       "Smad7"        
-    ## [157] "Snx18"         "Sowahc"        "Sox9"          "Spty2d1"      
-    ## [161] "Srf"           "Stmn4"         "Syt4"          "Thbs1"        
-    ## [165] "Tiparp"        "Tnip2"         "Tra2b"         "Trib1"        
-    ## [169] "Tsc22d2"       "Ubc"           "Uspl1"         "Zbtb33"       
-    ## [173] "Zdbf2"         "Zfand5"        "Zfp275"        "Zfp654"       
-    ## [177] "Zfp869"
+    ##   [1] "1190002N15RIK" "ABHD2"         "ADAMTS1"       "ADRB1"        
+    ##   [5] "AHR"           "AMIGO2"        "ANKRD13A"      "ANKRD28"      
+    ##   [9] "ANKRD33B"      "APAF1"         "ARID5B"        "ARL13B"       
+    ##  [13] "ARL4A"         "ARL4D"         "ARL5B"         "ARMCX5"       
+    ##  [17] "ARPP21"        "ATF3"          "B3GNT2"        "BACH1"        
+    ##  [21] "BTG2"          "C2CD4B"        "CCNK"          "CIART"        
+    ##  [25] "CITED2"        "CLDN12"        "CNNM1"         "CPEB4"        
+    ##  [29] "CTNND1"        "CUL3"          "CWC25"         "CXADR"        
+    ##  [33] "CYP51"         "DNAJA1"        "DNAJB1"        "DNAJB4"       
+    ##  [37] "DUSP14"        "DUSP16"        "DUSP4"         "DUSP6"        
+    ##  [41] "DUSP8"         "DYRK2"         "EGR1"          "EGR3"         
+    ##  [45] "EIF5"          "EPRS"          "ERF"           "FAM107B"      
+    ##  [49] "FAM118A"       "FBXW7"         "FERMT2"        "FLRT3"        
+    ##  [53] "FOS"           "FOSB"          "FOXG1"         "FOXO1"        
+    ##  [57] "FZD4"          "GAD1"          "GM13889"       "GMEB2"        
+    ##  [61] "GPR19"         "HECA"          "HMGCR"         "HS6ST1"       
+    ##  [65] "HSPA1A"        "HSPH1"         "IL16"          "ING2"         
+    ##  [69] "IRF2BP2"       "IRS1"          "JDP2"          "JMJD1C"       
+    ##  [73] "JUNB"          "JUND"          "KCNA4"         "KDM6B"        
+    ##  [77] "KDM7A"         "KLF2"          "KLF6"          "LBH"          
+    ##  [81] "LCMT2"         "LEMD3"         "LMNA"          "LONRF1"       
+    ##  [85] "LRRTM2"        "MARCH11"       "MED7"          "MFAP3L"       
+    ##  [89] "MN1"           "MYC"           "NAF1"          "NAP1L5"       
+    ##  [93] "NEDD9"         "NEFM"          "NFIL3"         "NR4A1"        
+    ##  [97] "NR4A2"         "NR4A3"         "NUAK1"         "ODC1"         
+    ## [101] "OLFML2B"       "PAK6"          "PEG10"         "PELI1"        
+    ## [105] "PER1"          "PER2"          "PHLDA1"        "PIGA"         
+    ## [109] "PLAGL1"        "PLK3"          "POU3F3"        "PPP1R15A"     
+    ## [113] "PRPF38B"       "RANBP2"        "RASL11A"       "RASL11B"      
+    ## [117] "RGMB"          "RGS4"          "SCG2"          "SH2D3C"       
+    ## [121] "SIAH2"         "SLC25A25"      "SLC2A3"        "SLC45A4"      
+    ## [125] "SLITRK5"       "SOWAHC"        "SOX9"          "SRF"          
+    ## [129] "STMN4"         "SYT4"          "THBS1"         "TIPARP"       
+    ## [133] "TNIP2"         "TRA2B"         "TRIB1"         "TSC22D2"      
+    ## [137] "USPL1"         "ZBTB33"        "ZFAND5"        "ZFP275"       
+    ## [141] "ZFP654"        "ZFP869"
 
     downDG <- DGDEGs %>% filter(lfc < 0)
     downDG <- as.vector(downDG$gene)
     downDG
 
-    ##  [1] "Ankrd27"  "BC048403" "Bmt2"     "Ccdc32"   "Cecr6"    "Coq2"    
-    ##  [7] "Cpne7"    "Ctcfl"    "Dpysl2"   "Eef1e1"   "Gnaz"     "Gpi1"    
-    ## [13] "Gyg"      "Igf2bp2"  "Klkb1"    "Lrrc45"   "Lysmd4"   "Mc1r"    
-    ## [19] "Neurod6"  "Nxf1"     "Pde6a"    "Pgam2"    "Plch2"    "Prune2"  
-    ## [25] "Pxn"      "Rbm47"    "Scoc"     "Senp8"    "Slc5a5"   "Srgap1"  
-    ## [31] "Stac2"    "Sv2b"     "Tmem170"  "Tspyl3"   "Tubb4a"   "Zfp207"  
-    ## [37] "Zfp668"
+    ##  [1] "ANKRD27"  "BC048403" "BMT2"     "CCDC32"   "CECR6"    "COQ2"    
+    ##  [7] "CPNE7"    "CTCFL"    "DPYSL2"   "EEF1E1"   "GNAZ"     "GPI1"    
+    ## [13] "GYG"      "IGF2BP2"  "KLKB1"    "LRRC45"   "LYSMD4"   "MC1R"    
+    ## [19] "NEUROD6"  "NXF1"     "PDE6A"    "PGAM2"    "PLCH2"    "PRUNE2"  
+    ## [25] "PXN"      "RBM47"    "SCOC"     "SENP8"    "SLC5A5"   "SRGAP1"  
+    ## [31] "STAC2"    "SV2B"     "TMEM170"  "TSPYL3"   "TUBB4A"   "ZFP207"  
+    ## [37] "ZFP668"
 
     upCA1 <- CA1DEGs %>% filter(lfc > 0)
     upCA1 <- as.vector(upCA1$gene)
     upCA1
 
-    ## [1] "Glcci1"
+    ## [1] "GLCCI1"
 
     downCA1 <- CA1DEGs %>% filter(lfc < 0)
     downCA1 <- as.vector(downCA1$gene)
     downCA1
 
-    ##  [1] "Ahdc1"   "Bmt2"    "Ctcfl"   "Fn3krp"  "Gnaz"    "Igf2bp2" "Il4ra"  
-    ##  [8] "Inhbb"   "Khnyn"   "Klkb1"   "Mx1"     "Pde6a"   "Stac3"   "Stox2"  
-    ## [15] "Tmem170"
+    ##  [1] "AHDC1"   "BMT2"    "CTCFL"   "FN3KRP"  "GNAZ"    "IGF2BP2" "IL4RA"  
+    ##  [8] "INHBB"   "KHNYN"   "KLKB1"   "MX1"     "PDE6A"   "STAC3"   "STOX2"  
+    ## [15] "TMEM170"
 
     ## DG 
-    DEGes <- assay(vst(DGdds))
+    DEGes <- assay(vst(DGdds2))
     DEGes <- cbind(DEGes, contrast1)
     DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
 
     DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
     DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
-    DEGes$padjmin <- with(DEGes, pmin(padjcombinedgroupstrainedyoked)) 
+    DEGes$padjmin <- with(DEGes, pmin(padjtrainingtrainedyoked)) 
     DEGes <- DEGes %>% filter(padjmin < 0.1)
     rownames(DEGes) <- DEGes$rownames
     drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -400,11 +356,11 @@
     paletteLength <- 10
     myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
                   seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
-    df <- as.data.frame(colData(DGdds)[,c("combinedgroups")]) ## matrix to df
-    rownames(df) <- row.names(colData(DGdds))
-    names(df) <- c("combinedgroups")
+    df <- as.data.frame(colData(DGdds2)[,c("training")]) ## matrix to df
+    rownames(df) <- row.names(colData(DGdds2))
+    names(df) <- c("training")
     df$subfield <- "DG"
-    levels(df$combinedgroups) <- c("yoked", "trained")
+    levels(df$training) <- c("yoked", "trained")
 
     pheatmap(DEGes, show_colnames=F, show_rownames = T,
              annotation_col=df, 
@@ -447,12 +403,12 @@
 
     ### CA1
 
-    DEGes <- assay(vst(CA1dds))
+    DEGes <- assay(vst(CA1dds2))
     DEGes <- cbind(DEGes, contrast2)
     DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
     DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
     DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
-    DEGes$padjmin <- with(DEGes, pmin(padjcombinedgroupstrainedyoked)) 
+    DEGes$padjmin <- with(DEGes, pmin(padjtrainingtrainedyoked)) 
     DEGes <- DEGes %>% filter(padjmin < 0.1)
     rownames(DEGes) <- DEGes$rownames
     drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
@@ -463,11 +419,11 @@
     paletteLength <- 10
     myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
                   seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
-    df <- as.data.frame(colData(CA1dds)[,c("combinedgroups")]) ## matrix to df
-    rownames(df) <- row.names(colData(CA1dds))
-    names(df) <- c("combinedgroups")
+    df <- as.data.frame(colData(CA1dds2)[,c("training")]) ## matrix to df
+    rownames(df) <- row.names(colData(CA1dds2))
+    names(df) <- c("training")
     df$subfield <- "CA1"
-    levels(df$combinedgroups) <- c("yoked", "trained")
+    levels(df$training) <- c("yoked", "trained")
 
     pheatmap(DEGes, show_colnames=F, show_rownames = T,
              annotation_col=df, 
@@ -510,8 +466,8 @@
 tSNE
 ----
 
-    a <- plot.tSNE.trained(DGdds, 2, "DG")
-    b <- plot.tSNE.trained(CA1dds, 2, "CA1")
+    a <- plot.tSNE.trained(DGdds2, 2, "DG")
+    b <- plot.tSNE.trained(CA1dds2, 2, "CA1")
 
     plot_grid(a,b)
 
