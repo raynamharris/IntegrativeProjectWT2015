@@ -6,7 +6,7 @@ output: md_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = F)
+knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = T, cache.lazy = FALSE)
 ```
 
 
@@ -14,6 +14,7 @@ knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = F)
 library(tidyverse)
 library(corrr)
 library(cowplot)
+library(ggrepel)
 
 source("./figureoptions.R")
 
@@ -21,185 +22,184 @@ source("./figureoptions.R")
 
 
 ```{r DGDEGs}
+
+# lists of genes that are correlated with particular genes
 ARC_associated <- read_csv("../data/02h_ARC_associated.csv")  %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
 Neurod6_associated <- read_csv("../data/02h_Neurod6_associated.csv") %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
 Prkcz_associated <- read_csv("../data/02h_Prkcz_associated.csv") %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
 
-
+# differentially expressed gens in the DG
 DG_DEGs <- read.csv("../data/02f_DG_DEGs_vsd.csv", row.names = 1, check.names = F)
 DG_DEGs <- as.data.frame(t(DG_DEGs))
 DG_DEGs$sample <- row.names(DG_DEGs)
 DG_DEGs <- DG_DEGs %>% select(`1190002N15RIK`:ZFP869)
-head(DG_DEGs)[1:5]
-
 DG_DEGs <- as.data.frame(t(DG_DEGs))
 DG_DEGs$gene <- row.names(DG_DEGs)
 
+# only look at Differentially expressed genes in the ARC module
 DG_ARC <- DG_DEGs %>% filter(gene %in% ARC_associated) %>% select(gene, everything())
 row.names(DG_ARC) <- DG_ARC$gene
 DG_ARC$gene <- NULL
-
-
 DG_ARC <- as.data.frame(t(DG_ARC))
 DG_ARC$sample  <- row.names(DG_ARC)
 DG_ARC$mouse <- sapply(strsplit(as.character(DG_ARC$sample),"\\-"), "[", 1)
 DG_ARC$ID <- paste(15, DG_ARC$mouse, sep = "")
 
-# read the sample data, set levels
+# read the sample data, set levels, join iwth behvior PCA data
 colData <- read.csv("../data/02a_colData.csv", row.names = 1, stringsAsFactors = T)
 colData <- colData %>% filter(subfield == "DG")
-
-# join with pca data for retention
-
 pca.Rn <- read_csv("../data/01a_pca.all.csv") %>% filter(TrainSessionComboNum == 9)
 pca.Rn <- pca.Rn %>% select(ID:PC2)
-head(pca.Rn)
-
 colData <- left_join(colData, pca.Rn)
-colData
+head(colData)
 
+# joing with counts and sample data, prep for correlations
 alldata <- left_join(colData, DG_ARC)
 forcorplots <- alldata %>% select(PC1:UBC)
 forcorplots
 
+# correlation matrix
 x <- correlate(forcorplots)
 
-x %>% filter(PC1 > 0.755) %>% arrange(desc(PC1)) 
+x %>% filter(PC1 > 0.755) %>% arrange(desc(PC1))  %>% select(rowname, PC1, PC2)
+```
+
+```{r correlations}
+cor.test(alldata$ARC, alldata$PC1, method = "pearson")
+cor.test(alldata$ARC, alldata$PC2, method = "pearson")
 
 
-plotmycors <- function(df, whichgene, mysubtitle){
- p <- ggplot(alldata, aes(x = PC1, y = whichgene)) +
+a <- ggplot(alldata, aes(x = PC1, y = ARC)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
-   labs(y = mysubtitle,  x = "PC1") +
-   theme(legend.position = "none")
- return(p) 
-}  
+   theme_ms() +
+   theme(legend.position = "none") +
+  labs(subtitle = "R2 = 0.81, p = 0.0002")
+  
 
-
-
-p3 <- plotmycors(alldata, alldata$ARC, "ARC")
-p3
-
-ggplot(alldata, aes(x = ARC, y = FOSL2)) +
+b <- ggplot(alldata, aes(x = PC2, y = ARC)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")
+   theme_ms() +
+   theme(legend.position = "none") +
+  labs(subtitle = "R2 = -0.63, p = 0.009")
 
-ggplot(alldata, aes(x = NAF1, y = CPEB4)) +
-   geom_point(aes( color = treatment)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")
+plot_grid(a,b)
+
 ```
 
 
 ```{r DGvsd}
+# read all count data
 vsd <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F)
 
-GOgenes <- read_csv("../data/goterms/GOterms.csv") 
-GOgenes
-
-vsd2 <- vsd %>%
-  mutate(genes = toupper(rownames(vsd))) %>%
-  filter(genes %in% GOgenes$gene) %>%
-  as.data.frame()
-row.names(vsd2) <- vsd2$genes
-vsd2$genes <- NULL
-head(vsd2)
-
-
-vsd <- as.data.frame(t(vsd2))
-
+# prep to join with sample colData
+vsd <- as.data.frame(t(vsd))
 vsd$sample <- row.names(vsd)
-head(vsd)[1]
-head(vsd)[6112]
-vsd <- vsd %>% select(`1600014C10RIK`:ZYX)
-vsd
-
-
-vsd$sample  <- row.names(vsd)
 vsd$mouse <- sapply(strsplit(as.character(vsd$sample),"\\-"), "[", 1)
 vsd$ID <- paste(15, vsd$mouse, sep = "")
-vsd <- vsd %>% select(ID, `1600014C10RIK`:ZYX)
-head(vsd)[1:5]
 
 vsd <- left_join(colData, vsd)
-vsd
-forcorall <-  vsd %>% select(PC1:ZYX)
-y <- correlate(forcorall) 
+head(vsd)[17015:17020]
 
-head(vsd)
+forcorall <-  vsd %>% select(PC1:Zzz3)
+head(forcorall)
+
+corrrmat <- correlate(forcorall, diagonal = 1) 
+head(corrrmat)
+```
+
+```{r corrrplots}
+summary(lm( PC1 ~ Arc, data = vsd))
+summary(lm( PC2 ~ Arc, data = vsd))
 
 
-y %>% filter(PC1 > 0.6) %>% arrange(desc(PC1)) 
-y %>% filter(PC1 < -0.6) %>% arrange(desc(PC1)) 
-
-y %>% filter(PC2 > 0.6) %>% arrange(desc(PC2)) 
-y %>% filter(PC2 < -0.6) %>% arrange(desc(PC2)) 
-
-y %>% 
-  focus(PC1,PC2, ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2, PAK6, PLK2, PTGS2, SGK1, SRF, SYT4,  mirror = TRUE)  %>% 
-        rplot(shape = 15, colors = c("#67a9cf", "#ef8a62") ) 
-
-y %>% 
-  focus(PC1,PC2, ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2, PAK6, PLK2, PTGS2, SGK1, SRF, SYT4,  mirror = TRUE)  %>% 
-        rplot( colors = c("#67a9cf", "#ef8a62") ) 
-
-a1 <- y %>% focus(PC1,PC2, ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2,
-           # PRKCZ, DLG4,
-            PAK6, PLK2, PTGS2, SGK1, SRF, SYT4,  mirror = TRUE)  %>% 
-  network_plot(colors = c("#67a9cf", "#ef8a62") ) +
-  theme(legend.position = "bottom")
-a1
+cor.test(vsd$PC1, vsd$Arc, method = c("pearson"))
+cor.test(vsd$PC2, vsd$Arc, method = c("pearson"))
+cor.test(vsd$Jun, vsd$Arc, method = c("pearson"))
 
 
 
-a <- ggplot(vsd, aes(x = PC1, y = ARC)) +
+a <- ggplot(vsd, aes(x = PC1, y = Arc)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")  +
-  theme(axis.text.x = element_blank(),
-        axis.title.x = element_blank()) + 
-  annotate("text", x = 1, y = 11.5, label = "R2 = 0.65")
-b <- ggplot(vsd, aes(x = PC1, y = BDNF)) +
+   theme(legend.position = "none", axis.text.x = element_blank())  +
+   annotate("text", x = 0, y = 11.5, label = "R2 = 0.81, p = 0.0002")
+b <- ggplot(vsd, aes(x = PC2, y = Arc)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")  +
-  theme(axis.text.x = element_blank(),
-        axis.title.x = element_blank()) + 
-  annotate("text", x = 1, y = 10.6, label = "R2 = 0.50")
-c <- ggplot(vsd, aes(x = PC1, y = PRKCZ)) +
+   theme(legend.position = "none", axis.text.x = element_blank(),
+         axis.text.y = element_blank(), axis.title.y = element_blank())  +
+   annotate("text", x = 2, y = 11.5, label = "R2 = -0.63, p = 0.009")
+
+c <- ggplot(vsd, aes(x = Jun, y = Arc)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")  +
-  scale_x_continuous(breaks = c(-2,0,2,4,6)) + 
-  annotate("text", x = 3, y = 8.7, label = "R2 = 0.13")
-d <- ggplot(vsd, aes(x = PC1, y = DLG4)) +
-   geom_point(aes( color = treatment)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = treatmentcolors) +
-  # theme(axis.text.x = element_blank())  +
-   theme(legend.position = "none")  +
-  scale_x_continuous(breaks = c(-2,0,2,4,6)) + 
-  annotate("text", x = 3, y = 10.7, label = "R2 = 0.03")
-   
+   theme(legend.position = "none", 
+         axis.text.x = element_blank(),
+         axis.text.y = element_blank(), 
+         axis.title.y = element_blank())  +
+   annotate("text", x = 9.5, y = 11.5, label = "R2 = 85, p = 2.801e-05")
+c
 
-a2 <- plot_grid(a,b,c,d, nrow = 2, rel_heights = c(0.45, 0.55))
+top <- plot_grid(a,b, c, rel_widths = c(0.4,0.3, 0.3), nrow = 1)
+top
 
-plot_grid(a1,a2, rel_widths = c(0.4,0.6))
+slim <- corrrmat %>% 
+  focus(PC1, PC2)  %>% 
+  arrange(desc(PC1)) %>% 
+  filter(PC1 > 0.801 | PC2 > 0.69) 
+slim
+
+topcorrrs <- slim$rowname
+topcorrrs
 
 
-lm( PC1 ~ ARC, data = vsd)
-summary(lm( PC1 ~ ARC, data = vsd))
-summary(lm( PC1 ~ BDNF, data = vsd))
-summary(lm( PC1 ~ PRKCZ, data = vsd))
-summary(lm( PC1 ~ DLG4, data = vsd))
+p1 <- corrrmat %>% 
+  focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+  network_plot(colors = c("#67a9cf", "#ef8a62"),
+               min_cor = .6, curved = F, legend = F,
+               repel = TRUE) 
+p1 
+
+p2 <- corrrmat %>% 
+  focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+   focus(PC1, PC2) %>%
+  mutate(rowname = reorder(rowname, PC1)) %>%
+  ggplot(aes(rowname, PC1, fill = PC1)) +
+    geom_col() + coord_flip() +
+  scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
+  #theme_ms() +
+  theme(legend.position = "none") +
+  ylim(-1,1) +
+  labs(x = NULL, y = "Correlation to PC1")
+p2 
+
+p3 <- corrrmat %>% 
+  focus(PC1, PC2,topcorrrs,  mirror = TRUE) %>% 
+   focus(PC1, PC2) %>%
+  mutate(rowname = reorder(rowname, PC1)) %>%
+  ggplot(aes(rowname, PC2, fill = PC2)) +
+    geom_col() + coord_flip() +
+  scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
+  #theme_ms() +
+  theme(legend.position = "none", axis.text.y = element_blank()) +
+  ylim(-1,1) +
+  labs(x = NULL, y = "Correlation to PC2")
+p3
+
+
+bottom <- plot_grid(p2,p3,p1,  nrow = 1, rel_widths = c(0.4,0.3,0.4))
+bottom
+
+
+plot_grid(top, bottom, nrow = 2, rel_heights = c(0.45,0.55))
+
 ```
 
 
