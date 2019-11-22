@@ -22,7 +22,7 @@ source("figureoptions.R")
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02f_trainedvyoked/', cache = F)
+knitr::opts_chunk$set(fig.path = '../figures/02f_trainedvyoked/', cache = T)
 ```
 
 ```{r DESeq}
@@ -268,7 +268,12 @@ GO_synapse$GO <- "3. synapse organization"
 GO_learningormemory <- read.table("../data/goterms/GO_term_summary_20191121_142500.txt", sep = "\t", row.names = NULL)
 GO_learningormemory$GO <- "4. learning or memory"
 
-GOterms <- rbind(GO_learningormemory, GO_response, GO_translation, GO_synapse)
+
+GO_negregcellprocess <- read.table("../data/goterms/GO_term_summary_20191121_171649.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+GO_negregcellprocess$GO <- "5. negative regulation of cellular process"
+
+
+GOterms <- rbind(GO_learningormemory, GO_response, GO_translation, GO_synapse, GO_negregcellprocess)
 
 GOterms <- GOterms %>%
   dplyr::mutate(gene = toupper(MGI.Gene.Marker.ID)) %>% 
@@ -276,17 +281,48 @@ GOterms <- GOterms %>%
   dplyr::distinct(gene, GO) %>% 
  group_by(gene) 
 
-GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
-  arrange(GO,gene)
-GOtermsDEGs
+head(GOterms)
 
-GOtermsDEGs2  <- GOtermsDEGs %>%
+write.csv(GOterms, "../data/goterms/GOterms.csv", row.names = F)
+
+GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
+  arrange(GO,gene) %>%
   dplyr::select(gene, GO) %>% 
  group_by(GO) %>%
  summarize(genes = str_c(gene, collapse = ", "))
-GOtermsDEGs2
+GOtermsDEGs
 
-GOtermsDEGs2$genes
+write.csv(GOtermsDEGs, "../data/goterms/GOtermsDEGs2.csv", row.names = F)
 
-write.csv(GOtermsDEGs2, "../data/goterms/GOtermsDEGs2.csv", row.names = F)
+# what to konw which of our favorite genes were in those list but perhaps not captured by analysis
+
+
+sanesLichtman <- read.csv("../data/02i_sanesLichtman.csv", header = T, stringsAsFactors = F)
+head(sanesLichtman)
+
+GOtermsSanesLichtman <- GOterms %>%
+  filter(gene %in% sanesLichtman$genes) %>%
+  dplyr::select(gene, GO) %>% 
+ group_by(GO) %>%
+ summarize(genes = str_c(gene, collapse = ", "))
+
+GOtermsSanesLichtman
+write.csv(GOtermsSanesLichtman, "../data/goterms/GOtermsSanesLichtman.csv", row.names = F)
+
+inner_join(GOterms, DGDEGs) %>%
+  dplyr::select(gene, GO) %>% 
+ group_by(GO) %>%
+ summarize(genes = str_c(gene, collapse = ", "))
+
+inner_join(GOterms, DGDEGs) %>%
+  filter(gene %in% sanesLichtman$genes)%>%
+  dplyr::select(gene, GO) %>% 
+ group_by(GO) %>%
+ summarize(genes = str_c(gene, collapse = ", "))
+
+# ADRB1 Adrenoceptor Beta 1
+# HOMER1
+# EGR1 Early Growth Response 1
+
+
 ```

@@ -22,7 +22,6 @@ source("./figureoptions.R")
 
 ```{r DGDEGs}
 ARC_associated <- read_csv("../data/02h_ARC_associated.csv")  %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
-
 Neurod6_associated <- read_csv("../data/02h_Neurod6_associated.csv") %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
 Prkcz_associated <- read_csv("../data/02h_Prkcz_associated.csv") %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
 
@@ -79,17 +78,9 @@ plotmycors <- function(df, whichgene, mysubtitle){
 }  
 
 
-p1 <- plotmycors(alldata, alldata$NAF1, "NAF1")
-p2 <- plotmycors(alldata, alldata$RGS2, "RGS2")
-p3 <- plotmycors(alldata, alldata$ARC, "ARC")
-p4 <- plotmycors(alldata, alldata$ACAN, "ACAN")
-p5 <- plotmycors(alldata, alldata$SYT4, "SYT4")
-p6 <- plotmycors(alldata, alldata$ARMCX5, "ARMCX5")
-p7 <- plotmycors(alldata, alldata$ATF3, "ATF3")
-p8 <- plotmycors(alldata, alldata$FOSL2, "FOSL2")
-p9 <- plotmycors(alldata,alldata$CPEB4, "CPEB4")
 
-plot_grid(p1,p2,p3,p4,p5,p6,p7,p8,p9)
+p3 <- plotmycors(alldata, alldata$ARC, "ARC")
+p3
 
 ggplot(alldata, aes(x = ARC, y = FOSL2)) +
    geom_point(aes( color = treatment)) + 
@@ -107,61 +98,196 @@ ggplot(alldata, aes(x = NAF1, y = CPEB4)) +
 
 ```{r DGvsd}
 vsd <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F)
-vsd <- as.data.frame(t(vsd))
+
+GOgenes <- read_csv("../data/goterms/GOterms.csv") 
+GOgenes
+
+vsd2 <- vsd %>%
+  mutate(genes = toupper(rownames(vsd))) %>%
+  filter(genes %in% GOgenes$gene) %>%
+  as.data.frame()
+row.names(vsd2) <- vsd2$genes
+vsd2$genes <- NULL
+head(vsd2)
+
+
+vsd <- as.data.frame(t(vsd2))
+
 vsd$sample <- row.names(vsd)
 head(vsd)[1]
-head(vsd)[17010]
-vsd <- vsd %>% select(`0610007P14Rik`:Zzef1)
+head(vsd)[6112]
+vsd <- vsd %>% select(`1600014C10RIK`:ZYX)
+vsd
+
 
 vsd$sample  <- row.names(vsd)
 vsd$mouse <- sapply(strsplit(as.character(vsd$sample),"\\-"), "[", 1)
 vsd$ID <- paste(15, vsd$mouse, sep = "")
-vsd <- vsd %>% select(ID, `0610007P14Rik`:Zzef1)
+vsd <- vsd %>% select(ID, `1600014C10RIK`:ZYX)
 head(vsd)[1:5]
 
 vsd <- left_join(colData, vsd)
-
-forcorall <-  vsd %>% select(PC1:Zzef1)
+vsd
+forcorall <-  vsd %>% select(PC1:ZYX)
 y <- correlate(forcorall) 
+
+head(vsd)
 
 
 y %>% filter(PC1 > 0.6) %>% arrange(desc(PC1)) 
 y %>% filter(PC1 < -0.6) %>% arrange(desc(PC1)) 
 
+y %>% filter(PC2 > 0.6) %>% arrange(desc(PC2)) 
+y %>% filter(PC2 < -0.6) %>% arrange(desc(PC2)) 
+
 y %>% 
-  focus(PC1, PC2, Naf1, Ptgs2, Rgs2, Hist1h1d, Col10a1,  Arc, 
-            Nme1, Mettl7a1, Lsm7, Coq2, Uqcr11, Mrps23, 
-        mirror = TRUE)  %>% 
+  focus(PC1,PC2, ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2, PAK6, PLK2, PTGS2, SGK1, SRF, SYT4,  mirror = TRUE)  %>% 
         rplot(shape = 15, colors = c("#67a9cf", "#ef8a62") ) 
 
-plotmycors(vsd, vsd$Arc, "ARC")
-plotmycors(vsd, vsd$Nme1, "NME1")
+y %>% 
+  focus(PC1,PC2, ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2, PAK6, PLK2, PTGS2, SGK1, SRF, SYT4,  mirror = TRUE)  %>% 
+        rplot( colors = c("#67a9cf", "#ef8a62") ) 
+
+a1 <- y %>% focus(PC1,PC2, ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2,
+           # PRKCZ, DLG4,
+            PAK6, PLK2, PTGS2, SGK1, SRF, SYT4,  mirror = TRUE)  %>% 
+  network_plot(colors = c("#67a9cf", "#ef8a62") ) +
+  theme(legend.position = "bottom")
+a1
+
+
+
+a <- ggplot(vsd, aes(x = PC1, y = ARC)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+   theme(legend.position = "none")  +
+  theme(axis.text.x = element_blank(),
+        axis.title.x = element_blank())
+b <- ggplot(vsd, aes(x = PC1, y = BDNF)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+   theme(legend.position = "none")  +
+  theme(axis.text.x = element_blank(),
+        axis.title.x = element_blank())
+c <- ggplot(vsd, aes(x = PC1, y = PRKCZ)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+   theme(legend.position = "none")  +
+  scale_x_continuous(breaks = c(-2,0,2,4,6))
+d <- ggplot(vsd, aes(x = PC1, y = DLG4)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+  # theme(axis.text.x = element_blank())  +
+   theme(legend.position = "none")  +
+  scale_x_continuous(breaks = c(-2,0,2,4,6))
+   
+
+a2 <- plot_grid(a,b,c,d, nrow = 2, rel_heights = c(0.45, 0.55))
+
+plot_grid(a1,a2)
+
+
+
+
+```
+
+```{r DGvsd2}
+vsd <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F)
+
+sanesLichtman <- read.csv("../data/02i_sanesLichtman.csv", header = T, stringsAsFactors = F)
+head(sanesLichtman)
+
+sanesLichtmangenes <- as.vector(sanesLichtman$gene)
+
+vsd2 <- vsd %>%
+  mutate(genes = toupper(rownames(vsd))) %>%
+  filter(genes %in% sanesLichtman$gene) %>%
+  as.data.frame()
+row.names(vsd2) <- vsd2$genes
+vsd2$genes <- NULL
+head(vsd2)
+
+
+vsd <- as.data.frame(t(vsd2))
+
+vsd$sample <- row.names(vsd)
+head(vsd)[1]
+head(vsd)[226]
+vsd <- vsd %>% select(`ACHE`:VAMP8)
+vsd
+
+
+vsd$sample  <- row.names(vsd)
+vsd$mouse <- sapply(strsplit(as.character(vsd$sample),"\\-"), "[", 1)
+vsd$ID <- paste(15, vsd$mouse, sep = "")
+vsd <- vsd %>% select(ID, `ACHE`:VAMP8)
+head(vsd)[1:5]
+
+vsd <- left_join(colData, vsd)
+vsd
+forcorall <-  vsd %>% select(PC1:VAMP8)
+y <- correlate(forcorall) 
+
+
+y %>% filter(PC1 > 0.5) %>% arrange(desc(PC1)) 
+y %>% filter(PC1 < -0.5) %>% arrange(desc(PC1)) 
 
 y %>% filter(PC2 > 0.5) %>% arrange(desc(PC2)) 
 y %>% filter(PC2 < -0.5) %>% arrange(desc(PC2)) 
 
+
 y %>% 
-  focus(PC1,PC2, Cabp7,  Traf3ip3, Cox7a2, Ndufv2, Trim65, Frmd7,
-            Mybl2,Gm10750, Cluap1,Snrpd3,Mapk6, Gabra2,
-        mirror = TRUE)  %>% 
+  focus(PC1,PC2, CREB1,MAPK1 ,EGR1, HOMER1, GABRR1, PRKCZ,GRIA1, GRIN1,GRM1, mirror = TRUE)  %>% 
         rplot(shape = 15, colors = c("#67a9cf", "#ef8a62") ) 
 
+y %>% 
+  focus(PC1,PC2, CREB1,MAPK1 ,EGR1, HOMER1, GABRR1, PRKCZ,GRIA1, GRIN1,GRM1,  mirror = TRUE)  %>% 
+        rplot( colors = c("#67a9cf", "#ef8a62") ) 
 
-ggplot(vsd, aes(x = PC2, y = Gabra2)) +
+
+
+
+
+
+a <- ggplot(vsd, aes(x = PC1, y = CAMK2)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")
-ggplot(vsd, aes(x = PC2, y = Cabp7)) +
+   theme(legend.position = "none")  +
+  theme(axis.text.x = element_blank(),
+        axis.title.x = element_blank())
+b <- ggplot(vsd, aes(x = PC1, y = GRIA1)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")
-ggplot(vsd, aes(x = PC2, y = Mapk6)) +
+   theme(legend.position = "none")  +
+  theme(axis.text.x = element_blank(),
+        axis.title.x = element_blank())
+c <- ggplot(vsd, aes(x = PC1, y = GRM1)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")
+   theme(legend.position = "none")  +
+  scale_x_continuous(breaks = c(-2,0,2,4,6))
+d <- ggplot(vsd, aes(x = PC1, y = DLG4)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+  # theme(axis.text.x = element_blank())  +
+   theme(legend.position = "none")  +
+  scale_x_continuous(breaks = c(-2,0,2,4,6))
+   
+
+a2 <- plot_grid(a,b,c,d, nrow = 2, rel_heights = c(0.45, 0.55))
+
+plot_grid(a1,a2)
+
+
+
 
 ```
 

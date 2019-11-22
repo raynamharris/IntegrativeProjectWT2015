@@ -16,7 +16,7 @@
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02f_trainedvyoked/', cache = F)
+    knitr::opts_chunk$set(fig.path = '../figures/02f_trainedvyoked/', cache = T)
 
     a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
 
@@ -500,33 +500,14 @@ Go terms
      group_by(gene) 
 
     GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
-      arrange(GO,gene)
+      arrange(GO,gene) %>%
+      dplyr::select(gene, GO) %>% 
+     group_by(GO) %>%
+     summarize(genes = str_c(gene, collapse = ", "))
 
     ## Joining, by = "gene"
 
     GOtermsDEGs
-
-    ## # A tibble: 106 x 7
-    ## # Groups:   gene [90]
-    ##    gene    GO                   lfc      padj direction tissue comparison  
-    ##    <chr>   <chr>              <dbl>     <dbl> <chr>     <fct>  <chr>       
-    ##  1 ABHD2   1. response to st…  0.86   1.53e-2 increased DG     trained-yok…
-    ##  2 ADRB1   1. response to st…  0.98   3.11e-2 increased DG     trained-yok…
-    ##  3 AHR     1. response to st…  1.59   1.91e-2 increased DG     trained-yok…
-    ##  4 ANKRD27 1. response to st… -1.09   5.93e-2 decreased DG     trained-yok…
-    ##  5 APAF1   1. response to st…  1.26   4.55e-3 increased DG     trained-yok…
-    ##  6 ARC     1. response to st…  2.1    4.72e-6 increased DG     trained-yok…
-    ##  7 ARID5B  1. response to st…  1.06   5.36e-3 increased DG     trained-yok…
-    ##  8 ARL13B  1. response to st…  1.23   9.92e-2 increased DG     trained-yok…
-    ##  9 ARPP21  1. response to st…  0.5    8.67e-2 increased DG     trained-yok…
-    ## 10 ATF3    1. response to st…  1.78   5.23e-3 increased DG     trained-yok…
-    ## # … with 96 more rows
-
-    GOtermsDEGs2  <- GOtermsDEGs %>%
-      dplyr::select(gene, GO) %>% 
-     group_by(GO) %>%
-     summarize(genes = str_c(gene, collapse = ", "))
-    GOtermsDEGs2
 
     ## # A tibble: 4 x 2
     ##   GO                 genes                                                 
@@ -536,11 +517,35 @@ Go terms
     ## 3 3. synapse organi… AMIGO2, ARC, BDNF, FLRT3, FZD5, HOMER1, LRRTM2, NPAS4…
     ## 4 4. learning or me… ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX…
 
-    GOtermsDEGs2$genes
+    write.csv(GOtermsDEGs, "../data/goterms/GOtermsDEGs2.csv", row.names = F)
 
-    ## [1] "ABHD2, ADRB1, AHR, ANKRD27, APAF1, ARC, ARID5B, ARL13B, ARPP21, ATF3, B3GNT2, BACH1, BC048403, BMT2, BTG2, C2CD4B, CCNK, CITED2, FBXW7, FERMT2, FLRT3, FOS, FOSB, FOSL2, FOXG1, FOXO1, FZD4, FZD5, GADD45G, GNAZ, GPI1, GPR19, HMGCR, HOMER1, HSPA1A, HSPH1, IL16, ING2, IRS1, IRS2, JUN, JUNB, JUND, KDM6B, KITL, KLF2, KLF6, KLKB1, LBH, LEMD3, LMNA, MC1R, MEST, MYC, NEDD9, NFIL3, NPAS4, NPTX2, NR4A1, NR4A2, NR4A3, PPP1R15A, SLC16A1, SLC25A25, SLITRK5, SMAD7, SOX9, SRF, SRGAP1, STAC2, SYT4, THBS1, TIPARP, TNIP2, TRA2B, TRIB1, TSC22D2, ZBTB33, ZFAND5"
-    ## [2] "CPEB4, EIF5"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-    ## [3] "AMIGO2, ARC, BDNF, FLRT3, FZD5, HOMER1, LRRTM2, NPAS4, PCDH8, SLITRK5"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-    ## [4] "ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2, PAK6, PLK2, PTGS2, SGK1, SRF, SYT4"
+    # what to konw which of our favorite genes were in those list but perhaps not captured by analysis
 
-    write.csv(GOtermsDEGs2, "../data/goterms/GOtermsDEGs2.csv", row.names = F)
+
+    sanesLichtman <- read.csv("../data/02i_sanesLichtman.csv", header = T, stringsAsFactors = F)
+    head(sanesLichtman)
+
+    ##    genes
+    ## 1   ACHE
+    ## 2  ADCY1
+    ## 3 ADRA2A
+    ## 4 ADRA2B
+    ## 5 ADRA2C
+    ## 6  ADRB1
+
+    GOtermsSanesLichtman <- GOterms %>%
+      filter(gene %in% sanesLichtman$genes) %>%
+      dplyr::select(gene, GO) %>% 
+     group_by(GO) %>%
+     summarize(genes = str_c(gene, collapse = ", "))
+
+    GOtermsSanesLichtman
+
+    ## # A tibble: 3 x 2
+    ##   GO                 genes                                                 
+    ##   <chr>              <chr>                                                 
+    ## 1 1. response to st… ADCY1, ADRA2A, ADRA2B, ADRA2C, ADRB1, ADRB2, ADRB3, C…
+    ## 2 3. synapse organi… ACHE, BDNF, CACNA1A, CACNA1S, CAMK1, CDH1, CDH2, CHRN…
+    ## 3 4. learning or me… ADCY1, ADRB1, ADRB2, BDNF, CACNA1C, CACNA1E, CALB1, C…
+
+    write.csv(GOtermsSanesLichtman, "../data/goterms/GOtermsSanesLichtman.csv", row.names = F)
