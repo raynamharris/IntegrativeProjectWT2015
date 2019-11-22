@@ -27,6 +27,12 @@ ann_colors_treatment = list(
                 "Retention" = "#7a0177"   )
 )
 
+levelstreatment =  c('standard.yoked' , 'standard.trained' ,
+                     'conflict.yoked' ,  'conflict.trained' )
+
+levelsTrials <- c("Hab", "T1" , "T2", "T3" ,
+                  "Retest" , "T4_C1" , "T5_C2" ,
+                  "T6_C3" , "Retention" )
 
 # for beahvior and physiology
 
