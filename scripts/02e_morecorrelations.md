@@ -1,13 +1,13 @@
     library(tidyverse)
 
-    ## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✔ ggplot2 3.2.1     ✔ purrr   0.3.3
     ## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
     ## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
     ## ✔ readr   1.3.1     ✔ forcats 0.4.0
 
-    ## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -34408,23 +34408,14 @@
 
 ![](../figures/02e_correlations/DGvsd-2.png)
 
-    y %>% 
-      focus(PC1,PC2, ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2,
-            PRKCZ, DLG4,
-            PAK6, PLK2, PTGS2, SGK1, SRF, SYT4,  mirror = TRUE)  %>% 
-            rplot( colors = c("#67a9cf", "#ef8a62") ) 
-
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-
-![](../figures/02e_correlations/DGvsd-3.png)
-
     a1 <- y %>% focus(PC1,PC2, ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2,
                # PRKCZ, DLG4,
                 PAK6, PLK2, PTGS2, SGK1, SRF, SYT4,  mirror = TRUE)  %>% 
-      network_plot( ) +
+      network_plot(colors = c("#67a9cf", "#ef8a62") ) +
       theme(legend.position = "bottom")
+    a1
 
-
+![](../figures/02e_correlations/DGvsd-3.png)
 
     a <- ggplot(vsd, aes(x = PC1, y = ARC)) +
        geom_point(aes( color = treatment)) + 
@@ -34432,31 +34423,125 @@
        scale_color_manual(values = treatmentcolors) +
        theme(legend.position = "none")  +
       theme(axis.text.x = element_blank(),
-            axis.title.x = element_blank())
+            axis.title.x = element_blank()) + 
+      annotate("text", x = 1, y = 11.5, label = "R2 = 0.65")
     b <- ggplot(vsd, aes(x = PC1, y = BDNF)) +
        geom_point(aes( color = treatment)) + 
        geom_smooth(method = "lm", color = "grey") +
        scale_color_manual(values = treatmentcolors) +
        theme(legend.position = "none")  +
       theme(axis.text.x = element_blank(),
-            axis.title.x = element_blank())
+            axis.title.x = element_blank()) + 
+      annotate("text", x = 1, y = 10.6, label = "R2 = 0.50")
     c <- ggplot(vsd, aes(x = PC1, y = PRKCZ)) +
        geom_point(aes( color = treatment)) + 
        geom_smooth(method = "lm", color = "grey") +
        scale_color_manual(values = treatmentcolors) +
        theme(legend.position = "none")  +
-      scale_x_continuous(breaks = c(-2,0,2,4,6))
+      scale_x_continuous(breaks = c(-2,0,2,4,6)) + 
+      annotate("text", x = 3, y = 8.7, label = "R2 = 0.13")
     d <- ggplot(vsd, aes(x = PC1, y = DLG4)) +
        geom_point(aes( color = treatment)) + 
        geom_smooth(method = "lm", color = "grey") +
        scale_color_manual(values = treatmentcolors) +
       # theme(axis.text.x = element_blank())  +
        theme(legend.position = "none")  +
-      scale_x_continuous(breaks = c(-2,0,2,4,6))
+      scale_x_continuous(breaks = c(-2,0,2,4,6)) + 
+      annotate("text", x = 3, y = 10.7, label = "R2 = 0.03")
        
 
     a2 <- plot_grid(a,b,c,d, nrow = 2, rel_heights = c(0.45, 0.55))
 
-    plot_grid(a1,a2)
+    plot_grid(a1,a2, rel_widths = c(0.4,0.6))
 
 ![](../figures/02e_correlations/DGvsd-4.png)
+
+    lm( PC1 ~ ARC, data = vsd)
+
+    ## 
+    ## Call:
+    ## lm(formula = PC1 ~ ARC, data = vsd)
+    ## 
+    ## Coefficients:
+    ## (Intercept)          ARC  
+    ##     -26.629        2.921
+
+    summary(lm( PC1 ~ ARC, data = vsd))
+
+    ## 
+    ## Call:
+    ## lm(formula = PC1 ~ ARC, data = vsd)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -4.6977 -1.7429  0.2442  1.2672  5.6700 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) -26.6287     5.4718  -4.867 0.000249 ***
+    ## ARC           2.9210     0.5732   5.096 0.000163 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 2.617 on 14 degrees of freedom
+    ## Multiple R-squared:  0.6497, Adjusted R-squared:  0.6247 
+    ## F-statistic: 25.97 on 1 and 14 DF,  p-value: 0.0001629
+
+    summary(lm( PC1 ~ BDNF, data = vsd))
+
+    ## 
+    ## Call:
+    ## lm(formula = PC1 ~ BDNF, data = vsd)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -3.9845 -2.2539 -0.4002  1.6199  7.0392 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)   
+    ## (Intercept)  -31.916      8.908  -3.583   0.0030 **
+    ## BDNF           3.992      1.074   3.716   0.0023 **
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 3.137 on 14 degrees of freedom
+    ## Multiple R-squared:  0.4966, Adjusted R-squared:  0.4606 
+    ## F-statistic: 13.81 on 1 and 14 DF,  p-value: 0.002304
+
+    summary(lm( PC1 ~ PRKCZ, data = vsd))
+
+    ## 
+    ## Call:
+    ## lm(formula = PC1 ~ PRKCZ, data = vsd)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -6.1235 -3.7800 -0.4724  4.0239  5.7184 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)   98.332     68.579   1.434    0.174
+    ## PRKCZ        -11.565      8.152  -1.419    0.178
+    ## 
+    ## Residual standard error: 4.134 on 14 degrees of freedom
+    ## Multiple R-squared:  0.1257, Adjusted R-squared:  0.06323 
+    ## F-statistic: 2.012 on 1 and 14 DF,  p-value: 0.1779
+
+    summary(lm( PC1 ~ DLG4, data = vsd))
+
+    ## 
+    ## Call:
+    ## lm(formula = PC1 ~ DLG4, data = vsd)
+    ## 
+    ## Residuals:
+    ##    Min     1Q Median     3Q    Max 
+    ## -4.724 -3.774 -1.556  4.827  5.656 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)  -44.224     71.677  -0.617    0.547
+    ## DLG4           4.396      6.958   0.632    0.538
+    ## 
+    ## Residual standard error: 4.36 on 14 degrees of freedom
+    ## Multiple R-squared:  0.02772,    Adjusted R-squared:  -0.04173 
+    ## F-statistic: 0.3992 on 1 and 14 DF,  p-value: 0.5377

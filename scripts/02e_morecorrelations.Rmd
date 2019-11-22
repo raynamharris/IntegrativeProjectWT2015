@@ -163,132 +163,44 @@ a <- ggplot(vsd, aes(x = PC1, y = ARC)) +
    scale_color_manual(values = treatmentcolors) +
    theme(legend.position = "none")  +
   theme(axis.text.x = element_blank(),
-        axis.title.x = element_blank())
+        axis.title.x = element_blank()) + 
+  annotate("text", x = 1, y = 11.5, label = "R2 = 0.65")
 b <- ggplot(vsd, aes(x = PC1, y = BDNF)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
    theme(legend.position = "none")  +
   theme(axis.text.x = element_blank(),
-        axis.title.x = element_blank())
+        axis.title.x = element_blank()) + 
+  annotate("text", x = 1, y = 10.6, label = "R2 = 0.50")
 c <- ggplot(vsd, aes(x = PC1, y = PRKCZ)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
    theme(legend.position = "none")  +
-  scale_x_continuous(breaks = c(-2,0,2,4,6))
+  scale_x_continuous(breaks = c(-2,0,2,4,6)) + 
+  annotate("text", x = 3, y = 8.7, label = "R2 = 0.13")
 d <- ggplot(vsd, aes(x = PC1, y = DLG4)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
   # theme(axis.text.x = element_blank())  +
    theme(legend.position = "none")  +
-  scale_x_continuous(breaks = c(-2,0,2,4,6))
+  scale_x_continuous(breaks = c(-2,0,2,4,6)) + 
+  annotate("text", x = 3, y = 10.7, label = "R2 = 0.03")
    
 
 a2 <- plot_grid(a,b,c,d, nrow = 2, rel_heights = c(0.45, 0.55))
 
-plot_grid(a1,a2)
+plot_grid(a1,a2, rel_widths = c(0.4,0.6))
 
 
-
-
+lm( PC1 ~ ARC, data = vsd)
+summary(lm( PC1 ~ ARC, data = vsd))
+summary(lm( PC1 ~ BDNF, data = vsd))
+summary(lm( PC1 ~ PRKCZ, data = vsd))
+summary(lm( PC1 ~ DLG4, data = vsd))
 ```
 
-```{r DGvsd2}
-vsd <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F)
-
-sanesLichtman <- read.csv("../data/02i_sanesLichtman.csv", header = T, stringsAsFactors = F)
-head(sanesLichtman)
-
-sanesLichtmangenes <- as.vector(sanesLichtman$gene)
-
-vsd2 <- vsd %>%
-  mutate(genes = toupper(rownames(vsd))) %>%
-  filter(genes %in% sanesLichtman$gene) %>%
-  as.data.frame()
-row.names(vsd2) <- vsd2$genes
-vsd2$genes <- NULL
-head(vsd2)
-
-
-vsd <- as.data.frame(t(vsd2))
-
-vsd$sample <- row.names(vsd)
-head(vsd)[1]
-head(vsd)[226]
-vsd <- vsd %>% select(`ACHE`:VAMP8)
-vsd
-
-
-vsd$sample  <- row.names(vsd)
-vsd$mouse <- sapply(strsplit(as.character(vsd$sample),"\\-"), "[", 1)
-vsd$ID <- paste(15, vsd$mouse, sep = "")
-vsd <- vsd %>% select(ID, `ACHE`:VAMP8)
-head(vsd)[1:5]
-
-vsd <- left_join(colData, vsd)
-vsd
-forcorall <-  vsd %>% select(PC1:VAMP8)
-y <- correlate(forcorall) 
-
-
-y %>% filter(PC1 > 0.5) %>% arrange(desc(PC1)) 
-y %>% filter(PC1 < -0.5) %>% arrange(desc(PC1)) 
-
-y %>% filter(PC2 > 0.5) %>% arrange(desc(PC2)) 
-y %>% filter(PC2 < -0.5) %>% arrange(desc(PC2)) 
-
-
-y %>% 
-  focus(PC1,PC2, CREB1,MAPK1 ,EGR1, HOMER1, GABRR1, PRKCZ,GRIA1, GRIN1,GRM1, mirror = TRUE)  %>% 
-        rplot(shape = 15, colors = c("#67a9cf", "#ef8a62") ) 
-
-y %>% 
-  focus(PC1,PC2, CREB1,MAPK1 ,EGR1, HOMER1, GABRR1, PRKCZ,GRIA1, GRIN1,GRM1,  mirror = TRUE)  %>% 
-        rplot( colors = c("#67a9cf", "#ef8a62") ) 
-
-
-
-
-
-
-a <- ggplot(vsd, aes(x = PC1, y = CAMK2)) +
-   geom_point(aes( color = treatment)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")  +
-  theme(axis.text.x = element_blank(),
-        axis.title.x = element_blank())
-b <- ggplot(vsd, aes(x = PC1, y = GRIA1)) +
-   geom_point(aes( color = treatment)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")  +
-  theme(axis.text.x = element_blank(),
-        axis.title.x = element_blank())
-c <- ggplot(vsd, aes(x = PC1, y = GRM1)) +
-   geom_point(aes( color = treatment)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none")  +
-  scale_x_continuous(breaks = c(-2,0,2,4,6))
-d <- ggplot(vsd, aes(x = PC1, y = DLG4)) +
-   geom_point(aes( color = treatment)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = treatmentcolors) +
-  # theme(axis.text.x = element_blank())  +
-   theme(legend.position = "none")  +
-  scale_x_continuous(breaks = c(-2,0,2,4,6))
-   
-
-a2 <- plot_grid(a,b,c,d, nrow = 2, rel_heights = c(0.45, 0.55))
-
-plot_grid(a1,a2)
-
-
-
-
-```
 
 
