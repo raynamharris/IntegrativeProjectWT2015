@@ -29,7 +29,7 @@ knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
 ## Sample sizes
 
 The 'treatment' column describes the four behavioral treatment groups.  
-The 'TrainSessionCombo' column describes the behvioral training sessions. Here I filter by a single session to calculte the number of mice. 
+The 'trial' column describes the behvioral training sessions. Here I filter by a single session to calculte the number of mice. 
 
 ```{r wrangledata, message=F}
 ## import output from video tracker program 
@@ -42,7 +42,7 @@ behavior$training <- factor(behavior$training, levels = c("yoked", "trained"))
 
 # sample sizes
 behavior %>% 
-  filter(TrainSessionCombo == "Hab") %>%
+  filter(trial == "Hab") %>%
   select(treatment)  %>%  summary()
 
 head(behavior)
@@ -57,10 +57,10 @@ The values in the column "NumShock" are actually measures of the number of entra
 ```{r shockentrplot, width=3.5, height=2.45}
 # supset beahvior to keep only factors and num shocks
 numshocks <- behavior %>%
-  select(ID, TrainSessionCombo, treatment, NumShock) 
+  select(ID, trial, treatment, NumShock) 
 
 # widen datafram, and sum total
-numshocks <- spread(numshocks, key=TrainSessionCombo, value= NumShock)
+numshocks <- spread(numshocks, key=trial, value= NumShock)
 numshocks$sums <- rowSums(numshocks[sapply(numshocks, is.numeric)])
 head(numshocks)
 
@@ -94,24 +94,16 @@ realnumshocks %>%
 
 # define what levels to compare for stats
 
-a <- ggplot(realnumshocks, aes(x = treatment, y = sums, fill = treatment)) +
-  geom_boxplot(outlier.size = 0.5) +
+a <- ggplot(realnumshocks, aes(x = treatment, y = sums, color = treatment)) +
+  geom_boxplot() +
+  geom_point(size = 0.75) +
   theme_ms() +
-  scale_fill_manual(values = colorvalAPA00,
+  scale_color_manual(values = colorvalAPA00,
                     name = NULL) +
   labs(x = "treatment", subtitle = " ", y = "Total Shocks") +
     theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
           legend.position = "none") 
 a
-
-
-dfa <- realnumshocks %>%
-  dplyr::group_by(treatment, TrainSessionComboNum) %>%
-  dplyr::summarise(m = mean(Entr.Dist.1.m.), 
-                   se = sd(Entr.Dist.1.m.)/sqrt(length(Entr.Dist.1.m.))) %>%
-  dplyr::mutate(measure = "Entrance / Distance")
-
-
 ```
 
 # Vizualizing Mean and Standard error for num entrace and time 1st entrance
@@ -120,26 +112,26 @@ To make the point and line graphs, I must create and join some data frames, then
 
 ```{r behavmeanstdev}
 dfb <- behavior %>%
-  dplyr::group_by(treatment, TrainSessionComboNum) %>%
+  dplyr::group_by(treatment, trialNum) %>%
   dplyr::summarise(m = mean(NumEntrances), 
                    se = sd(NumEntrances)/sqrt(length(NumEntrances))) %>%
   dplyr::mutate(measure = "Number of target zone entrances")
 
 dfc <- behavior %>%
-  dplyr::group_by(treatment, TrainSessionComboNum) %>%
+  dplyr::group_by(treatment, trialNum) %>%
   dplyr::mutate(minutes = Time1stEntr/60) %>%
   dplyr::summarise(m = mean(minutes), 
                    se = sd(minutes)/sqrt(length(minutes))) %>%
   dplyr::mutate(measure = "Time to 1st target zone entrance (min)")
 
 dfd <- behavior %>%
-  dplyr::group_by(treatment, TrainSessionComboNum) %>%
+  dplyr::group_by(treatment, trialNum) %>%
   dplyr::summarise(m = mean(pTimeShockZone), 
                    se = sd(pTimeShockZone)/sqrt(length(pTimeShockZone))) %>%
   dplyr::mutate(measure = "Proportion of time in target zone")
 
 dfa <- behavior %>%
-  dplyr::group_by(treatment, TrainSessionComboNum) %>%
+  dplyr::group_by(treatment, trialNum) %>%
   dplyr::summarise(m = mean(Entr.Dist.1.m.), 
                    se = sd(Entr.Dist.1.m.)/sqrt(length(Entr.Dist.1.m.))) %>%
   dplyr::mutate(measure = "Entrance / Distance")
@@ -150,9 +142,13 @@ dfa <- behavior %>%
 fourmeasures <- rbind(dfb,dfc,dfd)
 head(fourmeasures)
 
-b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
-c <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
-d <- meansdplots(dfd, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
+b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) 
+c <- meansdplots(dfd, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
+d <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
+
+b
+c
+d
 
 fourplots <- plot_grid(a + theme(legend.position = "none"),
                        b + theme(legend.position = "none"),
@@ -160,12 +156,7 @@ fourplots <- plot_grid(a + theme(legend.position = "none"),
                        d + theme(legend.position = "none"), nrow = 1,
                        label_size = 8,
                        labels = c("(a)", "(b)", "(c)", "(d)"))
-
-b
-c
-d
 fourplots
-
 ```
 
 
@@ -179,10 +170,10 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 names(behavior)
 pca.all <- makepcadf(behavior)
 
-retention <- behavior %>% filter(TrainSessionComboNum == 9)
+retention <- behavior %>% filter(trialNum == 9)
 pca.Rn <- makepcadf(retention)
 
-pca.Rn.summary <- pca.all %>% filter(TrainSessionComboNum == 9) %>% 
+pca.Rn.summary <- pca.all %>% filter(trialNum == 9) %>% 
   group_by(treatment) %>% 
   dplyr::summarize(avePC1 = mean(PC1),
                    avePC2 = mean(PC2),
@@ -192,7 +183,7 @@ pca.Rn.summary <- pca.all %>% filter(TrainSessionComboNum == 9) %>%
 
 e <- ggplot(pca.all, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
 
-  geom_point(data = pca.all, aes(alpha = TrainSessionComboNum)) + 
+  geom_point(data = pca.all, aes(alpha = trialNum)) + 
   geom_point(data = pca.Rn.summary, aes(x = avePC1, y = avePC2), size = 4) +
   theme_ms() +
     scale_fill_manual(guide = 'none',values = colorvalAPA00) +
@@ -247,25 +238,25 @@ dev.off()
 ```{r stats}
 # 3 behavioral measures
 names(behavior)
-summary(aov(NumEntrances ~ treatment * TrainSessionCombo, data=behavior))
-summary(aov(Time1stEntr ~ treatment * TrainSessionCombo, data=behavior))
-summary(aov(pTimeShockZone ~ treatment * TrainSessionCombo, data=behavior))
+summary(aov(NumEntrances ~ treatment * trial, data=behavior))
+summary(aov(Time1stEntr ~ treatment * trial, data=behavior))
+summary(aov(pTimeShockZone ~ treatment * trial, data=behavior))
 
 
 ## retest
 
-retest <- behavior %>% filter(TrainSessionCombo == "Retest")
+retest <- behavior %>% filter(trial == "Retest")
 summary(aov(NumEntrances ~ treatment, data=retest))
 TukeyHSD(aov(NumEntrances ~ treatment, data=retest))
 
 ## T4
 
-T4 <- behavior %>% filter(TrainSessionCombo == "T4_C1")
+T4 <- behavior %>% filter(trial == "T4_C1")
 summary(aov(NumEntrances ~ treatment, data=T4))
 TukeyHSD(aov(NumEntrances ~ treatment, data=T4))
 
 # T5 - retention
-reten <- behavior %>% filter(TrainSessionCombo %in% c("T5_C2", "T6_C3", "Retention" ) )
+reten <- behavior %>% filter(trial %in% c("T5_C2", "T6_C3", "Retention" ) )
 summary(aov(NumEntrances ~ treatment, data=reten))
 TukeyHSD(aov(NumEntrances ~ treatment, data=reten))
 

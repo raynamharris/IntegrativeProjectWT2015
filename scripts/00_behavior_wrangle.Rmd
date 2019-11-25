@@ -1,6 +1,6 @@
 ---
 title: "Behavior data wrangle"
-output: html_document
+output: md_document
 ---
 
 ```{r setup, message=F}
@@ -76,7 +76,7 @@ behav <- behav %>%
   mutate(training = fct_collapse(treatment,
                                       trained = c("standard.trained", "conflict.trained"),
                                       yoked = c("standard.yoked", "conflict.yoked")))  %>%
-  mutate(TrainSessionCombo = fct_collapse(TrainSession,
+  mutate(trial = fct_collapse(TrainSession,
                                       "T4_C1" = c("T4", "C1"),
                                       "T5_C2" = c("T5", "C2"),
                                       "T6_C3" = c("T6", "C3"),
@@ -87,13 +87,13 @@ behav <- behav %>%
                                       "Retest" = "Retest",
                                       "Retention" = "Retention"))
 
-behav$TrainSessionCombo <- factor(behav$TrainSessionCombo, 
+behav$trial <- factor(behav$trial, 
                                   levels = c("Hab", "T1","T2","T3","Retest",
                                    "T4_C1","T5_C2","T6_C3","Retention"))
-behav$TrainSessionComboNum <- as.numeric(behav$TrainSessionCombo)
+behav$trialNum <- as.numeric(behav$trial)
 
-behav <- behav %>%  dplyr::select(ID,Day,treatment, training,TrainSessionCombo,
-                                 TrainSessionComboNum, ShockOnOff, PairedPartner,
+behav <- behav %>%  dplyr::select(ID,Day,treatment, training,trial,
+                                 trialNum, ShockOnOff, PairedPartner,
                                  `TotalPath(Arena)`:ShockPerEntrance) %>%
                     dplyr::arrange(ID)
 

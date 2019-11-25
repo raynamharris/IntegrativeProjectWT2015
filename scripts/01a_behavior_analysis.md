@@ -27,9 +27,8 @@ Sample sizes
 ------------
 
 The ‘treatment’ column describes the four behavioral treatment groups.  
-The ‘TrainSessionCombo’ column describes the behvioral training
-sessions. Here I filter by a single session to calculte the number of
-mice.
+The ‘trial’ column describes the behvioral training sessions. Here I
+filter by a single session to calculte the number of mice.
 
     ## import output from video tracker program 
     behavior <- read.csv("../data/00_behaviordata.csv", header = T)
@@ -41,7 +40,7 @@ mice.
 
     # sample sizes
     behavior %>% 
-      filter(TrainSessionCombo == "Hab") %>%
+      filter(trial == "Hab") %>%
       select(treatment)  %>%  summary()
 
     ##             treatment
@@ -52,62 +51,55 @@ mice.
 
     head(behavior)
 
-    ##       ID Day        treatment training TrainSessionCombo
-    ## 1 15140A   1 conflict.trained  trained               Hab
-    ## 2 15140A   1 conflict.trained  trained                T1
-    ## 3 15140A   1 conflict.trained  trained                T2
-    ## 4 15140A   1 conflict.trained  trained                T3
-    ## 5 15140A   2 conflict.trained  trained            Retest
-    ## 6 15140A   2 conflict.trained  trained             T4_C1
-    ##   TrainSessionComboNum ShockOnOff PairedPartner TotalPath.Arena.
-    ## 1                    1        Off        15140B            22.68
-    ## 2                    2         On        15140B            19.36
-    ## 3                    3         On        15140B            15.01
-    ## 4                    4         On        15140B            14.39
-    ## 5                    5         On        15140B            14.04
-    ## 6                    6         On        15140B            12.50
-    ##   SpeedArena.cm.s sd.Speed.Arena. Linearity.Arena. NumEntrances
-    ## 1            3.78            3.07           0.4790           28
-    ## 2            3.23            2.78           0.4016            6
-    ## 3            2.50            2.68           0.3170            2
-    ## 4            2.40            2.78           0.3122            3
-    ## 5            2.34            3.11           0.2895            1
-    ## 6            2.08            2.52           0.3107           10
-    ##   Time1stEntr Path1stEntr Speed1stEntr.cm.s. Entr.Dist.1.m. NumShock
-    ## 1       24.63        1.09               4.56           1.12       52
-    ## 2        9.83        0.62              16.42           0.30        7
-    ## 3      118.37        3.17               2.31           0.11        3
-    ## 4      256.53        7.48               4.26           0.17        3
-    ## 5      432.07       10.56               9.38           0.06        1
-    ## 6        0.87        0.00              -1.00           0.56       13
-    ##   MaxTimeAvoid MaxPathAvoid Time2ndEntr Path2ndEntr Speed2ndEntr
-    ## 1           53         2.15       59.97        2.59         7.85
-    ## 2          327        11.70       18.30        1.23         6.53
-    ## 3          312         4.98      287.63        8.54         3.73
-    ## 4          256         7.48      447.80       12.74         1.56
-    ## 5          432        10.56      599.97       15.66        -1.00
-    ## 6          447         1.82       25.90        0.75        16.19
-    ##   TimeShockZone pTimeShockZone pTimeCCW pTimeOPP pTimeCW RayleigLength
-    ## 1        94.665         0.2277   0.2583   0.1788  0.3352          0.11
-    ## 2         8.433         0.0211   0.6961   0.2049  0.0779          0.65
-    ## 3         3.366         0.0092   0.6413   0.3245  0.0250          0.78
-    ## 4         2.498         0.0069   0.5790   0.4018  0.0123          0.80
-    ## 5         1.067         0.0026   0.2945   0.6300  0.0729          0.72
-    ## 6        17.735         0.0339   0.0195   0.1561  0.7905          0.67
-    ##   RayleigAngle Min50.RngLoBin AnnularSkewnes AnnularKurtosis
-    ## 1       330.67             60           0.88            3.13
-    ## 2       112.66            130           1.81            6.70
-    ## 3       124.87            150           1.87            8.91
-    ## 4       128.39            150           2.84           12.51
-    ## 5       159.36            170           2.42           11.83
-    ## 6       257.90            280           0.98            4.65
-    ##   ShockPerEntrance
-    ## 1         1.857143
-    ## 2         1.166667
-    ## 3         1.500000
-    ## 4         1.000000
-    ## 5         1.000000
-    ## 6         1.300000
+    ##       ID Day        treatment training  trial trialNum ShockOnOff
+    ## 1 15140A   1 conflict.trained  trained    Hab        1        Off
+    ## 2 15140A   1 conflict.trained  trained     T1        2         On
+    ## 3 15140A   1 conflict.trained  trained     T2        3         On
+    ## 4 15140A   1 conflict.trained  trained     T3        4         On
+    ## 5 15140A   2 conflict.trained  trained Retest        5         On
+    ## 6 15140A   2 conflict.trained  trained  T4_C1        6         On
+    ##   PairedPartner TotalPath.Arena. SpeedArena.cm.s sd.Speed.Arena.
+    ## 1        15140B            22.68            3.78            3.07
+    ## 2        15140B            19.36            3.23            2.78
+    ## 3        15140B            15.01            2.50            2.68
+    ## 4        15140B            14.39            2.40            2.78
+    ## 5        15140B            14.04            2.34            3.11
+    ## 6        15140B            12.50            2.08            2.52
+    ##   Linearity.Arena. NumEntrances Time1stEntr Path1stEntr Speed1stEntr.cm.s.
+    ## 1           0.4790           28       24.63        1.09               4.56
+    ## 2           0.4016            6        9.83        0.62              16.42
+    ## 3           0.3170            2      118.37        3.17               2.31
+    ## 4           0.3122            3      256.53        7.48               4.26
+    ## 5           0.2895            1      432.07       10.56               9.38
+    ## 6           0.3107           10        0.87        0.00              -1.00
+    ##   Entr.Dist.1.m. NumShock MaxTimeAvoid MaxPathAvoid Time2ndEntr
+    ## 1           1.12       52           53         2.15       59.97
+    ## 2           0.30        7          327        11.70       18.30
+    ## 3           0.11        3          312         4.98      287.63
+    ## 4           0.17        3          256         7.48      447.80
+    ## 5           0.06        1          432        10.56      599.97
+    ## 6           0.56       13          447         1.82       25.90
+    ##   Path2ndEntr Speed2ndEntr TimeShockZone pTimeShockZone pTimeCCW pTimeOPP
+    ## 1        2.59         7.85        94.665         0.2277   0.2583   0.1788
+    ## 2        1.23         6.53         8.433         0.0211   0.6961   0.2049
+    ## 3        8.54         3.73         3.366         0.0092   0.6413   0.3245
+    ## 4       12.74         1.56         2.498         0.0069   0.5790   0.4018
+    ## 5       15.66        -1.00         1.067         0.0026   0.2945   0.6300
+    ## 6        0.75        16.19        17.735         0.0339   0.0195   0.1561
+    ##   pTimeCW RayleigLength RayleigAngle Min50.RngLoBin AnnularSkewnes
+    ## 1  0.3352          0.11       330.67             60           0.88
+    ## 2  0.0779          0.65       112.66            130           1.81
+    ## 3  0.0250          0.78       124.87            150           1.87
+    ## 4  0.0123          0.80       128.39            150           2.84
+    ## 5  0.0729          0.72       159.36            170           2.42
+    ## 6  0.7905          0.67       257.90            280           0.98
+    ##   AnnularKurtosis ShockPerEntrance
+    ## 1            3.13         1.857143
+    ## 2            6.70         1.166667
+    ## 3            8.91         1.500000
+    ## 4           12.51         1.000000
+    ## 5           11.83         1.000000
+    ## 6            4.65         1.300000
 
     names(behavior[9:34])
 
@@ -134,10 +126,10 @@ standard.trained or conflict.trained trained partner.
 
     # supset beahvior to keep only factors and num shocks
     numshocks <- behavior %>%
-      select(ID, TrainSessionCombo, treatment, NumShock) 
+      select(ID, trial, treatment, NumShock) 
 
     # widen datafram, and sum total
-    numshocks <- spread(numshocks, key=TrainSessionCombo, value= NumShock)
+    numshocks <- spread(numshocks, key=trial, value= NumShock)
     numshocks$sums <- rowSums(numshocks[sapply(numshocks, is.numeric)])
     head(numshocks)
 
@@ -225,10 +217,11 @@ standard.trained or conflict.trained trained partner.
 
     # define what levels to compare for stats
 
-    a <- ggplot(realnumshocks, aes(x = treatment, y = sums, fill = treatment)) +
-      geom_boxplot(outlier.size = 0.5) +
+    a <- ggplot(realnumshocks, aes(x = treatment, y = sums, color = treatment)) +
+      geom_boxplot() +
+      geom_point(size = 0.75) +
       theme_ms() +
-      scale_fill_manual(values = colorvalAPA00,
+      scale_color_manual(values = colorvalAPA00,
                         name = NULL) +
       labs(x = "treatment", subtitle = " ", y = "Total Shocks") +
         theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
@@ -245,26 +238,26 @@ frames, then I have a function that makes four plots with specific
 titles, y labels and limits.
 
     dfb <- behavior %>%
-      dplyr::group_by(treatment, TrainSessionComboNum) %>%
+      dplyr::group_by(treatment, trialNum) %>%
       dplyr::summarise(m = mean(NumEntrances), 
                        se = sd(NumEntrances)/sqrt(length(NumEntrances))) %>%
       dplyr::mutate(measure = "Number of target zone entrances")
 
     dfc <- behavior %>%
-      dplyr::group_by(treatment, TrainSessionComboNum) %>%
+      dplyr::group_by(treatment, trialNum) %>%
       dplyr::mutate(minutes = Time1stEntr/60) %>%
       dplyr::summarise(m = mean(minutes), 
                        se = sd(minutes)/sqrt(length(minutes))) %>%
       dplyr::mutate(measure = "Time to 1st target zone entrance (min)")
 
     dfd <- behavior %>%
-      dplyr::group_by(treatment, TrainSessionComboNum) %>%
+      dplyr::group_by(treatment, trialNum) %>%
       dplyr::summarise(m = mean(pTimeShockZone), 
                        se = sd(pTimeShockZone)/sqrt(length(pTimeShockZone))) %>%
       dplyr::mutate(measure = "Proportion of time in target zone")
 
     dfa <- behavior %>%
-      dplyr::group_by(treatment, TrainSessionComboNum) %>%
+      dplyr::group_by(treatment, trialNum) %>%
       dplyr::summarise(m = mean(Entr.Dist.1.m.), 
                        se = sd(Entr.Dist.1.m.)/sqrt(length(Entr.Dist.1.m.))) %>%
       dplyr::mutate(measure = "Entrance / Distance")
@@ -277,25 +270,18 @@ titles, y labels and limits.
 
     ## # A tibble: 6 x 5
     ## # Groups:   treatment [1]
-    ##   treatment      TrainSessionComboN…     m    se measure                   
-    ##   <fct>                        <int> <dbl> <dbl> <chr>                     
-    ## 1 standard.yoked                   1  31.4 2.32  Number of target zone ent…
-    ## 2 standard.yoked                   2  21.4 2.02  Number of target zone ent…
-    ## 3 standard.yoked                   3  15.4 1.40  Number of target zone ent…
-    ## 4 standard.yoked                   4  14.5 2.01  Number of target zone ent…
-    ## 5 standard.yoked                   5  16.9 0.875 Number of target zone ent…
-    ## 6 standard.yoked                   6  15   1.56  Number of target zone ent…
+    ##   treatment      trialNum     m    se measure                        
+    ##   <fct>             <int> <dbl> <dbl> <chr>                          
+    ## 1 standard.yoked        1  31.4 2.32  Number of target zone entrances
+    ## 2 standard.yoked        2  21.4 2.02  Number of target zone entrances
+    ## 3 standard.yoked        3  15.4 1.40  Number of target zone entrances
+    ## 4 standard.yoked        4  14.5 2.01  Number of target zone entrances
+    ## 5 standard.yoked        5  16.9 0.875 Number of target zone entrances
+    ## 6 standard.yoked        6  15   1.56  Number of target zone entrances
 
-    b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) + theme(legend.justification = "center")
-    c <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
-    d <- meansdplots(dfd, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
-
-    fourplots <- plot_grid(a + theme(legend.position = "none"),
-                           b + theme(legend.position = "none"),
-                           c + theme(legend.position = "none"), 
-                           d + theme(legend.position = "none"), nrow = 1,
-                           label_size = 8,
-                           labels = c("(a)", "(b)", "(c)", "(d)"))
+    b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) 
+    c <- meansdplots(dfd, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
+    d <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
 
     b
 
@@ -309,6 +295,12 @@ titles, y labels and limits.
 
 ![](../figures/01_behavior/behavmeanstdev-3.png)
 
+    fourplots <- plot_grid(a + theme(legend.position = "none"),
+                           b + theme(legend.position = "none"),
+                           c + theme(legend.position = "none"), 
+                           d + theme(legend.position = "none"), nrow = 1,
+                           label_size = 8,
+                           labels = c("(a)", "(b)", "(c)", "(d)"))
     fourplots
 
 ![](../figures/01_behavior/behavmeanstdev-4.png)
@@ -319,25 +311,25 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
     names(behavior)
 
-    ##  [1] "ID"                   "Day"                  "treatment"           
-    ##  [4] "training"             "TrainSessionCombo"    "TrainSessionComboNum"
-    ##  [7] "ShockOnOff"           "PairedPartner"        "TotalPath.Arena."    
-    ## [10] "SpeedArena.cm.s"      "sd.Speed.Arena."      "Linearity.Arena."    
-    ## [13] "NumEntrances"         "Time1stEntr"          "Path1stEntr"         
-    ## [16] "Speed1stEntr.cm.s."   "Entr.Dist.1.m."       "NumShock"            
-    ## [19] "MaxTimeAvoid"         "MaxPathAvoid"         "Time2ndEntr"         
-    ## [22] "Path2ndEntr"          "Speed2ndEntr"         "TimeShockZone"       
-    ## [25] "pTimeShockZone"       "pTimeCCW"             "pTimeOPP"            
-    ## [28] "pTimeCW"              "RayleigLength"        "RayleigAngle"        
-    ## [31] "Min50.RngLoBin"       "AnnularSkewnes"       "AnnularKurtosis"     
+    ##  [1] "ID"                 "Day"                "treatment"         
+    ##  [4] "training"           "trial"              "trialNum"          
+    ##  [7] "ShockOnOff"         "PairedPartner"      "TotalPath.Arena."  
+    ## [10] "SpeedArena.cm.s"    "sd.Speed.Arena."    "Linearity.Arena."  
+    ## [13] "NumEntrances"       "Time1stEntr"        "Path1stEntr"       
+    ## [16] "Speed1stEntr.cm.s." "Entr.Dist.1.m."     "NumShock"          
+    ## [19] "MaxTimeAvoid"       "MaxPathAvoid"       "Time2ndEntr"       
+    ## [22] "Path2ndEntr"        "Speed2ndEntr"       "TimeShockZone"     
+    ## [25] "pTimeShockZone"     "pTimeCCW"           "pTimeOPP"          
+    ## [28] "pTimeCW"            "RayleigLength"      "RayleigAngle"      
+    ## [31] "Min50.RngLoBin"     "AnnularSkewnes"     "AnnularKurtosis"   
     ## [34] "ShockPerEntrance"
 
     pca.all <- makepcadf(behavior)
 
-    retention <- behavior %>% filter(TrainSessionComboNum == 9)
+    retention <- behavior %>% filter(trialNum == 9)
     pca.Rn <- makepcadf(retention)
 
-    pca.Rn.summary <- pca.all %>% filter(TrainSessionComboNum == 9) %>% 
+    pca.Rn.summary <- pca.all %>% filter(trialNum == 9) %>% 
       group_by(treatment) %>% 
       dplyr::summarize(avePC1 = mean(PC1),
                        avePC2 = mean(PC2),
@@ -347,7 +339,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
     e <- ggplot(pca.all, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
 
-      geom_point(data = pca.all, aes(alpha = TrainSessionComboNum)) + 
+      geom_point(data = pca.all, aes(alpha = trialNum)) + 
       geom_point(data = pca.Rn.summary, aes(x = avePC1, y = avePC2), size = 4) +
       theme_ms() +
         scale_fill_manual(guide = 'none',values = colorvalAPA00) +
@@ -415,52 +407,52 @@ now all the stats
     # 3 behavioral measures
     names(behavior)
 
-    ##  [1] "ID"                   "Day"                  "treatment"           
-    ##  [4] "training"             "TrainSessionCombo"    "TrainSessionComboNum"
-    ##  [7] "ShockOnOff"           "PairedPartner"        "TotalPath.Arena."    
-    ## [10] "SpeedArena.cm.s"      "sd.Speed.Arena."      "Linearity.Arena."    
-    ## [13] "NumEntrances"         "Time1stEntr"          "Path1stEntr"         
-    ## [16] "Speed1stEntr.cm.s."   "Entr.Dist.1.m."       "NumShock"            
-    ## [19] "MaxTimeAvoid"         "MaxPathAvoid"         "Time2ndEntr"         
-    ## [22] "Path2ndEntr"          "Speed2ndEntr"         "TimeShockZone"       
-    ## [25] "pTimeShockZone"       "pTimeCCW"             "pTimeOPP"            
-    ## [28] "pTimeCW"              "RayleigLength"        "RayleigAngle"        
-    ## [31] "Min50.RngLoBin"       "AnnularSkewnes"       "AnnularKurtosis"     
+    ##  [1] "ID"                 "Day"                "treatment"         
+    ##  [4] "training"           "trial"              "trialNum"          
+    ##  [7] "ShockOnOff"         "PairedPartner"      "TotalPath.Arena."  
+    ## [10] "SpeedArena.cm.s"    "sd.Speed.Arena."    "Linearity.Arena."  
+    ## [13] "NumEntrances"       "Time1stEntr"        "Path1stEntr"       
+    ## [16] "Speed1stEntr.cm.s." "Entr.Dist.1.m."     "NumShock"          
+    ## [19] "MaxTimeAvoid"       "MaxPathAvoid"       "Time2ndEntr"       
+    ## [22] "Path2ndEntr"        "Speed2ndEntr"       "TimeShockZone"     
+    ## [25] "pTimeShockZone"     "pTimeCCW"           "pTimeOPP"          
+    ## [28] "pTimeCW"            "RayleigLength"      "RayleigAngle"      
+    ## [31] "Min50.RngLoBin"     "AnnularSkewnes"     "AnnularKurtosis"   
     ## [34] "ShockPerEntrance"
 
-    summary(aov(NumEntrances ~ treatment * TrainSessionCombo, data=behavior))
+    summary(aov(NumEntrances ~ treatment * trial, data=behavior))
 
-    ##                              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## treatment                     3   6851  2283.6  94.877  < 2e-16 ***
-    ## TrainSessionCombo             8  14274  1784.3  74.134  < 2e-16 ***
-    ## treatment:TrainSessionCombo  24   2296    95.7   3.976 9.81e-09 ***
-    ## Residuals                   270   6499    24.1                     
+    ##                  Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## treatment         3   6851  2283.6  94.877  < 2e-16 ***
+    ## trial             8  14274  1784.3  74.134  < 2e-16 ***
+    ## treatment:trial  24   2296    95.7   3.976 9.81e-09 ***
+    ## Residuals       270   6499    24.1                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    summary(aov(Time1stEntr ~ treatment * TrainSessionCombo, data=behavior))
+    summary(aov(Time1stEntr ~ treatment * trial, data=behavior))
 
-    ##                              Df  Sum Sq Mean Sq F value   Pr(>F)    
-    ## treatment                     3 1521083  507028  28.656 4.06e-16 ***
-    ## TrainSessionCombo             8  987917  123490   6.979 2.29e-08 ***
-    ## treatment:TrainSessionCombo  24 1182020   49251   2.784 3.25e-05 ***
-    ## Residuals                   270 4777188   17693                     
+    ##                  Df  Sum Sq Mean Sq F value   Pr(>F)    
+    ## treatment         3 1521083  507028  28.656 4.06e-16 ***
+    ## trial             8  987917  123490   6.979 2.29e-08 ***
+    ## treatment:trial  24 1182020   49251   2.784 3.25e-05 ***
+    ## Residuals       270 4777188   17693                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    summary(aov(pTimeShockZone ~ treatment * TrainSessionCombo, data=behavior))
+    summary(aov(pTimeShockZone ~ treatment * trial, data=behavior))
 
-    ##                              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## treatment                     3  3.315  1.1050 294.336  < 2e-16 ***
-    ## TrainSessionCombo             8  0.583  0.0729  19.414  < 2e-16 ***
-    ## treatment:TrainSessionCombo  24  0.549  0.0229   6.095 5.37e-15 ***
-    ## Residuals                   270  1.014  0.0038                     
+    ##                  Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## treatment         3  3.315  1.1050 294.336  < 2e-16 ***
+    ## trial             8  0.583  0.0729  19.414  < 2e-16 ***
+    ## treatment:trial  24  0.549  0.0229   6.095 5.37e-15 ***
+    ## Residuals       270  1.014  0.0038                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
     ## retest
 
-    retest <- behavior %>% filter(TrainSessionCombo == "Retest")
+    retest <- behavior %>% filter(trial == "Retest")
     summary(aov(NumEntrances ~ treatment, data=retest))
 
     ##             Df Sum Sq Mean Sq F value   Pr(>F)    
@@ -494,7 +486,7 @@ now all the stats
 
     ## T4
 
-    T4 <- behavior %>% filter(TrainSessionCombo == "T4_C1")
+    T4 <- behavior %>% filter(trial == "T4_C1")
     summary(aov(NumEntrances ~ treatment, data=T4))
 
     ##             Df Sum Sq Mean Sq F value   Pr(>F)    
@@ -527,7 +519,7 @@ now all the stats
     ## conflict.trained-conflict.yoked   0.5679926
 
     # T5 - retention
-    reten <- behavior %>% filter(TrainSessionCombo %in% c("T5_C2", "T6_C3", "Retention" ) )
+    reten <- behavior %>% filter(trial %in% c("T5_C2", "T6_C3", "Retention" ) )
     summary(aov(NumEntrances ~ treatment, data=reten))
 
     ##             Df Sum Sq Mean Sq F value   Pr(>F)    

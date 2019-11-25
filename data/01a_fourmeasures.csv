@@ -1,4 +1,4 @@
-"treatment","TrainSessionComboNum","m","se","measure"
+"treatment","trialNum","m","se","measure"
 "standard.yoked",1,31.375,2.32177195262584,"Number of target zone entrances"
 "standard.yoked",2,21.375,2.01722493256737,"Number of target zone entrances"
 "standard.yoked",3,15.375,1.40073322635988,"Number of target zone entrances"

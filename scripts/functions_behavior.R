@@ -11,8 +11,8 @@ makepcadf <- function(data){
   scoresdf <- as.data.frame(scores)
   scoresdf$ID <-  data$ID
   scoresdf$treatment <- data$treatment
-  scoresdf$TrainSessionComboNum <- data$TrainSessionComboNum
-  scoresdf <- scoresdf %>% select(ID, treatment,TrainSessionComboNum, PC1:PC10)
+  scoresdf$trialNum <- data$trialNum
+  scoresdf <- scoresdf %>% select(ID, treatment,trialNum, PC1:PC10)
   return(scoresdf)
 }
 
@@ -29,15 +29,15 @@ getpcsd <- function(data){
 
 meansdplots <- function(df, myylab, ybreaks, ylims){
   myplot <- ggplot(df, 
-                   aes(x=, TrainSessionComboNum, y=m, color=treatment)) + 
+                   aes(x=, trialNum, y=m, color=treatment)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=treatment), width=.1) +
     geom_line() +
-    geom_point(size = 1.5, aes(alpha = TrainSessionComboNum)) +
+    geom_point(size = 1.5, aes(alpha = trialNum)) +
     labs(subtitle = " ") +
     scale_y_continuous(name= myylab,
                        breaks = ybreaks,
                        limits = ylims) +
-    scale_x_continuous(name= "training session", 
+    scale_x_continuous(name= "trial", 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels = c( "P", "T1", "T2", "T3",
                                    "Rt", "T4", "T5", "T6", "Rn")) +
