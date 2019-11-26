@@ -156,69 +156,7 @@ plot(left)
 dev.off()
 ```
 
-# candidate genes
-f
-```{r DG_boxplots}
-betterPlotCounts <- function(mygene, mydds, mysubfield){
-  df <- plotCounts(mydds, mygene, intgroup = "treatment",  transform = F, replaced = F, returnData = T)
-  names(df) <- c("count", "treatment")
-  df$treatment <- factor(df$treatment, levels = c("standard.yoked","standard.trained",
-                                                  "conflict.yoked", "conflict.trained"))
-  
-  #df <- df %>% filter(treatment %in% c("home.cage","standard.trained"))
-  
-  ggplot(df, aes(x = treatment, y = count)) +
-    geom_boxplot(aes(fill = treatment)) + 
-    geom_point() +
-    labs(subtitle = paste(mysubfield, " *", mygene, "*",  sep = "")) +
-    theme_classic() +
-    theme(legend.position = "none", 
-          panel.grid.major  = element_blank(),  # remove major gridlines
-          panel.grid.minor  = element_blank()) + # remove minor gridlines) +
-    scale_fill_manual(values = fourgroups) 
 
-}
-
-betterPlotCounts("Prkcz", DGdds, "DG")
-betterPlotCounts("Dusp16", DGdds, "DG")
-betterPlotCounts("Thbs1", DGdds, "DG")
-betterPlotCounts("Slc16a1", DGdds, "DG")
-betterPlotCounts("Hes5", DGdds, "DG")
-betterPlotCounts("Rtl1", DGdds, "DG")
-
-betterPlotCounts("Nlrp3", DGdds, "DG")
-betterPlotCounts("Kcnc2", DGdds, "DG")
-betterPlotCounts("1110008F13Rik", DGdds, "DG")
-
-a <- betterPlotCounts("Irs1", DGdds, "DG") + labs(title = "wald = -6, p = 1.577782e-06")
-b <- betterPlotCounts("Dab2ip", DGdds, "DG")  + labs(title = "wald =  5, p = 3.227358e-05")
-plot_grid(a,b)
-
-```
-
-```{r CA1_boxplots}
-betterPlotCounts("Prkcz", CA1dds, "CA1")
-betterPlotCounts("Grm1", CA1dds, "CA1")
-betterPlotCounts("Grin2b", CA1dds, "CA1")
-betterPlotCounts("Foxj3", CA1dds, "CA1")
-betterPlotCounts("Grik3", CA1dds, "CA1")
-betterPlotCounts("0610010K14Rik", CA1dds, "CA1")
-
-```
-
-## genes that are correlated with number of entrances 
-
-Requires anlaysis of `04_integration.Rmd` first.
-
-```{r DGcorrelations}
-plotCounts(DGdds, "Acan", intgroup = "treatment", normalized = TRUE, main="Acan in DG")
-plotCounts(DGdds, "Amigo2", intgroup = "treatment", normalized = TRUE, main="Amigo2 in DG")
-plotCounts(DGdds, "Armcx5", intgroup = "treatment", normalized = TRUE, main="Armcx5 in DG")
-plotCounts(DGdds, "Ptgs2", intgroup = "treatment", normalized = TRUE, main="Ptgs2 in DG")
-plotCounts(DGdds, "Rgs2", intgroup = "treatment", normalized = TRUE, main="Rgs2 in DG")
-plotCounts(DGdds, "Syt4", intgroup = "treatment", normalized = TRUE, main="Syt4 in DG")
-
-```
 
 ```{r citations}
 citation("DESeq2") ## for gene expression analysis

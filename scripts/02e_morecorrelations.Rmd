@@ -14,7 +14,6 @@ knitr::opts_chunk$set(fig.path = '../figures/02e_correlations/', cache = T, cach
 library(tidyverse)
 library(corrr)
 library(cowplot)
-library(ggrepel)
 
 source("./figureoptions.R")
 
@@ -48,7 +47,7 @@ DG_ARC$ID <- paste(15, DG_ARC$mouse, sep = "")
 # read the sample data, set levels, join iwth behvior PCA data
 colData <- read.csv("../data/02a_colData.csv", row.names = 1, stringsAsFactors = T)
 colData <- colData %>% filter(subfield == "DG")
-pca.Rn <- read_csv("../data/01a_pca.all.csv") %>% filter(TrainSessionComboNum == 9)
+pca.Rn <- read_csv("../data/01a_pca.all.csv") %>% filter(trialNum == 9)
 pca.Rn <- pca.Rn %>% select(ID:PC2)
 colData <- left_join(colData, pca.Rn)
 head(colData)
@@ -162,10 +161,65 @@ topcorrrs
 
 p1 <- corrrmat %>% 
   focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+  rearrange() %>% 
   network_plot(colors = c("#67a9cf", "#ef8a62"),
                min_cor = .6, curved = F, legend = F,
                repel = TRUE) 
 p1 
+
+
+library(ggcorrplot)
+
+corrrmat2 <- corrrmat %>% 
+  focus(PC1, PC2, topcorrrs,  mirror = TRUE) 
+
+
+corrrmat2 <- as.data.frame(corrrmat2)
+row.names(corrrmat2) <- corrrmat2$rowname
+corrrmat2$rowname <- NULL
+corrrmat2 <- as.matrix(corrrmat2)
+head(corrrmat2)
+
+ggcorrplot(corrrmat2)
+
+ggcorrplot(corrrmat2, hc.order = TRUE, type = "lower",
+     outline.col = "white")
+
+ggcorrplot(corrrmat2, hc.order = TRUE,
+   outline.col = "white",
+   ggtheme = ggplot2::theme_gray,
+   colors = c("#67a9cf", "white",   "#ef8a62"),
+  method = "circle")
+
+library(pheatmap)
+pheatmap(corrrmat2)
+
+pheatmap(DEGs, show_colnames=F, show_rownames = T,
+           annotation_col=df, annotation_colors = ann_colors, 
+           annotation_row = NA, annotation_legend = TRUE,
+           annotation_names_row = FALSE, annotation_names_col = TRUE,
+           treeheight_row = 0, treeheight_col = 15,
+           fontsize = 7,
+           #border_color = "grey60" ,
+           color = viridis(30),
+           clustering_method="median",
+           breaks=myBreaks,
+           clustering_distance_cols=clustercolsmethod, 
+           cluster_cols = T,
+           main = title)  
+}
+
+
+
+```
+
+
+
+
+
+
+
+```{r}
 
 p2 <- corrrmat %>% 
   focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
@@ -202,5 +256,7 @@ plot_grid(top, bottom, nrow = 2, rel_heights = c(0.45,0.55))
 
 ```
 
-
+```{r citation}
+citation("corrr")
+```
 
