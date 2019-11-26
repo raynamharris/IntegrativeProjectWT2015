@@ -309,21 +309,6 @@ titles, y labels and limits.
 
 Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
-    names(behavior)
-
-    ##  [1] "ID"                 "Day"                "treatment"         
-    ##  [4] "training"           "trial"              "trialNum"          
-    ##  [7] "ShockOnOff"         "PairedPartner"      "TotalPath.Arena."  
-    ## [10] "SpeedArena.cm.s"    "sd.Speed.Arena."    "Linearity.Arena."  
-    ## [13] "NumEntrances"       "Time1stEntr"        "Path1stEntr"       
-    ## [16] "Speed1stEntr.cm.s." "Entr.Dist.1.m."     "NumShock"          
-    ## [19] "MaxTimeAvoid"       "MaxPathAvoid"       "Time2ndEntr"       
-    ## [22] "Path2ndEntr"        "Speed2ndEntr"       "TimeShockZone"     
-    ## [25] "pTimeShockZone"     "pTimeCCW"           "pTimeOPP"          
-    ## [28] "pTimeCW"            "RayleigLength"      "RayleigAngle"      
-    ## [31] "Min50.RngLoBin"     "AnnularSkewnes"     "AnnularKurtosis"   
-    ## [34] "ShockPerEntrance"
-
     pca.all <- makepcadf(behavior)
 
     retention <- behavior %>% filter(trialNum == 9)
@@ -371,7 +356,6 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
                      ylab = "PC2 % contributions" , xlab = "estimates of activity", subtitle = " ") +
       theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
 
-
     f
 
 ![](../figures/01_behavior/PCA-3.png)
@@ -384,7 +368,6 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
                nrow = 1,
                label_size = 8,
               rel_widths = c(0.5,0.25,0.25))
-
     threeplots
 
 ![](../figures/01_behavior/PCA-5.png)
@@ -404,217 +387,200 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 now all the stats
 -----------------
 
-    # 3 behavioral measures
-    names(behavior)
+Maybe it should be done like this: Q1: are the groups different? 1-way
+ANOVA of groups on Pre Q2: are the groups different during initial
+training T1-T3? 2-way ANOVA of groups X trial Q3: do the groups differ
+in initial recall? 1-way ANOVA of groups on Rt Q4: Do the groups differ
+in subsequent training? T4-T6 2-way ANOVA of groups X trial Q5: do the
+groups differ in subsequent recall? 1-way ANOVA of groups on Rn
 
-    ##  [1] "ID"                 "Day"                "treatment"         
-    ##  [4] "training"           "trial"              "trialNum"          
-    ##  [7] "ShockOnOff"         "PairedPartner"      "TotalPath.Arena."  
-    ## [10] "SpeedArena.cm.s"    "sd.Speed.Arena."    "Linearity.Arena."  
-    ## [13] "NumEntrances"       "Time1stEntr"        "Path1stEntr"       
-    ## [16] "Speed1stEntr.cm.s." "Entr.Dist.1.m."     "NumShock"          
-    ## [19] "MaxTimeAvoid"       "MaxPathAvoid"       "Time2ndEntr"       
-    ## [22] "Path2ndEntr"        "Speed2ndEntr"       "TimeShockZone"     
-    ## [25] "pTimeShockZone"     "pTimeCCW"           "pTimeOPP"          
-    ## [28] "pTimeCW"            "RayleigLength"      "RayleigAngle"      
-    ## [31] "Min50.RngLoBin"     "AnnularSkewnes"     "AnnularKurtosis"   
-    ## [34] "ShockPerEntrance"
+    library(apaTables)
 
-    summary(aov(NumEntrances ~ treatment * trial, data=behavior))
+    # twoway anova table function
 
-    ##                  Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## treatment         3   6851  2283.6  94.877  < 2e-16 ***
-    ## trial             8  14274  1784.3  74.134  < 2e-16 ***
-    ## treatment:trial  24   2296    95.7   3.976 9.81e-09 ***
-    ## Residuals       270   6499    24.1                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    twowayANOVAfor3measures <- function(mydata, mydescription){
+      apa1 <- apa.aov.table(aov(NumEntrances ~ treatment * trial, data=mydata))
+      apa1df <- as.data.frame(apa1$table_body)
+      totaldf <- apa1df[5, 3]
+      apa1df$df <- paste(apa1df$df, ", " , totaldf, sep = "")
+      apa1df$ANOVA <- "NumEntrances ~ treatment * trial"
+      apa1df
 
-    summary(aov(Time1stEntr ~ treatment * trial, data=behavior))
+      apa2 <- apa.aov.table(aov(pTimeShockZone ~ treatment * trial, data=mydata))
+      apa2df <- as.data.frame(apa2$table_body)
+      apa2df$df <- paste(apa2df$df, ", " , totaldf, sep = "")
+      apa2df$ANOVA <- "pTimeShockZone ~ treatment * trial"
 
-    ##                  Df  Sum Sq Mean Sq F value   Pr(>F)    
-    ## treatment         3 1521083  507028  28.656 4.06e-16 ***
-    ## trial             8  987917  123490   6.979 2.29e-08 ***
-    ## treatment:trial  24 1182020   49251   2.784 3.25e-05 ***
-    ## Residuals       270 4777188   17693                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      apa3 <- apa.aov.table(aov(Time1stEntr ~ treatment * trial, data=mydata))
+      apa3df <- as.data.frame(apa3$table_body)
+      apa3df$df <- paste(apa3df$df, ", " , totaldf, sep = "")
+      apa3df$ANOVA <- "Time1stEntr ~ treatment * trial"
+      apa3df
 
-    summary(aov(pTimeShockZone ~ treatment * trial, data=behavior))
+      apa123 <- as.data.frame(rbind(apa1df,apa2df,apa3df))
+      apa123$trials <- mydescription
+      apa123 <- apa123 %>%
+        select(trials, ANOVA, Predictor, df, "F", p) %>%
+        filter(!Predictor %in% c("(Intercept)", "Error"))
 
-    ##                  Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## treatment         3  3.315  1.1050 294.336  < 2e-16 ***
-    ## trial             8  0.583  0.0729  19.414  < 2e-16 ***
-    ## treatment:trial  24  0.549  0.0229   6.095 5.37e-15 ***
-    ## Residuals       270  1.014  0.0038                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      return(apa123)
+    }
 
-    ## retest
 
-    retest <- behavior %>% filter(trial == "Retest")
-    summary(aov(NumEntrances ~ treatment, data=retest))
+    onewayANOVAfor3measures <- function(mydata, whichtrial, mydescription){
+      
+      mydata <- mydata %>% filter(trial == whichtrial)
+      
+      apa1 <- apa.aov.table(aov(NumEntrances ~ treatment , data=mydata))
+      apa1df <- as.data.frame(apa1$table_body)
+      totaldf <- apa1df[3, 3]
+      apa1df$df <- paste(apa1df$df, ", " , totaldf, sep = "")
+      apa1df$ANOVA <- "NumEntrances ~ treatment"
+      apa1df
 
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## treatment    3 1604.8   534.9   45.44 2.84e-11 ***
-    ## Residuals   30  353.2    11.8                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      apa2 <- apa.aov.table(aov(pTimeShockZone ~ treatment , data=mydata))
+      apa2df <- as.data.frame(apa2$table_body)
+      apa2df$df <- paste(apa2df$df, ", " , totaldf, sep = "")
+      apa2df$ANOVA <- "pTimeShockZone ~ treatment"
 
-    TukeyHSD(aov(NumEntrances ~ treatment, data=retest))
+      apa3 <- apa.aov.table(aov(Time1stEntr ~ treatment , data=mydata))
+      apa3df <- as.data.frame(apa3$table_body)
+      apa3df$df <- paste(apa3df$df, ", " , totaldf, sep = "")
+      apa3df$ANOVA <- "Time1stEntr ~ treatment"
+      apa3df
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = NumEntrances ~ treatment, data = retest)
-    ## 
-    ## $treatment
-    ##                                          diff        lwr        upr
-    ## standard.trained-standard.yoked   -13.5000000 -18.164907  -8.835093
-    ## conflict.yoked-standard.yoked      -0.7638889  -5.297364   3.769586
-    ## conflict.trained-standard.yoked   -14.6527778 -19.186252 -10.119303
-    ## conflict.yoked-standard.trained    12.7361111   8.202636  17.269586
-    ## conflict.trained-standard.trained  -1.1527778  -5.686252   3.380697
-    ## conflict.trained-conflict.yoked   -13.8888889 -18.287005  -9.490772
-    ##                                       p adj
-    ## standard.trained-standard.yoked   0.0000001
-    ## conflict.yoked-standard.yoked     0.9675015
-    ## conflict.trained-standard.yoked   0.0000000
-    ## conflict.yoked-standard.trained   0.0000001
-    ## conflict.trained-standard.trained 0.8995626
-    ## conflict.trained-conflict.yoked   0.0000000
+      apa123 <- as.data.frame(rbind(apa1df,apa2df,apa3df))
+      apa123$trials <- mydescription
+      apa123 <- apa123 %>%
+        select(trials, ANOVA, Predictor, df, "F", p) %>%
+        filter(!Predictor %in% c("(Intercept)", "Error"))
 
-    ## T4
+      return(apa123)
+    }
 
-    T4 <- behavior %>% filter(trial == "T4_C1")
-    summary(aov(NumEntrances ~ treatment, data=T4))
+    # Q1. Are groups different at pre? No.
+    Q1 <- onewayANOVAfor3measures(behavior, "Hab", "Pre-training (Pre)")
+      
+      
+    # Q2. Are the groups different during initial training T1-T3? Yes (sometimes alone, sometime interaction)
+    T1T2T3 <-  behavior %>% filter(trial %in% c("T1", "T2", "T3"))
+    Q2 <- twowayANOVAfor3measures(T1T2T3, "Initial training (T1 - T3)")
 
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## treatment    3  939.2  313.05   9.348 0.000161 ***
-    ## Residuals   30 1004.6   33.49                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    TukeyHSD(aov(NumEntrances ~ treatment, data=T4))
+    # Q3 Do the groups differ in initial recall? Yes.
+    Q3 <- onewayANOVAfor3measures(behavior, "Retest", "Initial recall (Rt)")
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = NumEntrances ~ treatment, data = T4)
-    ## 
-    ## $treatment
-    ##                                          diff        lwr       upr
-    ## standard.trained-standard.yoked   -10.7500000 -18.617469 -2.882531
-    ## conflict.yoked-standard.yoked      -0.1111111  -7.756917  7.534694
-    ## conflict.trained-standard.yoked     3.4444444  -4.201361 11.090250
-    ## conflict.yoked-standard.trained    10.6388889   2.993083 18.284694
-    ## conflict.trained-standard.trained  14.1944444   6.548639 21.840250
-    ## conflict.trained-conflict.yoked     3.5555556  -3.861965 10.973077
-    ##                                       p adj
-    ## standard.trained-standard.yoked   0.0043699
-    ## conflict.yoked-standard.yoked     0.9999773
-    ## conflict.trained-standard.yoked   0.6162617
-    ## conflict.yoked-standard.trained   0.0036531
-    ## conflict.trained-standard.trained 0.0001147
-    ## conflict.trained-conflict.yoked   0.5679926
+    # Q4 Do the groups differ in subsequent training? Yes
+    T4T5T6 <-  behavior %>% filter(trial %in% c("T4_C1", "T5_C2", "T6_C3"))
+    Q4 <- twowayANOVAfor3measures(T4T5T6,  "Conflict training  (T4 - T6)")
 
-    # T5 - retention
-    reten <- behavior %>% filter(trial %in% c("T5_C2", "T6_C3", "Retention" ) )
-    summary(aov(NumEntrances ~ treatment, data=reten))
 
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## treatment    3   2751   917.0   33.45 5.67e-15 ***
-    ## Residuals   98   2687    27.4                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    # Q5  Do the groups differ in subsequent recall? Yes
+    Q5 <- onewayANOVAfor3measures(behavior, "Retention", "Conflict recall (Rn)")
 
-    TukeyHSD(aov(NumEntrances ~ treatment, data=reten))
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = NumEntrances ~ treatment, data = reten)
-    ## 
-    ## $treatment
-    ##                                         diff        lwr       upr
-    ## standard.trained-standard.yoked   -11.541667 -15.492323 -7.591011
-    ## conflict.yoked-standard.yoked      -0.250000  -4.089348  3.589348
-    ## conflict.trained-standard.yoked    -9.398148 -13.237496 -5.558801
-    ## conflict.yoked-standard.trained    11.291667   7.452319 15.131014
-    ## conflict.trained-standard.trained   2.143519  -1.695829  5.982866
-    ## conflict.trained-conflict.yoked    -9.148148 -12.872862 -5.423434
-    ##                                       p adj
-    ## standard.trained-standard.yoked   0.0000000
-    ## conflict.yoked-standard.yoked     0.9982358
-    ## conflict.trained-standard.yoked   0.0000000
-    ## conflict.yoked-standard.trained   0.0000000
-    ## conflict.trained-standard.trained 0.4659963
-    ## conflict.trained-conflict.yoked   0.0000000
+    # more stats. didn't bother with a function
 
-    # pca
-    pc1aov <- aov(PC1 ~ treatment, data = pca.all)
-    summary(pc1aov)
+    PC1all <- apa.aov.table(aov(PC1 ~ treatment , data=pca.all))
+    PC1all <- as.data.frame(PC1all$table_body)
+    totaldf <- PC1all[3, 3]
+    PC1all$df <- paste(PC1all$df, ", " , totaldf, sep = "")
+    PC1all$ANOVA <- "PC1 ~ treatment"
+    PC1all$trials <- "All trials"
 
-    ##              Df Sum Sq Mean Sq F value Pr(>F)    
-    ## treatment     3   1580   526.8   101.3 <2e-16 ***
-    ## Residuals   302   1570     5.2                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    PC2all <- apa.aov.table(aov(PC2 ~ treatment , data=pca.all))
+    PC2all <- as.data.frame(PC2all$table_body)
+    totaldf <- PC2all[3, 3]
+    PC2all$df <- paste(PC2all$df, ", " , totaldf, sep = "")
+    PC2all$ANOVA <- "PC2 ~ treatment"
+    PC2all$trials <- "All trails"
 
-    TukeyHSD(pc1aov)
+    PC1rn <- apa.aov.table(aov(PC1 ~ treatment , data=pca.Rn))
+    PC1rn <- as.data.frame(PC1rn$table_body)
+    totaldf <- PC1rn[3, 3]
+    PC1rn$df <- paste(PC1rn$df, ", " , totaldf, sep = "")
+    PC1rn$ANOVA <- "PC1 ~ treatment"
+    PC1rn$trials <- "Retention (Rn)"
 
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC1 ~ treatment, data = pca.all)
-    ## 
-    ## $treatment
-    ##                                         diff        lwr        upr
-    ## standard.trained-standard.yoked    4.9963315  4.0147194  5.9779435
-    ## conflict.yoked-standard.yoked      0.3485261 -0.6054293  1.3024815
-    ## conflict.trained-standard.yoked    4.4486632  3.4947078  5.4026186
-    ## conflict.yoked-standard.trained   -4.6478054 -5.6017608 -3.6938500
-    ## conflict.trained-standard.trained -0.5476682 -1.5016237  0.4062872
-    ## conflict.trained-conflict.yoked    4.1001372  3.1746645  5.0256098
-    ##                                       p adj
-    ## standard.trained-standard.yoked   0.0000000
-    ## conflict.yoked-standard.yoked     0.7812070
-    ## conflict.trained-standard.yoked   0.0000000
-    ## conflict.yoked-standard.trained   0.0000000
-    ## conflict.trained-standard.trained 0.4489594
-    ## conflict.trained-conflict.yoked   0.0000000
+    PC2rn <- apa.aov.table(aov(PC2 ~ treatment , data=pca.Rn))
+    PC2rn <- as.data.frame(PC2rn$table_body)
+    totaldf <- PC2rn[3, 3]
+    PC2rn$df <- paste(PC2rn$df, ", " , totaldf, sep = "")
+    PC2rn$ANOVA <- "PC2 ~ treatment"
+    PC2rn$trials <- "Retention"
 
-    pc2aov <- aov(PC2 ~ treatment, data = pca.all)
-    summary(pc2aov)
+    PC.APA <- as.data.frame(rbind(PC1all, PC2all, PC1rn, PC2rn))
+    PC.APA <- PC.APA %>% 
+        select(trials, ANOVA, Predictor, df, "F", p) %>%
+        filter(!Predictor %in% c("(Intercept)", "Error"))
 
-    ##              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## treatment     3  121.5   40.50   10.62 1.18e-06 ***
-    ## Residuals   302 1152.4    3.82                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    Q12345 <- as.data.frame(rbind(Q1,Q2,Q3,Q4,Q5, PC.APA))
+    Q12345
 
-    TukeyHSD(pc2aov)
-
-    ##   Tukey multiple comparisons of means
-    ##     95% family-wise confidence level
-    ## 
-    ## Fit: aov(formula = PC2 ~ treatment, data = pca.all)
-    ## 
-    ## $treatment
-    ##                                            diff        lwr         upr
-    ## standard.trained-standard.yoked   -1.5108364813 -2.3519166 -0.66975635
-    ## conflict.yoked-standard.yoked     -0.6213243098 -1.4387073  0.19605866
-    ## conflict.trained-standard.yoked   -1.5101805030 -2.3275635 -0.69279754
-    ## conflict.yoked-standard.trained    0.8895121715  0.0721292  1.70689514
-    ## conflict.trained-standard.trained  0.0006559783 -0.8167270  0.81803895
-    ## conflict.trained-conflict.yoked   -0.8888561932 -1.6818341 -0.09587824
-    ##                                       p adj
-    ## standard.trained-standard.yoked   0.0000307
-    ## conflict.yoked-standard.yoked     0.2041396
-    ## conflict.trained-standard.yoked   0.0000168
-    ## conflict.yoked-standard.trained   0.0268501
-    ## conflict.trained-standard.trained 1.0000000
-    ## conflict.trained-conflict.yoked   0.0210425
+    ##                          trials                              ANOVA
+    ## 1            Pre-training (Pre)           NumEntrances ~ treatment
+    ## 2            Pre-training (Pre)         pTimeShockZone ~ treatment
+    ## 3            Pre-training (Pre)            Time1stEntr ~ treatment
+    ## 4    Initial training (T1 - T3)   NumEntrances ~ treatment * trial
+    ## 5    Initial training (T1 - T3)   NumEntrances ~ treatment * trial
+    ## 6    Initial training (T1 - T3)   NumEntrances ~ treatment * trial
+    ## 7    Initial training (T1 - T3) pTimeShockZone ~ treatment * trial
+    ## 8    Initial training (T1 - T3) pTimeShockZone ~ treatment * trial
+    ## 9    Initial training (T1 - T3) pTimeShockZone ~ treatment * trial
+    ## 10   Initial training (T1 - T3)    Time1stEntr ~ treatment * trial
+    ## 11   Initial training (T1 - T3)    Time1stEntr ~ treatment * trial
+    ## 12   Initial training (T1 - T3)    Time1stEntr ~ treatment * trial
+    ## 13          Initial recall (Rt)           NumEntrances ~ treatment
+    ## 14          Initial recall (Rt)         pTimeShockZone ~ treatment
+    ## 15          Initial recall (Rt)            Time1stEntr ~ treatment
+    ## 16 Conflict training  (T4 - T6)   NumEntrances ~ treatment * trial
+    ## 17 Conflict training  (T4 - T6)   NumEntrances ~ treatment * trial
+    ## 18 Conflict training  (T4 - T6)   NumEntrances ~ treatment * trial
+    ## 19 Conflict training  (T4 - T6) pTimeShockZone ~ treatment * trial
+    ## 20 Conflict training  (T4 - T6) pTimeShockZone ~ treatment * trial
+    ## 21 Conflict training  (T4 - T6) pTimeShockZone ~ treatment * trial
+    ## 22 Conflict training  (T4 - T6)    Time1stEntr ~ treatment * trial
+    ## 23 Conflict training  (T4 - T6)    Time1stEntr ~ treatment * trial
+    ## 24 Conflict training  (T4 - T6)    Time1stEntr ~ treatment * trial
+    ## 25         Conflict recall (Rn)           NumEntrances ~ treatment
+    ## 26         Conflict recall (Rn)         pTimeShockZone ~ treatment
+    ## 27         Conflict recall (Rn)            Time1stEntr ~ treatment
+    ## 28                   All trials                    PC1 ~ treatment
+    ## 29                   All trails                    PC2 ~ treatment
+    ## 30               Retention (Rn)                    PC1 ~ treatment
+    ## 31                    Retention                    PC2 ~ treatment
+    ##            Predictor     df      F    p
+    ## 1          treatment  3, 30   0.09 .967
+    ## 2          treatment  3, 30   0.78 .512
+    ## 3          treatment  3, 30   0.80 .506
+    ## 4          treatment  3, 90  26.42 .000
+    ## 5              trial  2, 90   5.88 .004
+    ## 6  treatment x trial  6, 90   0.72 .631
+    ## 7          treatment  3, 90  48.26 .000
+    ## 8              trial  2, 90   0.88 .419
+    ## 9  treatment x trial  6, 90   0.59 .736
+    ## 10         treatment  3, 90   0.02 .997
+    ## 11             trial  2, 90   0.11 .895
+    ## 12 treatment x trial  6, 90   3.24 .006
+    ## 13         treatment  3, 30  45.44 .000
+    ## 14         treatment  3, 30 129.49 .000
+    ## 15         treatment  3, 30   7.96 .000
+    ## 16         treatment  3, 90   9.37 .000
+    ## 17             trial  2, 90   0.09 .913
+    ## 18 treatment x trial  6, 90   3.43 .004
+    ## 19         treatment  3, 90  25.26 .000
+    ## 20             trial  2, 90   0.03 .972
+    ## 21 treatment x trial  6, 90   1.54 .174
+    ## 22         treatment  3, 90   6.03 .001
+    ## 23             trial  2, 90   0.05 .954
+    ## 24 treatment x trial  6, 90   1.74 .120
+    ## 25         treatment  3, 30  18.01 .000
+    ## 26         treatment  3, 30  26.90 .000
+    ## 27         treatment  3, 30   5.97 .003
+    ## 28         treatment 3, 302 101.35 .000
+    ## 29         treatment 3, 302  10.61 .000
+    ## 30         treatment  3, 30  18.53 .000
+    ## 31         treatment  3, 30   0.36 .782
 
 save files
 ----------
@@ -626,3 +592,5 @@ save files
 
     write.csv(realnumshocks, file = "../data/01a_realnumshocks.csv", row.names = FALSE)
     write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
+
+    write.csv(Q12345, "../data/01a_APA.csv", row.names = F)
