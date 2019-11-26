@@ -9,9 +9,6 @@ have been inserted just below the subheadings.
     library(tidyverse)
     library(cowplot) ## for some easy to use themes
     library(DESeq2) ## for gene expression analysis
-    library(UpSetR)
-    library(ggtext) # for markdown in plots
-
     library(png)
     library(grid)
 
@@ -498,8 +495,7 @@ f
         geom_point() +
         labs(subtitle = paste(mysubfield, " *", mygene, "*",  sep = "")) +
         theme_classic() +
-        theme(plot.subtitle  = element_markdown(),
-              legend.position = "none", 
+        theme(legend.position = "none", 
               panel.grid.major  = element_blank(),  # remove major gridlines
               panel.grid.minor  = element_blank()) + # remove minor gridlines) +
         scale_fill_manual(values = fourgroups) 
@@ -601,57 +597,88 @@ Requires anlaysis of `04_integration.Rmd` first.
 
 ![](../figures/02c_rnaseqSubfield/DGcorrelations-6.png)
 
-Upset plots
------------
+    citation("DESeq2") ## for gene expression analysis
 
-What genes overlap within cetain comparisons?
+    ## 
+    ##   Love, M.I., Huber, W., Anders, S. Moderated estimation of fold
+    ##   change and dispersion for RNA-seq data with DESeq2 Genome
+    ##   Biology 15(12):550 (2014)
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Article{,
+    ##     title = {Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2},
+    ##     author = {Michael I. Love and Wolfgang Huber and Simon Anders},
+    ##     year = {2014},
+    ##     journal = {Genome Biology},
+    ##     doi = {10.1186/s13059-014-0550-8},
+    ##     volume = {15},
+    ##     issue = {12},
+    ##     pages = {550},
+    ##   }
 
-    a.colData <- read.csv("../data/02a_colData.csv", header = T)
-    a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
+    citation("png")
 
-    eachsubfield <- levels(a.colData$Punch)
+    ## 
+    ## To cite package 'png' in publications use:
+    ## 
+    ##   Simon Urbanek (2013). png: Read and write PNG images. R package
+    ##   version 0.1-7. https://CRAN.R-project.org/package=png
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Manual{,
+    ##     title = {png: Read and write PNG images},
+    ##     author = {Simon Urbanek},
+    ##     year = {2013},
+    ##     note = {R package version 0.1-7},
+    ##     url = {https://CRAN.R-project.org/package=png},
+    ##   }
+    ## 
+    ## ATTENTION: This citation information has been auto-generated from
+    ## the package DESCRIPTION file and may need manual editing, see
+    ## 'help("citation")'.
 
-    listofDEGs <- function(group1, group2){
-      res <- results(dds, contrast = c("treatment", group1, group2), independentFiltering = T)
-      
-      print(paste(group1,group2, sep = " vs "))
-      print(summary(res))
-      
-      data <- data.frame(gene = row.names(res),
-                         lfc = res$log2FoldChange,
-                         padj = res$padj,
-                         tissue = i,
-                         comparison = paste(group1, group2, sep = "-"))
-      data <- data %>% dplyr::filter(padj < 0.1) %>% droplevels()
-      return(data)
-    }
+    citation("grid")
 
-    for(i in eachsubfield){
-      
-      colData <- a.colData %>% 
-        dplyr::filter(Punch == i)  %>%
-        droplevels()
-      print(i)
-      
-      savecols <- as.character(colData$RNAseqID) 
-      savecols <- as.vector(savecols) 
-      countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+    ## 
+    ## The 'grid' package is part of R.  To cite R in publications use:
+    ## 
+    ##   R Core Team (2019). R: A language and environment for
+    ##   statistical computing. R Foundation for Statistical Computing,
+    ##   Vienna, Austria. URL https://www.R-project.org/.
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Manual{,
+    ##     title = {R: A Language and Environment for Statistical Computing},
+    ##     author = {{R Core Team}},
+    ##     organization = {R Foundation for Statistical Computing},
+    ##     address = {Vienna, Austria},
+    ##     year = {2019},
+    ##     url = {https://www.R-project.org/},
+    ##   }
+    ## 
+    ## We have invested a lot of time and effort in creating R, please
+    ## cite it when using it for data analysis. See also
+    ## 'citation("pkgname")' for citing R packages.
 
-    ## create DESeq object using the factors Punch and APA
-    dds <- DESeqDataSetFromMatrix(countData = countData,
-                                  colData = colData,
-                                  design = ~ treatment)
+    citation("BiocParallel")
 
-    dds # view the DESeq object - note numnber of genes
-    dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-    dds <- DESeq(dds, parallel = TRUE) # Differential expression analysis
-
-    A <- listofDEGs("standard.trained","standard.yoked")
-    B <- listofDEGs("conflict.trained","standard.trained")
-    C <- listofDEGs("conflict.trained","conflict.yoked")
-    D <- listofDEGs("conflict.yoked","standard.yoked")
-
-    all <- rbind(A,B,C,D)
-
-    write.csv(all, file = paste("../data/02c_",i,"forupset.csv", sep = ""), row.names = F)
-    }
+    ## 
+    ## To cite package 'BiocParallel' in publications use:
+    ## 
+    ##   Martin Morgan, Valerie Obenchain, Michel Lang, Ryan Thompson and
+    ##   Nitesh Turaga (2019). BiocParallel: Bioconductor facilities for
+    ##   parallel evaluation. R package version 1.18.0.
+    ##   https://github.com/Bioconductor/BiocParallel
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Manual{,
+    ##     title = {BiocParallel: Bioconductor facilities for parallel evaluation},
+    ##     author = {Martin Morgan and Valerie Obenchain and Michel Lang and Ryan Thompson and Nitesh Turaga},
+    ##     year = {2019},
+    ##     note = {R package version 1.18.0},
+    ##     url = {https://github.com/Bioconductor/BiocParallel},
+    ##   }

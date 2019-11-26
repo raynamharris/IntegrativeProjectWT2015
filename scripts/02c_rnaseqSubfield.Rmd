@@ -11,9 +11,6 @@ This script is used to identify treatement differences within each subfield, gen
 library(tidyverse)
 library(cowplot) ## for some easy to use themes
 library(DESeq2) ## for gene expression analysis
-library(UpSetR)
-library(ggtext) # for markdown in plots
-
 library(png)
 library(grid)
 
@@ -175,8 +172,7 @@ betterPlotCounts <- function(mygene, mydds, mysubfield){
     geom_point() +
     labs(subtitle = paste(mysubfield, " *", mygene, "*",  sep = "")) +
     theme_classic() +
-    theme(plot.subtitle  = element_markdown(),
-          legend.position = "none", 
+    theme(legend.position = "none", 
           panel.grid.major  = element_blank(),  # remove major gridlines
           panel.grid.minor  = element_blank()) + # remove minor gridlines) +
     scale_fill_manual(values = fourgroups) 
@@ -207,9 +203,8 @@ betterPlotCounts("Grin2b", CA1dds, "CA1")
 betterPlotCounts("Foxj3", CA1dds, "CA1")
 betterPlotCounts("Grik3", CA1dds, "CA1")
 betterPlotCounts("0610010K14Rik", CA1dds, "CA1")
+
 ```
-
-
 
 ## genes that are correlated with number of entrances 
 
@@ -222,61 +217,13 @@ plotCounts(DGdds, "Armcx5", intgroup = "treatment", normalized = TRUE, main="Arm
 plotCounts(DGdds, "Ptgs2", intgroup = "treatment", normalized = TRUE, main="Ptgs2 in DG")
 plotCounts(DGdds, "Rgs2", intgroup = "treatment", normalized = TRUE, main="Rgs2 in DG")
 plotCounts(DGdds, "Syt4", intgroup = "treatment", normalized = TRUE, main="Syt4 in DG")
+
 ```
 
-## Upset plots
+```{r citations}
+citation("DESeq2") ## for gene expression analysis
+citation("png")
+citation("grid")
+citation("BiocParallel")
 
-What genes overlap within cetain comparisons?
-
-```{r upsetplotprep}
-a.colData <- read.csv("../data/02a_colData.csv", header = T)
-a.countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-
-eachsubfield <- levels(a.colData$Punch)
-
-listofDEGs <- function(group1, group2){
-  res <- results(dds, contrast = c("treatment", group1, group2), independentFiltering = T)
-  
-  print(paste(group1,group2, sep = " vs "))
-  print(summary(res))
-  
-  data <- data.frame(gene = row.names(res),
-                     lfc = res$log2FoldChange,
-                     padj = res$padj,
-                     tissue = i,
-                     comparison = paste(group1, group2, sep = "-"))
-  data <- data %>% dplyr::filter(padj < 0.1) %>% droplevels()
-  return(data)
-}
-
-for(i in eachsubfield){
-  
-  colData <- a.colData %>% 
-    dplyr::filter(Punch == i)  %>%
-    droplevels()
-  print(i)
-  
-  savecols <- as.character(colData$RNAseqID) 
-  savecols <- as.vector(savecols) 
-  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
-
-## create DESeq object using the factors Punch and APA
-dds <- DESeqDataSetFromMatrix(countData = countData,
-                              colData = colData,
-                              design = ~ treatment)
-
-dds # view the DESeq object - note numnber of genes
-dds <- dds[ rowSums(counts(dds)) > 1, ]  # Pre-filtering genes with 0 counts
-dds <- DESeq(dds, parallel = TRUE) # Differential expression analysis
-
-A <- listofDEGs("standard.trained","standard.yoked")
-B <- listofDEGs("conflict.trained","standard.trained")
-C <- listofDEGs("conflict.trained","conflict.yoked")
-D <- listofDEGs("conflict.yoked","standard.yoked")
-
-all <- rbind(A,B,C,D)
-
-write.csv(all, file = paste("../data/02c_",i,"forupset.csv", sep = ""), row.names = F)
-}
-```
-
+````
