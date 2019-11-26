@@ -11,12 +11,10 @@ This markdown file is used for behavioral data wrangling, statistical analysis, 
 ```{r setup, message=F}
 ## load libraries 
 library(tidyverse) ## for respahing data
-library(reshape2) ## for melting dataframe
 library(cowplot) ## for some easy to use themes
-library(ggfortify) # pca
 library(factoextra)  ## pca with vectors
 library(FactoMineR) # more pca
-library(car) ## stats
+library(apaTables) #  for ANOVA tables
 
 ## load user-written functions 
 source("functions_behavior.R")
@@ -240,8 +238,6 @@ Q4: Do the groups differ in subsequent training? T4-T6 2-way ANOVA of groups X t
 Q5: do the groups differ in subsequent recall? 1-way ANOVA of groups on Rn
 
 ```{r stats}
-library(apaTables)
-
 # twoway anova table function
 
 twowayANOVAfor3measures <- function(mydata, mydescription){
@@ -376,4 +372,16 @@ write.csv(realnumshocks, file = "../data/01a_realnumshocks.csv", row.names = FAL
 write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
 
 write.csv(Q12345, "../data/01a_APA.csv", row.names = F)
+```
+
+
+```{r}
+# citatinos
+
+citation("tidyverse")
+citation("cowplot")  
+citation("factoextra")   
+citation("FactoMineR")  
+citation("apaTables")  
+
 ```

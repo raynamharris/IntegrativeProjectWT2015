@@ -9,12 +9,13 @@ Setup
 
     ## load libraries 
     library(tidyverse) ## for respahing data
-    library(reshape2) ## for melting dataframe
+    #library(reshape2) ## for melting dataframe
     library(cowplot) ## for some easy to use themes
-    library(ggfortify) # pca
     library(factoextra)  ## pca with vectors
     library(FactoMineR) # more pca
-    library(car) ## stats
+
+
+    library(apaTables) # 
 
     ## load user-written functions 
     source("functions_behavior.R")
@@ -394,8 +395,6 @@ in initial recall? 1-way ANOVA of groups on Rt Q4: Do the groups differ
 in subsequent training? T4-T6 2-way ANOVA of groups X trial Q5: do the
 groups differ in subsequent recall? 1-way ANOVA of groups on Rn
 
-    library(apaTables)
-
     # twoway anova table function
 
     twowayANOVAfor3measures <- function(mydata, mydescription){
@@ -594,3 +593,25 @@ save files
     write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
 
     write.csv(Q12345, "../data/01a_APA.csv", row.names = F)
+
+    # citatinos
+
+    citation("tidyverse")
+
+    ## 
+    ##   Wickham et al., (2019). Welcome to the tidyverse. Journal of
+    ##   Open Source Software, 4(43), 1686,
+    ##   https://doi.org/10.21105/joss.01686
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Article{,
+    ##     title = {Welcome to the {tidyverse}},
+    ##     author = {Hadley Wickham and Mara Averick and Jennifer Bryan and Winston Chang and Lucy D'Agostino McGowan and Romain François and Garrett Grolemund and Alex Hayes and Lionel Henry and Jim Hester and Max Kuhn and Thomas Lin Pedersen and Evan Miller and Stephan Milton Bache and Kirill Müller and Jeroen Ooms and David Robinson and Dana Paige Seidel and Vitalie Spinu and Kohske Takahashi and Davis Vaughan and Claus Wilke and Kara Woo and Hiroaki Yutani},
+    ##     year = {2019},
+    ##     journal = {Journal of Open Source Software},
+    ##     volume = {4},
+    ##     number = {43},
+    ##     pages = {1686},
+    ##     doi = {10.21105/joss.01686},
+    ##   }
