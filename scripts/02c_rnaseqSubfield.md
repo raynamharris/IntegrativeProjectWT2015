@@ -12,6 +12,9 @@ have been inserted just below the subheadings.
     library(UpSetR)
     library(ggtext) # for markdown in plots
 
+    library(png)
+    library(grid)
+
     library(BiocParallel)
     register(MulticoreParam(6))
 
@@ -405,7 +408,7 @@ Volcano plots
                            drop = FALSE) +
         ylim(c(0,12.5)) +  
         xlim(c(-8,8)) +
-        labs(y = "-log10(p)", x = "log fold change")  +
+        labs(y = NULL, x = "log fold change", subtitle = " ")  +
         theme(legend.position = "top",
               legend.spacing.x = unit(-0.1, 'cm'),
               legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
@@ -428,30 +431,50 @@ Volcano plots
 
 
 
-    volcanos <- plot_grid(DG1 +  labs(x= NULL) + annotate("text", x = -7, y = 12, label = "DG"),
-                          DG2  +  labs(x= NULL, y = " "), 
-                          DG3 +  labs(x= NULL, y = " "),
+    volcanos <- plot_grid(DG1 + labs(x= NULL, y = "DG \n -log10(p)") + theme(legend.position = "none"),
+                          DG2 + labs(x= NULL) + theme(legend.position = "none"), 
+                          DG3 + labs(x= NULL) + theme(legend.position = "none"),
                           
-                          CA31 + theme(legend.position = "none") + labs(x= NULL) + 
-                                  annotate("text", x = -7, y = 12, label = "CA3"),
-                          CA32 + theme(legend.position = "none") +  labs(x= NULL, y = " " ), 
-                          CA33 + theme(legend.position = "none") +  labs(x= NULL, y = " "), 
+                          CA31 + theme(legend.position = "none") + labs(x= NULL,  y = "CA3 \n -log10(p)"),
+                          CA32 + theme(legend.position = "none") +  labs(x= NULL ), 
+                          CA33 + theme(legend.position = "none") +  labs(x= NULL ), 
                           
-                          CA11 + theme(legend.position = "none") + 
-                                  annotate("text", x = -7, y = 12, label = "CA1"), 
-                          CA12 + theme(legend.position = "none") +  labs(y= " " ), 
-                          CA13 + theme(legend.position = "none") +  labs(y= " "), 
-                          nrow = 3, rel_heights =  c(0.35,0.3,0.35) ,
-                          labels =  c("a1", "b1", "c1",
-                                      "a2", "b2", "c2",
-                                      "a3", "b3", "c3"),
-                          label_size = 7) 
+                          CA11 + theme(legend.position = "bottom") +  labs( y = "CA1 \n -log10(p)"), 
+                          CA12 + theme(legend.position = "bottom"), 
+                          CA13 + theme(legend.position = "bottom"), 
+                          nrow = 3, 
+                          rel_heights =  c(1,1,1.25) ,
+                          rel_widths = c(1.2,1,1) ,
+                          labels =  c("a", "d", "g",
+                                      "b", "e", "h",
+                                      "c", "f", "i"),
+                          label_size = 8) 
     volcanos
 
 ![](../figures/02c_rnaseqSubfield/volcanos-1.png)
 
-    pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=6.65, height=4)
-    plot(volcanos)    
+    comparisons <- png::readPNG("../figures/00_schematics/figure_DEGcomparisons.png")
+    comparisons <- ggdraw() +  draw_image(comparisons, scale = 1)
+
+    right <- plot_grid(comparisons,volcanos, nrow = 2, rel_heights = c(0.1,1))
+
+    circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
+    circuit <- ggdraw() +  draw_image(circuit, scale = 1)
+
+    left <- plot_grid(circuit, right, nrow = 1, rel_widths = c(0.1,1))
+    left
+
+![](../figures/02c_rnaseqSubfield/volcanos-2.png)
+
+    pdf(file="../figures/02c_rnaseqSubfield/volcanos.pdf", width=6.69, height=6)
+    plot(left)    
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    pdf(file="../figures/figure_3.pdf", width=6.69, height=6)
+    plot(left)    
     dev.off()
 
     ## quartz_off_screen 
@@ -459,6 +482,8 @@ Volcano plots
 
 candidate genes
 ===============
+
+f
 
     betterPlotCounts <- function(mygene, mydds, mysubfield){
       df <- plotCounts(mydds, mygene, intgroup = "treatment",  transform = F, replaced = F, returnData = T)
@@ -546,18 +571,6 @@ candidate genes
     betterPlotCounts("0610010K14Rik", CA1dds, "CA1")
 
 ![](../figures/02c_rnaseqSubfield/CA1_boxplots-6.png)
-
-    a <- betterPlotCounts("Prkcz", CA1dds, "CA1")
-    b <- betterPlotCounts("Prkcz", CA3dds, "CA3")
-    c <- betterPlotCounts("Prkcz", DGdds, "DG")
-
-    d <- betterPlotCounts("Prkci", CA1dds, "CA1")
-    e <- betterPlotCounts("Prkci", CA3dds, "CA3")
-    f <- betterPlotCounts("Prkci", DGdds, "DG")
-
-    plot_grid(a,b,c,d,e,f)
-
-![](../figures/02c_rnaseqSubfield/pkrcs-1.png)
 
 genes that are correlated with number of entrances
 --------------------------------------------------
