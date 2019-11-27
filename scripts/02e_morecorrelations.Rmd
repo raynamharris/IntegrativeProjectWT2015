@@ -192,25 +192,19 @@ ggcorrplot(corrrmat2, hc.order = TRUE,
   method = "circle")
 
 library(pheatmap)
+library(colorRampPalette)
 pheatmap(corrrmat2)
 
-pheatmap(DEGs, show_colnames=F, show_rownames = T,
-           annotation_col=df, annotation_colors = ann_colors, 
-           annotation_row = NA, annotation_legend = TRUE,
-           annotation_names_row = FALSE, annotation_names_col = TRUE,
-           treeheight_row = 0, treeheight_col = 15,
-           fontsize = 7,
-           #border_color = "grey60" ,
-           color = viridis(30),
-           clustering_method="median",
-           breaks=myBreaks,
-           clustering_distance_cols=clustercolsmethod, 
-           cluster_cols = T,
-           main = title)  
-}
 
+mypheatmap <- pheatmap(corrrmat2, 
+           treeheight_row = 0, treeheight_col = 50,
+         labels_col = F,
+           fontsize = 7, 
+         colors = c("#67a9cf","white","#ef8a62"))  
+mypheatmap
 
-
+comparisons <- ggdraw() +  draw_image(mypheatmap)
+comparisons
 ```
 
 
