@@ -16,12 +16,10 @@ library(corrr)
 library(cowplot)
 
 source("./figureoptions.R")
-
 ```
 
 
 ```{r DGDEGs}
-
 # lists of genes that are correlated with particular genes
 ARC_associated <- read_csv("../data/02h_ARC_associated.csv")  %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
 Neurod6_associated <- read_csv("../data/02h_Neurod6_associated.csv") %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
@@ -92,7 +90,13 @@ plot_grid(a,b)
 
 ```{r DGvsd}
 # read all count data
-vsd <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F)
+vsd <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F) 
+vsd$gene <- row.names(vsd)
+vsd$gene <- toupper(vsd$gene)
+vsd <- as.data.frame(vsd)
+row.names(vsd) <- vsd$gene
+vsd$gene <- NULL
+head(vsd)
 
 # prep to join with sample colData
 vsd <- as.data.frame(t(vsd))
@@ -103,150 +107,145 @@ vsd$ID <- paste(15, vsd$mouse, sep = "")
 vsd <- left_join(colData, vsd)
 head(vsd)[17015:17020]
 
-forcorall <-  vsd %>% select(PC1:Zzz3)
+forcorall <-  vsd %>% select(PC1:ZZZ3)
 head(forcorall)
 
 corrrmat <- correlate(forcorall, diagonal = 1) 
 head(corrrmat)
 ```
 
-```{r corrrplots}
-summary(lm( PC1 ~ Arc, data = vsd))
-summary(lm( PC2 ~ Arc, data = vsd))
+```{r corrrplots, fig.width=6.69}
+summary(lm( PC1 ~ ARC, data = vsd))
+summary(lm( PC2 ~ ARC, data = vsd))
 
+cor.test(vsd$PC1, vsd$ARC, method = c("pearson"))
+cor.test(vsd$PC2, vsd$ARC, method = c("pearson"))
 
-cor.test(vsd$PC1, vsd$Arc, method = c("pearson"))
-cor.test(vsd$PC2, vsd$Arc, method = c("pearson"))
-cor.test(vsd$Jun, vsd$Arc, method = c("pearson"))
-
-
-
-a <- ggplot(vsd, aes(x = PC1, y = Arc)) +
+a <- ggplot(vsd, aes(x = PC1, y = ARC)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none", axis.text.x = element_blank())  +
-   annotate("text", x = 0, y = 11.5, label = "R2 = 0.81, p = 0.0002")
-b <- ggplot(vsd, aes(x = PC2, y = Arc)) +
+  theme_ms() +
+   theme(legend.position = "none")  +
+   annotate("text", x = 0, y = 11.5, label = "R2 = 0.81, p = 0.0002") +
+  labs(subtitle = " ")
+b <- ggplot(vsd, aes(x = PC2, y = ARC)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none", axis.text.x = element_blank(),
+  theme_ms() +
+   theme(legend.position = "none",
          axis.text.y = element_blank(), axis.title.y = element_blank())  +
-   annotate("text", x = 2, y = 11.5, label = "R2 = -0.63, p = 0.009")
+   annotate("text", x = 2, y = 11.5, label = "R2 = -0.63, p = 0.009") +
+  labs(subtitle = " ")
 
-c <- ggplot(vsd, aes(x = Jun, y = Arc)) +
-   geom_point(aes( color = treatment)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = treatmentcolors) +
-   theme(legend.position = "none", 
-         axis.text.x = element_blank(),
-         axis.text.y = element_blank(), 
-         axis.title.y = element_blank())  +
-   annotate("text", x = 9.5, y = 11.5, label = "R2 = 85, p = 2.801e-05")
-c
-
-top <- plot_grid(a,b, c, rel_widths = c(0.4,0.3, 0.3), nrow = 1)
+top <- plot_grid(a,b, nrow = 1, labels = c("a","b"), label_size = 8)
 top
 
 slim <- corrrmat %>% 
   focus(PC1, PC2)  %>% 
   arrange(desc(PC1)) %>% 
-  filter(PC1 > 0.801 | PC2 > 0.69) 
+  filter(PC1 > 0.78) 
 slim
 
 topcorrrs <- slim$rowname
-topcorrrs
-
 
 p1 <- corrrmat %>% 
-  focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
-  rearrange() %>% 
-  network_plot(colors = c("#67a9cf", "#ef8a62"),
-               min_cor = .6, curved = F, legend = F,
-               repel = TRUE) 
-p1 
-
-
-library(ggcorrplot)
-
-corrrmat2 <- corrrmat %>% 
-  focus(PC1, PC2, topcorrrs,  mirror = TRUE) 
-
-
-corrrmat2 <- as.data.frame(corrrmat2)
-row.names(corrrmat2) <- corrrmat2$rowname
-corrrmat2$rowname <- NULL
-corrrmat2 <- as.matrix(corrrmat2)
-head(corrrmat2)
-
-ggcorrplot(corrrmat2)
-
-ggcorrplot(corrrmat2, hc.order = TRUE, type = "lower",
-     outline.col = "white")
-
-ggcorrplot(corrrmat2, hc.order = TRUE,
-   outline.col = "white",
-   ggtheme = ggplot2::theme_gray,
-   colors = c("#67a9cf", "white",   "#ef8a62"),
-  method = "circle")
-
-library(pheatmap)
-library(colorRampPalette)
-pheatmap(corrrmat2)
-
-
-mypheatmap <- pheatmap(corrrmat2, 
-           treeheight_row = 0, treeheight_col = 50,
-         labels_col = F,
-           fontsize = 7, 
-         colors = c("#67a9cf","white","#ef8a62"))  
-mypheatmap
-
-comparisons <- ggdraw() +  draw_image(mypheatmap)
-comparisons
-```
-
-
-
-
-
-
-
-```{r}
-
-p2 <- corrrmat %>% 
   focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
    focus(PC1, PC2) %>%
   mutate(rowname = reorder(rowname, PC1)) %>%
   ggplot(aes(rowname, PC1, fill = PC1)) +
     geom_col() + coord_flip() +
   scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
-  #theme_ms() +
+  theme_ms() +
   theme(legend.position = "none") +
-  ylim(-1,1) +
-  labs(x = NULL, y = "Correlation to PC1")
+  #ylim(-1,1) +
+  labs(x = NULL, y = "Correlation to PC1") +
+  geom_hline(yintercept=0.6, linetype="dashed", color = "black") +
+  labs(subtitle = " ")
+p1 
+
+
+p2 <- corrrmat %>% 
+  focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+  rearrange() %>% 
+  network_plot(colors = c("#67a9cf", "white", "#ef8a62"),
+               min_cor = .6, curved = T, legend = T,
+               repel = TRUE) + 
+  theme(legend.position = "bottom") +
+  labs(subtitle = " ")
 p2 
 
-p3 <- corrrmat %>% 
-  focus(PC1, PC2,topcorrrs,  mirror = TRUE) %>% 
-   focus(PC1, PC2) %>%
-  mutate(rowname = reorder(rowname, PC1)) %>%
-  ggplot(aes(rowname, PC2, fill = PC2)) +
-    geom_col() + coord_flip() +
-  scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
-  #theme_ms() +
-  theme(legend.position = "none", axis.text.y = element_blank()) +
-  ylim(-1,1) +
-  labs(x = NULL, y = "Correlation to PC2")
-p3
 
 
-bottom <- plot_grid(p2,p3,p1,  nrow = 1, rel_widths = c(0.4,0.3,0.4))
+bottom <- plot_grid(p1,p2,  nrow = 1, labels = c("c","d"), label_size = 8)
 bottom
 
 
-plot_grid(top, bottom, nrow = 2, rel_heights = c(0.45,0.55))
+fig4 <- plot_grid(top, bottom, nrow = 2, rel_heights = c(0.4,0.6))
+fig4
+
+
+```
+
+## what genes genes correlated with PC1? what gene are correlated with PC1 and are differentially epxressed 
+
+```{r}
+PC1corrs <- corrrmat %>% 
+  focus(PC1)  %>% 
+  arrange(desc(PC1)) %>% 
+  filter(PC1 > .7) %>%
+   mutate_each(funs=toupper) %>%
+  mutate(gene = rowname) %>% 
+  arrange(gene)
+PC1corrs
+
+# 217 DEGs in DG
+str(DG_DEGs)
+head(DG_DEGs$gene)
+
+# 41 found  in both correlate and deg datasets
+PC1corrsDEGS <- inner_join(PC1corrs, DG_DEGs) %>% arrange(gene)
+length(PC1corrsDEGS$gene)
+PC1corrsDEGS$gene
+
+# these 40 genes have a top go hit for 
+
+#Enrichment FDR	Genes in list	Total genes	Functional Category
+#2.0E-07	8	145	Memory
+#2.6E-07	23	3205	Response to organic substance
+#3.3E-07	18	1855	Tissue development
+#3.4E-07	14	1003	Response to organic cyclic compound
+#3.9E-07	9	286	Learning or memory
+#4.1E-07	12	693	Behavior
+#6.9E-07	9	317	Cognition
+#4.8E-06	10	545	Cellular response to organic cyclic compound
+#8.1E-06	7	201	Regulation of synaptic plasticity
+#1.3E-05	15	1687	Response to oxygen-containing compound
+
+#Enrichment FDR	Genes in list	Total genes	Functional Category
+#9.3E-04	12	1486	Neuron projection
+#1.7E-03	8	736	Dendrite
+#1.7E-03	8	738	Dendritic tree
+#1.9E-03	9	1095	Cell junction
+#1.9E-03	9	1035	Somatodendritic compartment
+#1.9E-03	10	1341	Synapse
+#1.9E-03	12	1933	Neuron part
+#2.6E-03	6	472	Glutamatergic synapse
+#3.5E-03	7	723	Postsynapse
+#5.4E-03	12	2260	Plasma membrane bounded cell projection
+
+# Enrichment FDR	Genes in list	Total genes	Functional Category
+#2.5E-04	10	949	Regulatory region nucleic acid binding
+#2.5E-04	10	946	Transcription regulatory region DNA binding
+#1.1E-03	8	782	RNA polymerase II regulatory region sequence-specific DNA binding
+#1.1E-03	8	738	DNA-binding transcription factor activity, RNA polymerase II-specific
+#31.1E-03	8	788	RNA polymerase II regulatory region DNA binding
+#1.1E-03	9	1010	DNA-binding transcription factor activity
+#1.4E-03	8	837	Transcription regulatory region sequence-specific DNA binding
+#1.6E-03	8	874	Sequence-specific double-stranded DNA binding
+#2.2E-03	5	310	Ubiquitin protein ligase binding
+#2.3E-03	8	959	Double-stranded DNA binding
 
 ```
 
@@ -254,3 +253,7 @@ plot_grid(top, bottom, nrow = 2, rel_heights = c(0.45,0.55))
 citation("corrr")
 ```
 
+```{r}
+write.csv(slim, "../data/02e_top10PC1correlations.csv", row.names = F)
+write.csv(PC1corrsDEGS, "../data/02e_PC1correlationsDEGs.csv", row.names = F)
+```

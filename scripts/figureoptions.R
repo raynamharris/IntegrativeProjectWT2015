@@ -1,7 +1,7 @@
 # this file stores color palettes and themes
 
 theme_ms <- function () { 
-  theme_classic(base_size = 7) +
+  theme_classic(base_size = 8) +
     theme(
       panel.grid.major  = element_blank(),  # remove major gridlines
       panel.grid.minor  = element_blank(),  # remove minor gridlines
