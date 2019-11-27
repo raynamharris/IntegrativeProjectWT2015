@@ -3,6 +3,7 @@
     library(cowplot)
 
     source("./figureoptions.R")
+    source("./functions_RNAseq.R")
 
     # lists of genes that are correlated with particular genes
     ARC_associated <- read_csv("../data/02h_ARC_associated.csv")  %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
@@ -443,6 +444,20 @@
     fig4
 
 ![](../figures/02e_correlations/corrrplots-5.png)
+
+    pdf(file="../figures/02e_corrrplots.pdf", width=6.69, height=3.5)
+    plot(fig4)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    pdf(file="../figures/figure_4.pdf", width=6.69, height=3.5)
+    plot(fig4)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
 
 what genes genes correlated with PC1? what gene are correlated with PC1 and are differentially epxressed
 --------------------------------------------------------------------------------------------------------

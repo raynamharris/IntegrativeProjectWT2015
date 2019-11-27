@@ -16,6 +16,7 @@ library(corrr)
 library(cowplot)
 
 source("./figureoptions.R")
+source("./functions_RNAseq.R")
 ```
 
 
@@ -137,7 +138,6 @@ b <- ggplot(vsd, aes(x = ARC, y = PC2)) +
 left <- plot_grid(a,b, nrow = 2, labels = c("a","b"), label_size = 8)
 left
 
-
 slim <- corrrmat %>% 
   focus(PC1, PC2)  %>% 
   arrange(desc(PC1)) %>% 
@@ -160,7 +160,6 @@ p1 <- corrrmat %>%
   labs(subtitle = " ")
 p1 
 
-
 p2 <- corrrmat %>% 
   focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
   rearrange() %>% 
@@ -174,9 +173,16 @@ p2
 right <- plot_grid(p1,p2,  nrow = 1, labels = c("c","d"), label_size = 8)
 right
 
-
 fig4 <- plot_grid(left, right, nrow = 1, rel_widths = c(1,2))
 fig4
+
+pdf(file="../figures/02e_corrrplots.pdf", width=6.69, height=3.5)
+plot(fig4)
+dev.off()
+
+pdf(file="../figures/figure_4.pdf", width=6.69, height=3.5)
+plot(fig4)
+dev.off()
 ```
 
 ## what genes genes correlated with PC1? what gene are correlated with PC1 and are differentially epxressed 
