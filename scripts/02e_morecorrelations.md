@@ -445,7 +445,7 @@
 
 ![](../figures/02e_correlations/corrrplots-5.png)
 
-    pdf(file="../figures/02e_corrrplots.pdf", width=6.69, height=3.5)
+    pdf(file="../figures/02e_correlations/corrrplots.pdf", width=6.69, height=3.5)
     plot(fig4)
     dev.off()
 

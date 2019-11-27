@@ -113,7 +113,7 @@ corrrmat <- correlate(forcorall, diagonal = 1)
 head(corrrmat)
 ```
 
-```{r corrrplots, fig.width=6.69}
+```{r corrrplots, fig.width=6.69, fig.height=3.5}
 summary(lm( PC1 ~ ARC, data = vsd))
 summary(lm( PC2 ~ ARC, data = vsd))
 
@@ -176,7 +176,7 @@ right
 fig4 <- plot_grid(left, right, nrow = 1, rel_widths = c(1,2))
 fig4
 
-pdf(file="../figures/02e_corrrplots.pdf", width=6.69, height=3.5)
+pdf(file="../figures/02e_correlations/corrrplots.pdf", width=6.69, height=3.5)
 plot(fig4)
 dev.off()
 
