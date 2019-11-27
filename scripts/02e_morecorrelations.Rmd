@@ -53,7 +53,6 @@ head(colData)
 # joing with counts and sample data, prep for correlations
 alldata <- left_join(colData, DG_ARC)
 forcorplots <- alldata %>% select(PC1:UBC)
-forcorplots
 
 # correlation matrix
 x <- correlate(forcorplots)
@@ -108,7 +107,6 @@ vsd <- left_join(colData, vsd)
 head(vsd)[17015:17020]
 
 forcorall <-  vsd %>% select(PC1:ZZZ3)
-head(forcorall)
 
 corrrmat <- correlate(forcorall, diagonal = 1) 
 head(corrrmat)
@@ -121,26 +119,24 @@ summary(lm( PC2 ~ ARC, data = vsd))
 cor.test(vsd$PC1, vsd$ARC, method = c("pearson"))
 cor.test(vsd$PC2, vsd$ARC, method = c("pearson"))
 
-a <- ggplot(vsd, aes(x = PC1, y = ARC)) +
+a <- ggplot(vsd, aes(x = ARC, y = PC1)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+  theme_ms() +
+   theme(legend.position = "none", axis.title.x = element_blank(), axis.text.x = element_blank())  +
+  labs(subtitle = "R2 = 0.81, p = 0.0002")
+b <- ggplot(vsd, aes(x = ARC, y = PC2)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
   theme_ms() +
    theme(legend.position = "none")  +
-   annotate("text", x = 0, y = 11.5, label = "R2 = 0.81, p = 0.0002") +
-  labs(subtitle = " ")
-b <- ggplot(vsd, aes(x = PC2, y = ARC)) +
-   geom_point(aes( color = treatment)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = treatmentcolors) +
-  theme_ms() +
-   theme(legend.position = "none",
-         axis.text.y = element_blank(), axis.title.y = element_blank())  +
-   annotate("text", x = 2, y = 11.5, label = "R2 = -0.63, p = 0.009") +
-  labs(subtitle = " ")
+  labs(subtitle = "R2 = -0.63, p = 0.009 ")
 
-top <- plot_grid(a,b, nrow = 1, labels = c("a","b"), label_size = 8)
-top
+left <- plot_grid(a,b, nrow = 2, labels = c("a","b"), label_size = 8)
+left
+
 
 slim <- corrrmat %>% 
   focus(PC1, PC2)  %>% 
@@ -161,7 +157,6 @@ p1 <- corrrmat %>%
   theme(legend.position = "none") +
   #ylim(-1,1) +
   labs(x = NULL, y = "Correlation to PC1") +
-  geom_hline(yintercept=0.6, linetype="dashed", color = "black") +
   labs(subtitle = " ")
 p1 
 
@@ -176,21 +171,18 @@ p2 <- corrrmat %>%
   labs(subtitle = " ")
 p2 
 
+right <- plot_grid(p1,p2,  nrow = 1, labels = c("c","d"), label_size = 8)
+right
 
 
-bottom <- plot_grid(p1,p2,  nrow = 1, labels = c("c","d"), label_size = 8)
-bottom
-
-
-fig4 <- plot_grid(top, bottom, nrow = 2, rel_heights = c(0.4,0.6))
+fig4 <- plot_grid(left, right, nrow = 1, rel_widths = c(1,2))
 fig4
-
-
 ```
 
 ## what genes genes correlated with PC1? what gene are correlated with PC1 and are differentially epxressed 
 
 ```{r}
+# 57 genes are correlated with PC1 > 0.7
 PC1corrs <- corrrmat %>% 
   focus(PC1)  %>% 
   arrange(desc(PC1)) %>% 
@@ -198,7 +190,7 @@ PC1corrs <- corrrmat %>%
    mutate_each(funs=toupper) %>%
   mutate(gene = rowname) %>% 
   arrange(gene)
-PC1corrs
+PC1corrs$gene
 
 # 217 DEGs in DG
 str(DG_DEGs)
@@ -209,45 +201,26 @@ PC1corrsDEGS <- inner_join(PC1corrs, DG_DEGs) %>% arrange(gene)
 length(PC1corrsDEGS$gene)
 PC1corrsDEGS$gene
 
-# these 40 genes have a top go hit for 
-
-#Enrichment FDR	Genes in list	Total genes	Functional Category
-#2.0E-07	8	145	Memory
-#2.6E-07	23	3205	Response to organic substance
-#3.3E-07	18	1855	Tissue development
-#3.4E-07	14	1003	Response to organic cyclic compound
-#3.9E-07	9	286	Learning or memory
-#4.1E-07	12	693	Behavior
-#6.9E-07	9	317	Cognition
-#4.8E-06	10	545	Cellular response to organic cyclic compound
-#8.1E-06	7	201	Regulation of synaptic plasticity
-#1.3E-05	15	1687	Response to oxygen-containing compound
-
-#Enrichment FDR	Genes in list	Total genes	Functional Category
-#9.3E-04	12	1486	Neuron projection
-#1.7E-03	8	736	Dendrite
-#1.7E-03	8	738	Dendritic tree
-#1.9E-03	9	1095	Cell junction
-#1.9E-03	9	1035	Somatodendritic compartment
-#1.9E-03	10	1341	Synapse
-#1.9E-03	12	1933	Neuron part
-#2.6E-03	6	472	Glutamatergic synapse
-#3.5E-03	7	723	Postsynapse
-#5.4E-03	12	2260	Plasma membrane bounded cell projection
-
-# Enrichment FDR	Genes in list	Total genes	Functional Category
-#2.5E-04	10	949	Regulatory region nucleic acid binding
-#2.5E-04	10	946	Transcription regulatory region DNA binding
-#1.1E-03	8	782	RNA polymerase II regulatory region sequence-specific DNA binding
-#1.1E-03	8	738	DNA-binding transcription factor activity, RNA polymerase II-specific
-#31.1E-03	8	788	RNA polymerase II regulatory region DNA binding
-#1.1E-03	9	1010	DNA-binding transcription factor activity
-#1.4E-03	8	837	Transcription regulatory region sequence-specific DNA binding
-#1.6E-03	8	874	Sequence-specific double-stranded DNA binding
-#2.2E-03	5	310	Ubiquitin protein ligase binding
-#2.3E-03	8	959	Double-stranded DNA binding
-
+## these 41 genes were used for a go analysis using shinygo http://bioinformatics.sdstate.edu/go/
+## results are stored as 
+  #data/02e_DEGPC1enrichmentBP.csv
+	#data/02e_DEGPC1enrichmentCC.csv
+	#data/02e_DEGPC1enrichmentMF.csv
 ```
+
+```{r }
+BP <- read_csv("../data/02e_DEGPC1enrichmentBP.csv", n_max = 5) %>% mutate(Domain = "BP") 
+CC <- read_csv("../data/02e_DEGPC1enrichmentCC.csv", n_max = 5) %>% mutate(Domain = "CC") 
+MF <- read_csv("../data/02e_DEGPC1enrichmentMF.csv", n_max = 5) %>% mutate(Domain = "MF") 
+
+GO <- rbind(BP, CC, MF) %>% select(Domain, `Functional Category`, `Total genes`, `Genes in list`, Genes)
+GO
+
+# alphabetize
+GO$Genes <- GO$Genes %>% str_split(., ' ') %>% lapply(., 'sort') %>%  lapply(., 'paste', collapse=' ') %>% unlist(.)
+GO
+```
+
 
 ```{r citation}
 citation("corrr")
@@ -256,4 +229,5 @@ citation("corrr")
 ```{r}
 write.csv(slim, "../data/02e_top10PC1correlations.csv", row.names = F)
 write.csv(PC1corrsDEGS, "../data/02e_PC1correlationsDEGs.csv", row.names = F)
+write.csv(GO, "../data/02e_PC1corrTopGOterms.csv", row.names = F)
 ```
