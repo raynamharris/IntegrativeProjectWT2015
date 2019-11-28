@@ -195,15 +195,17 @@ PC1corrs <- corrrmat %>%
   filter(PC1 > .7) %>%
    mutate_each(funs=toupper) %>%
   mutate(gene = rowname) %>% 
-  arrange(gene)
+  arrange(gene) %>% 
+  select(gene,PC1)   
 PC1corrs$gene
 
 # 217 DEGs in DG
-str(DG_DEGs)
+dim(DG_DEGs)
 head(DG_DEGs$gene)
 
 # 41 found  in both correlate and deg datasets
-PC1corrsDEGS <- inner_join(PC1corrs, DG_DEGs) %>% arrange(gene)
+PC1corrsDEGS <- inner_join(PC1corrs, DG_DEGs) %>% 
+  arrange(gene) %>% select(gene,PC1)   
 length(PC1corrsDEGS$gene)
 PC1corrsDEGS$gene
 
@@ -234,6 +236,6 @@ citation("corrr")
 
 ```{r}
 write.csv(slim, "../data/02e_top10PC1correlations.csv", row.names = F)
-write.csv(PC1corrsDEGS, "../data/02e_PC1correlationsDEGs.csv", row.names = F)
+write.csv(PC1corrs, "../data/02e_PC1correlations.csv", row.names = F)
 write.csv(GO, "../data/02e_PC1corrTopGOterms.csv", row.names = F)
 ```
