@@ -21,28 +21,6 @@ source("./functions_RNAseq.R")
 
 
 ```{r DGDEGs}
-# lists of genes that are correlated with particular genes
-ARC_associated <- read_csv("../data/02h_ARC_associated.csv")  %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
-Neurod6_associated <- read_csv("../data/02h_Neurod6_associated.csv") %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
-Prkcz_associated <- read_csv("../data/02h_Prkcz_associated.csv") %>% mutate_each(funs=toupper)  %>% dplyr::pull(gene) 
-
-# differentially expressed gens in the DG
-DG_DEGs <- read.csv("../data/02f_DG_DEGs_vsd.csv", row.names = 1, check.names = F)
-DG_DEGs <- as.data.frame(t(DG_DEGs))
-DG_DEGs$sample <- row.names(DG_DEGs)
-DG_DEGs <- DG_DEGs %>% select(`1190002N15RIK`:ZFP869)
-DG_DEGs <- as.data.frame(t(DG_DEGs))
-DG_DEGs$gene <- row.names(DG_DEGs)
-
-# only look at Differentially expressed genes in the ARC module
-DG_ARC <- DG_DEGs %>% filter(gene %in% ARC_associated) %>% select(gene, everything())
-row.names(DG_ARC) <- DG_ARC$gene
-DG_ARC$gene <- NULL
-DG_ARC <- as.data.frame(t(DG_ARC))
-DG_ARC$sample  <- row.names(DG_ARC)
-DG_ARC$mouse <- sapply(strsplit(as.character(DG_ARC$sample),"\\-"), "[", 1)
-DG_ARC$ID <- paste(15, DG_ARC$mouse, sep = "")
-
 # read the sample data, set levels, join iwth behvior PCA data
 colData <- read.csv("../data/02a_colData.csv", row.names = 1, stringsAsFactors = T)
 colData <- colData %>% filter(subfield == "DG")
@@ -50,43 +28,7 @@ pca.Rn <- read_csv("../data/01a_pca.all.csv") %>% filter(trialNum == 9)
 pca.Rn <- pca.Rn %>% select(ID:PC2)
 colData <- left_join(colData, pca.Rn)
 head(colData)
-
-# joing with counts and sample data, prep for correlations
-alldata <- left_join(colData, DG_ARC)
-forcorplots <- alldata %>% select(PC1:UBC)
-
-# correlation matrix
-x <- correlate(forcorplots)
-
-x %>% filter(PC1 > 0.755) %>% arrange(desc(PC1))  %>% select(rowname, PC1, PC2)
 ```
-
-```{r correlations}
-cor.test(alldata$ARC, alldata$PC1, method = "pearson")
-cor.test(alldata$ARC, alldata$PC2, method = "pearson")
-
-
-a <- ggplot(alldata, aes(x = PC1, y = ARC)) +
-   geom_point(aes( color = treatment)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = treatmentcolors) +
-   theme_ms() +
-   theme(legend.position = "none") +
-  labs(subtitle = "R2 = 0.81, p = 0.0002")
-  
-
-b <- ggplot(alldata, aes(x = PC2, y = ARC)) +
-   geom_point(aes( color = treatment)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = treatmentcolors) +
-   theme_ms() +
-   theme(legend.position = "none") +
-  labs(subtitle = "R2 = -0.63, p = 0.009")
-
-plot_grid(a,b)
-
-```
-
 
 ```{r DGvsd}
 # read all count data
