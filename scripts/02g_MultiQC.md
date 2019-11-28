@@ -1,100 +1,241 @@
-    multiqc <- read.csv(file = "../data/multiqc/multiqc_report.csv")
-    summary(multiqc)
+    # read meta data for plotting
+    colData <- read.csv("../data/02a_colData.csv")
+    colData <- colData %>% select(RNAseqID, treatment)  
 
-    ##                      Sample.Name       Dups              GC        
-    ##  142C_CA1_S_S19_L003_R1_001:  2   Min.   :0.2100   Min.   :0.4400  
-    ##  142C_CA1_S_S19_L003_R2_001:  2   1st Qu.:0.5800   1st Qu.:0.4700  
-    ##  142C_DG_S_S21_L003_R1_001 :  2   Median :0.6950   Median :0.4900  
-    ##  142C_DG_S_S21_L003_R2_001 :  2   Mean   :0.6859   Mean   :0.4832  
-    ##  143A_CA3_1_S35_L002_R1_001:  2   3rd Qu.:0.8000   3rd Qu.:0.4900  
-    ##  143A_CA3_1_S35_L002_R2_001:  2   Max.   :0.9600   Max.   :0.5500  
-    ##  (Other)                   :204                                    
-    ##      Length       MillionReads    QualityFiltered
-    ##  Min.   :137.0   Min.   : 0.500   No :108        
-    ##  1st Qu.:149.0   1st Qu.: 2.850   Yes:108        
-    ##  Median :150.0   Median : 4.550                  
-    ##  Mean   :149.1   Mean   : 6.087                  
-    ##  3rd Qu.:150.0   3rd Qu.: 7.000                  
-    ##  Max.   :150.0   Max.   :37.900                  
-    ## 
+    # stats from fastqc 
+    fastqc <- read.csv(file = "../data/multiqc/multiqc_fastqc.csv")
+    fastqc$read <- ifelse(grepl("R1", fastqc$Sample.Name), "R1", "R2")  # make read columns
+    fastqc$mouse <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 1)
+    fastqc$subfield <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 2)
+    fastqc$section <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 3)
+    fastqc$RNAseqID <- paste(fastqc$mouse, fastqc$subfield, fastqc$section, sep = "-")
+    fastqc <- left_join(colData,fastqc) %>% 
+      select(RNAseqID, treatment, subfield, read, QualityFiltered, Dups, GC, Length, MillionReads)  %>% 
+      filter(QualityFiltered == "No")
 
-    before <- multiqc[multiqc$QualityFiltered == "No",]
-    after <- multiqc[multiqc$QualityFiltered == "Yes",]
-    summary(before$MillionReads)
+    ## Joining, by = "RNAseqID"
 
-    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##   1.500   3.900   5.500   7.304   7.900  37.900
+    ## Warning: Column `RNAseqID` joining factor and character vector, coercing
+    ## into character vector
 
-    summary(after$MillionReads)
+    fastqc$treatment <- factor(fastqc$treatment, levels = levelstreatment)
+    fastqc$subfield <- factor(fastqc$subfield, levels = levelssubfield)
+    head(fastqc)
 
-    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##    0.50    1.90    3.35    4.87    6.10   35.80
+    ##     RNAseqID        treatment subfield read QualityFiltered Dups   GC
+    ## 1 143A-CA3-1 conflict.trained      CA3   R1              No 0.81 0.49
+    ## 2 143A-CA3-1 conflict.trained      CA3   R2              No 0.71 0.48
+    ## 3  143A-DG-1 conflict.trained       DG   R1              No 0.72 0.50
+    ## 4  143A-DG-1 conflict.trained       DG   R2              No 0.63 0.49
+    ## 5 143B-CA1-1   conflict.yoked      CA1   R1              No 0.71 0.48
+    ## 6 143B-CA1-1   conflict.yoked      CA1   R2              No 0.62 0.48
+    ##   Length MillionReads
+    ## 1    150          5.8
+    ## 2    150          5.8
+    ## 3    150          7.9
+    ## 4    150          7.9
+    ## 5    150          2.9
+    ## 6    150          2.9
 
-    # mean before 7.3 million reads max 37 min 1.5. 
-    # mean after 4.8 millino reads Max 35 min 0.5
-    hist(before$MillionReads, ylim = c(0,80))
+    # stats from kallisto
+    kallisto <- read.csv(file = "../data/multiqc/multiqc_kallisto.csv")
+    kallisto$mouse <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 1)
+    kallisto$subfield <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 2)
+    kallisto$section <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 3)
+    kallisto$RNAseqID <- paste(kallisto$mouse, kallisto$subfield, kallisto$section, sep = "-")
+    kallisto <- left_join(colData,kallisto) %>% 
+      select(RNAseqID, treatment, subfield, QC, bp, fracalign, millalign) %>% 
+      filter(QC == "raw")
+
+    ## Joining, by = "RNAseqID"
+
+    ## Warning: Column `RNAseqID` joining factor and character vector, coercing
+    ## into character vector
+
+    kallisto$treatment <- factor(kallisto$treatment, levels = levelstreatment)
+    kallisto$subfield <- factor(kallisto$subfield, levels = levelssubfield)
+    head(kallisto)
+
+    ##     RNAseqID        treatment subfield  QC    bp fracalign millalign
+    ## 1 143A-CA3-1 conflict.trained      CA3 raw 201.1      0.60       3.5
+    ## 2  143A-DG-1 conflict.trained       DG raw 198.9      0.69       5.4
+    ## 3 143B-CA1-1   conflict.yoked      CA1 raw 200.6      0.62       1.8
+    ## 4  143B-DG-1   conflict.yoked       DG raw 200.0      0.57       2.2
+    ## 5 143C-CA1-1 standard.trained      CA1 raw 198.4      0.66       2.3
+    ## 6 143D-CA1-3   standard.yoked      CA1 raw 197.0      0.37       1.2
+
+    multiqc <- left_join(fastqc, kallisto) 
+
+    ## Joining, by = c("RNAseqID", "treatment", "subfield")
+
+    multiqc$treatment <-   fct_recode(multiqc$treatment, "standard\nyoked" = "standard.yoked", 
+                                      "standard\ntrained" = "standard.trained",
+                                      "conflict\nyoked" = "conflict.yoked", 
+                                      "conflict\ntrained" = "conflict.trained")
+    head(multiqc)
+
+    ##     RNAseqID         treatment subfield read QualityFiltered Dups   GC
+    ## 1 143A-CA3-1 conflict\ntrained      CA3   R1              No 0.81 0.49
+    ## 2 143A-CA3-1 conflict\ntrained      CA3   R2              No 0.71 0.48
+    ## 3  143A-DG-1 conflict\ntrained       DG   R1              No 0.72 0.50
+    ## 4  143A-DG-1 conflict\ntrained       DG   R2              No 0.63 0.49
+    ## 5 143B-CA1-1   conflict\nyoked      CA1   R1              No 0.71 0.48
+    ## 6 143B-CA1-1   conflict\nyoked      CA1   R2              No 0.62 0.48
+    ##   Length MillionReads  QC    bp fracalign millalign
+    ## 1    150          5.8 raw 201.1      0.60       3.5
+    ## 2    150          5.8 raw 201.1      0.60       3.5
+    ## 3    150          7.9 raw 198.9      0.69       5.4
+    ## 4    150          7.9 raw 198.9      0.69       5.4
+    ## 5    150          2.9 raw 200.6      0.62       1.8
+    ## 6    150          2.9 raw 200.6      0.62       1.8
+
+    a <- ggplot(multiqc, aes(x = treatment, y = MillionReads, color = treatment)) +
+      geom_boxplot() + geom_point() +
+      scale_color_manual(values = treatmentcolors2) +  
+      #facet_wrap(~subfield, nrow = 3) +
+      labs(y = "Total Reads (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+
+    b <- ggplot(multiqc, aes(x = treatment, y = millalign, color = treatment)) +
+      geom_boxplot() + geom_point() +
+      scale_color_manual(values = treatmentcolors2) +  
+      labs(y = "Pseudo-aligned Reads (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+    c <- ggplot(multiqc, aes(x = treatment, y = fracalign, color = treatment)) +
+             geom_boxplot() + geom_point() +
+      scale_color_manual(values = treatmentcolors2) +  
+      labs(y = "Fraction aligned (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+
+    plot_grid( a, b , c , 
+              labels = c( "(a)", "(b)", "(c)"),
+              label_size = 8, nrow = 1)
 
 ![](../figures/02g_MultiQC/multiqc-1.png)
 
-    hist(after$MillionReads, ylim = c(0,80))
+    summary(multiqc)
+
+    ##    RNAseqID                    treatment   subfield     read          
+    ##  Length:88          standard\nyoked  :18   DG :32   Length:88         
+    ##  Class :character   standard\ntrained:18   CA3:26   Class :character  
+    ##  Mode  :character   conflict\nyoked  :24   CA1:30   Mode  :character  
+    ##                     conflict\ntrained:28                              
+    ##                                                                       
+    ##                                                                       
+    ##  QualityFiltered      Dups              GC             Length   
+    ##  No :88          Min.   :0.4700   Min.   :0.4400   Min.   :150  
+    ##  Yes: 0          1st Qu.:0.6400   1st Qu.:0.4700   1st Qu.:150  
+    ##                  Median :0.7300   Median :0.4800   Median :150  
+    ##                  Mean   :0.7326   Mean   :0.4782   Mean   :150  
+    ##                  3rd Qu.:0.8400   3rd Qu.:0.4900   3rd Qu.:150  
+    ##                  Max.   :0.9600   Max.   :0.5400   Max.   :150  
+    ##   MillionReads             QC           bp          fracalign    
+    ##  Min.   : 1.800   filtertrim: 0   Min.   :161.4   Min.   :0.050  
+    ##  1st Qu.: 3.750   raw       :88   1st Qu.:196.7   1st Qu.:0.250  
+    ##  Median : 5.250                   Median :198.9   Median :0.480  
+    ##  Mean   : 6.900                   Mean   :198.6   Mean   :0.428  
+    ##  3rd Qu.: 7.425                   3rd Qu.:201.3   3rd Qu.:0.620  
+    ##  Max.   :37.900                   Max.   :214.8   Max.   :0.690  
+    ##    millalign     
+    ##  Min.   : 0.100  
+    ##  1st Qu.: 1.275  
+    ##  Median : 2.200  
+    ##  Mean   : 2.584  
+    ##  3rd Qu.: 3.400  
+    ##  Max.   :12.100
+
+    mean(multiqc$MillionReads)
+
+    ## [1] 6.9
+
+    sd(multiqc$MillionReads)
+
+    ## [1] 6.345059
+
+    mean(multiqc$millalign)
+
+    ## [1] 2.584091
+
+    sd(multiqc$millalign)
+
+    ## [1] 2.102647
+
+    mean(multiqc$fracalign)
+
+    ## [1] 0.4279545
+
+    sd(multiqc$fracalign)
+
+    ## [1] 0.2093842
+
+    summary(aov(MillionReads ~ treatment, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## treatment    3    179   59.55   1.505  0.219
+    ## Residuals   84   3324   39.57
+
+    summary(aov(millalign ~ treatment, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## treatment    3   31.8    10.6   2.524 0.0631 .
+    ## Residuals   84  352.8     4.2                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(fracalign ~ treatment, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## treatment    3  0.300 0.10003   2.391 0.0744 .
+    ## Residuals   84  3.514 0.04183                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    a <- ggplot(multiqc, aes(x = subfield, y = MillionReads, color = subfield)) +
+      geom_boxplot() + geom_point() +
+      scale_color_manual(values = colorvalsubfield) +  
+      #facet_wrap(~subfield, nrow = 3) +
+      labs(y = "Total Reads (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+
+    b <- ggplot(multiqc, aes(x = subfield, y = millalign, color = subfield)) +
+      geom_boxplot() + geom_point() +
+      scale_color_manual(values = colorvalsubfield) +  
+      labs(y = "Pseudo-aligned Reads (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+    c <- ggplot(multiqc, aes(x = subfield, y = fracalign, color = subfield)) +
+             geom_boxplot() + geom_point() +
+      scale_color_manual(values = colorvalsubfield) +  
+      labs(y = "Fraction aligned (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+
+    plot_grid( a, b , c , 
+              labels = c( "(a)", "(b)", "(c)"),
+              label_size = 8, nrow = 1)
 
 ![](../figures/02g_MultiQC/multiqc-2.png)
 
-    boxplot(multiqc$MillionReads ~ multiqc$QualityFiltered,
-            names = c("Before", "After"),
-            main = "Million reads per sample",
-            xlab = "Samples before and after quality control",
-            ylab = "Million reads per sample",
-            ylim = c(0,40))
+    summary(aov(MillionReads ~ subfield, multiqc))
 
-![](../figures/02g_MultiQC/multiqc-3.png)
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## subfield     2    228  113.78   2.953 0.0576 .
+    ## Residuals   85   3275   38.53                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-    boxplot(multiqc$Length ~ multiqc$QualityFiltered,
-            names = c("Before", "After"),
-            main = "Read Lenght",
-            xlab = "Samples before and after quality control",
-            ylab = "Read Length (bp)")
+    summary(aov(millalign ~ subfield, multiqc))
 
-![](../figures/02g_MultiQC/multiqc-4.png)
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## subfield     2    8.1   4.034   0.911  0.406
+    ## Residuals   85  376.6   4.430
 
-    multiqc <- read.csv(file = "../data/multiqc/multiqc_report_0204.csv")
-    summary(multiqc)
+    summary(aov(fracalign ~ subfield, multiqc))
 
-    ##                   sample         bp          fracalign     
-    ##  142C_CA1_S_S19_L003_: 2   Min.   :160.8   Min.   :0.0500  
-    ##  142C_DG_S_S21_L003_ : 2   1st Qu.:196.6   1st Qu.:0.3200  
-    ##  143A_CA3_1_S35_L002_: 2   Median :200.2   Median :0.5800  
-    ##  143A_DG_1_S36_L002_ : 2   Mean   :200.0   Mean   :0.5062  
-    ##  143B_CA1_1_S37_L002_: 2   3rd Qu.:202.6   3rd Qu.:0.6925  
-    ##  143B_DG_1_S38_L002_ : 2   Max.   :220.5   Max.   :0.8300  
-    ##  (Other)             :96                                   
-    ##    millalign               QC    
-    ##  Min.   : 0.000   filtertrim:54  
-    ##  1st Qu.: 0.000   raw       :54  
-    ##  Median : 0.150                  
-    ##  Mean   : 1.333                  
-    ##  3rd Qu.: 2.225                  
-    ##  Max.   :12.100                  
-    ## 
-
-    multiqc$QC <- factor(multiqc$QC, levels = c("raw" ,"filtertrim"))
-    before <- multiqc[multiqc$QC == "raw",]
-    after <- multiqc[multiqc$QC == "filtertrim",]
-    summary(before$millalign)
-
-    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##   0.100   1.225   2.250   2.656   3.475  12.100
-
-    summary(after$millalign)
-
-    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ## 0.00000 0.00000 0.00000 0.01111 0.00000 0.20000
-
-    boxplot(multiqc$millalign ~ multiqc$QC,
-            names = c("Raw reads", "Filtered & trimmed reads"),
-            main = "Millions of Reads Aligned",
-            xlab = "Samples before and after quality control",
-            ylab = "Millions of Reads Aligned",
-            ylim = c(-2,12))
-
-![](../figures/02g_MultiQC/multiqc-5.png)
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## subfield     2  0.039 0.01943   0.438  0.647
+    ## Residuals   85  3.775 0.04442

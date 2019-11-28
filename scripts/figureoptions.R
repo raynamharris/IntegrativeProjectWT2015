@@ -34,6 +34,8 @@ levelsTrials <- c("Hab", "T1" , "T2", "T3" ,
                   "Retest" , "T4_C1" , "T5_C2" ,
                   "T6_C3" , "Retention" )
 
+levelssubfield <- c("DG", "CA3", "CA1")
+
 # for beahvior and physiology
 
 colorvalAPA00 <-  c( "#404040","#ca0020", "#969696", "#f4a582")
@@ -90,6 +92,9 @@ trainedcolors <-  c( "standard.yoked" = "#404040", "standard.trained" = "#ca0020
 conflictcolors <- c("conflict.yoked" = "#969696","conflict.trained" = "#f4a582")
 treatmentcolors <- c( "standard.yoked" = "#404040", "standard.trained" = "#ca0020",
                       "conflict.yoked" = "#969696","conflict.trained" = "#f4a582")
+treatmentcolors2 <- c( "standard\nyoked" = "#404040", "standard\ntrained" = "#ca0020",
+                      "conflict\nyoked" = "#969696","conflict\ntrained" = "#f4a582")
+
 
 
 volcano1 <-  c("standard.trained" = "#ca0020",
