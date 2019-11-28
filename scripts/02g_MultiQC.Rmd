@@ -12,7 +12,7 @@ knitr::opts_chunk$set(fig.path = '../figures/02g_MultiQC/')
 
 
 ```{r multiqc}
-multiqc <- read.csv(file = "../data/multiqc_report.csv")
+multiqc <- read.csv(file = "../data/multiqc/multiqc_report.csv")
 summary(multiqc)
 before <- multiqc[multiqc$QualityFiltered == "No",]
 after <- multiqc[multiqc$QualityFiltered == "Yes",]
@@ -34,7 +34,7 @@ boxplot(multiqc$Length ~ multiqc$QualityFiltered,
         xlab = "Samples before and after quality control",
         ylab = "Read Length (bp)")
 
-multiqc <- read.csv(file = "../data/multiqc_report_0204.csv")
+multiqc <- read.csv(file = "../data/multiqc/multiqc_report_0204.csv")
 summary(multiqc)
 multiqc$QC <- factor(multiqc$QC, levels = c("raw" ,"filtertrim"))
 before <- multiqc[multiqc$QC == "raw",]

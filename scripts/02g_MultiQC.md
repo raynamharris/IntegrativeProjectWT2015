@@ -1,4 +1,4 @@
-    multiqc <- read.csv(file = "../data/multiqc_report.csv")
+    multiqc <- read.csv(file = "../data/multiqc/multiqc_report.csv")
     summary(multiqc)
 
     ##                      Sample.Name       Dups              GC        
@@ -57,7 +57,7 @@
 
 ![](../figures/02g_MultiQC/multiqc-4.png)
 
-    multiqc <- read.csv(file = "../data/multiqc_report_0204.csv")
+    multiqc <- read.csv(file = "../data/multiqc/multiqc_report_0204.csv")
     summary(multiqc)
 
     ##                   sample         bp          fracalign     
