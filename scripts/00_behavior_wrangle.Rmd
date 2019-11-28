@@ -37,7 +37,6 @@ behav <- read_csv("../data/00_Data2013_2016_forAnalysis.csv", col_types = mycols
 behav <- as.data.frame(behav)
 names(behav)
 
-
 # remove some columns that are not behavioral measures
 columnstoremove <- c("PolarAvgVal" , "PolarSdVal", "PolarMinVal" ,
                      "PolarMinBin", "Max50%RngLoBin", "Min50%RngHiBin" , 
@@ -58,11 +57,11 @@ names(behav)[names(behav)=="Speed (Arena)"] <- "SpeedArena.cm.s"
 # keep only 2015 animals and remove unnecessary columns
 behav <- behav %>% dplyr::filter(Year == "2015") %>% 
                    dplyr::select(-columnstoremove) %>% 
-                   dplyr::mutate(ShockPerEntrance = NumShock / NumEntrances) %>% 
+                   
                   droplevels()
 
 # check which measures are included
-measures <- behav %>% select(`TotalPath(Arena)`:ShockPerEntrance)
+measures <- behav %>% select(`TotalPath(Arena)`:AnnularKurtosis)
 names(measures)
 
 # make new factors
@@ -94,11 +93,45 @@ behav$trialNum <- as.numeric(behav$trial)
 
 behav <- behav %>%  dplyr::select(ID,Day,treatment, training,trial,
                                  trialNum, ShockOnOff, PairedPartner,
-                                 `TotalPath(Arena)`:ShockPerEntrance) %>%
+                                 `TotalPath(Arena)`:AnnularKurtosis) %>%
                     dplyr::arrange(ID)
 
 head(behav)
 
+
+## Fix the NumShocks problem but it doesn't know the the yoked got shocked when the trained got shocked rather than they enterer the shock zone.
+# Steps:
+# 1. Create a "shocks1" df that have only ID, PairedPartner, training, trialNum, NumShock, ShockOnOff
+# 2. Separate the tarined and yoked mice into two dataframes, relabel columsn so the two dfs can be rejoined
+# 3. Creat a "shocks2" df by join the two dataframes and replace all NumShock value for all the yoked animals, and set it to 0 when shock is off
+# 4. Sparate the trained and yoked again and rename so they can be join into a final "shocks3" datafram by 
+# 5. Join the behavior data with the new shocks data. Replace old NumShock with new NumShock
+
+shocks1 <- behav %>% select(ID, PairedPartner, training, trialNum, NumShock, ShockOnOff) 
+
+trained <- shocks1 %>% filter(training == "trained") %>% 
+  rename(trained = ID, yoked = PairedPartner, ttraining = training,  tNumShock = NumShock)
+yoked <- shocks1 %>% filter(training == "yoked") %>% 
+  rename(yoked = ID, trained = PairedPartner, ytraining = training, yNumShock = NumShock)
+
+shocks2 <- full_join(trained,yoked) %>% select(trained, yoked, ShockOnOff, trialNum, tNumShock) 
+shocks2$tNumShock <- ifelse(shocks2$ShockOnOff == "Off", 0, shocks2$tNumShock )
+
+trained <- shocks2 %>% select(trained, trialNum, tNumShock) %>% rename(ID = trained )
+yoked <- shocks2 %>% select(yoked, trialNum, tNumShock) %>% rename(ID = yoked )
+shocks3 <- rbind(trained, yoked)
+
+behav <- full_join(behav, shocks3) %>% mutate(NumShock = tNumShock) %>% select(-tNumShock)
+
+# add new measure 
+behav <- behav %>%  mutate(ShockPerEntrance = NumShock / NumEntrances) %>%  
+  mutate(ShockPerEntrance = ifelse(is.na(ShockPerEntrance), 0, ShockPerEntrance))
+
+```
+
+
+
+```{r}
 write.csv(behav, "../data/00_behaviordata.csv", row.names = F)
 ```
 

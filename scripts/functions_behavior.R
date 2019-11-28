@@ -12,7 +12,8 @@ makepcadf <- function(data){
   scoresdf$ID <-  data$ID
   scoresdf$treatment <- data$treatment
   scoresdf$trialNum <- data$trialNum
-  scoresdf <- scoresdf %>% select(ID, treatment,trialNum, PC1:PC10)
+  scoresdf$Day <- data$Day
+  scoresdf <- scoresdf %>% select(ID, treatment, trialNum, Day, PC1:PC10)
   return(scoresdf)
 }
 
@@ -32,7 +33,7 @@ meansdplots <- function(df, myylab, ybreaks, ylims){
                    aes(x=, trialNum, y=m, color=treatment)) + 
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=treatment), width=.1) +
     geom_line() +
-    geom_point(size = 1.5, aes(alpha = trialNum)) +
+    geom_point(size = 1.5) +
     labs(subtitle = " ") +
     scale_y_continuous(name= myylab,
                        breaks = ybreaks,
@@ -41,9 +42,7 @@ meansdplots <- function(df, myylab, ybreaks, ylims){
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels = c( "P", "T1", "T2", "T3",
                                    "Rt", "T4", "T5", "T6", "Rn")) +
-    scale_alpha_continuous( breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                            labels = c( "P", "T1", "T2", "T3",
-                                        "Rt", "T4", "T5", "T6", "Rn")) +
+    scale_alpha_continuous( breaks = c(1, 2, 3)) +
     theme_ms() +
     scale_color_manual(values = colorvalAPA00,
                        name  = NULL)  +

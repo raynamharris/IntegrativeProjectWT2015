@@ -16,6 +16,9 @@ library(factoextra)  ## pca with vectors
 library(FactoMineR) # more pca
 library(apaTables) #  for ANOVA tables
 
+library(png) # for ading images to plots
+library(grid)  # for ading images to plots
+
 ## load user-written functions 
 source("functions_behavior.R")
 source("figureoptions.R")
@@ -47,114 +50,108 @@ head(behavior)
 names(behavior[9:34])
 ```
 
-
-## Number of shocks
-
-The values in the column "NumShock" are actually measures of the number of entraces into the shock zone. Because, that's what the software records. For standard.trained and conflict.trained animals, the number of shocks equals equals the number of entraces. However, for yoked individuals, the number of entrances does not equal the number of shocks. For them, the number of shocks is equal to their standard.trained or conflict.trained trained partner. 
-
-```{r shockentrplot, width=3.5, height=2.45}
-# supset beahvior to keep only factors and num shocks
-numshocks <- behavior %>%
-  select(ID, trial, treatment, NumShock) 
-
-# widen datafram, and sum total
-numshocks <- spread(numshocks, key=trial, value= NumShock)
-numshocks$sums <- rowSums(numshocks[sapply(numshocks, is.numeric)])
-head(numshocks)
-
-grouped <- numshocks %>% group_by(treatment)
-summarise(grouped, mean=mean(sums), sd=sd(sums))
+```{r experimentaldesign, fig.height = 2.4, fig.width = 6.69}
+dfshocks <- behavior %>%
+  dplyr::group_by(treatment, trialNum) %>%
+  dplyr::summarise(m = mean(NumShock), 
+                   se = sd(NumShock)/sqrt(length(NumShock))) %>%
+  dplyr::mutate(m = round(m,0)) %>%
+  dplyr::mutate(measure = "NumShock")
+dfshocks
 
 
-# delete values for yoked animals
-numshocks <- numshocks %>%
-  filter(treatment %in% c("standard.trained", "conflict.trained")) %>%
-  droplevels()
+numshocks <- ggplot(dfshocks,  aes(x=, trialNum, y=m, color=treatment, label = m)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=treatment), width=.1) +
+    geom_line() +
+    geom_point(size = 1.5) +
+    labs(y = "NumShocks") +
+    scale_x_continuous(name= "trial", 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels = c( "P", "T1", "T2", "T3",
+                                   "Rt", "T4", "T5", "T6", "Rn")) +
+    scale_alpha_continuous( breaks = c(1, 2, 3)) +
+    theme_ms() +
+    scale_color_manual(values = colorvalAPA00,
+                       name  = NULL)  +
+    theme(legend.position = "none",
+          legend.justification=c(0,0),
+          legend.text=element_text(size=5),
+          strip.text = element_blank(),
+          axis.text.y = element_blank()) +
+  facet_wrap(~treatment, nrow = 4) +
+  scale_y_continuous(breaks = c(0,10,20), limits = c(0,30)) +
+  geom_text(vjust= -1, size=2.5)
 
-# create a tempdataframe with dupclicate values for yoked
-numshockstemp <- numshocks
-levels(numshockstemp$treatment) 
-levels(numshockstemp$treatment) <- c("standard.yoked","conflict.yoked")
-levels(numshockstemp$treatment) 
+numshocks
 
-# combine the two and plot
+paradigm <- png::readPNG("../figures/00_schematics/figure_1a.png")
+paradigm <- ggdraw() +  draw_image(paradigm, scale = 1)
 
-realnumshocks <- rbind(numshocks, numshockstemp)
-levels(realnumshocks$treatment) 
+subfields <- png::readPNG("../figures/00_schematics/figure_1c.png")
+subfields <- ggdraw() +  draw_image(subfields, scale = 1)
 
-realnumshocks$treatment <- factor(realnumshocks$treatment, levels = c("standard.yoked", "standard.trained", "conflict.yoked", "conflict.trained"))
-levels(realnumshocks$treatment) <- c("standard\nyoked", "standard\ntrained", "conflict\nyoked", "conflict\ntrained")
 
-head(realnumshocks)
-realnumshocks %>%
-  dplyr::group_by(treatment) %>%
-  dplyr::summarise(meanshocks = mean(sums, na.rm = TRUE))
+experimentaldesign <- plot_grid(paradigm, numshocks, subfields, rel_widths = c(2,1,0.8), nrow = 1,
+          label_size = 8, labels = c("(a)", "(b) ", "(c)"))
+experimentaldesign
 
-# define what levels to compare for stats
 
-a <- ggplot(realnumshocks, aes(x = treatment, y = sums, color = treatment)) +
-  geom_boxplot() +
-  geom_point(size = 0.75) +
-  theme_ms() +
-  scale_color_manual(values = colorvalAPA00,
-                    name = NULL) +
-  labs(x = "treatment", subtitle = " ", y = "Total Shocks") +
-    theme(axis.text.x=element_text(angle=60, vjust = 1, hjust = 1),
-          legend.position = "none") 
-a
+pdf(file="../figures/01_behavior/experimentaldesign.pdf", width=6.69, height=2.4)
+plot(experimentaldesign)
+dev.off()
+
+pdf(file="../figures/figure_1.pdf", width=6.69, height=2.4)
+plot(experimentaldesign)
+dev.off()
 ```
 
-# Vizualizing Mean and Standard error for num entrace and time 1st entrance
+# Vizualizing Mean and Standard error for avoidance behaviors
 
 To make the point and line graphs, I must create and join some data frames, then I have a function that makes four plots with specific titles, y labels and limits.
 
 ```{r behavmeanstdev}
-dfb <- behavior %>%
+dfa <- behavior %>%
   dplyr::group_by(treatment, trialNum) %>%
   dplyr::summarise(m = mean(NumEntrances), 
                    se = sd(NumEntrances)/sqrt(length(NumEntrances))) %>%
-  dplyr::mutate(measure = "Number of target zone entrances")
+  dplyr::mutate(measure = "NumEntrances")
 
-dfc <- behavior %>%
+dfb <- behavior %>%
   dplyr::group_by(treatment, trialNum) %>%
   dplyr::mutate(minutes = Time1stEntr/60) %>%
   dplyr::summarise(m = mean(minutes), 
                    se = sd(minutes)/sqrt(length(minutes))) %>%
-  dplyr::mutate(measure = "Time to 1st target zone entrance (min)")
+  dplyr::mutate(measure = "Time1stEntr.min")
 
-dfd <- behavior %>%
+dfc <- behavior %>%
   dplyr::group_by(treatment, trialNum) %>%
   dplyr::summarise(m = mean(pTimeShockZone), 
                    se = sd(pTimeShockZone)/sqrt(length(pTimeShockZone))) %>%
-  dplyr::mutate(measure = "Proportion of time in target zone")
+  dplyr::mutate(measure = "pTimeShockZone")
 
-dfa <- behavior %>%
-  dplyr::group_by(treatment, trialNum) %>%
-  dplyr::summarise(m = mean(Entr.Dist.1.m.), 
-                   se = sd(Entr.Dist.1.m.)/sqrt(length(Entr.Dist.1.m.))) %>%
-  dplyr::mutate(measure = "Entrance / Distance")
 
 # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
 
 
-fourmeasures <- rbind(dfb,dfc,dfd)
-head(fourmeasures)
+avoidancedf <- rbind(dfa, dfb,dfc)
+head(avoidancedf)
 
-b <- meansdplots(dfb, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) 
-c <- meansdplots(dfd, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
-d <- meansdplots(dfc, "Time1stEntr.m (min)",  c(0,2,4,6,8), c(0, 8))
+a <- meansdplots(dfa, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) 
+b <- meansdplots(dfb, "Time1stEntr.min",  c(0,2,4,6,8), c(0, 8))
+c <- meansdplots(dfc, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
 
+a
 b
 c
-d
 
-fourplots <- plot_grid(a + theme(legend.position = "none"),
-                       b + theme(legend.position = "none"),
-                       c + theme(legend.position = "none"), 
-                       d + theme(legend.position = "none"), nrow = 1,
+
+avoidancebehaviors <- plot_grid(a + theme(legend.position = "none"),
+                       b + theme(legend.position = "none"), 
+                       c + theme(legend.position = "none"), nrow = 1,
                        label_size = 8,
-                       labels = c("(a)", "(b)", "(c)", "(d)"))
-fourplots
+                       labels = c("(a)", "(b)", "(c)"))
+avoidancebehaviors
+
 ```
 
 
@@ -178,20 +175,19 @@ pca.Rn.summary <- pca.all %>% filter(trialNum == 9) %>%
                    sePC2 = sd(PC2)/sqrt(length(PC2)))
 
 
-e <- ggplot(pca.all, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
+d <- ggplot(pca.all, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
 
-  geom_point(data = pca.all, aes(alpha = trialNum)) + 
+  geom_point(data = pca.all, aes(alpha = Day)) + 
   geom_point(data = pca.Rn.summary, aes(x = avePC1, y = avePC2), size = 4) +
   theme_ms() +
     scale_fill_manual(guide = 'none',values = colorvalAPA00) +
   scale_color_manual(guide = 'none',values = colorvalAPA00) +
-  scale_alpha_continuous( breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                       labels = c( "P", "T1", "T2", "T3",
-                                   "Rt", "T4", "T5", "T6", "Rn")) +
+  scale_alpha_continuous(breaks = c(1, 2, 3)) +
   theme(legend.position = "none") +
-  labs(y = "PC2: 16.7% \n variance explained", x = "PC1: 41.3% variance explained",
+  labs( x = "PC1: 38.3% variance explained",
+        y = "PC2: 16.7% \n variance explained",
        subtitle = " ") 
-e
+d
 
 # get contributions
 df <- behavior %>% select(TotalPath.Arena.:AnnularKurtosis)
@@ -201,30 +197,33 @@ fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))
 
 
 # Contributions of variables to PC1
-f <- fviz_contrib_rmh(res.pca, choice = "var", axes = 1, top = 8, 
-                 ylab = "PC1 % contributions", xlab = "estimates of memory", subtitle = " ") +
+e <- fviz_contrib_rmh(res.pca, choice = "var", axes = 1, top = 8, 
+                 ylab = "PC1 % contrib.", xlab = "estimates of memory", subtitle = " ") +
   theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
 # Contributions of variables to PC2
-g <- fviz_contrib_rmh(res.pca, choice = "var", axes = 2, top = 8, 
-                 ylab = "PC2 % contributions" , xlab = "estimates of activity", subtitle = " ") +
+f <- fviz_contrib_rmh(res.pca, choice = "var", axes = 2, top = 8, 
+                 ylab = "PC2 % contrib." , xlab = "estimates of activity", subtitle = " ") +
   theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
 
+e
 f
-g
 
-threeplots <- plot_grid(e,f,g, labels = c("(e)", "(f)", "(g)"),
+pcaplots <- plot_grid(d,e,f, labels = c("(d)", "(e)", "(f)"),
            nrow = 1,
-           label_size = 8,
-          rel_widths = c(0.5,0.25,0.25))
-threeplots
+           label_size = 8)
+pcaplots
 ```
 
-```{r behaviorfig, fig.width=7,fig.height=3.5}
-behaviorfig <- plot_grid(fourplots, threeplots, nrow = 2)
-behaviorfig
+```{r avoidance, fig.width=6.69,fig.height=3.5}
+avoidance <- plot_grid(avoidancebehaviors, pcaplots, nrow = 2)
+avoidance
 
-pdf(file="../figures/01_behavior/behaviorfig.pdf", width=7, height=3.5)
-plot(behaviorfig)
+pdf(file="../figures/01_behavior/avoidance.pdf", width=6.69, height=3.5)
+plot(avoidance)
+dev.off()
+
+pdf(file="../figures/figure_2.pdf", width=6.69, height=3.5)
+plot(avoidance)
 dev.off()
 ```
 
@@ -363,15 +362,19 @@ Q12345
 ## save files
 
 ```{r writefiles}
+# supp table 1
 write.csv(behavior, file = "../data/01a_behavior.csv", row.names = FALSE)
+
+# supp table 2
+write.csv(avoidancedf, file = "../data/01a_avoidance.csv", row.names = FALSE)
+
+# table 1
+write.csv(Q12345, "../data/01a_APA.csv", row.names = F)
+
+# unsure wether/how to include
 write.csv(pca.all, file = "../data/01a_pca.all.csv", row.names = FALSE)
 write.csv(pca.Rn.summary, file = "../data/01a_pca.Rn.summary.csv", row.names = FALSE)
 write.csv(pca.Rn, file = "../data/01a_pca.Rn.csv", row.names = FALSE)
-
-write.csv(realnumshocks, file = "../data/01a_realnumshocks.csv", row.names = FALSE)
-write.csv(fourmeasures, file = "../data/01a_fourmeasures.csv", row.names = FALSE)
-
-write.csv(Q12345, "../data/01a_APA.csv", row.names = F)
 ```
 
 

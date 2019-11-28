@@ -82,11 +82,11 @@
     # keep only 2015 animals and remove unnecessary columns
     behav <- behav %>% dplyr::filter(Year == "2015") %>% 
                        dplyr::select(-columnstoremove) %>% 
-                       dplyr::mutate(ShockPerEntrance = NumShock / NumEntrances) %>% 
+                       
                       droplevels()
 
     # check which measures are included
-    measures <- behav %>% select(`TotalPath(Arena)`:ShockPerEntrance)
+    measures <- behav %>% select(`TotalPath(Arena)`:AnnularKurtosis)
     names(measures)
 
     ##  [1] "TotalPath(Arena)"   "SpeedArena.cm.s"    "sd Speed(Arena)"   
@@ -97,7 +97,7 @@
     ## [16] "TimeShockZone"      "pTimeShockZone"     "pTimeCCW"          
     ## [19] "pTimeOPP"           "pTimeCW"            "RayleigLength"     
     ## [22] "RayleigAngle"       "Min50%RngLoBin"     "AnnularSkewnes"    
-    ## [25] "AnnularKurtosis"    "ShockPerEntrance"
+    ## [25] "AnnularKurtosis"
 
     # make new factors
     behav <- behav %>%
@@ -128,7 +128,7 @@
 
     behav <- behav %>%  dplyr::select(ID,Day,treatment, training,trial,
                                      trialNum, ShockOnOff, PairedPartner,
-                                     `TotalPath(Arena)`:ShockPerEntrance) %>%
+                                     `TotalPath(Arena)`:AnnularKurtosis) %>%
                         dplyr::arrange(ID)
 
     head(behav)
@@ -175,12 +175,45 @@
     ## 4  0.0123          0.80       128.39            150           2.84
     ## 5  0.0729          0.72       159.36            170           2.42
     ## 6  0.7905          0.67       257.90            280           0.98
-    ##   AnnularKurtosis ShockPerEntrance
-    ## 1            3.13         1.857143
-    ## 2            6.70         1.166667
-    ## 3            8.91         1.500000
-    ## 4           12.51         1.000000
-    ## 5           11.83         1.000000
-    ## 6            4.65         1.300000
+    ##   AnnularKurtosis
+    ## 1            3.13
+    ## 2            6.70
+    ## 3            8.91
+    ## 4           12.51
+    ## 5           11.83
+    ## 6            4.65
+
+    ## Fix the NumShocks problem but it doesn't know the the yoked got shocked when the trained got shocked rather than they enterer the shock zone.
+    # Steps:
+    # 1. Create a "shocks1" df that have only ID, PairedPartner, training, trialNum, NumShock, ShockOnOff
+    # 2. Separate the tarined and yoked mice into two dataframes, relabel columsn so the two dfs can be rejoined
+    # 3. Creat a "shocks2" df by join the two dataframes and replace all NumShock value for all the yoked animals, and set it to 0 when shock is off
+    # 4. Sparate the trained and yoked again and rename so they can be join into a final "shocks3" datafram by 
+    # 5. Join the behavior data with the new shocks data. Replace old NumShock with new NumShock
+
+    shocks1 <- behav %>% select(ID, PairedPartner, training, trialNum, NumShock, ShockOnOff) 
+
+    trained <- shocks1 %>% filter(training == "trained") %>% 
+      rename(trained = ID, yoked = PairedPartner, ttraining = training,  tNumShock = NumShock)
+    yoked <- shocks1 %>% filter(training == "yoked") %>% 
+      rename(yoked = ID, trained = PairedPartner, ytraining = training, yNumShock = NumShock)
+
+    shocks2 <- full_join(trained,yoked) %>% select(trained, yoked, ShockOnOff, trialNum, tNumShock) 
+
+    ## Joining, by = c("trained", "yoked", "trialNum", "ShockOnOff")
+
+    shocks2$tNumShock <- ifelse(shocks2$ShockOnOff == "Off", 0, shocks2$tNumShock )
+
+    trained <- shocks2 %>% select(trained, trialNum, tNumShock) %>% rename(ID = trained )
+    yoked <- shocks2 %>% select(yoked, trialNum, tNumShock) %>% rename(ID = yoked )
+    shocks3 <- rbind(trained, yoked)
+
+    behav <- full_join(behav, shocks3) %>% mutate(NumShock = tNumShock) %>% select(-tNumShock)
+
+    ## Joining, by = c("ID", "trialNum")
+
+    # add new measure 
+    behav <- behav %>%  mutate(ShockPerEntrance = NumShock / NumEntrances) %>%  
+      mutate(ShockPerEntrance = ifelse(is.na(ShockPerEntrance), 0, ShockPerEntrance))
 
     write.csv(behav, "../data/00_behaviordata.csv", row.names = F)
