@@ -107,7 +107,7 @@ rowsum$sample <- row.names(rowsum)
 ggplot(rowsum, aes(x=millioncounts)) + 
   geom_histogram(binwidth = 1, colour = "black", fill = "darkgrey") +
   theme_classic() +
-  scale_x_continuous(name = "Millions of Gene Counts per Sample") +
+  scale_x_continuous(name = "Millions of Counts per Sample") +
   scale_y_continuous(name = "Number of Samples")
 ```
 
