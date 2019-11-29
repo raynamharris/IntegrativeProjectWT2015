@@ -39,6 +39,7 @@ This workflow below describes the order in which scripts are used to process and
 	  - [UNIXworkflow/02_filtrimreads](UNIXworkflow/02_filtrimreads.md): Filter low quality reads and trim adapters using the program cutadapt.
   	- [UNIXworkflow/03_fastqc](UNIXworkflow/03_fastqc.md): Evaluate the quality of the processed reads
 	  - [UNIXworkflow04_kallisto](UNIXworkflow04_kallisto.md): Quantify transcript-level expression using Kallisto
+	 
   - **R-based**
 	  - [scripts/00_rnaseq_wrangle](scripts/00_rnaseq_wrangle.md): converting the kallisto transcript counts to gene counts 
 	  - [scripts/02_rnaseqQC](scripts/02_rnaseqQC.md): analyzing all the RNA-seq data together
