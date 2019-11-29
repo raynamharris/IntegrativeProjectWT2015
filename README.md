@@ -49,8 +49,13 @@ This workflow below describes the order in which scripts are used to process and
 
 ### Figure 2
 
-
 ![](./figures/01_behavior/avoidance-1.png)
+
+### Table 1
+
+```{r}
+
+```
 
 ### Figure 3
 
