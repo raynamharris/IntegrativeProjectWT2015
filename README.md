@@ -1,4 +1,4 @@
-[![Binder](http://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/raynamharris/IntegrativeProjectWT2015/master)
+[![Binder](http://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/raynamharris/IntegrativeProjectWT2015/master?urlpath=rstudio)
 *Click the button to launch a Binder R session. Navigate to the
 `scripts` directory and open any `.Rmd` file.*
 
