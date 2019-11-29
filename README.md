@@ -31,9 +31,9 @@ integrate across all three levels of analysis.
 
 -   **Part 1: Behavioral analysis**
     -   [scripts/00\_behavior\_wrangle](scripts/00_behavior_wrangle.md):
-        behavior data wrangling,
-        -   [scripts/01\_behavior\_analysis](scripts/01_behavior_analysis.md):
-            behavior statistics and data visualization
+        behavior data wrangling
+    -   [scripts/01\_behavior\_analysis](scripts/01_behavior_analysis.md):
+        behavior statistics and data visualization
 -   **Part 2: RNA sequencing analysis**
     -   **UNIX-based**
         -   [UNIXworkflow/00\_rawdata](UNIXworkflow/00_rawdata.md):

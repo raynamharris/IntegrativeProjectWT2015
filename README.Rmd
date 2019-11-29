@@ -30,8 +30,8 @@ This project is organized into five main subdirectories:
 This workflow below describes the order in which scripts are used to process and analyze behavioral data (part 1), RNA-seq data (part 2), electrophysiology data (part 3). Finally, the last step (part 4) was to integrate across all three levels of analysis. 
 
 - **Part 1: Behavioral analysis**	
-  - [scripts/00_behavior_wrangle](scripts/00_behavior_wrangle.md): behavior data wrangling,
-	- [scripts/01_behavior_analysis](scripts/01_behavior_analysis.md): behavior statistics and data visualization
+    - [scripts/00_behavior_wrangle](scripts/00_behavior_wrangle.md): behavior data wrangling
+    - [scripts/01_behavior_analysis](scripts/01_behavior_analysis.md): behavior statistics and data visualization
 - **Part 2: RNA sequencing analysis**
   - **UNIX-based**
 	  - [UNIXworkflow/00_rawdata](UNIXworkflow/00_rawdata.md): Download the data to scratch on Stampede with `00_gsaf_download.sh`. 
