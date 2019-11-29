@@ -3,23 +3,11 @@ title: "02b_rnaseq_All"
 output: md_document
 ---
 
-The figures made from this script were compiled in Adobe.
-
-<img src="../figures/figures-02.png" width="1370" />
 
 ```{r setup, message=F, warning=F}
 library(tidyverse)
 library(cowplot) ## for some easy to use themes
-library(pheatmap) ## awesome heatmaps
-library(viridis) # for awesome color pallette
-library(reshape2) ## for melting dataframe
 library(DESeq2) ## for gene expression analysis
-library(edgeR)  ## for basic read counts status
-library(magrittr) ## to use the weird pipe
-library(ggrepel) ## for labeling volcano plot
-library(stringr) ## for uppercase gene names
-library(car) # stats
-library(RColorBrewer)  # colors
 library(Rtsne) # for tSNE
 
 library(BiocParallel)
@@ -30,10 +18,98 @@ source("figureoptions.R")
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = F)
+knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = T)
 ```
 
-## Design
+
+# Quality control
+
+## MultiQC
+
+
+```{r multiqc, fig.width = 6.69, fig.height = 2.4}
+# read meta data for plotting
+colData <- read.csv("../data/02a_colData.csv")
+sampletreatment <- colData %>% select(RNAseqID, treatment)  
+
+# stats from fastqc 
+fastqc <- read.csv(file = "../data/multiqc/multiqc_fastqc.csv")
+fastqc$read <- ifelse(grepl("R1", fastqc$Sample.Name), "R1", "R2")  # make read columns
+fastqc$mouse <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 1)
+fastqc$subfield <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 2)
+fastqc$section <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 3)
+fastqc$RNAseqID <- paste(fastqc$mouse, fastqc$subfield, fastqc$section, sep = "-")
+fastqc <- left_join(sampletreatment,fastqc) %>% 
+  select(RNAseqID, treatment, subfield, read, QualityFiltered, Dups, GC, Length, MillionReads)  %>% 
+  filter(QualityFiltered == "No")
+
+fastqc$treatment <- factor(fastqc$treatment, levels = levelstreatment)
+fastqc$subfield <- factor(fastqc$subfield, levels = levelssubfield)
+head(fastqc)
+
+# stats from kallisto
+kallisto <- read.csv(file = "../data/multiqc/multiqc_kallisto.csv")
+kallisto$mouse <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 1)
+kallisto$subfield <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 2)
+kallisto$section <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 3)
+kallisto$RNAseqID <- paste(kallisto$mouse, kallisto$subfield, kallisto$section, sep = "-")
+kallisto <- left_join(sampletreatment,kallisto) %>% 
+  select(RNAseqID, treatment, subfield, QC, bp, fracalign, millalign) %>% 
+  filter(QC == "raw")
+kallisto$treatment <- factor(kallisto$treatment, levels = levelstreatment)
+kallisto$subfield <- factor(kallisto$subfield, levels = levelssubfield)
+head(kallisto)
+
+multiqc <- left_join(fastqc, kallisto) 
+
+summary(multiqc)
+
+mean(multiqc$MillionReads)
+sd(multiqc$MillionReads)
+
+mean(multiqc$millalign)
+sd(multiqc$millalign)
+
+mean(multiqc$fracalign)
+sd(multiqc$fracalign)
+
+summary(aov(MillionReads ~ treatment, multiqc))
+summary(aov(millalign ~ treatment, multiqc))
+summary(aov(fracalign ~ treatment, multiqc))
+
+
+a <- ggplot(multiqc, aes(x = subfield, y = MillionReads, color = subfield)) +
+  geom_boxplot(outlier.size = 0.75) + geom_point(size = 0.75) +
+  scale_color_manual(values = colorvalsubfield) +  
+  #facet_wrap(~subfield, nrow = 3) +
+  labs(y = "Total Reads (millions)", x = NULL, subtitle = " ") +
+  theme_ms() + theme(legend.position = "none")
+
+
+b <- ggplot(multiqc, aes(x = subfield, y = millalign, color = subfield)) +
+  geom_boxplot() + geom_point(size = 0.5) +
+  scale_color_manual(values = colorvalsubfield) +  
+  labs(y = "Aligned Reads (millions)", x = NULL, subtitle = " ") +
+  theme_ms() + theme(legend.position = "none")
+
+c <- ggplot(multiqc, aes(x = subfield, y = fracalign, color = subfield)) +
+         geom_boxplot() + geom_point(size = 0.5) +
+  scale_color_manual(values = colorvalsubfield) +  
+  labs(y = "Fraction aligned (millions)", x = NULL, subtitle = " ") +
+  theme_ms() + theme(legend.position = "none")
+
+
+multiqcplots <- plot_grid( a, b , c , 
+          labels = c( "(a)", "(b)", "(c)"),
+          label_size = 8, nrow = 1)
+multiqcplots
+
+summary(aov(MillionReads ~ subfield, multiqc))
+summary(aov(millalign ~ subfield, multiqc))
+summary(aov(fracalign ~ subfield, multiqc))
+```
+
+## DESeq2
 
 The two two catagorical variables are
 
@@ -62,34 +138,8 @@ vsd <- vst(dds, blind=FALSE) ## variance stabilized
 head(assay(vsd),3)
 ```
 
-## check for outliers
 
-
-```{r outliers, fig.height=6}
-boxplot(log10(assays(dds)[["cooks"]]), range=0, las=2)
-plotDispEsts(dds)
-
-sampleDists <- dist(t(assay(vsd)))
-sampleDistMatrix <- as.matrix(sampleDists)
-
-rownames(sampleDistMatrix) <- paste(vsd$subfield, vsd$treatment, sep="-")
-colnames(sampleDistMatrix) <- NULL
-colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
-
-pheatmap(sampleDistMatrix,
-         clustering_distance_rows=sampleDists,
-         clustering_distance_cols=sampleDists,
-         col=colors, fontsize = 8)
-
-rownames(sampleDistMatrix) <- (vsd$RNAseqID)
-pheatmap(sampleDistMatrix,
-         clustering_distance_rows=sampleDists,
-         clustering_distance_cols=sampleDists,
-         col=colors, fontsize = 8)
-
-```
-
-## Summary 2 way contrasts
+### Summary DEGs
 
 This first function shows the total number of up and down regulated genes and the top 3 most significant genes.
 
@@ -113,84 +163,6 @@ res_summary(c("treatment", "conflict.trained", "standard.trained"))
 res_summary(c("treatment", "conflict.yoked", "standard.yoked"))
 ```
 
-This second function only prints the total number of DEGs, but it saves lots of useful info to a df for downstream dataviz.
-
-```{r heatmap_prep}
-# note: see resvals fucntion in `functions_RNAseq.R`
-
-contrast1 <- resvals(contrastvector = c("subfield", "CA1", "DG"), mypval = 0.1)  
-contrast2 <- resvals(contrastvector = c("subfield", "CA1", "CA3"), mypval = 0.1)  
-contrast3 <- resvals(contrastvector = c("subfield", "CA3", "DG"), mypval = 0.1)  
-contrast4 <- resvals(contrastvector = c("treatment", "standard.trained", "standard.yoked"), mypval = 0.1)  
-contrast5 <- resvals(contrastvector = c("treatment", "conflict.trained", "conflict.yoked"), mypval = 0.1)  
-contrast6 <- resvals(contrastvector = c("treatment", "conflict.trained", "standard.trained"), mypval = 0.1)  
-contrast7 <- resvals(contrastvector = c("treatment", "conflict.yoked", "standard.yoked"), mypval = 0.1)  
-```
-
-```{r pheatmap}
-# heatmap with all DEGs
-DEGes <- assay(vsd)
-DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
-DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
-DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
-
-names(DEGes)
-DEGes$padjmin <- with(DEGes, pmin(# padjsubfieldCA1DG, padjsubfieldCA1CA3, padjsubfieldCA3DG,
-                                  padjtreatmentstandard.trainedstandard.yoked, padjtreatmentconflict.trainedconflict.yoked,
-                                  padjtreatmentconflict.trainedstandard.trained,padjtreatmentconflict.yokedstandard.yoked)) 
-DEGes <- DEGes %>% filter(padjmin < 0.1)
-
-rownames(DEGes) <- DEGes$rownames
-drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
-DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
-DEGes <- as.matrix(DEGes)
-DEGes <- DEGes - rowMeans(DEGes)
-
-df <- as.data.frame(colData(dds)[,c("treatment", "subfield")]) ## matrix to df
-rownames(df) <- names(countData)
-levels(df$treatment) <- c("standard yoked", "standard trained",  "conflict yoked","conflict trained")
-
-
-DEGes <- as.matrix(DEGes) 
-paletteLength <- 80
-myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
-              seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
-
-pheatmap(DEGes, show_colnames=F, show_rownames = F,
-         annotation_col=df, 
-         annotation_colors = pheatmapcolors,
-         treeheight_row = 0, treeheight_col = 25,
-         annotation_row = NA, 
-         annotation_legend = TRUE,
-         annotation_names_row = FALSE, annotation_names_col = TRUE,
-         fontsize = 8, 
-         border_color = NA ,
-         color = viridis(80),
-         cellwidth = 6, 
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation" 
-         )
-
-pheatmap(DEGes, show_colnames=F, show_rownames = F,
-         annotation_col=df, annotation_colors = pheatmapcolors, 
-         annotation_row = NA, 
-         annotation_legend = F,
-         annotation_names_row = FALSE, 
-         annotation_names_col = FALSE,
-         treeheight_row = 0, treeheight_col = 10,
-         fontsize = 6, 
-         border_color = NA ,
-         color = viridis(80),
-         height = 2.5, 
-         width = 2.5,
-         clustering_method="average",
-         breaks=myBreaks,
-         clustering_distance_cols="correlation", 
-         filename = "../figures/02b_RNAseqALL/pheatmap1.pdf"
-         )
-```
 
 ## Principle component analysis
 
@@ -218,11 +190,9 @@ PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
    theme_ms()  +
       theme(legend.position= "none") +
     scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield)) +
-  labs(color = "subfield", shape = "treatment") +
+  labs(color = "subfield", shape = "treatment", subtitle = " ") +
   guides(color = FALSE)
 PCA12
-
-head(pcadata)
 ```
 
 ## tSNE
@@ -259,35 +229,32 @@ plot_tSNE <- function(myperplecity, mysubtitle){
   
 }
 
-
-p2 <- plot_tSNE(4, "perplexity = 4") + theme(legend.position = "none")
-p4 <- plot_tSNE(8, "perplexity = 8") + theme(legend.position = "none")
-p6 <- plot_tSNE(10, "perplexity = 10")
-
-mylegend <- get_legend(p6)
-
-top <- plot_grid(p2,p4,p6 + theme(legend.position = "none"), nrow = 1)
-topl <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
-topl
-
+mytsneplot <- plot_tSNE(10, " ")
 ```
 
 ## pca + tsne
 
-```{r PCA-tSNE}
-mylegend <- get_legend(p6)
+```{r PCAtSNE}
+mylegend <- get_legend(mytsneplot)
+top <- plot_grid(PCA12, mytsneplot + theme(legend.position = "none"), nrow = 1,
+          labels = c( "(d)", "(e)"),
+          label_size = 8)
 
-top <- plot_grid(PCA12, p6 + theme(legend.position = "none"), nrow = 1)
-topl <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
-topl
+PCAtSNE <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
+PCAtSNE
+```
 
-pdf(file="../figures/02b_RNAseqALL/PCA-tSNE.pdf", width=4, height=2.5)
-plot(topl)
+```{r supplfig1, fig.width=5.1, fig.height=4}
+supplfig1 <- plot_grid(multiqcplots, PCAtSNE, nrow = 2, rel_heights = c(1,1.25))
+supplfig1
+
+
+pdf(file="../figures/02b_RNAseqALL/PCA-tSNE.pdf", width=5.1, height=4)
+plot(supplfig1)
 dev.off()
 ```
 
 
-
-```{r}
+```{r save}
 write.csv(assay(vsd), file = "../data/02b_vsd.csv", row.names = T)
 ```

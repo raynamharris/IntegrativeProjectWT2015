@@ -1,19 +1,6 @@
-The figures made from this script were compiled in Adobe.
-
-<img src="../figures/figures-02.png" width="1370" />
-
     library(tidyverse)
     library(cowplot) ## for some easy to use themes
-    library(pheatmap) ## awesome heatmaps
-    library(viridis) # for awesome color pallette
-    library(reshape2) ## for melting dataframe
     library(DESeq2) ## for gene expression analysis
-    library(edgeR)  ## for basic read counts status
-    library(magrittr) ## to use the weird pipe
-    library(ggrepel) ## for labeling volcano plot
-    library(stringr) ## for uppercase gene names
-    library(car) # stats
-    library(RColorBrewer)  # colors
     library(Rtsne) # for tSNE
 
     library(BiocParallel)
@@ -24,9 +11,210 @@ The figures made from this script were compiled in Adobe.
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = F)
+    knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = T)
 
-Design
+Quality control
+===============
+
+MultiQC
+-------
+
+    # read meta data for plotting
+    colData <- read.csv("../data/02a_colData.csv")
+    sampletreatment <- colData %>% select(RNAseqID, treatment)  
+
+    # stats from fastqc 
+    fastqc <- read.csv(file = "../data/multiqc/multiqc_fastqc.csv")
+    fastqc$read <- ifelse(grepl("R1", fastqc$Sample.Name), "R1", "R2")  # make read columns
+    fastqc$mouse <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 1)
+    fastqc$subfield <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 2)
+    fastqc$section <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 3)
+    fastqc$RNAseqID <- paste(fastqc$mouse, fastqc$subfield, fastqc$section, sep = "-")
+    fastqc <- left_join(sampletreatment,fastqc) %>% 
+      select(RNAseqID, treatment, subfield, read, QualityFiltered, Dups, GC, Length, MillionReads)  %>% 
+      filter(QualityFiltered == "No")
+
+    ## Joining, by = "RNAseqID"
+
+    ## Warning: Column `RNAseqID` joining factor and character vector, coercing
+    ## into character vector
+
+    fastqc$treatment <- factor(fastqc$treatment, levels = levelstreatment)
+    fastqc$subfield <- factor(fastqc$subfield, levels = levelssubfield)
+    head(fastqc)
+
+    ##     RNAseqID        treatment subfield read QualityFiltered Dups   GC
+    ## 1 143A-CA3-1 conflict.trained      CA3   R1              No 0.81 0.49
+    ## 2 143A-CA3-1 conflict.trained      CA3   R2              No 0.71 0.48
+    ## 3  143A-DG-1 conflict.trained       DG   R1              No 0.72 0.50
+    ## 4  143A-DG-1 conflict.trained       DG   R2              No 0.63 0.49
+    ## 5 143B-CA1-1   conflict.yoked      CA1   R1              No 0.71 0.48
+    ## 6 143B-CA1-1   conflict.yoked      CA1   R2              No 0.62 0.48
+    ##   Length MillionReads
+    ## 1    150          5.8
+    ## 2    150          5.8
+    ## 3    150          7.9
+    ## 4    150          7.9
+    ## 5    150          2.9
+    ## 6    150          2.9
+
+    # stats from kallisto
+    kallisto <- read.csv(file = "../data/multiqc/multiqc_kallisto.csv")
+    kallisto$mouse <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 1)
+    kallisto$subfield <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 2)
+    kallisto$section <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 3)
+    kallisto$RNAseqID <- paste(kallisto$mouse, kallisto$subfield, kallisto$section, sep = "-")
+    kallisto <- left_join(sampletreatment,kallisto) %>% 
+      select(RNAseqID, treatment, subfield, QC, bp, fracalign, millalign) %>% 
+      filter(QC == "raw")
+
+    ## Joining, by = "RNAseqID"
+
+    ## Warning: Column `RNAseqID` joining factor and character vector, coercing
+    ## into character vector
+
+    kallisto$treatment <- factor(kallisto$treatment, levels = levelstreatment)
+    kallisto$subfield <- factor(kallisto$subfield, levels = levelssubfield)
+    head(kallisto)
+
+    ##     RNAseqID        treatment subfield  QC    bp fracalign millalign
+    ## 1 143A-CA3-1 conflict.trained      CA3 raw 201.1      0.60       3.5
+    ## 2  143A-DG-1 conflict.trained       DG raw 198.9      0.69       5.4
+    ## 3 143B-CA1-1   conflict.yoked      CA1 raw 200.6      0.62       1.8
+    ## 4  143B-DG-1   conflict.yoked       DG raw 200.0      0.57       2.2
+    ## 5 143C-CA1-1 standard.trained      CA1 raw 198.4      0.66       2.3
+    ## 6 143D-CA1-3   standard.yoked      CA1 raw 197.0      0.37       1.2
+
+    multiqc <- left_join(fastqc, kallisto) 
+
+    ## Joining, by = c("RNAseqID", "treatment", "subfield")
+
+    summary(multiqc)
+
+    ##    RNAseqID                    treatment  subfield     read          
+    ##  Length:88          standard.yoked  :18   DG :32   Length:88         
+    ##  Class :character   standard.trained:18   CA3:26   Class :character  
+    ##  Mode  :character   conflict.yoked  :24   CA1:30   Mode  :character  
+    ##                     conflict.trained:28                              
+    ##                                                                      
+    ##                                                                      
+    ##  QualityFiltered      Dups              GC             Length   
+    ##  No :88          Min.   :0.4700   Min.   :0.4400   Min.   :150  
+    ##  Yes: 0          1st Qu.:0.6400   1st Qu.:0.4700   1st Qu.:150  
+    ##                  Median :0.7300   Median :0.4800   Median :150  
+    ##                  Mean   :0.7326   Mean   :0.4782   Mean   :150  
+    ##                  3rd Qu.:0.8400   3rd Qu.:0.4900   3rd Qu.:150  
+    ##                  Max.   :0.9600   Max.   :0.5400   Max.   :150  
+    ##   MillionReads             QC           bp          fracalign    
+    ##  Min.   : 1.800   filtertrim: 0   Min.   :161.4   Min.   :0.050  
+    ##  1st Qu.: 3.750   raw       :88   1st Qu.:196.7   1st Qu.:0.250  
+    ##  Median : 5.250                   Median :198.9   Median :0.480  
+    ##  Mean   : 6.900                   Mean   :198.6   Mean   :0.428  
+    ##  3rd Qu.: 7.425                   3rd Qu.:201.3   3rd Qu.:0.620  
+    ##  Max.   :37.900                   Max.   :214.8   Max.   :0.690  
+    ##    millalign     
+    ##  Min.   : 0.100  
+    ##  1st Qu.: 1.275  
+    ##  Median : 2.200  
+    ##  Mean   : 2.584  
+    ##  3rd Qu.: 3.400  
+    ##  Max.   :12.100
+
+    mean(multiqc$MillionReads)
+
+    ## [1] 6.9
+
+    sd(multiqc$MillionReads)
+
+    ## [1] 6.345059
+
+    mean(multiqc$millalign)
+
+    ## [1] 2.584091
+
+    sd(multiqc$millalign)
+
+    ## [1] 2.102647
+
+    mean(multiqc$fracalign)
+
+    ## [1] 0.4279545
+
+    sd(multiqc$fracalign)
+
+    ## [1] 0.2093842
+
+    summary(aov(MillionReads ~ treatment, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## treatment    3    179   59.55   1.505  0.219
+    ## Residuals   84   3324   39.57
+
+    summary(aov(millalign ~ treatment, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## treatment    3   31.8    10.6   2.524 0.0631 .
+    ## Residuals   84  352.8     4.2                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(fracalign ~ treatment, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## treatment    3  0.300 0.10003   2.391 0.0744 .
+    ## Residuals   84  3.514 0.04183                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    a <- ggplot(multiqc, aes(x = subfield, y = MillionReads, color = subfield)) +
+      geom_boxplot(outlier.size = 0.75) + geom_point(size = 0.75) +
+      scale_color_manual(values = colorvalsubfield) +  
+      #facet_wrap(~subfield, nrow = 3) +
+      labs(y = "Total Reads (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+
+    b <- ggplot(multiqc, aes(x = subfield, y = millalign, color = subfield)) +
+      geom_boxplot() + geom_point(size = 0.5) +
+      scale_color_manual(values = colorvalsubfield) +  
+      labs(y = "Aligned Reads (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+    c <- ggplot(multiqc, aes(x = subfield, y = fracalign, color = subfield)) +
+             geom_boxplot() + geom_point(size = 0.5) +
+      scale_color_manual(values = colorvalsubfield) +  
+      labs(y = "Fraction aligned (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+
+    multiqcplots <- plot_grid( a, b , c , 
+              labels = c( "(a)", "(b)", "(c)"),
+              label_size = 8, nrow = 1)
+    multiqcplots
+
+![](../figures/02b_RNAseqAll/multiqc-1.png)
+
+    summary(aov(MillionReads ~ subfield, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## subfield     2    228  113.78   2.953 0.0576 .
+    ## Residuals   85   3275   38.53                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(millalign ~ subfield, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## subfield     2    8.1   4.034   0.911  0.406
+    ## Residuals   85  376.6   4.430
+
+    summary(aov(fracalign ~ subfield, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## subfield     2  0.039 0.01943   0.438  0.647
+    ## Residuals   85  3.775 0.04442
+
+DESeq2
 ------
 
 The two two catagorical variables are
@@ -120,41 +308,7 @@ The two two catagorical variables are
     ## 0610009B22Rik  5.950604   5.422896   6.444857  5.864737
     ## 0610009L18Rik  5.875464   5.422896   5.936087  5.735933
 
-check for outliers
-------------------
-
-    boxplot(log10(assays(dds)[["cooks"]]), range=0, las=2)
-
-![](../figures/02b_RNAseqAll/outliers-1.png)
-
-    plotDispEsts(dds)
-
-![](../figures/02b_RNAseqAll/outliers-2.png)
-
-    sampleDists <- dist(t(assay(vsd)))
-    sampleDistMatrix <- as.matrix(sampleDists)
-
-    rownames(sampleDistMatrix) <- paste(vsd$subfield, vsd$treatment, sep="-")
-    colnames(sampleDistMatrix) <- NULL
-    colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
-
-    pheatmap(sampleDistMatrix,
-             clustering_distance_rows=sampleDists,
-             clustering_distance_cols=sampleDists,
-             col=colors, fontsize = 8)
-
-![](../figures/02b_RNAseqAll/outliers-3.png)
-
-    rownames(sampleDistMatrix) <- (vsd$RNAseqID)
-    pheatmap(sampleDistMatrix,
-             clustering_distance_rows=sampleDists,
-             clustering_distance_cols=sampleDists,
-             col=colors, fontsize = 8)
-
-![](../figures/02b_RNAseqAll/outliers-4.png)
-
-Summary 2 way contrasts
------------------------
+### Summary DEGs
 
 This first function shows the total number of up and down regulated
 genes and the top 3 most significant genes.
@@ -406,165 +560,6 @@ genes and the top 3 most significant genes.
     ## Cnr1    5.15229291727841 2.57320693829974e-07 0.000985473927195342
     ## Dner     4.9744211558523 6.54428926948817e-07  0.00200503934638578
 
-This second function only prints the total number of DEGs, but it saves
-lots of useful info to a df for downstream dataviz.
-
-    # note: see resvals fucntion in `functions_RNAseq.R`
-
-    contrast1 <- resvals(contrastvector = c("subfield", "CA1", "DG"), mypval = 0.1)  
-
-    ## [1] 2758
-
-    contrast2 <- resvals(contrastvector = c("subfield", "CA1", "CA3"), mypval = 0.1)  
-
-    ## [1] 2194
-
-    contrast3 <- resvals(contrastvector = c("subfield", "CA3", "DG"), mypval = 0.1)  
-
-    ## [1] 2948
-
-    contrast4 <- resvals(contrastvector = c("treatment", "standard.trained", "standard.yoked"), mypval = 0.1)  
-
-    ## [1] 113
-
-    contrast5 <- resvals(contrastvector = c("treatment", "conflict.trained", "conflict.yoked"), mypval = 0.1)  
-
-    ## [1] 62
-
-    contrast6 <- resvals(contrastvector = c("treatment", "conflict.trained", "standard.trained"), mypval = 0.1)  
-
-    ## [1] 0
-
-    contrast7 <- resvals(contrastvector = c("treatment", "conflict.yoked", "standard.yoked"), mypval = 0.1)  
-
-    ## [1] 40
-
-    # heatmap with all DEGs
-    DEGes <- assay(vsd)
-    DEGes <- cbind(DEGes, contrast1, contrast2, contrast3, contrast4, contrast5, contrast6, contrast7)
-    DEGes <- as.data.frame(DEGes) # convert matrix to dataframe
-    DEGes$rownames <- rownames(DEGes)  # add the rownames to the dataframe
-    DEGes$rownames <- str_to_upper(DEGes$rownames) ## uppercase gene names
-
-    names(DEGes)
-
-    ##  [1] "143A-CA3-1"                                   
-    ##  [2] "143A-DG-1"                                    
-    ##  [3] "143B-CA1-1"                                   
-    ##  [4] "143B-DG-1"                                    
-    ##  [5] "143C-CA1-1"                                   
-    ##  [6] "143D-CA1-3"                                   
-    ##  [7] "143D-DG-3"                                    
-    ##  [8] "144A-CA1-2"                                   
-    ##  [9] "144A-CA3-2"                                   
-    ## [10] "144A-DG-2"                                    
-    ## [11] "144B-CA1-1"                                   
-    ## [12] "144B-CA3-1"                                   
-    ## [13] "144C-CA1-2"                                   
-    ## [14] "144C-CA3-2"                                   
-    ## [15] "144C-DG-2"                                    
-    ## [16] "144D-CA3-2"                                   
-    ## [17] "144D-DG-2"                                    
-    ## [18] "145A-CA1-2"                                   
-    ## [19] "145A-CA3-2"                                   
-    ## [20] "145A-DG-2"                                    
-    ## [21] "145B-CA1-1"                                   
-    ## [22] "145B-DG-1"                                    
-    ## [23] "146A-CA1-2"                                   
-    ## [24] "146A-CA3-2"                                   
-    ## [25] "146A-DG-2"                                    
-    ## [26] "146B-CA1-2"                                   
-    ## [27] "146B-CA3-2"                                   
-    ## [28] "146B-DG-2"                                    
-    ## [29] "146C-CA1-4"                                   
-    ## [30] "146C-DG-4"                                    
-    ## [31] "146D-CA1-3"                                   
-    ## [32] "146D-CA3-3"                                   
-    ## [33] "146D-DG-3"                                    
-    ## [34] "147C-CA1-3"                                   
-    ## [35] "147C-CA3-3"                                   
-    ## [36] "147C-DG-3"                                    
-    ## [37] "147D-CA3-1"                                   
-    ## [38] "147D-DG-1"                                    
-    ## [39] "148A-CA1-3"                                   
-    ## [40] "148A-CA3-3"                                   
-    ## [41] "148A-DG-3"                                    
-    ## [42] "148B-CA1-4"                                   
-    ## [43] "148B-CA3-4"                                   
-    ## [44] "148B-DG-4"                                    
-    ## [45] "pvalsubfieldCA1DG"                            
-    ## [46] "padjsubfieldCA1DG"                            
-    ## [47] "pvalsubfieldCA1CA3"                           
-    ## [48] "padjsubfieldCA1CA3"                           
-    ## [49] "pvalsubfieldCA3DG"                            
-    ## [50] "padjsubfieldCA3DG"                            
-    ## [51] "pvaltreatmentstandard.trainedstandard.yoked"  
-    ## [52] "padjtreatmentstandard.trainedstandard.yoked"  
-    ## [53] "pvaltreatmentconflict.trainedconflict.yoked"  
-    ## [54] "padjtreatmentconflict.trainedconflict.yoked"  
-    ## [55] "pvaltreatmentconflict.trainedstandard.trained"
-    ## [56] "padjtreatmentconflict.trainedstandard.trained"
-    ## [57] "pvaltreatmentconflict.yokedstandard.yoked"    
-    ## [58] "padjtreatmentconflict.yokedstandard.yoked"    
-    ## [59] "rownames"
-
-    DEGes$padjmin <- with(DEGes, pmin(# padjsubfieldCA1DG, padjsubfieldCA1CA3, padjsubfieldCA3DG,
-                                      padjtreatmentstandard.trainedstandard.yoked, padjtreatmentconflict.trainedconflict.yoked,
-                                      padjtreatmentconflict.trainedstandard.trained,padjtreatmentconflict.yokedstandard.yoked)) 
-    DEGes <- DEGes %>% filter(padjmin < 0.1)
-
-    rownames(DEGes) <- DEGes$rownames
-    drop.cols <-colnames(DEGes[,grep("padj|pval|rownames", colnames(DEGes))])
-    DEGes <- DEGes %>% dplyr::select(-one_of(drop.cols))
-    DEGes <- as.matrix(DEGes)
-    DEGes <- DEGes - rowMeans(DEGes)
-
-    df <- as.data.frame(colData(dds)[,c("treatment", "subfield")]) ## matrix to df
-    rownames(df) <- names(countData)
-    levels(df$treatment) <- c("standard yoked", "standard trained",  "conflict yoked","conflict trained")
-
-
-    DEGes <- as.matrix(DEGes) 
-    paletteLength <- 80
-    myBreaks <- c(seq(min(DEGes), 0, length.out=ceiling(paletteLength/2) + 1), 
-                  seq(max(DEGes)/paletteLength, max(DEGes), length.out=floor(paletteLength/2)))
-
-    pheatmap(DEGes, show_colnames=F, show_rownames = F,
-             annotation_col=df, 
-             annotation_colors = pheatmapcolors,
-             treeheight_row = 0, treeheight_col = 25,
-             annotation_row = NA, 
-             annotation_legend = TRUE,
-             annotation_names_row = FALSE, annotation_names_col = TRUE,
-             fontsize = 8, 
-             border_color = NA ,
-             color = viridis(80),
-             cellwidth = 6, 
-             clustering_method="average",
-             breaks=myBreaks,
-             clustering_distance_cols="correlation" 
-             )
-
-![](../figures/02b_RNAseqAll/pheatmap-1.png)
-
-    pheatmap(DEGes, show_colnames=F, show_rownames = F,
-             annotation_col=df, annotation_colors = pheatmapcolors, 
-             annotation_row = NA, 
-             annotation_legend = F,
-             annotation_names_row = FALSE, 
-             annotation_names_col = FALSE,
-             treeheight_row = 0, treeheight_col = 10,
-             fontsize = 6, 
-             border_color = NA ,
-             color = viridis(80),
-             height = 2.5, 
-             width = 2.5,
-             clustering_method="average",
-             breaks=myBreaks,
-             clustering_distance_cols="correlation", 
-             filename = "../figures/02b_RNAseqALL/pheatmap1.pdf"
-             )
-
 Principle component analysis
 ----------------------------
 
@@ -631,42 +626,11 @@ Principle component analysis
        theme_ms()  +
           theme(legend.position= "none") +
         scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield)) +
-      labs(color = "subfield", shape = "treatment") +
+      labs(color = "subfield", shape = "treatment", subtitle = " ") +
       guides(color = FALSE)
     PCA12
 
 ![](../figures/02b_RNAseqAll/pca-1.png)
-
-    head(pcadata)
-
-    ##                  PC1         PC2        PC3       PC4        PC5
-    ## 143A-CA3-1 -11.77305 -12.3696694 -1.6318032  5.308896  4.7004074
-    ## 143A-DG-1   20.03365  -0.5342967 -5.3618441 -1.815360 -2.1477127
-    ## 143B-CA1-1 -11.04281  11.0103985 -2.4922962  1.094413 -1.8486562
-    ## 143B-DG-1   18.32356  -1.7608687 -1.9458585  1.042455 -0.8785098
-    ## 143C-CA1-1 -10.64079  13.0026072 -5.2365096  1.806490 -0.1519011
-    ## 143D-CA1-3 -11.76687  12.9077663  0.5809389  1.107377  0.2791110
-    ##                    PC6        PC7        PC8        PC9
-    ## 143A-CA3-1 -5.04439227  0.1062447 -0.1355936  0.7672596
-    ## 143A-DG-1  -0.68138437 -0.5310096 -0.3584481 -0.8316969
-    ## 143B-CA1-1  3.17053046 -1.1402673  0.2760218 -0.2524822
-    ## 143B-DG-1   2.84463582  1.0242361 -0.1040812 -1.7993637
-    ## 143C-CA1-1 -1.14896028 -2.2448529  0.9741248  0.3885778
-    ## 143D-CA1-3 -0.04518588 -1.5080185 -2.9278593 -3.0316346
-    ##                             group subfield        treatment       name
-    ## 143A-CA3-1 CA3 : conflict.trained      CA3 conflict trained 143A-CA3-1
-    ## 143A-DG-1   DG : conflict.trained       DG conflict trained  143A-DG-1
-    ## 143B-CA1-1   CA1 : conflict.yoked      CA1   conflict yoked 143B-CA1-1
-    ## 143B-DG-1     DG : conflict.yoked       DG   conflict yoked  143B-DG-1
-    ## 143C-CA1-1 CA1 : standard.trained      CA1 standard trained 143C-CA1-1
-    ## 143D-CA1-3   CA1 : standard.yoked      CA1   standard yoked 143D-CA1-3
-    ##                     subfieldAPA
-    ## 143A-CA3-1 CA3_conflict.trained
-    ## 143A-DG-1   DG_conflict.trained
-    ## 143B-CA1-1   CA1_conflict.yoked
-    ## 143B-DG-1     DG_conflict.yoked
-    ## 143C-CA1-1 CA1_standard.trained
-    ## 143D-CA1-3   CA1_standard.yoked
 
 tSNE
 ----
@@ -702,40 +666,30 @@ tSNE
       
     }
 
-
-    p2 <- plot_tSNE(4, "perplexity = 4") + theme(legend.position = "none")
-
-    ## [1] 4
-
-    p4 <- plot_tSNE(8, "perplexity = 8") + theme(legend.position = "none")
-
-    ## [1] 8
-
-    p6 <- plot_tSNE(10, "perplexity = 10")
+    mytsneplot <- plot_tSNE(10, " ")
 
     ## [1] 10
-
-    mylegend <- get_legend(p6)
-
-    top <- plot_grid(p2,p4,p6 + theme(legend.position = "none"), nrow = 1)
-    topl <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
-    topl
-
-![](../figures/02b_RNAseqAll/tSNE-1.png)
 
 pca + tsne
 ----------
 
-    mylegend <- get_legend(p6)
+    mylegend <- get_legend(mytsneplot)
+    top <- plot_grid(PCA12, mytsneplot + theme(legend.position = "none"), nrow = 1,
+              labels = c( "(d)", "(e)"),
+              label_size = 8)
 
-    top <- plot_grid(PCA12, p6 + theme(legend.position = "none"), nrow = 1)
-    topl <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
-    topl
+    PCAtSNE <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
+    PCAtSNE
 
-![](../figures/02b_RNAseqAll/PCA-tSNE-1.png)
+![](../figures/02b_RNAseqAll/PCAtSNE-1.png)
 
-    pdf(file="../figures/02b_RNAseqALL/PCA-tSNE.pdf", width=4, height=2.5)
-    plot(topl)
+    supplfig1 <- plot_grid(multiqcplots, PCAtSNE, nrow = 2, rel_heights = c(1,1.25))
+    supplfig1
+
+![](../figures/02b_RNAseqAll/supplfig1-1.png)
+
+    pdf(file="../figures/02b_RNAseqALL/PCA-tSNE.pdf", width=5.1, height=4)
+    plot(supplfig1)
     dev.off()
 
     ## quartz_off_screen 
