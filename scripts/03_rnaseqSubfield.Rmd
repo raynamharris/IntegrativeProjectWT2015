@@ -72,77 +72,67 @@ res_summary_subfield(CA1dds, c("treatment", "conflict.yoked", "standard.yoked"))
 
 ## Volcano plots
 
+```{r DEGs}
+
+# create data frame for making volcanos plots
+DGa <- calculateDEGs(DGdds2, "DG", "training", "trained", "yoked") 
+DGb <-  calculateDEGs(DGdds, "DG", "treatment", "conflict.trained", "standard.trained") 
+DGc <-  calculateDEGs(DGdds, "DG", "treatment", "conflict.yoked", "standard.yoked") 
+
+CA3a <- calculateDEGs(CA3dds2, "CA3", "training", "trained", "yoked") 
+CA3b <-  calculateDEGs(CA3dds, "CA3", "treatment", "conflict.trained", "standard.trained") 
+CA3c <-  calculateDEGs(CA3dds, "CA3", "treatment", "conflict.yoked", "standard.yoked") 
+
+CA1a <- calculateDEGs(CA1dds2, "CA1", "training", "trained", "yoked") 
+CA1b <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.trained", "standard.trained") 
+CA1c <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.yoked", "standard.yoked") 
+
+# save files where there are DEGs
+
+saveDEGs(DGa, "DG", "trained", "yoked") 
+saveDEGs(DGb, "DG", "conflict.trained", "standard.trained") 
+saveDEGs(DGc, "DG", "conflict.yoked", "standard.yoked") 
+
+saveDEGs(CA3a, "CA3", "trained", "yoked") 
+saveDEGs(CA3b, "CA3", "conflict.trained", "standard.trained") 
+saveDEGs(CA3c, "CA3", "conflict.yoked", "standard.yoked") 
+
+saveDEGs(CA1a, "CA1", "trained", "yoked") 
+saveDEGs(CA1b, "CA1", "conflict.trained", "standard.trained") 
+saveDEGs(CA1c, "CA1", "conflict.yoked", "standard.yoked") 
+```
+
+
+
 ```{r volcanos, fig.width=6.69, fig.height=6}
+# volcano plots
 
-plot.volcano <- function(mydds, whichtissue, whichfactor, up, down, mycolors){
+p1 <- plot.volcano(DGa, volcano7, "214 DEGs") 
+p2 <-  plot.volcano(DGb,volcano2, "0 DEGs") 
+p3 <-  plot.volcano(DGc, volcano6, "3 DEGs") 
 
-  # calculate DEG results
-  res <- results(mydds, contrast =c(whichfactor, up, down),
-                 independentFiltering = T, alpha = 0.1)
-   
-  # create dataframe with pvalues and lfc
-  data <- data.frame(gene = row.names(res),
-                     padj = res$padj, 
-                     logpadj = -log10(res$padj),
-                     lfc = res$log2FoldChange)
-  data <- na.omit(data)
-  data <- data %>%
-    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                                     yes = up, no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                                 yes = down, no = "NS")))
-  data$direction <- factor(data$direction, levels = c(down, "NS", up))
-  
-  #save df that only has the values for significant genes IF there are DEGs
-  toprint <- data %>% filter(direction != "NS")
-  myfilename = paste("../data/03", whichtissue, "DEGs", down, up, ".csv" ,sep = "_")
-  
-  # for some reason i can only return the df or return the plot...
-  #if (dim(toprint)[1] != 0) { return(write.csv(toprint, myfilename))}
-  
-  # plot volcanos
-  volcano <- data %>%
-    ggplot(aes(x = lfc, y = logpadj)) + 
-    geom_point(aes(color = direction), size = 1, alpha = 0.75, na.rm = T) + 
-     theme_ms() +
-    scale_color_manual(values = mycolors,
-                       name = " ",
-                       drop = FALSE) +
-    ylim(c(0,12.5)) +  
-    xlim(c(-8,8)) +
-    labs(y = NULL, x = "log fold change", subtitle = " ")  +
-    theme(legend.position = "top",
-          legend.spacing.x = unit(-0.1, 'cm'),
-          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
-          panel.grid = element_blank()) 
-  return(volcano)
-  
+p4 <- plot.volcano(CA3a,  volcano7, "0 DEGs") 
+p5 <-  plot.volcano(CA3b, volcano2, "0 DEGs") 
+p6 <-  plot.volcano(CA3c, volcano6, "2 DEGs") 
 
-}
+p7 <- plot.volcano(CA1a,  volcano7, "16 DEGs") 
+p8 <-  plot.volcano(CA1b, volcano2, "0 DEGs") 
+p9 <-  plot.volcano(CA1c, volcano6, "917 DEGs") 
 
-# usage: mydds, whichfactor, up, down, mycolors, mysubfield
-DGa <- plot.volcano(DGdds2, "DG", "training", "trained", "yoked", volcano7) 
-DGb <-  plot.volcano(DGdds, "DG", "treatment", "conflict.trained", "standard.trained",  volcano2) 
-DGc <-  plot.volcano(DGdds, "DG", "treatment", "conflict.yoked", "standard.yoked",  volcano6) 
 
-CA3a <- plot.volcano(CA3dds2, "CA3", "training", "trained", "yoked", volcano7) 
-CA3b <-  plot.volcano(CA3dds, "CA3","treatment", "conflict.trained", "standard.trained", volcano2) 
-CA3c <-  plot.volcano(CA3dds, "CA3","treatment", "conflict.yoked", "standard.yoked", volcano6) 
-
-CA1a <- plot.volcano(CA1dds2, "CA1","training", "trained", "yoked", volcano7) 
-CA1b <-  plot.volcano(CA1dds, "CA1","treatment", "conflict.trained", "standard.trained", volcano2) 
-CA1c <-  plot.volcano(CA1dds, "CA1","treatment", "conflict.yoked", "standard.yoked", volcano6) 
-
-volcanos <- plot_grid(DGa + labs(x= NULL, y = "DG \n -log10(p)") + theme(legend.position = "none"),
-                      DGb + labs(x= NULL) + theme(legend.position = "none"), 
-                      DGc + labs(x= NULL) + theme(legend.position = "none"),
+# plot grid
+volcanos <- plot_grid(p1 + theme(legend.position = "none") + labs(y = "DG \n -log10(p-value)"),
+                      p2 + theme(legend.position = "none"), 
+                      p3 + theme(legend.position = "none"),
                       
-                      CA3a + theme(legend.position = "none") + labs(x= NULL,  y = "CA3 \n -log10(p)"),
-                      CA3b + theme(legend.position = "none") +  labs(x= NULL ), 
-                      CA3c + theme(legend.position = "none") +  labs(x= NULL ), 
+                      p4 + theme(legend.position = "none") + labs(y = "CA3 \n -log10(p-value)"),
+                      p5 + theme(legend.position = "none"), 
+                      p6 + theme(legend.position = "none"), 
                       
-                      CA1a + theme(legend.position = "bottom") +  labs( y = "CA1 \n -log10(p)"), 
-                      CA1b + theme(legend.position = "bottom"), 
-                      CA1c + theme(legend.position = "bottom"), 
+                      p7  + labs( y = "CA1 \n -log10(p-value)"), 
+                      p8, 
+                      p9, 
+                      
                       nrow = 3, 
                       rel_heights =  c(1,1,1.25) ,
                       rel_widths = c(1.2,1,1) ,
@@ -155,20 +145,19 @@ volcanos
 comparisons <- png::readPNG("../figures/00_schematics/figure_DEGcomparisons.png")
 comparisons <- ggdraw() +  draw_image(comparisons, scale = 1)
 
-right <- plot_grid(comparisons,volcanos, nrow = 2, rel_heights = c(0.1,1))
-
 circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
 circuit <- ggdraw() +  draw_image(circuit, scale = 1)
 
-left <- plot_grid(circuit, right, nrow = 1, rel_widths = c(0.1,1))
-left
+volcanoscomparisons <- plot_grid(volcanos, comparisons, nrow = 2, rel_heights = c(1, 0.1))
+volcanoscomparisonscircuit <- plot_grid(circuit, volcanoscomparisons, nrow = 1, rel_widths = c(0.1,1))
+volcanoscomparisonscircuit
 
 pdf(file="../figures/03_rnaseqSubfield/volcanos.pdf", width=6.69, height=6)
-plot(left)    
+plot(volcanoscomparisonscircuit)    
 dev.off()
 
 pdf(file="../figures/figure_3.pdf", width=6.69, height=6)
-plot(left)    
+plot(volcanoscomparisonscircuit)    
 dev.off()
 ```
 

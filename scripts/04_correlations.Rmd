@@ -163,7 +163,7 @@ corrsPC1sig$gene
 
 # 214 DEGs in DG
 # read DG DEGs
-DG_DEGs <- read.csv("../data/03_DG_DEGs_yoked_trained_.csv", row.names = 1, check.names = F) 
+DG_DEGs <- read.csv("../data/03_DG_DEGs_yokedtrained.csv", row.names = 1, check.names = F) 
 DG_DEGs$gene <- toupper(DG_DEGs$gene)
 dim(DG_DEGs)
 

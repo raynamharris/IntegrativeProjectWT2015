@@ -1,4 +1,7 @@
 
+
+## used in 02_rnaseqQC.Rmd
+
 plot.tSNE.trained <- function(mydds, myperplexity, mysubfield){
   vsddft <- as.data.frame(t(assay(vst(mydds))))
   euclidist <- dist(vsddft) # euclidean distances between the rows
@@ -26,7 +29,7 @@ plot.tSNE.trained <- function(mydds, myperplexity, mysubfield){
 }
 
 
-
+## used in 03_rnaseqSubfield
 
 returnddstreatment <- function(mytissue){
   print(mytissue)
@@ -137,6 +140,54 @@ resvals2 <- function(mydds, contrastvector, mypval){
   return(vals)
 }
 
+## these next 3 funcitons are needed for volcano plots
+
+calculateDEGs <-  function(mydds, whichtissue, whichfactor, up, down){
+  
+  # calculate DEG results
+  res <- results(mydds, contrast =c(whichfactor, up, down),
+                 independentFiltering = T, alpha = 0.1)
+  
+  # create dataframe with pvalues and lfc
+  data <- data.frame(gene = row.names(res),
+                     padj = res$padj, 
+                     logpadj = -log10(res$padj),
+                     lfc = res$log2FoldChange)
+  data <- na.omit(data)
+  data <- data %>%
+    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
+                                     yes = up, no = ifelse(data$lfc < 0 & data$padj < 0.1, 
+                                                           yes = down, no = "NS")))
+  data$direction <- factor(data$direction, levels = c(down, "NS", up))
+  return(data)
+}  
+
+saveDEGs <-  function(data, whichtissue, up, down){
+  DEGs <- data %>% filter(direction != "NS")
+  myfilename <-  paste("../data/03_", whichtissue, "_DEGs_", down, up, sep = "")
+  filenamewithextension <- paste(myfilename, ".csv", sep = "")
+  if (dim(DEGs)[1] != 0) {return(write.csv(DEGs, filenamewithextension))}
+}  
+
+plot.volcano <- function(data, mycolors, mysubtitle){
+  
+  volcano <- data %>%
+    ggplot(aes(x = lfc, y = logpadj)) + 
+    geom_point(aes(color = direction), size = 1, alpha = 0.75, na.rm = T) + 
+    theme_ms() +
+    scale_color_manual(values = mycolors,
+                       name = " ",
+                       drop = FALSE) +
+    ylim(c(0,12.5)) +  
+    xlim(c(-8,8)) +
+    labs(y = NULL, x = NULL, subtitle = mysubtitle)  +
+    theme(legend.position = "bottom",
+          legend.spacing.x = unit(-0.1, 'cm'),
+          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
+          panel.grid = element_blank()) 
+  return(volcano)
+  
+}
 
 
 myhistogram <- function(contrastvector, mypval){
@@ -425,37 +476,6 @@ plotmeansd <- function(mymeandev, mybehavior, myylab, mycolors){
                         labels = c( "P", "T1", "T2", "T3",
                                     "Rt", "T4", "T5", "T6", "Rn")) +
     labs(x = NULL, y = myylab) 
-}
-
-# volcano plots 
-
-plot.volcano <- function(mydds, up, down, mycolors){
-  res <- results(mydds, contrast =c("APA2", up, down),
-                 independentFiltering = T, alpha = 0.1)
-  print(summary(res))
-   data <- data.frame(gene = row.names(res),
-                     padj = res$padj, 
-                     logpadj = -log10(res$padj),
-                     lfc = res$log2FoldChange)
-  data <- na.omit(data)
-  data <- data %>%
-    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
-                                     yes = up, 
-                                     no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                                 yes = down, 
-                                                 no = "NS")))
-  volcano <- data %>%
-    ggplot(aes(x = lfc, y = logpadj)) + 
-    geom_point(aes(color = factor(direction)), size = 0.5, alpha = 0.75, na.rm = T) + 
-      theme_minimal(base_size = 8) +
-    scale_color_manual(values = mycolors)  + 
-    ylim(c(0,7)) +
-    xlim(c(-10,10)) +
-    labs(x = NULL, y = NULL)  +
-    theme(panel.grid.minor=element_blank(),
-                panel.grid.major=element_blank(),
-                legend.position = "none") 
-  plot(volcano)
 }
 
 
