@@ -30,6 +30,8 @@ ann_colors_treatment = list(
 levelstreatment =  c('standard.yoked' , 'standard.trained' ,
                      'conflict.yoked' ,  'conflict.trained' )
 
+levelstraining = c("yoked", "trained")
+
 levelsTrials <- c("Hab", "T1" , "T2", "T3" ,
                   "Retest" , "T4_C1" , "T5_C2" ,
                   "T6_C3" , "Retention" )

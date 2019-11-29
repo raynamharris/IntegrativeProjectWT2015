@@ -1,0 +1,382 @@
+---
+title: "Analysis of Avoidance Behavior"
+output: md_document
+---
+
+
+```{r setup, message=F}
+## load libraries 
+library(tidyverse) ## for respahing data
+library(cowplot) ## for some easy to use themes
+library(factoextra)  ## pca with vectors
+library(FactoMineR) # more pca
+library(apaTables) #  for ANOVA tables
+
+library(png) # for ading images to plots
+library(grid)  # for ading images to plots
+
+## load user-written functions 
+source("functions_behavior.R")
+source("figureoptions.R")
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/01_behavior/')
+```
+
+## Sample sizes
+
+The 'treatment' column describes the four behavioral treatment groups.  
+The 'trial' column describes the behvioral training sessions. Here I filter by a single session to calculte the number of mice. 
+
+```{r wrangledata, message=F}
+## import output from video tracker program 
+behavior <- read.csv("../data/00_behaviordata.csv", header = T)
+
+# set levels
+behavior$treatment <- factor(behavior$treatment, levels = levelstreatment)
+behavior$training <- factor(behavior$training, levels = levelstraining)
+
+# sample sizes
+behavior %>% 
+  filter(trial == "Hab") %>%
+  select(treatment)  %>%  summary()
+
+head(behavior)
+names(behavior[9:34])
+```
+
+```{r experimentaldesign, fig.height = 2.4, fig.width = 6.69}
+dfshocks <- behavior %>%
+  dplyr::group_by(treatment, trialNum) %>%
+  dplyr::summarise(m = mean(NumShock), 
+                   se = sd(NumShock)/sqrt(length(NumShock))) %>%
+  dplyr::mutate(m = round(m,0)) %>%
+  dplyr::mutate(measure = "NumShock")
+dfshocks
+
+
+numshocks <- ggplot(dfshocks,  aes(x=, trialNum, y=m, color=treatment, label = m)) + 
+    geom_errorbar(aes(ymin=m-se, ymax=m+se, color=treatment), width=.1) +
+    geom_line() +
+    geom_point(size = 1) +
+    labs(y = "NumShocks") +
+    scale_x_continuous(name= "trial", 
+                       breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                       labels = c( "P", "T1", "T2", "T3",
+                                   "Rt", "T4", "T5", "T6", "Rn")) +
+    scale_alpha_continuous( breaks = c(1, 2, 3)) +
+    theme_ms() +
+    scale_color_manual(values = colorvalAPA00,
+                       name  = NULL)  +
+    theme(legend.position = "none",
+          legend.justification=c(0,0),
+          legend.text=element_text(size=5),
+          strip.text = element_blank(),
+          axis.text.y = element_blank()) +
+  facet_wrap(~treatment, nrow = 4) +
+  scale_y_continuous(breaks = c(0,10,20), limits = c(0,30)) +
+  geom_text(vjust= -1, size=2.5)
+
+numshocks
+
+paradigm <- png::readPNG("../figures/00_schematics/figure_1a.png")
+paradigm <- ggdraw() +  draw_image(paradigm, scale = 1)
+
+subfields <- png::readPNG("../figures/00_schematics/figure_1c.png")
+subfields <- ggdraw() +  draw_image(subfields, scale = 1)
+
+
+experimentaldesign <- plot_grid(paradigm, numshocks, subfields, rel_widths = c(2,1,0.8), nrow = 1,
+          label_size = 8, labels = c("(a)", "(b) ", "(c)"))
+experimentaldesign
+
+
+pdf(file="../figures/01_behavior/experimentaldesign.pdf", width=6.69, height=2.4)
+plot(experimentaldesign)
+dev.off()
+
+pdf(file="../figures/figure_1.pdf", width=6.69, height=2.4)
+plot(experimentaldesign)
+dev.off()
+```
+
+# Vizualizing Mean and Standard error for avoidance behaviors
+
+To make the point and line graphs, I must create and join some data frames, then I have a function that makes four plots with specific titles, y labels and limits.
+
+```{r behavmeanstdev}
+dfa <- behavior %>%
+  dplyr::group_by(treatment, trialNum) %>%
+  dplyr::summarise(m = mean(NumEntrances), 
+                   se = sd(NumEntrances)/sqrt(length(NumEntrances))) %>%
+  dplyr::mutate(measure = "NumEntrances")
+
+dfb <- behavior %>%
+  dplyr::group_by(treatment, trialNum) %>%
+  dplyr::mutate(minutes = Time1stEntr/60) %>%
+  dplyr::summarise(m = mean(minutes), 
+                   se = sd(minutes)/sqrt(length(minutes))) %>%
+  dplyr::mutate(measure = "Time1stEntr.min")
+
+dfc <- behavior %>%
+  dplyr::group_by(treatment, trialNum) %>%
+  dplyr::summarise(m = mean(pTimeShockZone), 
+                   se = sd(pTimeShockZone)/sqrt(length(pTimeShockZone))) %>%
+  dplyr::mutate(measure = "pTimeShockZone")
+
+
+# see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
+
+
+avoidancedf <- rbind(dfa, dfb,dfc)
+head(avoidancedf)
+
+a <- meansdplots(dfa, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) 
+b <- meansdplots(dfb, "Time1stEntr.min",  c(0,2,4,6,8), c(0, 8))
+c <- meansdplots(dfc, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
+
+a
+b
+c
+
+
+avoidancebehaviors <- plot_grid(a + theme(legend.position = "none"),
+                       b + theme(legend.position = "none"), 
+                       c + theme(legend.position = "none"), nrow = 1,
+                       label_size = 8,
+                       labels = c("(a)", "(b)", "(c)"))
+avoidancebehaviors
+
+```
+
+
+
+
+### Principle component analysis 
+
+Next, I next reduced the dimentionality of the data with a PCA anlaysis. 
+
+```{r PCA}
+pca.all <- makepcadf(behavior)
+
+retention <- behavior %>% filter(trialNum == 9)
+pca.Rn <- makepcadf(retention)
+
+pca.Rn.summary <- pca.all %>% filter(trialNum == 9) %>% 
+  group_by(treatment) %>% 
+  dplyr::summarize(avePC1 = mean(PC1),
+                   avePC2 = mean(PC2),
+                   sePC1 = sd(PC1)/sqrt(length(PC1)),
+                   sePC2 = sd(PC2)/sqrt(length(PC2)))
+
+
+d <- ggplot(pca.all, aes(x = PC1, y = PC2, color = treatment, fill = treatment)) +
+
+  geom_point(data = pca.all, aes(alpha = Day)) + 
+  geom_point(data = pca.Rn.summary, aes(x = avePC1, y = avePC2), size = 4) +
+  theme_ms() +
+    scale_fill_manual(guide = 'none',values = colorvalAPA00) +
+  scale_color_manual(guide = 'none',values = colorvalAPA00) +
+  scale_alpha_continuous(breaks = c(1, 2, 3)) +
+  theme(legend.position = "none") +
+  labs( x = "PC1: 38.3% variance explained",
+        y = "PC2: 16.7% \n variance explained",
+       subtitle = " ") 
+d
+
+# get contributions
+df <- behavior %>% select(TotalPath.Arena.:AnnularKurtosis)
+res.pca <- PCA(df,  graph = FALSE)
+# Visualize eigenvalues/variances
+fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))
+
+
+# Contributions of variables to PC1
+e <- fviz_contrib_rmh(res.pca, choice = "var", axes = 1, top = 8, 
+                 ylab = "PC1 % contrib.", xlab = "estimates of memory", subtitle = " ") +
+  theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
+# Contributions of variables to PC2
+f <- fviz_contrib_rmh(res.pca, choice = "var", axes = 2, top = 8, 
+                 ylab = "PC2 % contrib." , xlab = "estimates of activity", subtitle = " ") +
+  theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
+
+e
+f
+
+pcaplots <- plot_grid(d,e,f, labels = c("(d)", "(e)", "(f)"),
+           nrow = 1,
+           label_size = 8)
+pcaplots
+```
+
+```{r avoidance, fig.width=6.69,fig.height=3.5}
+avoidance <- plot_grid(avoidancebehaviors, pcaplots, nrow = 2)
+avoidance
+
+pdf(file="../figures/01_behavior/avoidance.pdf", width=6.69, height=3.5)
+plot(avoidance)
+dev.off()
+
+pdf(file="../figures/figure_2.pdf", width=6.69, height=3.5)
+plot(avoidance)
+dev.off()
+```
+
+## now all the stats
+
+Maybe it should be done like this:
+Q1: are the groups different? 1-way ANOVA of groups on Pre
+Q2: are the groups different during initial training T1-T3? 2-way ANOVA of groups X trial
+Q3: do the groups differ in initial recall? 1-way ANOVA of groups on Rt
+Q4: Do the groups differ in subsequent training? T4-T6 2-way ANOVA of groups X trial
+Q5: do the groups differ in subsequent recall? 1-way ANOVA of groups on Rn
+
+```{r stats}
+# twoway anova table function
+
+twowayANOVAfor3measures <- function(mydata, mydescription){
+  apa1 <- apa.aov.table(aov(NumEntrances ~ treatment * trial, data=mydata))
+  apa1df <- as.data.frame(apa1$table_body)
+  totaldf <- apa1df[5, 3]
+  apa1df$df <- paste(apa1df$df, ", " , totaldf, sep = "")
+  apa1df$ANOVA <- "NumEntrances ~ treatment * trial"
+  apa1df
+
+  apa2 <- apa.aov.table(aov(pTimeShockZone ~ treatment * trial, data=mydata))
+  apa2df <- as.data.frame(apa2$table_body)
+  apa2df$df <- paste(apa2df$df, ", " , totaldf, sep = "")
+  apa2df$ANOVA <- "pTimeShockZone ~ treatment * trial"
+
+  apa3 <- apa.aov.table(aov(Time1stEntr ~ treatment * trial, data=mydata))
+  apa3df <- as.data.frame(apa3$table_body)
+  apa3df$df <- paste(apa3df$df, ", " , totaldf, sep = "")
+  apa3df$ANOVA <- "Time1stEntr ~ treatment * trial"
+  apa3df
+
+  apa123 <- as.data.frame(rbind(apa1df,apa2df,apa3df))
+  apa123$trials <- mydescription
+  apa123 <- apa123 %>%
+    select(trials, ANOVA, Predictor, df, "F", p) %>%
+    filter(!Predictor %in% c("(Intercept)", "Error"))
+
+  return(apa123)
+}
+
+
+onewayANOVAfor3measures <- function(mydata, whichtrial, mydescription){
+  
+  mydata <- mydata %>% filter(trial == whichtrial)
+  
+  apa1 <- apa.aov.table(aov(NumEntrances ~ treatment , data=mydata))
+  apa1df <- as.data.frame(apa1$table_body)
+  totaldf <- apa1df[3, 3]
+  apa1df$df <- paste(apa1df$df, ", " , totaldf, sep = "")
+  apa1df$ANOVA <- "NumEntrances ~ treatment"
+  apa1df
+
+  apa2 <- apa.aov.table(aov(pTimeShockZone ~ treatment , data=mydata))
+  apa2df <- as.data.frame(apa2$table_body)
+  apa2df$df <- paste(apa2df$df, ", " , totaldf, sep = "")
+  apa2df$ANOVA <- "pTimeShockZone ~ treatment"
+
+  apa3 <- apa.aov.table(aov(Time1stEntr ~ treatment , data=mydata))
+  apa3df <- as.data.frame(apa3$table_body)
+  apa3df$df <- paste(apa3df$df, ", " , totaldf, sep = "")
+  apa3df$ANOVA <- "Time1stEntr ~ treatment"
+  apa3df
+
+  apa123 <- as.data.frame(rbind(apa1df,apa2df,apa3df))
+  apa123$trials <- mydescription
+  apa123 <- apa123 %>%
+    select(trials, ANOVA, Predictor, df, "F", p) %>%
+    filter(!Predictor %in% c("(Intercept)", "Error"))
+
+  return(apa123)
+}
+
+# Q1. Are groups different at pre? No.
+Q1 <- onewayANOVAfor3measures(behavior, "Hab", "Pre-training (Pre)")
+  
+  
+# Q2. Are the groups different during initial training T1-T3? Yes (sometimes alone, sometime interaction)
+T1T2T3 <-  behavior %>% filter(trial %in% c("T1", "T2", "T3"))
+Q2 <- twowayANOVAfor3measures(T1T2T3, "Initial training (T1 - T3)")
+
+
+# Q3 Do the groups differ in initial recall? Yes.
+Q3 <- onewayANOVAfor3measures(behavior, "Retest", "Initial recall (Rt)")
+
+# Q4 Do the groups differ in subsequent training? Yes
+T4T5T6 <-  behavior %>% filter(trial %in% c("T4_C1", "T5_C2", "T6_C3"))
+Q4 <- twowayANOVAfor3measures(T4T5T6,  "Conflict training  (T4 - T6)")
+
+
+# Q5  Do the groups differ in subsequent recall? Yes
+Q5 <- onewayANOVAfor3measures(behavior, "Retention", "Conflict recall (Rn)")
+
+
+# more stats. didn't bother with a function
+
+PC1all <- apa.aov.table(aov(PC1 ~ treatment , data=pca.all))
+PC1all <- as.data.frame(PC1all$table_body)
+totaldf <- PC1all[3, 3]
+PC1all$df <- paste(PC1all$df, ", " , totaldf, sep = "")
+PC1all$ANOVA <- "PC1 ~ treatment"
+PC1all$trials <- "All trials"
+
+PC2all <- apa.aov.table(aov(PC2 ~ treatment , data=pca.all))
+PC2all <- as.data.frame(PC2all$table_body)
+totaldf <- PC2all[3, 3]
+PC2all$df <- paste(PC2all$df, ", " , totaldf, sep = "")
+PC2all$ANOVA <- "PC2 ~ treatment"
+PC2all$trials <- "All trails"
+
+PC1rn <- apa.aov.table(aov(PC1 ~ treatment , data=pca.Rn))
+PC1rn <- as.data.frame(PC1rn$table_body)
+totaldf <- PC1rn[3, 3]
+PC1rn$df <- paste(PC1rn$df, ", " , totaldf, sep = "")
+PC1rn$ANOVA <- "PC1 ~ treatment"
+PC1rn$trials <- "Retention (Rn)"
+
+PC2rn <- apa.aov.table(aov(PC2 ~ treatment , data=pca.Rn))
+PC2rn <- as.data.frame(PC2rn$table_body)
+totaldf <- PC2rn[3, 3]
+PC2rn$df <- paste(PC2rn$df, ", " , totaldf, sep = "")
+PC2rn$ANOVA <- "PC2 ~ treatment"
+PC2rn$trials <- "Retention"
+
+PC.APA <- as.data.frame(rbind(PC1all, PC2all, PC1rn, PC2rn))
+PC.APA <- PC.APA %>% 
+    select(trials, ANOVA, Predictor, df, "F", p) %>%
+    filter(!Predictor %in% c("(Intercept)", "Error"))
+
+Q12345 <- as.data.frame(rbind(Q1,Q2,Q3,Q4,Q5, PC.APA))
+Q12345
+```
+
+## save files
+
+```{r writefiles}
+# supp table 1
+write.csv(behavior, file = "../data/01_behavior.csv", row.names = FALSE)
+
+# supp table 2
+write.csv(avoidancedf, file = "../data/01_avoidance.csv", row.names = FALSE)
+
+# table 1
+write.csv(Q12345, "../data/01_APA.csv", row.names = F)
+
+# unsure wether/how to include
+write.csv(pca.all, file = "../data/01_pca.all.csv", row.names = FALSE)
+write.csv(pca.Rn.summary, file = "../data/01_pca.Rn.summary.csv", row.names = FALSE)
+write.csv(pca.Rn, file = "../data/01_pca.Rn.csv", row.names = FALSE)
+```
+
+
+```{r citations}
+citation("tidyverse")
+citation("cowplot")  
+citation("factoextra")   
+citation("FactoMineR")  
+citation("apaTables")  
+```

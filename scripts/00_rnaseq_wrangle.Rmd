@@ -1,0 +1,177 @@
+---
+title: "RNAseq Data Wrangle"
+output: md_document
+---
+  
+```{r setup, warning=FALSE, message=FALSE}
+library("tidyverse") 
+library("forcats")  
+
+#knitr::opts_chunk$set(cache = T)
+```
+
+## Disclaimer
+
+Hello! If you are viewing this page then hopefully you want to access some really large data files containing raw RNA transcript counts and estimates of transcripts per million. 
+
+To obtain the data analyzed in this markdown file, I [ran kallisto](https://github.com/raynamharris/IntegrativeProjectWT2015/blob/master/UNIXworkflow/04_kallisto.md) on the Stampede Cluster at the Texas Advanced Computing Facility. The data are exported as abunance files in a subdirectory for every sample. 
+
+These files and this analysis will take up considerable space and time. If you want to run the analysis, first download `GSE100225_IntegrativeWT2015` from this GitHub repository: https://github.com/raynamharris/MouseHippocampusRNAseqData and save them in this repo in `../data/. 
+
+
+## Importing data from many Kallisto files into a single data frame
+
+The kallisto output gives you read counts for sample in an abundance file for every single sample. This portion of the code goes through and finds each samples' abundance.tsv file, extracts the data, and combines it all into a dataframe. The `counts` file is unnormalized, but the `tpm` is the data after being normalized by transcripts per million. This script was developed with assistance from Anna Batthenhouse and Dennis Whylie.
+
+Rather than examine unique transcripts, my analyses will focus on gene-level exprrssion. I use some string splitting to take the very long transcript identifying and create a `geneids` file that has all the database identifiers for each transcript. Then, I'll save the dount data.
+
+```{r kalistogather, warning=FALSE}
+## this will create lists of all the samples
+kallistoDirs = dir("../data/GSE100225_IntegrativeWT2015/")
+kallistoDirs = kallistoDirs[!grepl("\\.(R|py|pl|sh|xlsx?|txt|tsv|csv|org|md|obo|png|jpg|pdf)$",
+kallistoDirs, ignore.case=TRUE)]
+
+path <- c("../data/GSE100225_IntegrativeWT2015/")
+
+kallistoFiles = paste0(path, kallistoDirs, "/abundance.tsv")
+names(kallistoFiles) = kallistoDirs
+if(file.exists(kallistoFiles))
+  kallistoData = lapply(
+  kallistoFiles,
+  read.table,
+  sep = "\t",
+  row.names = 1,
+  header = TRUE
+)
+
+## this for loop uses the reduce function to make two data frame with counts or tpm from all the samples. note, only counts are used
+
+ids = Reduce(f=union, x=lapply(kallistoData, rownames))
+if (all(sapply(kallistoData, function(x) {all(rownames(x)==ids)}))) {
+  count = data.frame(
+    id = ids,
+    sapply(kallistoData, function(x) {x$est_counts}),
+    check.names = FALSE,
+    stringsAsFactors = FALSE
+)
+  tpm = data.frame(
+    id = ids,
+    sapply(kallistoData, function(x) {x$tpm}),
+    check.names = FALSE,
+    stringsAsFactors = FALSE
+)
+}
+```
+
+## Gene ids
+
+This takes one column of information from the transcriptome and splits it up to make a dataframe with tons of useful gene information 
+
+```{r geneids}
+head(count)
+## make a dataframe with the parts of the gene id as columns
+geneids <- count[c(1)] 
+geneids$ENSMUST <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 1)
+geneids$ENSMUSG <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 2)
+geneids$OTTMUSG <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 3)
+geneids$OTTMUST <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 4)
+geneids$transcript <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 5)
+geneids$gene <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 6)
+geneids$length <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 7)
+geneids$structure1 <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 8)
+geneids$structure2 <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 9)
+geneids$structure3 <- sapply(strsplit(as.character(geneids$id),'\\|'), "[", 10)
+geneids$transcript_lenght <- as.factor(paste(geneids$transcript, geneids$length, sep="_"))
+names(geneids)
+
+# save slim version for joining immediately
+geneidgene <- geneids %>% select(id, gene)
+geneidtranscript <- geneids %>% select(id, transcript_lenght)
+```
+
+## TPM
+
+My downstream analyses don't use TPM, but some people find that useful, so I made one and saved it as a df for you.
+
+```{r tpm}
+# tpm to tpmbytranscript - note: not used for subsequent analyses
+tpmbytranscript <-  full_join(geneidtranscript, tpm) %>% select(-id)   # merge tpm and genids
+row.names(tpmbytranscript) <- tpmbytranscript$transcript_lenght ## make gene the row name
+tpmbytranscript[1] <- NULL ## make gene the row name
+tpmbytranscript <- round(tpmbytranscript) #round all value to nearest 1s place
+head(tpmbytranscript,3)
+```
+
+## Counts per gene
+
+This sums the counts for all transcripts then rounds the measure to give a df that will be used fof all down stream analysis.
+
+```{r countbygene}
+# count to countbygene
+countbygene <- full_join(geneidgene, count) %>% select(-id)  %>% 
+  pivot_longer(-gene, names_to = "samples", values_to = "counts") %>%  
+  pivot_wider(
+    names_from = samples, 
+    values_from = counts,
+    values_fn = list(counts = sum))  %>% 
+  arrange(gene)
+countbygene <- as.data.frame(countbygene)
+row.names(countbygene) <- countbygene$gene ## make gene the row name
+countbygene[1] <- NULL ## make gene the row name
+countbygene <- round(countbygene) #round all value to nearest 1s place
+head(countbygene,3)
+```
+
+
+## Prep for DESeq
+
+DESeq is the tool I'll be using downstream, so I use "colData" to describe the meta data that will be used in downstream analyses
+
+```{r colData}
+# clean col Data
+colData <- read_csv("../data/IntegrativeWT2015ColData.csv") %>%
+  mutate(ID = gsub("[[:punct:]]", "", Mouse)) %>%
+  filter(APA_Conflict != "NA_NA") %>%
+  mutate(subfield = Region) %>%
+  mutate(treatment = fct_recode(APA_Conflict,
+                                "standard.yoked" = "Yoked_NoConflict",
+                                "standard.trained" = "Trained_NoConflict",
+                                "conflict.yoked" = "Yoked_Conflict",
+                                "conflict.trained" = "Trained_Conflict")) %>%
+  mutate(training = fct_collapse(treatment,
+                                      trained = c("standard.trained", "conflict.trained"),
+                                      yoked = c("standard.yoked", "conflict.yoked"))) %>%
+  select(RNAseqID,ID,subfield, treatment, training) %>%
+  arrange(RNAseqID) %>%
+  droplevels() 
+head(colData,3)
+```
+
+Remove count data for samples that we aren't analyzing.
+
+```{r countData}
+## colData and countData must contain the exact same samples. 
+savecols <- as.character(colData$RNAseqID) #select the rowsname 
+savecols <- as.vector(savecols) # make it a vector
+countData <- countbygene %>% dplyr::select(one_of(savecols)) # select just the columns 
+head(countData,3)  
+```
+
+## Save files
+
+```{r write}
+write.csv(geneids, "../data/00_geneids.csv", row.names=F)
+write.csv(tpmbytranscript, "../data/00_tpmbytranscript.csv", row.names=T)
+write.csv(colData, file = "../data/00_colData.csv", row.names = F)
+write.csv(countData, file = "../data/00_countData.csv", row.names = T)  
+```
+
+## Session Info
+
+```{r SessionInfo}
+sessionInfo()
+```
+
+```{r citations}
+citation("tidyverse") 
+```

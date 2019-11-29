@@ -1,0 +1,186 @@
+---
+title: "Correlation Analysis"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(fig.path = '../figures/04_correlations/')
+```
+
+
+```{r packages}
+library(tidyverse)
+library(corrr)
+library(cowplot)
+
+source("./figureoptions.R")
+source("./functions_RNAseq.R")
+```
+
+## Sample information and PC1
+
+```{r DGDEGs}
+# read the sample data, set levels, join iwth behvior PCA data
+colData <- read.csv("../data/00_colData.csv", row.names = 1, stringsAsFactors = T)
+colData <- colData %>% filter(subfield == "DG")
+pca.Rn <- read_csv("../data/01_pca.all.csv") %>% 
+  filter(trialNum == 9) %>% 
+  select(ID:PC2)
+colData <- left_join(colData, pca.Rn)
+head(colData)
+```
+
+```{r DGvsd}
+# read all count data
+vsd <- read.csv("../data/03_DG_vsdtraining.csv", row.names = 1, check.names = F) 
+vsd$gene <- row.names(vsd)
+vsd$gene <- toupper(vsd$gene)
+vsd <- as.data.frame(vsd)
+row.names(vsd) <- vsd$gene
+vsd$gene <- NULL
+head(vsd)
+
+# prep to join with sample colData
+vsd <- as.data.frame(t(vsd))
+vsd$sample <- row.names(vsd)
+vsd$mouse <- sapply(strsplit(as.character(vsd$sample),"\\-"), "[", 1)
+vsd$ID <- paste(15, vsd$mouse, sep = "")
+
+vsd <- left_join(colData, vsd)
+```
+
+
+
+```{r ARC}
+summary(lm( PC1 ~ ARC, data = vsd))
+summary(lm( PC2 ~ ARC, data = vsd))
+
+cor.test(vsd$PC1, vsd$ARC, method = c("pearson"))
+cor.test(vsd$PC2, vsd$ARC, method = c("pearson"))
+
+a <- ggplot(vsd, aes(x = ARC, y = PC1)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+  theme_ms() +
+   theme(legend.position = "none", axis.title.x = element_blank(), axis.text.x = element_blank())  +
+  labs(subtitle = "R2 = 0.81, p = 0.0002")
+b <- ggplot(vsd, aes(x = ARC, y = PC2)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+  theme_ms() +
+   theme(legend.position = "none")  +
+  labs(subtitle = "R2 = -0.63, p = 0.009 ")
+
+left <- plot_grid(a,b, nrow = 2, labels = c("a","b"), label_size = 8)
+left
+```
+
+
+## Correlate ALL genes with PC1 and PC2
+
+```{r makecorrrmat}
+
+# I'm using the select function to get PC1, PC1, and all the genes. Use `tail(names(vsd),5)` to see that last genes is "ZZZ3"
+head(names(vsd),10)
+tail(names(vsd),5)
+
+forcorall <-  vsd %>% select(PC1:ZZZ3)
+corrrmat <- correlate(forcorall, diagonal = 1) 
+head(corrrmat)
+```
+
+## Top 11 correlations with PC1 and their relationship with PC2
+
+```{r corrr}
+corrsTop10 <- corrrmat %>% 
+  focus(PC1, PC2)  %>% 
+  arrange(desc(PC1)) %>% 
+  filter(PC1 > 0.78) 
+corrsTop10
+
+topcorrrs <- corrsTop10$rowname
+
+p1 <- corrrmat %>% 
+  focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+   focus(PC1, PC2) %>%
+  mutate(rowname = reorder(rowname, PC1)) %>%
+  ggplot(aes(rowname, PC1, fill = PC1)) +
+    geom_col() + coord_flip() +
+  scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
+  theme_ms() +
+  theme(legend.position = "none") +
+  #ylim(-1,1) +
+  labs(x = NULL, y = "Correlation to PC1") +
+  labs(subtitle = " ")
+p1 
+
+p2 <- corrrmat %>% 
+  focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+  rearrange() %>% 
+  network_plot(colors = c("#67a9cf", "white", "#ef8a62"),
+               min_cor = .6, curved = T, legend = T,
+               repel = TRUE) + 
+  theme(legend.position = "bottom") +
+  labs(subtitle = " ")
+p2 
+
+right <- plot_grid(p1,p2,  nrow = 1, labels = c("c","d"), label_size = 8)
+right
+```
+
+## all figures together
+
+```{r correlations, fig.width=6.69, fig.height=3.5}
+fig4 <- plot_grid(left, right, nrow = 1, rel_widths = c(1,2))
+fig4
+
+pdf(file="../figures/04_correlations/correlations.pdf", width=6.69, height=3.5)
+plot(fig4)
+dev.off()
+
+pdf(file="../figures/figure_4.pdf", width=6.69, height=3.5)
+plot(fig4)
+dev.off()
+```
+
+## What genes genes correlated with PC1? How many gene correlated with PC1 and are differentially epxressed in DG?
+
+```{r numbers}
+# 58 genes are correlated with PC1 > 0.7
+corrsPC1sig <- corrrmat %>% 
+  focus(PC1)  %>% 
+  arrange(desc(PC1)) %>% 
+  filter(PC1 > .7) %>%
+   mutate_each(funs=toupper) %>%
+  mutate(gene = rowname) %>% 
+  arrange(gene) %>% 
+  select(gene,PC1)   
+corrsPC1sig$gene
+
+# 214 DEGs in DG
+# read DG DEGs
+DG_DEGs <- read.csv("../data/03_DG_DEGs_yoked_trained_.csv", row.names = 1, check.names = F) 
+DG_DEGs$gene <- toupper(DG_DEGs$gene)
+dim(DG_DEGs)
+
+# 42 found  in both correlate and deg datasets
+PC1corrsDEGS <- inner_join(corrsPC1sig, DG_DEGs) %>% 
+  arrange(gene) %>% select(gene,PC1)   
+length(PC1corrsDEGS$gene)
+PC1corrsDEGS$gene
+```
+
+
+
+```{r citation}
+citation("corrr")
+```
+
+```{r write}
+write.csv(corrsTop10, "../data/04_corrsTop10.csv", row.names = F)
+write.csv(corrsPC1sig, "../data/04_corrsPC1sig.csv", row.names = F)
+```

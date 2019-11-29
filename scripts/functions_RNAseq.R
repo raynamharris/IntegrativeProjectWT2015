@@ -7,7 +7,7 @@ plot.tSNE.trained <- function(mydds, myperplexity, mysubfield){
   
   tsne_df = as.data.frame(tsne_model$Y) 
   
-  colData <- subsetcolData(a.colData, mysubfield)
+  colData <- subsetcolData(colData, mysubfield)
   tsne_df <- cbind(colData, tsne_df)
   tsne_df$subfield <- factor(tsne_df$subfield, levels = c("DG", "CA3", "CA1"))
   tsne_df$training <- factor(tsne_df$training, levels = c("yoked", "trained"))
@@ -30,13 +30,13 @@ plot.tSNE.trained <- function(mydds, myperplexity, mysubfield){
 
 returnddstreatment <- function(mytissue){
   print(mytissue)
-  colData <- a.colData %>% 
+  colData <- colData %>% 
     filter(subfield %in% c(mytissue))  %>% 
     droplevels()
   
   savecols <- as.character(colData$RNAseqID) 
   savecols <- as.vector(savecols) 
-  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+  countData <- countData %>% dplyr::select(one_of(savecols)) 
   
   ## create DESeq object using the factors subfield and APA
   dds <- DESeqDataSetFromMatrix(countData = countData,
@@ -48,15 +48,15 @@ returnddstreatment <- function(mytissue){
   return(dds)
 }
 
-returndds2 <- function(mytissue){
+returnddstraining <- function(mytissue){
   print(mytissue)
-  colData <- a.colData %>% 
+  colData <- colData %>% 
     filter(subfield %in% c(mytissue))  %>% 
     droplevels()
   
   savecols <- as.character(colData$RNAseqID) 
   savecols <- as.vector(savecols) 
-  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+  countData <- countData %>% dplyr::select(one_of(savecols)) 
   
   ## create DESeq object using the factors subfield and APA
   dds <- DESeqDataSetFromMatrix(countData = countData,
@@ -69,7 +69,7 @@ returndds2 <- function(mytissue){
 }
 
 
-returnvsds <- function(mydds, vsdfilename){
+savevsds <- function(mydds, vsdfilename){
   dds <- mydds
   vsd <- vst(dds, blind=FALSE) ## variance stabilized
   print(head(assay(vsd),3))
@@ -331,10 +331,10 @@ plottotalDEGs <- function(myDEGS, mysubtitle){
 ## new correlation heatmap
 
 # subset col for heatmap
-subsetcolData <- function(a.colData, eachgroup){
+subsetcolData <- function(colData, eachgroup){
   
   # subset to look within one tissue in one sex
-  colData <- a.colData %>%
+  colData <- colData %>%
     dplyr::filter(subfield == eachgroup) %>%
     droplevels()
   row.names(colData) <- colData$RNAseqID
@@ -461,14 +461,14 @@ plot.volcano <- function(mydds, up, down, mycolors){
 
 returndds <- function(mytissue, mytreatment){
   print(mytissue)
-  colData <- a.colData %>% 
+  colData <- colData %>% 
     filter(subfield %in% c(mytissue),
            APA2 %in% c(mytreatment))  %>% 
     droplevels()
   
   savecols <- as.character(colData$RNAseqID) 
   savecols <- as.vector(savecols) 
-  countData <- a.countData %>% dplyr::select(one_of(savecols)) 
+  countData <- countData %>% dplyr::select(one_of(savecols)) 
   
   ## create DESeq object using the factors subfield and APA
   dds <- DESeqDataSetFromMatrix(countData = countData,

@@ -1,0 +1,181 @@
+---
+title: "Differential Gene Expression Analysis of Subfields"
+output: md_document
+---
+
+## Subfield analysis
+
+This script is used to identify treatement differences within each subfield, generate volcano plots, venn diagrams, and tables for subsequent GO analyses. The final mutlipanel figures for the manuscript have been inserted just below the subheadings. 
+
+```{r setup, message=F, warning=F}
+library(tidyverse)
+library(cowplot) ## for some easy to use themes
+library(DESeq2) ## for gene expression analysis
+library(png)
+library(grid)
+
+library(BiocParallel)
+register(MulticoreParam(6))
+
+## load functions 
+source("figureoptions.R")
+source("functions_RNAseq.R")
+
+## set output file for figures 
+knitr::opts_chunk$set(fig.path = '../figures/03_rnaseqSubfield/', cache = T)
+```
+
+## Get varience stabilized gene expression for each tissue
+
+```{r DGdeseq}
+# count data
+countData <- read.csv("../data/00_countData.csv", header = T, check.names = F, row.names = 1)
+
+# prep col data
+colData <- read.csv("../data/00_colData.csv", header = T)
+colData$training <- factor(colData$training, levels = levelstraining)
+colData$treatment <- factor(colData$treatment, levels = levelstreatment)
+
+# DEGs with looking at all four treatments individually
+DGdds <- returnddstreatment("DG") 
+CA3dds <- returnddstreatment("CA3") 
+CA1dds <- returnddstreatment("CA1") 
+
+# DEGs with looking at all grouped trained and yoked
+DGdds2 <- returnddstraining("DG") 
+CA3dds2 <- returnddstraining("CA3") 
+CA1dds2 <- returnddstraining("CA1") 
+
+savevsds(DGdds2, "../data/03_DG_vsdtraining.csv")
+savevsds(CA3dds2, "../data/03_CA3_vsdtraining.csv")
+savevsds(CA1dds2, "../data/03_CA1_vsdtraining.csv")
+```
+
+## Results to compare with volcano plots
+
+```{r twowaycontrasts}
+print("DG")
+res_summary_subfield(DGdds2, c("training", "trained", "yoked"))
+res_summary_subfield(DGdds, c("treatment", "conflict.trained", "standard.trained"))
+res_summary_subfield(DGdds, c("treatment", "conflict.yoked", "standard.yoked"))
+
+print("CA3")
+res_summary_subfield(CA3dds2, c("training", "trained", "yoked"))
+res_summary_subfield(CA3dds, c("treatment", "conflict.trained", "standard.trained"))
+res_summary_subfield(CA3dds, c("treatment", "conflict.yoked", "standard.yoked"))
+
+print("CA1")
+res_summary_subfield(CA1dds2, c("training", "trained", "yoked"))
+res_summary_subfield(CA1dds, c("treatment", "conflict.trained", "standard.trained"))
+res_summary_subfield(CA1dds, c("treatment", "conflict.yoked", "standard.yoked"))
+```
+
+## Volcano plots
+
+```{r volcanos, fig.width=6.69, fig.height=6}
+
+plot.volcano <- function(mydds, whichtissue, whichfactor, up, down, mycolors){
+
+  # calculate DEG results
+  res <- results(mydds, contrast =c(whichfactor, up, down),
+                 independentFiltering = T, alpha = 0.1)
+   
+  # create dataframe with pvalues and lfc
+  data <- data.frame(gene = row.names(res),
+                     padj = res$padj, 
+                     logpadj = -log10(res$padj),
+                     lfc = res$log2FoldChange)
+  data <- na.omit(data)
+  data <- data %>%
+    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
+                                     yes = up, no = ifelse(data$lfc < 0 & data$padj < 0.1, 
+                                                 yes = down, no = "NS")))
+  data$direction <- factor(data$direction, levels = c(down, "NS", up))
+  
+  #save df that only has the values for significant genes IF there are DEGs
+  toprint <- data %>% filter(direction != "NS")
+  myfilename = paste("../data/03", whichtissue, "DEGs", down, up, ".csv" ,sep = "_")
+  
+  # for some reason i can only return the df or return the plot...
+  #if (dim(toprint)[1] != 0) { return(write.csv(toprint, myfilename))}
+  
+  # plot volcanos
+  volcano <- data %>%
+    ggplot(aes(x = lfc, y = logpadj)) + 
+    geom_point(aes(color = direction), size = 1, alpha = 0.75, na.rm = T) + 
+     theme_ms() +
+    scale_color_manual(values = mycolors,
+                       name = " ",
+                       drop = FALSE) +
+    ylim(c(0,12.5)) +  
+    xlim(c(-8,8)) +
+    labs(y = NULL, x = "log fold change", subtitle = " ")  +
+    theme(legend.position = "top",
+          legend.spacing.x = unit(-0.1, 'cm'),
+          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
+          panel.grid = element_blank()) 
+  return(volcano)
+  
+
+}
+
+# usage: mydds, whichfactor, up, down, mycolors, mysubfield
+DGa <- plot.volcano(DGdds2, "DG", "training", "trained", "yoked", volcano7) 
+DGb <-  plot.volcano(DGdds, "DG", "treatment", "conflict.trained", "standard.trained",  volcano2) 
+DGc <-  plot.volcano(DGdds, "DG", "treatment", "conflict.yoked", "standard.yoked",  volcano6) 
+
+CA3a <- plot.volcano(CA3dds2, "CA3", "training", "trained", "yoked", volcano7) 
+CA3b <-  plot.volcano(CA3dds, "CA3","treatment", "conflict.trained", "standard.trained", volcano2) 
+CA3c <-  plot.volcano(CA3dds, "CA3","treatment", "conflict.yoked", "standard.yoked", volcano6) 
+
+CA1a <- plot.volcano(CA1dds2, "CA1","training", "trained", "yoked", volcano7) 
+CA1b <-  plot.volcano(CA1dds, "CA1","treatment", "conflict.trained", "standard.trained", volcano2) 
+CA1c <-  plot.volcano(CA1dds, "CA1","treatment", "conflict.yoked", "standard.yoked", volcano6) 
+
+volcanos <- plot_grid(DGa + labs(x= NULL, y = "DG \n -log10(p)") + theme(legend.position = "none"),
+                      DGb + labs(x= NULL) + theme(legend.position = "none"), 
+                      DGc + labs(x= NULL) + theme(legend.position = "none"),
+                      
+                      CA3a + theme(legend.position = "none") + labs(x= NULL,  y = "CA3 \n -log10(p)"),
+                      CA3b + theme(legend.position = "none") +  labs(x= NULL ), 
+                      CA3c + theme(legend.position = "none") +  labs(x= NULL ), 
+                      
+                      CA1a + theme(legend.position = "bottom") +  labs( y = "CA1 \n -log10(p)"), 
+                      CA1b + theme(legend.position = "bottom"), 
+                      CA1c + theme(legend.position = "bottom"), 
+                      nrow = 3, 
+                      rel_heights =  c(1,1,1.25) ,
+                      rel_widths = c(1.2,1,1) ,
+                      labels =  c("a", "d", "g",
+                                  "b", "e", "h",
+                                  "c", "f", "i"),
+                      label_size = 8) 
+volcanos
+
+comparisons <- png::readPNG("../figures/00_schematics/figure_DEGcomparisons.png")
+comparisons <- ggdraw() +  draw_image(comparisons, scale = 1)
+
+right <- plot_grid(comparisons,volcanos, nrow = 2, rel_heights = c(0.1,1))
+
+circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
+circuit <- ggdraw() +  draw_image(circuit, scale = 1)
+
+left <- plot_grid(circuit, right, nrow = 1, rel_widths = c(0.1,1))
+left
+
+pdf(file="../figures/03_rnaseqSubfield/volcanos.pdf", width=6.69, height=6)
+plot(left)    
+dev.off()
+
+pdf(file="../figures/figure_3.pdf", width=6.69, height=6)
+plot(left)    
+dev.off()
+```
+
+
+```{r citations}
+citation("DESeq2") ## for gene expression analysis
+citation("png")
+citation("grid")
+citation("BiocParallel")
+````

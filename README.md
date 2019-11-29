@@ -32,7 +32,7 @@ integrate across all three levels of analysis.
 -   **Part 1: Behavioral analysis**
     -   [scripts/00\_behavior\_wrangle](scripts/00_behavior_wrangle.md):
         behavior data wrangling,
-        -   [scripts/01a\_behavior\_analysis](scripts/01a_behavior_analysis.md):
+        -   [scripts/01\_behavior\_analysis](scripts/01_behavior_analysis.md):
             behavior statistics and data visualization
 -   **Part 2: RNA sequencing analysis**
     -   **UNIX-based**
@@ -49,36 +49,35 @@ integrate across all three levels of analysis.
             -   [UNIXworkflow04\_kallisto](UNIXworkflow04_kallisto.md):
                 Quantify transcript-level expression using Kallisto
     -   **R-based**
-        -   [scripts/00\_kallistoCounts](scripts/00_kallistoCounts.md):
+        -   [scripts/00\_rnaseq\_wrangle](scripts/00_rnaseq_wrangle.md):
             converting the kallisto transcript counts to gene counts
-        -   [scripts/02a\_rnaseq\_makedfs](scripts/02a_rnaseq_makedfs.md):
-            wrangling the categorical data about the samples and the
-            count data
-        -   [scripts/02b\_rnaseqQC](scripts/02b_rnaseqALL.md): analyzing
+        -   [scripts/02\_rnaseqQC](scripts/02_rnaseqQC.md): analyzing
             all the RNA-seq data together
-        -   [scripts/02c\_rnaseqSubfield](scripts/02c_rnaseqSubfield.md):
+        -   [scripts/03\_rnaseqSubfield](scripts/03_rnaseqSubfield.md):
             analyzing the data for each hippocampal subfield separately
-        -   [scripts/02d\_correlations.Rmd](scripts/02d_correlations.md):
+        -   [scripts/04\_correlations.Rmd](scripts/04_correlations.md):
             correlations between genes and beahvior
-        -   [scripts/02e\_GO](scripts/02e_GO.md_) an analysis of gene
+        -   [scripts/05\_GO](scripts/05_GO.md) an analysis of gene
             ontology.
+
+![](./figures/00_schematics/figure_workflow.png)
 
 Figures and Tables
 ------------------
 
-### Figure 1
+### Figure 1: Experimental Design
 
 ![](./figures/01_behavior/experimentaldesign-2.png)
 
-### Supplementary Figure 1
+### Supplementary Figure 1: RNA-seq Quality Control
 
 ![](./figures/02b_rnaseqQC/supplfig1-1.png)
 
-### Figure 2
+### Figure 2: Avoidance Behavior
 
 ![](./figures/01_behavior/avoidance-1.png)
 
-### Table 1
+### Table 1: Avoidance Behavior Statistics
 
 <table>
 <thead>
@@ -727,11 +726,11 @@ treatment
 </tbody>
 </table>
 
-### Figure 3
+### Figure 3: Subfield-specific gene expression
 
-![](./figures/02c_rnaseqSubfield/volcanos-2.png)
+![](./figures/03_rnaseqSubfield/volcanos-2.png)
 
-### Table 2
+### Table 2: Hypothesis-driven Anlaysis of Gene Ontology of Differential Gene Expression
 
 <table>
 <thead>
@@ -838,9 +837,9 @@ Molecules.associated.with.LTP
 
 ### Figure 4
 
-![](./figures/02d_correlations/correlations-1.png)
+![](./figures/04_correlations/correlations-1.png)
 
-### Table 3
+### Table 3: Data-driven analysis of Gene Ontology related to Behavior
 
 <table>
 <thead>
@@ -885,6 +884,23 @@ ARC BDNF EGR1 KCNK10 NPAS4 PLK2 PTGS2 SGK1 SYT4
 BP
 </td>
 <td style="text-align:left;">
+Learning or memory
+</td>
+<td style="text-align:right;">
+286
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+ARC BDNF BTG2 EGR1 KCNK10 NPAS4 PLK2 PTGS2 SGK1 SYT4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BP
+</td>
+<td style="text-align:left;">
 Tissue development
 </td>
 <td style="text-align:right;">
@@ -896,23 +912,6 @@ Tissue development
 <td style="text-align:left;">
 ACAN ARC AREG ATF3 BDNF BTG2 COL10A1 EGR1 ERRFI1 FOSL2 FRMD6 FZD5 HOMER1
 HOXC4 NR4A3 PCDH8 PTGS2 RGS2 SLC25A25 SMAD7 TIPARP
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-BP
-</td>
-<td style="text-align:left;">
-Learning or memory
-</td>
-<td style="text-align:right;">
-286
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:left;">
-ARC BDNF BTG2 EGR1 KCNK10 NPAS4 PLK2 PTGS2 SGK1 SYT4
 </td>
 </tr>
 <tr>
@@ -1023,16 +1022,16 @@ ARC BDNF CPEB4 FZD5 HOMER1 PCDH8 PLK2 SYT4
 CC
 </td>
 <td style="text-align:left;">
-Neuron part
+Somatodendritic compartment
 </td>
 <td style="text-align:right;">
-1933
+1035
 </td>
 <td style="text-align:right;">
-13
+9
 </td>
 <td style="text-align:left;">
-ACAN ARC BDNF CPEB4 FZD5 HOMER1 NEXN PCDH8 PLK2 PTGS2 RGS2 SGK1 SYT4
+ACAN ARC BDNF CPEB4 FZD5 HOMER1 PCDH8 PLK2 SYT4
 </td>
 </tr>
 <tr>
@@ -1122,16 +1121,3 @@ ATF3 EGR1 EGR4 FOSL2 HOXC4 NFIL3 NPAS4 NR4A3 PER1
 </tr>
 </tbody>
 </table>
-
-### Supplementary Table 2
-
-![](./figures/00_schematics/figure_workflow.png)
-
-### Data
-
-This directory contains both raw and intermediate data files. -
-Intermediate data files have alphanumeric prefixes that correspond to
-the R script that created them. - Raw files have only numeric prefix
-(aka lack an alphabetical character) that indicates whether it is for
-behavior (01), RNA-seq (02), or ephys (03). - Files with more
-descriptive names were created for public repositories

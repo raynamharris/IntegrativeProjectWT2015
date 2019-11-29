@@ -31,7 +31,7 @@ This workflow below describes the order in which scripts are used to process and
 
 - **Part 1: Behavioral analysis**	
   - [scripts/00_behavior_wrangle](scripts/00_behavior_wrangle.md): behavior data wrangling,
-	- [scripts/01a_behavior_analysis](scripts/01a_behavior_analysis.md): behavior statistics and data visualization
+	- [scripts/01_behavior_analysis](scripts/01_behavior_analysis.md): behavior statistics and data visualization
 - **Part 2: RNA sequencing analysis**
   - **UNIX-based**
 	  - [UNIXworkflow/00_rawdata](UNIXworkflow/00_rawdata.md): Download the data to scratch on Stampede with `00_gsaf_download.sh`. 
@@ -40,66 +40,58 @@ This workflow below describes the order in which scripts are used to process and
   	- [UNIXworkflow/03_fastqc](UNIXworkflow/03_fastqc.md): Evaluate the quality of the processed reads
 	  - [UNIXworkflow04_kallisto](UNIXworkflow04_kallisto.md): Quantify transcript-level expression using Kallisto
   - **R-based**
-	  - [scripts/00_kallistoCounts](scripts/00_kallistoCounts.md): converting the kallisto transcript counts to gene counts 
-	  - [scripts/02a_rnaseq_makedfs](scripts/02a_rnaseq_makedfs.md): wrangling the categorical data about the samples and the count data
-	  - [scripts/02b_rnaseqQC](scripts/02b_rnaseqALL.md): analyzing all the RNA-seq data together
-	  - [scripts/02c_rnaseqSubfield](scripts/02c_rnaseqSubfield.md): analyzing the data for each hippocampal subfield separately
-	  - [scripts/02d_correlations.Rmd](scripts/02d_correlations.md): correlations between genes and beahvior
-	  - [scripts/02e_GO](scripts/02e_GO.md_) an analysis of gene ontology. 
+	  - [scripts/00_rnaseq_wrangle](scripts/00_rnaseq_wrangle.md): converting the kallisto transcript counts to gene counts 
+	  - [scripts/02_rnaseqQC](scripts/02_rnaseqQC.md): analyzing all the RNA-seq data together
+	  - [scripts/03_rnaseqSubfield](scripts/03_rnaseqSubfield.md): analyzing the data for each hippocampal subfield separately
+	  - [scripts/04_correlations.Rmd](scripts/04_correlations.md): correlations between genes and beahvior
+	  - [scripts/05_GO](scripts/05_GO.md) an analysis of gene ontology. 
 	  
+
+![](./figures/00_schematics/figure_workflow.png)	  
 	  
 ## Figures and Tables
 
-### Figure 1
+### Figure 1: Experimental Design
 
 
 ![](./figures/01_behavior/experimentaldesign-2.png)
 
-### Supplementary Figure 1
+### Supplementary Figure 1: RNA-seq Quality Control
 
 ![](./figures/02b_rnaseqQC/supplfig1-1.png)
 
-### Figure 2
+### Figure 2: Avoidance Behavior
 
 ![](./figures/01_behavior/avoidance-1.png)
 
-### Table 1
+### Table 1: Avoidance Behavior Statistics
 
 ```{r}
-table1 <- read.csv("./data/01a_APA.csv")
+table1 <- read.csv("./data/01_APA.csv")
 kable(table1)
 ```
 
-### Figure 3
+### Figure 3: Subfield-specific gene expression
 
-![](./figures/02c_rnaseqSubfield/volcanos-2.png)
+![](./figures/03_rnaseqSubfield/volcanos-2.png)
 
-### Table 2
+### Table 2: Hypothesis-driven Anlaysis of Gene Ontology of Differential Gene Expression
 
 ```{r}
-table2 <- read.csv("./data/02e_GO_DEGsSanesLichtman.csv")
+table2 <- read.csv("./data/05_GO_DEGsSanesLichtman.csv")
 kable(table2)
 ```
 
 ### Figure 4
 
-![](./figures/02d_correlations/correlations-1.png)
+![](./figures/04_correlations/correlations-1.png)
 
-### Table 3
+### Table 3: Data-driven analysis of Gene Ontology related to Behavior
 
 ```{r}
-table3 <- read.csv("./data/02e_GO_PC1.csv")
+table3 <- read.csv("./data/05_GO_PC1.csv")
 kable(table3)
 ```
 
-### Supplementary Table 2
-
-![](./figures/00_schematics/figure_workflow.png)
 
 
-### Data
-
-This directory contains both raw and intermediate data files. 
-- Intermediate data files have alphanumeric prefixes that correspond to the R script that created them. 
-- Raw files have only numeric prefix (aka lack an alphabetical character) that indicates whether it is for behavior (01), RNA-seq (02), or ephys (03). 
-- Files with more descriptive names were created for public repositories

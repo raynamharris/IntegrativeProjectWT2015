@@ -1,0 +1,860 @@
+    library(tidyverse)
+    library(cowplot) ## for some easy to use themes
+    library(DESeq2) ## for gene expression analysis
+    library(Rtsne) # for tSNE
+
+    library(BiocParallel)
+    register(MulticoreParam(6))
+
+    ## load functions 
+    source("figureoptions.R")
+    source("functions_RNAseq.R")
+
+    ## set output file for figures 
+    knitr::opts_chunk$set(fig.path = '../figures/02_rnaseqQC/')
+
+Quality control
+===============
+
+MultiQC
+-------
+
+    # read meta data for plotting
+    colData <- read.csv("../data/00_colData.csv")
+    sampletreatment <- colData %>% select(RNAseqID, treatment)  
+
+    # stats from fastqc 
+    fastqc <- read.csv(file = "../data/multiqc/multiqc_fastqc.csv")
+    fastqc$read <- ifelse(grepl("R1", fastqc$Sample.Name), "R1", "R2")  # make read columns
+    fastqc$mouse <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 1)
+    fastqc$subfield <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 2)
+    fastqc$section <- sapply(strsplit(as.character(fastqc$Sample.Name),"\\_"), "[", 3)
+    fastqc$RNAseqID <- paste(fastqc$mouse, fastqc$subfield, fastqc$section, sep = "-")
+    fastqc <- left_join(sampletreatment,fastqc) %>% 
+      select(RNAseqID, treatment, subfield, read, QualityFiltered, Dups, GC, Length, MillionReads)  %>% 
+      filter(QualityFiltered == "No")
+
+    ## Joining, by = "RNAseqID"
+
+    ## Warning: Column `RNAseqID` joining factor and character vector, coercing
+    ## into character vector
+
+    fastqc$treatment <- factor(fastqc$treatment, levels = levelstreatment)
+    fastqc$subfield <- factor(fastqc$subfield, levels = levelssubfield)
+    head(fastqc)
+
+    ##     RNAseqID        treatment subfield read QualityFiltered Dups   GC
+    ## 1 143A-CA3-1 conflict.trained      CA3   R1              No 0.81 0.49
+    ## 2 143A-CA3-1 conflict.trained      CA3   R2              No 0.71 0.48
+    ## 3  143A-DG-1 conflict.trained       DG   R1              No 0.72 0.50
+    ## 4  143A-DG-1 conflict.trained       DG   R2              No 0.63 0.49
+    ## 5 143B-CA1-1   conflict.yoked      CA1   R1              No 0.71 0.48
+    ## 6 143B-CA1-1   conflict.yoked      CA1   R2              No 0.62 0.48
+    ##   Length MillionReads
+    ## 1    150          5.8
+    ## 2    150          5.8
+    ## 3    150          7.9
+    ## 4    150          7.9
+    ## 5    150          2.9
+    ## 6    150          2.9
+
+    # stats from kallisto
+    kallisto <- read.csv(file = "../data/multiqc/multiqc_kallisto.csv")
+    kallisto$mouse <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 1)
+    kallisto$subfield <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 2)
+    kallisto$section <- sapply(strsplit(as.character(kallisto$sample),"\\_"), "[", 3)
+    kallisto$RNAseqID <- paste(kallisto$mouse, kallisto$subfield, kallisto$section, sep = "-")
+    kallisto <- left_join(sampletreatment,kallisto) %>% 
+      select(RNAseqID, treatment, subfield, QC, bp, fracalign, millalign) %>% 
+      filter(QC == "raw")
+
+    ## Joining, by = "RNAseqID"
+
+    ## Warning: Column `RNAseqID` joining factor and character vector, coercing
+    ## into character vector
+
+    kallisto$treatment <- factor(kallisto$treatment, levels = levelstreatment)
+    kallisto$subfield <- factor(kallisto$subfield, levels = levelssubfield)
+    head(kallisto)
+
+    ##     RNAseqID        treatment subfield  QC    bp fracalign millalign
+    ## 1 143A-CA3-1 conflict.trained      CA3 raw 201.1      0.60       3.5
+    ## 2  143A-DG-1 conflict.trained       DG raw 198.9      0.69       5.4
+    ## 3 143B-CA1-1   conflict.yoked      CA1 raw 200.6      0.62       1.8
+    ## 4  143B-DG-1   conflict.yoked       DG raw 200.0      0.57       2.2
+    ## 5 143C-CA1-1 standard.trained      CA1 raw 198.4      0.66       2.3
+    ## 6 143D-CA1-3   standard.yoked      CA1 raw 197.0      0.37       1.2
+
+    multiqc <- left_join(fastqc, kallisto) 
+
+    ## Joining, by = c("RNAseqID", "treatment", "subfield")
+
+    summary(multiqc)
+
+    ##    RNAseqID                    treatment  subfield     read          
+    ##  Length:88          standard.yoked  :18   DG :32   Length:88         
+    ##  Class :character   standard.trained:18   CA3:26   Class :character  
+    ##  Mode  :character   conflict.yoked  :24   CA1:30   Mode  :character  
+    ##                     conflict.trained:28                              
+    ##                                                                      
+    ##                                                                      
+    ##  QualityFiltered      Dups              GC             Length   
+    ##  No :88          Min.   :0.4700   Min.   :0.4400   Min.   :150  
+    ##  Yes: 0          1st Qu.:0.6400   1st Qu.:0.4700   1st Qu.:150  
+    ##                  Median :0.7300   Median :0.4800   Median :150  
+    ##                  Mean   :0.7326   Mean   :0.4782   Mean   :150  
+    ##                  3rd Qu.:0.8400   3rd Qu.:0.4900   3rd Qu.:150  
+    ##                  Max.   :0.9600   Max.   :0.5400   Max.   :150  
+    ##   MillionReads             QC           bp          fracalign    
+    ##  Min.   : 1.800   filtertrim: 0   Min.   :161.4   Min.   :0.050  
+    ##  1st Qu.: 3.750   raw       :88   1st Qu.:196.7   1st Qu.:0.250  
+    ##  Median : 5.250                   Median :198.9   Median :0.480  
+    ##  Mean   : 6.900                   Mean   :198.6   Mean   :0.428  
+    ##  3rd Qu.: 7.425                   3rd Qu.:201.3   3rd Qu.:0.620  
+    ##  Max.   :37.900                   Max.   :214.8   Max.   :0.690  
+    ##    millalign     
+    ##  Min.   : 0.100  
+    ##  1st Qu.: 1.275  
+    ##  Median : 2.200  
+    ##  Mean   : 2.584  
+    ##  3rd Qu.: 3.400  
+    ##  Max.   :12.100
+
+    mean(multiqc$MillionReads)
+
+    ## [1] 6.9
+
+    sd(multiqc$MillionReads)
+
+    ## [1] 6.345059
+
+    mean(multiqc$millalign)
+
+    ## [1] 2.584091
+
+    sd(multiqc$millalign)
+
+    ## [1] 2.102647
+
+    mean(multiqc$fracalign)
+
+    ## [1] 0.4279545
+
+    sd(multiqc$fracalign)
+
+    ## [1] 0.2093842
+
+    summary(aov(MillionReads ~ treatment, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## treatment    3    179   59.55   1.505  0.219
+    ## Residuals   84   3324   39.57
+
+    summary(aov(millalign ~ treatment, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## treatment    3   31.8    10.6   2.524 0.0631 .
+    ## Residuals   84  352.8     4.2                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(fracalign ~ treatment, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## treatment    3  0.300 0.10003   2.391 0.0744 .
+    ## Residuals   84  3.514 0.04183                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    a <- ggplot(multiqc, aes(x = subfield, y = MillionReads, color = subfield)) +
+      geom_boxplot(outlier.size = 0.75) + geom_point(size = 0.75) +
+      scale_color_manual(values = colorvalsubfield) +  
+      #facet_wrap(~subfield, nrow = 3) +
+      labs(y = "Total Reads (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+
+    b <- ggplot(multiqc, aes(x = subfield, y = millalign, color = subfield)) +
+      geom_boxplot() + geom_point(size = 0.5) +
+      scale_color_manual(values = colorvalsubfield) +  
+      labs(y = "Aligned Reads (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+    c <- ggplot(multiqc, aes(x = subfield, y = fracalign, color = subfield)) +
+             geom_boxplot() + geom_point(size = 0.5) +
+      scale_color_manual(values = colorvalsubfield) +  
+      labs(y = "Fraction aligned (millions)", x = NULL, subtitle = " ") +
+      theme_ms() + theme(legend.position = "none")
+
+
+    multiqcplots <- plot_grid( a, b , c , 
+              labels = c( "(a)", "(b)", "(c)"),
+              label_size = 8, nrow = 1)
+    multiqcplots
+
+![](../figures/02_rnaseqQC/multiqc-1.png)
+
+    summary(aov(MillionReads ~ subfield, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## subfield     2    228  113.78   2.953 0.0576 .
+    ## Residuals   85   3275   38.53                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    summary(aov(millalign ~ subfield, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## subfield     2    8.1   4.034   0.911  0.406
+    ## Residuals   85  376.6   4.430
+
+    summary(aov(fracalign ~ subfield, multiqc))
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## subfield     2  0.039 0.01943   0.438  0.647
+    ## Residuals   85  3.775 0.04442
+
+DESeq2
+------
+
+The two two catagorical variables are
+
+-   Hippocampal subfield: DG, CA3, CA1
+-   Treatment: standard yoked, standard trained, conflict yoked,
+    conflict trained
+
+<!-- -->
+
+    colData <- read.csv("../data/00_colData.csv", header = T)
+    countData <- read.csv("../data/00_countData.csv", header = T, check.names = F, row.names = 1)
+    colData %>% select(treatment, subfield)  %>%  summary()
+
+    ##             treatment  subfield
+    ##  conflict.trained:14   CA1:15  
+    ##  conflict.yoked  :12   CA3:13  
+    ##  standard.trained: 9   DG :16  
+    ##  standard.yoked  : 9
+
+    dds <- DESeqDataSetFromMatrix(countData = countData,
+                                  colData = colData,
+                                  design = ~ subfield * treatment )
+
+    dds$subfield <- factor(dds$subfield, levels=c("DG","CA3", "CA1")) ## specify the factor levels
+
+    dds$treatment <- factor(dds$treatment, levels=c("standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained")) ## specify the factor levels
+
+    dds # view the DESeq object - note numnber of genes
+
+    ## class: DESeqDataSet 
+    ## dim: 22485 44 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(22485): Xkr4 Rp1 ... mt-Nd6 mt-Cytb
+    ## rowData names(0):
+    ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
+    ## colData names(5): RNAseqID ID subfield treatment training
+
+    dds <- dds[ rowSums(counts(dds)) > 10, ]  # Pre-filtering genes
+    dds # view number of genes afternormalization and the number of samples
+
+    ## class: DESeqDataSet 
+    ## dim: 16616 44 
+    ## metadata(1): version
+    ## assays(1): counts
+    ## rownames(16616): Xkr4 Rp1 ... mt-Nd6 mt-Cytb
+    ## rowData names(0):
+    ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
+    ## colData names(5): RNAseqID ID subfield treatment training
+
+    dds <- DESeq(dds, parallel = TRUE) # Differential expression analysis
+    #rld <- rlog(dds, blind=FALSE) ## log transformed data
+    vsd <- vst(dds, blind=FALSE) ## variance stabilized
+    head(assay(vsd),3)
+
+    ##       143A-CA3-1 143A-DG-1 143B-CA1-1 143B-DG-1 143C-CA1-1 143D-CA1-3
+    ## Xkr4    6.902529  6.490802   6.564131  6.517648   7.184855   7.034702
+    ## Rp1     5.422896  5.422896   5.422896  5.422896   5.422896   5.422896
+    ## Sox17   5.578923  5.743387   5.422896  5.422896   5.918638   5.422896
+    ##       143D-DG-3 144A-CA1-2 144A-CA3-2 144A-DG-2 144B-CA1-1 144B-CA3-1
+    ## Xkr4   6.336503   6.759132   5.883910  6.849451   6.596739   6.738357
+    ## Rp1    5.422896   5.422896   5.422896  5.422896   5.422896   5.422896
+    ## Sox17  5.422896   6.140173   5.422896  6.141075   5.422896   5.706333
+    ##       144C-CA1-2 144C-CA3-2 144C-DG-2 144D-CA3-2 144D-DG-2 145A-CA1-2
+    ## Xkr4    7.314408   6.489249  6.812612   6.855302  6.735010   6.874057
+    ## Rp1     5.422896   5.422896  5.422896   5.422896  5.641991   5.422896
+    ## Sox17   5.799859   5.795994  5.422896   6.207358  5.780107   6.280520
+    ##       145A-CA3-2 145A-DG-2 145B-CA1-1 145B-DG-1 146A-CA1-2 146A-CA3-2
+    ## Xkr4    6.312386  6.918356   6.933046  6.574182   6.373334   5.936960
+    ## Rp1     5.422896  5.422896   5.422896  5.422896   5.422896   5.422896
+    ## Sox17   6.152907  5.422896   5.422896  5.743954   6.100920   6.450628
+    ##       146A-DG-2 146B-CA1-2 146B-CA3-2 146B-DG-2 146C-CA1-4 146C-DG-4
+    ## Xkr4   6.211080   7.225906   6.725775  6.336254   7.589532  5.981781
+    ## Rp1    5.422896   5.422896   5.422896  5.422896   5.422896  5.981781
+    ## Sox17  5.674932   6.244292   5.969774  5.422896   6.069351  5.422896
+    ##       146D-CA1-3 146D-CA3-3 146D-DG-3 147C-CA1-3 147C-CA3-3 147C-DG-3
+    ## Xkr4    7.175464   6.597312  5.422896   6.987659   7.215461  6.729225
+    ## Rp1     5.422896   5.422896  5.422896   5.422896   5.422896  5.422896
+    ## Sox17   5.422896   5.944388  5.422896   5.843516   6.396897  5.880034
+    ##       147D-CA3-1 147D-DG-1 148A-CA1-3 148A-CA3-3 148A-DG-3 148B-CA1-4
+    ## Xkr4    7.048376  6.589043   7.232111   6.503761  6.794545   6.623311
+    ## Rp1     5.422896  5.422896   5.422896   5.889562  5.422896   5.422896
+    ## Sox17   5.422896  5.674056   5.665302   5.599938  5.832562   6.363065
+    ##       148B-CA3-4 148B-DG-4
+    ## Xkr4    6.708915  6.676319
+    ## Rp1     5.422896  5.422896
+    ## Sox17   5.578371  5.735933
+
+### Summary DEGs
+
+This first function shows the total number of up and down regulated
+genes and the top 3 most significant genes.
+
+    res_summary <- function(mycontrast){
+      res <- results(dds, contrast = mycontrast, independentFiltering = T)
+      print(mycontrast)
+      print(sum(res$padj < 0.1, na.rm=TRUE))
+      print(summary(res))
+      print(head((res[order(res$padj),]), 5))
+      cat("\n")
+    }
+
+    res_summary(c("subfield", "CA1", "DG"))
+
+    ## [1] "subfield" "CA1"      "DG"      
+    ## [1] 2758
+    ## 
+    ## out of 16616 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 1218, 7.3%
+    ## LFC < 0 (down)     : 1540, 9.3%
+    ## outliers [1]       : 8, 0.048%
+    ## low counts [2]     : 3862, 23%
+    ## (mean count < 4)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## log2 fold change (MLE): subfield CA1 vs DG 
+    ## Wald test p-value: subfield CA1 vs DG 
+    ## DataFrame with 5 rows and 6 columns
+    ##                 baseMean   log2FoldChange             lfcSE
+    ##                <numeric>        <numeric>         <numeric>
+    ## Pou3f1  219.411952155873 5.98788009889165 0.528568810614781
+    ## Prkcg   1597.44305102598  2.9761934790783 0.284820273929179
+    ## Wfs1    558.096580361287 6.41720721777274 0.633476148881825
+    ## Synj2   114.149797568097 6.05486578155595 0.603057509394195
+    ## St8sia5 68.4953636213458 6.85807868916434 0.695976709179165
+    ##                     stat               pvalue                 padj
+    ##                <numeric>            <numeric>            <numeric>
+    ## Pou3f1  11.3284779174297 9.48384542208641e-30 1.20881093749913e-25
+    ## Prkcg   10.4493736980898 1.47496016103526e-25 9.39992110627771e-22
+    ## Wfs1    10.1301481185993 4.06033915010985e-24 1.72510276024334e-20
+    ## Synj2   10.0402792225213 1.01386753382173e-23 3.23068889652293e-20
+    ## St8sia5 9.85389108387371 6.59405493642751e-23  1.6809564843941e-19
+
+    res_summary(c("subfield", "CA1", "CA3"))
+
+    ## [1] "subfield" "CA1"      "CA3"     
+    ## [1] 2194
+    ## 
+    ## out of 16616 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 883, 5.3%
+    ## LFC < 0 (down)     : 1311, 7.9%
+    ## outliers [1]       : 8, 0.048%
+    ## low counts [2]     : 3862, 23%
+    ## (mean count < 4)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## log2 fold change (MLE): subfield CA1 vs CA3 
+    ## Wald test p-value: subfield CA1 vs CA3 
+    ## DataFrame with 5 rows and 6 columns
+    ##                baseMean    log2FoldChange             lfcSE
+    ##               <numeric>         <numeric>         <numeric>
+    ## Doc2b  349.417572153451  7.18163078046264 0.485175860022048
+    ## Itpka  710.071023144903  3.09537626053932 0.232412904994153
+    ## Pou3f1 219.411952155873  6.52771263750238 0.548075434712133
+    ## C1ql3  285.386723855134  6.43326260235465 0.608565960656958
+    ## Syn2   1094.47006534942 -2.23246608566972 0.211367267709644
+    ##                     stat               pvalue                 padj
+    ##                <numeric>            <numeric>            <numeric>
+    ## Doc2b   14.8021189268078 1.41939733978994e-49 1.80916384929626e-45
+    ## Itpka   13.3184353967659 1.80858035356288e-40 1.15260825932562e-36
+    ## Pou3f1  11.9102448751985 1.04669418662431e-32  4.4470547009045e-29
+    ## C1ql3   10.5711837635641 4.05345467043136e-26 1.13929204352678e-22
+    ## Syn2   -10.5620236750019 4.46921404176519e-26 1.13929204352678e-22
+
+    res_summary(c("subfield", "CA3", "DG"))
+
+    ## [1] "subfield" "CA3"      "DG"      
+    ## [1] 2948
+    ## 
+    ## out of 16616 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 1571, 9.5%
+    ## LFC < 0 (down)     : 1377, 8.3%
+    ## outliers [1]       : 8, 0.048%
+    ## low counts [2]     : 2578, 16%
+    ## (mean count < 2)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## log2 fold change (MLE): subfield CA3 vs DG 
+    ## Wald test p-value: subfield CA3 vs DG 
+    ## DataFrame with 5 rows and 6 columns
+    ##                 baseMean    log2FoldChange             lfcSE
+    ##                <numeric>         <numeric>         <numeric>
+    ## Fam163b 628.819601522936 -5.70014209318504 0.335658160648349
+    ## Doc2b   349.417572153451 -7.02236367815067 0.443183025923191
+    ## C1ql3   285.386723855134 -8.02899823540252 0.547299263988563
+    ## Pter    159.610534988909 -8.21122640398274 0.656377536292389
+    ## Cpe     3054.96826641212  2.95869521597912 0.240210438784262
+    ##                      stat               pvalue                 padj
+    ##                 <numeric>            <numeric>            <numeric>
+    ## Fam163b -16.9819857267131 1.11643868551624e-64 1.56636347577929e-60
+    ## Doc2b   -15.8452902466705 1.51519787753234e-56 1.06291131108893e-52
+    ## C1ql3   -14.6702156638937 1.00026630688808e-48 4.67791209521327e-45
+    ## Pter    -12.5099138071736 6.58956914229275e-36 2.31129137665918e-32
+    ## Cpe      12.3170967546351 7.32853880958788e-35 2.05638798997036e-31
+
+    res_summary(c("treatment", "standard.trained", "standard.yoked"))
+
+    ## [1] "treatment"        "standard.trained" "standard.yoked"  
+    ## [1] 113
+    ## 
+    ## out of 16616 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 105, 0.63%
+    ## LFC < 0 (down)     : 8, 0.048%
+    ## outliers [1]       : 8, 0.048%
+    ## low counts [2]     : 3540, 21%
+    ## (mean count < 3)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## log2 fold change (MLE): treatment standard.trained vs standard.yoked 
+    ## Wald test p-value: treatment standard.trained vs standard.yoked 
+    ## DataFrame with 5 rows and 6 columns
+    ##               baseMean   log2FoldChange             lfcSE             stat
+    ##              <numeric>        <numeric>         <numeric>        <numeric>
+    ## Plk2  690.892982346694 2.33683799910871  0.28697649191274 8.14295966730007
+    ## Sgk1  243.126788527358 2.51888168720334 0.352396323432319 7.14786596712924
+    ## Frmd6 115.436102973485 3.28459462100619 0.459910965436155 7.14180540986071
+    ## Smad7 101.648353958591 3.55559834012079 0.497176666572179 7.15157926584753
+    ## Arc   865.501371190336 2.88376455109463 0.419805445423535 6.86928810126617
+    ##                     pvalue                 padj
+    ##                  <numeric>            <numeric>
+    ## Plk2  3.85730784294261e-16 5.04072988915741e-12
+    ## Sgk1  8.81373044950096e-13 3.00932973691643e-09
+    ## Frmd6 9.21129396056452e-13 3.00932973691643e-09
+    ## Smad7 8.57851602847846e-13 3.00932973691643e-09
+    ## Arc   6.45230809755488e-12 1.68637524437694e-08
+
+    res_summary(c("treatment", "conflict.trained", "conflict.yoked"))
+
+    ## [1] "treatment"        "conflict.trained" "conflict.yoked"  
+    ## [1] 62
+    ## 
+    ## out of 16616 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 17, 0.1%
+    ## LFC < 0 (down)     : 45, 0.27%
+    ## outliers [1]       : 8, 0.048%
+    ## low counts [2]     : 5792, 35%
+    ## (mean count < 11)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## log2 fold change (MLE): treatment conflict.trained vs conflict.yoked 
+    ## Wald test p-value: treatment conflict.trained vs conflict.yoked 
+    ## DataFrame with 5 rows and 6 columns
+    ##                 baseMean    log2FoldChange             lfcSE
+    ##                <numeric>         <numeric>         <numeric>
+    ## Camk1g  40.6858606603921 -3.40368320141239 0.620531545521771
+    ## Insm1   21.1075753227574 -4.60164354700641 0.836778143186135
+    ## Kcnc2   144.358588449054 -2.52222804444383 0.470751572328015
+    ## Neurod6 331.806267643941 -3.56020520569808 0.703632664264455
+    ## Sv2b    568.239350545566 -3.75707558827698 0.743875755350764
+    ##                      stat               pvalue                 padj
+    ##                 <numeric>            <numeric>            <numeric>
+    ## Camk1g  -5.48510905847732 4.13214414189467e-08 0.000223466355193664
+    ## Insm1   -5.49923965447411   3.814324261597e-08 0.000223466355193664
+    ## Kcnc2   -5.35787492322248 8.42064995263667e-08 0.000303592499625728
+    ## Neurod6 -5.05974976221399  4.1980705346974e-07 0.000952346104744044
+    ## Sv2b    -5.05067622012413  4.4024875404218e-07 0.000952346104744044
+
+    res_summary(c("treatment", "conflict.trained", "standard.trained"))
+
+    ## [1] "treatment"        "conflict.trained" "standard.trained"
+    ## [1] 0
+    ## 
+    ## out of 16616 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 0, 0%
+    ## LFC < 0 (down)     : 0, 0%
+    ## outliers [1]       : 8, 0.048%
+    ## low counts [2]     : 0, 0%
+    ## (mean count < 0)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## log2 fold change (MLE): treatment conflict.trained vs standard.trained 
+    ## Wald test p-value: treatment conflict.trained vs standard.trained 
+    ## DataFrame with 5 rows and 6 columns
+    ##                 baseMean     log2FoldChange             lfcSE
+    ##                <numeric>          <numeric>         <numeric>
+    ## Xkr4    40.1012238801789  0.177527359028207 0.541870603284486
+    ## Rp1    0.273594583926052  -4.23813694936636  7.08041909385888
+    ## Sox17    4.6934098225261   1.05011266770486  1.61201214925318
+    ## Mrpl15  32.1212593660561 -0.910518201164126 0.401221780099146
+    ## Lypla1  29.2265008244511  0.358692853214631 0.490763399418052
+    ##                      stat             pvalue      padj
+    ##                 <numeric>          <numeric> <numeric>
+    ## Xkr4    0.327619468471155  0.743199399968198         1
+    ## Rp1    -0.598571481883362  0.549458678056687         1
+    ## Sox17   0.651429747717077  0.514769112943978         1
+    ## Mrpl15  -2.26936384395465 0.0232462090038909         1
+    ## Lypla1  0.730887538964741  0.464847847912695         1
+
+    res_summary(c("treatment", "conflict.yoked", "standard.yoked"))
+
+    ## [1] "treatment"      "conflict.yoked" "standard.yoked"
+    ## [1] 40
+    ## 
+    ## out of 16616 with nonzero total read count
+    ## adjusted p-value < 0.1
+    ## LFC > 0 (up)       : 38, 0.23%
+    ## LFC < 0 (down)     : 2, 0.012%
+    ## outliers [1]       : 8, 0.048%
+    ## low counts [2]     : 1289, 7.8%
+    ## (mean count < 1)
+    ## [1] see 'cooksCutoff' argument of ?results
+    ## [2] see 'independentFiltering' argument of ?results
+    ## 
+    ## NULL
+    ## log2 fold change (MLE): treatment conflict.yoked vs standard.yoked 
+    ## Wald test p-value: treatment conflict.yoked vs standard.yoked 
+    ## DataFrame with 5 rows and 6 columns
+    ##                 baseMean   log2FoldChange             lfcSE
+    ##                <numeric>        <numeric>         <numeric>
+    ## Kcnc2   144.358588449054 3.80133917239381 0.556346288495722
+    ## St8sia5 68.4953636213458 3.78861086700251 0.673922518191308
+    ## Gm2115  249.257751832989 3.48213722650287 0.658706293164929
+    ## Cnr1    350.970175675373 3.92670174540614 0.762127039058242
+    ## Dner    169.806900335675 1.75375363859233 0.352554314089205
+    ##                     stat               pvalue                 padj
+    ##                <numeric>            <numeric>            <numeric>
+    ## Kcnc2   6.83268541733614  8.3339581382726e-12 1.27667904720198e-07
+    ## St8sia5 5.62173063629108 1.89053883771342e-08  0.00014480582227466
+    ## Gm2115  5.28632755240886 1.24796350258567e-07 0.000637251763203661
+    ## Cnr1    5.15229291727841 2.57320693829974e-07 0.000985473927195342
+    ## Dner    4.97442115585229  6.5442892694887e-07  0.00200503934638595
+
+Principle component analysis
+----------------------------
+
+    # create the dataframe using my function pcadataframe
+    pcadata <- pcadataframe(vsd, intgroup=c("subfield","treatment"), returnData=TRUE)
+    percentVar <- round(100 * attr(pcadata, "percentVar"))
+    pcadata$subfieldAPA <- as.factor(paste(pcadata$subfield, pcadata$treatment, sep="_"))
+    pcadata$subfield <- factor(pcadata$subfield, levels=c("DG","CA3", "CA1"))
+    pcadata$treatment <- factor(pcadata$treatment, levels=c("standard.yoked","standard.trained",  "conflict.yoked","conflict.trained"))
+
+    levels(pcadata$treatment) <- c("standard yoked","standard trained",  "conflict yoked", "conflict trained")
+
+    summary(aov(PC1 ~ subfield * treatment, data=pcadata)) 
+
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)    
+    ## subfield            2   8985    4493 648.658 <2e-16 ***
+    ## treatment           3     70      23   3.345 0.0312 *  
+    ## subfield:treatment  6     86      14   2.059 0.0862 .  
+    ## Residuals          32    222       7                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    TukeyHSD((aov(PC1 ~ subfield, data=pcadata)), which = "subfield") 
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC1 ~ subfield, data = pcadata)
+    ## 
+    ## $subfield
+    ##               diff        lwr        upr     p adj
+    ## CA3-DG  -30.416493 -33.168694 -27.664291 0.0000000
+    ## CA1-DG  -29.051106 -31.700143 -26.402068 0.0000000
+    ## CA1-CA3   1.365387  -1.427636   4.158411 0.4665421
+
+    summary(aov(PC2 ~ subfield * treatment, data=pcadata)) 
+
+    ##                    Df Sum Sq Mean Sq  F value Pr(>F)    
+    ## subfield            2   4260  2130.0 1338.086 <2e-16 ***
+    ## treatment           3      8     2.6    1.614 0.2055    
+    ## subfield:treatment  6     22     3.7    2.299 0.0586 .  
+    ## Residuals          32     51     1.6                    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    TukeyHSD((aov(PC2 ~ subfield, data=pcadata)), which = "subfield") 
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = PC2 ~ subfield, data = pcadata)
+    ## 
+    ## $subfield
+    ##              diff       lwr       upr p adj
+    ## CA3-DG  -12.22169 -13.49481 -10.94857     0
+    ## CA1-DG   12.48060  11.25520  13.70600     0
+    ## CA1-CA3  24.70229  23.41029  25.99430     0
+
+    PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
+        geom_point(size=2, aes(shape=treatment), alpha = 0.8) +
+        xlab(paste0("PC1: ", percentVar[1],"%")) +
+        ylab(paste0("PC2: ", percentVar[2],"%")) +
+        scale_colour_manual(values=c(colorvalsubfield))+ 
+       theme_ms()  +
+          theme(legend.position= "none") +
+        scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield)) +
+      labs(color = "subfield", shape = "treatment", subtitle = " ") +
+      guides(color = FALSE)
+    PCA12
+
+![](../figures/02_rnaseqQC/pca-1.png)
+
+tSNE
+----
+
+    vsddf <- as.data.frame(assay(vsd))
+    vsddf <- as.data.frame(t(vsddf))
+
+    euclidist <- dist(vsddf) # euclidean distances between the rows
+
+    plot_tSNE <- function(myperplecity, mysubtitle){
+      
+      print(myperplecity)
+      tsne_model <- Rtsne(euclidist, check_duplicates=FALSE, pca=TRUE, perplexity=myperplecity)
+      tsne_df = as.data.frame(tsne_model$Y) 
+      tsne_df <- cbind(colData, tsne_df)
+      tsne_df$subfield <- factor(tsne_df$subfield, levels = c("DG", "CA3", "CA1"))
+      tsne_df$treatment <- factor(tsne_df$treatment, 
+                                  levels = c("standard.yoked" ,"standard.trained", 
+                                             "conflict.yoked", "conflict.trained"))
+
+      tnseplot  <- tsne_df %>%
+        ggplot(aes(x = V1, y = V2, shape = treatment, color = subfield, label = ID)) +
+        geom_point(size = 2) +
+        scale_color_manual(values = colorvalsubfield) +
+        theme_ms()  +
+        theme(legend.position = "bottom",
+              legend.title = element_blank(),
+              legend.spacing.x = unit(0.01, 'cm'),
+              legend.spacing.y = unit(0.01, 'cm')) +
+        labs(x = "tSNE 1", y = "tSNE 2", subtitle = mysubtitle) +
+        scale_shape_manual(aes(colour=colorvalsubfield), values=c(1, 16, 0, 15)) 
+      return(tnseplot)
+      
+    }
+
+    mytsneplot <- plot_tSNE(10, " ")
+
+    ## [1] 10
+
+pca + tsne
+----------
+
+    mylegend <- get_legend(mytsneplot)
+    top <- plot_grid(PCA12, mytsneplot + theme(legend.position = "none"), nrow = 1,
+              labels = c( "(d)", "(e)"),
+              label_size = 8)
+
+    PCAtSNE <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
+    PCAtSNE
+
+![](../figures/02_rnaseqQC/PCAtSNE-1.png)
+
+    supplfig1 <- plot_grid(multiqcplots, PCAtSNE, nrow = 2, rel_heights = c(1,1.25))
+    supplfig1
+
+![](../figures/02_rnaseqQC/supplfig1-1.png)
+
+    pdf(file="../figures/02_rnaseqQC/PCA-tSNE.pdf", width=5.1, height=4)
+    plot(supplfig1)
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    write.csv(assay(vsd), file = "../data/02_vsd.csv", row.names = T)
+
+Session Info
+------------
+
+    sessionInfo()
+
+    ## R version 3.6.0 (2019-04-26)
+    ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+    ## Running under: macOS Mojave 10.14.6
+    ## 
+    ## Matrix products: default
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+    ## 
+    ## locale:
+    ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+    ## 
+    ## attached base packages:
+    ## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+    ## [8] methods   base     
+    ## 
+    ## other attached packages:
+    ##  [1] Rtsne_0.15                  DESeq2_1.24.0              
+    ##  [3] SummarizedExperiment_1.14.0 DelayedArray_0.10.0        
+    ##  [5] BiocParallel_1.18.0         matrixStats_0.54.0         
+    ##  [7] Biobase_2.44.0              GenomicRanges_1.36.0       
+    ##  [9] GenomeInfoDb_1.20.0         IRanges_2.18.0             
+    ## [11] S4Vectors_0.22.0            BiocGenerics_0.30.0        
+    ## [13] cowplot_0.9.4               forcats_0.4.0              
+    ## [15] stringr_1.4.0               dplyr_0.8.3                
+    ## [17] purrr_0.3.3                 readr_1.3.1                
+    ## [19] tidyr_1.0.0                 tibble_2.1.3               
+    ## [21] ggplot2_3.2.1               tidyverse_1.3.0            
+    ## 
+    ## loaded via a namespace (and not attached):
+    ##  [1] colorspace_1.4-1       htmlTable_1.13.1       XVector_0.24.0        
+    ##  [4] base64enc_0.1-3        fs_1.3.1               rstudioapi_0.10       
+    ##  [7] bit64_0.9-7            AnnotationDbi_1.46.0   lubridate_1.7.4       
+    ## [10] xml2_1.2.2             splines_3.6.0          geneplotter_1.62.0    
+    ## [13] knitr_1.24             zeallot_0.1.0          Formula_1.2-3         
+    ## [16] jsonlite_1.6           broom_0.5.2            annotate_1.62.0       
+    ## [19] cluster_2.0.9          dbplyr_1.4.2           compiler_3.6.0        
+    ## [22] httr_1.4.1             backports_1.1.4        assertthat_0.2.1      
+    ## [25] Matrix_1.2-17          lazyeval_0.2.2         cli_1.1.0             
+    ## [28] acepack_1.4.1          htmltools_0.3.6        tools_3.6.0           
+    ## [31] gtable_0.3.0           glue_1.3.1             GenomeInfoDbData_1.2.1
+    ## [34] Rcpp_1.0.2             cellranger_1.1.0       vctrs_0.2.0           
+    ## [37] nlme_3.1-140           xfun_0.9               rvest_0.3.5           
+    ## [40] lifecycle_0.1.0        XML_3.98-1.19          zlibbioc_1.30.0       
+    ## [43] scales_1.0.0           hms_0.5.2              RColorBrewer_1.1-2    
+    ## [46] yaml_2.2.0             memoise_1.1.0          gridExtra_2.3         
+    ## [49] rpart_4.1-15           latticeExtra_0.6-28    stringi_1.4.3         
+    ## [52] RSQLite_2.1.1          genefilter_1.66.0      checkmate_1.9.3       
+    ## [55] rlang_0.4.1            pkgconfig_2.0.2        bitops_1.0-6          
+    ## [58] evaluate_0.14          lattice_0.20-38        htmlwidgets_1.3       
+    ## [61] labeling_0.3           bit_1.1-14             tidyselect_0.2.5      
+    ## [64] magrittr_1.5           R6_2.4.0               generics_0.0.2        
+    ## [67] Hmisc_4.2-0            DBI_1.0.0              pillar_1.4.2          
+    ## [70] haven_2.2.0            foreign_0.8-71         withr_2.1.2           
+    ## [73] survival_2.44-1.1      RCurl_1.95-4.12        nnet_7.3-12           
+    ## [76] modelr_0.1.5           crayon_1.3.4           rmarkdown_1.15        
+    ## [79] locfit_1.5-9.1         grid_3.6.0             readxl_1.3.1          
+    ## [82] data.table_1.12.2      blob_1.1.1             reprex_0.3.0          
+    ## [85] digest_0.6.20          xtable_1.8-4           munsell_0.5.0
+
+    citation("tidyverse") 
+
+    ## 
+    ##   Wickham et al., (2019). Welcome to the tidyverse. Journal of
+    ##   Open Source Software, 4(43), 1686,
+    ##   https://doi.org/10.21105/joss.01686
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Article{,
+    ##     title = {Welcome to the {tidyverse}},
+    ##     author = {Hadley Wickham and Mara Averick and Jennifer Bryan and Winston Chang and Lucy D'Agostino McGowan and Romain François and Garrett Grolemund and Alex Hayes and Lionel Henry and Jim Hester and Max Kuhn and Thomas Lin Pedersen and Evan Miller and Stephan Milton Bache and Kirill Müller and Jeroen Ooms and David Robinson and Dana Paige Seidel and Vitalie Spinu and Kohske Takahashi and Davis Vaughan and Claus Wilke and Kara Woo and Hiroaki Yutani},
+    ##     year = {2019},
+    ##     journal = {Journal of Open Source Software},
+    ##     volume = {4},
+    ##     number = {43},
+    ##     pages = {1686},
+    ##     doi = {10.21105/joss.01686},
+    ##   }
+
+    citation("cowplot")  
+
+    ## 
+    ## To cite package 'cowplot' in publications use:
+    ## 
+    ##   Claus O. Wilke (2019). cowplot: Streamlined Plot Theme and Plot
+    ##   Annotations for 'ggplot2'. R package version 0.9.4.
+    ##   https://CRAN.R-project.org/package=cowplot
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Manual{,
+    ##     title = {cowplot: Streamlined Plot Theme and Plot Annotations for 'ggplot2'},
+    ##     author = {Claus O. Wilke},
+    ##     year = {2019},
+    ##     note = {R package version 0.9.4},
+    ##     url = {https://CRAN.R-project.org/package=cowplot},
+    ##   }
+
+    citation("DESeq2")  
+
+    ## 
+    ##   Love, M.I., Huber, W., Anders, S. Moderated estimation of fold
+    ##   change and dispersion for RNA-seq data with DESeq2 Genome
+    ##   Biology 15(12):550 (2014)
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Article{,
+    ##     title = {Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2},
+    ##     author = {Michael I. Love and Wolfgang Huber and Simon Anders},
+    ##     year = {2014},
+    ##     journal = {Genome Biology},
+    ##     doi = {10.1186/s13059-014-0550-8},
+    ##     volume = {15},
+    ##     issue = {12},
+    ##     pages = {550},
+    ##   }
+
+    citation("Rtsne")  
+
+    ## 
+    ## t-SNE is described in (Van der Maaten & Hinton 2008), while the
+    ## Barnes-Hut t-SNE implementation is described in (Van der Maaten
+    ## 2014). To cite the Rtsne package specifically, use (Krijthe 2015).
+    ## 
+    ##   L.J.P. van der Maaten and G.E. Hinton. Visualizing
+    ##   High-Dimensional Data Using t-SNE. Journal of Machine Learning
+    ##   Research 9(Nov):2579-2605, 2008.
+    ## 
+    ##   L.J.P. van der Maaten. Accelerating t-SNE using Tree-Based
+    ##   Algorithms. Journal of Machine Learning Research
+    ##   15(Oct):3221-3245, 2014.
+    ## 
+    ##   Jesse H. Krijthe (2015). Rtsne: T-Distributed Stochastic
+    ##   Neighbor Embedding using a Barnes-Hut Implementation, URL:
+    ##   https://github.com/jkrijthe/Rtsne
+    ## 
+    ## To see these entries in BibTeX format, use 'print(<citation>,
+    ## bibtex=TRUE)', 'toBibtex(.)', or set
+    ## 'options(citation.bibtex.max=999)'.
+
+    citation("BiocParallel")
+
+    ## 
+    ## To cite package 'BiocParallel' in publications use:
+    ## 
+    ##   Martin Morgan, Valerie Obenchain, Michel Lang, Ryan Thompson and
+    ##   Nitesh Turaga (2019). BiocParallel: Bioconductor facilities for
+    ##   parallel evaluation. R package version 1.18.0.
+    ##   https://github.com/Bioconductor/BiocParallel
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Manual{,
+    ##     title = {BiocParallel: Bioconductor facilities for parallel evaluation},
+    ##     author = {Martin Morgan and Valerie Obenchain and Michel Lang and Ryan Thompson and Nitesh Turaga},
+    ##     year = {2019},
+    ##     note = {R package version 1.18.0},
+    ##     url = {https://github.com/Bioconductor/BiocParallel},
+    ##   }
