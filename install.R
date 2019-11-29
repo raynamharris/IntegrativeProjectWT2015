@@ -1,12 +1,13 @@
-pkgs = c("tidyverse", "knitr", "rmarkdown",
-         "plyr", "reshape2", "cowplot", "factoextra", "car",  
-         "pheatmap", "viridis", "magrittr", "genefilter",  
-         "ggrepel","colorblindr", "xtable", "Hmisc", "corrplot",
-         "magick", "ggrepel", "stringr", "kableExtra",
-         "devtools", "UpSetR","BiocManager")
+pkgs = c("tidyverse", "knitr", "rmarkdown", "kableExtra",
+         "forcats", 
+         "cowplot", "factoextra", "FactoMineR", "apaTables", "png", "grid",
+         "Rtsne", 
+         "corrr",
+         "devtools", "BiocManager")
 ncores = parallel::detectCores()
 install.packages(pkgs, Ncpus = ncores)
 
 BiocManager::install("DESeq2")
 BiocManager::install("edgeR")
-devtools::install_github("clauswilke/ggtextures")
+BiocManager::install("BiocParallel")
+
