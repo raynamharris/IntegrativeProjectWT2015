@@ -18,7 +18,7 @@ source("figureoptions.R")
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02_rnaseqQC/', cache = T)
+knitr::opts_chunk$set(fig.path = '../figures/02_rnaseqQC/')
 ```
 
 # Quality control
@@ -143,15 +143,6 @@ head(assay(vsd),3)
 This first function shows the total number of up and down regulated genes and the top 3 most significant genes.
 
 ```{r twowaycontrasts}
-res_summary <- function(mycontrast){
-  res <- results(dds, contrast = mycontrast, independentFiltering = T)
-  print(mycontrast)
-  print(sum(res$padj < 0.1, na.rm=TRUE))
-  print(summary(res))
-  print(head((res[order(res$padj),]), 5))
-  cat("\n")
-}
-
 res_summary(c("subfield", "CA1", "DG"))
 res_summary(c("subfield", "CA1", "CA3"))
 res_summary(c("subfield", "CA3", "DG"))
@@ -202,32 +193,6 @@ vsddf <- as.data.frame(t(vsddf))
 
 euclidist <- dist(vsddf) # euclidean distances between the rows
 
-plot_tSNE <- function(myperplecity, mysubtitle){
-  
-  print(myperplecity)
-  tsne_model <- Rtsne(euclidist, check_duplicates=FALSE, pca=TRUE, perplexity=myperplecity)
-  tsne_df = as.data.frame(tsne_model$Y) 
-  tsne_df <- cbind(colData, tsne_df)
-  tsne_df$subfield <- factor(tsne_df$subfield, levels = c("DG", "CA3", "CA1"))
-  tsne_df$treatment <- factor(tsne_df$treatment, 
-                              levels = c("standard.yoked" ,"standard.trained", 
-                                         "conflict.yoked", "conflict.trained"))
-
-  tnseplot  <- tsne_df %>%
-    ggplot(aes(x = V1, y = V2, shape = treatment, color = subfield, label = ID)) +
-    geom_point(size = 2) +
-    scale_color_manual(values = colorvalsubfield) +
-    theme_ms()  +
-    theme(legend.position = "bottom",
-          legend.title = element_blank(),
-          legend.spacing.x = unit(0.01, 'cm'),
-          legend.spacing.y = unit(0.01, 'cm')) +
-    labs(x = "tSNE 1", y = "tSNE 2", subtitle = mysubtitle) +
-    scale_shape_manual(aes(colour=colorvalsubfield), values=c(1, 16, 0, 15)) 
-  return(tnseplot)
-  
-}
-
 mytsneplot <- plot_tSNE(10, " ")
 ```
 
@@ -243,12 +208,11 @@ PCAtSNE <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
 PCAtSNE
 ```
 
-```{r supplfig1, fig.width=5.1, fig.height=4}
+```{r supplfig, fig.width=5.1, fig.height=4}
 supplfig1 <- plot_grid(multiqcplots, PCAtSNE, nrow = 2, rel_heights = c(1,1.25))
 supplfig1
 
-
-pdf(file="../figures/02_rnaseqQC/PCA-tSNE.pdf", width=5.1, height=4)
+pdf(file="../figures/supplfig1.pdf", width=5.1, height=4)
 plot(supplfig1)
 dev.off()
 ```

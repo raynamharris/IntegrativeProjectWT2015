@@ -1,32 +1,5 @@
-## PCA ----
 
-makepcadf <- function(data){
-  Z <- data %>%
-    select(TotalPath.Arena.:AnnularKurtosis) # columns 9 to 47
-  Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
-  pc = prcomp(Z, scale.=TRUE)
-  loadings <- pc$rotation
-  scores <- pc$x
-  #get ready for ggplot
-  scoresdf <- as.data.frame(scores)
-  scoresdf$ID <-  data$ID
-  scoresdf$treatment <- data$treatment
-  scoresdf$trialNum <- data$trialNum
-  scoresdf$Day <- data$Day
-  scoresdf <- scoresdf %>% select(ID, treatment, trialNum, Day, PC1:PC10)
-  return(scoresdf)
-}
-
-getpcsd <- function(data){
-  Z <- rentention %>%
-    select(SdevSpeedArena:Speed2)
-  Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
-  pc = prcomp(Z, scale.=TRUE)
-  pcsummary <- summary(pc)
-  return(pcsummary)
-}
-
-## make plot of behavior across time
+## Mean and standard deviation plots  of avoidance behavior
 
 meansdplots <- function(df, myylab, ybreaks, ylims){
   myplot <- ggplot(df, 
@@ -53,7 +26,27 @@ meansdplots <- function(df, myylab, ybreaks, ylims){
 }  
 
 
-## pca from facto extra
+## make PCA dataframes
+
+makepcadf <- function(data){
+  Z <- data %>%
+    select(TotalPath.Arena.:AnnularKurtosis) # columns 9 to 47
+  Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
+  pc = prcomp(Z, scale.=TRUE)
+  loadings <- pc$rotation
+  scores <- pc$x
+  #get ready for ggplot
+  scoresdf <- as.data.frame(scores)
+  scoresdf$ID <-  data$ID
+  scoresdf$treatment <- data$treatment
+  scoresdf$trialNum <- data$trialNum
+  scoresdf$Day <- data$Day
+  scoresdf <- scoresdf %>% select(ID, treatment, trialNum, Day, PC1:PC10)
+  return(scoresdf)
+}
+
+
+## modified function for PCA from facto extra
 
 
 fviz_contrib_rmh <- function(X, choice = c("row", "col", "var", "ind", "quanti.var", "quali.var", "group", "partial.axes"),
@@ -98,4 +91,68 @@ fviz_contrib_rmh <- function(X, choice = c("row", "col", "var", "ind", "quanti.v
   #     geom_hline(yintercept=theo_contrib, linetype=2, color="red")
   
   p
+}
+
+## ANOVAs
+
+# twoway anova table function
+
+twowayANOVAfor3measures <- function(mydata, mydescription){
+  apa1 <- apa.aov.table(aov(NumEntrances ~ treatment * trial, data=mydata))
+  apa1df <- as.data.frame(apa1$table_body)
+  totaldf <- apa1df[5, 3]
+  apa1df$df <- paste(apa1df$df, ", " , totaldf, sep = "")
+  apa1df$ANOVA <- "NumEntrances ~ treatment * trial"
+  apa1df
+  
+  apa2 <- apa.aov.table(aov(pTimeShockZone ~ treatment * trial, data=mydata))
+  apa2df <- as.data.frame(apa2$table_body)
+  apa2df$df <- paste(apa2df$df, ", " , totaldf, sep = "")
+  apa2df$ANOVA <- "pTimeShockZone ~ treatment * trial"
+  
+  apa3 <- apa.aov.table(aov(Time1stEntr ~ treatment * trial, data=mydata))
+  apa3df <- as.data.frame(apa3$table_body)
+  apa3df$df <- paste(apa3df$df, ", " , totaldf, sep = "")
+  apa3df$ANOVA <- "Time1stEntr ~ treatment * trial"
+  apa3df
+  
+  apa123 <- as.data.frame(rbind(apa1df,apa2df,apa3df))
+  apa123$trials <- mydescription
+  apa123 <- apa123 %>%
+    select(trials, ANOVA, Predictor, df, "F", p) %>%
+    filter(!Predictor %in% c("(Intercept)", "Error"))
+  
+  return(apa123)
+}
+
+
+onewayANOVAfor3measures <- function(mydata, whichtrial, mydescription){
+  
+  mydata <- mydata %>% filter(trial == whichtrial)
+  
+  apa1 <- apa.aov.table(aov(NumEntrances ~ treatment , data=mydata))
+  apa1df <- as.data.frame(apa1$table_body)
+  totaldf <- apa1df[3, 3]
+  apa1df$df <- paste(apa1df$df, ", " , totaldf, sep = "")
+  apa1df$ANOVA <- "NumEntrances ~ treatment"
+  apa1df
+  
+  apa2 <- apa.aov.table(aov(pTimeShockZone ~ treatment , data=mydata))
+  apa2df <- as.data.frame(apa2$table_body)
+  apa2df$df <- paste(apa2df$df, ", " , totaldf, sep = "")
+  apa2df$ANOVA <- "pTimeShockZone ~ treatment"
+  
+  apa3 <- apa.aov.table(aov(Time1stEntr ~ treatment , data=mydata))
+  apa3df <- as.data.frame(apa3$table_body)
+  apa3df$df <- paste(apa3df$df, ", " , totaldf, sep = "")
+  apa3df$ANOVA <- "Time1stEntr ~ treatment"
+  apa3df
+  
+  apa123 <- as.data.frame(rbind(apa1df,apa2df,apa3df))
+  apa123$trials <- mydescription
+  apa123 <- apa123 %>%
+    select(trials, ANOVA, Predictor, df, "F", p) %>%
+    filter(!Predictor %in% c("(Intercept)", "Error"))
+  
+  return(apa123)
 }

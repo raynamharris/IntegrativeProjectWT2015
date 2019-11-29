@@ -227,68 +227,6 @@ Q4: Do the groups differ in subsequent training? T4-T6 2-way ANOVA of groups X t
 Q5: do the groups differ in subsequent recall? 1-way ANOVA of groups on Rn
 
 ```{r stats}
-# twoway anova table function
-
-twowayANOVAfor3measures <- function(mydata, mydescription){
-  apa1 <- apa.aov.table(aov(NumEntrances ~ treatment * trial, data=mydata))
-  apa1df <- as.data.frame(apa1$table_body)
-  totaldf <- apa1df[5, 3]
-  apa1df$df <- paste(apa1df$df, ", " , totaldf, sep = "")
-  apa1df$ANOVA <- "NumEntrances ~ treatment * trial"
-  apa1df
-
-  apa2 <- apa.aov.table(aov(pTimeShockZone ~ treatment * trial, data=mydata))
-  apa2df <- as.data.frame(apa2$table_body)
-  apa2df$df <- paste(apa2df$df, ", " , totaldf, sep = "")
-  apa2df$ANOVA <- "pTimeShockZone ~ treatment * trial"
-
-  apa3 <- apa.aov.table(aov(Time1stEntr ~ treatment * trial, data=mydata))
-  apa3df <- as.data.frame(apa3$table_body)
-  apa3df$df <- paste(apa3df$df, ", " , totaldf, sep = "")
-  apa3df$ANOVA <- "Time1stEntr ~ treatment * trial"
-  apa3df
-
-  apa123 <- as.data.frame(rbind(apa1df,apa2df,apa3df))
-  apa123$trials <- mydescription
-  apa123 <- apa123 %>%
-    select(trials, ANOVA, Predictor, df, "F", p) %>%
-    filter(!Predictor %in% c("(Intercept)", "Error"))
-
-  return(apa123)
-}
-
-
-onewayANOVAfor3measures <- function(mydata, whichtrial, mydescription){
-  
-  mydata <- mydata %>% filter(trial == whichtrial)
-  
-  apa1 <- apa.aov.table(aov(NumEntrances ~ treatment , data=mydata))
-  apa1df <- as.data.frame(apa1$table_body)
-  totaldf <- apa1df[3, 3]
-  apa1df$df <- paste(apa1df$df, ", " , totaldf, sep = "")
-  apa1df$ANOVA <- "NumEntrances ~ treatment"
-  apa1df
-
-  apa2 <- apa.aov.table(aov(pTimeShockZone ~ treatment , data=mydata))
-  apa2df <- as.data.frame(apa2$table_body)
-  apa2df$df <- paste(apa2df$df, ", " , totaldf, sep = "")
-  apa2df$ANOVA <- "pTimeShockZone ~ treatment"
-
-  apa3 <- apa.aov.table(aov(Time1stEntr ~ treatment , data=mydata))
-  apa3df <- as.data.frame(apa3$table_body)
-  apa3df$df <- paste(apa3df$df, ", " , totaldf, sep = "")
-  apa3df$ANOVA <- "Time1stEntr ~ treatment"
-  apa3df
-
-  apa123 <- as.data.frame(rbind(apa1df,apa2df,apa3df))
-  apa123$trials <- mydescription
-  apa123 <- apa123 %>%
-    select(trials, ANOVA, Predictor, df, "F", p) %>%
-    filter(!Predictor %in% c("(Intercept)", "Error"))
-
-  return(apa123)
-}
-
 # Q1. Are groups different at pre? No.
 Q1 <- onewayANOVAfor3measures(behavior, "Hab", "Pre-training (Pre)")
   

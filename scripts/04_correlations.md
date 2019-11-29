@@ -1,13 +1,13 @@
     library(tidyverse)
 
-    ## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✔ ggplot2 3.2.1     ✔ purrr   0.3.3
     ## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
     ## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
     ## ✔ readr   1.3.1     ✔ forcats 0.4.0
 
-    ## ── Conflicts ────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -283,10 +283,10 @@ Top 11 correlations with PC1 and their relationship with PC2
     corrsTop10 <- corrrmat %>% 
       focus(PC1, PC2)  %>% 
       arrange(desc(PC1)) %>% 
-      filter(PC1 > 0.78) 
+      filter(PC1 > 0.7534) 
     corrsTop10
 
-    ## # A tibble: 11 x 3
+    ## # A tibble: 20 x 3
     ##    rowname    PC1    PC2
     ##    <chr>    <dbl>  <dbl>
     ##  1 NAF1     0.862 -0.698
@@ -300,6 +300,15 @@ Top 11 correlations with PC1 and their relationship with PC2
     ##  9 FZD5     0.799 -0.670
     ## 10 ACAN     0.784 -0.545
     ## 11 AREG     0.784 -0.438
+    ## 12 HIST1H3I 0.779 -0.489
+    ## 13 ARMCX5   0.776 -0.283
+    ## 14 ATF3     0.774 -0.681
+    ## 15 SYT4     0.774 -0.554
+    ## 16 NEXN     0.772 -0.401
+    ## 17 HOXC4    0.765 -0.639
+    ## 18 ABRA     0.764 -0.634
+    ## 19 FOSL2    0.762 -0.672
+    ## 20 UBC      0.753 -0.649
 
     topcorrrs <- corrsTop10$rowname
 
@@ -322,7 +331,7 @@ Top 11 correlations with PC1 and their relationship with PC2
     p2 <- corrrmat %>% 
       focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
       rearrange() %>% 
-      network_plot(colors = c("#67a9cf", "white", "#ef8a62"),
+      network_plot.cor_df(colors = c("#67a9cf", "white", "#ef8a62"),
                    min_cor = .6, curved = T, legend = T,
                    repel = TRUE) + 
       theme(legend.position = "bottom") +

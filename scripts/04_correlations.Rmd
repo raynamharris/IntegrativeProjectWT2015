@@ -99,7 +99,7 @@ head(corrrmat)
 corrsTop10 <- corrrmat %>% 
   focus(PC1, PC2)  %>% 
   arrange(desc(PC1)) %>% 
-  filter(PC1 > 0.78) 
+  filter(PC1 > 0.7534) 
 corrsTop10
 
 topcorrrs <- corrsTop10$rowname
@@ -121,7 +121,7 @@ p1
 p2 <- corrrmat %>% 
   focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
   rearrange() %>% 
-  network_plot(colors = c("#67a9cf", "white", "#ef8a62"),
+  network_plot.cor_df(colors = c("#67a9cf", "white", "#ef8a62"),
                min_cor = .6, curved = T, legend = T,
                repel = TRUE) + 
   theme(legend.position = "bottom") +
