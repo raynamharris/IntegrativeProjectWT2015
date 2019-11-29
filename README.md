@@ -1123,6 +1123,10 @@ ATF3 EGR1 EGR4 FOSL2 HOXC4 NFIL3 NPAS4 NR4A3 PER1
 </tbody>
 </table>
 
+### Supplementary Table 2
+
+![](./figures/00_schematics/figure_workflow.png)
+
 ### Data
 
 This directory contains both raw and intermediate data files. -

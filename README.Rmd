@@ -92,6 +92,10 @@ table3 <- read.csv("./data/02e_GO_PC1.csv")
 kable(table3)
 ```
 
+### Supplementary Table 2
+
+![](./figures/00_schematics/figure_workflow.png)
+
 
 ### Data
 
