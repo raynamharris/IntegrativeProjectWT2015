@@ -1,0 +1,183 @@
+---
+title: "02d_morecorrelations"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(fig.path = '../figures/02d_correlations/', cache = T, cache.lazy = FALSE)
+```
+
+
+```{r packages}
+library(tidyverse)
+library(corrr)
+library(cowplot)
+
+source("./figureoptions.R")
+source("./functions_RNAseq.R")
+```
+
+
+```{r DGDEGs}
+# read the sample data, set levels, join iwth behvior PCA data
+colData <- read.csv("../data/02a_colData.csv", row.names = 1, stringsAsFactors = T)
+colData <- colData %>% filter(subfield == "DG")
+pca.Rn <- read_csv("../data/01a_pca.all.csv") %>% filter(trialNum == 9)
+pca.Rn <- pca.Rn %>% select(ID:PC2)
+colData <- left_join(colData, pca.Rn)
+head(colData)
+```
+
+```{r DGvsd}
+# read all count data
+vsd <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F) 
+vsd$gene <- row.names(vsd)
+vsd$gene <- toupper(vsd$gene)
+vsd <- as.data.frame(vsd)
+row.names(vsd) <- vsd$gene
+vsd$gene <- NULL
+head(vsd)
+
+# prep to join with sample colData
+vsd <- as.data.frame(t(vsd))
+vsd$sample <- row.names(vsd)
+vsd$mouse <- sapply(strsplit(as.character(vsd$sample),"\\-"), "[", 1)
+vsd$ID <- paste(15, vsd$mouse, sep = "")
+
+vsd <- left_join(colData, vsd)
+head(vsd)[17015:17020]
+
+forcorall <-  vsd %>% select(PC1:ZZZ3)
+
+corrrmat <- correlate(forcorall, diagonal = 1) 
+head(corrrmat)
+```
+
+```{r corrrplots, fig.width=6.69, fig.height=3.5}
+summary(lm( PC1 ~ ARC, data = vsd))
+summary(lm( PC2 ~ ARC, data = vsd))
+
+cor.test(vsd$PC1, vsd$ARC, method = c("pearson"))
+cor.test(vsd$PC2, vsd$ARC, method = c("pearson"))
+
+a <- ggplot(vsd, aes(x = ARC, y = PC1)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+  theme_ms() +
+   theme(legend.position = "none", axis.title.x = element_blank(), axis.text.x = element_blank())  +
+  labs(subtitle = "R2 = 0.81, p = 0.0002")
+b <- ggplot(vsd, aes(x = ARC, y = PC2)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+  theme_ms() +
+   theme(legend.position = "none")  +
+  labs(subtitle = "R2 = -0.63, p = 0.009 ")
+
+left <- plot_grid(a,b, nrow = 2, labels = c("a","b"), label_size = 8)
+left
+
+slim <- corrrmat %>% 
+  focus(PC1, PC2)  %>% 
+  arrange(desc(PC1)) %>% 
+  filter(PC1 > 0.78) 
+slim
+
+topcorrrs <- slim$rowname
+
+p1 <- corrrmat %>% 
+  focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+   focus(PC1, PC2) %>%
+  mutate(rowname = reorder(rowname, PC1)) %>%
+  ggplot(aes(rowname, PC1, fill = PC1)) +
+    geom_col() + coord_flip() +
+  scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
+  theme_ms() +
+  theme(legend.position = "none") +
+  #ylim(-1,1) +
+  labs(x = NULL, y = "Correlation to PC1") +
+  labs(subtitle = " ")
+p1 
+
+p2 <- corrrmat %>% 
+  focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+  rearrange() %>% 
+  network_plot(colors = c("#67a9cf", "white", "#ef8a62"),
+               min_cor = .6, curved = T, legend = T,
+               repel = TRUE) + 
+  theme(legend.position = "bottom") +
+  labs(subtitle = " ")
+p2 
+
+right <- plot_grid(p1,p2,  nrow = 1, labels = c("c","d"), label_size = 8)
+right
+
+fig4 <- plot_grid(left, right, nrow = 1, rel_widths = c(1,2))
+fig4
+
+pdf(file="../figures/02d_correlations/corrrplots.pdf", width=6.69, height=3.5)
+plot(fig4)
+dev.off()
+
+pdf(file="../figures/figure_4.pdf", width=6.69, height=3.5)
+plot(fig4)
+dev.off()
+```
+
+## what genes genes correlated with PC1? what gene are correlated with PC1 and are differentially epxressed 
+
+```{r}
+# 57 genes are correlated with PC1 > 0.7
+PC1corrs <- corrrmat %>% 
+  focus(PC1)  %>% 
+  arrange(desc(PC1)) %>% 
+  filter(PC1 > .7) %>%
+   mutate_each(funs=toupper) %>%
+  mutate(gene = rowname) %>% 
+  arrange(gene) %>% 
+  select(gene,PC1)   
+PC1corrs$gene
+
+# 217 DEGs in DG
+dim(DG_DEGs)
+head(DG_DEGs$gene)
+
+# 41 found  in both correlate and deg datasets
+PC1corrsDEGS <- inner_join(PC1corrs, DG_DEGs) %>% 
+  arrange(gene) %>% select(gene,PC1)   
+length(PC1corrsDEGS$gene)
+PC1corrsDEGS$gene
+
+## these 41 genes were used for a go analysis using shinygo http://bioinformatics.sdstate.edu/go/
+## results are stored as 
+  #data/02d_DEGPC1enrichmentBP.csv
+	#data/02d_DEGPC1enrichmentCC.csv
+	#data/02d_DEGPC1enrichmentMF.csv
+```
+
+```{r }
+BP <- read_csv("../data/02d_DEGPC1enrichmentBP.csv", n_max = 5) %>% mutate(Domain = "BP") 
+CC <- read_csv("../data/02d_DEGPC1enrichmentCC.csv", n_max = 5) %>% mutate(Domain = "CC") 
+MF <- read_csv("../data/02d_DEGPC1enrichmentMF.csv", n_max = 5) %>% mutate(Domain = "MF") 
+
+GO <- rbind(BP, CC, MF) %>% select(Domain, `Functional Category`, `Total genes`, `Genes in list`, Genes)
+GO
+
+# alphabetize
+GO$Genes <- GO$Genes %>% str_split(., ' ') %>% lapply(., 'sort') %>%  lapply(., 'paste', collapse=' ') %>% unlist(.)
+GO
+```
+
+
+```{r citation}
+citation("corrr")
+```
+
+```{r}
+write.csv(slim, "../data/02d_top10PC1correlations.csv", row.names = F)
+write.csv(PC1corrs, "../data/02d_PC1correlations.csv", row.names = F)
+write.csv(GO, "../data/02d_PC1corrTopGOterms.csv", row.names = F)
+```
