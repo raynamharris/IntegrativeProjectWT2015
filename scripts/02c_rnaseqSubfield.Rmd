@@ -71,10 +71,14 @@ res_summary_subfield(CA1dds, c("treatment", "conflict.yoked", "standard.yoked"))
 
 ```{r volcanos, fig.width=6.69, fig.height=6}
 
-plot.volcano <- function(mydds, whichfactor, up, down, mycolors){
+plot.volcano <- function(mydds, whichtissue, whichfactor, up, down, mycolors){
+
+  # calculate DEG results
   res <- results(mydds, contrast =c(whichfactor, up, down),
                  independentFiltering = T, alpha = 0.1)
-   data <- data.frame(gene = row.names(res),
+   
+  # create dataframe with pvalues and lfc
+  data <- data.frame(gene = row.names(res),
                      padj = res$padj, 
                      logpadj = -log10(res$padj),
                      lfc = res$log2FoldChange)
@@ -84,6 +88,15 @@ plot.volcano <- function(mydds, whichfactor, up, down, mycolors){
                                      yes = up, no = ifelse(data$lfc < 0 & data$padj < 0.1, 
                                                  yes = down, no = "NS")))
   data$direction <- factor(data$direction, levels = c(down, "NS", up))
+  
+  #save df that only has the values for significant genes IF there are DEGs
+  toprint <- data %>% filter(direction != "NS")
+  myfilename = paste("../data/02c_DEGs", whichtissue, whichfactor, down, up, "csv" ,sep = ".")
+  
+  # for some reason i can only return the df or return the plot...
+  #if (dim(toprint)[1] != 0) { return(write.csv(toprint, myfilename))}
+  
+  # plot volcanos
   volcano <- data %>%
     ggplot(aes(x = lfc, y = logpadj)) + 
     geom_point(aes(color = direction), size = 1, alpha = 0.75, na.rm = T) + 
@@ -99,34 +112,34 @@ plot.volcano <- function(mydds, whichfactor, up, down, mycolors){
           legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
           panel.grid = element_blank()) 
   return(volcano)
+  
+
 }
 
 # usage: mydds, whichfactor, up, down, mycolors, mysubfield
-DG1 <- plot.volcano(DGdds2, "training", "trained", "yoked", volcano7) 
-DG2 <-  plot.volcano(DGdds, "treatment", "conflict.trained", "standard.trained",  volcano2) 
-DG3 <-  plot.volcano(DGdds, "treatment", "conflict.yoked", "standard.yoked",  volcano6) 
+DGa <- plot.volcano(DGdds2, "DG", "training", "trained", "yoked", volcano7) 
+DGb <-  plot.volcano(DGdds, "DG", "treatment", "conflict.trained", "standard.trained",  volcano2) 
+DGc <-  plot.volcano(DGdds, "DG", "treatment", "conflict.yoked", "standard.yoked",  volcano6) 
 
-CA31 <- plot.volcano(CA3dds2, "training", "trained", "yoked", volcano7) 
-CA32 <-  plot.volcano(CA3dds, "treatment", "conflict.trained", "standard.trained", volcano2) 
-CA33 <-  plot.volcano(CA3dds, "treatment", "conflict.yoked", "standard.yoked", volcano6) 
+CA3a <- plot.volcano(CA3dds2, "CA3", "training", "trained", "yoked", volcano7) 
+CA3b <-  plot.volcano(CA3dds, "CA3","treatment", "conflict.trained", "standard.trained", volcano2) 
+CA3c <-  plot.volcano(CA3dds, "CA3","treatment", "conflict.yoked", "standard.yoked", volcano6) 
 
-CA11 <- plot.volcano(CA1dds2, "training", "trained", "yoked", volcano7) 
-CA12 <-  plot.volcano(CA1dds, "treatment", "conflict.trained", "standard.trained", volcano2) 
-CA13 <-  plot.volcano(CA1dds, "treatment", "conflict.yoked", "standard.yoked", volcano6) 
+CA1a <- plot.volcano(CA1dds2, "CA1","training", "trained", "yoked", volcano7) 
+CA1b <-  plot.volcano(CA1dds, "CA1","treatment", "conflict.trained", "standard.trained", volcano2) 
+CA1c <-  plot.volcano(CA1dds, "CA1","treatment", "conflict.yoked", "standard.yoked", volcano6) 
 
-
-
-volcanos <- plot_grid(DG1 + labs(x= NULL, y = "DG \n -log10(p)") + theme(legend.position = "none"),
-                      DG2 + labs(x= NULL) + theme(legend.position = "none"), 
-                      DG3 + labs(x= NULL) + theme(legend.position = "none"),
+volcanos <- plot_grid(DGa + labs(x= NULL, y = "DG \n -log10(p)") + theme(legend.position = "none"),
+                      DGb + labs(x= NULL) + theme(legend.position = "none"), 
+                      DGc + labs(x= NULL) + theme(legend.position = "none"),
                       
-                      CA31 + theme(legend.position = "none") + labs(x= NULL,  y = "CA3 \n -log10(p)"),
-                      CA32 + theme(legend.position = "none") +  labs(x= NULL ), 
-                      CA33 + theme(legend.position = "none") +  labs(x= NULL ), 
+                      CA3a + theme(legend.position = "none") + labs(x= NULL,  y = "CA3 \n -log10(p)"),
+                      CA3b + theme(legend.position = "none") +  labs(x= NULL ), 
+                      CA3c + theme(legend.position = "none") +  labs(x= NULL ), 
                       
-                      CA11 + theme(legend.position = "bottom") +  labs( y = "CA1 \n -log10(p)"), 
-                      CA12 + theme(legend.position = "bottom"), 
-                      CA13 + theme(legend.position = "bottom"), 
+                      CA1a + theme(legend.position = "bottom") +  labs( y = "CA1 \n -log10(p)"), 
+                      CA1b + theme(legend.position = "bottom"), 
+                      CA1c + theme(legend.position = "bottom"), 
                       nrow = 3, 
                       rel_heights =  c(1,1,1.25) ,
                       rel_widths = c(1.2,1,1) ,

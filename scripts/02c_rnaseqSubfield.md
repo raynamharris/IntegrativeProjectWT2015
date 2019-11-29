@@ -383,10 +383,14 @@ Results to compare with volcano plots
 Volcano plots
 -------------
 
-    plot.volcano <- function(mydds, whichfactor, up, down, mycolors){
+    plot.volcano <- function(mydds, whichtissue, whichfactor, up, down, mycolors){
+
+      # calculate DEG results
       res <- results(mydds, contrast =c(whichfactor, up, down),
                      independentFiltering = T, alpha = 0.1)
-       data <- data.frame(gene = row.names(res),
+       
+      # create dataframe with pvalues and lfc
+      data <- data.frame(gene = row.names(res),
                          padj = res$padj, 
                          logpadj = -log10(res$padj),
                          lfc = res$log2FoldChange)
@@ -396,6 +400,15 @@ Volcano plots
                                          yes = up, no = ifelse(data$lfc < 0 & data$padj < 0.1, 
                                                      yes = down, no = "NS")))
       data$direction <- factor(data$direction, levels = c(down, "NS", up))
+      
+      #save df that only has the values for significant genes IF there are DEGs
+      toprint <- data %>% filter(direction != "NS")
+      myfilename = paste("../data/02c_DEGs", whichtissue, whichfactor, down, up, "csv" ,sep = ".")
+      
+      # for some reason i can only return the df or return the plot...
+      #if (dim(toprint)[1] != 0) { return(write.csv(toprint, myfilename))}
+      
+      # plot volcanos
       volcano <- data %>%
         ggplot(aes(x = lfc, y = logpadj)) + 
         geom_point(aes(color = direction), size = 1, alpha = 0.75, na.rm = T) + 
@@ -411,34 +424,34 @@ Volcano plots
               legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
               panel.grid = element_blank()) 
       return(volcano)
+      
+
     }
 
     # usage: mydds, whichfactor, up, down, mycolors, mysubfield
-    DG1 <- plot.volcano(DGdds2, "training", "trained", "yoked", volcano7) 
-    DG2 <-  plot.volcano(DGdds, "treatment", "conflict.trained", "standard.trained",  volcano2) 
-    DG3 <-  plot.volcano(DGdds, "treatment", "conflict.yoked", "standard.yoked",  volcano6) 
+    DGa <- plot.volcano(DGdds2, "DG", "training", "trained", "yoked", volcano7) 
+    DGb <-  plot.volcano(DGdds, "DG", "treatment", "conflict.trained", "standard.trained",  volcano2) 
+    DGc <-  plot.volcano(DGdds, "DG", "treatment", "conflict.yoked", "standard.yoked",  volcano6) 
 
-    CA31 <- plot.volcano(CA3dds2, "training", "trained", "yoked", volcano7) 
-    CA32 <-  plot.volcano(CA3dds, "treatment", "conflict.trained", "standard.trained", volcano2) 
-    CA33 <-  plot.volcano(CA3dds, "treatment", "conflict.yoked", "standard.yoked", volcano6) 
+    CA3a <- plot.volcano(CA3dds2, "CA3", "training", "trained", "yoked", volcano7) 
+    CA3b <-  plot.volcano(CA3dds, "CA3","treatment", "conflict.trained", "standard.trained", volcano2) 
+    CA3c <-  plot.volcano(CA3dds, "CA3","treatment", "conflict.yoked", "standard.yoked", volcano6) 
 
-    CA11 <- plot.volcano(CA1dds2, "training", "trained", "yoked", volcano7) 
-    CA12 <-  plot.volcano(CA1dds, "treatment", "conflict.trained", "standard.trained", volcano2) 
-    CA13 <-  plot.volcano(CA1dds, "treatment", "conflict.yoked", "standard.yoked", volcano6) 
+    CA1a <- plot.volcano(CA1dds2, "CA1","training", "trained", "yoked", volcano7) 
+    CA1b <-  plot.volcano(CA1dds, "CA1","treatment", "conflict.trained", "standard.trained", volcano2) 
+    CA1c <-  plot.volcano(CA1dds, "CA1","treatment", "conflict.yoked", "standard.yoked", volcano6) 
 
-
-
-    volcanos <- plot_grid(DG1 + labs(x= NULL, y = "DG \n -log10(p)") + theme(legend.position = "none"),
-                          DG2 + labs(x= NULL) + theme(legend.position = "none"), 
-                          DG3 + labs(x= NULL) + theme(legend.position = "none"),
+    volcanos <- plot_grid(DGa + labs(x= NULL, y = "DG \n -log10(p)") + theme(legend.position = "none"),
+                          DGb + labs(x= NULL) + theme(legend.position = "none"), 
+                          DGc + labs(x= NULL) + theme(legend.position = "none"),
                           
-                          CA31 + theme(legend.position = "none") + labs(x= NULL,  y = "CA3 \n -log10(p)"),
-                          CA32 + theme(legend.position = "none") +  labs(x= NULL ), 
-                          CA33 + theme(legend.position = "none") +  labs(x= NULL ), 
+                          CA3a + theme(legend.position = "none") + labs(x= NULL,  y = "CA3 \n -log10(p)"),
+                          CA3b + theme(legend.position = "none") +  labs(x= NULL ), 
+                          CA3c + theme(legend.position = "none") +  labs(x= NULL ), 
                           
-                          CA11 + theme(legend.position = "bottom") +  labs( y = "CA1 \n -log10(p)"), 
-                          CA12 + theme(legend.position = "bottom"), 
-                          CA13 + theme(legend.position = "bottom"), 
+                          CA1a + theme(legend.position = "bottom") +  labs( y = "CA1 \n -log10(p)"), 
+                          CA1b + theme(legend.position = "bottom"), 
+                          CA1c + theme(legend.position = "bottom"), 
                           nrow = 3, 
                           rel_heights =  c(1,1,1.25) ,
                           rel_widths = c(1.2,1,1) ,
@@ -476,126 +489,6 @@ Volcano plots
 
     ## quartz_off_screen 
     ##                 2
-
-candidate genes
-===============
-
-f
-
-    betterPlotCounts <- function(mygene, mydds, mysubfield){
-      df <- plotCounts(mydds, mygene, intgroup = "treatment",  transform = F, replaced = F, returnData = T)
-      names(df) <- c("count", "treatment")
-      df$treatment <- factor(df$treatment, levels = c("standard.yoked","standard.trained",
-                                                      "conflict.yoked", "conflict.trained"))
-      
-      #df <- df %>% filter(treatment %in% c("home.cage","standard.trained"))
-      
-      ggplot(df, aes(x = treatment, y = count)) +
-        geom_boxplot(aes(fill = treatment)) + 
-        geom_point() +
-        labs(subtitle = paste(mysubfield, " *", mygene, "*",  sep = "")) +
-        theme_classic() +
-        theme(legend.position = "none", 
-              panel.grid.major  = element_blank(),  # remove major gridlines
-              panel.grid.minor  = element_blank()) + # remove minor gridlines) +
-        scale_fill_manual(values = fourgroups) 
-
-    }
-
-    betterPlotCounts("Prkcz", DGdds, "DG")
-
-![](../figures/02c_rnaseqSubfield/DG_boxplots-1.png)
-
-    betterPlotCounts("Dusp16", DGdds, "DG")
-
-![](../figures/02c_rnaseqSubfield/DG_boxplots-2.png)
-
-    betterPlotCounts("Thbs1", DGdds, "DG")
-
-![](../figures/02c_rnaseqSubfield/DG_boxplots-3.png)
-
-    betterPlotCounts("Slc16a1", DGdds, "DG")
-
-![](../figures/02c_rnaseqSubfield/DG_boxplots-4.png)
-
-    betterPlotCounts("Hes5", DGdds, "DG")
-
-![](../figures/02c_rnaseqSubfield/DG_boxplots-5.png)
-
-    betterPlotCounts("Rtl1", DGdds, "DG")
-
-![](../figures/02c_rnaseqSubfield/DG_boxplots-6.png)
-
-    betterPlotCounts("Nlrp3", DGdds, "DG")
-
-![](../figures/02c_rnaseqSubfield/DG_boxplots-7.png)
-
-    betterPlotCounts("Kcnc2", DGdds, "DG")
-
-![](../figures/02c_rnaseqSubfield/DG_boxplots-8.png)
-
-    betterPlotCounts("1110008F13Rik", DGdds, "DG")
-
-![](../figures/02c_rnaseqSubfield/DG_boxplots-9.png)
-
-    a <- betterPlotCounts("Irs1", DGdds, "DG") + labs(title = "wald = -6, p = 1.577782e-06")
-    b <- betterPlotCounts("Dab2ip", DGdds, "DG")  + labs(title = "wald =  5, p = 3.227358e-05")
-    plot_grid(a,b)
-
-![](../figures/02c_rnaseqSubfield/DG_boxplots-10.png)
-
-    betterPlotCounts("Prkcz", CA1dds, "CA1")
-
-![](../figures/02c_rnaseqSubfield/CA1_boxplots-1.png)
-
-    betterPlotCounts("Grm1", CA1dds, "CA1")
-
-![](../figures/02c_rnaseqSubfield/CA1_boxplots-2.png)
-
-    betterPlotCounts("Grin2b", CA1dds, "CA1")
-
-![](../figures/02c_rnaseqSubfield/CA1_boxplots-3.png)
-
-    betterPlotCounts("Foxj3", CA1dds, "CA1")
-
-![](../figures/02c_rnaseqSubfield/CA1_boxplots-4.png)
-
-    betterPlotCounts("Grik3", CA1dds, "CA1")
-
-![](../figures/02c_rnaseqSubfield/CA1_boxplots-5.png)
-
-    betterPlotCounts("0610010K14Rik", CA1dds, "CA1")
-
-![](../figures/02c_rnaseqSubfield/CA1_boxplots-6.png)
-
-genes that are correlated with number of entrances
---------------------------------------------------
-
-Requires anlaysis of `04_integration.Rmd` first.
-
-    plotCounts(DGdds, "Acan", intgroup = "treatment", normalized = TRUE, main="Acan in DG")
-
-![](../figures/02c_rnaseqSubfield/DGcorrelations-1.png)
-
-    plotCounts(DGdds, "Amigo2", intgroup = "treatment", normalized = TRUE, main="Amigo2 in DG")
-
-![](../figures/02c_rnaseqSubfield/DGcorrelations-2.png)
-
-    plotCounts(DGdds, "Armcx5", intgroup = "treatment", normalized = TRUE, main="Armcx5 in DG")
-
-![](../figures/02c_rnaseqSubfield/DGcorrelations-3.png)
-
-    plotCounts(DGdds, "Ptgs2", intgroup = "treatment", normalized = TRUE, main="Ptgs2 in DG")
-
-![](../figures/02c_rnaseqSubfield/DGcorrelations-4.png)
-
-    plotCounts(DGdds, "Rgs2", intgroup = "treatment", normalized = TRUE, main="Rgs2 in DG")
-
-![](../figures/02c_rnaseqSubfield/DGcorrelations-5.png)
-
-    plotCounts(DGdds, "Syt4", intgroup = "treatment", normalized = TRUE, main="Syt4 in DG")
-
-![](../figures/02c_rnaseqSubfield/DGcorrelations-6.png)
 
     citation("DESeq2") ## for gene expression analysis
 

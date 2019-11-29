@@ -1,4 +1,0 @@
-"gene","lfc","padj","tissue","comparison"
-"Sco2",7.92174450889184,0.0024244588553795,"CA3","standard.trained-standard.yoked"
-"Sco2",7.47695593197555,0.00416880045127324,"CA3","conflict.yoked-standard.yoked"
-"Tbc1d16",-1.99890215328692,0.070494544190143,"CA3","conflict.yoked-standard.yoked"
