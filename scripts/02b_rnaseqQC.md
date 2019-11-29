@@ -11,7 +11,7 @@
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = T)
+    knitr::opts_chunk$set(fig.path = '../figures/02b_rnaseqQC/', cache = T)
 
 Quality control
 ===============
@@ -192,7 +192,7 @@ MultiQC
               label_size = 8, nrow = 1)
     multiqcplots
 
-![](../figures/02b_RNAseqAll/multiqc-1.png)
+![](../figures/02b_rnaseqQC/multiqc-1.png)
 
     summary(aov(MillionReads ~ subfield, multiqc))
 
@@ -630,7 +630,7 @@ Principle component analysis
       guides(color = FALSE)
     PCA12
 
-![](../figures/02b_RNAseqAll/pca-1.png)
+![](../figures/02b_rnaseqQC/pca-1.png)
 
 tSNE
 ----
@@ -681,14 +681,14 @@ pca + tsne
     PCAtSNE <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
     PCAtSNE
 
-![](../figures/02b_RNAseqAll/PCAtSNE-1.png)
+![](../figures/02b_rnaseqQC/PCAtSNE-1.png)
 
     supplfig1 <- plot_grid(multiqcplots, PCAtSNE, nrow = 2, rel_heights = c(1,1.25))
     supplfig1
 
-![](../figures/02b_RNAseqAll/supplfig1-1.png)
+![](../figures/02b_rnaseqQC/supplfig1-1.png)
 
-    pdf(file="../figures/02b_RNAseqALL/PCA-tSNE.pdf", width=5.1, height=4)
+    pdf(file="../figures/02b_rnaseqQC/PCA-tSNE.pdf", width=5.1, height=4)
     plot(supplfig1)
     dev.off()
 

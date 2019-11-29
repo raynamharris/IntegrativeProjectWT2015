@@ -26,7 +26,7 @@ The kallisto output gives you read counts for sample in an abundance file for ev
 Rather than examine unique transcripts, my analyses will focus on gene-level exprrssion. I use some string splitting to take the very long transcript identifying and create a `geneids` file that has all the database identifiers for each transcript. Then, I'll save the dount data.
 
 ```{r data, warning=FALSE}
-setwd("../data/GSE100225_IntegrativeWT2015/")
+setwd("../data/GSE100225/")
 ## this will create lists of all the samples
 kallistoDirs = dir(".")
 kallistoDirs = kallistoDirs[!grepl("\\.(R|py|pl|sh|xlsx?|txt|tsv|csv|org|md|obo|png|jpg|pdf)$",

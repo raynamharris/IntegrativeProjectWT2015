@@ -1,5 +1,5 @@
 ---
-title: "02b_rnaseq_All"
+title: "02b_rnaseqQC"
 output: md_document
 ---
 
@@ -18,7 +18,7 @@ source("figureoptions.R")
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = T)
+knitr::opts_chunk$set(fig.path = '../figures/02b_rnaseqQC/', cache = T)
 ```
 
 
@@ -249,7 +249,7 @@ supplfig1 <- plot_grid(multiqcplots, PCAtSNE, nrow = 2, rel_heights = c(1,1.25))
 supplfig1
 
 
-pdf(file="../figures/02b_RNAseqALL/PCA-tSNE.pdf", width=5.1, height=4)
+pdf(file="../figures/02b_rnaseqQC/PCA-tSNE.pdf", width=5.1, height=4)
 plot(supplfig1)
 dev.off()
 ```
