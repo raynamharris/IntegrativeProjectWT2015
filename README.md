@@ -46,8 +46,8 @@ integrate across all three levels of analysis.
             cutadapt.
         -   [UNIXworkflow/03\_fastqc](UNIXworkflow/03_fastqc.md):
             Evaluate the quality of the processed reads
-            -   [UNIXworkflow04\_kallisto](UNIXworkflow04_kallisto.md):
-                Quantify transcript-level expression using Kallisto
+        -   [UNIXworkflow04\_kallisto](UNIXworkflow04_kallisto.md):
+            Quantify transcript-level expression using Kallisto
     -   **R-based**
         -   [scripts/00\_rnaseq\_wrangle](scripts/00_rnaseq_wrangle.md):
             converting the kallisto transcript counts to gene counts
