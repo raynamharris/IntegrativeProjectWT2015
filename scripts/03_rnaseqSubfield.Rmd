@@ -107,17 +107,17 @@ saveDEGs(CA1c, "CA1", "conflict.yoked", "standard.yoked")
 ```{r volcanos, fig.width=6.69, fig.height=6}
 # volcano plots
 
-p1 <- plot.volcano(DGa, volcano7, "214 DEGs") 
+p1 <- plot.volcano(DGa, volcano1, "214 DEGs") 
 p2 <-  plot.volcano(DGb,volcano2, "0 DEGs") 
-p3 <-  plot.volcano(DGc, volcano6, "3 DEGs") 
+p3 <-  plot.volcano(DGc, volcano3, "3 DEGs") 
 
-p4 <- plot.volcano(CA3a,  volcano7, "0 DEGs") 
+p4 <- plot.volcano(CA3a,  volcano1, "0 DEGs") 
 p5 <-  plot.volcano(CA3b, volcano2, "0 DEGs") 
-p6 <-  plot.volcano(CA3c, volcano6, "2 DEGs") 
+p6 <-  plot.volcano(CA3c, volcano3, "2 DEGs") 
 
-p7 <- plot.volcano(CA1a,  volcano7, "16 DEGs") 
+p7 <- plot.volcano(CA1a,  volcano1, "16 DEGs") 
 p8 <-  plot.volcano(CA1b, volcano2, "0 DEGs") 
-p9 <-  plot.volcano(CA1c, volcano6, "917 DEGs") 
+p9 <-  plot.volcano(CA1c, volcano3, "917 DEGs") 
 
 
 # plot grid

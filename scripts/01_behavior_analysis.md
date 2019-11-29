@@ -139,7 +139,7 @@ filter by a single session to calculte the number of mice.
                                        "Rt", "T4", "T5", "T6", "Rn")) +
         scale_alpha_continuous( breaks = c(1, 2, 3)) +
         theme_ms() +
-        scale_color_manual(values = colorvalAPA00,
+        scale_color_manual(values = treatmentcolors,
                            name  = NULL)  +
         theme(legend.position = "none",
               legend.justification=c(0,0),
@@ -207,10 +207,6 @@ titles, y labels and limits.
                        se = sd(pTimeShockZone)/sqrt(length(pTimeShockZone))) %>%
       dplyr::mutate(measure = "pTimeShockZone")
 
-
-    # see https://cran.r-project.org/web/packages/cowplot/vignettes/shared_legends.html for share legends
-
-
     avoidancedf <- rbind(dfa, dfb,dfc)
     head(avoidancedf)
 
@@ -272,8 +268,8 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
       geom_point(data = pca.all, aes(alpha = Day)) + 
       geom_point(data = pca.Rn.summary, aes(x = avePC1, y = avePC2), size = 4) +
       theme_ms() +
-        scale_fill_manual(guide = 'none',values = colorvalAPA00) +
-      scale_color_manual(guide = 'none',values = colorvalAPA00) +
+        scale_fill_manual(guide = 'none',values = treatmentcolors) +
+      scale_color_manual(guide = 'none',values = treatmentcolors) +
       scale_alpha_continuous(breaks = c(1, 2, 3)) +
       theme(legend.position = "none") +
       labs( x = "PC1: 38.3% variance explained",

@@ -44,7 +44,7 @@ meansdplots <- function(df, myylab, ybreaks, ylims){
                                    "Rt", "T4", "T5", "T6", "Rn")) +
     scale_alpha_continuous( breaks = c(1, 2, 3)) +
     theme_ms() +
-    scale_color_manual(values = colorvalAPA00,
+    scale_color_manual(values = treatmentcolors,
                        name  = NULL)  +
     theme(legend.position = "bottom",
           legend.justification=c(0,0),
