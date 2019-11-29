@@ -52,7 +52,7 @@ colorvalPunch <- c("#d95f02","#1b9e77", "#7570b3")
 ## CA3 "#1b9e77"
 ## CA1 "#7570b3")
 
-colorvalsubfield <- c("#d95f02","#1b9e77", "#7570b3")
+colorvalsubfield <- c("DG" = "#d95f02", "CA3" = "#1b9e77", "CA1" = "#7570b3")
 
 volcanoDGvCA3 <- c("CA3" = "#1b9e77",
                    "DG" = "#d95f02", 

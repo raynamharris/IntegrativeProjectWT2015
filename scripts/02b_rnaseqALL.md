@@ -24,7 +24,7 @@ The figures made from this script were compiled in Adobe.
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = T)
+    knitr::opts_chunk$set(fig.path = '../figures/02b_RNAseqAll/', cache = F)
 
 Design
 ------
@@ -39,7 +39,6 @@ The two two catagorical variables are
 
     colData <- read.csv("../data/02a_colData.csv", header = T)
     countData <- read.csv("../data/02a_countData.csv", header = T, check.names = F, row.names = 1)
-    colData <- colData %>% dplyr::rename(treatment = APA2, subfield = Punch)
     colData %>% select(treatment, subfield)  %>%  summary()
 
     ##             treatment  subfield
@@ -50,7 +49,7 @@ The two two catagorical variables are
 
     dds <- DESeqDataSetFromMatrix(countData = countData,
                                   colData = colData,
-                                  design = ~ subfield + treatment + subfield*treatment)
+                                  design = ~ subfield * treatment )
 
     dds$subfield <- factor(dds$subfield, levels=c("DG","CA3", "CA1")) ## specify the factor levels
 
@@ -65,7 +64,7 @@ The two two catagorical variables are
     ## rownames(22485): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
-    ## colData names(8): RNAseqID Mouse ... ID treatment
+    ## colData names(5): RNAseqID ID subfield treatment training
 
     dds <- dds[ rowSums(counts(dds)) > 10, ]  # Pre-filtering genes
     dds # view number of genes afternormalization and the number of samples
@@ -77,7 +76,7 @@ The two two catagorical variables are
     ## rownames(16616): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
     ## rowData names(0):
     ## colnames(44): 143A-CA3-1 143A-DG-1 ... 148B-CA3-4 148B-DG-4
-    ## colData names(8): RNAseqID Mouse ... ID treatment
+    ## colData names(5): RNAseqID ID subfield treatment training
 
     dds <- DESeq(dds, parallel = TRUE) # Differential expression analysis
     #rld <- rlog(dds, blind=FALSE) ## log transformed data
@@ -121,8 +120,6 @@ The two two catagorical variables are
     ## 0610009B22Rik  5.950604   5.422896   6.444857  5.864737
     ## 0610009L18Rik  5.875464   5.422896   5.936087  5.735933
 
-    write.csv(assay(vsd), file = "../data/02b_vsd.csv", row.names = T)
-
 check for outliers
 ------------------
 
@@ -136,15 +133,25 @@ check for outliers
 
     sampleDists <- dist(t(assay(vsd)))
     sampleDistMatrix <- as.matrix(sampleDists)
+
     rownames(sampleDistMatrix) <- paste(vsd$subfield, vsd$treatment, sep="-")
     colnames(sampleDistMatrix) <- NULL
     colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+
     pheatmap(sampleDistMatrix,
              clustering_distance_rows=sampleDists,
              clustering_distance_cols=sampleDists,
-             col=colors, fontsize = 6)
+             col=colors, fontsize = 8)
 
 ![](../figures/02b_RNAseqAll/outliers-3.png)
+
+    rownames(sampleDistMatrix) <- (vsd$RNAseqID)
+    pheatmap(sampleDistMatrix,
+             clustering_distance_rows=sampleDists,
+             clustering_distance_cols=sampleDists,
+             col=colors, fontsize = 8)
+
+![](../figures/02b_RNAseqAll/outliers-4.png)
 
 Summary 2 way contrasts
 -----------------------
@@ -404,31 +411,31 @@ lots of useful info to a df for downstream dataviz.
 
     # note: see resvals fucntion in `functions_RNAseq.R`
 
-    contrast1 <- resvals(contrastvector = c("subfield", "CA1", "DG"), mypval = 0.1) # 3060
+    contrast1 <- resvals(contrastvector = c("subfield", "CA1", "DG"), mypval = 0.1)  
 
     ## [1] 2758
 
-    contrast2 <- resvals(contrastvector = c("subfield", "CA1", "CA3"), mypval = 0.1) # 2388
+    contrast2 <- resvals(contrastvector = c("subfield", "CA1", "CA3"), mypval = 0.1)  
 
     ## [1] 2194
 
-    contrast3 <- resvals(contrastvector = c("subfield", "CA3", "DG"), mypval = 0.1) # 3078
+    contrast3 <- resvals(contrastvector = c("subfield", "CA3", "DG"), mypval = 0.1)  
 
     ## [1] 2948
 
-    contrast4 <- resvals(contrastvector = c("treatment", "standard.trained", "standard.yoked"), mypval = 0.1) #  80
+    contrast4 <- resvals(contrastvector = c("treatment", "standard.trained", "standard.yoked"), mypval = 0.1)  
 
     ## [1] 113
 
-    contrast5 <- resvals(contrastvector = c("treatment", "conflict.trained", "conflict.yoked"), mypval = 0.1) # 23
+    contrast5 <- resvals(contrastvector = c("treatment", "conflict.trained", "conflict.yoked"), mypval = 0.1)  
 
     ## [1] 62
 
-    contrast6 <- resvals(contrastvector = c("treatment", "conflict.trained", "standard.trained"), mypval = 0.1) #  1
+    contrast6 <- resvals(contrastvector = c("treatment", "conflict.trained", "standard.trained"), mypval = 0.1)  
 
     ## [1] 0
 
-    contrast7 <- resvals(contrastvector = c("treatment", "conflict.yoked", "standard.yoked"), mypval = 0.1) # 37
+    contrast7 <- resvals(contrastvector = c("treatment", "conflict.yoked", "standard.yoked"), mypval = 0.1)  
 
     ## [1] 40
 
@@ -558,40 +565,6 @@ lots of useful info to a df for downstream dataviz.
              filename = "../figures/02b_RNAseqALL/pheatmap1.pdf"
              )
 
-    pheatmap(DEGes, show_colnames=F, show_rownames = T,
-             annotation_col=df, 
-             annotation_colors = pheatmapcolors,
-             treeheight_row = 0, treeheight_col = 25,
-             annotation_row = NA, 
-             annotation_legend = TRUE,
-             annotation_names_row = FALSE, annotation_names_col = TRUE,
-             fontsize = 8, 
-             border_color = NA ,
-             color = viridis(80),
-             cellwidth = 6, 
-             clustering_method="average",
-             breaks=myBreaks,
-             clustering_distance_cols="correlation" 
-             )
-
-    pheatmap(DEGes, show_colnames=F, show_rownames = T,
-             annotation_col=df, annotation_colors = pheatmapcolors, 
-             annotation_row = NA, 
-             annotation_legend = F,
-             annotation_names_row = FALSE, 
-             annotation_names_col = FALSE,
-             treeheight_row = 0, treeheight_col = 10,
-             fontsize = 4, 
-             border_color = NA ,
-             color = viridis(80),
-             height = 5, 
-             width = 2.5,
-             clustering_method="average",
-             breaks=myBreaks,
-             clustering_distance_cols="correlation", 
-             filename = "../figures/02b_RNAseqALL/pheatmap2.pdf"
-             )
-
 Principle component analysis
 ----------------------------
 
@@ -664,6 +637,37 @@ Principle component analysis
 
 ![](../figures/02b_RNAseqAll/pca-1.png)
 
+    head(pcadata)
+
+    ##                  PC1         PC2        PC3       PC4        PC5
+    ## 143A-CA3-1 -11.77305 -12.3696694 -1.6318032  5.308896  4.7004074
+    ## 143A-DG-1   20.03365  -0.5342967 -5.3618441 -1.815360 -2.1477127
+    ## 143B-CA1-1 -11.04281  11.0103985 -2.4922962  1.094413 -1.8486562
+    ## 143B-DG-1   18.32356  -1.7608687 -1.9458585  1.042455 -0.8785098
+    ## 143C-CA1-1 -10.64079  13.0026072 -5.2365096  1.806490 -0.1519011
+    ## 143D-CA1-3 -11.76687  12.9077663  0.5809389  1.107377  0.2791110
+    ##                    PC6        PC7        PC8        PC9
+    ## 143A-CA3-1 -5.04439227  0.1062447 -0.1355936  0.7672596
+    ## 143A-DG-1  -0.68138437 -0.5310096 -0.3584481 -0.8316969
+    ## 143B-CA1-1  3.17053046 -1.1402673  0.2760218 -0.2524822
+    ## 143B-DG-1   2.84463582  1.0242361 -0.1040812 -1.7993637
+    ## 143C-CA1-1 -1.14896028 -2.2448529  0.9741248  0.3885778
+    ## 143D-CA1-3 -0.04518588 -1.5080185 -2.9278593 -3.0316346
+    ##                             group subfield        treatment       name
+    ## 143A-CA3-1 CA3 : conflict.trained      CA3 conflict trained 143A-CA3-1
+    ## 143A-DG-1   DG : conflict.trained       DG conflict trained  143A-DG-1
+    ## 143B-CA1-1   CA1 : conflict.yoked      CA1   conflict yoked 143B-CA1-1
+    ## 143B-DG-1     DG : conflict.yoked       DG   conflict yoked  143B-DG-1
+    ## 143C-CA1-1 CA1 : standard.trained      CA1 standard trained 143C-CA1-1
+    ## 143D-CA1-3   CA1 : standard.yoked      CA1   standard yoked 143D-CA1-3
+    ##                     subfieldAPA
+    ## 143A-CA3-1 CA3_conflict.trained
+    ## 143A-DG-1   DG_conflict.trained
+    ## 143B-CA1-1   CA1_conflict.yoked
+    ## 143B-DG-1     DG_conflict.yoked
+    ## 143C-CA1-1 CA1_standard.trained
+    ## 143D-CA1-3   CA1_standard.yoked
+
 tSNE
 ----
 
@@ -671,33 +675,60 @@ tSNE
     vsddf <- as.data.frame(t(vsddf))
 
     euclidist <- dist(vsddf) # euclidean distances between the rows
-    tsne_model <- Rtsne(euclidist, check_duplicates=FALSE, pca=TRUE, perplexity=2, theta=0.5, dims=2)
 
-    tsne_df = as.data.frame(tsne_model$Y) 
-    tsne_df <- cbind(colData, tsne_df)
-    tsne_df$subfield <- factor(tsne_df$subfield, levels = c("DG", "CA3", "CA1"))
-    tsne_df$treatment <- factor(tsne_df$treatment, levels = c("standard.yoked" ,"standard.trained", "conflict.yoked", "conflict.trained"))
+    plot_tSNE <- function(myperplecity, mysubtitle){
+      
+      print(myperplecity)
+      tsne_model <- Rtsne(euclidist, check_duplicates=FALSE, pca=TRUE, perplexity=myperplecity)
+      tsne_df = as.data.frame(tsne_model$Y) 
+      tsne_df <- cbind(colData, tsne_df)
+      tsne_df$subfield <- factor(tsne_df$subfield, levels = c("DG", "CA3", "CA1"))
+      tsne_df$treatment <- factor(tsne_df$treatment, 
+                                  levels = c("standard.yoked" ,"standard.trained", 
+                                             "conflict.yoked", "conflict.trained"))
 
-    tnseplot  <- ggplot(tsne_df, aes(x = V1, y = V2, shape = treatment, color = subfield)) +
-      geom_point(size = 2) +
-      scale_color_manual(guide = FALSE, values = c("#d95f02","#1b9e77", "#7570b3")) +
-      theme_ms()  +
-      theme(legend.position = "bottom",
-            legend.title = element_blank(),
-            legend.spacing.x = unit(0.01, 'cm'),
-            legend.spacing.y = unit(0.01, 'cm')) +
-      labs(x = "tSNE 1", y = "tSNE 2") +
-      scale_shape_manual(aes(colour=colorvalsubfield), values=c(1, 16, 0, 15)) 
-    tnseplot
+      tnseplot  <- tsne_df %>%
+        ggplot(aes(x = V1, y = V2, shape = treatment, color = subfield, label = ID)) +
+        geom_point(size = 2) +
+        scale_color_manual(values = colorvalsubfield) +
+        theme_ms()  +
+        theme(legend.position = "bottom",
+              legend.title = element_blank(),
+              legend.spacing.x = unit(0.01, 'cm'),
+              legend.spacing.y = unit(0.01, 'cm')) +
+        labs(x = "tSNE 1", y = "tSNE 2", subtitle = mysubtitle) +
+        scale_shape_manual(aes(colour=colorvalsubfield), values=c(1, 16, 0, 15)) 
+      return(tnseplot)
+      
+    }
+
+
+    p2 <- plot_tSNE(4, "perplexity = 4") + theme(legend.position = "none")
+
+    ## [1] 4
+
+    p4 <- plot_tSNE(8, "perplexity = 8") + theme(legend.position = "none")
+
+    ## [1] 8
+
+    p6 <- plot_tSNE(10, "perplexity = 10")
+
+    ## [1] 10
+
+    mylegend <- get_legend(p6)
+
+    top <- plot_grid(p2,p4,p6 + theme(legend.position = "none"), nrow = 1)
+    topl <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
+    topl
 
 ![](../figures/02b_RNAseqAll/tSNE-1.png)
 
 pca + tsne
 ----------
 
-    mylegend <- get_legend(tnseplot)
+    mylegend <- get_legend(p6)
 
-    top <- plot_grid(PCA12, tnseplot + theme(legend.position = "none"), nrow = 1)
+    top <- plot_grid(PCA12, p6 + theme(legend.position = "none"), nrow = 1)
     topl <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
     topl
 
@@ -710,314 +741,4 @@ pca + tsne
     ## quartz_off_screen 
     ##                 2
 
-Volcanos plots and and gene lists
----------------------------------
-
-    makevolcanodf <- function(mycontrast, myup, mydown, filename){
-      res <- results(dds, contrast = mycontrast, independentFiltering = T)
-
-      data <- data.frame(gene = row.names(res), pvalue = (res$padj), 
-                         lfc = res$log2FoldChange)
-      data <- na.omit(data)
-
-      data <- data %>%
-      mutate(direction = ifelse(data$lfc > 0 & data$pvalue < 0.05, 
-                            yes = myup, 
-                            no = ifelse(data$lfc < 0 & data$pvalue < 0.05, 
-                                        yes = mydown, 
-                                        no = "NS")))
-      data$logp <- -log10(data$pvalue)
-      data <- dplyr::arrange(data, logp)
-      write.csv(data, filename, row.names = F) # save for downstream analysis
-      return(data)
-    }
-
-    DGvCA3 <- makevolcanodf(c("subfield", "CA3", "DG"), "CA3", "DG", "../data/DGvCA3.csv")
-    head(DGvCA3)
-
-    ##            gene    pvalue           lfc direction         logp
-    ## 1 3100002H09Rik 1.0000000  0.0000000000        NS 0.000000e+00
-    ## 2        Clcnka 1.0000000  0.0000000000        NS 0.000000e+00
-    ## 3         Nup37 0.9999647 -0.0002985180        NS 1.534975e-05
-    ## 4          Egfr 0.9994908  0.0006363971        NS 2.212019e-04
-    ## 5         Fubp3 0.9994908 -0.0004064093        NS 2.212019e-04
-    ## 6        Amotl1 0.9994815  0.0008107400        NS 2.252406e-04
-
-    DGvCA1 <- makevolcanodf(c("subfield", "CA1", "DG"),"CA1", "DG", "../data/DGvCA1.csv")
-    CA3vCA1 <- makevolcanodf(c("subfield", "CA1", "CA3"),"CA1", "CA3", "../data/CA3vCA1.csv")
-
-    volcanoplot <- function(mydata, mycolors, mybreaks){
-      
-      myvolcano <- mydata %>%
-        #dplyr::filter(direction != "NS") %>%
-        ggplot(aes(x = lfc, y = logp)) + 
-      geom_point(aes(color = direction), alpha = 0.5, na.rm = T) + 
-      scale_color_manual(values = mycolors,
-                         breaks = mybreaks,
-                         name = "higher in") + 
-      theme_ms() +
-      #geom_hline(yintercept = 1.3,  size = 0.25, linetype = 2) + 
-      scale_y_continuous(limits=c(0, 60)) +
-      scale_x_continuous(limits=c(-10, 10)) +
-      xlab(paste0("log fold difference")) +
-      ylab(paste0("log10 p-value")) +       
-      theme(panel.grid.minor=element_blank(),
-            #legend.title = element_blank(),
-            legend.position = "bottom",
-            legend.spacing.x = unit(-0.1, 'cm'),
-            panel.grid.major=element_blank(),
-            legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm")) 
-
-    return(myvolcano)
-    }
-      
-    d <- volcanoplot(DGvCA3, volcanoDGvCA3, c("DG", "CA3"))
-    e <- volcanoplot(DGvCA1, volcanoDGvCA1, c("DG", "CA1"))  
-    f <- volcanoplot(CA3vCA1, volcanoCA3vCA1, c("CA3", "CA1")) 
-
-    myvolcanoplots <- plot_grid(d,e,f,nrow = 1)
-    myvolcanoplots
-
-![](../figures/02b_RNAseqAll/volcanos-1.png)
-
-mareker gene analysis
----------------------
-
-Genes from Cembrowski sublement file 1
-<a href="https://elifesciences.org/articles/14997/figures" class="uri">https://elifesciences.org/articles/14997/figures</a>
-
-    # import cembrowski markers
-    cembrowskisupp <- read.table("../data/cembrowksi_markers/elife-14997-supp1-v1_dendrogram.txt", sep="\t", header = T)
-
-    # select just columns with gene symbol and enriched column
-    # then rename gene column and convert to uppercase
-    cembrowskisupp <- cembrowskisupp %>% dplyr::select(gene_short_name, enriched) 
-    colnames(cembrowskisupp)[1] <- "gene"
-    cembrowskisupp$gene <- str_to_upper(cembrowskisupp$gene)
-    head(cembrowskisupp)
-
-    ##       gene  enriched
-    ## 1   ABLIM3 dg_d-dg_v
-    ## 2    AKAP7 dg_d-dg_v
-    ## 3 ARHGAP20 dg_d-dg_v
-    ## 4     BTG2 dg_d-dg_v
-    ## 5    C1QL2 dg_d-dg_v
-    ## 6    CALD1 dg_d-dg_v
-
-    # subset my maker
-
-    cembrowksimarkers <- function(subfields){
-      mydf <- cembrowskisupp %>% 
-      dplyr::filter(enriched %in% subfields) %>% 
-      dplyr::select(gene)
-      names(mydf) <- NULL
-      mylist <- as.list(mydf[,1])
-      return(mylist)
-    }
-
-    levels(cembrowskisupp$enriched)
-
-    ##  [1] "ca1_d"                           "ca1_d-ca1_v"                    
-    ##  [3] "ca1_v"                           "ca2"                            
-    ##  [5] "ca3_d"                           "ca3_d-ca3_v-ca2-ca1_d-ca1_v"    
-    ##  [7] "ca3_v"                           "ca4"                            
-    ##  [9] "ca4-ca3_d-ca3_v-ca2-ca1_d-ca1_v" "dg_d"                           
-    ## [11] "dg_d-dg_v"                       "dg_v"
-
-    # dorsal markers 
-    CA1_markers <- cembrowksimarkers(c("ca1_d", "ca1_d-ca1_v"))
-    DG_markers <- cembrowksimarkers(c("dg_d", "dg_d-dg_v"))
-    CA3_markers <- cembrowksimarkers(c("ca3_d",  "ca3_d-ca3_v-ca2-ca1_d-ca1_v"))
-
-    # import subfield specific data
-    wrangledata <- function(filename, mycomparison){
-      mydata <- read.csv(filename, header = T)
-      mydata$gene <- str_to_upper(mydata$gene)
-      mydata$comparison <- mycomparison
-      return(mydata)
-    }
-
-    CA1DG <- wrangledata("../data/DGvCA1.csv", "CA1-DG")
-    CA1CA3 <- wrangledata("../data/CA3vCA1.csv", "CA1-CA3")
-    CA3DG <- wrangledata("../data/DGvCA3.csv", "CA3-DG")
-
-    #look for markers in each supfield
-    # make data frames of genes expression results for markers 
-
-    marker_summary <- function(mydf, markers){
-        df <- mydf %>%
-        dplyr::filter(gene %in% c(markers)) 
-        #return((df))
-        return(summary(df$direction))
-    }
-
-    # comparing all lists with a given brain region
-    for(i in list(CA1DG, CA1CA3)){
-      j <- marker_summary(i, CA1_markers)
-      print(i[1, 6])
-      print(j)
-    }
-
-    ## [1] "CA1-DG"
-    ## CA1  DG  NS 
-    ##  15   0   3 
-    ## [1] "CA1-CA3"
-    ## CA1 CA3  NS 
-    ##  15   1   2
-
-    15/(15+3)
-
-    ## [1] 0.8333333
-
-    15/(15+3)
-
-    ## [1] 0.8333333
-
-    for(i in list(CA1CA3, CA3DG)){
-      j <- marker_summary(i, CA3_markers)
-      print(i[1, 6])
-      print(j)
-    }
-
-    ## [1] "CA1-CA3"
-    ## CA1 CA3  NS 
-    ##   0   6   4 
-    ## [1] "CA3-DG"
-    ## CA3  DG  NS 
-    ##   7   0   3
-
-    6/10
-
-    ## [1] 0.6
-
-    7/10
-
-    ## [1] 0.7
-
-    for(i in list(CA1DG, CA3DG)){
-      j <- marker_summary(i, DG_markers)
-      print(i[1, 6])
-      print(j)
-    }
-
-    ## [1] "CA1-DG"
-    ## CA1  DG  NS 
-    ##   0  48  23 
-    ## [1] "CA3-DG"
-    ## CA3  DG  NS 
-    ##   0  49  22
-
-    48/(48+23)
-
-    ## [1] 0.6760563
-
-    49/(49+22)
-
-    ## [1] 0.6901408
-
-Then, I checked to see how many of the markers that Cembrowski found to
-be enriched in discrete dorsal cell populations were also enriched in my
-comparisons. The enriched coloumn is what percent were confirmed, the
-depleted column means that the marker was experssed in the opposite
-direction, and neither means that the Cembrowski marker was not
-significantly different in expression between the two cell types. Here
-are the results:
-
-<table>
-<thead>
-<tr class="header">
-<th>Maker</th>
-<th>Comparison</th>
-<th>Enriched</th>
-<th>Depleted</th>
-<th>Neither</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>CA1</td>
-<td>CA1 v DG</td>
-<td>0.83</td>
-<td>0.00</td>
-<td>0.17</td>
-</tr>
-<tr class="even">
-<td>CA1</td>
-<td>CA1 v CA3</td>
-<td>0.83</td>
-<td>0.06</td>
-<td>0.11</td>
-</tr>
-<tr class="odd">
-<td>CA3</td>
-<td>CA3 v DG</td>
-<td>0.60</td>
-<td>0.00</td>
-<td>0.40</td>
-</tr>
-<tr class="even">
-<td>CA3</td>
-<td>CA3 v CA1</td>
-<td>0.70</td>
-<td>0.00</td>
-<td>0.30</td>
-</tr>
-<tr class="odd">
-<td>DG</td>
-<td>DG v CA1</td>
-<td>0.68</td>
-<td>0.00</td>
-<td>0.32</td>
-</tr>
-<tr class="even">
-<td>DG</td>
-<td>DG v CA3</td>
-<td>0.69</td>
-<td>0.00</td>
-<td>0.31</td>
-</tr>
-</tbody>
-</table>
-
-    mybarplot <- read.csv("../data/02h_markers.csv")
-    mybarplot
-
-    ##   comparison marker correct
-    ## 1     CA1vDG    CA1    0.83
-    ## 2    CA1vCA3    CA1    0.83
-    ## 3    CA1vCA3    CA3    0.60
-    ## 4     CA3vDG    CA3    0.70
-    ## 5     CA1vDG     DG    0.68
-    ## 6     CA3vDG     DG    0.69
-
-    p <- ggplot(data=mybarplot, aes(x=comparison, y=correct, fill = marker)) +
-      geom_bar(stat="identity", position=position_dodge()) +
-      theme_ms() +
-      scale_fill_manual(values = c( "#7570b3","#1b9e77",  "#d95f02"),
-                        name = "markers") +
-      ylab("% marker genes recovered") +
-      xlab("subfields compared") +
-      theme(panel.grid.minor=element_blank(),
-            panel.grid.major=element_blank(),
-            legend.key.width =  unit(0.2, "cm"),
-            legend.key.height =  unit(0.1, "cm"),
-            axis.text.x = element_text(angle = 45, hjust = 1),
-            legend.position = "bottom") +
-      scale_y_continuous(labels = scales::percent,
-                         limits = c(0,1)) 
-    p
-
-![](../figures/02b_RNAseqAll/barplot-1.png)
-
-    myvolcanoplots <- plot_grid(d,e + labs(y = NULL),f + labs(y = NULL),p, nrow = 1,
-                                rel_widths = c(0.275,0.225,0.225,0.275))
-    myvolcanoplots
-
-![](../figures/02b_RNAseqAll/volcanobar-1.png)
-
-    pdf(file="../figures/02b_RNAseqALL/volcanoplots.pdf", width=6.69, height=2.5)
-    plot(myvolcanoplots)
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
+    write.csv(assay(vsd), file = "../data/02b_vsd.csv", row.names = T)
