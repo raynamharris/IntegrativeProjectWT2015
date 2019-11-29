@@ -267,13 +267,13 @@
     left <- plot_grid(a,b, nrow = 2, labels = c("a","b"), label_size = 8)
     left
 
-![](../figures/02d_correlations/corrrplots-1.png)
+![](../figures/02d_correlations/ARC-1.png)
 
-    slim <- corrrmat %>% 
+    corrsTop10 <- corrrmat %>% 
       focus(PC1, PC2)  %>% 
       arrange(desc(PC1)) %>% 
       filter(PC1 > 0.78) 
-    slim
+    corrsTop10
 
     ## # A tibble: 11 x 3
     ##    rowname    PC1    PC2
@@ -290,7 +290,7 @@
     ## 10 ACAN     0.785 -0.546
     ## 11 AREG     0.784 -0.438
 
-    topcorrrs <- slim$rowname
+    topcorrrs <- corrsTop10$rowname
 
     p1 <- corrrmat %>% 
       focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
@@ -306,7 +306,7 @@
       labs(subtitle = " ")
     p1 
 
-![](../figures/02d_correlations/corrrplots-2.png)
+![](../figures/02d_correlations/corrr-1.png)
 
     p2 <- corrrmat %>% 
       focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
@@ -323,19 +323,19 @@
 
     p2 
 
-![](../figures/02d_correlations/corrrplots-3.png)
+![](../figures/02d_correlations/corrr-2.png)
 
     right <- plot_grid(p1,p2,  nrow = 1, labels = c("c","d"), label_size = 8)
     right
 
-![](../figures/02d_correlations/corrrplots-4.png)
+![](../figures/02d_correlations/corrr-3.png)
 
     fig4 <- plot_grid(left, right, nrow = 1, rel_widths = c(1,2))
     fig4
 
-![](../figures/02d_correlations/corrrplots-5.png)
+![](../figures/02d_correlations/correlations-1.png)
 
-    pdf(file="../figures/02d_correlations/corrrplots.pdf", width=6.69, height=3.5)
+    pdf(file="../figures/02d_correlations/correlations.pdf", width=6.69, height=3.5)
     plot(fig4)
     dev.off()
 
@@ -349,11 +349,11 @@
     ## quartz_off_screen 
     ##                 2
 
-what genes genes correlated with PC1? what gene are correlated with PC1 and are differentially epxressed
---------------------------------------------------------------------------------------------------------
+What genes genes correlated with PC1? How many gene correlated with PC1 and are differentially epxressed in DG?
+---------------------------------------------------------------------------------------------------------------
 
     # 57 genes are correlated with PC1 > 0.7
-    PC1corrs <- corrrmat %>% 
+    corrsPC1sig <- corrrmat %>% 
       focus(PC1)  %>% 
       arrange(desc(PC1)) %>% 
       filter(PC1 > .7) %>%
@@ -361,7 +361,7 @@ what genes genes correlated with PC1? what gene are correlated with PC1 and are 
       mutate(gene = rowname) %>% 
       arrange(gene) %>% 
       select(gene,PC1)   
-    PC1corrs$gene
+    corrsPC1sig$gene
 
     ##  [1] "ABRA"     "ACAN"     "ADAMTS1"  "AIM1L"    "AMIGO2"   "ARC"     
     ##  [7] "AREG"     "ARL4D"    "ARL5B"    "ARMCX5"   "ATF3"     "BDNF"    
@@ -383,7 +383,7 @@ what genes genes correlated with PC1? what gene are correlated with PC1 and are 
     ## [1] 214   5
 
     # 41 found  in both correlate and deg datasets
-    PC1corrsDEGS <- inner_join(PC1corrs, DG_DEGs) %>% 
+    PC1corrsDEGS <- inner_join(corrsPC1sig, DG_DEGs) %>% 
       arrange(gene) %>% select(gene,PC1)   
 
     ## Joining, by = "gene"
@@ -401,90 +401,6 @@ what genes genes correlated with PC1? what gene are correlated with PC1 and are 
     ## [25] "NR4A3"    "PCDH8"    "PELI1"    "PER1"     "PLK2"     "PTGS2"   
     ## [31] "RASD1"    "RGS2"     "SGK1"     "SLC16A1"  "SLC25A25" "SMAD7"   
     ## [37] "SPTY2D1"  "SYT4"     "TIPARP"   "TRIB1"    "UBC"
-
-    ## these 41 genes were used for a go analysis using shinygo http://bioinformatics.sdstate.edu/go/
-    ## results are stored as 
-      #data/02d_DEGPC1enrichmentBP.csv
-        #data/02d_DEGPC1enrichmentCC.csv
-        #data/02d_DEGPC1enrichmentMF.csv
-
-    BP <- read_csv("../data/02d_DEGPC1enrichmentBP.csv", n_max = 5) %>% mutate(Domain = "BP") 
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   `Enrichment FDR` = col_double(),
-    ##   `Genes in list` = col_double(),
-    ##   `Total genes` = col_double(),
-    ##   `Functional Category` = col_character(),
-    ##   Genes = col_character()
-    ## )
-
-    CC <- read_csv("../data/02d_DEGPC1enrichmentCC.csv", n_max = 5) %>% mutate(Domain = "CC") 
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   `Enrichment FDR` = col_double(),
-    ##   `Genes in list` = col_double(),
-    ##   `Total genes` = col_double(),
-    ##   `Functional Category` = col_character(),
-    ##   Genes = col_character()
-    ## )
-
-    MF <- read_csv("../data/02d_DEGPC1enrichmentMF.csv", n_max = 5) %>% mutate(Domain = "MF") 
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   `Enrichment FDR` = col_double(),
-    ##   `Genes in list` = col_double(),
-    ##   `Total genes` = col_double(),
-    ##   `Functional Category` = col_character(),
-    ##   Genes = col_character()
-    ## )
-
-    GO <- rbind(BP, CC, MF) %>% select(Domain, `Functional Category`, `Total genes`, `Genes in list`, Genes)
-    GO
-
-    ## # A tibble: 15 x 5
-    ##    Domain `Functional Category`  `Total genes` `Genes in list` Genes       
-    ##    <chr>  <chr>                          <dbl>           <dbl> <chr>       
-    ##  1 BP     Memory                           145               9 BDNF ARC PT…
-    ##  2 BP     Tissue development              1855              21 ERRFI1 BDNF…
-    ##  3 BP     Learning or memory               286              10 BDNF ARC PT…
-    ##  4 BP     Cognition                        317              10 BDNF ARC PT…
-    ##  5 BP     Behavior                         693              13 BDNF ARC PT…
-    ##  6 CC     Neuron projection               1486              13 HOMER1 CPEB…
-    ##  7 CC     Cell junction                   1095              10 FZD5 FRMD6 …
-    ##  8 CC     Dendrite                         736               8 HOMER1 BDNF…
-    ##  9 CC     Dendritic tree                   738               8 HOMER1 BDNF…
-    ## 10 CC     Neuron part                     1933              13 HOMER1 CPEB…
-    ## 11 MF     Regulatory region nuc…           949              11 PER1 ATF3 N…
-    ## 12 MF     Transcription regulat…           946              11 PER1 ATF3 N…
-    ## 13 MF     RNA polymerase II reg…           782               9 ATF3 NR4A3 …
-    ## 14 MF     DNA-binding transcrip…           738               9 EGR1 NPAS4 …
-    ## 15 MF     RNA polymerase II reg…           788               9 ATF3 NR4A3 …
-
-    # alphabetize
-    GO$Genes <- GO$Genes %>% str_split(., ' ') %>% lapply(., 'sort') %>%  lapply(., 'paste', collapse=' ') %>% unlist(.)
-    GO
-
-    ## # A tibble: 15 x 5
-    ##    Domain `Functional Category`  `Total genes` `Genes in list` Genes       
-    ##    <chr>  <chr>                          <dbl>           <dbl> <chr>       
-    ##  1 BP     Memory                           145               9 ARC BDNF EG…
-    ##  2 BP     Tissue development              1855              21 ACAN ARC AR…
-    ##  3 BP     Learning or memory               286              10 ARC BDNF BT…
-    ##  4 BP     Cognition                        317              10 ARC BDNF BT…
-    ##  5 BP     Behavior                         693              13 ARC BDNF BT…
-    ##  6 CC     Neuron projection               1486              13 ACAN ARC BD…
-    ##  7 CC     Cell junction                   1095              10 ARC CPEB4 F…
-    ##  8 CC     Dendrite                         736               8 ARC BDNF CP…
-    ##  9 CC     Dendritic tree                   738               8 ARC BDNF CP…
-    ## 10 CC     Neuron part                     1933              13 ACAN ARC BD…
-    ## 11 MF     Regulatory region nuc…           949              11 ATF3 EGR1 E…
-    ## 12 MF     Transcription regulat…           946              11 ATF3 EGR1 E…
-    ## 13 MF     RNA polymerase II reg…           782               9 ATF3 EGR1 E…
-    ## 14 MF     DNA-binding transcrip…           738               9 ATF3 BTG2 E…
-    ## 15 MF     RNA polymerase II reg…           788               9 ATF3 EGR1 E…
 
     citation("corrr")
 
@@ -505,6 +421,5 @@ what genes genes correlated with PC1? what gene are correlated with PC1 and are 
     ##     url = {https://CRAN.R-project.org/package=corrr},
     ##   }
 
-    write.csv(slim, "../data/02d_top10PC1correlations.csv", row.names = F)
-    write.csv(PC1corrs, "../data/02d_PC1correlations.csv", row.names = F)
-    write.csv(GO, "../data/02d_PC1corrTopGOterms.csv", row.names = F)
+    write.csv(corrsTop10, "../data/02d_corrsTop10.csv", row.names = F)
+    write.csv(corrsPC1sig, "../data/02d_corrsPC1sig.csv", row.names = F)

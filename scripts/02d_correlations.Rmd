@@ -56,7 +56,7 @@ corrrmat <- correlate(forcorall, diagonal = 1)
 head(corrrmat)
 ```
 
-```{r corrrplots, fig.width=6.69, fig.height=3.5}
+```{r ARC}
 summary(lm( PC1 ~ ARC, data = vsd))
 summary(lm( PC2 ~ ARC, data = vsd))
 
@@ -80,14 +80,16 @@ b <- ggplot(vsd, aes(x = ARC, y = PC2)) +
 
 left <- plot_grid(a,b, nrow = 2, labels = c("a","b"), label_size = 8)
 left
+```
 
-slim <- corrrmat %>% 
+```{r corrr}
+corrsTop10 <- corrrmat %>% 
   focus(PC1, PC2)  %>% 
   arrange(desc(PC1)) %>% 
   filter(PC1 > 0.78) 
-slim
+corrsTop10
 
-topcorrrs <- slim$rowname
+topcorrrs <- corrsTop10$rowname
 
 p1 <- corrrmat %>% 
   focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
@@ -115,11 +117,13 @@ p2
 
 right <- plot_grid(p1,p2,  nrow = 1, labels = c("c","d"), label_size = 8)
 right
+```
 
+```{r correlations, fig.width=6.69, fig.height=3.5}
 fig4 <- plot_grid(left, right, nrow = 1, rel_widths = c(1,2))
 fig4
 
-pdf(file="../figures/02d_correlations/corrrplots.pdf", width=6.69, height=3.5)
+pdf(file="../figures/02d_correlations/correlations.pdf", width=6.69, height=3.5)
 plot(fig4)
 dev.off()
 
@@ -128,13 +132,11 @@ plot(fig4)
 dev.off()
 ```
 
-## what genes genes correlated with PC1? what gene are correlated with PC1 and are differentially epxressed 
+## What genes genes correlated with PC1? How many gene correlated with PC1 and are differentially epxressed in DG?
 
-```{r}
-
-
+```{r numbers}
 # 57 genes are correlated with PC1 > 0.7
-PC1corrs <- corrrmat %>% 
+corrsPC1sig <- corrrmat %>% 
   focus(PC1)  %>% 
   arrange(desc(PC1)) %>% 
   filter(PC1 > .7) %>%
@@ -142,7 +144,7 @@ PC1corrs <- corrrmat %>%
   mutate(gene = rowname) %>% 
   arrange(gene) %>% 
   select(gene,PC1)   
-PC1corrs$gene
+corrsPC1sig$gene
 
 # 214 DEGs in DG
 # read DG DEGs
@@ -151,38 +153,19 @@ DG_DEGs$gene <- toupper(DG_DEGs$gene)
 dim(DG_DEGs)
 
 # 41 found  in both correlate and deg datasets
-PC1corrsDEGS <- inner_join(PC1corrs, DG_DEGs) %>% 
+PC1corrsDEGS <- inner_join(corrsPC1sig, DG_DEGs) %>% 
   arrange(gene) %>% select(gene,PC1)   
 length(PC1corrsDEGS$gene)
 PC1corrsDEGS$gene
-
-## these 41 genes were used for a go analysis using shinygo http://bioinformatics.sdstate.edu/go/
-## results are stored as 
-  #data/02d_DEGPC1enrichmentBP.csv
-	#data/02d_DEGPC1enrichmentCC.csv
-	#data/02d_DEGPC1enrichmentMF.csv
 ```
 
-```{r }
-BP <- read_csv("../data/02d_DEGPC1enrichmentBP.csv", n_max = 5) %>% mutate(Domain = "BP") 
-CC <- read_csv("../data/02d_DEGPC1enrichmentCC.csv", n_max = 5) %>% mutate(Domain = "CC") 
-MF <- read_csv("../data/02d_DEGPC1enrichmentMF.csv", n_max = 5) %>% mutate(Domain = "MF") 
-
-GO <- rbind(BP, CC, MF) %>% select(Domain, `Functional Category`, `Total genes`, `Genes in list`, Genes)
-GO
-
-# alphabetize
-GO$Genes <- GO$Genes %>% str_split(., ' ') %>% lapply(., 'sort') %>%  lapply(., 'paste', collapse=' ') %>% unlist(.)
-GO
-```
 
 
 ```{r citation}
 citation("corrr")
 ```
 
-```{r}
-write.csv(slim, "../data/02d_top10PC1correlations.csv", row.names = F)
-write.csv(PC1corrs, "../data/02d_PC1correlations.csv", row.names = F)
-write.csv(GO, "../data/02d_PC1corrTopGOterms.csv", row.names = F)
+```{r write}
+write.csv(corrsTop10, "../data/02d_corrsTop10.csv", row.names = F)
+write.csv(corrsPC1sig, "../data/02d_corrsPC1sig.csv", row.names = F)
 ```
