@@ -22,9 +22,6 @@ library(ggplot2)
 
 ## Functions
 source("functions_RNAseq.R")
-
-## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02a_makedfs/')
 ```
 
 Now, I create data frames from three csv files
@@ -103,12 +100,6 @@ table( rowSums( counts ) )[ 1:30 ] # Number of genes with low counts
 rowsum <- as.data.frame(colSums( counts ) / 1e06 )
 names(rowsum)[1] <- "millioncounts"
 rowsum$sample <- row.names(rowsum)
-
-ggplot(rowsum, aes(x=millioncounts)) + 
-  geom_histogram(binwidth = 1, colour = "black", fill = "darkgrey") +
-  theme_classic() +
-  scale_x_continuous(name = "Millions of Counts per Sample") +
-  scale_y_continuous(name = "Number of Samples")
 ```
 
 ## Write the two files
