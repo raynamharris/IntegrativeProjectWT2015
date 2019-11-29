@@ -48,9 +48,10 @@ vsd$ID <- paste(15, vsd$mouse, sep = "")
 
 vsd <- left_join(colData, vsd)
 head(vsd)[17015:17020]
+```
 
+```{r makecorrrmat}
 forcorall <-  vsd %>% select(PC1:ZZZ3)
-
 corrrmat <- correlate(forcorall, diagonal = 1) 
 head(corrrmat)
 ```
@@ -130,6 +131,8 @@ dev.off()
 ## what genes genes correlated with PC1? what gene are correlated with PC1 and are differentially epxressed 
 
 ```{r}
+
+
 # 57 genes are correlated with PC1 > 0.7
 PC1corrs <- corrrmat %>% 
   focus(PC1)  %>% 
@@ -141,9 +144,11 @@ PC1corrs <- corrrmat %>%
   select(gene,PC1)   
 PC1corrs$gene
 
-# 217 DEGs in DG
+# 214 DEGs in DG
+# read DG DEGs
+DG_DEGs <- read.csv("../data/02c_DEGs.DG.training.yoked.trained.csv", row.names = 1, check.names = F) 
+DG_DEGs$gene <- toupper(DG_DEGs$gene)
 dim(DG_DEGs)
-head(DG_DEGs$gene)
 
 # 41 found  in both correlate and deg datasets
 PC1corrsDEGS <- inner_join(PC1corrs, DG_DEGs) %>% 

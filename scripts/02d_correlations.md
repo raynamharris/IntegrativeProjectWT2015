@@ -1,6 +1,25 @@
     library(tidyverse)
+
+    ## ── Attaching packages ────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+
+    ## ✔ ggplot2 3.2.1     ✔ purrr   0.3.3
+    ## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
+    ## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
+    ## ✔ readr   1.3.1     ✔ forcats 0.4.0
+
+    ## ── Conflicts ───────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+
     library(corrr)
     library(cowplot)
+
+    ## 
+    ## Attaching package: 'cowplot'
+
+    ## The following object is masked from 'package:ggplot2':
+    ## 
+    ##     ggsave
 
     source("./figureoptions.R")
     source("./functions_RNAseq.R")
@@ -15,6 +34,7 @@
     ##   ID = col_character(),
     ##   treatment = col_character(),
     ##   trialNum = col_double(),
+    ##   Day = col_double(),
     ##   PC1 = col_double(),
     ##   PC2 = col_double(),
     ##   PC3 = col_double(),
@@ -40,20 +60,20 @@
 
     head(colData)
 
-    ##       ID subfield        treatment training trialNum        PC1
-    ## 1 15143A       DG conflict.trained  trained        9 -0.2511636
-    ## 2 15143B       DG   conflict.yoked    yoked        9 -3.5595365
-    ## 3 15143D       DG   standard.yoked    yoked        9 -3.0605115
-    ## 4 15144A       DG conflict.trained  trained        9  6.6921089
-    ## 5 15144C       DG standard.trained  trained        9  7.0436756
-    ## 6 15144D       DG   standard.yoked    yoked        9 -3.4999867
+    ##       ID subfield        treatment training trialNum Day        PC1
+    ## 1 15143A       DG conflict.trained  trained        9   3 -0.2275039
+    ## 2 15143B       DG   conflict.yoked    yoked        9   3 -3.1436627
+    ## 3 15143D       DG   standard.yoked    yoked        9   3 -2.7532719
+    ## 4 15144A       DG conflict.trained  trained        9   3  6.7041815
+    ## 5 15144C       DG standard.trained  trained        9   4  7.0499369
+    ## 6 15144D       DG   standard.yoked    yoked        9   3 -3.3026284
     ##           PC2
-    ## 1  3.02981466
-    ## 2 -0.47451513
-    ## 3 -0.07227782
-    ## 4 -0.02270055
-    ## 5 -1.72946383
-    ## 6  1.16766175
+    ## 1  3.03543738
+    ## 2 -0.48834291
+    ## 3 -0.07584809
+    ## 4 -0.07853719
+    ## 5 -1.78499206
+    ## 6  1.17314374
 
     # read all count data
     vsd <- read.csv("../data/02c_DGvsd.csv", row.names = 1, check.names = F) 
@@ -98,16 +118,15 @@
 
     head(vsd)[17015:17020]
 
-    ##     ZYG11B      ZYX    ZZEF1     ZZZ3    sample mouse
-    ## 1 8.319205 7.203704 7.829641 7.742970 143A-DG-1  143A
-    ## 2 8.118246 7.258360 7.711706 7.569642 143B-DG-1  143B
-    ## 3 8.715286 6.853523 7.987434 7.135233 143D-DG-3  143D
-    ## 4 9.110958 7.532625 8.240355 7.760152 144A-DG-2  144A
-    ## 5 8.724875 7.128516 7.955995 7.634300 144C-DG-2  144C
-    ## 6 8.814969 6.671645 7.908857 7.526267 144D-DG-2  144D
+    ##       ZXDC   ZYG11B      ZYX    ZZEF1     ZZZ3    sample
+    ## 1 6.579863 8.319205 7.203704 7.829641 7.742970 143A-DG-1
+    ## 2 6.626521 8.118246 7.258360 7.711706 7.569642 143B-DG-1
+    ## 3 6.695140 8.715286 6.853523 7.987434 7.135233 143D-DG-3
+    ## 4 6.816776 9.110958 7.532625 8.240355 7.760152 144A-DG-2
+    ## 5 7.219436 8.724875 7.128516 7.955995 7.634300 144C-DG-2
+    ## 6 6.617663 8.814969 6.671645 7.908857 7.526267 144D-DG-2
 
     forcorall <-  vsd %>% select(PC1:ZZZ3)
-
     corrrmat <- correlate(forcorall, diagonal = 1) 
 
     ## 
@@ -119,12 +138,12 @@
     ## # A tibble: 6 x 17,014
     ##   rowname     PC1     PC2 `0610007P14RIK` `0610009B22RIK` `0610009L18RIK`
     ##   <chr>     <dbl>   <dbl>           <dbl>           <dbl>           <dbl>
-    ## 1 PC1      1      -0.589          -0.0955          0.331          -0.146 
-    ## 2 PC2     -0.589   1               0.0157         -0.199           0.0177
-    ## 3 061000… -0.0955  0.0157          1              -0.595          -0.173 
-    ## 4 061000…  0.331  -0.199          -0.595           1               0.0266
-    ## 5 061000… -0.146   0.0177         -0.173           0.0266          1     
-    ## 6 061000…  0.0325 -0.163           0.164          -0.342           0.465 
+    ## 1 PC1      1      -0.606          -0.0930          0.324          -0.137 
+    ## 2 PC2     -0.606   1               0.0167         -0.200           0.0170
+    ## 3 061000… -0.0930  0.0167          1              -0.595          -0.173 
+    ## 4 061000…  0.324  -0.200          -0.595           1               0.0266
+    ## 5 061000… -0.137   0.0170         -0.173           0.0266          1     
+    ## 6 061000…  0.0393 -0.163           0.164          -0.342           0.465 
     ## # … with 17,008 more variables: `0610009O20RIK` <dbl>,
     ## #   `0610010F05RIK` <dbl>, `0610010K14RIK` <dbl>, `0610012G03RIK` <dbl>,
     ## #   `0610030E20RIK` <dbl>, `0610037L13RIK` <dbl>, `0610040J01RIK` <dbl>,
@@ -168,18 +187,18 @@
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -4.6977 -1.7429  0.2442  1.2672  5.6700 
+    ## -4.6903 -1.7333  0.2229  1.2413  5.5850 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept) -26.6287     5.4718  -4.867 0.000249 ***
-    ## ARC           2.9210     0.5732   5.096 0.000163 ***
+    ## (Intercept) -25.9124     5.3643  -4.831 0.000267 ***
+    ## ARC           2.8553     0.5619   5.081 0.000167 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 2.617 on 14 degrees of freedom
-    ## Multiple R-squared:  0.6497, Adjusted R-squared:  0.6247 
-    ## F-statistic: 25.97 on 1 and 14 DF,  p-value: 0.0001629
+    ## Residual standard error: 2.565 on 14 degrees of freedom
+    ## Multiple R-squared:  0.6484, Adjusted R-squared:  0.6233 
+    ## F-statistic: 25.82 on 1 and 14 DF,  p-value: 0.0001674
 
     summary(lm( PC2 ~ ARC, data = vsd))
 
@@ -189,18 +208,18 @@
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -2.0549 -0.9078 -0.1875  0.5348  3.2513 
+    ## -2.0654 -0.8975 -0.2179  0.5500  3.2926 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)   9.8519     2.9665   3.321  0.00505 **
-    ## ARC          -0.9469     0.3107  -3.047  0.00870 **
+    ## (Intercept)   9.9971     2.9862   3.348  0.00479 **
+    ## ARC          -0.9639     0.3128  -3.081  0.00813 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 1.419 on 14 degrees of freedom
-    ## Multiple R-squared:  0.3988, Adjusted R-squared:  0.3558 
-    ## F-statistic: 9.285 on 1 and 14 DF,  p-value: 0.008699
+    ## Residual standard error: 1.428 on 14 degrees of freedom
+    ## Multiple R-squared:  0.4041, Adjusted R-squared:  0.3616 
+    ## F-statistic: 9.495 on 1 and 14 DF,  p-value: 0.008128
 
     cor.test(vsd$PC1, vsd$ARC, method = c("pearson"))
 
@@ -208,13 +227,13 @@
     ##  Pearson's product-moment correlation
     ## 
     ## data:  vsd$PC1 and vsd$ARC
-    ## t = 5.0961, df = 14, p-value = 0.0001629
+    ## t = 5.0812, df = 14, p-value = 0.0001674
     ## alternative hypothesis: true correlation is not equal to 0
     ## 95 percent confidence interval:
-    ##  0.5168971 0.9301213
+    ##  0.5151616 0.9298016
     ## sample estimates:
     ##       cor 
-    ## 0.8060654
+    ## 0.8052353
 
     cor.test(vsd$PC2, vsd$ARC, method = c("pearson"))
 
@@ -222,13 +241,13 @@
     ##  Pearson's product-moment correlation
     ## 
     ## data:  vsd$PC2 and vsd$ARC
-    ## t = -3.0471, df = 14, p-value = 0.008699
+    ## t = -3.0814, df = 14, p-value = 0.008128
     ## alternative hypothesis: true correlation is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.8584581 -0.1976259
+    ##  -0.8603085 -0.2044175
     ## sample estimates:
     ##        cor 
-    ## -0.6314698
+    ## -0.6357062
 
     a <- ggplot(vsd, aes(x = ARC, y = PC1)) +
        geom_point(aes( color = treatment)) + 
@@ -248,7 +267,7 @@
     left <- plot_grid(a,b, nrow = 2, labels = c("a","b"), label_size = 8)
     left
 
-![](../figures/02e_correlations/corrrplots-1.png)
+![](../figures/02d_correlations/corrrplots-1.png)
 
     slim <- corrrmat %>% 
       focus(PC1, PC2)  %>% 
@@ -259,17 +278,17 @@
     ## # A tibble: 11 x 3
     ##    rowname    PC1    PC2
     ##    <chr>    <dbl>  <dbl>
-    ##  1 NAF1     0.859 -0.693
-    ##  2 PTGS2    0.839 -0.640
-    ##  3 RGS2     0.833 -0.605
-    ##  4 HIST1H1D 0.818 -0.539
-    ##  5 COL10A1  0.813 -0.574
-    ##  6 ARC      0.806 -0.631
-    ##  7 HSPB3    0.801 -0.277
-    ##  8 NPAS4    0.798 -0.637
-    ##  9 FZD5     0.797 -0.666
-    ## 10 ACAN     0.789 -0.542
-    ## 11 AREG     0.784 -0.432
+    ##  1 NAF1     0.862 -0.699
+    ##  2 PTGS2    0.839 -0.645
+    ##  3 RGS2     0.834 -0.611
+    ##  4 HIST1H1D 0.815 -0.544
+    ##  5 COL10A1  0.813 -0.579
+    ##  6 ARC      0.805 -0.636
+    ##  7 HSPB3    0.803 -0.286
+    ##  8 NPAS4    0.799 -0.641
+    ##  9 FZD5     0.798 -0.670
+    ## 10 ACAN     0.785 -0.546
+    ## 11 AREG     0.784 -0.438
 
     topcorrrs <- slim$rowname
 
@@ -287,7 +306,7 @@
       labs(subtitle = " ")
     p1 
 
-![](../figures/02e_correlations/corrrplots-2.png)
+![](../figures/02d_correlations/corrrplots-2.png)
 
     p2 <- corrrmat %>% 
       focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
@@ -304,19 +323,19 @@
 
     p2 
 
-![](../figures/02e_correlations/corrrplots-3.png)
+![](../figures/02d_correlations/corrrplots-3.png)
 
     right <- plot_grid(p1,p2,  nrow = 1, labels = c("c","d"), label_size = 8)
     right
 
-![](../figures/02e_correlations/corrrplots-4.png)
+![](../figures/02d_correlations/corrrplots-4.png)
 
     fig4 <- plot_grid(left, right, nrow = 1, rel_widths = c(1,2))
     fig4
 
-![](../figures/02e_correlations/corrrplots-5.png)
+![](../figures/02d_correlations/corrrplots-5.png)
 
-    pdf(file="../figures/02e_correlations/corrrplots.pdf", width=6.69, height=3.5)
+    pdf(file="../figures/02d_correlations/corrrplots.pdf", width=6.69, height=3.5)
     plot(fig4)
     dev.off()
 
@@ -355,15 +374,13 @@ what genes genes correlated with PC1? what gene are correlated with PC1 and are 
     ## [49] "SLC25A25" "SMAD7"    "SPTY2D1"  "SYT4"     "TIPARP"   "TNFRSF23"
     ## [55] "TRIB1"    "UBC"      "ZFP804B"
 
-    # 217 DEGs in DG
+    # 214 DEGs in DG
+    # read DG DEGs
+    DG_DEGs <- read.csv("../data/02c_DEGs.DG.training.yoked.trained.csv", row.names = 1, check.names = F) 
+    DG_DEGs$gene <- toupper(DG_DEGs$gene)
     dim(DG_DEGs)
 
-    ## [1] 214  17
-
-    head(DG_DEGs$gene)
-
-    ## [1] "1190002N15RIK" "A830010M20RIK" "ABHD2"         "ACAN"         
-    ## [5] "ADAMTS1"       "ADRB1"
+    ## [1] 214   5
 
     # 41 found  in both correlate and deg datasets
     PC1corrsDEGS <- inner_join(PC1corrs, DG_DEGs) %>% 
@@ -387,22 +404,11 @@ what genes genes correlated with PC1? what gene are correlated with PC1 and are 
 
     ## these 41 genes were used for a go analysis using shinygo http://bioinformatics.sdstate.edu/go/
     ## results are stored as 
-      #data/02e_DEGPC1enrichmentBP.csv
-        #data/02e_DEGPC1enrichmentCC.csv
-        #data/02e_DEGPC1enrichmentMF.csv
+      #data/02d_DEGPC1enrichmentBP.csv
+        #data/02d_DEGPC1enrichmentCC.csv
+        #data/02d_DEGPC1enrichmentMF.csv
 
-    BP <- read_csv("../data/02e_DEGPC1enrichmentBP.csv", n_max = 5) %>% mutate(Domain = "BP") 
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   `Enrichment FDR` = col_double(),
-    ##   `Genes in list` = col_double(),
-    ##   `Total genes` = col_double(),
-    ##   `Functional Category` = col_character(),
-    ##   Genes = col_character()
-    ## )
-
-    CC <- read_csv("../data/02e_DEGPC1enrichmentCC.csv", n_max = 5) %>% mutate(Domain = "CC") 
+    BP <- read_csv("../data/02d_DEGPC1enrichmentBP.csv", n_max = 5) %>% mutate(Domain = "BP") 
 
     ## Parsed with column specification:
     ## cols(
@@ -413,7 +419,18 @@ what genes genes correlated with PC1? what gene are correlated with PC1 and are 
     ##   Genes = col_character()
     ## )
 
-    MF <- read_csv("../data/02e_DEGPC1enrichmentMF.csv", n_max = 5) %>% mutate(Domain = "MF") 
+    CC <- read_csv("../data/02d_DEGPC1enrichmentCC.csv", n_max = 5) %>% mutate(Domain = "CC") 
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   `Enrichment FDR` = col_double(),
+    ##   `Genes in list` = col_double(),
+    ##   `Total genes` = col_double(),
+    ##   `Functional Category` = col_character(),
+    ##   Genes = col_character()
+    ## )
+
+    MF <- read_csv("../data/02d_DEGPC1enrichmentMF.csv", n_max = 5) %>% mutate(Domain = "MF") 
 
     ## Parsed with column specification:
     ## cols(
@@ -488,6 +505,6 @@ what genes genes correlated with PC1? what gene are correlated with PC1 and are 
     ##     url = {https://CRAN.R-project.org/package=corrr},
     ##   }
 
-    write.csv(slim, "../data/02e_top10PC1correlations.csv", row.names = F)
-    write.csv(PC1corrs, "../data/02e_PC1correlations.csv", row.names = F)
-    write.csv(GO, "../data/02e_PC1corrTopGOterms.csv", row.names = F)
+    write.csv(slim, "../data/02d_top10PC1correlations.csv", row.names = F)
+    write.csv(PC1corrs, "../data/02d_PC1correlations.csv", row.names = F)
+    write.csv(GO, "../data/02d_PC1corrTopGOterms.csv", row.names = F)
