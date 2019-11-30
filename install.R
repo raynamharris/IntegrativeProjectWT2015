@@ -3,7 +3,9 @@ pkgs = c("tidyverse", "knitr", "rmarkdown", "kableExtra",
          "cowplot", "factoextra", "FactoMineR", "apaTables", "png", "grid",
          "Rtsne", 
          "corrr",
-         "devtools", "BiocManager")
+         "devtools", "BiocManager",
+         "magick", 
+         "gsl", "OpenMx", "MBESS")
 install.packages(pkgs)
 
 BiocManager::install("DESeq2")
