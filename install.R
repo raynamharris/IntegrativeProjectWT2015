@@ -4,10 +4,8 @@ pkgs = c("tidyverse", "knitr", "rmarkdown", "kableExtra",
          "Rtsne", 
          "corrr",
          "devtools", "BiocManager")
-ncores = parallel::detectCores()
-install.packages(pkgs, Ncpus = ncores)
+install.packages(pkgs)
 
 BiocManager::install("DESeq2")
 BiocManager::install("edgeR")
 BiocManager::install("BiocParallel")
-
