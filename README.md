@@ -24,11 +24,6 @@ Stampede cluster at the Texas Advanced Computing Facility -
 [`data`](data): all the input data and the results - [`docs`](docs):
 presentations generated using R
 
-This workflow below describes the order in which scripts are used to
-process and analyze behavioral data (part 1), RNA-seq data (part 2),
-electrophysiology data (part 3). Finally, the last step (part 4) was to
-integrate across all three levels of analysis.
-
 -   **Part 1: Behavioral analysis**
     -   [scripts/00\_behavior\_wrangle](scripts/00_behavior_wrangle.md):
         behavior data wrangling
@@ -71,7 +66,7 @@ Figures and Tables
 
 ### Supplementary Figure 1: RNA-seq Quality Control
 
-![](./figures/02b_rnaseqQC/supplfig1-1.png)
+![](./figures/02_rnaseqQC/supplfig-1.png)
 
 ### Figure 2: Avoidance Behavior
 

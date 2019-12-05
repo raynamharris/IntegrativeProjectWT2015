@@ -172,6 +172,10 @@ TukeyHSD((aov(PC1 ~ subfield, data=pcadata)), which = "subfield")
 summary(aov(PC2 ~ subfield * treatment, data=pcadata)) 
 TukeyHSD((aov(PC2 ~ subfield, data=pcadata)), which = "subfield") 
 
+subfields <- png::readPNG("../figures/00_schematics/figure_hippocampus.png")
+subfields <-  grid::rasterGrob(subfields, interpolate=TRUE)
+
+
 PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
     geom_point(size=2, aes(shape=treatment), alpha = 0.8) +
     xlab(paste0("PC1: ", percentVar[1],"%")) +
@@ -181,7 +185,8 @@ PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
       theme(legend.position= "none") +
     scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield)) +
   labs(color = "subfield", shape = "treatment", subtitle = " ") +
-  guides(color = FALSE)
+  guides(color = FALSE) + 
+  annotation_custom(subfields, ymin = 5, ymax = 15, xmin = 10) 
 PCA12
 ```
 
@@ -194,6 +199,7 @@ vsddf <- as.data.frame(t(vsddf))
 euclidist <- dist(vsddf) # euclidean distances between the rows
 
 mytsneplot <- plot_tSNE(10, " ")
+mytsneplot
 ```
 
 ## pca + tsne
@@ -203,12 +209,14 @@ mylegend <- get_legend(mytsneplot)
 top <- plot_grid(PCA12, mytsneplot + theme(legend.position = "none"), nrow = 1,
           labels = c( "(d)", "(e)"),
           label_size = 8)
-
 PCAtSNE <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
 PCAtSNE
 ```
 
+
+
 ```{r supplfig, fig.width=5.1, fig.height=4}
+# 3 box plots, 1 pca plot, 1 tsne plot with hippocampus image
 supplfig1 <- plot_grid(multiqcplots, PCAtSNE, nrow = 2, rel_heights = c(1,1.25))
 supplfig1
 
@@ -216,6 +224,8 @@ pdf(file="../figures/supplfig1.pdf", width=5.1, height=4)
 plot(supplfig1)
 dev.off()
 ```
+
+
 
 
 ```{r save}

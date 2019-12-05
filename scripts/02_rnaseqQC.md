@@ -609,6 +609,10 @@ Principle component analysis
     ## CA1-DG   12.48060  11.25520  13.70600     0
     ## CA1-CA3  24.70229  23.41029  25.99430     0
 
+    subfields <- png::readPNG("../figures/00_schematics/figure_hippocampus.png")
+    subfields <-  grid::rasterGrob(subfields, interpolate=TRUE)
+
+
     PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, colour=subfield)) +
         geom_point(size=2, aes(shape=treatment), alpha = 0.8) +
         xlab(paste0("PC1: ", percentVar[1],"%")) +
@@ -618,7 +622,8 @@ Principle component analysis
           theme(legend.position= "none") +
         scale_shape_manual(values=c(1, 16, 0, 15), aes(color=colorvalsubfield)) +
       labs(color = "subfield", shape = "treatment", subtitle = " ") +
-      guides(color = FALSE)
+      guides(color = FALSE) + 
+      annotation_custom(subfields, ymin = 5, ymax = 15, xmin = 10) 
     PCA12
 
 ![](../figures/02_rnaseqQC/pca-1.png)
@@ -635,6 +640,10 @@ tSNE
 
     ## [1] 10
 
+    mytsneplot
+
+![](../figures/02_rnaseqQC/tSNE-1.png)
+
 pca + tsne
 ----------
 
@@ -642,12 +651,12 @@ pca + tsne
     top <- plot_grid(PCA12, mytsneplot + theme(legend.position = "none"), nrow = 1,
               labels = c( "(d)", "(e)"),
               label_size = 8)
-
     PCAtSNE <- plot_grid(top, mylegend, nrow = 2, rel_heights = c(1,0.1))
     PCAtSNE
 
 ![](../figures/02_rnaseqQC/PCAtSNE-1.png)
 
+    # 3 box plots, 1 pca plot, 1 tsne plot with hippocampus image
     supplfig1 <- plot_grid(multiqcplots, PCAtSNE, nrow = 2, rel_heights = c(1,1.25))
     supplfig1
 
@@ -702,29 +711,30 @@ Session Info
     ## [10] xml2_1.2.2             splines_3.6.0          geneplotter_1.62.0    
     ## [13] knitr_1.24             zeallot_0.1.0          Formula_1.2-3         
     ## [16] jsonlite_1.6           broom_0.5.2            annotate_1.62.0       
-    ## [19] cluster_2.0.9          dbplyr_1.4.2           compiler_3.6.0        
-    ## [22] httr_1.4.1             backports_1.1.4        assertthat_0.2.1      
-    ## [25] Matrix_1.2-17          lazyeval_0.2.2         cli_1.1.0             
-    ## [28] acepack_1.4.1          htmltools_0.3.6        tools_3.6.0           
-    ## [31] gtable_0.3.0           glue_1.3.1             GenomeInfoDbData_1.2.1
-    ## [34] Rcpp_1.0.2             cellranger_1.1.0       vctrs_0.2.0           
-    ## [37] nlme_3.1-140           xfun_0.9               rvest_0.3.5           
-    ## [40] lifecycle_0.1.0        XML_3.98-1.19          zlibbioc_1.30.0       
-    ## [43] scales_1.0.0           hms_0.5.2              RColorBrewer_1.1-2    
-    ## [46] yaml_2.2.0             memoise_1.1.0          gridExtra_2.3         
-    ## [49] rpart_4.1-15           latticeExtra_0.6-28    stringi_1.4.3         
-    ## [52] RSQLite_2.1.1          genefilter_1.66.0      checkmate_1.9.3       
-    ## [55] rlang_0.4.1            pkgconfig_2.0.2        bitops_1.0-6          
-    ## [58] evaluate_0.14          lattice_0.20-38        htmlwidgets_1.3       
-    ## [61] labeling_0.3           bit_1.1-14             tidyselect_0.2.5      
-    ## [64] magrittr_1.5           R6_2.4.0               generics_0.0.2        
-    ## [67] Hmisc_4.2-0            DBI_1.0.0              pillar_1.4.2          
-    ## [70] haven_2.2.0            foreign_0.8-71         withr_2.1.2           
-    ## [73] survival_2.44-1.1      RCurl_1.95-4.12        nnet_7.3-12           
-    ## [76] modelr_0.1.5           crayon_1.3.4           rmarkdown_1.15        
-    ## [79] locfit_1.5-9.1         grid_3.6.0             readxl_1.3.1          
-    ## [82] data.table_1.12.2      blob_1.1.1             reprex_0.3.0          
-    ## [85] digest_0.6.20          xtable_1.8-4           munsell_0.5.0
+    ## [19] cluster_2.0.9          dbplyr_1.4.2           png_0.1-7             
+    ## [22] compiler_3.6.0         httr_1.4.1             backports_1.1.4       
+    ## [25] assertthat_0.2.1       Matrix_1.2-17          lazyeval_0.2.2        
+    ## [28] cli_1.1.0              acepack_1.4.1          htmltools_0.3.6       
+    ## [31] tools_3.6.0            gtable_0.3.0           glue_1.3.1            
+    ## [34] GenomeInfoDbData_1.2.1 Rcpp_1.0.2             cellranger_1.1.0      
+    ## [37] vctrs_0.2.0            nlme_3.1-140           xfun_0.9              
+    ## [40] rvest_0.3.5            lifecycle_0.1.0        XML_3.98-1.19         
+    ## [43] zlibbioc_1.30.0        scales_1.0.0           hms_0.5.2             
+    ## [46] RColorBrewer_1.1-2     yaml_2.2.0             memoise_1.1.0         
+    ## [49] gridExtra_2.3          rpart_4.1-15           latticeExtra_0.6-28   
+    ## [52] stringi_1.4.3          RSQLite_2.1.1          genefilter_1.66.0     
+    ## [55] checkmate_1.9.3        rlang_0.4.1            pkgconfig_2.0.2       
+    ## [58] bitops_1.0-6           evaluate_0.14          lattice_0.20-38       
+    ## [61] htmlwidgets_1.3        labeling_0.3           bit_1.1-14            
+    ## [64] tidyselect_0.2.5       magrittr_1.5           R6_2.4.0              
+    ## [67] generics_0.0.2         Hmisc_4.2-0            DBI_1.0.0             
+    ## [70] pillar_1.4.2           haven_2.2.0            foreign_0.8-71        
+    ## [73] withr_2.1.2            survival_2.44-1.1      RCurl_1.95-4.12       
+    ## [76] nnet_7.3-12            modelr_0.1.5           crayon_1.3.4          
+    ## [79] rmarkdown_1.15         locfit_1.5-9.1         grid_3.6.0            
+    ## [82] readxl_1.3.1           data.table_1.12.2      blob_1.1.1            
+    ## [85] reprex_0.3.0           digest_0.6.20          xtable_1.8-4          
+    ## [88] munsell_0.5.0
 
     citation("tidyverse") 
 

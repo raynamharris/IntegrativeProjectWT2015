@@ -58,7 +58,9 @@ This project is organized into five main subdirectories:
 
 ### Supplementary Figure 1: RNA-seq Quality Control
 
-![](./figures/02b_rnaseqQC/supplfig1-1.png)
+![](./figures/02_rnaseqQC/supplfig-1.png)
+
+
 
 ### Figure 2: Avoidance Behavior
 
