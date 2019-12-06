@@ -283,7 +283,7 @@ Sample information and PC1
                       label_size = 8, rel_heights = c(0.45,0.575))
     left
 
-![](../figures/06_searchfavgenes/ARC-1.png)
+![](../figures/favegenes/ARC-1.png)
 
 Correlate ALL genes with PC1 and PC2
 ------------------------------------
@@ -318,10 +318,10 @@ Correlate ALL genes with PC1 and PC2
     ## Correlation method: 'pearson'
     ## Missing treated using: 'pairwise.complete.obs'
 
-Top 11 correlations with PC1 and their relationship with PC2
-------------------------------------------------------------
+Top correlations with PC1 and their relationship with PC2
+---------------------------------------------------------
 
-    plotcorrrs <- function(df, whichgenes){
+    plotcorrrs <- function(df, mysubtitle){
       
      corrsTop <- df %>% 
       focus(PC1)  %>% 
@@ -329,8 +329,7 @@ Top 11 correlations with PC1 and their relationship with PC2
       top_n(20)
       
       topcorrrs <- corrsTop$rowname
-      favgenes <- c("ARC", "PRKCZ", "GRIN2A", "GRIN1", "CAM2KA" , "DRD2")
-        
+
       p1 <- df %>% 
         focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
         focus(PC1, PC2) %>%
@@ -342,7 +341,7 @@ Top 11 correlations with PC1 and their relationship with PC2
         theme(legend.position = "none") +
         #ylim(-1,1) +
         labs(x = NULL, y = "Correlation to PC1") +
-        labs(subtitle = " ")
+        labs(subtitle = mysubtitle)
       
       p2 <- df %>% 
         focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
@@ -374,7 +373,7 @@ Top 11 correlations with PC1 and their relationship with PC2
       return(p123)
     }
 
-    plotcorrrs(corrrDG)
+    plotcorrrs(corrrDG, "DG")
 
     ## Selecting by PC1
 
@@ -382,19 +381,19 @@ Top 11 correlations with PC1 and their relationship with PC2
     ##   method         from 
     ##   reorder.hclust gclus
 
-![](../figures/06_searchfavgenes/corrr-1.png)
+![](../figures/favegenes/corrr-1.png)
 
-    plotcorrrs(corrrCA3)
-
-    ## Selecting by PC1
-
-![](../figures/06_searchfavgenes/corrr-2.png)
-
-    plotcorrrs(corrrCA1)
+    plotcorrrs(corrrCA3, "CA3")
 
     ## Selecting by PC1
 
-![](../figures/06_searchfavgenes/corrr-3.png)
+![](../figures/favegenes/corrr-2.png)
+
+    plotcorrrs(corrrCA1, "CA1")
+
+    ## Selecting by PC1
+
+![](../figures/favegenes/corrr-3.png)
 
     plotcorrrs2 <- function(df, whichsubfield){
       
@@ -454,12 +453,12 @@ Top 11 correlations with PC1 and their relationship with PC2
 
     plotcorrrs2(corrrDG, "DG")
 
-![](../figures/06_searchfavgenes/corrr2-1.png)
+![](../figures/favegenes/corrr2-1.png)
 
     plotcorrrs2(corrrCA3, "CA3")
 
-![](../figures/06_searchfavgenes/corrr2-2.png)
+![](../figures/favegenes/corrr2-2.png)
 
     plotcorrrs2(corrrCA1, "CA1")
 
-![](../figures/06_searchfavgenes/corrr2-3.png)
+![](../figures/favegenes/corrr2-3.png)
