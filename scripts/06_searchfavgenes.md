@@ -279,11 +279,207 @@ Sample information and PC1
     p5 <- plotcorrelation(vsdCA1, vsdCA1$ARC, vsdCA1$PC1)
     p6 <- plotcorrelation(vsdCA1, vsdCA1$ARC, vsdCA1$PC2)  + labs(x =  " ")
 
-    left <- plot_grid(p1,p3,p5,p2,p4,p6, nrow = 2, labels = c("a","b", "c", " ", " ", " "), 
+    plot_grid(p1,p3,p5,p2,p4,p6, nrow = 2, labels = c("a","b", "c", " ", " ", " "), 
                       label_size = 8, rel_heights = c(0.45,0.575))
-    left
 
 ![](../figures/favegenes/ARC-1.png)
+
+    plotcorrelation2 <- function(df, favegene, myPC){
+      p <- ggplot(df, aes(x = favegene, y = myPC)) +
+       geom_point(aes( color = treatment)) + 
+       geom_smooth(method = "lm", color = "grey") +
+       scale_color_manual(values = treatmentcolors) +
+      theme_ms() +
+       theme(legend.position = "none",
+             strip.text = element_blank()) +
+        facet_wrap(~subfield) +
+        labs(y = NULL, x = NULL)
+      return(p)
+    }
+
+    printcortests1 <- function(mysubfield, df){
+      print(mysubfield)
+      print(cor.test(df$PRKCZ, df$PRKCI, method = c("pearson")))
+      print(cor.test(df$PRKCZ, df$PRKCB, method = c("pearson")))
+    }
+
+    printcortests1("DG", vsdDG)
+
+    ## [1] "DG"
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  df$PRKCZ and df$PRKCI
+    ## t = -1.649, df = 14, p-value = 0.1214
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.7492100  0.1155226
+    ## sample estimates:
+    ##        cor 
+    ## -0.4032764 
+    ## 
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  df$PRKCZ and df$PRKCB
+    ## t = -0.31913, df = 14, p-value = 0.7543
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.5572153  0.4287850
+    ## sample estimates:
+    ##         cor 
+    ## -0.08498373
+
+    printcortests1("CA3", vsdCA3)
+
+    ## [1] "CA3"
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  df$PRKCZ and df$PRKCI
+    ## t = 0.67052, df = 11, p-value = 0.5164
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.3960683  0.6754034
+    ## sample estimates:
+    ##       cor 
+    ## 0.1981613 
+    ## 
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  df$PRKCZ and df$PRKCB
+    ## t = 1.4981, df = 11, p-value = 0.1623
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.1802239  0.7846575
+    ## sample estimates:
+    ##       cor 
+    ## 0.4116373
+
+    printcortests1("CA1", vsdCA1)
+
+    ## [1] "CA1"
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  df$PRKCZ and df$PRKCI
+    ## t = -0.64224, df = 13, p-value = 0.5319
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.6309485  0.3701487
+    ## sample estimates:
+    ##        cor 
+    ## -0.1753659 
+    ## 
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  df$PRKCZ and df$PRKCB
+    ## t = -0.6687, df = 13, p-value = 0.5154
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.6352749  0.3639007
+    ## sample estimates:
+    ##        cor 
+    ## -0.1823556
+
+    printcortests2 <- function(mysubfield, df){
+      print(mysubfield)
+      #print(cor.test(df$WWC1, df$PRKCI, method = c("pearson")))
+      #print(cor.test(df$WWC1, df$PRKCB, method = c("pearson")))
+      print(cor.test(df$WWC1, df$PRKCZ, method = c("pearson")))
+    }
+
+    printcortests2("DG", vsdDG)
+
+    ## [1] "DG"
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  df$WWC1 and df$PRKCZ
+    ## t = 0.90783, df = 14, p-value = 0.3793
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.2943199  0.6549413
+    ## sample estimates:
+    ##       cor 
+    ## 0.2357856
+
+    printcortests2("CA3", vsdCA3)
+
+    ## [1] "CA3"
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  df$WWC1 and df$PRKCZ
+    ## t = 1.4464, df = 11, p-value = 0.1759
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.1939546  0.7791277
+    ## sample estimates:
+    ##       cor 
+    ## 0.3997505
+
+    printcortests2("CA1", vsdCA1)
+
+    ## [1] "CA1"
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  df$WWC1 and df$PRKCZ
+    ## t = 0.81675, df = 13, p-value = 0.4288
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.3285129  0.6586500
+    ## sample estimates:
+    ##      cor 
+    ## 0.220929
+
+    p1 <- plotcorrelation2(vsdDG, vsdDG$PRKCZ, vsdDG$PRKCI) + labs(x = " ", y =  "PRKCI",
+                                                                 subtitle = "p = 0.12", title = "DG")
+    p2 <- plotcorrelation2(vsdDG,  vsdDG$PRKCZ, vsdDG$PRKCB) + labs(x = " ", y =  "PRKCB",
+                                                                 subtitle = "p = 0.75")
+
+    p3 <- plotcorrelation2(vsdCA3,  vsdCA3$PRKCZ, vsdCA3$PRKCI) + labs(x = "PRKCZ", y =  " ",
+                                                                 subtitle = "p = 0.51", title = "CA3")
+    p4 <- plotcorrelation2(vsdCA3,  vsdCA3$PRKCZ, vsdCA3$PRKCB) + labs(x = "PRKCZ", y =  " ",
+                                                                 subtitle = "p = 0.16")
+
+    p5 <- plotcorrelation2(vsdCA1,  vsdCA1$PRKCZ, vsdCA1$PRKCI) + labs(x = " ", y =  " ",
+                                                                 subtitle = "p = 0.53", title = "CA1")
+    p6 <- plotcorrelation2(vsdCA1,  vsdCA1$PRKCZ, vsdCA1$PRKCB) + labs(x = " ", y =  " ",
+                                                                 subtitle = "p = 0.52")
+
+    p11 <- plotcorrelation2(vsdDG, vsdDG$WWC1, vsdDG$PRKCI) + labs(x = " ", y =  "PRKCI",
+                                                                 subtitle = "p = 0.403")
+    p12 <- plotcorrelation2(vsdDG,  vsdDG$WWC1, vsdDG$PRKCB) + labs(x = " ", y =  "PRKCB",
+                                                                 subtitle = "p = 0.085")
+
+    p13 <- plotcorrelation2(vsdCA3,  vsdCA3$WWC1, vsdCA3$PRKCI) + labs(x = "WWC1", y =  " ",
+                                                                 subtitle = "p = 0.058")
+    p14 <- plotcorrelation2(vsdCA3,  vsdCA3$WWC1, vsdCA3$PRKCB) + labs(x = "WWC1", y =  " ",
+                                                                 subtitle = "p = 0.001" )
+    p15 <- plotcorrelation2(vsdCA1,  vsdCA1$WWC1, vsdCA1$PRKCI) + labs(x = " ", y =  " ",
+                                                                 subtitle = "p = 0.004")
+    p16 <- plotcorrelation2(vsdCA1,  vsdCA1$WWC1, vsdCA1$PRKCB) + labs(x = " ", y =  " ",
+                                                                 subtitle = "p = 0.385")
+
+
+
+    p24 <- plotcorrelation2(vsdDG,  vsdDG$WWC1, vsdDG$PRKCZ) + labs(x = " ", y =  "PRKCZ",
+                                                                 subtitle = "p = 0.380" )
+    p25 <- plotcorrelation2(vsdCA3,  vsdCA3$WWC1, vsdCA3$PRKCZ) + labs(x = "WWC1", y =  " ",
+                                                                 subtitle = "p = 0.176")
+    p26 <- plotcorrelation2(vsdCA1,  vsdCA1$WWC1, vsdCA1$PRKCZ) + labs(x = " ", y =  " ",
+                                                                 subtitle = "p = 0.4288")
+
+    plot_grid(p1,p3,p5,p2,p4,p6,
+              p11,p13,p15,p12,p14,p16,
+              p24,p25,p26,
+              nrow = 5, rel_heights = c(1.1,1,1,1,1))
+
+![](../figures/favegenes/PKCs-1.png)
 
 Correlate ALL genes with PC1 and PC2
 ------------------------------------
@@ -405,16 +601,27 @@ Top correlations with PC1 and their relationship with PC2
 
 ![](../figures/favegenes/corrr-3.png)
 
+    classicmemgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
+                    "NSF", "GRIA2", "PIN1", "IGF2", "CAMK2A")
+
+    ACTINngenes <- c( "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB", "TNR",
+                    "GABRA1", "PTPRS", "PNN", "EGFR")
+
+    stabilizationgenes <- c("LIMK1","CFL1", "ROCK2")
+
+    astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2", 
+                         "SLC1A2", "GFAP", "GJB6", "FGFR3", "AQP4", "ALDOC")
+
+    allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes)
+
+
     plotcorrrs2 <- function(df, whichsubfield){
       
-      favgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
-                    "NSF", "GRIA2", "PIN1", "FOS",
-                    "IGF2", "CAMK2A",
-                    "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB", "TNR",
-                    "GABRA1", "PTPRS", "PNN", "EGFR", 
-                    "LIMK1", "ROCK2", "ALDH1A1", "ALDH1L1")
+      favgenes <- allcandidates
       
-      df <- df %>% focus(PC1, PC2, favgenes,  mirror = TRUE) 
+      df <- df %>% 
+        focus(PC1, PC2, favgenes,  mirror = TRUE)  %>% 
+        arrange(desc(PC1))
 
       p1 <- df %>% 
         focus(PC1, PC2) %>%
@@ -460,7 +667,7 @@ Top correlations with PC1 and their relationship with PC2
       p12 <- plot_grid(p1,p2,  nrow = 1, rel_widths = c(1.1,1))
       p1234 <- plot_grid(p12,p34,  nrow = 2)
       
-      filename <- paste("../data/06_", whichsubfield, "_topcorrrs.csv", sep = "")
+      filename <- paste("../data/06_", whichsubfield, "_candidatecorrelations.csv", sep = "")
       
       write.csv(df, filename)
 
@@ -469,6 +676,10 @@ Top correlations with PC1 and their relationship with PC2
     }
 
     plotcorrrs2(corrrDG, "DG")
+
+    ## Registered S3 method overwritten by 'seriation':
+    ##   method         from 
+    ##   reorder.hclust gclus
 
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
@@ -539,17 +750,7 @@ Top correlations with PC1 and their relationship with PC2
       
     }
 
-    classicmemgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
-                    "NSF", "GRIA2", "PIN1", "IGF2", "CAMK2A")
-
-    ACTINngenes <- c( "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB", "TNR",
-                    "GABRA1", "PTPRS", "PNN", "EGFR")
-
-    stabilizationgenes <- c("LIMK1","CFL1", "ROCK2")
-
-    astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2")
-
-    plotcorrrs3(classicmemgenes, "memory genes")
+    plotcorrrs3(classicmemgenes, "candidate memory genes")
 
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
@@ -565,7 +766,7 @@ Top correlations with PC1 and their relationship with PC2
 
 ![](../figures/favegenes/corrr3-2.png)
 
-    plotcorrrs3(stabilizationgenes, "stabilization genes")
+    plotcorrrs3(stabilizationgenes, "PNN stabilization genes")
 
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.

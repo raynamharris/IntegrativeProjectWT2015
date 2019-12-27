@@ -90,9 +90,91 @@ p4 <- plotcorrelation(vsdCA3, vsdCA3$ARC, vsdCA3$PC2)  + labs(x = "ARC expressio
 p5 <- plotcorrelation(vsdCA1, vsdCA1$ARC, vsdCA1$PC1)
 p6 <- plotcorrelation(vsdCA1, vsdCA1$ARC, vsdCA1$PC2)  + labs(x =  " ")
 
-left <- plot_grid(p1,p3,p5,p2,p4,p6, nrow = 2, labels = c("a","b", "c", " ", " ", " "), 
+plot_grid(p1,p3,p5,p2,p4,p6, nrow = 2, labels = c("a","b", "c", " ", " ", " "), 
                   label_size = 8, rel_heights = c(0.45,0.575))
-left
+
+```
+
+```{r PKCs, fig.height=9}
+
+plotcorrelation2 <- function(df, favegene, myPC){
+  p <- ggplot(df, aes(x = favegene, y = myPC)) +
+   geom_point(aes( color = treatment)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = treatmentcolors) +
+  theme_ms() +
+   theme(legend.position = "none",
+         strip.text = element_blank()) +
+    facet_wrap(~subfield) +
+    labs(y = NULL, x = NULL)
+  return(p)
+}
+
+printcortests1 <- function(mysubfield, df){
+  print(mysubfield)
+  print(cor.test(df$PRKCZ, df$PRKCI, method = c("pearson")))
+  print(cor.test(df$PRKCZ, df$PRKCB, method = c("pearson")))
+}
+
+printcortests1("DG", vsdDG)
+printcortests1("CA3", vsdCA3)
+printcortests1("CA1", vsdCA1)
+
+
+printcortests2 <- function(mysubfield, df){
+  print(mysubfield)
+  #print(cor.test(df$WWC1, df$PRKCI, method = c("pearson")))
+  #print(cor.test(df$WWC1, df$PRKCB, method = c("pearson")))
+  print(cor.test(df$WWC1, df$PRKCZ, method = c("pearson")))
+}
+
+printcortests2("DG", vsdDG)
+printcortests2("CA3", vsdCA3)
+printcortests2("CA1", vsdCA1)
+
+
+p1 <- plotcorrelation2(vsdDG, vsdDG$PRKCZ, vsdDG$PRKCI) + labs(x = " ", y =  "PRKCI",
+                                                             subtitle = "p = 0.12", title = "DG")
+p2 <- plotcorrelation2(vsdDG,  vsdDG$PRKCZ, vsdDG$PRKCB) + labs(x = " ", y =  "PRKCB",
+                                                             subtitle = "p = 0.75")
+
+p3 <- plotcorrelation2(vsdCA3,  vsdCA3$PRKCZ, vsdCA3$PRKCI) + labs(x = "PRKCZ", y =  " ",
+                                                             subtitle = "p = 0.51", title = "CA3")
+p4 <- plotcorrelation2(vsdCA3,  vsdCA3$PRKCZ, vsdCA3$PRKCB) + labs(x = "PRKCZ", y =  " ",
+                                                             subtitle = "p = 0.16")
+
+p5 <- plotcorrelation2(vsdCA1,  vsdCA1$PRKCZ, vsdCA1$PRKCI) + labs(x = " ", y =  " ",
+                                                             subtitle = "p = 0.53", title = "CA1")
+p6 <- plotcorrelation2(vsdCA1,  vsdCA1$PRKCZ, vsdCA1$PRKCB) + labs(x = " ", y =  " ",
+                                                             subtitle = "p = 0.52")
+
+p11 <- plotcorrelation2(vsdDG, vsdDG$WWC1, vsdDG$PRKCI) + labs(x = " ", y =  "PRKCI",
+                                                             subtitle = "p = 0.403")
+p12 <- plotcorrelation2(vsdDG,  vsdDG$WWC1, vsdDG$PRKCB) + labs(x = " ", y =  "PRKCB",
+                                                             subtitle = "p = 0.085")
+
+p13 <- plotcorrelation2(vsdCA3,  vsdCA3$WWC1, vsdCA3$PRKCI) + labs(x = "WWC1", y =  " ",
+                                                             subtitle = "p = 0.058")
+p14 <- plotcorrelation2(vsdCA3,  vsdCA3$WWC1, vsdCA3$PRKCB) + labs(x = "WWC1", y =  " ",
+                                                             subtitle = "p = 0.001" )
+p15 <- plotcorrelation2(vsdCA1,  vsdCA1$WWC1, vsdCA1$PRKCI) + labs(x = " ", y =  " ",
+                                                             subtitle = "p = 0.004")
+p16 <- plotcorrelation2(vsdCA1,  vsdCA1$WWC1, vsdCA1$PRKCB) + labs(x = " ", y =  " ",
+                                                             subtitle = "p = 0.385")
+
+
+
+p24 <- plotcorrelation2(vsdDG,  vsdDG$WWC1, vsdDG$PRKCZ) + labs(x = " ", y =  "PRKCZ",
+                                                             subtitle = "p = 0.380" )
+p25 <- plotcorrelation2(vsdCA3,  vsdCA3$WWC1, vsdCA3$PRKCZ) + labs(x = "WWC1", y =  " ",
+                                                             subtitle = "p = 0.176")
+p26 <- plotcorrelation2(vsdCA1,  vsdCA1$WWC1, vsdCA1$PRKCZ) + labs(x = " ", y =  " ",
+                                                             subtitle = "p = 0.4288")
+
+plot_grid(p1,p3,p5,p2,p4,p6,
+          p11,p13,p15,p12,p14,p16,
+          p24,p25,p26,
+          nrow = 5, rel_heights = c(1.1,1,1,1,1))
 ```
 
 
@@ -189,16 +271,27 @@ plotcorrrs(corrrCA1, "CA1")
 ```
 
 ```{r corrr2, fig.height=6}
+classicmemgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
+                "NSF", "GRIA2", "PIN1", "IGF2", "CAMK2A")
+
+ACTINngenes <- c( "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB", "TNR",
+                "GABRA1", "PTPRS", "PNN", "EGFR")
+
+stabilizationgenes <- c("LIMK1","CFL1", "ROCK2")
+
+astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2", 
+                     "SLC1A2", "GFAP", "GJB6", "FGFR3", "AQP4", "ALDOC")
+
+allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes)
+
+
 plotcorrrs2 <- function(df, whichsubfield){
   
-  favgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
-                "NSF", "GRIA2", "PIN1", "FOS",
-                "IGF2", "CAMK2A",
-                "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB", "TNR",
-                "GABRA1", "PTPRS", "PNN", "EGFR", 
-                "LIMK1", "ROCK2", "ALDH1A1", "ALDH1L1")
+  favgenes <- allcandidates
   
-  df <- df %>% focus(PC1, PC2, favgenes,  mirror = TRUE) 
+  df <- df %>% 
+    focus(PC1, PC2, favgenes,  mirror = TRUE)  %>% 
+    arrange(desc(PC1))
 
   p1 <- df %>% 
     focus(PC1, PC2) %>%
@@ -244,7 +337,7 @@ plotcorrrs2 <- function(df, whichsubfield){
   p12 <- plot_grid(p1,p2,  nrow = 1, rel_widths = c(1.1,1))
   p1234 <- plot_grid(p12,p34,  nrow = 2)
   
-  filename <- paste("../data/06_", whichsubfield, "_topcorrrs.csv", sep = "")
+  filename <- paste("../data/06_", whichsubfield, "_candidatecorrelations.csv", sep = "")
   
   write.csv(df, filename)
 
@@ -310,19 +403,9 @@ plotcorrrs3 <- function(favgenes, mytitle){
   
 }
 
-classicmemgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
-                "NSF", "GRIA2", "PIN1", "IGF2", "CAMK2A")
-
-ACTINngenes <- c( "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB", "TNR",
-                "GABRA1", "PTPRS", "PNN", "EGFR")
-
-stabilizationgenes <- c("LIMK1","CFL1", "ROCK2")
-
-astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2")
-
-plotcorrrs3(classicmemgenes, "memory genes")
+plotcorrrs3(classicmemgenes, "candidate memory genes")
 plotcorrrs3(ACTINngenes, "actin remodeling")
-plotcorrrs3(stabilizationgenes, "stabilization genes")
+plotcorrrs3(stabilizationgenes, "PNN stabilization genes")
 plotcorrrs3(astrocyticgenes, "astrocytic involvement")
 ```
 
