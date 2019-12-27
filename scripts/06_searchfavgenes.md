@@ -1,6 +1,24 @@
     library(tidyverse)
-    library(corrr)
     library(cowplot)
+    library(corrr) # for easy correlations
+    library(Hmisc) # for correlations with pvalue
+
+    ## Loading required package: lattice
+
+    ## Loading required package: survival
+
+    ## Loading required package: Formula
+
+    ## 
+    ## Attaching package: 'Hmisc'
+
+    ## The following objects are masked from 'package:dplyr':
+    ## 
+    ##     src, summarize
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     format.pval, units
 
     source("./figureoptions.R")
     source("./functions_RNAseq.R")
@@ -282,7 +300,7 @@ Sample information and PC1
     plot_grid(p1,p3,p5,p2,p4,p6, nrow = 2, labels = c("a","b", "c", " ", " ", " "), 
                       label_size = 8, rel_heights = c(0.45,0.575))
 
-![](../figures/favegenes/ARC-1.png)
+![](../figures/06_favegenes/ARC-1.png)
 
     plotcorrelation2 <- function(df, favegene, myPC){
       p <- ggplot(df, aes(x = favegene, y = myPC)) +
@@ -479,7 +497,7 @@ Sample information and PC1
               p24,p25,p26,
               nrow = 5, rel_heights = c(1.1,1,1,1,1))
 
-![](../figures/favegenes/PKCs-1.png)
+![](../figures/06_favegenes/PKCs-1.png)
 
 Correlate ALL genes with PC1 and PC2
 ------------------------------------
@@ -585,21 +603,21 @@ Top correlations with PC1 and their relationship with PC2
 
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
-![](../figures/favegenes/corrr-1.png)
+![](../figures/06_favegenes/corrr-1.png)
 
     plotcorrrs(corrrCA3, "CA3")
 
     ## Selecting by PC1
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
-![](../figures/favegenes/corrr-2.png)
+![](../figures/06_favegenes/corrr-2.png)
 
     plotcorrrs(corrrCA1, "CA1")
 
     ## Selecting by PC1
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
-![](../figures/favegenes/corrr-3.png)
+![](../figures/06_favegenes/corrr-3.png)
 
     classicmemgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
                     "NSF", "GRIA2", "PIN1", "IGF2", "CAMK2A")
@@ -613,7 +631,6 @@ Top correlations with PC1 and their relationship with PC2
                          "SLC1A2", "GFAP", "GJB6", "FGFR3", "AQP4", "ALDOC")
 
     allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes)
-
 
     plotcorrrs2 <- function(df, whichsubfield){
       
@@ -677,25 +694,21 @@ Top correlations with PC1 and their relationship with PC2
 
     plotcorrrs2(corrrDG, "DG")
 
-    ## Registered S3 method overwritten by 'seriation':
-    ##   method         from 
-    ##   reorder.hclust gclus
-
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
-![](../figures/favegenes/corrr2-1.png)
+![](../figures/06_favegenes/corrr2-1.png)
 
     plotcorrrs2(corrrCA3, "CA3")
 
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
-![](../figures/favegenes/corrr2-2.png)
+![](../figures/06_favegenes/corrr2-2.png)
 
     plotcorrrs2(corrrCA1, "CA1")
 
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
-![](../figures/favegenes/corrr2-3.png)
+![](../figures/06_favegenes/corrr2-3.png)
 
 3 hypotheses
 ------------
@@ -756,7 +769,7 @@ Top correlations with PC1 and their relationship with PC2
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
-![](../figures/favegenes/corrr3-1.png)
+![](../figures/06_favegenes/corrr3-1.png)
 
     plotcorrrs3(ACTINngenes, "actin remodeling")
 
@@ -764,7 +777,7 @@ Top correlations with PC1 and their relationship with PC2
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
-![](../figures/favegenes/corrr3-2.png)
+![](../figures/06_favegenes/corrr3-2.png)
 
     plotcorrrs3(stabilizationgenes, "PNN stabilization genes")
 
@@ -772,7 +785,7 @@ Top correlations with PC1 and their relationship with PC2
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
-![](../figures/favegenes/corrr3-3.png)
+![](../figures/06_favegenes/corrr3-3.png)
 
     plotcorrrs3(astrocyticgenes, "astrocytic involvement")
 
@@ -780,4 +793,85 @@ Top correlations with PC1 and their relationship with PC2
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
     ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
-![](../figures/favegenes/corrr3-4.png)
+![](../figures/06_favegenes/corrr3-4.png)
+
+correlations with p-values
+--------------------------
+
+vsdDG &lt;- prepvsdforjoin(“../data/03\_DG\_vsdtraining.csv”) vsdCA3
+&lt;- prepvsdforjoin(“../data/03\_CA3\_vsdtraining.csv”) vsdCA1 &lt;-
+prepvsdforjoin(“../data/03\_CA1\_vsdtraining.csv”)
+
+    getcandidategenecorrelations <- function(df, candidategenes, whichsubfield){
+      
+      x <- df %>%
+        select(ID, PC1, PC2, candidategenes)
+      x <- as.data.frame(x)
+      row.names(x) <- x$ID
+      x$ID <- NULL
+      res <- rcorr(as.matrix(x))
+      
+      cormat <- res$r
+      pmat <- res$P
+      
+      ut <- upper.tri(cormat)
+      
+      newdf <- data.frame(
+        row = rownames(cormat)[row(cormat)[ut]],
+        column = rownames(cormat)[col(cormat)[ut]],
+        cor  =(cormat)[ut],
+        p = pmat[ut]
+        )
+      
+      newdf <- newdf %>% arrange(p) %>%
+        mutate(padj = p.adjust(p, method = "fdr", n = length(p)))
+      
+      filename <- paste("../data/06_", whichsubfield, "_corrswithpvalue.csv", sep = "")
+      write.csv(newdf, filename)
+      
+      print(head(newdf, 10))
+      return(newdf)
+      
+    }
+
+    DGcorrswithpvalue <- getcandidategenecorrelations(vsdDG, allcandidates, "DG")
+
+    ##        row  column        cor            p         padj
+    ## 1     TNXB ALDH1L1 -0.8939859 3.036534e-06 0.0005035482
+    ## 2    PRKCI    TNXB  0.8884341 4.274995e-06 0.0005035482
+    ## 3   SLC1A2    AQP4  0.8877482 4.454013e-06 0.0005035482
+    ## 4  ALDH1A1    GJB6  0.8874325 4.538507e-06 0.0005035482
+    ## 5    PRKCI ALDH1L1 -0.8865977 4.768448e-06 0.0005035482
+    ## 6    PRKCI   ROCK2  0.8819981 6.219411e-06 0.0005473082
+    ## 7  ALDH1A1   ALDOC  0.8757261 8.783571e-06 0.0006625322
+    ## 8     GFAP    GJB6  0.8680360 1.309062e-05 0.0008639810
+    ## 9   CAMK2A  SLC1A2  0.8489599 3.194234e-05 0.0018739504
+    ## 10 ALDH1A1    GFAP  0.8459903 3.630386e-05 0.0019168436
+
+    CA3corrswithpvalue <- getcandidategenecorrelations(vsdCA3, allcandidates, "CA3")
+
+    ##        row  column        cor            p         padj
+    ## 1     GJB6   ALDOC  0.9356891 2.622829e-06 0.0006328961
+    ## 2  ALDH1A1 ALDH1L1  0.9324362 3.418801e-06 0.0006328961
+    ## 3     GFAP   FGFR3  0.9317971 3.596001e-06 0.0006328961
+    ## 4     GFAP   ALDOC  0.9180910 9.584218e-06 0.0012651168
+    ## 5    FGFR3    AQP4  0.8983028 3.030198e-05 0.0027207832
+    ## 6    PTPRS    GJB6 -0.8979158 3.091799e-05 0.0027207832
+    ## 7   SLC1A2   FGFR3  0.8768696 8.312999e-05 0.0060323326
+    ## 8      NSF    GFAP -0.8740583 9.359244e-05 0.0060323326
+    ## 9      NSF ALDH1L1 -0.8713203 1.047687e-04 0.0060323326
+    ## 10  SLC1A2    GFAP  0.8691755 1.142487e-04 0.0060323326
+
+    CA1corrswithpvalue <- getcandidategenecorrelations(vsdCA1, allcandidates, "CA1")
+
+    ##        row column        cor            p       padj
+    ## 1     WWC1    NSF -0.8555629 4.756473e-05 0.01501465
+    ## 2    PRKCB    TNR  0.8501021 5.970954e-05 0.01501465
+    ## 3    LAMB1  LIMK1  0.8332957 1.141492e-04 0.01501465
+    ## 4    PRKCB  ROCK2  0.8312027 1.231329e-04 0.01501465
+    ## 5    LAMC1   EGFR  0.8248231 1.541753e-04 0.01501465
+    ## 6    LIMK1   AQP4  0.8175267 1.972814e-04 0.01501465
+    ## 7   SLC1A2  FGFR3  0.8172553 1.990579e-04 0.01501465
+    ## 8  ALDH1A1  ALDOC  0.7811893 5.846593e-04 0.03858751
+    ## 9    GRIA2  LIMK1 -0.7712003 7.613469e-04 0.04466569
+    ## 10   GRIA2    TNR  0.7538653 1.169390e-03 0.05822681

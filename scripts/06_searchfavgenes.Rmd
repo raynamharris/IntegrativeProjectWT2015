@@ -9,8 +9,9 @@ knitr::opts_chunk$set(echo = TRUE, fig.path = '../figures/06_favegenes/', cache 
 
 ```{r packages}
 library(tidyverse)
-library(corrr)
 library(cowplot)
+library(corrr) # for easy correlations
+library(Hmisc) # for correlations with pvalue
 
 source("./figureoptions.R")
 source("./functions_RNAseq.R")
@@ -270,7 +271,7 @@ plotcorrrs(corrrCA3, "CA3")
 plotcorrrs(corrrCA1, "CA1")
 ```
 
-```{r corrr2, fig.height=6}
+```{r candidategenes}
 classicmemgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
                 "NSF", "GRIA2", "PIN1", "IGF2", "CAMK2A")
 
@@ -284,6 +285,12 @@ astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2",
 
 allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes)
 
+```
+
+
+
+
+```{r corrr2, fig.height=6}
 
 plotcorrrs2 <- function(df, whichsubfield){
   
@@ -407,5 +414,51 @@ plotcorrrs3(classicmemgenes, "candidate memory genes")
 plotcorrrs3(ACTINngenes, "actin remodeling")
 plotcorrrs3(stabilizationgenes, "PNN stabilization genes")
 plotcorrrs3(astrocyticgenes, "astrocytic involvement")
+```
+
+## correlations with p-values
+
+
+vsdDG <- prepvsdforjoin("../data/03_DG_vsdtraining.csv")
+vsdCA3 <- prepvsdforjoin("../data/03_CA3_vsdtraining.csv")
+vsdCA1 <- prepvsdforjoin("../data/03_CA1_vsdtraining.csv")
+
+
+```{r Hmisc}
+getcandidategenecorrelations <- function(df, candidategenes, whichsubfield){
+  
+  x <- df %>%
+    select(ID, PC1, PC2, candidategenes)
+  x <- as.data.frame(x)
+  row.names(x) <- x$ID
+  x$ID <- NULL
+  res <- rcorr(as.matrix(x))
+  
+  cormat <- res$r
+  pmat <- res$P
+  
+  ut <- upper.tri(cormat)
+  
+  newdf <- data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    cor  =(cormat)[ut],
+    p = pmat[ut]
+    )
+  
+  newdf <- newdf %>% arrange(p) %>%
+    mutate(padj = p.adjust(p, method = "fdr", n = length(p)))
+  
+  filename <- paste("../data/06_", whichsubfield, "_corrswithpvalue.csv", sep = "")
+  write.csv(newdf, filename)
+  
+  print(head(newdf, 10))
+  return(newdf)
+  
+}
+
+DGcorrswithpvalue <- getcandidategenecorrelations(vsdDG, allcandidates, "DG")
+CA3corrswithpvalue <- getcandidategenecorrelations(vsdCA3, allcandidates, "CA3")
+CA1corrswithpvalue <- getcandidategenecorrelations(vsdCA1, allcandidates, "CA1")
 ```
 
