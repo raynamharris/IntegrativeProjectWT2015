@@ -300,19 +300,19 @@ Correlate ALL genes with PC1 and PC2
       return(corrrmat)
     }
 
-    corrrDG <- makecorrrmatrix(vsdDG)
+    corrrDG <- makecorrrmatrix(vsdDG) 
 
     ## 
     ## Correlation method: 'pearson'
     ## Missing treated using: 'pairwise.complete.obs'
 
-    corrrCA3 <- makecorrrmatrix(vsdCA3)
+    corrrCA3 <- makecorrrmatrix(vsdCA3) 
 
     ## 
     ## Correlation method: 'pearson'
     ## Missing treated using: 'pairwise.complete.obs'
 
-    corrrCA1 <- makecorrrmatrix(vsdCA1)
+    corrrCA1 <- makecorrrmatrix(vsdCA1) 
 
     ## 
     ## Correlation method: 'pearson'
@@ -491,7 +491,6 @@ Top correlations with PC1 and their relationship with PC2
 
     plotcorrrs3 <- function(favgenes, mytitle){
       
-      
       plotfavgenes <- function(favgenes, df, whichsubfield){
       
         df <- df %>% focus(PC1, PC2, favgenes,  mirror = TRUE) 
@@ -549,7 +548,6 @@ Top correlations with PC1 and their relationship with PC2
     stabilizationgenes <- c("LIMK1","CFL1", "ROCK2")
 
     astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2")
-
 
     plotcorrrs3(classicmemgenes, "memory genes")
 

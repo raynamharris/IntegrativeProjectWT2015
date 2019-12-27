@@ -110,22 +110,21 @@ makecorrrmatrix <- function(df){
 ```
 
 ```{r makecorrrmat1}
-corrrDG <- makecorrrmatrix(vsdDG)
+corrrDG <- makecorrrmatrix(vsdDG) 
 ```
 
 ```{r makecorrrmat2}
-corrrCA3 <- makecorrrmatrix(vsdCA3)
+corrrCA3 <- makecorrrmatrix(vsdCA3) 
 ```
 
 ```{r makecorrrmat3}
-corrrCA1 <- makecorrrmatrix(vsdCA1)
+corrrCA1 <- makecorrrmatrix(vsdCA1) 
 ```
 
 
 ## Top correlations with PC1 and their relationship with PC2
 
 ```{r corrr}
-
 plotcorrrs <- function(df, mysubtitle){
   
  corrsTop <- df %>% 
@@ -190,7 +189,6 @@ plotcorrrs(corrrCA1, "CA1")
 ```
 
 ```{r corrr2, fig.height=6}
-
 plotcorrrs2 <- function(df, whichsubfield){
   
   favgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
@@ -262,9 +260,7 @@ plotcorrrs2(corrrCA1, "CA1")
 ## 3 hypotheses
 
 ```{r corrr3, fig.height=6, fig.width=6}
-
 plotcorrrs3 <- function(favgenes, mytitle){
-  
   
   plotfavgenes <- function(favgenes, df, whichsubfield){
   
@@ -323,7 +319,6 @@ ACTINngenes <- c( "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB", "TNR",
 stabilizationgenes <- c("LIMK1","CFL1", "ROCK2")
 
 astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2")
-
 
 plotcorrrs3(classicmemgenes, "memory genes")
 plotcorrrs3(ACTINngenes, "actin remodeling")
