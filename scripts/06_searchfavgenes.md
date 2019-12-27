@@ -296,7 +296,7 @@ Correlate ALL genes with PC1 and PC2
 
     makecorrrmatrix <- function(df){
       forcorall <-  df %>% select(PC1:ZZZ3)
-      corrrmat <- correlate(forcorall, diagonal = 1) 
+      corrrmat <- correlate(forcorall) 
       return(corrrmat)
     }
 
@@ -358,19 +358,25 @@ Top correlations with PC1 and their relationship with PC2
 
       p3 <- df %>% 
         focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
-        rearrange() %>% 
+        replace(., is.na(.), 1) %>% 
         network_plot.cor_df(colors = c("#67a9cf", "white", "#ef8a62"),
                    min_cor = .7, curved = F, legend = T,
                    repel = TRUE) + 
         theme(legend.position = "right") +
         labs(subtitle = " ")
       
+      p4 <- df %>% 
+        focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+        replace(., is.na(.), 0) %>% 
+        rearrange() %>% 
+        rplot()
+      
       p12 <- plot_grid(p1,p2,  nrow = 1)
-      p123 <- plot_grid(p12,p3,  nrow = 2)
-
+      p34 <- plot_grid(p3,p4,  nrow = 1)
+      p1234 <- plot_grid(p12,p34,  nrow = 2)
       
       
-      return(p123)
+      return(p1234)
     }
 
     plotcorrrs(corrrDG, "DG")
@@ -381,29 +387,32 @@ Top correlations with PC1 and their relationship with PC2
     ##   method         from 
     ##   reorder.hclust gclus
 
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+
 ![](../figures/favegenes/corrr-1.png)
 
     plotcorrrs(corrrCA3, "CA3")
 
     ## Selecting by PC1
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
 ![](../figures/favegenes/corrr-2.png)
 
     plotcorrrs(corrrCA1, "CA1")
 
     ## Selecting by PC1
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
 ![](../figures/favegenes/corrr-3.png)
 
     plotcorrrs2 <- function(df, whichsubfield){
       
-      
-      favgenes <- c("PRKCZ", "WWC1",
-                    "GRIA1","GRIN2A", "GRIN1", "CAMK2A" , 
-                    "DRD2",  "NPAS4", "ARC", 
-                    "CPEB4", "EIF5", "BDNF", 
-                    "GABRA5", "SNAP25", "HTR2A", "TH",
-                    "MAPK1", "SYN1")
+      favgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
+                    "NSF", "GRIA2", "PIN1", "FOS",
+                    "IGF2", "CAMK2A",
+                    "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB", "TNR",
+                    "GABRA1", "PTPRS", "PNN", "EGFR", 
+                    "LIMK1", "ROCK2", "ALDH1A1", "ALDH1L1")
       
       df <- df %>% focus(PC1, PC2, favgenes,  mirror = TRUE) 
 
@@ -433,32 +442,143 @@ Top correlations with PC1 and their relationship with PC2
         labs(subtitle = " ") 
 
       p3 <- df %>% 
+        replace(., is.na(.), 1) %>% 
         network_plot.cor_df(colors = c("#67a9cf", "white", "#ef8a62"),
-                   min_cor = .7, curved = F, legend = T,
+                   min_cor = 0.0, curved = F, legend = T,
                    repel = TRUE) + 
         theme(legend.position = "right") +
         labs(subtitle = " ")
       
       p4 <- df %>% 
-        rplot(print_cor = TRUE, shape = "square")
-      
+        focus(PC1, PC2, favgenes,  mirror = TRUE) %>% 
+        replace(., is.na(.), 0) %>% 
+        rearrange() %>% 
+        rplot(colours = c("#67a9cf", "white", "#ef8a62")) + 
+        theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+        
+      p34 <- plot_grid(p3,p4,  nrow = 1)
       p12 <- plot_grid(p1,p2,  nrow = 1, rel_widths = c(1.1,1))
-      p123 <- plot_grid(p12,p3,  nrow = 2)
+      p1234 <- plot_grid(p12,p34,  nrow = 2)
+      
+      filename <- paste("../data/06_", whichsubfield, "_topcorrrs.csv", sep = "")
+      
+      write.csv(df, filename)
 
+      return(p1234)
       
-      
-      return(p123)
     }
 
-
     plotcorrrs2(corrrDG, "DG")
+
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
 
 ![](../figures/favegenes/corrr2-1.png)
 
     plotcorrrs2(corrrCA3, "CA3")
 
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+
 ![](../figures/favegenes/corrr2-2.png)
 
     plotcorrrs2(corrrCA1, "CA1")
 
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+
 ![](../figures/favegenes/corrr2-3.png)
+
+3 hypotheses
+------------
+
+    plotcorrrs3 <- function(favgenes, mytitle){
+      
+      
+      plotfavgenes <- function(favgenes, df, whichsubfield){
+      
+        df <- df %>% focus(PC1, PC2, favgenes,  mirror = TRUE) 
+        
+        p1 <- df %>% 
+          focus(PC1, PC2) %>%
+          mutate(rowname = reorder(rowname, PC1)) %>%
+          ggplot(aes(rowname, PC1, fill = PC1)) +
+          geom_col() + coord_flip() +
+          scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
+          theme_ms() +
+          ylim(-1,1) +
+          theme(legend.position = "none") +
+          labs(x = NULL, y = "Correlation to PC1") +
+          labs(subtitle = whichsubfield)
+      
+        p2 <- df %>% 
+          replace(., is.na(.), 0) %>% 
+          network_plot.cor_df(colors = c("#67a9cf", "white", "#ef8a62"),
+                   min_cor = 0.0, curved = F, legend = T,
+                   repel = TRUE) + 
+          theme(legend.position = "none") 
+        
+        p3 <- df %>% 
+        focus(PC1, PC2, favgenes,  mirror = TRUE) %>% 
+        #rearrange() %>% 
+        replace(., is.na(.), 0) %>%   
+        rplot(colours = c("#67a9cf", "white", "#ef8a62")) + 
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))  + 
+          theme(legend.position = "none") 
+
+        p12 <- plot_grid(p1, p2, p3, nrow = 1, rel_widths = c(1,1,1))
+
+        return(p12)
+      }
+      
+      a <- plotfavgenes(favgenes, corrrDG, "DG")
+      b <- plotfavgenes(favgenes, corrrCA3, "CA3")
+      c <- plotfavgenes(favgenes, corrrCA1, "CA1")
+      
+      title <- ggdraw() + 
+        draw_label(mytitle, fontface = 'bold', x = 0, hjust = 0) +
+        theme(plot.margin = margin(0, 0, 0, 7))
+      
+      plot_grid(title, a,b,c, nrow = 4, rel_heights = c(0.1, 1, 1, 1))
+      
+    }
+
+    classicmemgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
+                    "NSF", "GRIA2", "PIN1", "IGF2", "CAMK2A")
+
+    ACTINngenes <- c( "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB", "TNR",
+                    "GABRA1", "PTPRS", "PNN", "EGFR")
+
+    stabilizationgenes <- c("LIMK1","CFL1", "ROCK2")
+
+    astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2")
+
+
+    plotcorrrs3(classicmemgenes, "memory genes")
+
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+
+![](../figures/favegenes/corrr3-1.png)
+
+    plotcorrrs3(ACTINngenes, "actin remodeling")
+
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+
+![](../figures/favegenes/corrr3-2.png)
+
+    plotcorrrs3(stabilizationgenes, "stabilization genes")
+
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+
+![](../figures/favegenes/corrr3-3.png)
+
+    plotcorrrs3(astrocyticgenes, "astrocytic involvement")
+
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+
+![](../figures/favegenes/corrr3-4.png)

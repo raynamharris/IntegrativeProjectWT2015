@@ -181,10 +181,10 @@ pcadataframe <- function (object, intgroup = "condition", ntop = 500, returnData
 network_plot.cor_df <- function(rdf,
                                 min_cor = .30,
                                 legend = TRUE,
-                                colours = c("indianred2", "white", "skyblue1"),
+                                colours = c("skyblue1", "white", "indianred2"),
                                 repel = TRUE,
                                 curved = TRUE,
-                                colors) {
+                                colors = c("skyblue1", "white", "indianred2") ) {
   
   if (min_cor < 0 || min_cor > 1) {
     stop ("min_cor must be a value ranging from zero to one.")
