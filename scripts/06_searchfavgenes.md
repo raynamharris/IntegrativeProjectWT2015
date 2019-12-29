@@ -1,24 +1,7 @@
-    library(tidyverse)
-    library(cowplot)
-    library(corrr) # for easy correlations
-    library(Hmisc) # for correlations with pvalue
-
-    ## Loading required package: lattice
-
-    ## Loading required package: survival
-
-    ## Loading required package: Formula
-
-    ## 
-    ## Attaching package: 'Hmisc'
-
-    ## The following objects are masked from 'package:dplyr':
-    ## 
-    ##     src, summarize
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     format.pval, units
+    suppressMessages(library(tidyverse))
+    suppressMessages(library(cowplot))
+    suppressMessages(library(corrr)) # for easy correlations
+    suppressMessages(library(Hmisc)) # for correlations with pvalue
 
     source("./figureoptions.R")
     source("./functions_RNAseq.R")
@@ -112,6 +95,7 @@ Sample information and PC1
 
       vsd$subfield <- factor(vsd$subfield, levels = levelssubfield)
       vsd$treatment <- factor(vsd$treatment, levels = levelstreatment)
+      vsd$training <- factor(vsd$training, levels = levelstraining)
       return(vsd)
     }
 
@@ -142,58 +126,32 @@ Sample information and PC1
 
     ## Joining, by = "RNAseqID"
 
-    vsdCA3 <- prepvsdforjoin("../data/03_CA3_vsdtraining.csv")
+different sets of candidatea genes
+----------------------------------
 
-    ## Warning: Missing column names filled in: 'X1' [1]
+    classicmemgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
+                    "NSF", "GRIA2", "PIN1", "IGF2", "CAMK2A",
+                    "PICK1")
 
-    ## Parsed with column specification:
-    ## cols(
-    ##   X1 = col_character(),
-    ##   `143A-CA3-1` = col_double(),
-    ##   `144A-CA3-2` = col_double(),
-    ##   `144B-CA3-1` = col_double(),
-    ##   `144C-CA3-2` = col_double(),
-    ##   `144D-CA3-2` = col_double(),
-    ##   `145A-CA3-2` = col_double(),
-    ##   `146A-CA3-2` = col_double(),
-    ##   `146B-CA3-2` = col_double(),
-    ##   `146D-CA3-3` = col_double(),
-    ##   `147C-CA3-3` = col_double(),
-    ##   `147D-CA3-1` = col_double(),
-    ##   `148A-CA3-3` = col_double(),
-    ##   `148B-CA3-4` = col_double()
-    ## )
-    ## Joining, by = "RNAseqID"
+    stabilizationgenes  <- c("IGF2BP2",  "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB",
+                              "TNR", "GABRA1", "PTPRS", "PNN", "EGFR")
 
-    vsdCA1 <- prepvsdforjoin("../data/03_CA1_vsdtraining.csv")
+    ACTINngenes <- c("LIMK1","CFL1", "ROCK2")
 
-    ## Warning: Missing column names filled in: 'X1' [1]
+    astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2", 
+                         "SLC1A2", "GFAP", "GJB6", "FGFR3", "AQP4", "ALDOC")
 
-    ## Parsed with column specification:
-    ## cols(
-    ##   X1 = col_character(),
-    ##   `143B-CA1-1` = col_double(),
-    ##   `143C-CA1-1` = col_double(),
-    ##   `143D-CA1-3` = col_double(),
-    ##   `144A-CA1-2` = col_double(),
-    ##   `144B-CA1-1` = col_double(),
-    ##   `144C-CA1-2` = col_double(),
-    ##   `145A-CA1-2` = col_double(),
-    ##   `145B-CA1-1` = col_double(),
-    ##   `146A-CA1-2` = col_double(),
-    ##   `146B-CA1-2` = col_double(),
-    ##   `146C-CA1-4` = col_double(),
-    ##   `146D-CA1-3` = col_double(),
-    ##   `147C-CA1-3` = col_double(),
-    ##   `148A-CA1-3` = col_double(),
-    ##   `148B-CA1-4` = col_double()
-    ## )
-    ## Joining, by = "RNAseqID"
+    allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes)
+
+correlations with ARC
+---------------------
 
     printcortests <- function(mysubfield, df){
       print(mysubfield)
       print(cor.test(df$PC1, df$ARC, method = c("pearson")))
-      print(cor.test(df$PC2, df$ARC, method = c("pearson")))
+      print(cor.test(df$FOSL2, df$ARC, method = c("pearson")))
+      print(cor.test(df$PC1, df$PRKCZ, method = c("pearson")))
+      print(cor.test(df$PC1, df$CAMK2A, method = c("pearson")))
     }
 
     printcortests("DG", vsdDG)
@@ -214,290 +172,73 @@ Sample information and PC1
     ## 
     ##  Pearson's product-moment correlation
     ## 
-    ## data:  df$PC2 and df$ARC
-    ## t = -3.0752, df = 14, p-value = 0.008228
+    ## data:  df$FOSL2 and df$ARC
+    ## t = 7.1459, df = 14, p-value = 4.966e-06
     ## alternative hypothesis: true correlation is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.8599769 -0.2031956
-    ## sample estimates:
-    ##        cor 
-    ## -0.6349459
-
-    printcortests("CA3", vsdCA3)
-
-    ## [1] "CA3"
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$PC1 and df$ARC
-    ## t = -1.0265, df = 11, p-value = 0.3267
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.7280482  0.3050049
-    ## sample estimates:
-    ##        cor 
-    ## -0.2956684 
-    ## 
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$PC2 and df$ARC
-    ## t = -0.34391, df = 11, p-value = 0.7374
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.6189505  0.4748301
-    ## sample estimates:
-    ##        cor 
-    ## -0.1031389
-
-    printcortests("CA1", vsdCA1)
-
-    ## [1] "CA1"
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$PC1 and df$ARC
-    ## t = 0.73268, df = 13, p-value = 0.4768
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.3486959  0.6455477
+    ##  0.6957281 0.9600200
     ## sample estimates:
     ##       cor 
-    ## 0.1991377 
+    ## 0.8859057 
     ## 
     ## 
     ##  Pearson's product-moment correlation
     ## 
-    ## data:  df$PC2 and df$ARC
-    ## t = -1.7954, df = 13, p-value = 0.09586
+    ## data:  df$PC1 and df$PRKCZ
+    ## t = -1.4622, df = 14, p-value = 0.1658
     ## alternative hypothesis: true correlation is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.7799244  0.0861938
+    ##  -0.7282877  0.1607156
     ## sample estimates:
     ##        cor 
-    ## -0.4457507
-
-    plotcorrelation <- function(df, favegene, myPC){
-      p <- ggplot(df, aes(x = favegene, y = myPC)) +
-       geom_point(aes( color = treatment)) + 
-       geom_smooth(method = "lm", color = "grey") +
-       scale_color_manual(values = treatmentcolors) +
-      theme_ms() +
-       theme(legend.position = "none") +
-        facet_wrap(~subfield) +
-        labs(y = NULL, x = NULL)
-      return(p)
-    }
-
-
-    p1 <- plotcorrelation(vsdDG, vsdDG$ARC, vsdDG$PC1) + labs(y = "PC1")
-    p2 <- plotcorrelation(vsdDG, vsdDG$ARC, vsdDG$PC2) + labs(y = "PC2")  + labs(x =  " ")
-    p3 <- plotcorrelation(vsdCA3, vsdCA3$ARC, vsdCA3$PC1) 
-    p4 <- plotcorrelation(vsdCA3, vsdCA3$ARC, vsdCA3$PC2)  + labs(x = "ARC expression")
-    p5 <- plotcorrelation(vsdCA1, vsdCA1$ARC, vsdCA1$PC1)
-    p6 <- plotcorrelation(vsdCA1, vsdCA1$ARC, vsdCA1$PC2)  + labs(x =  " ")
-
-    plot_grid(p1,p3,p5,p2,p4,p6, nrow = 2, labels = c("a","b", "c", " ", " ", " "), 
-                      label_size = 8, rel_heights = c(0.45,0.575))
-
-![](../figures/06_favegenes/ARC-1.png)
-
-    plotcorrelation2 <- function(df, favegene, myPC){
-      p <- ggplot(df, aes(x = favegene, y = myPC)) +
-       geom_point(aes( color = treatment)) + 
-       geom_smooth(method = "lm", color = "grey") +
-       scale_color_manual(values = treatmentcolors) +
-      theme_ms() +
-       theme(legend.position = "none",
-             strip.text = element_blank()) +
-        facet_wrap(~subfield) +
-        labs(y = NULL, x = NULL)
-      return(p)
-    }
-
-    printcortests1 <- function(mysubfield, df){
-      print(mysubfield)
-      print(cor.test(df$PRKCZ, df$PRKCI, method = c("pearson")))
-      print(cor.test(df$PRKCZ, df$PRKCB, method = c("pearson")))
-    }
-
-    printcortests1("DG", vsdDG)
-
-    ## [1] "DG"
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$PRKCZ and df$PRKCI
-    ## t = -1.649, df = 14, p-value = 0.1214
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.7492100  0.1155226
-    ## sample estimates:
-    ##        cor 
-    ## -0.4032764 
+    ## -0.3639878 
     ## 
     ## 
     ##  Pearson's product-moment correlation
     ## 
-    ## data:  df$PRKCZ and df$PRKCB
-    ## t = -0.31913, df = 14, p-value = 0.7543
+    ## data:  df$PC1 and df$CAMK2A
+    ## t = 1.1261, df = 14, p-value = 0.2791
     ## alternative hypothesis: true correlation is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.5572153  0.4287850
-    ## sample estimates:
-    ##         cor 
-    ## -0.08498373
-
-    printcortests1("CA3", vsdCA3)
-
-    ## [1] "CA3"
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$PRKCZ and df$PRKCI
-    ## t = 0.67052, df = 11, p-value = 0.5164
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.3960683  0.6754034
-    ## sample estimates:
-    ##       cor 
-    ## 0.1981613 
-    ## 
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$PRKCZ and df$PRKCB
-    ## t = 1.4981, df = 11, p-value = 0.1623
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.1802239  0.7846575
-    ## sample estimates:
-    ##       cor 
-    ## 0.4116373
-
-    printcortests1("CA1", vsdCA1)
-
-    ## [1] "CA1"
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$PRKCZ and df$PRKCI
-    ## t = -0.64224, df = 13, p-value = 0.5319
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.6309485  0.3701487
-    ## sample estimates:
-    ##        cor 
-    ## -0.1753659 
-    ## 
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$PRKCZ and df$PRKCB
-    ## t = -0.6687, df = 13, p-value = 0.5154
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.6352749  0.3639007
-    ## sample estimates:
-    ##        cor 
-    ## -0.1823556
-
-    printcortests2 <- function(mysubfield, df){
-      print(mysubfield)
-      #print(cor.test(df$WWC1, df$PRKCI, method = c("pearson")))
-      #print(cor.test(df$WWC1, df$PRKCB, method = c("pearson")))
-      print(cor.test(df$WWC1, df$PRKCZ, method = c("pearson")))
-    }
-
-    printcortests2("DG", vsdDG)
-
-    ## [1] "DG"
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$WWC1 and df$PRKCZ
-    ## t = 0.90783, df = 14, p-value = 0.3793
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.2943199  0.6549413
-    ## sample estimates:
-    ##       cor 
-    ## 0.2357856
-
-    printcortests2("CA3", vsdCA3)
-
-    ## [1] "CA3"
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$WWC1 and df$PRKCZ
-    ## t = 1.4464, df = 11, p-value = 0.1759
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.1939546  0.7791277
-    ## sample estimates:
-    ##       cor 
-    ## 0.3997505
-
-    printcortests2("CA1", vsdCA1)
-
-    ## [1] "CA1"
-    ## 
-    ##  Pearson's product-moment correlation
-    ## 
-    ## data:  df$WWC1 and df$PRKCZ
-    ## t = 0.81675, df = 13, p-value = 0.4288
-    ## alternative hypothesis: true correlation is not equal to 0
-    ## 95 percent confidence interval:
-    ##  -0.3285129  0.6586500
+    ##  -0.2421023  0.6859077
     ## sample estimates:
     ##      cor 
-    ## 0.220929
+    ## 0.288189
 
-    p1 <- plotcorrelation2(vsdDG, vsdDG$PRKCZ, vsdDG$PRKCI) + labs(x = " ", y =  "PRKCI",
-                                                                 subtitle = "p = 0.12", title = "DG")
-    p2 <- plotcorrelation2(vsdDG,  vsdDG$PRKCZ, vsdDG$PRKCB) + labs(x = " ", y =  "PRKCB",
-                                                                 subtitle = "p = 0.75")
+    plotcorrelation <- function(df, myx, myy){
+      p <- ggplot(df, aes(x = myx, y = myy)) +
+       geom_point(aes(color = training)) + 
+       geom_smooth(method = "lm", color = "grey") +
+       scale_color_manual(values = volcano1) +
+      theme_ms() +
+       theme(legend.position = "none") +
+        labs(y = NULL, x = NULL)
+      return(p)
+    }
 
-    p3 <- plotcorrelation2(vsdCA3,  vsdCA3$PRKCZ, vsdCA3$PRKCI) + labs(x = "PRKCZ", y =  " ",
-                                                                 subtitle = "p = 0.51", title = "CA3")
-    p4 <- plotcorrelation2(vsdCA3,  vsdCA3$PRKCZ, vsdCA3$PRKCB) + labs(x = "PRKCZ", y =  " ",
-                                                                 subtitle = "p = 0.16")
-
-    p5 <- plotcorrelation2(vsdCA1,  vsdCA1$PRKCZ, vsdCA1$PRKCI) + labs(x = " ", y =  " ",
-                                                                 subtitle = "p = 0.53", title = "CA1")
-    p6 <- plotcorrelation2(vsdCA1,  vsdCA1$PRKCZ, vsdCA1$PRKCB) + labs(x = " ", y =  " ",
-                                                                 subtitle = "p = 0.52")
-
-    p11 <- plotcorrelation2(vsdDG, vsdDG$WWC1, vsdDG$PRKCI) + labs(x = " ", y =  "PRKCI",
-                                                                 subtitle = "p = 0.403")
-    p12 <- plotcorrelation2(vsdDG,  vsdDG$WWC1, vsdDG$PRKCB) + labs(x = " ", y =  "PRKCB",
-                                                                 subtitle = "p = 0.085")
-
-    p13 <- plotcorrelation2(vsdCA3,  vsdCA3$WWC1, vsdCA3$PRKCI) + labs(x = "WWC1", y =  " ",
-                                                                 subtitle = "p = 0.058")
-    p14 <- plotcorrelation2(vsdCA3,  vsdCA3$WWC1, vsdCA3$PRKCB) + labs(x = "WWC1", y =  " ",
-                                                                 subtitle = "p = 0.001" )
-    p15 <- plotcorrelation2(vsdCA1,  vsdCA1$WWC1, vsdCA1$PRKCI) + labs(x = " ", y =  " ",
-                                                                 subtitle = "p = 0.004")
-    p16 <- plotcorrelation2(vsdCA1,  vsdCA1$WWC1, vsdCA1$PRKCB) + labs(x = " ", y =  " ",
-                                                                 subtitle = "p = 0.385")
+    p1 <- plotcorrelation(vsdDG, vsdDG$ARC, vsdDG$PC1) + labs(y = "PC1", subtitle = "R2 = 0.81, p = 1.64 × 10-4")
+    p2 <- plotcorrelation(vsdDG, vsdDG$ARC, vsdDG$FOSL2)  + labs(y = "FOSL", x = "ARC", subtitle = "R2 = 0.89, p = 4.97 × 10-6") + 
+      theme(axis.title = element_text(face = "italic"))
 
 
+    cd <- plot_grid(p1,p2, nrow = 2, rel_heights = c(0.45,0.55), labels = c("c", NULL), label_size = 8)
+    cd
 
-    p24 <- plotcorrelation2(vsdDG,  vsdDG$WWC1, vsdDG$PRKCZ) + labs(x = " ", y =  "PRKCZ",
-                                                                 subtitle = "p = 0.380" )
-    p25 <- plotcorrelation2(vsdCA3,  vsdCA3$WWC1, vsdCA3$PRKCZ) + labs(x = "WWC1", y =  " ",
-                                                                 subtitle = "p = 0.176")
-    p26 <- plotcorrelation2(vsdCA1,  vsdCA1$WWC1, vsdCA1$PRKCZ) + labs(x = " ", y =  " ",
-                                                                 subtitle = "p = 0.4288")
+![](../figures/06_favegenes/scatterplots-1.png)
 
-    plot_grid(p1,p3,p5,p2,p4,p6,
-              p11,p13,p15,p12,p14,p16,
-              p24,p25,p26,
-              nrow = 5, rel_heights = c(1.1,1,1,1,1))
+    p3 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$PRKCZ) + labs( y = "PRKCZ",   subtitle = "R2 = -0.73, p = 0.166") + 
+      theme(axis.title.y = element_text(face = "italic"))
+    p4 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$CAMK2A)  + labs(x = "PC1", y = "CAMK2A", subtitle = "R2 = 0.29, p = 0.279") + 
+      theme(axis.title.y = element_text(face = "italic"), 
+            legend.position = "bottom", legend.title = element_blank(),
+            legend.margin=margin(0,0,0,0),
+            legend.box.margin=margin(-8,-8,-8,-8)) 
 
-![](../figures/06_favegenes/PKCs-1.png)
+
+    gh <- plot_grid(p3,p4, nrow = 2, rel_heights = c(0.45,0.55), labels = c("f", NULL), label_size = 8)
+    gh
+
+![](../figures/06_favegenes/scatterplots-2.png)
 
 Correlate ALL genes with PC1 and PC2
 ------------------------------------
@@ -535,272 +276,92 @@ Correlate ALL genes with PC1 and PC2
 Top correlations with PC1 and their relationship with PC2
 ---------------------------------------------------------
 
-    plotcorrrs <- function(df, mysubtitle){
-      
-     corrsTop <- df %>% 
+    corrsTop <- corrrDG %>% 
       focus(PC1)  %>% 
       arrange(desc(PC1)) %>% 
       top_n(20)
-      
-      topcorrrs <- corrsTop$rowname
 
-      p1 <- df %>% 
-        focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
-        focus(PC1, PC2) %>%
+    ## Selecting by PC1
+
+    topcorrrs <- corrsTop$rowname
+
+    a <- corrrDG %>% 
+        focus(PC1,  topcorrrs,  mirror = TRUE) %>% 
+        focus(PC1) %>% 
         mutate(rowname = reorder(rowname, PC1)) %>%
         ggplot(aes(rowname, PC1, fill = PC1)) +
          geom_col() + coord_flip() +
         scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
         theme_ms() +
-        theme(legend.position = "none") +
+        theme(legend.position = "none", axis.text.y = element_text(face = "italic")) +
         #ylim(-1,1) +
-        labs(x = NULL, y = "Correlation to PC1") +
-        labs(subtitle = mysubtitle)
+        labs(x = NULL, y = "Correlation to PC1 (avoidance estimate)") 
       
-      p2 <- df %>% 
-        focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
-        focus(PC1, PC2) %>%
-        mutate(rowname = reorder(rowname, PC1)) %>%
-        ggplot(aes(rowname, PC2, fill = PC2)) +
-         geom_col() + coord_flip() +
-        scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
-        theme_ms() +
-        theme(legend.position = "none") +
-        #ylim(-1,1) +
-        labs(x = NULL, y = "Correlation to PC2") +
-        labs(subtitle = " ")
-
-      p3 <- df %>% 
-        focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+    b <- corrrDG %>% 
+        focus(PC1, topcorrrs,  mirror = TRUE) %>% 
         replace(., is.na(.), 1) %>% 
         network_plot.cor_df(colors = c("#67a9cf", "white", "#ef8a62"),
                    min_cor = .7, curved = F, legend = T,
                    repel = TRUE) + 
-        theme(legend.position = "right") +
-        labs(subtitle = " ")
+        theme(legend.position = "none") 
       
-      p4 <- df %>% 
-        focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
-        replace(., is.na(.), 0) %>% 
-        rearrange() %>% 
-        rplot()
-      
-      p12 <- plot_grid(p1,p2,  nrow = 1)
-      p34 <- plot_grid(p3,p4,  nrow = 1)
-      p1234 <- plot_grid(p12,p34,  nrow = 2)
-      
-      
-      return(p1234)
-    }
-
-    plotcorrrs(corrrDG, "DG")
-
-    ## Selecting by PC1
-
-    ## Registered S3 method overwritten by 'seriation':
-    ##   method         from 
-    ##   reorder.hclust gclus
-
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+    ab <- plot_grid(a,b,  nrow = 1, labels = c("a", "b"), label_size = 8)
+     
+    abcd <- plot_grid(ab, cd, rel_widths = c(0.66, 0.33))
+    abcd
 
 ![](../figures/06_favegenes/corrr-1.png)
 
-    plotcorrrs(corrrCA3, "CA3")
-
-    ## Selecting by PC1
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-
-![](../figures/06_favegenes/corrr-2.png)
-
-    plotcorrrs(corrrCA1, "CA1")
-
-    ## Selecting by PC1
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-
-![](../figures/06_favegenes/corrr-3.png)
-
-    classicmemgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
-                    "NSF", "GRIA2", "PIN1", "IGF2", "CAMK2A")
-
-    ACTINngenes <- c( "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB", "TNR",
-                    "GABRA1", "PTPRS", "PNN", "EGFR")
-
-    stabilizationgenes <- c("LIMK1","CFL1", "ROCK2")
-
-    astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2", 
-                         "SLC1A2", "GFAP", "GJB6", "FGFR3", "AQP4", "ALDOC")
-
-    allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes)
-
     plotcorrrs2 <- function(df, whichsubfield){
       
-      favgenes <- allcandidates
+      favgenes <- c(classicmemgenes, stabilizationgenes)
       
       df <- df %>% 
-        focus(PC1, PC2, favgenes,  mirror = TRUE)  %>% 
+        focus(PC1, favgenes,  mirror = TRUE)  %>% 
         arrange(desc(PC1))
 
       p1 <- df %>% 
-        focus(PC1, PC2) %>%
+        focus(PC1) %>%
         mutate(rowname = reorder(rowname, PC1)) %>%
         ggplot(aes(rowname, PC1, fill = PC1)) +
          geom_col() + coord_flip() +
         scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
         theme_ms() +
-        theme(legend.position = "none") +
+        theme(legend.position = "none", axis.text.y = element_text(face = "italic")) +
         #ylim(-1,1) +
-        labs(x = NULL, y = "Correlation to PC1") +
-        labs(subtitle = whichsubfield)
+        labs(x = NULL, y = "Correlation to PC1 (avoidance estimate)")
       
-      p2 <- df %>% 
-        focus(PC1, PC2) %>%
-        mutate(rowname = reorder(rowname, PC1)) %>%
-        ggplot(aes(rowname, PC2, fill = PC2)) +
-        geom_col() + coord_flip() +
-        scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
-        theme_ms() +
-        theme(legend.position = "none",
-              axis.text.y = element_blank()) +
-        #ylim(-1,1) +
-        labs(x = NULL, y = "Correlation to PC2") +
-        labs(subtitle = " ") 
 
       p3 <- df %>% 
         replace(., is.na(.), 1) %>% 
         network_plot.cor_df(colors = c("#67a9cf", "white", "#ef8a62"),
                    min_cor = 0.0, curved = F, legend = T,
                    repel = TRUE) + 
-        theme(legend.position = "right") +
-        labs(subtitle = " ")
+        theme(legend.position = "bottom") 
       
-      p4 <- df %>% 
-        focus(PC1, PC2, favgenes,  mirror = TRUE) %>% 
-        replace(., is.na(.), 0) %>% 
-        rearrange() %>% 
-        rplot(colours = c("#67a9cf", "white", "#ef8a62")) + 
-        theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
-        
-      p34 <- plot_grid(p3,p4,  nrow = 1)
-      p12 <- plot_grid(p1,p2,  nrow = 1, rel_widths = c(1.1,1))
-      p1234 <- plot_grid(p12,p34,  nrow = 2)
+      p13 <- plot_grid(p1,p3,  nrow = 1, labels = c("d", "e"), label_size = 8)
       
       filename <- paste("../data/06_", whichsubfield, "_candidatecorrelations.csv", sep = "")
       
       write.csv(df, filename)
 
-      return(p1234)
+      return(p13)
       
     }
 
-    plotcorrrs2(corrrDG, "DG")
+    ef <- plotcorrrs2(corrrDG, "DG")
 
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
+    efgh <- plot_grid(ef, gh, rel_widths = c(0.66, 0.33))
+    efgh
 
-![](../figures/06_favegenes/corrr2-1.png)
+![](../figures/06_favegenes/corrr-2.png)
 
-    plotcorrrs2(corrrCA3, "CA3")
+    plot_grid(abcd,efgh, nrow = 2)
 
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-
-![](../figures/06_favegenes/corrr2-2.png)
-
-    plotcorrrs2(corrrCA1, "CA1")
-
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-
-![](../figures/06_favegenes/corrr2-3.png)
-
-3 hypotheses
-------------
-
-    plotcorrrs3 <- function(favgenes, mytitle){
-      
-      plotfavgenes <- function(favgenes, df, whichsubfield){
-      
-        df <- df %>% focus(PC1, PC2, favgenes,  mirror = TRUE) 
-        
-        p1 <- df %>% 
-          focus(PC1, PC2) %>%
-          mutate(rowname = reorder(rowname, PC1)) %>%
-          ggplot(aes(rowname, PC1, fill = PC1)) +
-          geom_col() + coord_flip() +
-          scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
-          theme_ms() +
-          ylim(-1,1) +
-          theme(legend.position = "none") +
-          labs(x = NULL, y = "Correlation to PC1") +
-          labs(subtitle = whichsubfield)
-      
-        p2 <- df %>% 
-          replace(., is.na(.), 0) %>% 
-          network_plot.cor_df(colors = c("#67a9cf", "white", "#ef8a62"),
-                   min_cor = 0.0, curved = F, legend = T,
-                   repel = TRUE) + 
-          theme(legend.position = "none") 
-        
-        p3 <- df %>% 
-        focus(PC1, PC2, favgenes,  mirror = TRUE) %>% 
-        #rearrange() %>% 
-        replace(., is.na(.), 0) %>%   
-        rplot(colours = c("#67a9cf", "white", "#ef8a62")) + 
-        theme(axis.text.x = element_text(angle = 45, hjust = 1))  + 
-          theme(legend.position = "none") 
-
-        p12 <- plot_grid(p1, p2, p3, nrow = 1, rel_widths = c(1,1,1))
-
-        return(p12)
-      }
-      
-      a <- plotfavgenes(favgenes, corrrDG, "DG")
-      b <- plotfavgenes(favgenes, corrrCA3, "CA3")
-      c <- plotfavgenes(favgenes, corrrCA1, "CA1")
-      
-      title <- ggdraw() + 
-        draw_label(mytitle, fontface = 'bold', x = 0, hjust = 0) +
-        theme(plot.margin = margin(0, 0, 0, 7))
-      
-      plot_grid(title, a,b,c, nrow = 4, rel_heights = c(0.1, 1, 1, 1))
-      
-    }
-
-    plotcorrrs3(classicmemgenes, "candidate memory genes")
-
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-
-![](../figures/06_favegenes/corrr3-1.png)
-
-    plotcorrrs3(ACTINngenes, "actin remodeling")
-
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-
-![](../figures/06_favegenes/corrr3-2.png)
-
-    plotcorrrs3(stabilizationgenes, "PNN stabilization genes")
-
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-
-![](../figures/06_favegenes/corrr3-3.png)
-
-    plotcorrrs3(astrocyticgenes, "astrocytic involvement")
-
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-    ## Don't know how to automatically pick scale for object of type noquote. Defaulting to continuous.
-
-![](../figures/06_favegenes/corrr3-4.png)
+![](../figures/06_favegenes/corrr-3.png)
 
 correlations with p-values
 --------------------------
-
-vsdDG &lt;- prepvsdforjoin(“../data/03\_DG\_vsdtraining.csv”) vsdCA3
-&lt;- prepvsdforjoin(“../data/03\_CA3\_vsdtraining.csv”) vsdCA1 &lt;-
-prepvsdforjoin(“../data/03\_CA1\_vsdtraining.csv”)
 
     getcandidategenecorrelations <- function(df, candidategenes, whichsubfield){
       
@@ -837,41 +398,13 @@ prepvsdforjoin(“../data/03\_CA1\_vsdtraining.csv”)
     DGcorrswithpvalue <- getcandidategenecorrelations(vsdDG, allcandidates, "DG")
 
     ##        row  column        cor            p         padj
-    ## 1     TNXB ALDH1L1 -0.8939859 3.036534e-06 0.0005035482
-    ## 2    PRKCI    TNXB  0.8884341 4.274995e-06 0.0005035482
-    ## 3   SLC1A2    AQP4  0.8877482 4.454013e-06 0.0005035482
-    ## 4  ALDH1A1    GJB6  0.8874325 4.538507e-06 0.0005035482
-    ## 5    PRKCI ALDH1L1 -0.8865977 4.768448e-06 0.0005035482
-    ## 6    PRKCI   ROCK2  0.8819981 6.219411e-06 0.0005473082
-    ## 7  ALDH1A1   ALDOC  0.8757261 8.783571e-06 0.0006625322
-    ## 8     GFAP    GJB6  0.8680360 1.309062e-05 0.0008639810
-    ## 9   CAMK2A  SLC1A2  0.8489599 3.194234e-05 0.0018739504
-    ## 10 ALDH1A1    GFAP  0.8459903 3.630386e-05 0.0019168436
-
-    CA3corrswithpvalue <- getcandidategenecorrelations(vsdCA3, allcandidates, "CA3")
-
-    ##        row  column        cor            p         padj
-    ## 1     GJB6   ALDOC  0.9356891 2.622829e-06 0.0006328961
-    ## 2  ALDH1A1 ALDH1L1  0.9324362 3.418801e-06 0.0006328961
-    ## 3     GFAP   FGFR3  0.9317971 3.596001e-06 0.0006328961
-    ## 4     GFAP   ALDOC  0.9180910 9.584218e-06 0.0012651168
-    ## 5    FGFR3    AQP4  0.8983028 3.030198e-05 0.0027207832
-    ## 6    PTPRS    GJB6 -0.8979158 3.091799e-05 0.0027207832
-    ## 7   SLC1A2   FGFR3  0.8768696 8.312999e-05 0.0060323326
-    ## 8      NSF    GFAP -0.8740583 9.359244e-05 0.0060323326
-    ## 9      NSF ALDH1L1 -0.8713203 1.047687e-04 0.0060323326
-    ## 10  SLC1A2    GFAP  0.8691755 1.142487e-04 0.0060323326
-
-    CA1corrswithpvalue <- getcandidategenecorrelations(vsdCA1, allcandidates, "CA1")
-
-    ##        row column        cor            p       padj
-    ## 1     WWC1    NSF -0.8555629 4.756473e-05 0.01501465
-    ## 2    PRKCB    TNR  0.8501021 5.970954e-05 0.01501465
-    ## 3    LAMB1  LIMK1  0.8332957 1.141492e-04 0.01501465
-    ## 4    PRKCB  ROCK2  0.8312027 1.231329e-04 0.01501465
-    ## 5    LAMC1   EGFR  0.8248231 1.541753e-04 0.01501465
-    ## 6    LIMK1   AQP4  0.8175267 1.972814e-04 0.01501465
-    ## 7   SLC1A2  FGFR3  0.8172553 1.990579e-04 0.01501465
-    ## 8  ALDH1A1  ALDOC  0.7811893 5.846593e-04 0.03858751
-    ## 9    GRIA2  LIMK1 -0.7712003 7.613469e-04 0.04466569
-    ## 10   GRIA2    TNR  0.7538653 1.169390e-03 0.05822681
+    ## 1    PICK1   LAMC1  0.9009589 1.922347e-06 0.0004728711
+    ## 2     TNXB ALDH1L1 -0.8939859 3.036534e-06 0.0004728711
+    ## 3    PRKCI    TNXB  0.8884341 4.274995e-06 0.0004728711
+    ## 4   SLC1A2    AQP4  0.8877482 4.454013e-06 0.0004728711
+    ## 5  ALDH1A1    GJB6  0.8874325 4.538507e-06 0.0004728711
+    ## 6    PRKCI ALDH1L1 -0.8865977 4.768448e-06 0.0004728711
+    ## 7    PRKCI   ROCK2  0.8819981 6.219411e-06 0.0005286499
+    ## 8  ALDH1A1   ALDOC  0.8757261 8.783571e-06 0.0006532781
+    ## 9     GFAP    GJB6  0.8680360 1.309062e-05 0.0008654355
+    ## 10  CAMK2A  SLC1A2  0.8489599 3.194234e-05 0.0019005690
