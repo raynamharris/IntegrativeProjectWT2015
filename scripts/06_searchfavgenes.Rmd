@@ -36,7 +36,7 @@ prepvsdforjoin <- function(pathtovsd, mysubfield){
   #read all count data
   vsd <- read_csv(pathtovsd) 
   vsd$gene <- vsd$X1
-  vsd$gene <- toupper(vsd$gene)
+  vsd$gene <- str_to_title(vsd$gene)
   vsd <- vsd %>% arrange(gene) %>%  select(gene,everything())
   vsd <- as.data.frame(vsd)
   vsd$X1 <- NULL
@@ -55,22 +55,33 @@ prepvsdforjoin <- function(pathtovsd, mysubfield){
 }
 
 vsdDG <- prepvsdforjoin("../data/03_DG_vsdtraining.csv")
+vsdCA1 <- prepvsdforjoin("../data/03_CA1_vsdtraining.csv")
+vsdCA3 <- prepvsdforjoin("../data/03_CA3_vsdtraining.csv")
+
+
 ```
+
+## correlation of PC1 and PC2
+
+```{r PC1PC2}
+head(vsdDG)[1:10]
+```
+
+
 
 ## different sets of candidatea genes
 
 ```{r candidategenes}
-classicmemgenes <- c("PRKCZ", "WWC1", "PRKCI", "PRKCB",
-                "NSF", "GRIA2", "PIN1", "IGF2", "CAMK2A",
-                "PICK1")
+classicmemgenes <- c("Prkcz",  "Wwc1" ,  "Prkci",  "Prkcb" , "Nsf" ,   "Gria2" , 
+                     "Pin1" ,  "Igf2" ,  "Camk2a" , "Pick1")
 
-stabilizationgenes  <- c("IGF2BP2",  "LAMA1", "LAMB1", "LAMC1", "TNC", "TNXB",
-                          "TNR", "GABRA1", "PTPRS", "PNN", "EGFR")
+stabilizationgenes  <- c("Igf2bp2", "Lama1"  , "Lamb1"  , "Lamc1" ,  "Tnc" ,
+                         "Tnxb"  ,  "Tnr" ,    "Gabra1" , "Ptprs"  , "Pnn"  , "Egfr")
 
-ACTINngenes <- c("LIMK1","CFL1", "ROCK2")
+ACTINngenes <- c("Limk1","Cfl1", "Rock2")
 
-astrocyticgenes <- c("ALDH1A1", "ALDH1L1", "ALDH1L2", 
-                     "SLC1A2", "GFAP", "GJB6", "FGFR3", "AQP4", "ALDOC")
+astrocyticgenes <- c("Aldh1a1", "Aldh1l1" ,"Aldh1l2", "Slc1a2" , "Gfap" ,
+                     "Gjb6" ,   "Fgfr3" ,  "Aqp4" ,   "Aldoc")
 
 allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes)
 ```
@@ -80,10 +91,10 @@ allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticg
 ```{r scatterplots}
 printcortests <- function(mysubfield, df){
   print(mysubfield)
-  print(cor.test(df$PC1, df$ARC, method = c("pearson")))
-  print(cor.test(df$FOSL2, df$ARC, method = c("pearson")))
-  print(cor.test(df$PC1, df$PRKCZ, method = c("pearson")))
-  print(cor.test(df$PC1, df$CAMK2A, method = c("pearson")))
+  print(cor.test(df$PC1, df$Arc, method = c("pearson")))
+  print(cor.test(df$Fosl2, df$Arc, method = c("pearson")))
+  print(cor.test(df$PC1, df$Prkcz, method = c("pearson")))
+  print(cor.test(df$PC1, df$Camk2a, method = c("pearson")))
 }
 
 printcortests("DG", vsdDG)
@@ -99,17 +110,17 @@ plotcorrelation <- function(df, myx, myy){
   return(p)
 }
 
-p1 <- plotcorrelation(vsdDG, vsdDG$ARC, vsdDG$PC1) + labs(y = "PC1", subtitle = "R2 = 0.81, p = 1.64 × 10-4")
-p2 <- plotcorrelation(vsdDG, vsdDG$ARC, vsdDG$FOSL2)  + labs(y = "FOSL", x = "ARC", subtitle = "R2 = 0.89, p = 4.97 × 10-6") + 
+p1 <- plotcorrelation(vsdDG, vsdDG$Arc, vsdDG$PC1) + labs(y = "PC1", subtitle = "R2 = 0.81, p = 1.64 × 10-4")
+p2 <- plotcorrelation(vsdDG, vsdDG$Arc, vsdDG$Fosl2)  + labs(y = "Fosl2", x = "Arc", subtitle = "R2 = 0.89, p = 4.97 × 10-6") + 
   theme(axis.title = element_text(face = "italic"))
 
 
 cd <- plot_grid(p1,p2, nrow = 2, rel_heights = c(0.45,0.55), labels = c("c", NULL), label_size = 8)
 cd
 
-p3 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$PRKCZ) + labs( y = "PRKCZ",   subtitle = "R2 = -0.73, p = 0.166") + 
+p3 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$Prkcz) + labs( y = "Prkcz",   subtitle = "R2 = -0.73, p = 0.166") + 
   theme(axis.title.y = element_text(face = "italic"))
-p4 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$CAMK2A)  + labs(x = "PC1", y = "CAMK2A", subtitle = "R2 = 0.29, p = 0.279") + 
+p4 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$Camk2a)  + labs(x = "PC1", y = "Camk2a", subtitle = "R2 = 0.29, p = 0.279") + 
   theme(axis.title.y = element_text(face = "italic"), 
         legend.position = "bottom", legend.title = element_blank(),
         legend.margin=margin(0,0,0,0),
@@ -118,7 +129,66 @@ p4 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$CAMK2A)  + labs(x = "PC1", y = "CA
 
 gh <- plot_grid(p3,p4, nrow = 2, rel_heights = c(0.45,0.55), labels = c("f", NULL), label_size = 8)
 gh
+
+plot_grid(cd,gh)
 ```
+
+```{r supplfig3}
+
+cor.test(vsdDG$PC1, vsdDG$PC2, method = c("pearson"))
+cor.test(vsdCA3$PC1, vsdCA3$PC2, method = c("pearson"))
+cor.test(vsdCA1$PC1, vsdCA1$PC2, method = c("pearson"))
+
+
+icon <- png::readPNG("../figures/00_schematics/DG.png")
+icon <-  grid::rasterGrob(iconDG, interpolate=TRUE)
+
+
+pc1v2a <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$PC2) + 
+  labs(x = "PC1",  y = "PC2",  subtitle = "R2 = -0.61, p = 0.013") +
+  annotation_custom(iconDG, ymin = 3, ymax = 5, xmin = 2.5) 
+pc1v2b <- plotcorrelation(vsdCA3, vsdCA3$PC1, vsdCA3$PC2) + 
+  labs(x = "PC1",  y = "PC2",  subtitle = "R2 = -0.51, p = 0.053") + 
+  theme(axis.title.y = element_blank()) +
+  annotation_custom(iconCA3, ymin = 3, ymax = 5, xmin = 2.5) 
+pc1v2c <- plotcorrelation(vsdCA1, vsdCA1$PC1, vsdCA1$PC2) + 
+  labs(x = "PC1",  y = "PC2",  subtitle = "R2 = -0.71, p = 0.0075")  +
+  theme(axis.title.y = element_blank()) +
+  annotation_custom(iconCA1, ymin = 2, ymax = 3.25, xmin = 2.5) 
+
+pc1v2abc <- plot_grid(pc1v2a,pc1v2b,pc1v2c, nrow = 1,
+                      labels = "auto", label_size = 8)
+pc1v2abc
+
+
+
+apafig <- png::readPNG("../figures/00_schematics/APA.png")
+apafig <-  grid::rasterGrob(apafig, interpolate=F)
+
+
+dgslim <- vsdDG %>% dplyr::select(training, subfield, PC1, PC2)
+CA3slim <- vsdCA3 %>% dplyr::select(training, subfield, PC1, PC2)
+CA1slim <- vsdCA1 %>% dplyr::select(training, subfield, PC1, PC2)
+slim <- rbind(dgslim, CA3slim, CA1slim)
+
+cor.test(slim$PC1, slim$PC2, method = c("pearson"))
+
+p <- ggplot(slim, aes(x = PC1, y = PC2)) +
+   geom_point(aes(color = training)) + 
+   geom_smooth(method = "lm", color = "grey") +
+   scale_color_manual(values = volcano1) +
+  theme_ms() +
+   theme(legend.position = "none")  +
+  annotation_custom(apafig, ymin = 2, ymax = 4.5, xmin = 2.5) + 
+  labs(x = "PC1",  y = "PC2",  subtitle = "R2 = -0.60, p = 1.369e-05") 
+p
+
+pdf(file="../figures/supplfig3.pdf", width=2, height=2)
+plot(p)
+dev.off()
+
+```
+
 
 ## Correlate ALL genes with PC1 and PC2
 
