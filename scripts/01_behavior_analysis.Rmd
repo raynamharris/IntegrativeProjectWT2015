@@ -45,7 +45,7 @@ head(behavior)
 names(behavior[9:34])
 ```
 
-```{r experimentaldesign, fig.height = 2.4, fig.width = 6.69}
+```{r experimentaldesign, fig.height = 2.8, fig.width = 6.69}
 dfshocks <- behavior %>%
   dplyr::group_by(treatment, trialNum) %>%
   dplyr::summarise(m = mean(NumShock), 
@@ -59,7 +59,7 @@ numshocks <- ggplot(dfshocks,  aes(x=, trialNum, y=m, color=treatment, label = m
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=treatment), width=.1) +
     geom_line() +
     geom_point(size = 1) +
-    labs(y = "NumShocks") +
+    labs(y = "\n NumShocks") +
     scale_x_continuous(name= "trial", 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels = c( "P", "T1", "T2", "T3",
@@ -71,12 +71,12 @@ numshocks <- ggplot(dfshocks,  aes(x=, trialNum, y=m, color=treatment, label = m
     theme(legend.position = "none",
           legend.justification=c(0,0),
           legend.text=element_text(size=5),
-          strip.text = element_blank(),
-          axis.text.y = element_blank()) +
-  facet_wrap(~treatment, nrow = 4) +
+          strip.text = element_text(angle = 0, hjust = 0, vjust = 0),
+          axis.text.y = element_blank(),
+          strip.background = element_blank()) +
+  facet_wrap(~treatment, nrow = 4, labeller = treatment_labeller) +
   scale_y_continuous(breaks = c(0,10,20), limits = c(0,30)) +
   geom_text(vjust= -1, size=2.5)
-
 numshocks
 
 paradigm <- png::readPNG("../figures/00_schematics/figure_1a.png")
@@ -91,11 +91,11 @@ experimentaldesign <- plot_grid(paradigm, numshocks, subfields, rel_widths = c(2
 experimentaldesign
 
 
-pdf(file="../figures/01_behavior/experimentaldesign.pdf", width=6.69, height=2.4)
+pdf(file="../figures/01_behavior/experimentaldesign.pdf", width=6.69, height=2.8)
 plot(experimentaldesign)
 dev.off()
 
-pdf(file="../figures/figure_1.pdf", width=6.69, height=2.4)
+pdf(file="../figures/figure_1.pdf", width=6.69, height=2.8)
 plot(experimentaldesign)
 dev.off()
 ```
@@ -127,7 +127,7 @@ dfc <- behavior %>%
 avoidancedf <- rbind(dfa, dfb,dfc)
 head(avoidancedf)
 
-a <- meansdplots(dfa, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) 
+a <- meansdplots(dfa, "NumEntrances" ,  c(0,10,20,30), c(0, 35))
 b <- meansdplots(dfb, "Time1stEntr.min",  c(0,2,4,6,8), c(0, 8))
 c <- meansdplots(dfc, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
 
@@ -135,7 +135,10 @@ a
 b
 c
 
-avoidancebehaviors <- plot_grid(a + theme(legend.position = "none"),
+avoidancebehaviors <- plot_grid(a + theme(legend.position = c(0.05, 0.9),
+                                          legend.direction = "horizontal",
+                                          legend.key.size = unit(0.25, "cm")) +
+                                  guides(color = guide_legend(nrow = 2)) ,
                        b + theme(legend.position = "none"), 
                        c + theme(legend.position = "none"), nrow = 1,
                        label_size = 8,

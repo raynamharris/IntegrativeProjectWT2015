@@ -18,7 +18,8 @@ meansdplots <- function(df, myylab, ybreaks, ylims){
     scale_alpha_continuous( breaks = c(1, 2, 3)) +
     theme_ms() +
     scale_color_manual(values = treatmentcolors,
-                       name  = NULL)  +
+                       name  = NULL,
+                       labels = levelstreatmentlegend)  +
     theme(legend.position = "bottom",
           legend.justification=c(0,0),
           legend.text=element_text(size=5))

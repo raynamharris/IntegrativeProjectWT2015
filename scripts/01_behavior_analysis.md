@@ -132,7 +132,7 @@ filter by a single session to calculte the number of mice.
         geom_errorbar(aes(ymin=m-se, ymax=m+se, color=treatment), width=.1) +
         geom_line() +
         geom_point(size = 1) +
-        labs(y = "NumShocks") +
+        labs(y = "\n NumShocks") +
         scale_x_continuous(name= "trial", 
                            breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                            labels = c( "P", "T1", "T2", "T3",
@@ -144,11 +144,15 @@ filter by a single session to calculte the number of mice.
         theme(legend.position = "none",
               legend.justification=c(0,0),
               legend.text=element_text(size=5),
-              strip.text = element_blank(),
-              axis.text.y = element_blank()) +
-      facet_wrap(~treatment, nrow = 4) +
+              strip.text = element_text(angle = 0, hjust = 0, vjust = 0),
+              axis.text.y = element_blank(),
+              strip.background = element_blank()) +
+      facet_wrap(~treatment, nrow = 4, labeller = treatment_labeller) +
       scale_y_continuous(breaks = c(0,10,20), limits = c(0,30)) +
       geom_text(vjust= -1, size=2.5)
+
+    ## Warning: The labeller API has been updated. Labellers taking `variable`and
+    ## `value` arguments are now deprecated. See labellers documentation.
 
     numshocks
 
@@ -167,14 +171,14 @@ filter by a single session to calculte the number of mice.
 
 ![](../figures/01_behavior/experimentaldesign-2.png)
 
-    pdf(file="../figures/01_behavior/experimentaldesign.pdf", width=6.69, height=2.4)
+    pdf(file="../figures/01_behavior/experimentaldesign.pdf", width=6.69, height=2.8)
     plot(experimentaldesign)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/figure_1.pdf", width=6.69, height=2.4)
+    pdf(file="../figures/figure_1.pdf", width=6.69, height=2.8)
     plot(experimentaldesign)
     dev.off()
 
@@ -221,7 +225,7 @@ titles, y labels and limits.
     ## 5 standard.yoked        5  16.9 0.875 NumEntrances
     ## 6 standard.yoked        6  15   1.56  NumEntrances
 
-    a <- meansdplots(dfa, "NumEntrances" ,  c(0,10,20,30), c(0, 35)) 
+    a <- meansdplots(dfa, "NumEntrances" ,  c(0,10,20,30), c(0, 35))
     b <- meansdplots(dfb, "Time1stEntr.min",  c(0,2,4,6,8), c(0, 8))
     c <- meansdplots(dfc, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
 
@@ -237,7 +241,10 @@ titles, y labels and limits.
 
 ![](../figures/01_behavior/behavmeanstdev-3.png)
 
-    avoidancebehaviors <- plot_grid(a + theme(legend.position = "none"),
+    avoidancebehaviors <- plot_grid(a + theme(legend.position = c(0.05, 0.9),
+                                              legend.direction = "horizontal",
+                                              legend.key.size = unit(0.25, "cm")) +
+                                      guides(color = guide_legend(nrow = 2)) ,
                            b + theme(legend.position = "none"), 
                            c + theme(legend.position = "none"), nrow = 1,
                            label_size = 8,
