@@ -36,7 +36,7 @@ head(colData)
 # read all count data
 vsd <- read.csv("../data/03_DG_vsdtraining.csv", row.names = 1, check.names = F) 
 vsd$gene <- row.names(vsd)
-vsd$gene <- toupper(vsd$gene)
+vsd$gene <- str_to_title(vsd$gene)
 vsd <- as.data.frame(vsd)
 row.names(vsd) <- vsd$gene
 vsd$gene <- NULL
@@ -49,31 +49,33 @@ vsd$mouse <- sapply(strsplit(as.character(vsd$sample),"\\-"), "[", 1)
 vsd$ID <- paste(15, vsd$mouse, sep = "")
 
 vsd <- left_join(colData, vsd)
+head(vsd)[1:10]
 ```
 
 
 
-```{r ARC}
-summary(lm( PC1 ~ ARC, data = vsd))
-summary(lm( PC2 ~ ARC, data = vsd))
+```{r Arc}
+summary(lm( PC1 ~ Arc, data = vsd))
+summary(lm( PC2 ~ Arc, data = vsd))
 
-cor.test(vsd$PC1, vsd$ARC, method = c("pearson"))
-cor.test(vsd$PC2, vsd$ARC, method = c("pearson"))
+cor.test(vsd$PC1, vsd$Arc, method = c("pearson"))
+cor.test(vsd$PC2, vsd$Arc, method = c("pearson"))
 
-a <- ggplot(vsd, aes(x = ARC, y = PC1)) +
+a <- ggplot(vsd, aes(x = Arc, y = PC1)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
   theme_ms() +
    theme(legend.position = "none", axis.title.x = element_blank(), axis.text.x = element_blank())  +
-  labs(subtitle = "R2 = 0.81, p = 0.0002")
-b <- ggplot(vsd, aes(x = ARC, y = PC2)) +
+  labs(subtitle = "r = 0.81, p = 0.0002")
+b <- ggplot(vsd, aes(x = Arc, y = PC2)) +
    geom_point(aes( color = treatment)) + 
    geom_smooth(method = "lm", color = "grey") +
    scale_color_manual(values = treatmentcolors) +
   theme_ms() +
-   theme(legend.position = "none")  +
-  labs(subtitle = "R2 = -0.63, p = 0.009 ")
+   theme(legend.position = "none",
+         axis.title.x = element_text(face = "italic"))  +
+  labs(subtitle = "r = -0.63, p = 0.009 ")
 
 left <- plot_grid(a,b, nrow = 2, labels = c("a","b"), label_size = 8)
 left
@@ -88,9 +90,9 @@ left
 head(names(vsd),10)
 tail(names(vsd),5)
 
-forcorall <-  vsd %>% select(PC1:ZZZ3)
+forcorall <-  vsd %>% select(PC1:Zzz3)
 corrrmat <- correlate(forcorall, diagonal = 1) 
-head(corrrmat)
+head(corrrmat)[1:5]
 ```
 
 ## Top 11 correlations with PC1 and their relationship with PC2
@@ -108,15 +110,33 @@ p1 <- corrrmat %>%
   focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
    focus(PC1, PC2) %>%
   mutate(rowname = reorder(rowname, PC1)) %>%
-  ggplot(aes(rowname, PC1, fill = PC1)) +
+  ggplot(aes(rowname, PC1, fill = PC1 )) +
     geom_col() + coord_flip() +
   scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
   theme_ms() +
-  theme(legend.position = "none") +
+  theme(legend.position = "none", 
+        axis.text.y  = element_text(face = "italic")) +
   #ylim(-1,1) +
   labs(x = NULL, y = "Correlation to PC1") +
-  labs(subtitle = " ")
+  labs(subtitle = " ")  
 p1 
+
+p1b <- corrrmat %>% 
+  focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+   focus(PC1, PC2) %>%
+  mutate(rowname = reorder(rowname, PC1)) %>%
+  ggplot(aes(rowname, PC2, fill = PC2 )) +
+    geom_col() + coord_flip() +
+  scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
+  theme_ms() +
+  theme(legend.position = "none", 
+        axis.text.y = element_text(face = "italic")) +
+  #ylim(-1,1) +
+  labs(x = NULL, y = "Correlation to PC2") +
+  labs(subtitle = " ") +
+  geom_hline(yintercept = -0.6, linetype = "dashed", 
+                color = "grey", size = 0.5)
+p1b 
 
 p2 <- corrrmat %>% 
   focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
@@ -128,14 +148,15 @@ p2 <- corrrmat %>%
   labs(subtitle = " ")
 p2 
 
-right <- plot_grid(p1,p2,  nrow = 1, labels = c("c","d"), label_size = 8)
+
+right <- plot_grid(p1,p1b, p2,  nrow = 1, labels = c("c","d", "e"), label_size = 8)
 right
 ```
 
 ## all figures together
 
 ```{r correlations, fig.width=6.69, fig.height=3.5}
-fig4 <- plot_grid(left, right, nrow = 1, rel_widths = c(1,2))
+fig4 <- plot_grid(left, right, nrow = 1, rel_widths = c(0.7,2))
 fig4
 
 pdf(file="../figures/04_correlations/correlations.pdf", width=6.69, height=3.5)
@@ -155,7 +176,7 @@ corrsPC1sig <- corrrmat %>%
   focus(PC1)  %>% 
   arrange(desc(PC1)) %>% 
   filter(PC1 > .7) %>%
-   mutate_each(funs=toupper) %>%
+   #mutate_each(funs=toupper) %>%
   mutate(gene = rowname) %>% 
   arrange(gene) %>% 
   select(gene,PC1)   
@@ -164,7 +185,7 @@ corrsPC1sig$gene
 # 214 DEGs in DG
 # read DG DEGs
 DG_DEGs <- read.csv("../data/03_DG_DEGs_yokedtrained.csv", row.names = 1, check.names = F) 
-DG_DEGs$gene <- toupper(DG_DEGs$gene)
+DG_DEGs$gene <- str_to_title(DG_DEGs$gene)
 dim(DG_DEGs)
 
 # 42 found  in both correlate and deg datasets
@@ -172,6 +193,11 @@ PC1corrsDEGS <- inner_join(corrsPC1sig, DG_DEGs) %>%
   arrange(gene) %>% select(gene,PC1)   
 length(PC1corrsDEGS$gene)
 PC1corrsDEGS$gene
+
+top10pc1withpc2 <- corrrmat %>% 
+  focus(PC1, PC2, topcorrrs,  mirror = TRUE) %>% 
+   focus(PC1, PC2)
+head(top10pc1withpc2)
 ```
 
 
@@ -183,4 +209,5 @@ citation("corrr")
 ```{r write}
 write.csv(corrsTop10, "../data/04_corrsTop10.csv", row.names = F)
 write.csv(corrsPC1sig, "../data/04_corrsPC1sig.csv", row.names = F)
+write.csv(top10pc1withpc2, "../data/04_top10pc1withpc2.csv", row.names = F)
 ```
