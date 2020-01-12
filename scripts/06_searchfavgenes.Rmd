@@ -133,62 +133,6 @@ gh
 plot_grid(cd,gh)
 ```
 
-```{r supplfig3}
-
-cor.test(vsdDG$PC1, vsdDG$PC2, method = c("pearson"))
-cor.test(vsdCA3$PC1, vsdCA3$PC2, method = c("pearson"))
-cor.test(vsdCA1$PC1, vsdCA1$PC2, method = c("pearson"))
-
-
-icon <- png::readPNG("../figures/00_schematics/DG.png")
-icon <-  grid::rasterGrob(iconDG, interpolate=TRUE)
-
-
-pc1v2a <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$PC2) + 
-  labs(x = "PC1",  y = "PC2",  subtitle = "R2 = -0.61, p = 0.013") +
-  annotation_custom(iconDG, ymin = 3, ymax = 5, xmin = 2.5) 
-pc1v2b <- plotcorrelation(vsdCA3, vsdCA3$PC1, vsdCA3$PC2) + 
-  labs(x = "PC1",  y = "PC2",  subtitle = "R2 = -0.51, p = 0.053") + 
-  theme(axis.title.y = element_blank()) +
-  annotation_custom(iconCA3, ymin = 3, ymax = 5, xmin = 2.5) 
-pc1v2c <- plotcorrelation(vsdCA1, vsdCA1$PC1, vsdCA1$PC2) + 
-  labs(x = "PC1",  y = "PC2",  subtitle = "R2 = -0.71, p = 0.0075")  +
-  theme(axis.title.y = element_blank()) +
-  annotation_custom(iconCA1, ymin = 2, ymax = 3.25, xmin = 2.5) 
-
-pc1v2abc <- plot_grid(pc1v2a,pc1v2b,pc1v2c, nrow = 1,
-                      labels = "auto", label_size = 8)
-pc1v2abc
-
-
-
-apafig <- png::readPNG("../figures/00_schematics/APA.png")
-apafig <-  grid::rasterGrob(apafig, interpolate=F)
-
-
-dgslim <- vsdDG %>% dplyr::select(training, subfield, PC1, PC2)
-CA3slim <- vsdCA3 %>% dplyr::select(training, subfield, PC1, PC2)
-CA1slim <- vsdCA1 %>% dplyr::select(training, subfield, PC1, PC2)
-slim <- rbind(dgslim, CA3slim, CA1slim)
-
-cor.test(slim$PC1, slim$PC2, method = c("pearson"))
-
-p <- ggplot(slim, aes(x = PC1, y = PC2)) +
-   geom_point(aes(color = training)) + 
-   geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = volcano1) +
-  theme_ms() +
-   theme(legend.position = "none")  +
-  annotation_custom(apafig, ymin = 2, ymax = 4.5, xmin = 2.5) + 
-  labs(x = "PC1",  y = "PC2",  subtitle = "R2 = -0.60, p = 1.369e-05") 
-p
-
-pdf(file="../figures/supplfig3.pdf", width=2, height=2)
-plot(p)
-dev.off()
-
-```
-
 
 ## Correlate ALL genes with PC1 and PC2
 

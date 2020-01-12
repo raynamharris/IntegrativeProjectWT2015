@@ -471,6 +471,27 @@ groups differ in subsequent recall? 1-way ANOVA of groups on Rn
     ## 30         treatment  3, 30  17.69 .000
     ## 31         treatment  3, 30   0.39 .761
 
+    pca.nopre <- pca.all %>% filter(trialNum != 1)
+
+    cor.test(pca.nopre$PC1, pca.nopre$PC2, method = c("pearson"))
+
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  pca.nopre$PC1 and pca.nopre$PC2
+    ## t = -6.7414, df = 270, p-value = 9.475e-11
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.4769711 -0.2729548
+    ## sample estimates:
+    ##       cor 
+    ## -0.379568
+
+    ggplot(pca.nopre, aes(PC1, PC2, color = treatment)) +
+      geom_point()
+
+![](../figures/01_behavior/PCcorrelations-1.png)
+
 save files
 ----------
 

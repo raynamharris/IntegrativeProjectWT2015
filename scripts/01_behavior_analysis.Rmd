@@ -290,6 +290,19 @@ Q12345 <- as.data.frame(rbind(Q1,Q2,Q3,Q4,Q5, PC.APA))
 Q12345
 ```
 
+
+
+```{r PCcorrelations}
+
+pca.nopre <- pca.all %>% filter(trialNum != 1)
+
+cor.test(pca.nopre$PC1, pca.nopre$PC2, method = c("pearson"))
+
+ggplot(pca.nopre, aes(PC1, PC2, color = treatment)) +
+  geom_point()
+```
+
+
 ## save files
 
 ```{r writefiles}
