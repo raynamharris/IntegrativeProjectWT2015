@@ -87,7 +87,6 @@ allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticg
 ```
 
 ```{r icons}
-
 iconDG <- png::readPNG("../figures/00_schematics/DG.png")
 iconDG <-  grid::rasterGrob(iconDG, interpolate=TRUE)
 
@@ -97,6 +96,8 @@ iconCA3 <-  grid::rasterGrob(iconCA3, interpolate=TRUE)
 iconCA1 <- png::readPNG("../figures/00_schematics/CA1.png")
 iconCA1 <-  grid::rasterGrob(iconCA1, interpolate=TRUE)
 
+icontrainedyoked <- png::readPNG("../figures/00_schematics/figure_yokedtrained.png")
+icontrainedyoked <-  grid::rasterGrob(icontrainedyoked, interpolate=TRUE)
 
 ```
 
@@ -104,7 +105,7 @@ iconCA1 <-  grid::rasterGrob(iconCA1, interpolate=TRUE)
 
 ## correlations with PC1
 
-```{r scatterplots}
+```{r supplefig3, fig.height= 3.14, fig.width=6.69}
 printcortests <- function(mysubfield, df){
   print(mysubfield)
   print(cor.test(df$PC1, df$Arc, method = c("pearson")))
@@ -126,15 +127,38 @@ plotcorrelation <- function(df, myx, myy){
   return(p)
 }
 
-p1 <- plotcorrelation(vsdCA3, vsdCA3$PC1, vsdCA3$Arc) + 
+p1 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$PC2) + 
+  labs(x = "PC1", y = "PC2", subtitle = "r = -0.30, p = 0.327")  + 
+    annotation_custom(icontrainedyoked, ymin = 3, ymax = 4, xmin = 2.5, xmax = 7.5)
+
+
+p2 <- plotcorrelation(vsdCA3, vsdCA3$PC1, vsdCA3$Arc) + 
   labs(x = "PC1", y = "Arc", subtitle = "r = -0.30, p = 0.327")  + 
-  theme(axis.title.y = element_text(face = "italic")) +
+  theme(axis.title.y = element_text(face = "italic"),
+        legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.key.size =  unit(0.25, "cm")) +
   annotation_custom(iconCA3, ymin = 9.3, ymax = 9.7, xmin = 4.25, xmax = 7)
-p2 <- plotcorrelation(vsdCA1, vsdCA1$PC1, vsdCA1$Arc)  + 
+
+p3 <- plotcorrelation(vsdCA1, vsdCA1$PC1, vsdCA1$Arc)  + 
   labs(x = "PC1", y = "Arc", subtitle = "r = 0.20, p = 0.48") + 
   theme(axis.title.y = element_text(face = "italic")) +
-    annotation_custom(iconCA1, ymin = 10.5, ymax = 11.3, xmin = -2.6, xmax = 0)
-plot_grid(p1,p2, labels = "auto", label_size = 8)
+    annotation_custom(iconCA1, ymin = 10.5, ymax = 11.3, xmin = -2.6, xmax = 0) 
+  
+mylegend = get_legend(p2)
+p1p2p3 <- plot_grid(p1,p2 + theme(legend.position = "none"), p3, labels = "auto", label_size = 8, nrow = 1)
+
+supplfig3 <- plot_grid(p1p2p3, mylegend, nrow = 2, rel_heights = c(1,0.1))
+supplfig3
+
+pdf(file="../figures/06_favegenes/supplfig3.pdf", width=6.69, height=3.5)
+plot(supplfig3)
+dev.off()
+
+pdf(file="../figures/supplfig3.pdf", width=6.69, height=3.5)
+plot(supplfig3)
+dev.off()
+
 ```
 
 
