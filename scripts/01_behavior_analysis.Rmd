@@ -45,7 +45,7 @@ head(behavior)
 names(behavior[9:34])
 ```
 
-```{r experimentaldesign, fig.height = 2.8, fig.width = 6.69}
+```{r experimentaldesign, fig.height = 2.6, fig.width = 6.69}
 dfshocks <- behavior %>%
   dplyr::group_by(treatment, trialNum) %>%
   dplyr::summarise(m = mean(NumShock), 
@@ -59,7 +59,7 @@ numshocks <- ggplot(dfshocks,  aes(x=, trialNum, y=m, color=treatment, label = m
     geom_errorbar(aes(ymin=m-se, ymax=m+se, color=treatment), width=.1) +
     geom_line() +
     geom_point(size = 1) +
-    labs(y = "\n NumShocks") +
+    labs(y = "\n Number of shocks") +
     scale_x_continuous(name= "trial", 
                        breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                        labels = c( "P", "T1", "T2", "T3",
@@ -76,7 +76,7 @@ numshocks <- ggplot(dfshocks,  aes(x=, trialNum, y=m, color=treatment, label = m
           strip.background = element_blank()) +
   facet_wrap(~treatment, nrow = 4, labeller = treatment_labeller) +
   scale_y_continuous(breaks = c(0,10,20), limits = c(0,30)) +
-  geom_text(vjust= -1, size=2.5)
+  geom_text(vjust= -0.5, size=2.5)
 numshocks
 
 paradigm <- png::readPNG("../figures/00_schematics/figure_1a.png")
@@ -91,11 +91,11 @@ experimentaldesign <- plot_grid(paradigm, numshocks, subfields, rel_widths = c(2
 experimentaldesign
 
 
-pdf(file="../figures/01_behavior/experimentaldesign.pdf", width=6.69, height=2.8)
+pdf(file="../figures/01_behavior/experimentaldesign.pdf", width=6.69, height=2.6)
 plot(experimentaldesign)
 dev.off()
 
-pdf(file="../figures/figure_1.pdf", width=6.69, height=2.8)
+pdf(file="../figures/figure_1.pdf", width=6.69, height=2.6)
 plot(experimentaldesign)
 dev.off()
 ```

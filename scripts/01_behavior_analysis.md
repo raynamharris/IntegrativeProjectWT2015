@@ -132,7 +132,7 @@ filter by a single session to calculte the number of mice.
         geom_errorbar(aes(ymin=m-se, ymax=m+se, color=treatment), width=.1) +
         geom_line() +
         geom_point(size = 1) +
-        labs(y = "\n NumShocks") +
+        labs(y = "\n Number of shocks") +
         scale_x_continuous(name= "trial", 
                            breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
                            labels = c( "P", "T1", "T2", "T3",
@@ -149,7 +149,7 @@ filter by a single session to calculte the number of mice.
               strip.background = element_blank()) +
       facet_wrap(~treatment, nrow = 4, labeller = treatment_labeller) +
       scale_y_continuous(breaks = c(0,10,20), limits = c(0,30)) +
-      geom_text(vjust= -1, size=2.5)
+      geom_text(vjust= -0.5, size=2.5)
 
     ## Warning: The labeller API has been updated. Labellers taking `variable`and
     ## `value` arguments are now deprecated. See labellers documentation.
@@ -171,14 +171,14 @@ filter by a single session to calculte the number of mice.
 
 ![](../figures/01_behavior/experimentaldesign-2.png)
 
-    pdf(file="../figures/01_behavior/experimentaldesign.pdf", width=6.69, height=2.8)
+    pdf(file="../figures/01_behavior/experimentaldesign.pdf", width=6.69, height=2.6)
     plot(experimentaldesign)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/figure_1.pdf", width=6.69, height=2.8)
+    pdf(file="../figures/figure_1.pdf", width=6.69, height=2.6)
     plot(experimentaldesign)
     dev.off()
 
