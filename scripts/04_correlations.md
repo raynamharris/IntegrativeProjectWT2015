@@ -1,13 +1,13 @@
     library(tidyverse)
 
-    ## ── Attaching packages ──────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ──────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✔ ggplot2 3.2.1     ✔ purrr   0.3.3
     ## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
     ## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
     ## ✔ readr   1.3.1     ✔ forcats 0.4.0
 
-    ## ── Conflicts ─────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -207,23 +207,31 @@ Sample information and PC1
     ##        cor 
     ## -0.6349459
 
+    iconDG <- png::readPNG("../figures/00_schematics/DG.png")
+    iconDG <-  grid::rasterGrob(iconDG, interpolate=TRUE)
+
+    vsd$training <- factor(vsd$training, levels = levelstraining)
+
     a <- ggplot(vsd, aes(x = Arc, y = PC1)) +
-       geom_point(aes( color = treatment)) + 
+       geom_point(aes( color = training)) + 
        geom_smooth(method = "lm", color = "grey") +
-       scale_color_manual(values = treatmentcolors) +
+       scale_color_manual(values = volcano1) +
       theme_ms() +
        theme(legend.position = "none", axis.title.x = element_blank(), axis.text.x = element_blank())  +
-      labs(subtitle = "r = 0.81, p = 0.0002")
+      labs(subtitle = "r = 0.81, p = 0.0002") +
+       annotation_custom(iconDG, ymin = 2.5, ymax = 10, xmin = 7.5, xmax = 9)
     b <- ggplot(vsd, aes(x = Arc, y = PC2)) +
-       geom_point(aes( color = treatment)) + 
+       geom_point(aes( color = training)) + 
        geom_smooth(method = "lm", color = "grey") +
-       scale_color_manual(values = treatmentcolors) +
+       scale_color_manual(values = volcano1) +
       theme_ms() +
-       theme(legend.position = "none",
-             axis.title.x = element_text(face = "italic"))  +
+       theme(legend.position = "bottom",
+             axis.title.x = element_text(face = "italic"),
+             legend.title = element_blank(), 
+             legend.key.size = unit(0.25, "cm"))  +
       labs(subtitle = "r = -0.63, p = 0.009 ")
 
-    left <- plot_grid(a,b, nrow = 2, labels = c("a","b"), label_size = 8)
+    left <- plot_grid(a,b, nrow = 2, labels = c("a","b"), label_size = 8, rel_heights = c(0.45,0.55))
     left
 
 ![](../figures/04_correlations/Arc-1.png)

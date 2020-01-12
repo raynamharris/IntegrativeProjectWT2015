@@ -86,18 +86,34 @@ astrocyticgenes <- c("Aldh1a1", "Aldh1l1" ,"Aldh1l2", "Slc1a2" , "Gfap" ,
 allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes)
 ```
 
-## correlations with ARC
+```{r icons}
+
+iconDG <- png::readPNG("../figures/00_schematics/DG.png")
+iconDG <-  grid::rasterGrob(iconDG, interpolate=TRUE)
+
+iconCA3 <- png::readPNG("../figures/00_schematics/CA3.png")
+iconCA3 <-  grid::rasterGrob(iconCA3, interpolate=TRUE)
+
+iconCA1 <- png::readPNG("../figures/00_schematics/CA1.png")
+iconCA1 <-  grid::rasterGrob(iconCA1, interpolate=TRUE)
+
+
+```
+
+
+
+## correlations with PC1
 
 ```{r scatterplots}
 printcortests <- function(mysubfield, df){
   print(mysubfield)
   print(cor.test(df$PC1, df$Arc, method = c("pearson")))
-  print(cor.test(df$Fosl2, df$Arc, method = c("pearson")))
   print(cor.test(df$PC1, df$Prkcz, method = c("pearson")))
   print(cor.test(df$PC1, df$Camk2a, method = c("pearson")))
 }
 
-printcortests("DG", vsdDG)
+printcortests("CA3", vsdCA3)
+printcortests("CA1", vsdCA1)
 
 plotcorrelation <- function(df, myx, myy){
   p <- ggplot(df, aes(x = myx, y = myy)) +
@@ -110,38 +126,26 @@ plotcorrelation <- function(df, myx, myy){
   return(p)
 }
 
-p1 <- plotcorrelation(vsdDG, vsdDG$Arc, vsdDG$PC1) + labs(y = "PC1", subtitle = "R2 = 0.81, p = 1.64 × 10-4")
-p2 <- plotcorrelation(vsdDG, vsdDG$Arc, vsdDG$Fosl2)  + labs(y = "Fosl2", x = "Arc", subtitle = "R2 = 0.89, p = 4.97 × 10-6") + 
-  theme(axis.title = element_text(face = "italic"))
-
-
-cd <- plot_grid(p1,p2, nrow = 2, rel_heights = c(0.45,0.55), labels = c("c", NULL), label_size = 8)
-cd
-
-p3 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$Prkcz) + labs( y = "Prkcz",   subtitle = "R2 = -0.73, p = 0.166") + 
-  theme(axis.title.y = element_text(face = "italic"))
-p4 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$Camk2a)  + labs(x = "PC1", y = "Camk2a", subtitle = "R2 = 0.29, p = 0.279") + 
-  theme(axis.title.y = element_text(face = "italic"), 
-        legend.position = "bottom", legend.title = element_blank(),
-        legend.margin=margin(0,0,0,0),
-        legend.box.margin=margin(-8,-8,-8,-8)) 
-
-
-gh <- plot_grid(p3,p4, nrow = 2, rel_heights = c(0.45,0.55), labels = c("f", NULL), label_size = 8)
-gh
-
-plot_grid(cd,gh)
+p1 <- plotcorrelation(vsdCA3, vsdCA3$PC1, vsdCA3$Arc) + 
+  labs(x = "PC1", y = "Arc", subtitle = "r = -0.30, p = 0.327")  + 
+  theme(axis.title.y = element_text(face = "italic")) +
+  annotation_custom(iconCA3, ymin = 9.3, ymax = 9.7, xmin = 4.25, xmax = 7)
+p2 <- plotcorrelation(vsdCA1, vsdCA1$PC1, vsdCA1$Arc)  + 
+  labs(x = "PC1", y = "Arc", subtitle = "r = 0.20, p = 0.48") + 
+  theme(axis.title.y = element_text(face = "italic")) +
+    annotation_custom(iconCA1, ymin = 10.5, ymax = 11.3, xmin = -2.6, xmax = 0)
+plot_grid(p1,p2, labels = "auto", label_size = 8)
 ```
 
 
 ## Correlate ALL genes with PC1 and PC2
 
 ```{r makecorrrmat}
-# Use `tail(names(vsd),10)` to see that last genes is "ZZZ3"
+# Use `tail(names(vsd),10)` to see that last genes is "Zzz3"
 tail(names(vsdDG),10)
 
 makecorrrmatrix <- function(df){
-  forcorall <-  df %>% select(PC1:ZZZ3)
+  forcorall <-  df %>% select(PC1:Zzz3)
   corrrmat <- correlate(forcorall) 
   return(corrrmat)
 }
