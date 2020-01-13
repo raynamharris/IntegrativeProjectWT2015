@@ -261,7 +261,7 @@ correlations with PC1
 
     p1 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$PC2) + 
       labs(x = "PC1", y = "PC2", subtitle = "r = -0.61, p = 0.013")  + 
-        annotation_custom(icontrainedyoked, ymin = 3, ymax = 4, xmin = 2.5, xmax = 7.5)
+        annotation_custom(icontrainedyoked, ymin = 3, ymax = 4, xmin = 2.5, xmax = 7)
 
 
     p2 <- plotcorrelation(vsdCA3, vsdCA3$PC1, vsdCA3$Arc) + 
@@ -270,12 +270,12 @@ correlations with PC1
             legend.position = "bottom",
             legend.title = element_blank(),
             legend.key.size =  unit(0.25, "cm")) +
-      annotation_custom(iconCA3, ymin = 9.3, ymax = 9.7, xmin = 3, xmax = 7)
+      annotation_custom(iconCA3, ymin = 9.3, ymax = 9.7, xmin = 2.5, xmax = 7)
 
     p3 <- plotcorrelation(vsdCA1, vsdCA1$PC1, vsdCA1$Arc)  + 
       labs(x = "PC1", y = "Arc", subtitle = "r = 0.20, p = 0.48") + 
       theme(axis.title.y = element_text(face = "italic")) +
-        annotation_custom(iconCA1, ymin = 10.5, ymax = 11.3, xmin = -2.6, xmax = 1.5) 
+        annotation_custom(iconCA1, ymin = 10.5, ymax = 11.3, xmin = 2.5, xmax = 7) 
 
     cor.test(vsdDG$PC1, vsdDG$Igf2, method = c("pearson"))
 
@@ -354,14 +354,14 @@ correlations with PC1
 
 ![](../figures/06_favegenes/supplefig3-2.png)
 
-    pdf(file="../figures/06_favegenes/supplfig3.pdf", width=6.69, height=6.69)
+    pdf(file="../figures/06_favegenes/supplfig3.pdf", width=6.69, height=5.5)
     plot(supplfig3)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/supplfig3.pdf", width=6.69, height=6.69)
+    pdf(file="../figures/supplfig3.pdf", width=6.69, height=5.5)
     plot(supplfig3)
     dev.off()
 
