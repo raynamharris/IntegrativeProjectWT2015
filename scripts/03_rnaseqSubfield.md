@@ -426,6 +426,7 @@ Volcano plots
 ![](../figures/03_rnaseqSubfield/volcanos-1.png)
 
     comparisons <- png::readPNG("../figures/00_schematics/figure_DEGcomparisons.png")
+
     comparisons <- ggdraw() +  draw_image(comparisons, scale = 1)
 
     circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")

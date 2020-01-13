@@ -143,6 +143,7 @@ volcanos <- plot_grid(p1 + theme(legend.position = "none") + labs(y = "DG \n -lo
 volcanos
 
 comparisons <- png::readPNG("../figures/00_schematics/figure_DEGcomparisons.png")
+
 comparisons <- ggdraw() +  draw_image(comparisons, scale = 1)
 
 circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
