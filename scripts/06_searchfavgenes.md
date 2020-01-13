@@ -276,23 +276,92 @@ correlations with PC1
       labs(x = "PC1", y = "Arc", subtitle = "r = 0.20, p = 0.48") + 
       theme(axis.title.y = element_text(face = "italic")) +
         annotation_custom(iconCA1, ymin = 10.5, ymax = 11.3, xmin = -2.6, xmax = 1.5) 
-      
+
+    cor.test(vsdDG$PC1, vsdDG$Igf2, method = c("pearson"))
+
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  vsdDG$PC1 and vsdDG$Igf2
+    ## t = 1.5246, df = 14, p-value = 0.1496
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.1455966  0.7354766
+    ## sample estimates:
+    ##       cor 
+    ## 0.3773427
+
+    cor.test(vsdCA3$PC1, vsdCA3$Igf2, method = c("pearson"))
+
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  vsdCA3$PC1 and vsdCA3$Igf2
+    ## t = 1.846, df = 11, p-value = 0.09195
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.08831082  0.81810116
+    ## sample estimates:
+    ##       cor 
+    ## 0.4863387
+
+    cor.test(vsdCA1$PC1, vsdCA1$Igf2, method = c("pearson"))
+
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  vsdCA1$PC1 and vsdCA1$Igf2
+    ## t = 2.5589, df = 13, p-value = 0.02379
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  0.09453006 0.84153161
+    ## sample estimates:
+    ##       cor 
+    ## 0.5787666
+
+    p4 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$Igf2) + 
+      labs(x = "PC1", y = "Igf2", subtitle = "r = 0.38, p = 0.150")  + 
+      theme(axis.title.y = element_text(face = "italic"),
+            legend.title = element_blank(),
+            legend.key.size =  unit(0.25, "cm")) +
+      annotation_custom(iconDG, ymin = 5, ymax = 5.6, xmin = 2.5, xmax = 7)
+
+
+    p5 <- plotcorrelation(vsdCA3, vsdCA3$PC1, vsdCA3$Igf2) + 
+      labs(x = "PC1", y = "Igf2", subtitle = "r = 0.48, p = 0.092")  + 
+      theme(axis.title.y = element_text(face = "italic"),
+            legend.title = element_blank(),
+            legend.key.size =  unit(0.25, "cm")) +
+      annotation_custom(iconCA3, ymin = 5, ymax = 7, xmin = 2.5, xmax = 7)
+
+    p6 <- plotcorrelation(vsdCA1, vsdCA1$PC1, vsdCA1$Igf2)  + 
+      labs(x = "PC1", y = "Igf2", subtitle = "r = 0.58, p = 0.024") + 
+      theme(axis.title.y = element_text(face = "italic")) +
+        annotation_custom(iconCA1, ymin = 6, ymax = 6.3, xmin = 2.5, xmax = 7) 
+
+    plot_grid(p4,p5,p6, nrow = 1)
+
+![](../figures/06_favegenes/supplefig3-1.png)
+
     mylegend = get_legend(p2)
-    p1p2p3 <- plot_grid(p1,p2 + theme(legend.position = "none"), p3, labels = "auto", label_size = 8, nrow = 1)
+
+    p1p2p3 <- plot_grid(p1,p2 + theme(legend.position = "none"), p3, 
+                        p4,p5,p6,
+                        labels = "auto", label_size = 8, nrow = 2)
 
     supplfig3 <- plot_grid(p1p2p3, mylegend, nrow = 2, rel_heights = c(1,0.1))
     supplfig3
 
-![](../figures/06_favegenes/supplefig3-1.png)
+![](../figures/06_favegenes/supplefig3-2.png)
 
-    pdf(file="../figures/06_favegenes/supplfig3.pdf", width=6.69, height=3.5)
+    pdf(file="../figures/06_favegenes/supplfig3.pdf", width=6.69, height=6.69)
     plot(supplfig3)
     dev.off()
 
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/supplfig3.pdf", width=6.69, height=3.5)
+    pdf(file="../figures/supplfig3.pdf", width=6.69, height=6.69)
     plot(supplfig3)
     dev.off()
 
