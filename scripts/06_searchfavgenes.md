@@ -412,9 +412,7 @@ Candidate gene
     ## Correlation method: 'pearson'
     ## Missing treated using: 'pairwise.complete.obs'
 
-    plotcorrrs2 <- function(corrs, whichsubfield, myPC1label, myPC2label, mylabels){
-      
-      favgenes <- c(classicmemgenes)
+    plotcorrrs2 <- function(favgenes, corrs, whichsubfield, myPC1label, myPC2label, mylabels){
       
       df <- corrs %>% 
         focus(PC1, PC2, favgenes,  mirror = TRUE)  %>% 
@@ -469,23 +467,23 @@ Candidate gene
       p123 <- plot_grid(p1, p2, p3,  
                        nrow = 1, labels = mylabels, label_size = 8, rel_widths = c(0.9,0.8,1.5))
       
-      filename <- paste("../data/06_", whichsubfield, "_candidatecorrelations.csv", sep = "")
+      #filename <- paste("../data/06_", whichsubfield, "_candidatecorrelations.csv", sep = "")
       
-      write.csv(df, filename)
+      #write.csv(df, filename)
 
       return(p123)
       
     }
 
-    p4 <- plotcorrrs2(corrrDG, "DG", NULL, NULL, c("a", "b", "c"))
+    p4 <- plotcorrrs2(classicmemgenes, corrrDG, "DG", NULL, NULL, c("a", "b", "c"))
 
     ## Warning: Removed 9 rows containing missing values (geom_text).
 
-    p5 <- plotcorrrs2(corrrCA3, "CA3", NULL, NULL, c("d", "e", "f"))
+    p5 <- plotcorrrs2(classicmemgenes, corrrCA3, "CA3", NULL, NULL, c("d", "e", "f"))
 
     ## Warning: Removed 9 rows containing missing values (geom_text).
 
-    p6 <- plotcorrrs2(corrrCA1, "CA1", "Correlation to PC1 \n (avoidance estimate)",
+    p6 <- plotcorrrs2(classicmemgenes, corrrCA1, "CA1", "Correlation to PC1 \n (avoidance estimate)",
                       "Correlation to PC2 \n (activity estimate)",
                       c("g", "h", "i"))
 
@@ -499,9 +497,9 @@ Candidate gene
     p456circuit <- plot_grid(circuit, p456, nrow = 1, rel_widths = c(0.1,1))
     p456circuit
 
-![](../figures/06_favegenes/candidategenes-1.png)
+![](../figures/06_favegenes/classicmemgenes-1.png)
 
-    pdf(file="../figures/06_favegenes/candidategenes.pdf", width=6.69, height=6)
+    pdf(file="../figures/06_favegenes/classicmemgenes.pdf", width=6.69, height=6)
     plot(p456circuit)    
     dev.off()
 
@@ -510,6 +508,43 @@ Candidate gene
 
     pdf(file="../figures/figure_4.pdf", width=6.69, height=6)
     plot(p456circuit)    
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    p7 <- plotcorrrs2(astrocyticgenes, corrrDG, "DG", NULL, NULL, c("a", "b", "c"))
+
+    ## Warning: Removed 9 rows containing missing values (geom_text).
+
+    p8 <- plotcorrrs2(astrocyticgenes, corrrCA3, "CA3", NULL, NULL, c("d", "e", "f"))
+
+    ## Warning: Removed 2 rows containing missing values (position_stack).
+
+    ## Warning: Removed 9 rows containing missing values (geom_text).
+
+    p9 <- plotcorrrs2(astrocyticgenes, corrrCA1, "CA1", "Correlation to PC1 \n (avoidance estimate)",
+                      "Correlation to PC2 \n (activity estimate)",
+                      c("g", "h", "i"))
+
+    ## Warning: Removed 9 rows containing missing values (geom_text).
+
+    p789 <- plot_grid(p7,p8,p9, nrow = 3)
+
+    p789circuit <- plot_grid(circuit, p789, nrow = 1, rel_widths = c(0.1,1))
+    p789circuit
+
+![](../figures/06_favegenes/astrocyticgenes-1.png)
+
+    pdf(file="../figures/06_favegenes/astrocyticgenes.pdf", width=6.69, height=6)
+    plot(p789circuit)    
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    pdf(file="../figures/supplfig4.pdf", width=6.69, height=6)
+    plot(p789circuit)    
     dev.off()
 
     ## quartz_off_screen 

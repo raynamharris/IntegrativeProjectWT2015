@@ -78,8 +78,21 @@ GO_DEGsSanesLichtman <- full_join(GOtermsDEGs, GOtermssanesLichtman, by = "GO") 
   rename("Differentially expressed in DG" = genes.x,
          "Molecules associated with LTP"  = genes.y)
 kable(GO_DEGsSanesLichtman)
-```
 
+```
+## DEGs and Sanes and top 10 memory genes
+
+
+```{r}
+gene <- c("Camk2a" ,  "Gria2",  "Igf2" , "Nsf" , "Pick1",
+                        "Prkcb" ,  "Prkci",  "Prkcz", "Wwc1" )
+gene <- as.data.frame(gene)
+gene$classicmemgene <- gene$gene
+
+GOtermsDEGs
+candidategenes <- left_join(gene, GOterms) %>% arrange(GO)
+candidategenes
+```
 
 ## PC1 correlations
 
