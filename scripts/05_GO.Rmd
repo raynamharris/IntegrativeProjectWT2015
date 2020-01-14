@@ -29,7 +29,7 @@ GO_learningormemory$GO <- "4. Learning or Memory (GO:0007611)"
 
 GOterms <- rbind(GO_learningormemory, GO_response, GO_translation, GO_synapse)
 GOterms <- GOterms %>%
-  dplyr::mutate(gene = toupper(MGI.Gene.Marker.ID)) %>% 
+  dplyr::mutate(gene = str_to_title(MGI.Gene.Marker.ID)) %>% 
   dplyr::select(gene, GO) %>% 
   dplyr::distinct(gene, GO) %>% 
  group_by(gene) 
@@ -42,7 +42,7 @@ GOterms
 
 ```{r}
 DGDEGs <- read_csv("../data/03_DG_DEGs_yokedtrained.csv") %>% filter(direction == "trained")
-DGDEGs$gene <- toupper(DGDEGs$gene)
+DGDEGs$gene <- str_to_title(DGDEGs$gene)
 DGDEGs$gene
 
 GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
@@ -50,13 +50,16 @@ GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
   dplyr::select(gene, GO) %>% 
   group_by(GO) %>%
   summarize(genes = str_c(gene, collapse = ", "))
+head(GOtermsDEGs)
 ```
 
 
 ## sanes
 
 ```{r}
-sanesLichtman <- read_csv("../data/05_sanesLichtman.csv")  %>% rename(gene = genes)
+sanesLichtman <- read_csv("../data/05_sanesLichtman.csv")  %>% 
+  rename(gene = genes) %>%
+  dplyr::mutate(gene = str_to_title(gene))
 sanesLichtman
 
 GOtermssanesLichtman <- inner_join(GOterms, sanesLichtman) %>%
@@ -94,10 +97,16 @@ BP <- read_csv("../data/05_GO_PC1enrichmentBP.csv", n_max = 5) %>% mutate(Domain
 CC <- read_csv("../data/05_GO_PC1enrichmentCC.csv", n_max = 5) %>% mutate(Domain = "CC") 
 MF <- read_csv("../data/05_GO_PC1enrichmentMF.csv", n_max = 5) %>% mutate(Domain = "MF") 
 
-GO_PC1 <- rbind(BP, CC, MF) %>% select(Domain, `Functional Category`, `Total genes`, `Genes in list`, Genes)
+GO_PC1 <- rbind(BP, CC, MF) %>% 
+  select(Domain, `Functional Category`, `Total genes`, `Genes in list`, Genes) %>%
+  rename(gene = Genes) %>%
+  dplyr::mutate(gene = str_to_title(gene))
 
 # alphabetize
-GO_PC1$Genes <- GO_PC1$Genes %>% str_split(., ' ') %>% lapply(., 'sort') %>%  lapply(., 'paste', collapse=' ') %>% unlist(.)
+GO_PC1$gene <- GO_PC1$gene %>% str_split(., ' ') %>% 
+  lapply(., 'sort') %>%  
+  lapply(., 'paste', collapse=' ') %>% 
+  unlist(.)
 
 kable(GO_PC1) 
 ```
