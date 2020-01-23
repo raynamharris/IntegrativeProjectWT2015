@@ -4,7 +4,7 @@ output: md_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.path = '../figures/06_favegenes/', cache = T, cache.lazy = F)
+knitr::opts_chunk$set(echo = TRUE, fig.path = '../figures/06_candidates/', cache = T, cache.lazy = F)
 ```
 
 ```{r packages}
@@ -164,7 +164,7 @@ p1p2p3 <- plot_grid(p1g,p2 + theme(legend.position = "none"), p3,
 supplfig3 <- plot_grid(p1p2p3, mylegend, nrow = 2, rel_heights = c(1,0.1))
 supplfig3
 
-pdf(file="../figures/06_favegenes/supplfig3.pdf", width=6.69, height=5.5)
+pdf(file="../figures/06_candidates/supplfig3.pdf", width=6.69, height=5.5)
 plot(supplfig3)
 dev.off()
 
@@ -280,7 +280,7 @@ circuit <- ggdraw() +  draw_image(circuit, scale = 1)
 p456circuit <- plot_grid(circuit, p456, nrow = 1, rel_widths = c(0.1,1))
 p456circuit
 
-pdf(file="../figures/06_favegenes/classicmemgenes.pdf", width=6.69, height=6)
+pdf(file="../figures/06_candidates/classicmemgenes.pdf", width=6.69, height=6)
 plot(p456circuit)    
 dev.off()
 
@@ -303,7 +303,7 @@ p789 <- plot_grid(p7,p8,p9, nrow = 3, rel_heights = c(1,1,1.2))
 p789circuit <- plot_grid(circuit, p789, nrow = 1, rel_widths = c(0.1,1))
 p789circuit
 
-pdf(file="../figures/06_favegenes/astrocyticgenes.pdf", width=6.69, height=6)
+pdf(file="../figures/06_candidates/astrocyticgenes.pdf", width=6.69, height=6)
 plot(p789circuit)    
 dev.off()
 

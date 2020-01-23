@@ -269,13 +269,13 @@ correlations with PC1
       labs(x = "PC1", y = "PC2") 
     inset
 
-![](../figures/06_favegenes/supplefig3-1.png)
+![](../figures/06_candidates/supplefig3-1.png)
 
     g2 = ggplotGrob(inset)
     p1g <- p1 + annotation_custom(grob = g2, xmin=1.5, xmax=7.5, ymin=7.25, ymax=9.25)
     p1g
 
-![](../figures/06_favegenes/supplefig3-2.png)
+![](../figures/06_candidates/supplefig3-2.png)
 
     p2 <- plotcorrelation(vsdCA3, vsdCA3$PC1, vsdCA3$Arc) + 
       labs(x = "PC1", y = "Arc", subtitle = "r = -0.30, p = 0.327")  + 
@@ -361,9 +361,9 @@ correlations with PC1
     supplfig3 <- plot_grid(p1p2p3, mylegend, nrow = 2, rel_heights = c(1,0.1))
     supplfig3
 
-![](../figures/06_favegenes/supplefig3-3.png)
+![](../figures/06_candidates/supplefig3-3.png)
 
-    pdf(file="../figures/06_favegenes/supplfig3.pdf", width=6.69, height=5.5)
+    pdf(file="../figures/06_candidates/supplfig3.pdf", width=6.69, height=5.5)
     plot(supplfig3)
     dev.off()
 
@@ -491,9 +491,9 @@ Candidate gene
     p456circuit <- plot_grid(circuit, p456, nrow = 1, rel_widths = c(0.1,1))
     p456circuit
 
-![](../figures/06_favegenes/classicmemgenes-1.png)
+![](../figures/06_candidates/classicmemgenes-1.png)
 
-    pdf(file="../figures/06_favegenes/classicmemgenes.pdf", width=6.69, height=6)
+    pdf(file="../figures/06_candidates/classicmemgenes.pdf", width=6.69, height=6)
     plot(p456circuit)    
     dev.off()
 
@@ -529,9 +529,9 @@ Candidate gene
     p789circuit <- plot_grid(circuit, p789, nrow = 1, rel_widths = c(0.1,1))
     p789circuit
 
-![](../figures/06_favegenes/astrocyticgenes-1.png)
+![](../figures/06_candidates/astrocyticgenes-1.png)
 
-    pdf(file="../figures/06_favegenes/astrocyticgenes.pdf", width=6.69, height=6)
+    pdf(file="../figures/06_candidates/astrocyticgenes.pdf", width=6.69, height=6)
     plot(p789circuit)    
     dev.off()
 
@@ -583,41 +583,41 @@ correlations with p-values
     DGcorrswithpvalue <- getcandidategenecorrelations(vsdDG, allcandidates, "DG")
 
     ##        row  column        cor            p         padj
-    ## 1    Pick1   Lamc1  0.9009589 1.922347e-06 0.0004458499
-    ## 2     Tnxb Aldh1l1 -0.8939859 3.036534e-06 0.0004458499
-    ## 3    Prkci    Tnxb  0.8884341 4.274995e-06 0.0004458499
-    ## 4   Slc1a2    Aqp4  0.8877482 4.454013e-06 0.0004458499
-    ## 5  Aldh1a1    Gjb6  0.8874325 4.538507e-06 0.0004458499
-    ## 6    Prkci Aldh1l1 -0.8865977 4.768448e-06 0.0004458499
-    ## 7    Prkci   Rock2  0.8819981 6.219411e-06 0.0004984414
-    ## 8  Aldh1a1   Aldoc  0.8757261 8.783571e-06 0.0006159479
-    ## 9     Gfap    Gjb6  0.8680360 1.309062e-05 0.0008159821
-    ## 10  Camk2a  Slc1a2  0.8489599 3.194234e-05 0.0017919651
+    ## 1     Mtor   Rock2  0.9013388 1.873260e-06 0.0004291604
+    ## 2    Pick1   Lamc1  0.9009589 1.922347e-06 0.0004291604
+    ## 3     Tnxb Aldh1l1 -0.8939859 3.036534e-06 0.0004291604
+    ## 4    Prkci    Tnxb  0.8884341 4.274995e-06 0.0004291604
+    ## 5   Slc1a2    Aqp4  0.8877482 4.454013e-06 0.0004291604
+    ## 6  Aldh1a1    Gjb6  0.8874325 4.538507e-06 0.0004291604
+    ## 7    Prkci Aldh1l1 -0.8865977 4.768448e-06 0.0004291604
+    ## 8    Prkci   Rock2  0.8819981 6.219411e-06 0.0004897786
+    ## 9  Aldh1a1   Aldoc  0.8757261 8.783571e-06 0.0006148500
+    ## 10    Gfap    Gjb6  0.8680360 1.309062e-05 0.0008247091
 
     CA3corrswithpvalue <- getcandidategenecorrelations(vsdCA3, allcandidates, "CA3")
 
     ##        row  column        cor            p         padj
-    ## 1     Gjb6   Aldoc  0.9356891 2.622829e-06 0.0006724521
-    ## 2  Aldh1a1 Aldh1l1  0.9324362 3.418801e-06 0.0006724521
-    ## 3     Gfap   Fgfr3  0.9317971 3.596001e-06 0.0006724521
-    ## 4     Gfap   Aldoc  0.9180910 9.584218e-06 0.0013441866
-    ## 5    Fgfr3    Aqp4  0.8983028 3.030198e-05 0.0028908321
-    ## 6    Ptprs    Gjb6 -0.8979158 3.091799e-05 0.0028908321
-    ## 7   Slc1a2   Fgfr3  0.8768696 8.312999e-05 0.0064093533
-    ## 8      Nsf    Gfap -0.8740583 9.359244e-05 0.0064093533
-    ## 9      Nsf Aldh1l1 -0.8713203 1.047687e-04 0.0064093533
-    ## 10  Slc1a2    Gfap  0.8691755 1.142487e-04 0.0064093533
+    ## 1     Gjb6   Aldoc  0.9356891 2.622829e-06 0.0007551601
+    ## 2  Aldh1a1 Aldh1l1  0.9324362 3.418801e-06 0.0007551601
+    ## 3     Gfap   Fgfr3  0.9317971 3.596001e-06 0.0007551601
+    ## 4     Gfap   Aldoc  0.9180910 9.584218e-06 0.0015095143
+    ## 5    Fgfr3    Aqp4  0.8983028 3.030198e-05 0.0032463890
+    ## 6    Ptprs    Gjb6 -0.8979158 3.091799e-05 0.0032463890
+    ## 7   Slc1a2   Fgfr3  0.8768696 8.312999e-05 0.0071976695
+    ## 8      Nsf    Gfap -0.8740583 9.359244e-05 0.0071976695
+    ## 9      Nsf Aldh1l1 -0.8713203 1.047687e-04 0.0071976695
+    ## 10  Slc1a2    Gfap  0.8691755 1.142487e-04 0.0071976695
 
     CA1corrswithpvalue <- getcandidategenecorrelations(vsdCA1, allcandidates, "CA1")
 
     ##        row column        cor            p       padj
-    ## 1      Nsf   Wwc1 -0.8555629 4.756473e-05 0.01595307
-    ## 2    Prkcb    Tnr  0.8501021 5.970954e-05 0.01595307
-    ## 3    Limk1  Lamb1  0.8332957 1.141492e-04 0.01595307
-    ## 4    Prkcb  Rock2  0.8312027 1.231329e-04 0.01595307
-    ## 5    Lamc1   Egfr  0.8248231 1.541753e-04 0.01595307
-    ## 6    Limk1   Aqp4  0.8175267 1.972814e-04 0.01595307
-    ## 7   Slc1a2  Fgfr3  0.8172553 1.990579e-04 0.01595307
-    ## 8    Pick1    Pnn -0.7964702 3.800031e-04 0.02664772
-    ## 9  Aldh1a1  Aldoc  0.7811893 5.846593e-04 0.03644376
-    ## 10   Gria2  Limk1 -0.7712003 7.613469e-04 0.04271156
+    ## 1      Nsf   Wwc1 -0.8555629 4.756473e-05 0.01791521
+    ## 2    Prkcb    Tnr  0.8501021 5.970954e-05 0.01791521
+    ## 3    Limk1  Lamb1  0.8332957 1.141492e-04 0.01791521
+    ## 4    Prkcb  Rock2  0.8312027 1.231329e-04 0.01791521
+    ## 5    Lamc1   Egfr  0.8248231 1.541753e-04 0.01791521
+    ## 6    Limk1   Aqp4  0.8175267 1.972814e-04 0.01791521
+    ## 7   Slc1a2  Fgfr3  0.8172553 1.990579e-04 0.01791521
+    ## 8    Pick1    Pnn -0.7964702 3.800031e-04 0.02992524
+    ## 9  Aldh1a1  Aldoc  0.7811893 5.846593e-04 0.04092615
+    ## 10   Gria2  Limk1 -0.7712003 7.613469e-04 0.04796486
