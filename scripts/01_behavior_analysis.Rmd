@@ -116,7 +116,7 @@ dfb <- behavior %>%
   dplyr::mutate(minutes = Time1stEntr/60) %>%
   dplyr::summarise(m = mean(minutes), 
                    se = sd(minutes)/sqrt(length(minutes))) %>%
-  dplyr::mutate(measure = "Time1stEntr.min")
+  dplyr::mutate(measure = "Time1stEntr (min)")
 
 dfc <- behavior %>%
   dplyr::group_by(treatment, trialNum) %>%
@@ -128,7 +128,7 @@ avoidancedf <- rbind(dfa, dfb,dfc)
 head(avoidancedf)
 
 a <- meansdplots(dfa, "NumEntrances" ,  c(0,10,20,30), c(0, 35))
-b <- meansdplots(dfb, "Time1stEntr.min",  c(0,2,4,6,8), c(0, 8))
+b <- meansdplots(dfb, "Time1stEntr (min)",  c(0,2,4,6,8), c(0, 8))
 c <- meansdplots(dfc, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
 
 a
@@ -183,7 +183,7 @@ d <- ggplot(pca.all, aes(x = PC1, y = PC2, color = treatment, fill = treatment))
 d
 
 # get contributions
-df <- behavior %>% select(TotalPath.Arena.:AnnularKurtosis)
+df <- behavior %>% select(TotalPath:AnnularKurtosis)
 res.pca <- PCA(df,  graph = FALSE)
 # Visualize eigenvalues/variances
 fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))

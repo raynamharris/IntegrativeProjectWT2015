@@ -49,60 +49,53 @@ filter by a single session to calculte the number of mice.
     ## 4 15140A   1 conflict.trained  trained     T3        4         On
     ## 5 15140A   2 conflict.trained  trained Retest        5         On
     ## 6 15140A   2 conflict.trained  trained  T4_C1        6         On
-    ##   PairedPartner TotalPath.Arena. SpeedArena.cm.s sd.Speed.Arena.
-    ## 1        15140B            22.68            3.78            3.07
-    ## 2        15140B            19.36            3.23            2.78
-    ## 3        15140B            15.01            2.50            2.68
-    ## 4        15140B            14.39            2.40            2.78
-    ## 5        15140B            14.04            2.34            3.11
-    ## 6        15140B            12.50            2.08            2.52
-    ##   Linearity.Arena. NumEntrances Time1stEntr Path1stEntr Speed1stEntr.cm.s.
-    ## 1           0.4790           28       24.63        1.09               4.56
-    ## 2           0.4016            6        9.83        0.62              16.42
-    ## 3           0.3170            2      118.37        3.17               2.31
-    ## 4           0.3122            3      256.53        7.48               4.26
-    ## 5           0.2895            1      432.07       10.56               9.38
-    ## 6           0.3107           10        0.87        0.00              -1.00
-    ##   Entr.Dist.1.m. NumShock MaxTimeAvoid MaxPathAvoid Time2ndEntr
-    ## 1           1.12        0           53         2.15       59.97
-    ## 2           0.30        7          327        11.70       18.30
-    ## 3           0.11        3          312         4.98      287.63
-    ## 4           0.17        3          256         7.48      447.80
-    ## 5           0.06        1          432        10.56      599.97
-    ## 6           0.56       13          447         1.82       25.90
-    ##   Path2ndEntr Speed2ndEntr TimeShockZone pTimeShockZone pTimeCCW pTimeOPP
-    ## 1        2.59         7.85        94.665         0.2277   0.2583   0.1788
-    ## 2        1.23         6.53         8.433         0.0211   0.6961   0.2049
-    ## 3        8.54         3.73         3.366         0.0092   0.6413   0.3245
-    ## 4       12.74         1.56         2.498         0.0069   0.5790   0.4018
-    ## 5       15.66        -1.00         1.067         0.0026   0.2945   0.6300
-    ## 6        0.75        16.19        17.735         0.0339   0.0195   0.1561
-    ##   pTimeCW RayleigLength RayleigAngle Min50.RngLoBin AnnularSkewnes
-    ## 1  0.3352          0.11       330.67             60           0.88
-    ## 2  0.0779          0.65       112.66            130           1.81
-    ## 3  0.0250          0.78       124.87            150           1.87
-    ## 4  0.0123          0.80       128.39            150           2.84
-    ## 5  0.0729          0.72       159.36            170           2.42
-    ## 6  0.7905          0.67       257.90            280           0.98
-    ##   AnnularKurtosis ShockPerEntrance
-    ## 1            3.13         0.000000
-    ## 2            6.70         1.166667
-    ## 3            8.91         1.500000
-    ## 4           12.51         1.000000
-    ## 5           11.83         1.000000
-    ## 6            4.65         1.300000
+    ##   PairedPartner TotalPath Speed sdSpeed Linearity NumEntrances Time1stEntr
+    ## 1        15140B     22.68  3.78    3.07    0.4790           28       24.63
+    ## 2        15140B     19.36  3.23    2.78    0.4016            6        9.83
+    ## 3        15140B     15.01  2.50    2.68    0.3170            2      118.37
+    ## 4        15140B     14.39  2.40    2.78    0.3122            3      256.53
+    ## 5        15140B     14.04  2.34    3.11    0.2895            1      432.07
+    ## 6        15140B     12.50  2.08    2.52    0.3107           10        0.87
+    ##   Path1stEntr Speed1stEntr EntrPerDist NumShock MaxTimeAvoid MaxPathAvoid
+    ## 1        1.09         4.56        1.12        0           53         2.15
+    ## 2        0.62        16.42        0.30        7          327        11.70
+    ## 3        3.17         2.31        0.11        3          312         4.98
+    ## 4        7.48         4.26        0.17        3          256         7.48
+    ## 5       10.56         9.38        0.06        1          432        10.56
+    ## 6        0.00        -1.00        0.56       13          447         1.82
+    ##   Time2ndEntr Path2ndEntr Speed2ndEntr TimeShockZone pTimeShockZone
+    ## 1       59.97        2.59         7.85        94.665         0.2277
+    ## 2       18.30        1.23         6.53         8.433         0.0211
+    ## 3      287.63        8.54         3.73         3.366         0.0092
+    ## 4      447.80       12.74         1.56         2.498         0.0069
+    ## 5      599.97       15.66        -1.00         1.067         0.0026
+    ## 6       25.90        0.75        16.19        17.735         0.0339
+    ##   pTimeCCW pTimeOPP pTimeCW RayleigLength RayleigAngle Min50.RngLoBin
+    ## 1   0.2583   0.1788  0.3352          0.11       330.67             60
+    ## 2   0.6961   0.2049  0.0779          0.65       112.66            130
+    ## 3   0.6413   0.3245  0.0250          0.78       124.87            150
+    ## 4   0.5790   0.4018  0.0123          0.80       128.39            150
+    ## 5   0.2945   0.6300  0.0729          0.72       159.36            170
+    ## 6   0.0195   0.1561  0.7905          0.67       257.90            280
+    ##   AnnularSkewnes AnnularKurtosis ShockPerEntrance
+    ## 1           0.88            3.13         0.000000
+    ## 2           1.81            6.70         1.166667
+    ## 3           1.87            8.91         1.500000
+    ## 4           2.84           12.51         1.000000
+    ## 5           2.42           11.83         1.000000
+    ## 6           0.98            4.65         1.300000
 
     names(behavior[9:34])
 
-    ##  [1] "TotalPath.Arena."   "SpeedArena.cm.s"    "sd.Speed.Arena."   
-    ##  [4] "Linearity.Arena."   "NumEntrances"       "Time1stEntr"       
-    ##  [7] "Path1stEntr"        "Speed1stEntr.cm.s." "Entr.Dist.1.m."    
-    ## [10] "NumShock"           "MaxTimeAvoid"       "MaxPathAvoid"      
-    ## [13] "Time2ndEntr"        "Path2ndEntr"        "Speed2ndEntr"      
-    ## [16] "TimeShockZone"      "pTimeShockZone"     "pTimeCCW"          
-    ## [19] "pTimeOPP"           "pTimeCW"            "RayleigLength"     
-    ## [22] "RayleigAngle"       "Min50.RngLoBin"     "AnnularSkewnes"    
-    ## [25] "AnnularKurtosis"    "ShockPerEntrance"
+    ##  [1] "TotalPath"        "Speed"            "sdSpeed"         
+    ##  [4] "Linearity"        "NumEntrances"     "Time1stEntr"     
+    ##  [7] "Path1stEntr"      "Speed1stEntr"     "EntrPerDist"     
+    ## [10] "NumShock"         "MaxTimeAvoid"     "MaxPathAvoid"    
+    ## [13] "Time2ndEntr"      "Path2ndEntr"      "Speed2ndEntr"    
+    ## [16] "TimeShockZone"    "pTimeShockZone"   "pTimeCCW"        
+    ## [19] "pTimeOPP"         "pTimeCW"          "RayleigLength"   
+    ## [22] "RayleigAngle"     "Min50.RngLoBin"   "AnnularSkewnes"  
+    ## [25] "AnnularKurtosis"  "ShockPerEntrance"
 
     dfshocks <- behavior %>%
       dplyr::group_by(treatment, trialNum) %>%
@@ -203,7 +196,7 @@ titles, y labels and limits.
       dplyr::mutate(minutes = Time1stEntr/60) %>%
       dplyr::summarise(m = mean(minutes), 
                        se = sd(minutes)/sqrt(length(minutes))) %>%
-      dplyr::mutate(measure = "Time1stEntr.min")
+      dplyr::mutate(measure = "Time1stEntr (min)")
 
     dfc <- behavior %>%
       dplyr::group_by(treatment, trialNum) %>%
@@ -226,7 +219,7 @@ titles, y labels and limits.
     ## 6 standard.yoked        6  15   1.56  NumEntrances
 
     a <- meansdplots(dfa, "NumEntrances" ,  c(0,10,20,30), c(0, 35))
-    b <- meansdplots(dfb, "Time1stEntr.min",  c(0,2,4,6,8), c(0, 8))
+    b <- meansdplots(dfb, "Time1stEntr (min)",  c(0,2,4,6,8), c(0, 8))
     c <- meansdplots(dfc, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
 
     a
@@ -287,7 +280,7 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 ![](../figures/01_behavior/PCA-1.png)
 
     # get contributions
-    df <- behavior %>% select(TotalPath.Arena.:AnnularKurtosis)
+    df <- behavior %>% select(TotalPath:AnnularKurtosis)
     res.pca <- PCA(df,  graph = FALSE)
     # Visualize eigenvalues/variances
     fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 50))

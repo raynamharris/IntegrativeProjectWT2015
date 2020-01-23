@@ -31,7 +31,7 @@ meansdplots <- function(df, myylab, ybreaks, ylims){
 
 makepcadf <- function(data){
   Z <- data %>%
-    select(TotalPath.Arena.:AnnularKurtosis) # columns 9 to 47
+    select(TotalPath:AnnularKurtosis) # columns 9 to 47
   Z <- Z[,apply(Z, 2, var, na.rm=TRUE) != 0]
   pc = prcomp(Z, scale.=TRUE)
   loadings <- pc$rotation
