@@ -410,9 +410,9 @@ Volcano plots
                           p5 + theme(legend.position = "none"), 
                           p6 + theme(legend.position = "none"), 
                           
-                          p7  + labs( y = "CA1 \n -log10(p-value)"), 
-                          p8, 
-                          p9, 
+                          p7  + labs( y = "CA1 \n -log10(p-value)", x = "log fold change"), 
+                          p8 + labs(x = "log fold change"), 
+                          p9 + labs(x = "log fold change"), 
                           
                           nrow = 3, 
                           rel_heights =  c(1,1,1.25) ,
