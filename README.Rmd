@@ -101,7 +101,11 @@ kable(table3)
 
 ### Figure 5: Very few candidate memory genes are correlated with behavior or with each other in hippocampal subfields
 
-![](./figures/06_candidates/candidategenes-1.png)
+![](./figures/06_candidates/classicmemgenes-1.png)
+
+
+
+
 
 ### Figure 6: Many astrocytic genes are are positively correlated with behavioral principal component 1 or with each other in hippocampal subfields.
 
