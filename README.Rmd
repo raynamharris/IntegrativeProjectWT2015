@@ -45,9 +45,11 @@ This project is organized into five main subdirectories:
 	  - [scripts/03_rnaseqSubfield](scripts/03_rnaseqSubfield.md): analyzing the data for each hippocampal subfield separately
 	  - [scripts/04_correlations.Rmd](scripts/04_correlations.md): correlations between genes and beahvior
 	  - [scripts/05_GO](scripts/05_GO.md) an analysis of gene ontology. 
+	  - [scripts/06_candidates](scripts/05_candidates.md) an analysis of candidate memory genes. 
 	  
 
-![](./figures/00_schematics/figure_workflow.png)	  
+![](./figures/00_schematics/figure_workflow.png)
+
 	  
 ## Figures and Tables
 
@@ -84,9 +86,11 @@ table2 <- read.csv("./data/05_GO_DEGsSanesLichtman.csv")
 kable(table2)
 ```
 
-### Figure 4
+### Figure 4: Top twently genes whose expression in DG is correlations to the principle compenent of behavioral variation in avoidance learning
 
 ![](./figures/04_correlations/correlations-1.png)
+
+
 
 ### Table 3: Data-driven analysis of Gene Ontology related to Behavior
 
@@ -95,5 +99,16 @@ table3 <- read.csv("./data/05_GO_PC1.csv")
 kable(table3)
 ```
 
+### Figure 5: Very few candidate memory genes are correlated with behavior or with each other in hippocampal subfields
+
+![](./figures/06_candidates/candidategenes-1.png)
+
+### Figure 6: Many astrocytic genes are are positively correlated with behavioral principal component 1 or with each other in hippocampal subfields.
+
+![](./figures/06_candidates/astrocyticgenes-1.png)
+
+### Supplemental Figure 3: More correlations
+
+![](./figures/06_candidates/supplefig3-3.png)
 
 

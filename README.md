@@ -54,6 +54,8 @@ presentations generated using R
             correlations between genes and beahvior
         -   [scripts/05\_GO](scripts/05_GO.md) an analysis of gene
             ontology.
+        -   [scripts/06\_candidates](scripts/05_candidates.md) an
+            analysis of candidate memory genes.
 
 ![](./figures/00_schematics/figure_workflow.png)
 
@@ -692,7 +694,7 @@ treatment
 3, 30
 </td>
 <td style="text-align:right;">
-17.69
+15.18
 </td>
 <td style="text-align:right;">
 0.000
@@ -712,10 +714,10 @@ treatment
 3, 30
 </td>
 <td style="text-align:right;">
-0.39
+3.25
 </td>
 <td style="text-align:right;">
-0.761
+0.035
 </td>
 </tr>
 </tbody>
@@ -749,33 +751,33 @@ Molecules.associated.with.LTP
     (<a href="GO:0050896" class="uri">GO:0050896</a>)
     </td>
     <td style="text-align:left;">
-    ABHD2, ADRB1, AHR, APAF1, ARC, ARID5B, ARL13B, ARPP21, ATF3, B3GNT2,
-    BACH1, BTG2, C2CD4B, CCNK, CITED2, FBXW7, FERMT2, FLRT3, FOS, FOSB,
-    FOSL2, FOXG1, FOXO1, FZD4, FZD5, GADD45G, GPR19, HMGCR, HOMER1,
-    HSPA1A, HSPH1, IL16, ING2, IRS1, IRS2, JUN, JUNB, JUND, KDM6B, KITL,
-    KLF2, KLF6, LBH, LEMD3, LMNA, MEST, MYC, NEDD9, NFIL3, NPAS4, NPTX2,
-    NR4A1, NR4A2, NR4A3, PPP1R15A, SLC16A1, SLC25A25, SLITRK5, SMAD7,
-    SOX9, SRF, SYT4, THBS1, TIPARP, TNIP2, TRA2B, TRIB1, TSC22D2,
-    ZBTB33, ZFAND5
+    Abhd2, Adrb1, Ahr, Apaf1, Arc, Arid5b, Arl13b, Arpp21, Atf3, B3gnt2,
+    Bach1, Btg2, C2cd4b, Ccnk, Cited2, Fbxw7, Fermt2, Flrt3, Fos, Fosb,
+    Fosl2, Foxg1, Foxo1, Fzd4, Fzd5, Gadd45g, Gpr19, Hmgcr, Homer1,
+    Hspa1a, Hsph1, Il16, Ing2, Irs1, Irs2, Jun, Junb, Jund, Kdm6b, Kitl,
+    Klf2, Klf6, Lbh, Lemd3, Lmna, Mest, Myc, Nedd9, Nfil3, Npas4, Nptx2,
+    Nr4a1, Nr4a2, Nr4a3, Ppp1r15a, Slc16a1, Slc25a25, Slitrk5, Smad7,
+    Sox9, Srf, Syt4, Thbs1, Tiparp, Tnip2, Tra2b, Trib1, Tsc22d2,
+    Zbtb33, Zfand5
     </td>
     <td style="text-align:left;">
-    ADCY1, ADRA2A, ADRA2B, ADRA2C, ADRB1, ADRB2, ADRB3, CACNA1A,
-    CACNA1B, CACNA1C, CACNA1D, CACNA1E, CACNA1F, CACNA1S, CALB1, CALM1,
-    CALM2, CALM3, CAMK1, CAMK4, CAPN1, CAPN10, CAPN2, CAPN3, CCR7, CD47,
-    CDH1, CDH2, CHRM1, CHRM2, CHRM3, CHRM4, CHRM5, CHRNA1, CHRNA3,
-    CHRNA7, CHRNB1, CHRNB2, CHRNB3, CNGA2, FGF2, FYN, GABBR1, GABRA1,
-    GABRA2, GABRA3, GABRA5, GABRA6, GABRB1, GABRB2, GABRB3, GABRR1,
-    GAP43, GFAP, GRIA1, GRIA2, GRIN1, GRIN2A, GRIN2D, GRM1, GRM4, GRM5,
-    GRM7, GUCY1A2, GUCY1B2, GUCY2C, GUCY2D, GUCY2E, GUCY2G, HOMER1,
-    HOMER2, HOMER3, HTR1A, HTR1B, HTR1F, HTR2A, HTR2B, HTR2C, HTR3A,
-    HTR3B, HTR4, HTR5A, HTR5B, HTR6, HTR7, IL1B, INHBA, ITGA1, ITGA10,
-    ITGA11, ITGA2, ITGA2B, ITGA3, ITGA4, ITGA5, ITGA6, ITGA7, ITGA8,
-    ITGA9, ITGAD, ITGAE, ITGAL, ITGAM, ITGAV, ITGAX, ITGB1, ITGB1BP1,
-    ITGB2, ITGB2L, ITGB3, ITGB4, ITGB5, ITGB6, ITGB7, ITGB8, ITGBL1,
-    ITPKB, L1CAM, MAPK1, MAPK11, MAPK12, MAPK14, MAPK3, MAPK4, MAPK6,
-    MAPK7, MAPK8, MAPK9, MAS1, NCAM1, NGF, NOS1, NOS3, NRG1, NRG2, NRG3,
-    NRGN, PNOC, SPTBN1, SRC, STX1B, SYP, TH, THY1, TNC, UBE3A, VAMP2,
-    VAMP3, VAMP4, VAMP8
+    Adcy1, Adra2a, Adra2b, Adra2c, Adrb1, Adrb2, Adrb3, Cacna1a,
+    Cacna1b, Cacna1c, Cacna1d, Cacna1e, Cacna1f, Cacna1s, Calb1, Calm1,
+    Calm2, Calm3, Camk1, Camk4, Capn1, Capn10, Capn2, Capn3, Ccr7, Cd47,
+    Cdh1, Cdh2, Chrm1, Chrm2, Chrm3, Chrm4, Chrm5, Chrna1, Chrna3,
+    Chrna7, Chrnb1, Chrnb2, Chrnb3, Cnga2, Fgf2, Fyn, Gabbr1, Gabra1,
+    Gabra2, Gabra3, Gabra5, Gabra6, Gabrb1, Gabrb2, Gabrb3, Gabrr1,
+    Gap43, Gfap, Gria1, Gria2, Grin1, Grin2a, Grin2d, Grm1, Grm4, Grm5,
+    Grm7, Gucy1a2, Gucy1b2, Gucy2c, Gucy2d, Gucy2e, Gucy2g, Homer1,
+    Homer2, Homer3, Htr1a, Htr1b, Htr1f, Htr2a, Htr2b, Htr2c, Htr3a,
+    Htr3b, Htr4, Htr5a, Htr5b, Htr6, Htr7, Il1b, Inhba, Itga1, Itga10,
+    Itga11, Itga2, Itga2b, Itga3, Itga4, Itga5, Itga6, Itga7, Itga8,
+    Itga9, Itgad, Itgae, Itgal, Itgam, Itgav, Itgax, Itgb1, Itgb1bp1,
+    Itgb2, Itgb2l, Itgb3, Itgb4, Itgb5, Itgb6, Itgb7, Itgb8, Itgbl1,
+    Itpkb, L1cam, Mapk1, Mapk11, Mapk12, Mapk14, Mapk3, Mapk4, Mapk6,
+    Mapk7, Mapk8, Mapk9, Mas1, Ncam1, Ngf, Nos1, Nos3, Nrg1, Nrg2, Nrg3,
+    Nrgn, Pnoc, Sptbn1, Src, Stx1b, Syp, Th, Thy1, Tnc, Ube3a, Vamp2,
+    Vamp3, Vamp4, Vamp8
     </td>
     </tr>
     <tr>
@@ -784,7 +786,7 @@ Molecules.associated.with.LTP
     1.  Translation (<a href="GO:0006412" class="uri">GO:0006412</a>)
         </td>
         <td style="text-align:left;">
-        CPEB4, EIF5
+        Cpeb4, Eif5
         </td>
         <td style="text-align:left;">
         NA
@@ -797,15 +799,15 @@ Molecules.associated.with.LTP
             (<a href="GO:0050808" class="uri">GO:0050808</a>)
             </td>
             <td style="text-align:left;">
-            AMIGO2, ARC, BDNF, FLRT3, FZD5, HOMER1, LRRTM2, NPAS4,
-            PCDH8, SLITRK5
+            Amigo2, Arc, Bdnf, Flrt3, Fzd5, Homer1, Lrrtm2, Npas4,
+            Pcdh8, Slitrk5
             </td>
             <td style="text-align:left;">
-            ACHE, BDNF, CACNA1A, CACNA1S, CAMK1, CDH1, CDH2, CHRNA1,
-            CHRNA7, CHRNB1, CHRNB2, DLG4, DRD1, EFNA5, EPHA5, ERBB4,
-            FYN, GABRA1, GABRB2, GABRB3, GAP43, GRIN1, GRIN2A, GRM5,
-            HOMER1, HTR1A, ITGA3, ITGAM, ITPKA, L1CAM, MAPK14, NRG1,
-            NRG2, NTRK2, PTN, RAB3A, SYN1, TNC, UBE3A
+            Ache, Bdnf, Cacna1a, Cacna1s, Camk1, Cdh1, Cdh2, Chrna1,
+            Chrna7, Chrnb1, Chrnb2, Dlg4, Drd1, Efna5, Epha5, Erbb4,
+            Fyn, Gabra1, Gabrb2, Gabrb3, Gap43, Grin1, Grin2a, Grm5,
+            Homer1, Htr1a, Itga3, Itgam, Itpka, L1cam, Mapk14, Nrg1,
+            Nrg2, Ntrk2, Ptn, Rab3a, Syn1, Tnc, Ube3a
             </td>
             </tr>
             <tr>
@@ -815,22 +817,22 @@ Molecules.associated.with.LTP
                 (<a href="GO:0007611" class="uri">GO:0007611</a>)
                 </td>
                 <td style="text-align:left;">
-                ADRB1, ARC, BDNF, BTG2, EGR1, HMGCR, JUN, NPAS4, NPTX2,
-                PAK6, PLK2, PTGS2, SGK1, SRF, SYT4
+                Adrb1, Arc, Bdnf, Btg2, Egr1, Hmgcr, Jun, Npas4, Nptx2,
+                Pak6, Plk2, Ptgs2, Sgk1, Srf, Syt4
                 </td>
                 <td style="text-align:left;">
-                ADCY1, ADRB1, ADRB2, BDNF, CACNA1C, CACNA1E, CALB1,
-                CAMK4, CHRNA7, CHRNB2, CNR1, CREB1, DRD1, EGR1, GABRA5,
-                GRIA1, GRIN1, GRIN2A, GRM4, GRM5, GRM7, HTR2A, HTR6,
-                HTR7, IL1B, ITGA3, ITGA5, ITGA8, ITGB1, NCAM1, NGF,
-                NTRK2, OPRL1, PLA2G6, PLCB1, PRKAR1B, PRKCZ, PTN, S100B,
-                SNAP25, TH
+                Adcy1, Adrb1, Adrb2, Bdnf, Cacna1c, Cacna1e, Calb1,
+                Camk4, Chrna7, Chrnb2, Cnr1, Creb1, Drd1, Egr1, Gabra5,
+                Gria1, Grin1, Grin2a, Grm4, Grm5, Grm7, Htr2a, Htr6,
+                Htr7, Il1b, Itga3, Itga5, Itga8, Itgb1, Ncam1, Ngf,
+                Ntrk2, Oprl1, Pla2g6, Plcb1, Prkar1b, Prkcz, Ptn, S100b,
+                Snap25, Th
                 </td>
                 </tr>
                 </tbody>
                 </table>
 
-### Figure 4
+### Figure 4: Top twently genes whose expression in DG is correlations to the principle compenent of behavioral variation in avoidance learning
 
 ![](./figures/04_correlations/correlations-1.png)
 
@@ -852,7 +854,7 @@ Total.genes
 Genes.in.list
 </th>
 <th style="text-align:left;">
-Genes
+gene
 </th>
 </tr>
 </thead>
@@ -871,7 +873,7 @@ Memory
 9
 </td>
 <td style="text-align:left;">
-ARC BDNF EGR1 KCNK10 NPAS4 PLK2 PTGS2 SGK1 SYT4
+Arc Bdnf Egr1 Kcnk10 Npas4 Plk2 Ptgs2 Sgk1 Syt4
 </td>
 </tr>
 <tr>
@@ -888,7 +890,7 @@ Learning or memory
 10
 </td>
 <td style="text-align:left;">
-ARC BDNF BTG2 EGR1 KCNK10 NPAS4 PLK2 PTGS2 SGK1 SYT4
+Arc Bdnf Btg2 Egr1 Kcnk10 Npas4 Plk2 Ptgs2 Sgk1 Syt4
 </td>
 </tr>
 <tr>
@@ -905,8 +907,8 @@ Tissue development
 21
 </td>
 <td style="text-align:left;">
-ACAN ARC AREG ATF3 BDNF BTG2 COL10A1 EGR1 ERRFI1 FOSL2 FRMD6 FZD5 HOMER1
-HOXC4 NR4A3 PCDH8 PTGS2 RGS2 SLC25A25 SMAD7 TIPARP
+Acan Arc Areg Atf3 Bdnf Btg2 Col10a1 Egr1 Errfi1 Fosl2 Frmd6 Fzd5 Homer1
+Hoxc4 Nr4a3 Pcdh8 Ptgs2 Rgs2 Slc25a25 Smad7 Tiparp
 </td>
 </tr>
 <tr>
@@ -923,7 +925,7 @@ Cognition
 10
 </td>
 <td style="text-align:left;">
-ARC BDNF BTG2 EGR1 KCNK10 NPAS4 PLK2 PTGS2 SGK1 SYT4
+Arc Bdnf Btg2 Egr1 Kcnk10 Npas4 Plk2 Ptgs2 Sgk1 Syt4
 </td>
 </tr>
 <tr>
@@ -940,8 +942,8 @@ Behavior
 13
 </td>
 <td style="text-align:left;">
-ARC BDNF BTG2 EGR1 HOMER1 KCNK10 NPAS4 NR4A3 PLK2 PTGS2 SGK1 SLC16A1
-SYT4
+Arc Bdnf Btg2 Egr1 Homer1 Kcnk10 Npas4 Nr4a3 Plk2 Ptgs2 Sgk1 Slc16a1
+Syt4
 </td>
 </tr>
 <tr>
@@ -958,7 +960,7 @@ Neuron projection
 13
 </td>
 <td style="text-align:left;">
-ACAN ARC BDNF CPEB4 FZD5 HOMER1 NEXN PCDH8 PLK2 PTGS2 RGS2 SGK1 SYT4
+Acan Arc Bdnf Cpeb4 Fzd5 Homer1 Nexn Pcdh8 Plk2 Ptgs2 Rgs2 Sgk1 Syt4
 </td>
 </tr>
 <tr>
@@ -975,7 +977,7 @@ Cell junction
 10
 </td>
 <td style="text-align:left;">
-ARC CPEB4 FRMD6 FZD5 HOMER1 NEXN PCDH8 SLC16A1 SMAD7 SYT4
+Arc Cpeb4 Frmd6 Fzd5 Homer1 Nexn Pcdh8 Slc16a1 Smad7 Syt4
 </td>
 </tr>
 <tr>
@@ -992,7 +994,7 @@ Dendrite
 8
 </td>
 <td style="text-align:left;">
-ARC BDNF CPEB4 FZD5 HOMER1 PCDH8 PLK2 SYT4
+Arc Bdnf Cpeb4 Fzd5 Homer1 Pcdh8 Plk2 Syt4
 </td>
 </tr>
 <tr>
@@ -1009,7 +1011,7 @@ Dendritic tree
 8
 </td>
 <td style="text-align:left;">
-ARC BDNF CPEB4 FZD5 HOMER1 PCDH8 PLK2 SYT4
+Arc Bdnf Cpeb4 Fzd5 Homer1 Pcdh8 Plk2 Syt4
 </td>
 </tr>
 <tr>
@@ -1026,7 +1028,7 @@ Somatodendritic compartment
 9
 </td>
 <td style="text-align:left;">
-ACAN ARC BDNF CPEB4 FZD5 HOMER1 PCDH8 PLK2 SYT4
+Acan Arc Bdnf Cpeb4 Fzd5 Homer1 Pcdh8 Plk2 Syt4
 </td>
 </tr>
 <tr>
@@ -1043,7 +1045,7 @@ Regulatory region nucleic acid binding
 11
 </td>
 <td style="text-align:left;">
-ATF3 EGR1 EGR4 FOSL2 HOXC4 NFIL3 NPAS4 NR4A3 PER1 SMAD7 TIPARP
+Atf3 Egr1 Egr4 Fosl2 Hoxc4 Nfil3 Npas4 Nr4a3 Per1 Smad7 Tiparp
 </td>
 </tr>
 <tr>
@@ -1060,7 +1062,7 @@ Transcription regulatory region DNA binding
 11
 </td>
 <td style="text-align:left;">
-ATF3 EGR1 EGR4 FOSL2 HOXC4 NFIL3 NPAS4 NR4A3 PER1 SMAD7 TIPARP
+Atf3 Egr1 Egr4 Fosl2 Hoxc4 Nfil3 Npas4 Nr4a3 Per1 Smad7 Tiparp
 </td>
 </tr>
 <tr>
@@ -1077,7 +1079,7 @@ RNA polymerase II regulatory region sequence-specific DNA binding
 9
 </td>
 <td style="text-align:left;">
-ATF3 EGR1 EGR4 FOSL2 HOXC4 NFIL3 NPAS4 NR4A3 PER1
+Atf3 Egr1 Egr4 Fosl2 Hoxc4 Nfil3 Npas4 Nr4a3 Per1
 </td>
 </tr>
 <tr>
@@ -1094,7 +1096,7 @@ DNA-binding transcription factor activity, RNA polymerase II-specific
 9
 </td>
 <td style="text-align:left;">
-ATF3 BTG2 EGR1 EGR4 FOSL2 HOXC4 NFIL3 NPAS4 NR4A3
+Atf3 Btg2 Egr1 Egr4 Fosl2 Hoxc4 Nfil3 Npas4 Nr4a3
 </td>
 </tr>
 <tr>
@@ -1111,8 +1113,20 @@ RNA polymerase II regulatory region DNA binding
 9
 </td>
 <td style="text-align:left;">
-ATF3 EGR1 EGR4 FOSL2 HOXC4 NFIL3 NPAS4 NR4A3 PER1
+Atf3 Egr1 Egr4 Fosl2 Hoxc4 Nfil3 Npas4 Nr4a3 Per1
 </td>
 </tr>
 </tbody>
 </table>
+
+### Figure 5: Very few candidate memory genes are correlated with behavior or with each other in hippocampal subfields
+
+![](./figures/06_candidates/candidategenes-1.png)
+
+### Figure 6: Many astrocytic genes are are positively correlated with behavioral principal component 1 or with each other in hippocampal subfields.
+
+![](./figures/06_candidates/astrocyticgenes-1.png)
+
+### Supplemental Figure 3: More correlations
+
+![](./figures/06_candidates/supplefig3-3.png)
