@@ -259,10 +259,23 @@ correlations with PC1
       return(p)
     }
 
-    p1 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$PC2) + 
-      labs(x = "PC1", y = "PC2", subtitle = "r = -0.61, p = 0.013")  + 
-        annotation_custom(icontrainedyoked, ymin = 3, ymax = 4, xmin = 2.5, xmax = 7)
+    p1 <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$Arc) + 
+      labs(x = "PC1", y = "Arc", subtitle = "r = 0.81, p = 0.0002")  + 
+      theme(axis.title.y = element_text(face = "italic")) +
+      annotation_custom(iconDG, ymin = 10.5, ymax = 11.8, xmin = -3, xmax = 2)
 
+
+    inset <- plotcorrelation(vsdDG, vsdDG$PC1, vsdDG$PC2) + 
+      labs(x = "PC1", y = "PC2") 
+    inset
+
+![](../figures/06_favegenes/supplefig3-1.png)
+
+    g2 = ggplotGrob(inset)
+    p1g <- p1 + annotation_custom(grob = g2, xmin=1.5, xmax=7.5, ymin=7.25, ymax=9.25)
+    p1g
+
+![](../figures/06_favegenes/supplefig3-2.png)
 
     p2 <- plotcorrelation(vsdCA3, vsdCA3$PC1, vsdCA3$Arc) + 
       labs(x = "PC1", y = "Arc", subtitle = "r = -0.30, p = 0.327")  + 
@@ -339,20 +352,16 @@ correlations with PC1
       theme(axis.title.y = element_text(face = "italic")) +
         annotation_custom(iconCA1, ymin = 6, ymax = 6.3, xmin = 2.5, xmax = 7) 
 
-    plot_grid(p4,p5,p6, nrow = 1)
-
-![](../figures/06_favegenes/supplefig3-1.png)
-
     mylegend = get_legend(p2)
 
-    p1p2p3 <- plot_grid(p1,p2 + theme(legend.position = "none"), p3, 
+    p1p2p3 <- plot_grid(p1g,p2 + theme(legend.position = "none"), p3, 
                         p4,p5,p6,
                         labels = "auto", label_size = 8, nrow = 2)
 
     supplfig3 <- plot_grid(p1p2p3, mylegend, nrow = 2, rel_heights = c(1,0.1))
     supplfig3
 
-![](../figures/06_favegenes/supplefig3-2.png)
+![](../figures/06_favegenes/supplefig3-3.png)
 
     pdf(file="../figures/06_favegenes/supplfig3.pdf", width=6.69, height=5.5)
     plot(supplfig3)
@@ -412,7 +421,7 @@ Candidate gene
     ## Correlation method: 'pearson'
     ## Missing treated using: 'pairwise.complete.obs'
 
-    plotcorrrs2 <- function(favgenes, corrs, whichsubfield, myPC1label, myPC2label, mylabels){
+    plotcorrrs2 <- function(favgenes, corrs, whichsubfield, myPC1label, matrixlabel , mylabels){
       
       df <- corrs %>% 
         focus(PC1, PC2, favgenes,  mirror = TRUE)  %>% 
@@ -430,20 +439,6 @@ Candidate gene
         labs(x = whichsubfield, y = myPC1label) +
          geom_hline(yintercept = -0.6, linetype = "dashed", color = "grey", size = 0.5) +
          geom_hline(yintercept = 0.6, linetype = "dashed", color = "grey", size = 0.5)
-      
-       p2 <- df %>% 
-        focus(PC2) %>%
-        dplyr::filter(rowname != "PC1") %>%
-        ggplot(aes(x = reorder(rowname, desc(rowname)), PC2, fill = PC2, label = round(PC2,2))) +
-         geom_col() + coord_flip() +
-        scale_fill_gradient2(low = "#67a9cf",  high = "#ef8a62", midpoint = 0) +
-        theme_ms() +
-        theme(legend.position = "none", 
-              axis.text.y = element_blank()) +
-        ylim(-0.75,0.75) +
-        labs(x = " ", y = myPC2label) +
-         geom_hline(yintercept = -0.6, linetype = "dashed", color = "grey", size = 0.5) +
-         geom_hline(yintercept = 0.6, linetype = "dashed", color = "grey", size = 0.5)
 
       dflong <- df %>%
         pivot_longer(-rowname, names_to = "colname") %>%
@@ -457,15 +452,15 @@ Candidate gene
                              high = "#ef8a62", na.value = "white",
                              limits = c(-1,1)) +
         theme_classic(base_size = 8) +
-        labs(x = NULL, y = NULL) +
+        labs(x = matrixlabel, y = " ") +
         theme(axis.text = element_text(face = "italic"),
               legend.position = "none") +
         geom_text(size=2.5, aes(label= ifelse(value > 0.6, round(value,2),
                                               ifelse(value < -0.6, round(value,2), " "))))
       
       
-      p123 <- plot_grid(p1, p2, p3,  
-                       nrow = 1, labels = mylabels, label_size = 8, rel_widths = c(0.9,0.8,1.5))
+      p123 <- plot_grid(p1, p3,  
+                       nrow = 1, labels = mylabels, label_size = 8, rel_widths = c(0.9,1.5))
       
       #filename <- paste("../data/06_", whichsubfield, "_candidatecorrelations.csv", sep = "")
       
@@ -475,21 +470,22 @@ Candidate gene
       
     }
 
-    p4 <- plotcorrrs2(classicmemgenes, corrrDG, "DG", NULL, NULL, c("a", "b", "c"))
+    p4 <- plotcorrrs2(classicmemgenes, corrrDG, "DG", NULL, NULL,  c("a", "b" ))
 
     ## Warning: Removed 9 rows containing missing values (geom_text).
 
-    p5 <- plotcorrrs2(classicmemgenes, corrrCA3, "CA3", NULL, NULL, c("d", "e", "f"))
+    p5 <- plotcorrrs2(classicmemgenes, corrrCA3, "CA3", NULL, NULL, c("c","d"))
 
     ## Warning: Removed 9 rows containing missing values (geom_text).
 
-    p6 <- plotcorrrs2(classicmemgenes, corrrCA1, "CA1", "Correlation to PC1 \n (avoidance estimate)",
-                      "Correlation to PC2 \n (activity estimate)",
-                      c("g", "h", "i"))
+    p6 <- plotcorrrs2(classicmemgenes, corrrCA1, "CA1", 
+                      "Correlation to PC1 \n (avoidance estimate)",
+                      "Candidate genes \n ",
+                      c("e", "f"))
 
     ## Warning: Removed 9 rows containing missing values (geom_text).
 
-    p456 <- plot_grid(p4,p5,p6, nrow = 3)
+    p456 <- plot_grid(p4,p5,p6, nrow = 3, rel_heights = c(1,1,1.2))
 
     circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
     circuit <- ggdraw() +  draw_image(circuit, scale = 1)
@@ -513,23 +509,24 @@ Candidate gene
     ## quartz_off_screen 
     ##                 2
 
-    p7 <- plotcorrrs2(astrocyticgenes, corrrDG, "DG", NULL, NULL, c("a", "b", "c"))
+    p7 <- plotcorrrs2(astrocyticgenes, corrrDG, "DG", NULL, NULL, c("a", "b"))
 
     ## Warning: Removed 9 rows containing missing values (geom_text).
 
-    p8 <- plotcorrrs2(astrocyticgenes, corrrCA3, "CA3", NULL, NULL, c("d", "e", "f"))
+    p8 <- plotcorrrs2(astrocyticgenes, corrrCA3, "CA3", NULL, NULL, c("c", "d"))
 
     ## Warning: Removed 2 rows containing missing values (position_stack).
 
     ## Warning: Removed 9 rows containing missing values (geom_text).
 
-    p9 <- plotcorrrs2(astrocyticgenes, corrrCA1, "CA1", "Correlation to PC1 \n (avoidance estimate)",
-                      "Correlation to PC2 \n (activity estimate)",
-                      c("g", "h", "i"))
+    p9 <- plotcorrrs2(astrocyticgenes, corrrCA1, "CA1", 
+                      "Correlation to PC1 \n (avoidance estimate)",
+                      "Candidate genes \n",
+                      c("e", "f"))
 
     ## Warning: Removed 9 rows containing missing values (geom_text).
 
-    p789 <- plot_grid(p7,p8,p9, nrow = 3)
+    p789 <- plot_grid(p7,p8,p9, nrow = 3, rel_heights = c(1,1,1.2))
 
     p789circuit <- plot_grid(circuit, p789, nrow = 1, rel_widths = c(0.1,1))
     p789circuit
