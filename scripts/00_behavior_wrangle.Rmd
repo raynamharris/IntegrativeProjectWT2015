@@ -46,22 +46,27 @@ columnstoremove <- c("PolarAvgVal" , "PolarSdVal", "PolarMinVal" ,
                      "AnnularMinVal" , "AnnularMinBin" , "AnnularMaxVal" , 
                      "AnnularMaxBin", "AnnularAvg"  , "AnnularSd" )
 
+# keep only 2015 animals and remove unnecessary columns
+behav <- behav %>% dplyr::filter(Year == "2015") %>% 
+                   dplyr::select(-columnstoremove) %>% 
+                  droplevels()
+
 # rename some columns
 names(behav)[names(behav)=="#Shock"] <- "NumShock"
 names(behav)[names(behav)=="#Entrances"] <- "NumEntrances"
 names(behav)[names(behav)=="pTimeTarget"] <- "pTimeShockZone"
 names(behav)[names(behav)=="TimeTarget"] <- "TimeShockZone"
-names(behav)[names(behav)=="Speed (Arena)"] <- "SpeedArena.cm.s"
+names(behav)[names(behav)=="Speed (Arena)"] <- "Speed"
+names(behav)[names(behav)=="TotalPath(Arena)"] <- "TotalPath"
+names(behav)[names(behav)=="Speed1stEntr(cm/s)"] <- "Speed1stEntr"
+names(behav)[names(behav)=="Speed2ndEntr(cm/s)"] <- "Speed2ndEntr"
+names(behav)[names(behav)=="Linearity(Arena)"] <- "Linearity"
+names(behav)[names(behav)=="sd Speed(Arena)"] <- "sdSpeed"
+names(behav)[names(behav)=="Entr/Dist(1/m)"] <- "EntrPerDist"
 
-
-# keep only 2015 animals and remove unnecessary columns
-behav <- behav %>% dplyr::filter(Year == "2015") %>% 
-                   dplyr::select(-columnstoremove) %>% 
-                   
-                  droplevels()
 
 # check which measures are included
-measures <- behav %>% select(`TotalPath(Arena)`:AnnularKurtosis)
+measures <- behav %>% select(TotalPath:AnnularKurtosis)
 names(measures)
 
 # make new factors
@@ -93,7 +98,7 @@ behav$trialNum <- as.numeric(behav$trial)
 
 behav <- behav %>%  dplyr::select(ID,Day,treatment, training,trial,
                                  trialNum, ShockOnOff, PairedPartner,
-                                 `TotalPath(Arena)`:AnnularKurtosis) %>%
+                                 TotalPath:AnnularKurtosis) %>%
                     dplyr::arrange(ID)
 
 head(behav)
