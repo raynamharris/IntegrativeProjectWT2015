@@ -253,7 +253,21 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
     pca.all <- makepcadf(behavior)
 
     retention <- behavior %>% filter(trialNum == 9)
-    pca.Rn <- makepcadf(retention)
+
+
+
+    pca.Rn <- pca.all %>% 
+      filter(trialNum == 9) %>%  
+      select(ID:PC2) 
+    head(pca.Rn)
+
+    ##       ID        treatment trialNum Day        PC1        PC2
+    ## 1 15140A conflict.trained        9   3  2.0985364 -1.2268375
+    ## 2 15140B   conflict.yoked        9   3 -0.8030276 -1.5914329
+    ## 3 15140C standard.trained        9   3  6.4346388  0.1710085
+    ## 4 15140D   standard.yoked        9   3 -1.1318442  1.7155694
+    ## 5 15141C standard.trained        9   3 -0.1644596  1.1372288
+    ## 6 15141D   standard.yoked        9   3 -2.7745864  2.2214867
 
     pca.Rn.summary <- pca.all %>% filter(trialNum == 9) %>% 
       group_by(treatment) %>% 
@@ -461,8 +475,8 @@ groups differ in subsequent recall? 1-way ANOVA of groups on Rn
     ## 27         treatment  3, 30   5.97 .003
     ## 28         treatment 3, 302  91.83 .000
     ## 29         treatment 3, 302  10.76 .000
-    ## 30         treatment  3, 30  17.69 .000
-    ## 31         treatment  3, 30   0.39 .761
+    ## 30         treatment  3, 30  15.18 .000
+    ## 31         treatment  3, 30   3.25 .035
 
     pca.nopre <- pca.all %>% filter(trialNum != 1)
 

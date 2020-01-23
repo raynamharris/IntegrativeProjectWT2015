@@ -26,10 +26,9 @@ colData <- read_csv("../data/00_colData.csv")
 geneids <- read_csv("../data/00_geneids.csv") %>% distinct(gene) %>% mutate(gene = toupper(gene))
 
 # pca data
-pca.Rn <- read_csv("../data/01_pca.all.csv") %>% 
-  filter(trialNum == 9) %>%  
-  select(ID:PC2) %>%
-  left_join(colData) %>% drop_na() %>% select(ID, treatment, training, trialNum, Day, RNAseqID, subfield, PC1, PC2)
+pca.Rn <- read_csv("../data/01_pca.Rn.csv") %>% 
+  left_join(colData) %>% drop_na() %>% 
+  select(ID, treatment, training, trialNum, Day, RNAseqID, subfield, PC1, PC2)
 head(pca.Rn)
 
 prepvsdforjoin <- function(pathtovsd, mysubfield){
@@ -284,7 +283,7 @@ pdf(file="../figures/06_candidates/classicmemgenes.pdf", width=6.69, height=6)
 plot(p456circuit)    
 dev.off()
 
-pdf(file="../figures/figure_4.pdf", width=6.69, height=6)
+pdf(file="../figures/fig-5.pdf", width=6.69, height=6)
 plot(p456circuit)    
 dev.off()
 ```
@@ -307,7 +306,7 @@ pdf(file="../figures/06_candidates/astrocyticgenes.pdf", width=6.69, height=6)
 plot(p789circuit)    
 dev.off()
 
-pdf(file="../figures/supplfig4.pdf", width=6.69, height=6)
+pdf(file="../figures/fig-6.pdf", width=6.69, height=6)
 plot(p789circuit)    
 dev.off()
 

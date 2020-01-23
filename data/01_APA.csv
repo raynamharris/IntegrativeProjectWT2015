@@ -28,5 +28,5 @@
 "Conflict recall (Rn)","Time1stEntr ~ treatment","treatment","3, 30","5.97",".003"
 "All trials","PC1 ~ treatment","treatment","3, 302","91.83",".000"
 "All trails","PC2 ~ treatment","treatment","3, 302","10.76",".000"
-"Retention (Rn)","PC1 ~ treatment","treatment","3, 30","17.69",".000"
-"Retention","PC2 ~ treatment","treatment","3, 30","0.39",".761"
+"Retention (Rn)","PC1 ~ treatment","treatment","3, 30","15.18",".000"
+"Retention","PC2 ~ treatment","treatment","3, 30","3.25",".035"

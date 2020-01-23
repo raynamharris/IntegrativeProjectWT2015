@@ -40,10 +40,9 @@ Sample information and PC1
     ## )
 
     # pca data
-    pca.Rn <- read_csv("../data/01_pca.all.csv") %>% 
-      filter(trialNum == 9) %>%  
-      select(ID:PC2) %>%
-      left_join(colData) %>% drop_na() %>% select(ID, treatment, training, trialNum, Day, RNAseqID, subfield, PC1, PC2)
+    pca.Rn <- read_csv("../data/01_pca.Rn.csv") %>% 
+      left_join(colData) %>% drop_na() %>% 
+      select(ID, treatment, training, trialNum, Day, RNAseqID, subfield, PC1, PC2)
 
     ## Parsed with column specification:
     ## cols(
@@ -52,15 +51,7 @@ Sample information and PC1
     ##   trialNum = col_double(),
     ##   Day = col_double(),
     ##   PC1 = col_double(),
-    ##   PC2 = col_double(),
-    ##   PC3 = col_double(),
-    ##   PC4 = col_double(),
-    ##   PC5 = col_double(),
-    ##   PC6 = col_double(),
-    ##   PC7 = col_double(),
-    ##   PC8 = col_double(),
-    ##   PC9 = col_double(),
-    ##   PC10 = col_double()
+    ##   PC2 = col_double()
     ## )
 
     ## Joining, by = c("ID", "treatment")
@@ -500,7 +491,7 @@ Candidate gene
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/figure_4.pdf", width=6.69, height=6)
+    pdf(file="../figures/fig-5.pdf", width=6.69, height=6)
     plot(p456circuit)    
     dev.off()
 
@@ -538,7 +529,7 @@ Candidate gene
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/supplfig4.pdf", width=6.69, height=6)
+    pdf(file="../figures/fig-6.pdf", width=6.69, height=6)
     plot(p789circuit)    
     dev.off()
 

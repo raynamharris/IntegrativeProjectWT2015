@@ -1,13 +1,13 @@
     library(tidyverse)
 
-    ## ── Attaching packages ───────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✔ ggplot2 3.2.1     ✔ purrr   0.3.3
     ## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
     ## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
     ## ✔ readr   1.3.1     ✔ forcats 0.4.0
 
-    ## ── Conflicts ──────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -52,9 +52,7 @@ Sample information and PC1
     # read the sample data, set levels, join iwth behvior PCA data
     colData <- read.csv("../data/00_colData.csv", row.names = 1, stringsAsFactors = T)
     colData <- colData %>% filter(subfield == "DG")
-    pca.Rn <- read_csv("../data/01_pca.all.csv") %>% 
-      filter(trialNum == 9) %>% 
-      select(ID:PC2)
+    pca.Rn <- read_csv("../data/01_pca.Rn.csv")
 
     ## Parsed with column specification:
     ## cols(
@@ -63,15 +61,7 @@ Sample information and PC1
     ##   trialNum = col_double(),
     ##   Day = col_double(),
     ##   PC1 = col_double(),
-    ##   PC2 = col_double(),
-    ##   PC3 = col_double(),
-    ##   PC4 = col_double(),
-    ##   PC5 = col_double(),
-    ##   PC6 = col_double(),
-    ##   PC7 = col_double(),
-    ##   PC8 = col_double(),
-    ##   PC9 = col_double(),
-    ##   PC10 = col_double()
+    ##   PC2 = col_double()
     ## )
 
     colData <- left_join(colData, pca.Rn)
@@ -617,7 +607,7 @@ all figures together
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/figure_4.pdf", width=6.69, height=3.5)
+    pdf(file="../figures/fig-4.pdf", width=6.69, height=3.5)
     plot(fig4)
     dev.off()
 

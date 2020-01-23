@@ -158,7 +158,14 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 pca.all <- makepcadf(behavior)
 
 retention <- behavior %>% filter(trialNum == 9)
-pca.Rn <- makepcadf(retention)
+
+
+
+pca.Rn <- pca.all %>% 
+  filter(trialNum == 9) %>%  
+  select(ID:PC2) 
+head(pca.Rn)
+
 
 pca.Rn.summary <- pca.all %>% filter(trialNum == 9) %>% 
   group_by(treatment) %>% 

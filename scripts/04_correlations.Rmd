@@ -28,9 +28,7 @@ source("./functions_RNAseq.R")
 # read the sample data, set levels, join iwth behvior PCA data
 colData <- read.csv("../data/00_colData.csv", row.names = 1, stringsAsFactors = T)
 colData <- colData %>% filter(subfield == "DG")
-pca.Rn <- read_csv("../data/01_pca.all.csv") %>% 
-  filter(trialNum == 9) %>% 
-  select(ID:PC2)
+pca.Rn <- read_csv("../data/01_pca.Rn.csv")
 colData <- left_join(colData, pca.Rn)
 head(colData)
 ```
@@ -271,7 +269,7 @@ pdf(file="../figures/04_correlations/correlations.pdf", width=6.69, height=3.5)
 plot(fig4)
 dev.off()
 
-pdf(file="../figures/figure_4.pdf", width=6.69, height=3.5)
+pdf(file="../figures/fig-4.pdf", width=6.69, height=3.5)
 plot(fig4)
 dev.off()
 ```
