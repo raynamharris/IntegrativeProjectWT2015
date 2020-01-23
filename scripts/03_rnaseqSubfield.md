@@ -410,7 +410,8 @@ Volcano plots
                           p5 + theme(legend.position = "none"), 
                           p6 + theme(legend.position = "none"), 
                           
-                          p7  + labs( y = "CA1 \n -log10(p-value)", x = "log fold change"), 
+                          p7  + labs( y = "CA1 \n -log10(p-value)", x = "log fold change") +
+                                 guides(color=guide_legend(title="increased in")), 
                           p8 + labs(x = "log fold change"), 
                           p9 + labs(x = "log fold change"), 
                           

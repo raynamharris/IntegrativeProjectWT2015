@@ -182,8 +182,8 @@ dev.off()
 ## Candidate gene
 
 ```{r allcandidates}
-classicmemgenes <- c("Camk2a" ,  "Gria2",  "Igf2" , "Nsf" , "Pick1",
-                        "Prkcb" ,  "Prkci",  "Prkcz", "Wwc1" )
+classicmemgenes <- c("Camk2a" , "Fmr1", "Gria2",  "Igf2" , "Mtor", "Nsf" , 
+                     "Pick1", "Prkcb" ,  "Prkci",  "Prkcz", "Wwc1")
 
 stabilizationgenes  <- c("Igf2bp2", "Lama1"  , "Lamb1"  , "Lamc1" ,  "Tnc" ,
                          "Tnxb"  ,  "Tnr" ,    "Gabra1" , "Ptprs"  , "Pnn"  , "Egfr")
@@ -193,7 +193,7 @@ ACTINngenes <- c("Limk1","Cfl1", "Rock2")
 astrocyticgenes <- c("Aldh1a1", "Aldh1l1" ,"Aldh1l2", "Slc1a2" , "Gfap" ,
                      "Gjb6" ,   "Fgfr3" ,  "Aqp4" ,   "Aldoc")
 
-allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes)
+allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes) 
 ```
 
 ```{r makecorrrmat}
@@ -206,19 +206,18 @@ makecorrrmatrix <- function(df){
 ```
 
 ```{r makecorrrmat1}
-corrrDG <- makecorrrmatrix(vsdDG)  
+corrrDG <- makecorrrmatrix(vsdDG)     
 ```
 
 ```{r makecorrrmat2}
-corrrCA3 <- makecorrrmatrix(vsdCA3)  
+corrrCA3 <- makecorrrmatrix(vsdCA3)      
 ```
 
 ```{r makecorrrmat3}
-corrrCA1 <- makecorrrmatrix(vsdCA1)  
+corrrCA1 <- makecorrrmatrix(vsdCA1)    
 ```
 
 ```{r classicmemgenes}
-
 plotcorrrs2 <- function(favgenes, corrs, whichsubfield, myPC1label, matrixlabel , mylabels){
   
   df <- corrs %>% 
@@ -261,9 +260,7 @@ plotcorrrs2 <- function(favgenes, corrs, whichsubfield, myPC1label, matrixlabel 
                    nrow = 1, labels = mylabels, label_size = 8, rel_widths = c(0.9,1.5))
   
   #filename <- paste("../data/06_", whichsubfield, "_candidatecorrelations.csv", sep = "")
-  
   #write.csv(df, filename)
-
   return(p123)
   
 }

@@ -383,8 +383,8 @@ Correlate ALL genes with PC1 and PC2
 Candidate gene
 --------------
 
-    classicmemgenes <- c("Camk2a" ,  "Gria2",  "Igf2" , "Nsf" , "Pick1",
-                            "Prkcb" ,  "Prkci",  "Prkcz", "Wwc1" )
+    classicmemgenes <- c("Camk2a" , "Fmr1", "Gria2",  "Igf2" , "Mtor", "Nsf" , 
+                         "Pick1", "Prkcb" ,  "Prkci",  "Prkcz", "Wwc1")
 
     stabilizationgenes  <- c("Igf2bp2", "Lama1"  , "Lamb1"  , "Lamc1" ,  "Tnc" ,
                              "Tnxb"  ,  "Tnr" ,    "Gabra1" , "Ptprs"  , "Pnn"  , "Egfr")
@@ -394,7 +394,7 @@ Candidate gene
     astrocyticgenes <- c("Aldh1a1", "Aldh1l1" ,"Aldh1l2", "Slc1a2" , "Gfap" ,
                          "Gjb6" ,   "Fgfr3" ,  "Aqp4" ,   "Aldoc")
 
-    allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes)
+    allcandidates <- c(classicmemgenes, ACTINngenes, stabilizationgenes, astrocyticgenes) 
 
     # Use `tail(names(vsd),10)` to see that last genes is "Zzz3"
     makecorrrmatrix <- function(df){
@@ -403,19 +403,19 @@ Candidate gene
       return(corrrmat)
     }
 
-    corrrDG <- makecorrrmatrix(vsdDG)  
+    corrrDG <- makecorrrmatrix(vsdDG)     
 
     ## 
     ## Correlation method: 'pearson'
     ## Missing treated using: 'pairwise.complete.obs'
 
-    corrrCA3 <- makecorrrmatrix(vsdCA3)  
+    corrrCA3 <- makecorrrmatrix(vsdCA3)      
 
     ## 
     ## Correlation method: 'pearson'
     ## Missing treated using: 'pairwise.complete.obs'
 
-    corrrCA1 <- makecorrrmatrix(vsdCA1)  
+    corrrCA1 <- makecorrrmatrix(vsdCA1)    
 
     ## 
     ## Correlation method: 'pearson'
@@ -463,27 +463,25 @@ Candidate gene
                        nrow = 1, labels = mylabels, label_size = 8, rel_widths = c(0.9,1.5))
       
       #filename <- paste("../data/06_", whichsubfield, "_candidatecorrelations.csv", sep = "")
-      
       #write.csv(df, filename)
-
       return(p123)
       
     }
 
     p4 <- plotcorrrs2(classicmemgenes, corrrDG, "DG", NULL, NULL,  c("a", "b" ))
 
-    ## Warning: Removed 9 rows containing missing values (geom_text).
+    ## Warning: Removed 11 rows containing missing values (geom_text).
 
     p5 <- plotcorrrs2(classicmemgenes, corrrCA3, "CA3", NULL, NULL, c("c","d"))
 
-    ## Warning: Removed 9 rows containing missing values (geom_text).
+    ## Warning: Removed 11 rows containing missing values (geom_text).
 
     p6 <- plotcorrrs2(classicmemgenes, corrrCA1, "CA1", 
                       "Correlation to PC1 \n (avoidance estimate)",
                       "Candidate genes \n ",
                       c("e", "f"))
 
-    ## Warning: Removed 9 rows containing missing values (geom_text).
+    ## Warning: Removed 11 rows containing missing values (geom_text).
 
     p456 <- plot_grid(p4,p5,p6, nrow = 3, rel_heights = c(1,1,1.2))
 
