@@ -395,7 +395,7 @@ Volcano plots
     ## 5   trained
     ## 6   trained
 
-    write.csv(allDEGs, "../data/03_allDEGs.csv", row.names = F)
+    write.csv(allDEGs, "../data/suppltable-4.csv", row.names = F)
 
     # volcano plots
 
