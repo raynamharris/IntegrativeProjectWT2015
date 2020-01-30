@@ -1,0 +1,161 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:87874	Ace	angiotensin I converting enzyme (peptidyl-dipeptidase A) 1	11		negative regulation of glucose import			ISO	RGD:2493 	J:155856 	
+MGI:106675	Adipoq	adiponectin, C1Q and collagen domain containing	16		positive regulation of glucose import			IDA		J:77479 	
+MGI:93830	Adipor2	adiponectin receptor 2	6		positive regulation of glucose import			ISO	RGD:1307891 	J:155856 	
+MGI:87971	Ahi1	Abelson helper integration site 1	10		negative regulation of glucose import			ISO	RGD:1303040 	J:155856 	
+MGI:87977	Ak1	adenylate kinase 1	2		positive regulation of glucose transmembrane transport			ISO	RGD:2076 	J:155856 	
+MGI:87986	Akt1	thymoma viral proto-oncogene 1	12		positive regulation of glucose import			ISO	P31749 	J:164563 	
+MGI:104874	Akt2	thymoma viral proto-oncogene 2	7		positive regulation of glucose import			IGI	MGI:1921991 	J:176652 	
+MGI:104874	Akt2	thymoma viral proto-oncogene 2	7		positive regulation of glucose import			ISO	RGD:2082 	J:155856 	
+MGI:104874	Akt2	thymoma viral proto-oncogene 2	7		positive regulation of glucose import			ISO	P31751 	J:164563 	
+MGI:1306797	Aoc3	amine oxidase, copper containing 3	11		positive regulation of glucose transmembrane transport			ISO	RGD:62058 	J:155856 	
+MGI:1920243	Appl1	adaptor protein, phosphotyrosine interaction, PH domain and leucine zipper containing 1	14		positive regulation of glucose import			ISO	Q9UKG1 	J:164563 	
+MGI:1920243	Appl1	adaptor protein, phosphotyrosine interaction, PH domain and leucine zipper containing 1	14		regulation of glucose import			ISO	Q9UKG1 	J:164563 	
+MGI:2384914	Appl2	adaptor protein, phosphotyrosine interaction, PH domain and leucine zipper containing 2	10		negative regulation of glucose import			IMP		J:156351 	
+MGI:2384914	Appl2	adaptor protein, phosphotyrosine interaction, PH domain and leucine zipper containing 2	10		negative regulation of glucose import			ISO	Q8NEU8 	J:164563 	
+MGI:1916188	Aspscr1	alveolar soft part sarcoma chromosome region, candidate 1 (human)	11		regulation of glucose import			IDA		J:89969 	
+MGI:88190	Braf	Braf transforming gene	6		positive regulation of glucose transmembrane transport			ISO	P15056 	J:164563 	
+MGI:1916433	C1qtnf2	C1q and tumor necrosis factor related protein 2	11		positive regulation of glucose import			IDA		J:92988 	
+MGI:1914639	C1qtnf12	C1q and tumor necrosis factor related 12	4		positive regulation of glucose import			IBA	PTN002513047 	J:265628 	
+MGI:1914639	C1qtnf12	C1q and tumor necrosis factor related 12	4		positive regulation of glucose import	regulates a function/process that happens in fat cell		IMP		J:183116 	
+MGI:1914639	C1qtnf12	C1q and tumor necrosis factor related 12	4		regulation of glucose import			IDA		J:177588 J:183116 	
+MGI:1921991	C2cd5	C2 calcium-dependent domain containing 5	6		positive regulation of glucose import			IGI	MGI:104874 	J:176652 	
+MGI:1921991	C2cd5	C2 calcium-dependent domain containing 5	6		positive regulation of glucose import			IMP		J:176652 	
+MGI:1921991	C2cd5	C2 calcium-dependent domain containing 5	6		positive regulation of glucose transmembrane transport			IMP		J:176652 	
+MGI:88227	C3	complement component 3	17		positive regulation of glucose transmembrane transport			ISO	P01024 	J:164563 	
+MGI:1344392	Capn10	calpain 10	1		positive regulation of glucose import			IMP		J:133015 	
+MGI:1344392	Capn10	calpain 10	1		positive regulation of glucose import			ISO	Q9HC96 	J:164563 	
+MGI:1923936	Clip3	CAP-GLY domain containing linker protein 3	7		positive regulation of glucose transmembrane transport			IMP		J:145864 	
+MGI:1889385	Crebl2	cAMP responsive element binding protein-like 2	6		positive regulation of glucose import			IMP		J:180535 	
+MGI:99578	Drd1	dopamine receptor D1	13		glucose import			IMP	MGI:1857158 	J:68124 	
+MGI:95283	Edn1	endothelin 1	13		regulation of glucose transmembrane transport			IDA		J:72781 	
+MGI:105923	Ednra	endothelin receptor type A	8		regulation of glucose transmembrane transport			IDA		J:72781 	
+MGI:97370	Enpp1	ectonucleotide pyrophosphatase/phosphodiesterase 1	10		negative regulation of glucose import			ISO	P22413 	J:164563 	
+MGI:95411	Erbb3	erb-b2 receptor tyrosine kinase 3	10		positive regulation of glucose import			ISO	RGD:69323 	J:155856 	
+MGI:104771	Erbb4	erb-b2 receptor tyrosine kinase 4	1		positive regulation of glucose import			ISO	RGD:620486 	J:155856 	
+MGI:3606476	Erfe	erythroferrone	1		positive regulation of glucose import			IBA	PTN002513047 	J:265628 	
+MGI:1352467	Esr1	estrogen receptor 1 (alpha)	10		negative regulation of glucose import			ISO	RGD:2581 	J:155856 	
+MGI:101790	Fabp5	fatty acid binding protein 5, epidermal	3		negative regulation of glucose transmembrane transport	happens in fat cell		IMP	MGI:2450172 	J:81609 	
+MGI:2147577	Ffar4	free fatty acid receptor 4	19		regulation of glucose transmembrane transport			IDA		J:166091 	
+MGI:1096383	Fgf15	fibroblast growth factor 15	7		positive regulation of glucose import			ISO	O95750 	J:164563 	
+MGI:1861377	Fgf21	fibroblast growth factor 21	7		positive regulation of glucose import			ISO	Q9NSA1 	J:164563 	
+MGI:95707	Gh	growth hormone	11		positive regulation of glucose transmembrane transport			ISO	P01241 	J:73065 	
+MGI:107504	Gip	gastric inhibitory polypeptide	11		positive regulation of glucose transmembrane transport			ISO	RGD:2709 	J:155856 	
+MGI:104903	Gpc3	glypican 3	X		positive regulation of glucose import			IDA		J:134067 	
+MGI:103232	Grb10	growth factor receptor bound protein 10	11		negative regulation of glucose import			IMP		J:149197 	
+MGI:87940	Grk2	G protein-coupled receptor kinase 2	19		negative regulation of glucose import			ISO	RGD:2062 	J:155856 	
+MGI:2152453	Gsk3a	glycogen synthase kinase 3 alpha	7		negative regulation of glucose import			ISO	P49840 	J:164563 	
+MGI:1315197	Hk2	hexokinase 2	6		regulation of glucose import	regulates a function/process that happens in skeletal muscle tissue		IMP	MGI:3624862 	J:126561 	
+MGI:98504	Hnf1a	HNF1 homeobox A	5		glucose import			IDA		J:106621 	
+MGI:98504	Hnf1a	HNF1 homeobox A	5		glucose import			ISO	P20823 	J:164563 	
+MGI:98504	Hnf1a	HNF1 homeobox A	5		renal glucose absorption			IDA		J:106621 	
+MGI:98504	Hnf1a	HNF1 homeobox A	5		renal glucose absorption			ISO	P20823 	J:164563 	
+MGI:96432	Igf1	insulin-like growth factor 1	10		positive regulation of glucose import			ISO	P05019 	J:164563 	
+MGI:96543	Il1b	interleukin 1 beta	2		negative regulation of glucose transmembrane transport			IDA		J:143678 	
+MGI:1194899	Inpp5k	inositol polyphosphate 5-phosphatase K	11		negative regulation of glucose transmembrane transport			ISO	Q9BT40 	J:164563 	
+MGI:96572	Ins1	insulin I	19		glucose transmembrane transport			TAS		J:79240 	
+MGI:96573	Ins2	insulin II	7		glucose transmembrane transport			TAS		J:79240 	
+MGI:96573	Ins2	insulin II	7		positive regulation of glucose import			ISO	P01308 	J:164563 	
+MGI:96575	Insr	insulin receptor	8		positive regulation of glucose import			ISO	P06213 	J:164563 	
+MGI:99454	Irs1	insulin receptor substrate 1	1		positive regulation of glucose import			ISO	P35568 	J:164563 	
+MGI:109334	Irs2	insulin receptor substrate 2	8		positive regulation of glucose import			ISO	Q9Y4H2 	J:164563 	
+MGI:1333831	Itln1	intelectin 1 (galactofuranose binding)	1		positive regulation of glucose import			ISO	Q8WWA0 	J:164563 	
+MGI:1929988	Klf15	Kruppel-like factor 15	6		positive regulation of glucose import			IDA		J:92922 	
+MGI:104663	Lep	leptin	6		negative regulation of glucose import			ISO	P41159 	J:164563 	
+MGI:1915671	Lmbrd1	LMBR1 domain containing 1	1		negative regulation of glucose import	happens in cardiac muscle cell	PR:Q8K0B2-1	IMP	MGI:5559223 	J:204994 	
+MGI:1346865	Mapk14	mitogen-activated protein kinase 14	17		positive regulation of glucose import	regulates a function/process that happens in extensor digitorum longus		IMP		J:176538 	
+MGI:99532	Mef2a	myocyte enhancer factor 2A	7		positive regulation of glucose import			IDA		J:92922 	
+MGI:96969	Met	met proto-oncogene	6		positive regulation of glucose transmembrane transport	regulates a function/process that happens in islets of Langerhans,regulates a function/process that happens in type B pancreatic cell		IMP	MGI:2176227 MGI:3041135 	J:99948 	
+MGI:2442786	Mfsd4a	major facilitator superfamily domain containing 4A	1		glucose transmembrane transport			IBA	PTN001137078 RGD:631438 	J:265628 	
+MGI:2143575	Mfsd4b1	major facilitator superfamily domain containing 4B1	10		glucose transmembrane transport			IBA	PTN001137078 RGD:631438 	J:265628 	
+MGI:1919295	Mfsd4b2	major facilitator superfamily domain containing 4B2	10		glucose transmembrane transport			IBA	PTN001137078 RGD:631438 	J:265628 	
+MGI:3773841	Mfsd4b3-ps	major facilitator superfamily domain containing 4B3, pseudogene	10		glucose transmembrane transport			IBA	PTN001137078 RGD:631438 	J:265628 	
+MGI:3035041	Mfsd4b4	major facilitator superfamily domain containing 4B4	10		glucose transmembrane transport			IBA	PTN001137078 RGD:631438 	J:265628 	
+MGI:2446139	Mfsd4b5	major facilitator superfamily domain containing 4B5	10		glucose transmembrane transport			IBA	PTN001137078 RGD:631438 	J:265628 	
+MGI:96982	Mif	macrophage migration inhibitory factor (glycosylation-inhibiting factor)	10		positive regulation of glucose import			ISO	RGD:621163 	J:155856 	
+MGI:97250	Myc	myelocytomatosis oncogene	15		negative regulation of glucose import			ISO	RGD:3130 	J:155856 	
+MGI:108420	Nfe2l2	nuclear factor, erythroid derived 2, like 2	2		positive regulation of glucose import			IDA		J:219261 	
+MGI:1352457	Nr4a3	nuclear receptor subfamily 4, group A, member 3	4		positive regulation of glucose transmembrane transport			ISO	Q92570 	J:164563 	
+MGI:106183	Ocln	occludin	13		positive regulation of glucose import			ISO	Q16625 	J:164563 	
+MGI:106183	Ocln	occludin	13		regulation of glucose transmembrane transport			ISO	Q16625 	J:164563 	
+MGI:1932139	Oga	O-GlcNAcase	19		positive regulation of glucose import			ISO	RGD:621077 	J:155856 	
+MGI:2443807	Osbpl8	oxysterol binding protein-like 8	10		positive regulation of glucose import	happens in cardiac muscle cell		IMP		J:222138 	
+MGI:2677164	Ostn	osteocrin	16		negative regulation of glucose import			IDA		J:89833 	
+MGI:104799	Pea15a	phosphoprotein enriched in astrocytes 15A	1		negative regulation of glucose import			ISO	Q15121 	J:164563 	
+MGI:2138391	Pid1	phosphotyrosine interaction domain containing 1	1		negative regulation of glucose import			IBA	PTN002701826 	J:265628 	
+MGI:2138391	Pid1	phosphotyrosine interaction domain containing 1	1		negative regulation of glucose import	happens at the same time as cellular response to insulin stimulus		IMP		J:180647 	
+MGI:2138391	Pid1	phosphotyrosine interaction domain containing 1	1		negative regulation of glucose import			ISO	Q7Z2X4 	J:164563 	
+MGI:102524	Pou4f2	POU domain, class 4, transcription factor 2	8		positive regulation of glucose import	is a part of cellular response to insulin stimulus,happens in UBERON:0035818|is a part of cellular response to insulin stimulus,happens in skeletal muscle tissue		IMP		J:235989 	
+MGI:97595	Prkca	protein kinase C, alpha	11		negative regulation of glucose import			IMP	MGI:2679305 	J:85923 	
+MGI:97596	Prkcb	protein kinase C, beta	7		negative regulation of glucose transmembrane transport			IMP		J:108802 	
+MGI:97596	Prkcb	protein kinase C, beta	7		regulation of glucose transmembrane transport			ISO	P05771 	J:164563 	
+MGI:97598	Prkcd	protein kinase C, delta	14		positive regulation of glucose import			ISO	RGD:67383 	J:155856 	
+MGI:99260	Prkci	protein kinase C, iota	3		positive regulation of glucose import			IMP		J:148082 	
+MGI:97799	Pth	parathyroid hormone	7		positive regulation of glucose import			ISO	P01270 	J:164563 	
+MGI:99511	Ptpn11	protein tyrosine phosphatase, non-receptor type 11	5		positive regulation of glucose import			ISO	Q06124 	J:164563 	
+MGI:105071	Rab4b	RAB4B, member RAS oncogene family	7		glucose import			ISO	P61018 	J:164563 	
+MGI:97852	Rap1a	RAS-related protein 1a	3		positive regulation of glucose import			ISO	RGD:1359694 	J:155856 	
+MGI:97860	Rasa1	RAS p21 protein activator 1	13		positive regulation of glucose import			ISO	RGD:3537 	J:155856 	
+MGI:1889817	Repin1	replication initiator 1	6		positive regulation of glucose import			IMP		J:164798 	
+MGI:1931553	Rhoq	ras homolog family member Q	17		negative regulation of glucose import			IC	GO:1903077 	J:75890 	
+MGI:1931553	Rhoq	ras homolog family member Q	17		positive regulation of glucose import			ISO	P17081 	J:164563 	
+MGI:1098272	Rnasel	ribonuclease L (2', 5'-oligoisoadenylate synthetase-dependent)	1		positive regulation of glucose import			IMP		J:204800 	
+MGI:1270849	Rps6kb1	ribosomal protein S6 kinase, polypeptide 1	11		regulation of glucose import			ISO	RGD:620683 	J:155856 	
+MGI:3526447	Rsc1a1	regulatory solute carrier protein, family 1, member 1	4		negative regulation of glucose transmembrane transport			ISO	Q92681 	J:164563 	
+MGI:107612	Rtn2	reticulon 2 (Z-band associated protein)	7		regulation of glucose import	regulates a function/process that happens in skeletal musculature		IMP	MGI:3528884 	J:158249 	
+MGI:2651874	Sesn2	sestrin 2	4		glucose import			IMP	MGI:3587950 	J:189021 	
+MGI:1345171	Sh2b2	SH2B adaptor protein 2	5		negative regulation of glucose import	regulates a function/process that happens in fat cell		ISA	MGI:2680256 	J:86301 	
+MGI:1354161	Sirt6	sirtuin 6	10		negative regulation of glucose import			IMP		J:167957 	
+MGI:101931	Slc1a2	solute carrier family 1 (glial high affinity glutamate transporter), member 2	2		positive regulation of glucose import			IMP	MGI:2449707 	J:102921 	
+MGI:95755	Slc2a1	solute carrier family 2 (facilitated glucose transporter), member 1	4		glucose transmembrane transport			IDA		J:153402 	
+MGI:95755	Slc2a1	solute carrier family 2 (facilitated glucose transporter), member 1	4		glucose transmembrane transport			ISO	P11166 	J:164563 	
+MGI:95755	Slc2a1	solute carrier family 2 (facilitated glucose transporter), member 1	4		glucose transmembrane transport			ISO	RGD:3704 	J:155856 	
+MGI:1095438	Slc2a2	solute carrier family 2 (facilitated glucose transporter), member 2	3		glucose transmembrane transport			IDA		J:153402 	
+MGI:1095438	Slc2a2	solute carrier family 2 (facilitated glucose transporter), member 2	3		glucose transmembrane transport			ISO	RGD:3705 	J:155856 	
+MGI:1095438	Slc2a2	solute carrier family 2 (facilitated glucose transporter), member 2	3		glucose transmembrane transport			ISO	P11168 	J:164563 	
+MGI:95757	Slc2a3	solute carrier family 2 (facilitated glucose transporter), member 3	6		glucose transmembrane transport			IDA		J:153402 	
+MGI:95757	Slc2a3	solute carrier family 2 (facilitated glucose transporter), member 3	6		glucose transmembrane transport	happens in placenta		IMP	MGI:3710246 	J:121238 	
+MGI:95757	Slc2a3	solute carrier family 2 (facilitated glucose transporter), member 3	6		glucose transmembrane transport			ISO	P11169 	J:164563 	
+MGI:95758	Slc2a4	solute carrier family 2 (facilitated glucose transporter), member 4	11		glucose import			ISO	RGD:2711 	J:155856 	
+MGI:95758	Slc2a4	solute carrier family 2 (facilitated glucose transporter), member 4	11		glucose import in response to insulin stimulus			IDA		J:234039 J:262363 	
+MGI:95758	Slc2a4	solute carrier family 2 (facilitated glucose transporter), member 4	11		glucose import in response to insulin stimulus			ISO	RGD:2711 	J:155856 	
+MGI:95758	Slc2a4	solute carrier family 2 (facilitated glucose transporter), member 4	11		glucose transmembrane transport			IDA		J:92922 J:99665 	
+MGI:95758	Slc2a4	solute carrier family 2 (facilitated glucose transporter), member 4	11		glucose transmembrane transport			ISO	RGD:2711 	J:155856 	
+MGI:95758	Slc2a4	solute carrier family 2 (facilitated glucose transporter), member 4	11		glucose transmembrane transport			TAS		J:49328 	
+MGI:1928369	Slc2a5	solute carrier family 2 (facilitated glucose transporter), member 5	4		glucose transmembrane transport			ISO	RGD:68328 	J:155856 	
+MGI:2443286	Slc2a6	solute carrier family 2 (facilitated glucose transporter), member 6	2		glucose import			IBA	PTN000756124 	J:265628 	
+MGI:1860103	Slc2a8	solute carrier family 2, (facilitated glucose transporter), member 8	2		glucose import			IBA	PTN000756124 	J:265628 	
+MGI:1860103	Slc2a8	solute carrier family 2, (facilitated glucose transporter), member 8	2		glucose transmembrane transport			IDA		J:62280 J:276390 	
+MGI:2152844	Slc2a9	solute carrier family 2 (facilitated glucose transporter), member 9	5		glucose transmembrane transport			IDA		J:88688 	
+MGI:2156687	Slc2a10	solute carrier family 2 (facilitated glucose transporter), member 10	2		glucose import			IBA	PTN000756124 	J:265628 	
+MGI:2156687	Slc2a10	solute carrier family 2 (facilitated glucose transporter), member 10	2		glucose transmembrane transport			ISO	AL031055 	J:71992 	
+MGI:3052471	Slc2a12	solute carrier family 2 (facilitated glucose transporter), member 12	10		glucose import			IBA	PTN000756124 	J:265628 	
+MGI:3052471	Slc2a12	solute carrier family 2 (facilitated glucose transporter), member 12	10		glucose transmembrane transport			IDA		J:192039 	
+MGI:2146030	Slc2a13	solute carrier family 2 (facilitated glucose transporter), member 13	15		glucose import			IBA	PTN000756124 	J:265628 	
+MGI:107678	Slc5a1	solute carrier family 5 (sodium/glucose cotransporter), member 1	5		glucose transmembrane transport			IMP		J:65175 	
+MGI:107678	Slc5a1	solute carrier family 5 (sodium/glucose cotransporter), member 1	5		glucose transmembrane transport			ISO	P13866 	J:73065 	
+MGI:2181411	Slc5a2	solute carrier family 5 (sodium/glucose cotransporter), member 2	7		glucose transmembrane transport			IBA	P13866 P31639 PTN000213391 RGD:3713 RGD:620217 	J:265628 	
+MGI:2181411	Slc5a2	solute carrier family 5 (sodium/glucose cotransporter), member 2	7		glucose transmembrane transport			ISO	RGD:620217 	J:155856 	
+MGI:1890478	Slc5a4b	solute carrier family 5 (neutral amino acid transporters, system A), member 4b	10		glucose transmembrane transport			IDA		J:162526 J:170569 	
+MGI:2140201	Slc5a9	solute carrier family 5 (sodium/glucose cotransporter), member 9	4		glucose transmembrane transport			IBA	P13866 P31639 PTN000213391 RGD:3713 RGD:620217 	J:265628 	
+MGI:1921261	Slc25a27	solute carrier family 25, member 27	17		regulation of glucose import			ISO	RGD:620787 	J:155856 	
+MGI:2653235	Slc45a1	solute carrier family 45, member 1	4		glucose transmembrane transport			ISO	RGD:708502 	J:155856 	
+MGI:2653235	Slc45a1	solute carrier family 45, member 1	4		glucose transmembrane transport			ISO	Q9Y2W3 	J:164563 	
+MGI:700014	Sorbs1	sorbin and SH3 domain containing 1	19		positive regulation of glucose import	happens at the same time as response to insulin		IDA		J:114794 	
+MGI:700014	Sorbs1	sorbin and SH3 domain containing 1	19		positive regulation of glucose import			IMP		J:114794 	
+MGI:1338015	Sort1	sortilin 1	3		glucose import			IMP		J:99400 	
+MGI:1338015	Sort1	sortilin 1	3		glucose import			ISO	Q99523 	J:164563 	
+MGI:107362	Stxbp3	syntaxin binding protein 3	3		negative regulation of glucose import			IDA		J:79240 	
+MGI:107362	Stxbp3	syntaxin binding protein 3	3		negative regulation of glucose import			IMP		J:79240 	
+MGI:1342296	Stxbp4	syntaxin binding protein 4	11		regulation of glucose transmembrane transport			IDA		J:55848 	
+MGI:1202709	Tert	telomerase reverse transcriptase	13		positive regulation of glucose import	happens in myoblast		IMP		J:217943 	
+MGI:104798	Tnf	tumor necrosis factor	17		negative regulation of glucose import			IDA		J:77479 	
+MGI:104798	Tnf	tumor necrosis factor	17		negative regulation of glucose import			ISO	RGD:3876 	J:155856 	
+MGI:3029307	Trarg1	trafficking regulator of GLUT4 (SLC2A4) 1	11		glucose import in response to insulin stimulus			IDA		J:262363 	
+MGI:3029307	Trarg1	trafficking regulator of GLUT4 (SLC2A4) 1	11		glucose import in response to insulin stimulus	happens in fat cell		IMP		J:234039 	
+MGI:1345675	Trib3	tribbles pseudokinase 3	2		regulation of glucose transmembrane transport			IDA		J:113933 	
+MGI:1929183	Tsc1	TSC complex subunit 1	2		glucose import			IMP	MGI:2656240 	J:136406 	
+MGI:102548	Tsc2	TSC complex subunit 2	17		glucose import			IMP		J:136406 	
+MGI:2140882	Upk3b	uroplakin 3B	5		negative regulation of glucose import			IMP		J:204269 	
+MGI:99147	Yes1	YES proto-oncogene 1, Src family tyrosine kinase	5		regulation of glucose transmembrane transport			IDA		J:72781 	
+

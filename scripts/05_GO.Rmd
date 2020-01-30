@@ -41,8 +41,8 @@ GOterms
 
 
 ```{r}
-DGDEGs <- read_csv("../data/03_DG_DEGs_yokedtrained.csv") %>% filter(direction == "trained")
-DGDEGs$gene <- str_to_title(DGDEGs$gene)
+DGDEGs <- read_csv("../data/suppltable-4.csv") %>% 
+  filter(tissue == "DG", comparison == "yoked vs. trained")
 DGDEGs$gene
 
 GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
@@ -51,6 +51,66 @@ GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
   group_by(GO) %>%
   summarize(genes = str_c(gene, collapse = ", "))
 head(GOtermsDEGs)
+```
+
+## are genes in GO term significant?
+
+```{r}
+
+totalGOterm <- GOterms %>%
+  group_by(GO) %>%
+  summarise(totalgenes = n())
+
+totalSignificantgenesperGO <- inner_join(GOterms, DGDEGs) %>%
+  arrange(GO,gene) %>%
+  dplyr::select(gene, GO) %>% 
+  group_by(GO) %>%
+  summarise(significantgenes = n())
+
+GOsummary <- full_join(totalGOterm, totalSignificantgenesperGO) %>%
+  mutate(percent = significantgenes / totalgenes * 100) %>%
+  mutate(percent = round(percent,2))
+GOsummary
+
+GO_DNArepair <- read.table("../data/goterms/GO_term_summary_20200130_140500.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+GO_DNArepair$GO <- "5. DNA repair (GO:0006281)" 
+
+GO_signaltransduction <- read.table("../data/goterms/GO_term_summary_20200130_140705.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+GO_signaltransduction$GO <- "6. Signal transduction (GO:0007165)" 
+
+GO_heterocyclebiosyntheticprocess <- read.table("../data/goterms/GO_term_summary_20200130_140958.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+GO_heterocyclebiosyntheticprocess$GO <- "7. Heterocycle biosynthetic process (GO:0018130)" 
+
+
+GO_glucosetransmembranetransport <- read.table("../data/goterms/GO_term_summary_20200130_141051.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+GO_glucosetransmembranetransport$GO <- "8. Glucose transmembrane transport (GO:1904659)" 
+
+GOterms2 <- rbind(GO_DNArepair, GO_signaltransduction, GO_heterocyclebiosyntheticprocess, GO_glucosetransmembranetransport)
+GOterms2 <- GOterms2 %>%
+  dplyr::mutate(gene = str_to_title(MGI.Gene.Marker.ID)) %>%
+  dplyr::select(gene, GO) %>% 
+  dplyr::distinct(gene, GO) %>% 
+ group_by(gene) 
+GOterms2
+
+
+
+totalGOterm2 <- GOterms2 %>%
+  group_by(GO) %>%
+  summarise(totalgenes = n())
+
+totalSignificantgenesperGO2 <- inner_join(GOterms2, DGDEGs) %>%
+  arrange(GO,gene) %>%
+  dplyr::select(gene, GO) %>% 
+  group_by(GO) %>%
+  summarise(significantgenes = n())
+
+GOsummary2 <- full_join(totalGOterm2, totalSignificantgenesperGO2) %>%
+  mutate(percent = significantgenes / totalgenes * 100) %>%
+  mutate(percent = round(percent,2))
+GOsummary2
+
+rbind(GOsummary,GOsummary2)
 ```
 
 
