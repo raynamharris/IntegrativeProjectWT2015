@@ -15,16 +15,16 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Hypothesised GO Terms
 
 ```{r}
-GO_response <- read.table("../data/goterms/GO_term_summary_20191121_150656.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+GO_response <- read.table("../data/goterms/01_responsetostimulus.txt", sep = "\t", row.names = NULL,  fill=TRUE)
 GO_response$GO <- "1. Response to Stimulus (GO:0050896)"
 
-GO_translation <- read.table("../data/goterms/GO_term_summary_20191121_141252.txt", sep = "\t", row.names = NULL)
+GO_translation <- read.table("../data/goterms/02_translation.txt", sep = "\t", row.names = NULL)
 GO_translation$GO <- "2. Translation (GO:0006412)"
 
-GO_synapse <- read.table("../data/goterms/GO_term_summary_20191121_145034.txt", sep = "\t", row.names = NULL)
+GO_synapse <- read.table("../data/goterms/03_synapseorganization.txt", sep = "\t", row.names = NULL)
 GO_synapse$GO <- "3. Synapse Organization (GO:0050808)"
 
-GO_learningormemory <- read.table("../data/goterms/GO_term_summary_20191121_142500.txt", sep = "\t", row.names = NULL)
+GO_learningormemory <- read.table("../data/goterms/04_learningormemory.txt", sep = "\t", row.names = NULL)
 GO_learningormemory$GO <- "4. Learning or Memory (GO:0007611)"
 
 GOterms <- rbind(GO_learningormemory, GO_response, GO_translation, GO_synapse)
@@ -72,17 +72,31 @@ GOsummary <- full_join(totalGOterm, totalSignificantgenesperGO) %>%
   mutate(percent = round(percent,2))
 GOsummary
 
-GO_DNArepair <- read.table("../data/goterms/GO_term_summary_20200130_140500.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+```
+
+## what about random GO terms
+
+FROM http://geneontology.org/docs/ontology-documentation/ 
+The larger processes, or ‘biological programs’ accomplished by multiple molecular activities. **Examples of broad biological process terms** are _DNA repair_ or _signal transduction_. Examples of more specific terms are _pyrimidine nucleobase biosynthetic process_ or _glucose transmembrane transport_. Note that a biological process is not equivalent to a pathway. At present, the GO does not try to represent the dynamics or dependencies that would be required to fully describe a pathway. Examples of broad biological process terms are DNA repair or signal transduction. Examples of more specific terms are pyrimidine nucleobase biosynthetic process or glucose transmembrane transport.
+
+Found all those at http://www.informatics.jax.org/vocab/gene_ontology
+
+_Note: "pyrimidine nucleobase biosynthetic process" was too small, so I went up to leveles and chose "heterocycle biosynthetic process" instead._
+
+```{r}
+
+
+GO_DNArepair <- read.table("../data/goterms/05_DNArepair.txt", sep = "\t", row.names = NULL,  fill=TRUE)
 GO_DNArepair$GO <- "5. DNA repair (GO:0006281)" 
 
-GO_signaltransduction <- read.table("../data/goterms/GO_term_summary_20200130_140705.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+GO_signaltransduction <- read.table("../data/goterms/06_signaltransduction.txt", sep = "\t", row.names = NULL,  fill=TRUE)
 GO_signaltransduction$GO <- "6. Signal transduction (GO:0007165)" 
 
-GO_heterocyclebiosyntheticprocess <- read.table("../data/goterms/GO_term_summary_20200130_140958.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+GO_heterocyclebiosyntheticprocess <- read.table("../data/goterms/07_heterocyclebiosyntheticprocess.txt", sep = "\t", row.names = NULL,  fill=TRUE)
 GO_heterocyclebiosyntheticprocess$GO <- "7. Heterocycle biosynthetic process (GO:0018130)" 
 
 
-GO_glucosetransmembranetransport <- read.table("../data/goterms/GO_term_summary_20200130_141051.txt", sep = "\t", row.names = NULL,  fill=TRUE)
+GO_glucosetransmembranetransport <- read.table("../data/goterms/08_glucosetransmembranetransport.txt", sep = "\t", row.names = NULL,  fill=TRUE)
 GO_glucosetransmembranetransport$GO <- "8. Glucose transmembrane transport (GO:1904659)" 
 
 GOterms2 <- rbind(GO_DNArepair, GO_signaltransduction, GO_heterocyclebiosyntheticprocess, GO_glucosetransmembranetransport)
