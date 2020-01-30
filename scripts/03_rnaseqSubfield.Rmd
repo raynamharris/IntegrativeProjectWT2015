@@ -13,6 +13,7 @@ library(cowplot) ## for some easy to use themes
 library(DESeq2) ## for gene expression analysis
 library(png)
 library(grid)
+library(scales)
 
 library(BiocParallel)
 register(MulticoreParam(6))
@@ -92,10 +93,13 @@ CA1c <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.yoked", "standard.y
 allDEGs <- rbind(DGa, DGb, DGc, 
                        CA3a, CA3b, CA3c, 
                        CA1a, CA1b, CA1c) %>% 
-  dplyr::filter(direction != "NS")
+  dplyr::filter(direction != "NS") %>%
+    dplyr::mutate(lfc = round(lfc, 2),
+                  padj = scientific(padj, digits = 3),
+                  logpadj = round(logpadj, 2))
 head(allDEGs) 
 
-write.csv(allDEGs, "../data/suppltable-4.csv", row.names = F)
+write_csv(allDEGs, "../data/suppltable-4.csv")
 ```
 
 

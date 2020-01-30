@@ -112,7 +112,7 @@ calculateDEGs <-  function(mydds, whichtissue, whichfactor, up, down){
   data <- data %>%
     dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
                                      yes = up, no = ifelse(data$lfc < 0 & data$padj < 0.1, 
-                                                           yes = down, no = "NS")))
+                                                           yes = down, no = "NS"))) 
   data$direction <- factor(data$direction, levels = c(down, "NS", up))
   data$tissue <- whichtissue
   data$comparison <- paste0(down, " vs. ", up, sep = "" )
@@ -120,12 +120,6 @@ calculateDEGs <-  function(mydds, whichtissue, whichfactor, up, down){
   return(data)
 }  
 
-saveDEGs <-  function(data, whichtissue, up, down){
-  DEGs <- data %>% filter(direction != "NS")
-  myfilename <-  paste("../data/03_", whichtissue, "_DEGs_", down, up, sep = "")
-  filenamewithextension <- paste(myfilename, ".csv", sep = "")
-  if (dim(DEGs)[1] != 0) {return(write.csv(DEGs, filenamewithextension))}
-}  
 
 plot.volcano <- function(data, mycolors, mysubtitle){
   

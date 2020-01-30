@@ -11,6 +11,7 @@ have been inserted just below the subheadings.
     library(DESeq2) ## for gene expression analysis
     library(png)
     library(grid)
+    library(scales)
 
     library(BiocParallel)
     register(MulticoreParam(6))
@@ -377,25 +378,21 @@ Volcano plots
     allDEGs <- rbind(DGa, DGb, DGc, 
                            CA3a, CA3b, CA3c, 
                            CA1a, CA1b, CA1c) %>% 
-      dplyr::filter(direction != "NS")
+      dplyr::filter(direction != "NS") %>%
+        dplyr::mutate(lfc = round(lfc, 2),
+                      padj = scientific(padj, digits = 3),
+                      logpadj = round(logpadj, 2))
     head(allDEGs) 
 
-    ##   tissue   gene       lfc         padj  logpadj        comparison
-    ## 1     DG Hs6st1 0.6039057 3.789359e-03 2.421434 yoked vs. trained
-    ## 2     DG Pou3f3 0.5492776 3.533208e-02 1.451831 yoked vs. trained
-    ## 3     DG  Zdbf2 1.5636194 7.149235e-05 4.145740 yoked vs. trained
-    ## 4     DG   Fzd5 3.2102837 3.783162e-09 8.422145 yoked vs. trained
-    ## 5     DG   Scg2 1.1523232 3.149710e-02 1.501729 yoked vs. trained
-    ## 6     DG   Cul3 0.4314816 4.259832e-02 1.370608 yoked vs. trained
-    ##   direction
-    ## 1   trained
-    ## 2   trained
-    ## 3   trained
-    ## 4   trained
-    ## 5   trained
-    ## 6   trained
+    ##   tissue   gene  lfc     padj logpadj        comparison direction
+    ## 1     DG Hs6st1 0.60 3.79e-03    2.42 yoked vs. trained   trained
+    ## 2     DG Pou3f3 0.55 3.53e-02    1.45 yoked vs. trained   trained
+    ## 3     DG  Zdbf2 1.56 7.15e-05    4.15 yoked vs. trained   trained
+    ## 4     DG   Fzd5 3.21 3.78e-09    8.42 yoked vs. trained   trained
+    ## 5     DG   Scg2 1.15 3.15e-02    1.50 yoked vs. trained   trained
+    ## 6     DG   Cul3 0.43 4.26e-02    1.37 yoked vs. trained   trained
 
-    write.csv(allDEGs, "../data/suppltable-4.csv", row.names = F)
+    write_csv(allDEGs, "../data/suppltable-4.csv")
 
     # volcano plots
 
