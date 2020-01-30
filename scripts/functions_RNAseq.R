@@ -114,6 +114,9 @@ calculateDEGs <-  function(mydds, whichtissue, whichfactor, up, down){
                                      yes = up, no = ifelse(data$lfc < 0 & data$padj < 0.1, 
                                                            yes = down, no = "NS")))
   data$direction <- factor(data$direction, levels = c(down, "NS", up))
+  data$tissue <- whichtissue
+  data$comparison <- paste0(down, " vs. ", up, sep = "" )
+  data <- data %>% select(tissue, gene, lfc, padj, logpadj, comparison, direction) 
   return(data)
 }  
 

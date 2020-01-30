@@ -372,19 +372,30 @@ Volcano plots
     CA1b <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.trained", "standard.trained") 
     CA1c <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.yoked", "standard.yoked") 
 
-    # save files where there are DEGs
+    # save df with DEGs
 
-    saveDEGs(DGa, "DG", "trained", "yoked") 
-    saveDEGs(DGb, "DG", "conflict.trained", "standard.trained") 
-    saveDEGs(DGc, "DG", "conflict.yoked", "standard.yoked") 
+    allDEGs <- rbind(DGa, DGb, DGc, 
+                           CA3a, CA3b, CA3c, 
+                           CA1a, CA1b, CA1c) %>% 
+      dplyr::filter(direction != "NS")
+    head(allDEGs) 
 
-    saveDEGs(CA3a, "CA3", "trained", "yoked") 
-    saveDEGs(CA3b, "CA3", "conflict.trained", "standard.trained") 
-    saveDEGs(CA3c, "CA3", "conflict.yoked", "standard.yoked") 
+    ##   tissue   gene       lfc         padj  logpadj        comparison
+    ## 1     DG Hs6st1 0.6039057 3.789359e-03 2.421434 yoked vs. trained
+    ## 2     DG Pou3f3 0.5492776 3.533208e-02 1.451831 yoked vs. trained
+    ## 3     DG  Zdbf2 1.5636194 7.149235e-05 4.145740 yoked vs. trained
+    ## 4     DG   Fzd5 3.2102837 3.783162e-09 8.422145 yoked vs. trained
+    ## 5     DG   Scg2 1.1523232 3.149710e-02 1.501729 yoked vs. trained
+    ## 6     DG   Cul3 0.4314816 4.259832e-02 1.370608 yoked vs. trained
+    ##   direction
+    ## 1   trained
+    ## 2   trained
+    ## 3   trained
+    ## 4   trained
+    ## 5   trained
+    ## 6   trained
 
-    saveDEGs(CA1a, "CA1", "trained", "yoked") 
-    saveDEGs(CA1b, "CA1", "conflict.trained", "standard.trained") 
-    saveDEGs(CA1c, "CA1", "conflict.yoked", "standard.yoked") 
+    write.csv(allDEGs, "../data/03_allDEGs.csv", row.names = F)
 
     # volcano plots
 

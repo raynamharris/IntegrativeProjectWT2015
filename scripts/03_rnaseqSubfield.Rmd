@@ -87,19 +87,15 @@ CA1a <- calculateDEGs(CA1dds2, "CA1", "training", "trained", "yoked")
 CA1b <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.trained", "standard.trained") 
 CA1c <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.yoked", "standard.yoked") 
 
-# save files where there are DEGs
+# save df with DEGs
 
-saveDEGs(DGa, "DG", "trained", "yoked") 
-saveDEGs(DGb, "DG", "conflict.trained", "standard.trained") 
-saveDEGs(DGc, "DG", "conflict.yoked", "standard.yoked") 
+allDEGs <- rbind(DGa, DGb, DGc, 
+                       CA3a, CA3b, CA3c, 
+                       CA1a, CA1b, CA1c) %>% 
+  dplyr::filter(direction != "NS")
+head(allDEGs) 
 
-saveDEGs(CA3a, "CA3", "trained", "yoked") 
-saveDEGs(CA3b, "CA3", "conflict.trained", "standard.trained") 
-saveDEGs(CA3c, "CA3", "conflict.yoked", "standard.yoked") 
-
-saveDEGs(CA1a, "CA1", "trained", "yoked") 
-saveDEGs(CA1b, "CA1", "conflict.trained", "standard.trained") 
-saveDEGs(CA1c, "CA1", "conflict.yoked", "standard.yoked") 
+write.csv(allDEGs, "../data/03_allDEGs.csv", row.names = F)
 ```
 
 
