@@ -53,28 +53,7 @@ GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
 head(GOtermsDEGs)
 ```
 
-## are genes in GO term significant?
-
-```{r}
-
-totalGOterm <- GOterms %>%
-  group_by(GO) %>%
-  summarise(totalgenes = n())
-
-totalSignificantgenesperGO <- inner_join(GOterms, DGDEGs) %>%
-  arrange(GO,gene) %>%
-  dplyr::select(gene, GO) %>% 
-  group_by(GO) %>%
-  summarise(significantgenes = n())
-
-GOsummary <- full_join(totalGOterm, totalSignificantgenesperGO) %>%
-  mutate(percent = significantgenes / totalgenes * 100) %>%
-  mutate(percent = round(percent,2))
-GOsummary
-
-```
-
-## what about random GO terms
+## are genes in GO term significant? what about random GO terms and significantly enriched GO terms
 
 FROM http://geneontology.org/docs/ontology-documentation/ 
 The larger processes, or ‘biological programs’ accomplished by multiple molecular activities. **Examples of broad biological process terms** are _DNA repair_ or _signal transduction_. Examples of more specific terms are _pyrimidine nucleobase biosynthetic process_ or _glucose transmembrane transport_. Note that a biological process is not equivalent to a pathway. At present, the GO does not try to represent the dynamics or dependencies that would be required to fully describe a pathway. Examples of broad biological process terms are DNA repair or signal transduction. Examples of more specific terms are pyrimidine nucleobase biosynthetic process or glucose transmembrane transport.
@@ -83,49 +62,71 @@ Found all those at http://www.informatics.jax.org/vocab/gene_ontology
 
 _Note: "pyrimidine nucleobase biosynthetic process" was too small, so I went up to leveles and chose "heterocycle biosynthetic process" instead._
 
-```{r}
+Top 4 GO terms from http://bioinformatics.sdstate.edu/go/ identified with 214 DG DEGs. 
+
+![](../figures/05_GO/Screen Shot 2020-01-30 at 11.19.35 AM.png)
 
 
-GO_DNArepair <- read.table("../data/goterms/05_DNArepair.txt", sep = "\t", row.names = NULL,  fill=TRUE)
-GO_DNArepair$GO <- "5. DNA repair (GO:0006281)" 
+```{r moreGOterms}
+# https://serialmentor.com/blog/2016/6/13/reading-and-combining-many-tidy-data-files-in-R
 
-GO_signaltransduction <- read.table("../data/goterms/06_signaltransduction.txt", sep = "\t", row.names = NULL,  fill=TRUE)
-GO_signaltransduction$GO <- "6. Signal transduction (GO:0007165)" 
+data_path <- "../data/goterms/"   # path to the data
+files <- dir(data_path, pattern = "*.txt") # get file names
 
-GO_heterocyclebiosyntheticprocess <- read.table("../data/goterms/07_heterocyclebiosyntheticprocess.txt", sep = "\t", row.names = NULL,  fill=TRUE)
-GO_heterocyclebiosyntheticprocess$GO <- "7. Heterocycle biosynthetic process (GO:0018130)" 
+filesdf <- as.data.frame(files)
+filesdf$source <- c(1:12)
+filesdf
 
+data <- files %>%
+  # read in all the files, appending the path before the filename
+  map_df(~ read.table(file.path(data_path, .),  sep = "\t", 
+                      row.names = NULL,  fill=TRUE), .id = "source") %>%
+  mutate(source = as.numeric(source)) %>%
+  select(source, MGI.Gene.Marker.ID) %>%
+  left_join(filesdf, .)  %>% 
+  mutate_at(.vars = "files",  .funs = gsub,
+            pattern = ".txt", replacement = "") %>%
+  dplyr::rename("GO" = "files",
+         "gene" = "MGI.Gene.Marker.ID") %>%
+  dplyr::select(GO, gene)
+head(data)
 
-GO_glucosetransmembranetransport <- read.table("../data/goterms/08_glucosetransmembranetransport.txt", sep = "\t", row.names = NULL,  fill=TRUE)
-GO_glucosetransmembranetransport$GO <- "8. Glucose transmembrane transport (GO:1904659)" 
-
-GOterms2 <- rbind(GO_DNArepair, GO_signaltransduction, GO_heterocyclebiosyntheticprocess, GO_glucosetransmembranetransport)
-GOterms2 <- GOterms2 %>%
-  dplyr::mutate(gene = str_to_title(MGI.Gene.Marker.ID)) %>%
+GOtermsDEGs2 <- inner_join(data, DGDEGs) %>%
+  arrange(GO,gene) %>%
   dplyr::select(gene, GO) %>% 
   dplyr::distinct(gene, GO) %>% 
- group_by(gene) 
-GOterms2
+  group_by(GO) %>%
+  summarize(genes = str_c(gene, collapse = ", "))
+head(GOtermsDEGs2)
 
-
-
-totalGOterm2 <- GOterms2 %>%
+totalGOterm3 <- data %>%
   group_by(GO) %>%
   summarise(totalgenes = n())
 
-totalSignificantgenesperGO2 <- inner_join(GOterms2, DGDEGs) %>%
+totalSignificantgenesperGO3 <- inner_join(data, DGDEGs) %>%
   arrange(GO,gene) %>%
   dplyr::select(gene, GO) %>% 
   group_by(GO) %>%
   summarise(significantgenes = n())
+totalSignificantgenesperGO3
 
-GOsummary2 <- full_join(totalGOterm2, totalSignificantgenesperGO2) %>%
+GOsummary3 <- full_join(totalGOterm3, totalSignificantgenesperGO3) %>%
   mutate(percent = significantgenes / totalgenes * 100) %>%
-  mutate(percent = round(percent,2))
-GOsummary2
+  mutate(percent = round(percent,2)) %>%
+  mutate(category = ifelse(grepl("01|02|03|04", GO), "hypothesis",
+                          ifelse(grepl("05|06|07|08", GO), "random",
+                                 ifelse(grepl("09|10|11|12", GO), "enriched", NA)))) %>%
+  select(category, GO, totalgenes, significantgenes, percent)  %>%
+  mutate(higerthanmeanenrich = ifelse(percent > 2.465, "yes", "no"))
+GOsummary3
 
-rbind(GOsummary,GOsummary2)
+write.csv(GOtermsDEGs2, "../data/05_GOtermsDEGs2.csv", row.names = F)
+write.csv(GOsummary3, "../data/05_GOsummary3.csv", row.names = F)
+
 ```
+
+
+
 
 
 ## sanes
