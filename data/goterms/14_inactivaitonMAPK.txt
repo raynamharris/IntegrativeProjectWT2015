@@ -1,0 +1,27 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:102709	Cav1	caveolin 1, caveolae protein	6		inactivation of MAPK activity	regulates a function/process that happens in heart,regulates a function/process that happens in fibroblast		IMP	MGI:2180364 	J:82042 	
+MGI:105120	Dusp1	dual specificity phosphatase 1	17		inactivation of MAPK activity			IBA	PTN002468407 	J:265628 	
+MGI:101911	Dusp2	dual specificity phosphatase 2	2		inactivation of MAPK activity			IBA	PTN002468407 	J:265628 	
+MGI:1919599	Dusp3	dual specificity phosphatase 3 (vaccinia virus phosphatase VH1-related)	11		inactivation of MAPK activity			IBA	P51452 PTN000806783 	J:265628 	
+MGI:1919599	Dusp3	dual specificity phosphatase 3 (vaccinia virus phosphatase VH1-related)	11		inactivation of MAPK activity			ISO	P51452 	J:164563 	
+MGI:2442191	Dusp4	dual specificity phosphatase 4	8		inactivation of MAPK activity			IBA	PTN002468407 	J:265628 	
+MGI:2442191	Dusp4	dual specificity phosphatase 4	8		inactivation of MAPK activity			ISO	Q13115 	J:164563 	
+MGI:2685183	Dusp5	dual specificity phosphatase 5	19		inactivation of MAPK activity			IBA	PTN002468407 	J:265628 	
+MGI:1914853	Dusp6	dual specificity phosphatase 6	10		inactivation of MAPK activity			ISO	Q16828 	J:164563 	
+MGI:106626	Dusp8	dual specificity phosphatase 8	7		inactivation of MAPK activity			IBA	PTN002468407 	J:265628 	
+MGI:106626	Dusp8	dual specificity phosphatase 8	7		inactivation of MAPK activity			IMP		J:234006 	
+MGI:2387107	Dusp9	dual specificity phosphatase 9	X		inactivation of MAPK activity			IDA		J:76596 	
+MGI:1927070	Dusp10	dual specificity phosphatase 10	1		inactivation of MAPK activity			IBA	PTN002468407 	J:265628 	
+MGI:1927070	Dusp10	dual specificity phosphatase 10	1		inactivation of MAPK activity			ISO	Q9Y6W6 	J:164563 	
+MGI:1917936	Dusp16	dual specificity phosphatase 16	6		inactivation of MAPK activity			IBA	PTN002468407 	J:265628 	
+MGI:1917936	Dusp16	dual specificity phosphatase 16	6		inactivation of MAPK activity			IDA		J:72184 	
+MGI:1915332	Dusp19	dual specificity phosphatase 19	2		inactivation of MAPK activity			IDA		J:77441 	
+MGI:2443362	Lax1	lymphocyte transmembrane adaptor 1	1		inactivation of MAPK activity			ISO	Q8IWV1 	J:164563 	
+MGI:97595	Prkca	protein kinase C, alpha	11		inactivation of MAPK activity			IMP	MGI:2679305 	J:85923 	
+MGI:2150016	Spred1	sprouty protein with EVH-1 domain 1, related sequence	2		inactivation of MAPK activity			IBA	PTN000128440 	J:265628 	
+MGI:2150016	Spred1	sprouty protein with EVH-1 domain 1, related sequence	2		inactivation of MAPK activity			IMP		J:82566 	
+MGI:2150019	Spred2	sprouty-related EVH1 domain containing 2	11		inactivation of MAPK activity			IBA	PTN000128440 	J:265628 	
+MGI:2150019	Spred2	sprouty-related EVH1 domain containing 2	11		inactivation of MAPK activity			IMP		J:82566 	
+MGI:2142186	Spred3	sprouty-related EVH1 domain containing 3	7		inactivation of MAPK activity			IBA	PTN000128440 	J:265628 	
+MGI:2142186	Spred3	sprouty-related EVH1 domain containing 3	7		inactivation of MAPK activity			IMP		J:82566 	
+

@@ -1,0 +1,379 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:1328365	Aanat	arylalkylamine N-acetyltransferase	11		circadian rhythm			IBA	PTN000097491 	J:265628 	
+MGI:1328365	Aanat	arylalkylamine N-acetyltransferase	11		circadian rhythm			ISO	Q16613 	J:164563 	
+MGI:87916	Ada	adenosine deaminase	2		negative regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:2031 	J:155856 	
+MGI:99677	Adcy1	adenylate cyclase 1	11		regulation of circadian rhythm			IMP		J:202325 	
+MGI:99401	Adora1	adenosine A1 receptor	1		negative regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:2048 	J:155856 	
+MGI:99401	Adora1	adenosine A1 receptor	1		negative regulation of circadian sleep/wake cycle, sleep			ISO	RGD:2048 	J:155856 	
+MGI:99402	Adora2a	adenosine A2a receptor	10		positive regulation of circadian sleep/wake cycle, sleep			ISO	RGD:2049 	J:155856 	
+MGI:87937	Adrb1	adrenergic receptor, beta 1	19		regulation of circadian sleep/wake cycle, sleep			IMP		J:279954 	
+MGI:87937	Adrb1	adrenergic receptor, beta 1	19		regulation of circadian sleep/wake cycle, sleep			ISO	P08588 	J:164563 	
+MGI:87968	Ahcy	S-adenosylhomocysteine hydrolase	2		circadian sleep/wake cycle			ISO	RGD:69260 	J:155856 	
+MGI:105043	Ahr	aryl-hydrocarbon receptor	12		circadian regulation of gene expression			IDA		J:162974 	
+MGI:87991	Alb	albumin	5		positive regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:2085 	J:155856 	
+MGI:2686021	Ankfn1	ankyrin-repeat and fibronectin type III domain containing 1	11		locomotor rhythm			IMP	MGI:2183465 	J:221935 	
+MGI:1096381	Arntl	aryl hydrocarbon receptor nuclear translocator-like	7		circadian regulation of gene expression			IDA		J:188853 J:209571 	
+MGI:1096381	Arntl	aryl hydrocarbon receptor nuclear translocator-like	7		circadian regulation of gene expression			IMP		J:147991 J:148217 J:162641 J:187450 J:206897 	
+MGI:1096381	Arntl	aryl hydrocarbon receptor nuclear translocator-like	7		circadian regulation of gene expression			ISO	O00327 	J:164563 	
+MGI:1096381	Arntl	aryl hydrocarbon receptor nuclear translocator-like	7		circadian rhythm			IDA		J:76640 J:78197 J:84471 J:84699 	
+MGI:1096381	Arntl	aryl hydrocarbon receptor nuclear translocator-like	7		circadian rhythm			IMP		J:119742 	
+MGI:1096381	Arntl	aryl hydrocarbon receptor nuclear translocator-like	7		circadian rhythm			IMP	MGI:2180361 	J:66502 	
+MGI:1096381	Arntl	aryl hydrocarbon receptor nuclear translocator-like	7		positive regulation of circadian rhythm			IMP		J:154880 	
+MGI:2684845	Arntl2	aryl hydrocarbon receptor nuclear translocator-like 2	6		circadian rhythm			ISO	Q8WYA1 	J:73065 	
+MGI:2684845	Arntl2	aryl hydrocarbon receptor nuclear translocator-like 2	6		positive regulation of circadian rhythm			IMP		J:154880 	
+MGI:88090	Ass1	argininosuccinate synthetase 1	2		circadian rhythm			IDA		J:250437 	
+MGI:88090	Ass1	argininosuccinate synthetase 1	2		circadian rhythm			ISO	P00966 	J:164563 	
+MGI:88096	Atf4	activating transcription factor 4	15		circadian regulation of gene expression			IMP		J:176743 	
+MGI:1921494	Atg7	autophagy related 7	6		regulation of circadian rhythm			IMP		J:266073 	
+MGI:1355553	Atoh7	atonal bHLH transcription factor 7	10		circadian rhythm			IMP	MGI:2159013 	J:80431 	
+MGI:1355553	Atoh7	atonal bHLH transcription factor 7	10		entrainment of circadian clock			IMP	MGI:2159013 	J:80431 	
+MGI:1097714	Bhlhe40	basic helix-loop-helix family, member e40	6		circadian regulation of gene expression			IBA	PTN002590934 	J:265628 	
+MGI:1097714	Bhlhe40	basic helix-loop-helix family, member e40	6		circadian regulation of gene expression			IMP		J:137262 J:271702 	
+MGI:1097714	Bhlhe40	basic helix-loop-helix family, member e40	6		circadian regulation of gene expression			ISO	O14503 	J:164563 	
+MGI:1097714	Bhlhe40	basic helix-loop-helix family, member e40	6		circadian rhythm			ISO	O14503 	J:164563 	
+MGI:1097714	Bhlhe40	basic helix-loop-helix family, member e40	6		entrainment of circadian clock by photoperiod			IMP		J:137262 	
+MGI:1097714	Bhlhe40	basic helix-loop-helix family, member e40	6		regulation of circadian rhythm			IMP		J:271702 	
+MGI:1930704	Bhlhe41	basic helix-loop-helix family, member e41	6		circadian regulation of gene expression			IBA	PTN002590915 	J:265628 	
+MGI:1930704	Bhlhe41	basic helix-loop-helix family, member e41	6		circadian regulation of gene expression			IMP		J:137262 	
+MGI:1916625	Btbd9	BTB (POZ) domain containing 9	17		circadian behavior			IBA	PTN000698411 	J:265628 	
+MGI:1916625	Btbd9	BTB (POZ) domain containing 9	17		circadian behavior			IMP	MGI:4127237 	J:187433 	
+MGI:1916625	Btbd9	BTB (POZ) domain containing 9	17		circadian sleep/wake cycle, non-REM sleep			IMP	MGI:4127237 	J:187433 	
+MGI:1338871	Btrc	beta-transducin repeat containing protein	19		positive regulation of circadian rhythm			IMP		J:166433 	
+MGI:1338871	Btrc	beta-transducin repeat containing protein	19		regulation of circadian rhythm			ISO	Q9Y297 	J:164563 	
+MGI:1351330	Cartpt	CART prepropeptide	13		circadian regulation of gene expression			ISO	RGD:2272 	J:155856 	
+MGI:96544	Casp1	caspase 1	9		positive regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:2274 	J:155856 	
+MGI:1923422	Cavin3	caveolae associated 3	7		circadian regulation of gene expression			IMP		J:200473 	
+MGI:2444228	Ccar2	cell cycle activator and apoptosis regulator 2	14		regulation of circadian rhythm			IMP		J:198046 	
+MGI:88351	Cdk1	cyclin-dependent kinase 1	10		regulation of circadian rhythm			ISO	P06493 	J:164563 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		regulation of circadian sleep/wake cycle, non-REM sleep	regulates a function/process that has the participant brain		IMP	MGI:1926253 	J:97276 	
+MGI:87891	Chrnb2	cholinergic receptor, nicotinic, beta polypeptide 2 (neuronal)	3		regulation of circadian sleep/wake cycle, REM sleep	regulates a function/process that has the participant brain		IMP	MGI:1926253 	J:97276 	
+MGI:2684975	Ciart	circadian associated repressor of transcription	3		circadian regulation of gene expression			IBA	PTN002860200 	J:265628 	
+MGI:2684975	Ciart	circadian associated repressor of transcription	3		circadian regulation of gene expression			IMP		J:205586 J:209571 	
+MGI:2684975	Ciart	circadian associated repressor of transcription	3		locomotor rhythm			IMP		J:209571 	
+MGI:1919185	Cipc	CLOCK interacting protein, circadian	12		negative regulation of circadian rhythm			IMP		J:204645 	
+MGI:99698	Clock	circadian locomotor output cycles kaput	5		circadian regulation of gene expression			IMP		J:87263 J:135812 J:147991 J:148217 J:165365 J:176743 J:178280 J:188853 J:199564 J:271702 	
+MGI:99698	Clock	circadian locomotor output cycles kaput	5		circadian regulation of gene expression			ISO	O15516 	J:164563 	
+MGI:99698	Clock	circadian locomotor output cycles kaput	5		circadian rhythm			IDA		J:84699 	
+MGI:99698	Clock	circadian locomotor output cycles kaput	5		circadian rhythm			IMP	MGI:1861634 	J:18005 J:76640 	
+MGI:99698	Clock	circadian locomotor output cycles kaput	5		regulation of circadian rhythm			IMP		J:271702 	
+MGI:109538	Cort	cortistatin	4		regulation of circadian sleep/wake cycle, sleep			ISO	RGD:2383 	J:155856 	
+MGI:88494	Creb1	cAMP responsive element binding protein 1	1		circadian rhythm			IDA		J:209480 	
+MGI:88494	Creb1	cAMP responsive element binding protein 1	1		regulation of circadian rhythm			ISO	RGD:620218 	J:155856 	
+MGI:88495	Crem	cAMP responsive element modulator	18		circadian regulation of gene expression			IMP		J:197826 	
+MGI:2142523	Crtc1	CREB regulated transcription coactivator 1	8		entrainment of circadian clock by photoperiod			IMP		J:204540 	
+MGI:1270841	Cry1	cryptochrome 1 (photolyase-like)	10		circadian regulation of gene expression			IGI	P97784 	J:179376 	
+MGI:1270841	Cry1	cryptochrome 1 (photolyase-like)	10		circadian regulation of gene expression			IMP		J:147991 J:192252 J:196953 J:205586 	
+MGI:1270841	Cry1	cryptochrome 1 (photolyase-like)	10		circadian rhythm			IDA		J:84471 	
+MGI:1270841	Cry1	cryptochrome 1 (photolyase-like)	10		circadian rhythm			IMP		J:119742 J:273529 	
+MGI:1270841	Cry1	cryptochrome 1 (photolyase-like)	10		circadian rhythm			IMP	MGI:2181205 	J:76640 	
+MGI:1270841	Cry1	cryptochrome 1 (photolyase-like)	10		entrainment of circadian clock by photoperiod			IMP		J:196953 	
+MGI:1270841	Cry1	cryptochrome 1 (photolyase-like)	10		negative regulation of circadian rhythm			IDA		J:154880 	
+MGI:1270841	Cry1	cryptochrome 1 (photolyase-like)	10		negative regulation of circadian rhythm			IMP		J:204645 	
+MGI:1270841	Cry1	cryptochrome 1 (photolyase-like)	10		regulation of circadian rhythm			IMP		J:54241 J:153754 J:170767 J:196953 J:243464 	
+MGI:1270841	Cry1	cryptochrome 1 (photolyase-like)	10		regulation of circadian rhythm			IMP	Q9R194 	J:209472 	
+MGI:1270859	Cry2	cryptochrome 2 (photolyase-like)	2		circadian regulation of gene expression			IGI	P97784 	J:179376 	
+MGI:1270859	Cry2	cryptochrome 2 (photolyase-like)	2		circadian regulation of gene expression			IMP		J:147991 J:196953 	
+MGI:1270859	Cry2	cryptochrome 2 (photolyase-like)	2		circadian rhythm			IMP		J:119742 J:161722 J:273529 	
+MGI:1270859	Cry2	cryptochrome 2 (photolyase-like)	2		circadian rhythm			IMP	MGI:2181206 	J:76640 	
+MGI:1270859	Cry2	cryptochrome 2 (photolyase-like)	2		entrainment of circadian clock by photoperiod			IMP		J:196953 	
+MGI:1270859	Cry2	cryptochrome 2 (photolyase-like)	2		negative regulation of circadian rhythm			IDA		J:154880 	
+MGI:1270859	Cry2	cryptochrome 2 (photolyase-like)	2		regulation of circadian rhythm			IMP		J:54241 J:196953 	
+MGI:1270859	Cry2	cryptochrome 2 (photolyase-like)	2		regulation of circadian rhythm			IMP	P97784 	J:209472 	
+MGI:1339752	Csf2	colony stimulating factor 2 (granulocyte-macrophage)	11		regulation of circadian sleep/wake cycle, sleep			ISO	RGD:621065 	J:155856 	
+MGI:1355272	Csnk1d	casein kinase 1, delta	11		circadian regulation of gene expression			IMP		J:150148 J:177139 	
+MGI:1355272	Csnk1d	casein kinase 1, delta	11		regulation of circadian rhythm			IBA	PTN002629128 	J:265628 	
+MGI:1355272	Csnk1d	casein kinase 1, delta	11		regulation of circadian rhythm			IMP		J:150148 J:177139 	
+MGI:1351660	Csnk1e	casein kinase 1, epsilon	15		circadian behavior			ISO	RGD:62045 	J:155856 	
+MGI:1351660	Csnk1e	casein kinase 1, epsilon	15		circadian regulation of gene expression			IMP		J:177139 	
+MGI:1351660	Csnk1e	casein kinase 1, epsilon	15		circadian rhythm			TAS		J:76640 	
+MGI:1351660	Csnk1e	casein kinase 1, epsilon	15		regulation of circadian rhythm			IMP		J:177139 	
+MGI:104978	Cyp7b1	cytochrome P450, family 7, subfamily b, polypeptide 1	3		circadian rhythm			ISO	RGD:2483 	J:155856 	
+MGI:94866	Dbp	D site albumin promoter binding protein	7		circadian rhythm			TAS		J:76640 	
+MGI:1202384	Ddb1	damage specific DNA binding protein 1	19		regulation of circadian rhythm			IMP		J:243464 	
+MGI:105037	Ddx5	DEAD (Asp-Glu-Ala-Asp) box polypeptide 5	11		circadian rhythm	happens in fibroblast		IMP		J:185950 	
+MGI:108177	Dhx9	DEAH (Asp-Glu-Ala-His) box polypeptide 9	1		circadian rhythm	happens in fibroblast		IMP		J:185950 	
+MGI:2139667	Dpyd	dihydropyrimidine dehydrogenase	3		circadian rhythm			ISO	RGD:621218 	J:155856 	
+MGI:99578	Drd1	dopamine receptor D1	13		negative regulation of circadian sleep/wake cycle, sleep			ISO	RGD:2518 	J:155856 	
+MGI:94924	Drd2	dopamine receptor D2	9		circadian regulation of gene expression	regulates a function/process that happens in retina,regulates Per1		IMP	MGI:2387895 	J:109095 	
+MGI:94924	Drd2	dopamine receptor D2	9		negative regulation of circadian sleep/wake cycle, sleep			ISO	RGD:2520 	J:155856 	
+MGI:94925	Drd3	dopamine receptor D3	16		circadian regulation of gene expression	regulates a function/process that happens in spinal cord intermediolateral nucleus,regulates Th		IMP	MGI:1857159 	J:104271 	
+MGI:94925	Drd3	dopamine receptor D3	16		regulation of circadian sleep/wake cycle, sleep			ISO	RGD:2521 	J:155856 	
+MGI:94926	Drd4	dopamine receptor D4	7		regulation of circadian rhythm			IMP		J:202325 	
+MGI:1330299	Dyrk1a	dual-specificity tyrosine-(Y)-phosphorylation regulated kinase 1a	16		circadian rhythm			IMP		J:161722 	
+MGI:95295	Egr1	early growth response 1	18		circadian regulation of gene expression			IMP		J:274077 J:267299 	
+MGI:95295	Egr1	early growth response 1	18		circadian temperature homeostasis			IMP		J:267299 	
+MGI:95295	Egr1	early growth response 1	18		locomotor rhythm			IMP		J:267299 	
+MGI:1276116	Ep300	E1A binding protein p300	15		circadian rhythm			IDA		J:207820 	
+MGI:107940	Ezh2	enhancer of zeste 2 polycomb repressive complex 2 subunit	6		regulation of circadian rhythm			IMP		J:116444 	
+MGI:107940	Ezh2	enhancer of zeste 2 polycomb repressive complex 2 subunit	6		regulation of circadian rhythm			ISO	Q15910 	J:164563 	
+MGI:1354702	Fbxl3	F-box and leucine-rich repeat protein 3	14		entrainment of circadian clock by photoperiod			IBA	PTN002545275 	J:265628 	
+MGI:1354702	Fbxl3	F-box and leucine-rich repeat protein 3	14		entrainment of circadian clock by photoperiod			IMP		J:194037 J:196293 J:196953 	
+MGI:1354702	Fbxl3	F-box and leucine-rich repeat protein 3	14		regulation of circadian rhythm			IMP		J:121578 J:122872 J:196953 	
+MGI:1354702	Fbxl3	F-box and leucine-rich repeat protein 3	14		regulation of circadian rhythm			ISO	Q9UKT7 	J:164563 	
+MGI:2442921	Fbxl21	F-box and leucine-rich repeat protein 21	13		entrainment of circadian clock by photoperiod			IBA	PTN002545275 	J:265628 	
+MGI:2442921	Fbxl21	F-box and leucine-rich repeat protein 21	13		entrainment of circadian clock by photoperiod			IMP		J:194037 J:196293 	
+MGI:1354695	Fbxw7	F-box and WD-40 domain protein 7	3		regulation of circadian rhythm			IMP		J:271692 	
+MGI:1354695	Fbxw7	F-box and WD-40 domain protein 7	3		regulation of circadian rhythm			ISO	Q969H0 	J:164563 	
+MGI:2144023	Fbxw11	F-box and WD-40 domain protein 11	11		positive regulation of circadian rhythm			IMP		J:166433 	
+MGI:95698	Gfpt1	glutamine fructose-6-phosphate transaminase 1	6		circadian regulation of gene expression			IMP		J:198047 	
+MGI:95709	Ghrh	growth hormone releasing hormone	2		circadian sleep/wake cycle, non-REM sleep			ISO	RGD:61883 	J:155856 	
+MGI:95709	Ghrh	growth hormone releasing hormone	2		positive regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:61883 	J:155856 	
+MGI:95710	Ghrhr	growth hormone releasing hormone receptor	6		positive regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:2688 	J:155856 	
+MGI:1930008	Ghrl	ghrelin	6		negative regulation of circadian sleep/wake cycle, REM sleep			ISO	Q9UBU3 	J:164563 	
+MGI:1930008	Ghrl	ghrelin	6		positive regulation of circadian sleep/wake cycle, non-REM sleep			ISO	Q9UBU3 	J:164563 	
+MGI:2442046	Gpr157	G protein-coupled receptor 157	4		circadian behavior			IMP		J:239188 	
+MGI:2685858	Gpr176	G protein-coupled receptor 176	2		circadian behavior			IMP		J:234743 	
+MGI:1861437	Gsk3b	glycogen synthase kinase 3 beta	16		circadian rhythm			IMP		J:161722 	
+MGI:1861437	Gsk3b	glycogen synthase kinase 3 beta	16		regulation of circadian rhythm			IMP		J:273508 	
+MGI:2680765	Hcrtr2	hypocretin (orexin) receptor 2	9		circadian sleep/wake cycle process			IEA	IPR004060 	J:72247 	
+MGI:108086	Hdac1	histone deacetylase 1	4		circadian regulation of gene expression			IDA		J:209491 	
+MGI:108086	Hdac1	histone deacetylase 1	4		circadian rhythm			IDA		J:209571 	
+MGI:1097691	Hdac2	histone deacetylase 2	10		circadian regulation of gene expression			IDA		J:209491 	
+MGI:1343091	Hdac3	histone deacetylase 3	18		circadian regulation of gene expression			IGI	MGI:1349717 	J:142342 	
+MGI:1343091	Hdac3	histone deacetylase 3	18		circadian regulation of gene expression			IMP		J:240095 	
+MGI:1343091	Hdac3	histone deacetylase 3	18		regulation of circadian rhythm			IMP		J:240095 	
+MGI:98505	Hnf1b	HNF1 homeobox B	11		circadian regulation of gene expression			ISO	RGD:3830 	J:155856 	
+MGI:109128	Hnf4a	hepatic nuclear factor 4, alpha	2		regulation of circadian rhythm			ISO	P41235 	J:164563 	
+MGI:101947	Hnrnpd	heterogeneous nuclear ribonucleoprotein D	5		circadian regulation of translation			ISO	Q14103 	J:164563 	
+MGI:101947	Hnrnpd	heterogeneous nuclear ribonucleoprotein D	5		regulation of circadian rhythm			ISO	Q14103 	J:164563 	
+MGI:1858195	Hnrnpu	heterogeneous nuclear ribonucleoprotein U	1		circadian regulation of gene expression			IDA		J:136001 	
+MGI:1333802	Hs3st2	heparan sulfate (glucosamine) 3-O-sulfotransferase 2	7		circadian rhythm			ISO	RGD:727787 	J:155856 	
+MGI:99841	Htr7	5-hydroxytryptamine (serotonin) receptor 7	19		circadian rhythm			IEA	IPR001069 	J:72247 	
+MGI:99841	Htr7	5-hydroxytryptamine (serotonin) receptor 7	19		negative regulation of circadian sleep/wake cycle, REM sleep			ISO	RGD:71034 	J:155856 	
+MGI:1926884	Huwe1	HECT, UBA and WWE domain containing 1	X		circadian regulation of gene expression			IMP		J:161386 	
+MGI:1926884	Huwe1	HECT, UBA and WWE domain containing 1	X		circadian regulation of gene expression			ISO	Q7Z6Z7 	J:164563 	
+MGI:96396	Id1	inhibitor of DNA binding 1, HLH protein	2		circadian regulation of gene expression			IBA	PTN000919548 	J:265628 	
+MGI:96397	Id2	inhibitor of DNA binding 2	12		circadian regulation of gene expression			IBA	PTN000919548 	J:265628 	
+MGI:96397	Id2	inhibitor of DNA binding 2	12		circadian regulation of gene expression			IMP		J:156337 	
+MGI:96397	Id2	inhibitor of DNA binding 2	12		entrainment of circadian clock			IMP	MGI:3838359 	J:146624 	
+MGI:96397	Id2	inhibitor of DNA binding 2	12		entrainment of circadian clock by photoperiod			IMP		J:146624 	
+MGI:96397	Id2	inhibitor of DNA binding 2	12		locomotor rhythm			IMP		J:146624 	
+MGI:96397	Id2	inhibitor of DNA binding 2	12		regulation of circadian rhythm			IMP		J:146624 	
+MGI:96398	Id3	inhibitor of DNA binding 3	4		circadian regulation of gene expression			IBA	PTN000919548 	J:265628 	
+MGI:99414	Id4	inhibitor of DNA binding 4	13		circadian regulation of gene expression			IBA	PTN000919548 	J:265628 	
+MGI:96559	Il6	interleukin 6	5		regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:2901 	J:155856 	
+MGI:109367	Impdh2	inosine monophosphate dehydrogenase 2	9		circadian rhythm			ISO	P12268 	J:164563 	
+MGI:96659	Kcna2	potassium voltage-gated channel, shaker-related subfamily, member 2	3		regulation of circadian sleep/wake cycle, non-REM sleep			IMP		J:130097 	
+MGI:102663	Kcnd2	potassium voltage-gated channel, Shal-related family, member 2	6		locomotor rhythm			IMP		J:186547 	
+MGI:99923	Kcnma1	potassium large conductance calcium-activated channel, subfamily M, alpha member 1	14		circadian rhythm	happens in suprachiasmatic nucleus		IMP	MGI:3053849 	J:111722 	
+MGI:99923	Kcnma1	potassium large conductance calcium-activated channel, subfamily M, alpha member 1	14		locomotor rhythm			IMP	MGI:3053849 	J:111722 	
+MGI:1354736	Kdm2a	lysine (K)-specific demethylase 2A	19		circadian regulation of gene expression			ISO	Q9Y2K7 	J:164563 	
+MGI:1354736	Kdm2a	lysine (K)-specific demethylase 2A	19		regulation of circadian rhythm			ISO	Q9Y2K7 	J:164563 	
+MGI:2136980	Kdm5a	lysine (K)-specific demethylase 5A	6		circadian regulation of gene expression			IMP		J:176119 	
+MGI:1922855	Kdm5b	lysine (K)-specific demethylase 5B	1		regulation of circadian rhythm			NAS		J:176119 	
+MGI:99781	Kdm5c	lysine (K)-specific demethylase 5C	X		regulation of circadian rhythm			NAS		J:176119 	
+MGI:1924285	Kdm8	lysine (K)-specific demethylase 8	7		circadian regulation of gene expression			IMP		J:268088 	
+MGI:1101353	Klf10	Kruppel-like factor 10	15		regulation of circadian rhythm			ISO	RGD:621652 	J:155856 	
+MGI:96995	Kmt2a	lysine (K)-specific methyltransferase 2A	9		circadian regulation of gene expression			IMP		J:215875 	
+MGI:104993	Lepr	leptin receptor	4		negative regulation of locomotor rhythm			ISO	RGD:3001 	J:155856 	
+MGI:1891468	Lgr4	leucine-rich repeat-containing G protein-coupled receptor 4	2		circadian regulation of gene expression			IMP		J:216037 	
+MGI:1930187	Maged1	melanoma antigen, family D, 1	X		circadian regulation of gene expression			IMP		J:200375 	
+MGI:1930187	Maged1	melanoma antigen, family D, 1	X		regulation of circadian rhythm			IMP		J:200375 	
+MGI:1351648	Magel2	melanoma antigen, family L, 2	7		regulation of circadian rhythm			IMP		J:215866 	
+MGI:1346861	Mapk8	mitogen-activated protein kinase 8	14		regulation of circadian rhythm			IMP		J:186089 	
+MGI:1346862	Mapk9	mitogen-activated protein kinase 9	11		regulation of circadian rhythm			IMP		J:186089 	
+MGI:2443731	Mat2a	methionine adenosyltransferase II, alpha	6		circadian rhythm			ISO	RGD:619985 	J:155856 	
+MGI:96929	Mc3r	melanocortin 3 receptor	2		circadian regulation of gene expression			IMP		J:142498 	
+MGI:96929	Mc3r	melanocortin 3 receptor	2		locomotor rhythm			IMP		J:142498 	
+MGI:1927165	Mettl3	methyltransferase like 3	14		circadian rhythm			IMP		J:203416 	
+MGI:2150037	Mta1	metastasis associated 1	12		circadian regulation of gene expression			IMP		J:213082 	
+MGI:2150037	Mta1	metastasis associated 1	12		entrainment of circadian clock by photoperiod			IMP		J:213082 	
+MGI:2150037	Mta1	metastasis associated 1	12		locomotor rhythm			IMP		J:213082 	
+MGI:102967	Mtnr1a	melatonin receptor 1A	8		circadian rhythm			IBA	PTN000663028 	J:265628 	
+MGI:102967	Mtnr1a	melatonin receptor 1A	8		circadian rhythm			TAS		J:76848 	
+MGI:2181726	Mtnr1b	melatonin receptor 1B	9		circadian rhythm			TAS		J:76848 	
+MGI:2181726	Mtnr1b	melatonin receptor 1B	9		positive regulation of circadian rhythm			ISO	RGD:620798 	J:155856 	
+MGI:2181726	Mtnr1b	melatonin receptor 1B	9		positive regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:620798 	J:155856 	
+MGI:1928394	Mtor	mechanistic target of rapamycin kinase	4		regulation of circadian rhythm			IMP		J:263234 	
+MGI:1928394	Mtor	mechanistic target of rapamycin kinase	4		regulation of locomotor rhythm			IMP		J:263234 	
+MGI:97233	Mup1	major urinary protein 1	4		locomotor rhythm			IDA		J:150507 	
+MGI:106181	Mybbp1a	MYB binding protein (P160) 1a	11		circadian regulation of gene expression			IDA		J:173042 	
+MGI:2179432	Mycbp2	MYC binding protein 2, E3 ubiquitin protein ligase	14		circadian regulation of gene expression			IMP		J:161386 	
+MGI:2179432	Mycbp2	MYC binding protein 2, E3 ubiquitin protein ligase	14		circadian regulation of gene expression			ISO	O75592 	J:164563 	
+MGI:1351641	Naglu	alpha-N-acetylglucosaminidase (Sanfilippo disease IIIB)	11		locomotor rhythm			IMP	MGI:1934018 	J:129390 	
+MGI:1929865	Nampt	nicotinamide phosphoribosyltransferase	12		circadian regulation of gene expression			IMP		J:147991 	
+MGI:1276533	Ncoa2	nuclear receptor coactivator 2	1		circadian regulation of gene expression			IMP		J:215957 	
+MGI:1276533	Ncoa2	nuclear receptor coactivator 2	1		locomotor rhythm			IMP		J:215957 	
+MGI:1349717	Ncor1	nuclear receptor co-repressor 1	11		circadian regulation of gene expression			IGI	MGI:1343091 	J:142342 	
+MGI:1349717	Ncor1	nuclear receptor co-repressor 1	11		locomotor rhythm			IMP		J:142342 	
+MGI:1913358	Ndufa9	NADH:ubiquinone oxidoreductase subunit A9	6		circadian rhythm			ISO	Q16795 	J:164563 	
+MGI:109495	Nfil3	nuclear factor, interleukin 3, regulated	13		circadian rhythm			IBA	PTN000392525 	J:265628 	
+MGI:97323	Ngfr	nerve growth factor receptor (TNFR superfamily, member 16)	11		circadian regulation of gene expression			IMP		J:199564 	
+MGI:108067	Nkx2-1	NK2 homeobox 1	12		positive regulation of circadian rhythm			IMP		J:211237 	
+MGI:2179435	Nlgn1	neuroligin 1	3		positive regulation of circadian sleep/wake cycle, wakefulness			IMP		J:197398 	
+MGI:3583618	Nms	neuromedin S	1		locomotor rhythm			ISO	Q5H8A2 	J:98692 	
+MGI:1860476	Nmu	neuromedin U	5		regulation of circadian sleep/wake cycle, sleep			ISO	RGD:68388 	J:155856 	
+MGI:109382	Noct	nocturnin	3		circadian regulation of gene expression			IMP		J:165676 	
+MGI:109382	Noct	nocturnin	3		circadian rhythm			IEA	IPR034965 	J:72247 	
+MGI:109382	Noct	nocturnin	3		regulation of circadian rhythm			IMP		J:180997 	
+MGI:1855692	Nono	non-POU-domain-containing, octamer binding protein	X		circadian rhythm			ISO	RGD:1549738 	J:155856 	
+MGI:1855692	Nono	non-POU-domain-containing, octamer binding protein	X		regulation of circadian rhythm			IMP		J:189236 	
+MGI:109232	Npas2	neuronal PAS domain protein 2	1		circadian regulation of gene expression			IMP		J:135812 J:202325 J:271703 	
+MGI:109232	Npas2	neuronal PAS domain protein 2	1		circadian sleep/wake cycle			IMP	MGI:2180392 	J:84471 	
+MGI:109232	Npas2	neuronal PAS domain protein 2	1		locomotor rhythm			IMP	MGI:2180392 	J:84471 	
+MGI:109232	Npas2	neuronal PAS domain protein 2	1		regulation of circadian rhythm			IMP		J:202325 	
+MGI:3642232	Nps	neuropeptide S	7		positive regulation of circadian sleep/wake cycle, wakefulness			ISO	RGD:2324597 	J:155856 	
+MGI:108418	Npy2r	neuropeptide Y receptor Y2	3		positive regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:620475 	J:155856 	
+MGI:1346344	Nr0b2	nuclear receptor subfamily 0, group B, member 2	4		circadian regulation of gene expression			IMP		J:274080 J:271712 	
+MGI:1346344	Nr0b2	nuclear receptor subfamily 0, group B, member 2	4		circadian rhythm			IBA	PTN002786584 	J:265628 	
+MGI:1346344	Nr0b2	nuclear receptor subfamily 0, group B, member 2	4		circadian rhythm			ISO	Q15466 	J:164563 	
+MGI:2444210	Nr1d1	nuclear receptor subfamily 1, group D, member 1	11		circadian regulation of gene expression			IMP		J:156994 	
+MGI:2444210	Nr1d1	nuclear receptor subfamily 1, group D, member 1	11		circadian rhythm			IDA		J:78197 	
+MGI:2444210	Nr1d1	nuclear receptor subfamily 1, group D, member 1	11		circadian temperature homeostasis			IMP		J:203422 	
+MGI:2444210	Nr1d1	nuclear receptor subfamily 1, group D, member 1	11		positive regulation of circadian rhythm			ISO	RGD:628827 	J:155856 	
+MGI:2444210	Nr1d1	nuclear receptor subfamily 1, group D, member 1	11		regulation of circadian rhythm			IBA	PTN001182215 	J:265628 	
+MGI:2444210	Nr1d1	nuclear receptor subfamily 1, group D, member 1	11		regulation of circadian rhythm			IMP		J:153064 J:156994 J:264705 	
+MGI:2444210	Nr1d1	nuclear receptor subfamily 1, group D, member 1	11		regulation of circadian rhythm			ISO	RGD:628827 	J:155856 	
+MGI:2444210	Nr1d1	nuclear receptor subfamily 1, group D, member 1	11		regulation of circadian sleep/wake cycle			IMP		J:273176 	
+MGI:2449205	Nr1d2	nuclear receptor subfamily 1, group D, member 2	14		circadian behavior			IMP		J:265505 	
+MGI:2449205	Nr1d2	nuclear receptor subfamily 1, group D, member 2	14		regulation of circadian rhythm			IBA	PTN001182215 	J:265628 	
+MGI:2449205	Nr1d2	nuclear receptor subfamily 1, group D, member 2	14		regulation of circadian rhythm			IDA		J:203378 	
+MGI:2449205	Nr1d2	nuclear receptor subfamily 1, group D, member 2	14		regulation of circadian rhythm			IMP		J:264705 	
+MGI:1352453	Nr2f6	nuclear receptor subfamily 2, group F, member 6	8		entrainment of circadian clock by photoperiod			IMP	MGI:3574037 	J:96328 	
+MGI:1315213	Nrip1	nuclear receptor interacting protein 1	16		circadian regulation of gene expression			IBA	PTN000387065 	J:265628 	
+MGI:1315213	Nrip1	nuclear receptor interacting protein 1	16		circadian regulation of gene expression			IMP		J:213898 	
+MGI:1315213	Nrip1	nuclear receptor interacting protein 1	16		circadian regulation of gene expression			ISO	P48552 	J:164563 	
+MGI:1339639	Ogt	O-linked N-acetylglucosamine (GlcNAc) transferase (UDP-N-acetylglucosamine:polypeptide-N-acetylglucosaminyl transferase)	X		circadian regulation of gene expression			IMP		J:198047 	
+MGI:1353425	Opn4	opsin 4 (melanopsin)	14		entrainment of circadian clock by photoperiod		PR:Q9QXZ9-2	IMP		J:252142 	
+MGI:1353425	Opn4	opsin 4 (melanopsin)	14		entrainment of circadian clock by photoperiod		PR:Q9QXZ9-1	IMP		J:252142 	
+MGI:1353425	Opn4	opsin 4 (melanopsin)	14		positive regulation of circadian sleep/wake cycle, sleep		PR:Q9QXZ9-1	IMP		J:252142 	
+MGI:1353425	Opn4	opsin 4 (melanopsin)	14		positive regulation of circadian sleep/wake cycle, sleep		PR:Q9QXZ9-2	IMP		J:252142 	
+MGI:1353425	Opn4	opsin 4 (melanopsin)	14		regulation of circadian rhythm			IMP		J:84281 	
+MGI:97440	Oprl1	opioid receptor-like 1	2		regulation of locomotor rhythm			ISO	RGD:68438 	J:155856 	
+MGI:1098283	Per1	period circadian clock 1	11		circadian regulation of gene expression			IBA	PTN000138364 	J:265628 	
+MGI:1098283	Per1	period circadian clock 1	11		circadian regulation of gene expression			IDA		J:156994 	
+MGI:1098283	Per1	period circadian clock 1	11		circadian regulation of gene expression			IMP		J:98340 	
+MGI:1098283	Per1	period circadian clock 1	11		circadian regulation of gene expression			ISO	O15534 	J:164563 	
+MGI:1098283	Per1	period circadian clock 1	11		circadian regulation of translation			IMP		J:69626 	
+MGI:1098283	Per1	period circadian clock 1	11		circadian rhythm			ISO	RGD:727863 	J:155856 	
+MGI:1098283	Per1	period circadian clock 1	11		circadian rhythm			TAS		J:76640 	
+MGI:1098283	Per1	period circadian clock 1	11		entrainment of circadian clock by photoperiod			IBA	PTN000138364 	J:265628 	
+MGI:1098283	Per1	period circadian clock 1	11		entrainment of circadian clock by photoperiod			IMP		J:98340 	
+MGI:1098283	Per1	period circadian clock 1	11		regulation of circadian rhythm			IMP		J:69626 	
+MGI:1195265	Per2	period circadian clock 2	1		circadian regulation of gene expression			IBA	PTN000138364 	J:265628 	
+MGI:1195265	Per2	period circadian clock 2	1		circadian regulation of gene expression			IDA		J:156994 	
+MGI:1195265	Per2	period circadian clock 2	1		circadian regulation of gene expression			IMP		J:69626 J:154857 J:183929 	
+MGI:1195265	Per2	period circadian clock 2	1		circadian regulation of translation			IMP		J:69626 	
+MGI:1195265	Per2	period circadian clock 2	1		circadian rhythm			IDA		J:84471 	
+MGI:1195265	Per2	period circadian clock 2	1		entrainment of circadian clock by photoperiod			IBA	PTN000138364 	J:265628 	
+MGI:1195265	Per2	period circadian clock 2	1		negative regulation of circadian rhythm			IDA		J:154880 	
+MGI:1195265	Per2	period circadian clock 2	1		regulation of circadian rhythm			IMP		J:69626 J:154857 	
+MGI:1277134	Per3	period circadian clock 3	4		circadian regulation of gene expression			IBA	PTN000138364 	J:265628 	
+MGI:1277134	Per3	period circadian clock 3	4		circadian rhythm			IDA		J:84471 	
+MGI:1277134	Per3	period circadian clock 3	4		entrainment of circadian clock by photoperiod			IBA	PTN000138364 	J:265628 	
+MGI:1277134	Per3	period circadian clock 3	4		regulation of circadian sleep/wake cycle, sleep			IMP		J:178770 	
+MGI:1277134	Per3	period circadian clock 3	4		regulation of circadian sleep/wake cycle, sleep			ISO	P56645 	J:164563 	
+MGI:2138327	Phlpp1	PH domain and leucine rich repeat protein phosphatase 1	1		entrainment of circadian clock			IMP	MGI:4421807 	J:156530 	
+MGI:1930036	Piwil2	piwi-like RNA-mediated gene silencing 2	14		negative regulation of circadian rhythm			IMP		J:272534 	
+MGI:1930036	Piwil2	piwi-like RNA-mediated gene silencing 2	14		negative regulation of circadian rhythm			ISO	Q8TC59 	J:164563 	
+MGI:97629	Pmch	pro-melanin-concentrating hormone	10		positive regulation of circadian sleep/wake cycle, REM sleep			ISO	RGD:3358 	J:155856 	
+MGI:104662	Pml	promyelocytic leukemia	9		circadian regulation of gene expression			IDA		J:181918 	
+MGI:104662	Pml	promyelocytic leukemia	9		entrainment of circadian clock by photoperiod			IDA		J:181918 	
+MGI:104662	Pml	promyelocytic leukemia	9		regulation of circadian rhythm			IDA		J:181918 	
+MGI:104740	Ppara	peroxisome proliferator activated receptor alpha	15		circadian regulation of gene expression			IDA		J:156994 	
+MGI:104740	Ppara	peroxisome proliferator activated receptor alpha	15		regulation of circadian rhythm			IDA		J:156994 	
+MGI:97747	Pparg	peroxisome proliferator activated receptor gamma	6		regulation of circadian rhythm			IMP		J:144377 	
+MGI:1342774	Ppargc1a	peroxisome proliferative activated receptor, gamma, coactivator 1 alpha	5		circadian regulation of gene expression			IDA		J:122764 	
+MGI:1342774	Ppargc1a	peroxisome proliferative activated receptor, gamma, coactivator 1 alpha	5		regulation of circadian rhythm			IDA		J:122764 	
+MGI:103016	Ppp1ca	protein phosphatase 1 catalytic subunit alpha	19		circadian regulation of gene expression			IDA		J:177139 	
+MGI:103016	Ppp1ca	protein phosphatase 1 catalytic subunit alpha	19		entrainment of circadian clock by photoperiod			IMP		J:174435 	
+MGI:103016	Ppp1ca	protein phosphatase 1 catalytic subunit alpha	19		regulation of circadian rhythm			IDA		J:177139 	
+MGI:103016	Ppp1ca	protein phosphatase 1 catalytic subunit alpha	19		regulation of circadian rhythm			IMP		J:174435 	
+MGI:103016	Ppp1ca	protein phosphatase 1 catalytic subunit alpha	19		regulation of circadian rhythm			ISO	P62136 	J:164563 	
+MGI:104871	Ppp1cb	protein phosphatase 1 catalytic subunit beta	5		circadian regulation of gene expression			IBA	PTN000185807 	J:265628 	
+MGI:104871	Ppp1cb	protein phosphatase 1 catalytic subunit beta	5		circadian regulation of gene expression			IDA		J:177139 	
+MGI:104871	Ppp1cb	protein phosphatase 1 catalytic subunit beta	5		entrainment of circadian clock by photoperiod			IMP		J:174435 	
+MGI:104871	Ppp1cb	protein phosphatase 1 catalytic subunit beta	5		regulation of circadian rhythm			IBA	PTN000185807 	J:265628 	
+MGI:104871	Ppp1cb	protein phosphatase 1 catalytic subunit beta	5		regulation of circadian rhythm			IDA		J:177139 	
+MGI:104871	Ppp1cb	protein phosphatase 1 catalytic subunit beta	5		regulation of circadian rhythm			IMP		J:174435 	
+MGI:104871	Ppp1cb	protein phosphatase 1 catalytic subunit beta	5		regulation of circadian rhythm			ISO	P62140 	J:164563 	
+MGI:104872	Ppp1cc	protein phosphatase 1 catalytic subunit gamma	5		circadian regulation of gene expression			IDA		J:177139 	
+MGI:104872	Ppp1cc	protein phosphatase 1 catalytic subunit gamma	5		entrainment of circadian clock by photoperiod			IMP		J:174435 	
+MGI:104872	Ppp1cc	protein phosphatase 1 catalytic subunit gamma	5		regulation of circadian rhythm			IDA		J:177139 	
+MGI:104872	Ppp1cc	protein phosphatase 1 catalytic subunit gamma	5		regulation of circadian rhythm			IMP		J:174435 	
+MGI:97551	Prf1	perforin 1 (pore forming protein)	10		circadian rhythm			ISO	RGD:708463 	J:155856 	
+MGI:2145955	Prkaa1	protein kinase, AMP-activated, alpha 1 catalytic subunit	15		regulation of circadian rhythm			IMP		J:153754 	
+MGI:1336173	Prkaa2	protein kinase, AMP-activated, alpha 2 catalytic subunit	4		regulation of circadian rhythm			IMP		J:153754 	
+MGI:97597	Prkcg	protein kinase C, gamma	7		regulation of circadian rhythm			IMP		J:193126 	
+MGI:104779	Prkdc	protein kinase, DNA activated, catalytic polypeptide	16		regulation of circadian rhythm			IMP		J:207239 	
+MGI:108174	Prkg1	protein kinase, cGMP-dependent, type I	19		positive regulation of circadian rhythm			ISO	RGD:1587390 	J:155856 	
+MGI:108173	Prkg2	protein kinase, cGMP-dependent, type II	5		circadian regulation of gene expression			IMP	MGI:2449704 	J:110026 	
+MGI:108173	Prkg2	protein kinase, cGMP-dependent, type II	5		circadian rhythm			IMP	MGI:2449704 	J:110026 	
+MGI:1351645	Prmt5	protein arginine N-methyltransferase 5	14		circadian regulation of gene expression			IMP		J:192252 	
+MGI:2180370	Prok1	prokineticin 1	3		circadian rhythm			IBA	PTN001050425 	J:265628 	
+MGI:2180370	Prok1	prokineticin 1	3		circadian rhythm			TAS		J:76640 	
+MGI:1354178	Prok2	prokineticin 2	6		circadian rhythm			IBA	PTN001050425 	J:265628 	
+MGI:1354178	Prok2	prokineticin 2	6		circadian rhythm			IDA		J:76640 	
+MGI:1929676	Prokr1	prokineticin receptor 1	6		circadian rhythm			TAS		J:76640 	
+MGI:2181363	Prokr2	prokineticin receptor 2	2		circadian rhythm			IBA	PTN000662877 	J:265628 	
+MGI:2181363	Prokr2	prokineticin receptor 2	2		circadian rhythm			IDA		J:76640 	
+MGI:97772	Prox1	prospero homeobox 1	1		regulation of circadian rhythm			ISO	Q92786 	J:164563 	
+MGI:1913895	Pspc1	paraspeckle protein 1	14		regulation of circadian rhythm			IMP		J:189236 	
+MGI:109583	Pten	phosphatase and tensin homolog	19		locomotor rhythm			IMP		J:125726 	
+MGI:99261	Ptgds	prostaglandin D2 synthase (brain)	2		regulation of circadian sleep/wake cycle, sleep			IDA		J:113895 	
+MGI:97795	Ptger3	prostaglandin E receptor 3 (subtype EP3)	3		negative regulation of circadian sleep/wake cycle, wakefulness			ISO	RGD:3435 	J:155856 	
+MGI:97795	Ptger3	prostaglandin E receptor 3 (subtype EP3)	3		positive regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:3435 	J:155856 	
+MGI:97795	Ptger3	prostaglandin E receptor 3 (subtype EP3)	3		regulation of circadian sleep/wake cycle, wakefulness			ISO	RGD:3435 	J:155856 	
+MGI:104311	Ptger4	prostaglandin E receptor 4 (subtype EP4)	15		negative regulation of circadian sleep/wake cycle, REM sleep			ISO	RGD:628641 	J:155856 	
+MGI:104311	Ptger4	prostaglandin E receptor 4 (subtype EP4)	15		positive regulation of circadian sleep/wake cycle, non-REM sleep			ISO	RGD:628641 	J:155856 	
+MGI:104311	Ptger4	prostaglandin E receptor 4 (subtype EP4)	15		regulation of circadian sleep/wake cycle, wakefulness			ISO	RGD:628641 	J:155856 	
+MGI:103291	Rai1	retinoic acid induced 1	11		circadian regulation of gene expression			IBA	PTN000383899 	J:265628 	
+MGI:103291	Rai1	retinoic acid induced 1	11		circadian regulation of gene expression			IMP		J:196808 	
+MGI:103291	Rai1	retinoic acid induced 1	11		circadian regulation of gene expression			ISO	Q7Z5J4 	J:164563 	
+MGI:1100865	Rbm4	RNA binding motif protein 4	19		circadian regulation of gene expression			IMP		J:119742 	
+MGI:1100865	Rbm4	RNA binding motif protein 4	19		circadian regulation of translation			IDA		J:119742 	
+MGI:1100865	Rbm4	RNA binding motif protein 4	19		entrainment of circadian clock by photoperiod			IDA		J:119742 	
+MGI:1913954	Rbm4b	RNA binding motif protein 4B	19		circadian regulation of gene expression			IDA		J:119742 	
+MGI:1913954	Rbm4b	RNA binding motif protein 4B	19		circadian rhythm			IDA		J:119742 	
+MGI:1913954	Rbm4b	RNA binding motif protein 4B	19		entrainment of circadian clock by photoperiod			IDA		J:119742 	
+MGI:103289	Relb	avian reticuloendotheliosis viral (v-rel) oncogene related B	7		circadian regulation of gene expression			IMP		J:211236 	
+MGI:107926	Rock2	Rho-associated coiled-coil containing protein kinase 2	12		regulation of circadian rhythm			IMP		J:209475 	
+MGI:104661	Rora	RAR-related orphan receptor alpha	9		circadian regulation of gene expression			IDA		J:199687 	
+MGI:104661	Rora	RAR-related orphan receptor alpha	9		positive regulation of circadian rhythm			IDA		J:199687 	
+MGI:104661	Rora	RAR-related orphan receptor alpha	9		regulation of circadian rhythm			IMP		J:209475 	
+MGI:1343464	Rorb	RAR-related orphan receptor beta	19		regulation of circadian rhythm			IMP		J:121989 	
+MGI:104856	Rorc	RAR-related orphan receptor gamma	3		circadian regulation of gene expression			IMP		J:199687 J:213087 	
+MGI:104856	Rorc	RAR-related orphan receptor gamma	3		positive regulation of circadian rhythm			IDA		J:199687 	
+MGI:2443480	Setx	senataxin	2		circadian rhythm			IMP		J:185950 	
+MGI:1918764	Sfpq	splicing factor proline/glutamine rich (polypyrimidine tract binding protein associated)	4		negative regulation of circadian rhythm			IMP		J:173532 	
+MGI:1918764	Sfpq	splicing factor proline/glutamine rich (polypyrimidine tract binding protein associated)	4		regulation of circadian rhythm			IMP		J:189236 	
+MGI:108062	Siah2	siah E3 ubiquitin protein ligase 2	3		regulation of circadian rhythm			IMP		J:266461 	
+MGI:108062	Siah2	siah E3 ubiquitin protein ligase 2	3		regulation of circadian rhythm			ISO	O43255 	J:164563 	
+MGI:104754	Sik1	salt inducible kinase 1	17		entrainment of circadian clock by photoperiod			IMP		J:204540 	
+MGI:107157	Sin3a	transcriptional regulator, SIN3A (yeast)	9		negative regulation of circadian rhythm			IMP		J:173532 	
+MGI:2135607	Sirt1	sirtuin 1	10		circadian regulation of gene expression			IMP		J:139296 J:147991 	
+MGI:2135607	Sirt1	sirtuin 1	10		circadian regulation of gene expression			ISO	Q96EB6 	J:164563 	
+MGI:102764	Six3	sine oculis-related homeobox 3	17		circadian behavior			IMP	MGI:3693321 	J:171421 	
+MGI:96285	Slc6a4	solute carrier family 6 (neurotransmitter transporter, serotonin), member 4	11		circadian rhythm			ISO	RGD:3714 	J:155856 	
+MGI:98362	Sox14	SRY (sex determining region Y)-box 14	9		entrainment of circadian clock	has the participant diencephalon		IMP		J:188332 	
+MGI:2183445	Spsb4	splA/ryanodine receptor domain and SOCS box containing 4	9		regulation of circadian rhythm			ISO	Q96A44 	J:164563 	
+MGI:1917368	Srrd	SRR1 domain containing	5		circadian rhythm			IBA	PTN002007691 	J:265628 	
+MGI:1917368	Srrd	SRR1 domain containing	5		regulation of circadian rhythm			IMP		J:271694 	
+MGI:1099440	Suv39h1	suppressor of variegation 3-9 1	X		negative regulation of circadian rhythm			IMP		J:210023 	
+MGI:1890396	Suv39h2	suppressor of variegation 3-9 2	2		negative regulation of circadian rhythm			IMP		J:210023 	
+MGI:2442637	Thrap3	thyroid hormone receptor associated protein 3	4		positive regulation of circadian rhythm			ISO	Q9Y2W1 	J:164563 	
+MGI:1321393	Timeless	timeless circadian clock 1	10		positive regulation of circadian rhythm			ISO	RGD:620939 	J:155856 	
+MGI:1321393	Timeless	timeless circadian clock 1	10		regulation of circadian rhythm			IMP		J:212062 	
+MGI:1321393	Timeless	timeless circadian clock 1	10		regulation of circadian rhythm			ISO	Q9UNS1 	J:164563 	
+MGI:1314891	Tnfrsf11a	tumor necrosis factor receptor superfamily, member 11a, NFKB activator	1		circadian temperature homeostasis			IMP		J:155398 	
+MGI:98788	Top1	topoisomerase (DNA) I	2		circadian regulation of gene expression			ISO	P11387 	J:164563 	
+MGI:98790	Top2a	topoisomerase (DNA) II alpha	11		regulation of circadian rhythm			IMP		J:217257 	
+MGI:98834	Trp53	transformation related protein 53	11		circadian behavior			IMP		J:217260 	
+MGI:98834	Trp53	transformation related protein 53	11		entrainment of circadian clock by photoperiod			IMP		J:217260 	
+MGI:105098	Ube3a	ubiquitin protein ligase E3A	7		regulation of circadian rhythm			IMP		J:215947 	
+MGI:105098	Ube3a	ubiquitin protein ligase E3A	7		regulation of circadian rhythm			ISO	Q05086 	J:164563 	
+MGI:1858178	Usp2	ubiquitin specific peptidase 2	9		circadian behavior			IMP		J:215857 	
+MGI:1858178	Usp2	ubiquitin specific peptidase 2	9		circadian regulation of gene expression			IMP		J:215857 	
+MGI:1858178	Usp2	ubiquitin specific peptidase 2	9		circadian regulation of gene expression	regulates UniProtKB:Q99MJ6,happens near membrane,happens in small intestine mucosa	PR:O88623-2	IMP		J:243462 	
+MGI:1858178	Usp2	ubiquitin specific peptidase 2	9		entrainment of circadian clock by photoperiod			IMP		J:215857 	
+MGI:1858178	Usp2	ubiquitin specific peptidase 2	9		locomotor rhythm			IMP		J:215857 	
+MGI:2182061	Usp7	ubiquitin specific peptidase 7	16		regulation of circadian rhythm			ISO	Q93009 	J:164563 	
+MGI:894681	Usp9x	ubiquitin specific peptidase 9, X chromosome	X		regulation of circadian rhythm			ISO	Q93008 	J:164563 	
+MGI:1346329	Uts2	urotensin 2	4		positive regulation of circadian sleep/wake cycle, REM sleep			ISO	RGD:3930 	J:155856 	
+MGI:1346329	Uts2	urotensin 2	4		positive regulation of circadian sleep/wake cycle, wakefulness			ISO	RGD:3930 	J:155856 	
+MGI:2183450	Uts2r	urotensin 2 receptor	11		positive regulation of circadian sleep/wake cycle, REM sleep			ISO	RGD:621884 	J:155856 	
+MGI:2183450	Uts2r	urotensin 2 receptor	11		positive regulation of circadian sleep/wake cycle, wakefulness			ISO	RGD:621884 	J:155856 	
+MGI:98963	Wo	wocko	1		circadian rhythm			IMP	MGI:1861589 	J:88249 	
+MGI:99948	Zfhx3	zinc finger homeobox 3	8		circadian regulation of gene expression			IMP		J:223990 	
+MGI:99948	Zfhx3	zinc finger homeobox 3	8		regulation of locomotor rhythm			IMP		J:223990 	
+
