@@ -295,6 +295,12 @@ PC.APA <- PC.APA %>%
 
 Q12345 <- as.data.frame(rbind(Q1,Q2,Q3,Q4,Q5, PC.APA))
 Q12345
+
+
+# ttests for retnetion pcs
+t.test(pca.Rn$PC1, pca.Rn$training )
+t.test(pca.Rn$PC2, pca.Rn$training )
+
 ```
 
 

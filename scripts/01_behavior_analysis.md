@@ -478,6 +478,35 @@ groups differ in subsequent recall? 1-way ANOVA of groups on Rn
     ## 30         treatment  3, 30  15.18 .000
     ## 31         treatment  3, 30   3.25 .035
 
+    # ttests for retnetion pcs
+    t.test(pca.Rn$PC1, pca.Rn$training )
+
+    ## 
+    ##  One Sample t-test
+    ## 
+    ## data:  pca.Rn$PC1
+    ## t = 1.0626, df = 33, p-value = 0.2957
+    ## alternative hypothesis: true mean is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.5967507  1.9016152
+    ## sample estimates:
+    ## mean of x 
+    ## 0.6524323
+
+    t.test(pca.Rn$PC2, pca.Rn$training )
+
+    ## 
+    ##  One Sample t-test
+    ## 
+    ## data:  pca.Rn$PC2
+    ## t = 1.8046, df = 33, p-value = 0.08028
+    ## alternative hypothesis: true mean is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.07234654  1.20783441
+    ## sample estimates:
+    ## mean of x 
+    ## 0.5677439
+
     pca.nopre <- pca.all %>% filter(trialNum != 1)
 
     cor.test(pca.nopre$PC1, pca.nopre$PC2, method = c("pearson"))
