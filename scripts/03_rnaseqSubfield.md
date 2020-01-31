@@ -381,18 +381,56 @@ Volcano plots
       dplyr::filter(direction != "NS") %>%
         dplyr::mutate(lfc = round(lfc, 2),
                       padj = scientific(padj, digits = 3),
-                      logpadj = round(logpadj, 2))
+                      logpadj = round(logpadj, 2)) %>%
+      arrange(tissue, comparison, gene)
     head(allDEGs) 
 
-    ##   tissue   gene  lfc     padj logpadj        comparison direction
-    ## 1     DG Hs6st1 0.60 3.79e-03    2.42 yoked vs. trained   trained
-    ## 2     DG Pou3f3 0.55 3.53e-02    1.45 yoked vs. trained   trained
-    ## 3     DG  Zdbf2 1.56 7.15e-05    4.15 yoked vs. trained   trained
-    ## 4     DG   Fzd5 3.21 3.78e-09    8.42 yoked vs. trained   trained
-    ## 5     DG   Scg2 1.15 3.15e-02    1.50 yoked vs. trained   trained
-    ## 6     DG   Cul3 0.43 4.26e-02    1.37 yoked vs. trained   trained
+    ##   tissue          gene   lfc     padj logpadj
+    ## 1    CA1 1110032F04Rik  3.70 7.54e-02    1.12
+    ## 2    CA1 1600002K03Rik -4.51 5.71e-02    1.24
+    ## 3    CA1 1810030O07Rik -1.73 6.86e-02    1.16
+    ## 4    CA1 2010107G23Rik -2.14 1.76e-02    1.75
+    ## 5    CA1 2210013O21Rik -2.38 5.17e-02    1.29
+    ## 6    CA1 2210016L21Rik -0.85 9.57e-02    1.02
+    ##                          comparison      direction
+    ## 1 standard.yoked vs. conflict.yoked conflict.yoked
+    ## 2 standard.yoked vs. conflict.yoked standard.yoked
+    ## 3 standard.yoked vs. conflict.yoked standard.yoked
+    ## 4 standard.yoked vs. conflict.yoked standard.yoked
+    ## 5 standard.yoked vs. conflict.yoked standard.yoked
+    ## 6 standard.yoked vs. conflict.yoked standard.yoked
 
-    write_csv(allDEGs, "../data/suppltable-4.csv")
+    suppltable4 <- allDEGs %>% filter(tissue == "DG"  & comparison == "yoked vs. trained")
+    head(suppltable4)
+
+    ##   tissue          gene  lfc     padj logpadj        comparison direction
+    ## 1     DG 1190002N15Rik 1.64 2.45e-04    3.61 yoked vs. trained   trained
+    ## 2     DG A830010M20Rik 1.53 7.89e-07    6.10 yoked vs. trained   trained
+    ## 3     DG         Abhd2 0.86 1.53e-02    1.81 yoked vs. trained   trained
+    ## 4     DG          Acan 1.97 4.54e-09    8.34 yoked vs. trained   trained
+    ## 5     DG       Adamts1 1.88 1.88e-03    2.73 yoked vs. trained   trained
+    ## 6     DG         Adrb1 0.98 3.11e-02    1.51 yoked vs. trained   trained
+
+    suppltable5 <- allDEGs %>% filter(tissue != "DG"  & comparison != "yoked vs. trained")
+    head(suppltable5)
+
+    ##   tissue          gene   lfc     padj logpadj
+    ## 1    CA1 1110032F04Rik  3.70 7.54e-02    1.12
+    ## 2    CA1 1600002K03Rik -4.51 5.71e-02    1.24
+    ## 3    CA1 1810030O07Rik -1.73 6.86e-02    1.16
+    ## 4    CA1 2010107G23Rik -2.14 1.76e-02    1.75
+    ## 5    CA1 2210013O21Rik -2.38 5.17e-02    1.29
+    ## 6    CA1 2210016L21Rik -0.85 9.57e-02    1.02
+    ##                          comparison      direction
+    ## 1 standard.yoked vs. conflict.yoked conflict.yoked
+    ## 2 standard.yoked vs. conflict.yoked standard.yoked
+    ## 3 standard.yoked vs. conflict.yoked standard.yoked
+    ## 4 standard.yoked vs. conflict.yoked standard.yoked
+    ## 5 standard.yoked vs. conflict.yoked standard.yoked
+    ## 6 standard.yoked vs. conflict.yoked standard.yoked
+
+    write_csv(suppltable4, "../data/suppltable-4.csv")
+    write_csv(suppltable5, "../data/suppltable-5.csv")
 
     # volcano plots
 

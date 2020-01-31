@@ -96,10 +96,19 @@ allDEGs <- rbind(DGa, DGb, DGc,
   dplyr::filter(direction != "NS") %>%
     dplyr::mutate(lfc = round(lfc, 2),
                   padj = scientific(padj, digits = 3),
-                  logpadj = round(logpadj, 2))
+                  logpadj = round(logpadj, 2)) %>%
+  arrange(tissue, comparison, gene)
 head(allDEGs) 
 
-write_csv(allDEGs, "../data/suppltable-4.csv")
+suppltable4 <- allDEGs %>% filter(tissue == "DG"  & comparison == "yoked vs. trained")
+head(suppltable4)
+
+suppltable5 <- allDEGs %>% filter(tissue != "DG"  & comparison != "yoked vs. trained")
+head(suppltable5)
+
+write_csv(suppltable4, "../data/suppltable-4.csv")
+write_csv(suppltable5, "../data/suppltable-5.csv")
+
 ```
 
 
