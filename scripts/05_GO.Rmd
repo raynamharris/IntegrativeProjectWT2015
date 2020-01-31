@@ -55,10 +55,11 @@ head(GOtermsDEGs)
 
 ## are genes in GO term significant? what about random GO terms and significantly enriched GO terms
 
-FROM http://geneontology.org/docs/ontology-documentation/ 
-The larger processes, or ‘biological programs’ accomplished by multiple molecular activities. **Examples of broad biological process terms** are _DNA repair_ or _signal transduction_. Examples of more specific terms are _pyrimidine nucleobase biosynthetic process_ or _glucose transmembrane transport_. Note that a biological process is not equivalent to a pathway. At present, the GO does not try to represent the dynamics or dependencies that would be required to fully describe a pathway. Examples of broad biological process terms are DNA repair or signal transduction. Examples of more specific terms are pyrimidine nucleobase biosynthetic process or glucose transmembrane transport.
+Random 1 from http://geneontology.org/docs/ontology-documentation/ 
+The larger processes, or ‘biological programs’ accomplished by multiple molecular activities. **Examples of broad biological process terms** are _DNA repair_ or _signal transduction_. Examples of more specific terms are _pyrimidine nucleobase biosynthetic process_ or _glucose transmembrane transport_. Note that a biological process is not equivalent to a pathway. At present, the GO does not try to represent the dynamics or dependencies that would be required to fully describe a pathway. Examples of broad biological process terms are DNA repair or signal transduction. Examples of more specific terms are pyrimidine nucleobase biosynthetic process or glucose transmembrane transport. Found all those at http://www.informatics.jax.org/vocab/gene_ontology
 
-Found all those at http://www.informatics.jax.org/vocab/gene_ontology
+Random 2 from https://www.biorxiv.org/content/10.1101/2020.01.26.920447v1.full.pdf
+
 
 _Note: "pyrimidine nucleobase biosynthetic process" was too small, so I went up to leveles and chose "heterocycle biosynthetic process" instead._
 
@@ -74,7 +75,7 @@ data_path <- "../data/goterms/"   # path to the data
 files <- dir(data_path, pattern = "*.txt") # get file names
 
 filesdf <- as.data.frame(files)
-filesdf$source <- c(1:12)
+filesdf$source <- c(1:17)
 filesdf
 
 data <- files %>%
@@ -106,6 +107,7 @@ totalGOterm3 <- data %>%
 totalSignificantgenesperGO3 <- inner_join(data, DGDEGs) %>%
   arrange(GO,gene) %>%
   dplyr::select(gene, GO) %>% 
+  dplyr::distinct(gene, GO) %>% 
   group_by(GO) %>%
   summarise(significantgenes = n())
 totalSignificantgenesperGO3
@@ -114,10 +116,12 @@ GOsummary3 <- full_join(totalGOterm3, totalSignificantgenesperGO3) %>%
   mutate(percent = significantgenes / totalgenes * 100) %>%
   mutate(percent = round(percent,2)) %>%
   mutate(category = ifelse(grepl("01|02|03|04", GO), "hypothesis",
-                          ifelse(grepl("05|06|07|08", GO), "random",
-                                 ifelse(grepl("09|10|11|12", GO), "enriched", NA)))) %>%
-  select(category, GO, totalgenes, significantgenes, percent)  %>%
-  mutate(higerthanmeanenrich = ifelse(percent > 2.465, "yes", "no"))
+                          ifelse(grepl("05|06|07|08", GO), "ShinyGO",
+                                 ifelse(grepl("09|10|11|12", GO), "random", 
+                                        ifelse(grepl("13|14|15|16|17", GO), "PANTHER", NA))))) %>%
+  select(category, GO, totalgenes, significantgenes, percent)   %>%
+  arrange(desc(percent)) %>%
+  left_join(.,GOtermsDEGs2)
 GOsummary3
 
 write.csv(GOtermsDEGs2, "../data/05_GOtermsDEGs2.csv", row.names = F)
@@ -127,46 +131,76 @@ write.csv(GOsummary3, "../data/05_GOsummary3.csv", row.names = F)
 
 
 
-
-
 ## sanes
 
 ```{r}
 sanesLichtman <- read_csv("../data/05_sanesLichtman.csv")  %>% 
-  rename(gene = genes) %>%
+  dplyr::rename("gene" = "genes") %>%
   dplyr::mutate(gene = str_to_title(gene))
-sanesLichtman
+str(sanesLichtman)
 
-GOtermssanesLichtman <- inner_join(GOterms, sanesLichtman) %>%
+GOtermssanesLichtman <- left_join(sanesLichtman, data) %>%
   arrange(GO,gene) %>%
   dplyr::select(gene, GO) %>% 
+   dplyr::distinct(gene, GO) %>% 
  group_by(GO) %>%
  summarize(genes = str_c(gene, collapse = ", "))
+GOtermssanesLichtman
+
+GOtermssanesLichtmansummary <- left_join(sanesLichtman, data) %>%
+  arrange(GO,gene) %>%
+  dplyr::select(gene, GO) %>% 
+   dplyr::distinct(gene, GO) %>% 
+ group_by(GO) %>%
+ summarize(SanesLichtman = n())
+GOtermssanesLichtmansummary
+
+full_join(GOsummary3, GOtermssanesLichtmansummary) %>% 
+  mutate(SLpercent = SanesLichtman / totalgenes * 100)  %>% 
+  mutate(SLpercent = round(SLpercent, 2))  %>% 
+  select(category, GO, totalgenes, SanesLichtman, SLpercent, significantgenes, percent) %>% 
+  filter(category != "ShinyGO")  %>%
+  drop_na()
+
+
 
 ```
 
-## DEGs and Sanes
-
-
-```{r}
-GO_DEGsSanesLichtman <- full_join(GOtermsDEGs, GOtermssanesLichtman, by = "GO") %>%
-  rename("Differentially expressed in DG" = genes.x,
-         "Molecules associated with LTP"  = genes.y)
-kable(GO_DEGsSanesLichtman)
-
-```
 ## DEGs and Sanes and top 10 memory genes
 
 
 ```{r}
-gene <- c("Camk2a" ,  "Gria2",  "Igf2" , "Nsf" , "Pick1",
-                        "Prkcb" ,  "Prkci",  "Prkcz", "Wwc1" )
-gene <- as.data.frame(gene)
-gene$classicmemgene <- gene$gene
+candidategenes <- c("Camk2a" ,  "Gria2",  "Igf2" , "Nsf" , "Pick1",
+                        "Prkcb" ,  "Prkci",  "Prkcz", "Wwc1" ,
+          "Fmr1", "Mtor")
+candidategenes <- as.data.frame(candidategenes) %>%
+  dplyr::rename("gene" = "candidategenes")
 
-GOtermsDEGs
-candidategenes <- left_join(gene, GOterms) %>% arrange(GO)
-candidategenes
+candidatesGO <- left_join(candidategenes, data, by = "gene")  %>%
+  arrange(GO,gene) %>%
+  dplyr::select(gene, GO) %>% 
+  dplyr::distinct(gene, GO) %>% 
+ group_by(GO) %>%
+ summarize(genes = str_c(gene, collapse = ", "))
+candidatesGO
+
+AllGOgenelists <- full_join(candidatesGO, GOtermssanesLichtman, by = "GO") %>% 
+  full_join(., GOtermsDEGs2, by = "GO") %>% 
+  dplyr::rename("candidates" = "genes.x", 
+         "SanesLichtman" ="genes.y", 
+         "DG DEGs"  = "genes") %>% 
+  arrange(GO) %>%
+  filter(GO != "NA") %>%
+  mutate(category = ifelse(grepl("01|02|03|04", GO), "hypothesis",
+                          ifelse(grepl("05|06|07|08", GO), "ShinyGO",
+                                 ifelse(grepl("09|10|11|12", GO), "random", 
+                                 ifelse(grepl("13|14|15|16|17", GO), "PANTHER", NA))))) %>%
+  select(category, everything())
+  
+AllGOgenelists 
+
+write_csv(AllGOgenelists, "../data/05_GO_AllGOgenelists.csv")
+
 ```
 
 ## PC1 correlations
@@ -198,7 +232,21 @@ GO_PC1$gene <- GO_PC1$gene %>% str_split(., ' ') %>%
 
 kable(GO_PC1) 
 ```
+
+## for GOrilla
+
+```{r}
+backgroundgeneset <- read_csv("../data/00_geneids.csv") %>% 
+  select(gene) %>%
+  distinct(gene) %>%
+  arrange(gene)
+head(backgroundgeneset,20)
+
+write.csv(backgroundgeneset, "../data/05_GO_backgroundgeneset.csv", row.names = F)
+```
+
+
+
 ```{r write}
-write.csv(GO_DEGsSanesLichtman, "../data/05_GO_DEGsSanesLichtman.csv", row.names = F)
 write.csv(GO_PC1, "../data/05_GO_PC1.csv", row.names = F)
 ```
