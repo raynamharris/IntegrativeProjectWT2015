@@ -11,6 +11,7 @@ library(cowplot) ## for some easy to use themes
 library(factoextra)  ## pca with vectors
 library(FactoMineR) # more pca
 library(apaTables) #  for ANOVA tables
+library(scales) # for scientific notation
 
 library(png) # for ading images to plots
 library(grid)  # for ading images to plots
@@ -32,26 +33,34 @@ The 'trial' column describes the behvioral training sessions. Here I filter by a
 ## import output from video tracker program 
 behavior <- read.csv("../data/00_behaviordata.csv", header = T)
 
-# set levels
+# set levels or refactor
 behavior$treatment <- factor(behavior$treatment, levels = levelstreatment)
 behavior$training <- factor(behavior$training, levels = levelstraining)
+behavior <- behavior %>%
+  mutate(trial = fct_recode(trial, "Pre" = "Hab"))
+head(behavior)
 
 # sample sizes
 behavior %>% 
-  filter(trial == "Hab") %>%
+  filter(trial == "Pre") %>%
   select(treatment)  %>%  summary()
 
-head(behavior)
+# names of behavioral measures
 names(behavior[9:34])
+
+
+# small table for converting between name and number later
+trialnameandnumber <- behavior %>% select(trial, trialNum) %>% distinct()
+trialnameandnumber
 ```
 
 ```{r experimentaldesign, fig.height = 2.6, fig.width = 6.69}
 dfshocks <- behavior %>%
-  dplyr::group_by(treatment, trialNum) %>%
+  dplyr::group_by(treatment, trial, trialNum) %>%
   dplyr::summarise(m = mean(NumShock), 
                    se = sd(NumShock)/sqrt(length(NumShock))) %>%
   dplyr::mutate(m = round(m,0)) %>%
-  dplyr::mutate(measure = "NumShock")
+  dplyr::mutate(measure = "NumShock") 
 dfshocks
 
 
@@ -106,34 +115,30 @@ To make the point and line graphs, I must create and join some data frames, then
 
 ```{r behavmeanstdev}
 dfa <- behavior %>%
-  dplyr::group_by(treatment, trialNum) %>%
+  dplyr::group_by(treatment, trial, trialNum) %>%
   dplyr::summarise(m = mean(NumEntrances), 
                    se = sd(NumEntrances)/sqrt(length(NumEntrances))) %>%
   dplyr::mutate(measure = "NumEntrances")
 
 dfb <- behavior %>%
-  dplyr::group_by(treatment, trialNum) %>%
+  dplyr::group_by(treatment, trial, trialNum) %>%
   dplyr::mutate(minutes = Time1stEntr/60) %>%
   dplyr::summarise(m = mean(minutes), 
                    se = sd(minutes)/sqrt(length(minutes))) %>%
   dplyr::mutate(measure = "Time1stEntr (min)")
 
 dfc <- behavior %>%
-  dplyr::group_by(treatment, trialNum) %>%
+  dplyr::group_by(treatment, trial, trialNum) %>%
   dplyr::summarise(m = mean(pTimeShockZone), 
                    se = sd(pTimeShockZone)/sqrt(length(pTimeShockZone))) %>%
   dplyr::mutate(measure = "pTimeShockZone")
 
 avoidancedf <- rbind(dfa, dfb,dfc)
-head(avoidancedf)
+
 
 a <- meansdplots(dfa, "NumEntrances" ,  c(0,10,20,30), c(0, 35))
 b <- meansdplots(dfb, "Time1stEntr (min)",  c(0,2,4,6,8), c(0, 8))
-c <- meansdplots(dfc, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37 ))
-
-a
-b
-c
+c <- meansdplots(dfc, "pTimeShockZone", c(0,.12,.25,.37), c(0, .37))
 
 avoidancebehaviors <- plot_grid(a + theme(legend.position = c(0.05, 0.9),
                                           legend.direction = "horizontal",
@@ -145,6 +150,11 @@ avoidancebehaviors <- plot_grid(a + theme(legend.position = c(0.05, 0.9),
                        labels = c("(a)", "(b)", "(c)"))
 avoidancebehaviors
 
+# clean df for saving
+suppletable2 <- rbind(dfshocks, avoidancedf)
+suppletable2$m <- round(suppletable2$m,3)
+suppletable2$se <- round(suppletable2$se,2)
+head(suppletable2)
 ```
 
 
@@ -156,16 +166,17 @@ Next, I next reduced the dimentionality of the data with a PCA anlaysis.
 
 ```{r PCA}
 pca.all <- makepcadf(behavior)
-
-retention <- behavior %>% filter(trialNum == 9)
-
-
+head(pca.all)
 
 pca.Rn <- pca.all %>% 
   filter(trialNum == 9) %>%  
   select(ID:PC2) 
 head(pca.Rn)
 
+suppletable3 <- pca.all %>% 
+  full_join(., trialnameandnumber)  %>% 
+  select(ID, treatment, trial, trialNum, PC1, PC2) 
+suppletable3
 
 pca.Rn.summary <- pca.all %>% filter(trialNum == 9) %>% 
   group_by(treatment) %>% 
@@ -238,7 +249,7 @@ Q5: do the groups differ in subsequent recall? 1-way ANOVA of groups on Rn
 
 ```{r stats}
 # Q1. Are groups different at pre? No.
-Q1 <- onewayANOVAfor3measures(behavior, "Hab", "Pre-training (Pre)")
+Q1 <- onewayANOVAfor3measures(behavior, "Pre", "Pre-training (Pre)")
   
   
 # Q2. Are the groups different during initial training T1-T3? Yes (sometimes alone, sometime interaction)
@@ -293,45 +304,35 @@ PC.APA <- PC.APA %>%
     select(trials, ANOVA, Predictor, df, "F", p) %>%
     filter(!Predictor %in% c("(Intercept)", "Error"))
 
-Q12345 <- as.data.frame(rbind(Q1,Q2,Q3,Q4,Q5, PC.APA))
-Q12345
+table1 <- as.data.frame(rbind(Q1,Q2,Q3,Q4,Q5, PC.APA))
+table1$F <- as.numeric(table1$F)
+table1$p <- as.numeric(table1$p)
+table1$F <- round(table1$F, 2)
+table1$p <- scientific(table1$p, digits = 3)
+table1
 
+## for inline citation
 
-# ttests for retnetion pcs
-t.test(pca.Rn$PC1, pca.Rn$training )
-t.test(pca.Rn$PC2, pca.Rn$training )
-
+summary(aov(PC1 ~ treatment , data=pca.Rn))
+summary(aov(PC2 ~ treatment , data=pca.Rn))
 ```
 
-
-
-```{r PCcorrelations}
-
-pca.nopre <- pca.all %>% filter(trialNum != 1)
-
-cor.test(pca.nopre$PC1, pca.nopre$PC2, method = c("pearson"))
-
-ggplot(pca.nopre, aes(PC1, PC2, color = treatment)) +
-  geom_point()
-```
 
 
 ## save files
 
 ```{r writefiles}
 # supp table 1
-write.csv(behavior, file = "../data/01_behavior.csv", row.names = FALSE)
+write.csv(behavior, file = "../data/suppltable1.csv", row.names = FALSE)
 
 # supp table 2
-write.csv(avoidancedf, file = "../data/01_avoidance.csv", row.names = FALSE)
+write.csv(suppletable2, file = "../data/suppltable2.csv", row.names = FALSE)
 
 # table 1
-write.csv(Q12345, "../data/01_APA.csv", row.names = F)
+write.csv(table1, "../data/table-1.csv", row.names = F)
 
-# unsure wether/how to include
-write.csv(pca.all, file = "../data/01_pca.all.csv", row.names = FALSE)
-write.csv(pca.Rn.summary, file = "../data/01_pca.Rn.summary.csv", row.names = FALSE)
-write.csv(pca.Rn, file = "../data/01_pca.Rn.csv", row.names = FALSE)
+# supp table 3
+write.csv(suppletable3, file = "../data/suppletable3.csv", row.names = FALSE)
 ```
 
 
