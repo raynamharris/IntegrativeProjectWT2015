@@ -98,7 +98,6 @@ allDEGs <- rbind(DGa, DGb, DGc,
                   padj = scientific(padj, digits = 3),
                   logpadj = round(logpadj, 2)) %>%
   arrange(tissue, comparison, gene)
-head(allDEGs) 
 
 suppltable4 <- allDEGs %>% filter(tissue == "DG"  & comparison == "yoked vs. trained")
 head(suppltable4)

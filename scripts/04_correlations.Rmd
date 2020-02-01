@@ -28,7 +28,7 @@ source("./functions_RNAseq.R")
 # read the sample data, set levels, join iwth behvior PCA data
 colData <- read.csv("../data/00_colData.csv", row.names = 1, stringsAsFactors = T)
 colData <- colData %>% filter(subfield == "DG")
-pca.Rn <- read_csv("../data/01_pca.Rn.csv")
+pca.Rn <- read_csv("../data/suppletable3.csv") %>% dplyr::filter(trialNum == 9)
 colData <- left_join(colData, pca.Rn)
 head(colData)
 ```
@@ -151,14 +151,13 @@ corrsPC1sig$gene
 
 # 214 DEGs in DG
 # read DG DEGs
-DG_DEGs <- read.csv("../data/03_DG_DEGs_yokedtrained.csv", row.names = 1, check.names = F) 
-DG_DEGs$gene <- str_to_title(DG_DEGs$gene)
-dim(DG_DEGs)
+DG_DEGs <- read_csv("../data/suppltable-4.csv") %>%
+  dplyr::select(tissue,comparison, gene)
+length(DG_DEGs$gene)
 
 # 42 found  in both correlate and deg datasets
 PC1corrsDEGS <- inner_join(corrsPC1sig, DG_DEGs) %>% 
   arrange(gene) %>% select(gene,PC1)   
-length(PC1corrsDEGS$gene)
 PC1corrsDEGS$gene
 
 top10pc1withpc2 <- corrrmat %>% 
@@ -176,10 +175,10 @@ colData <- read_csv("../data/00_colData.csv")
 geneids <- read_csv("../data/00_geneids.csv") %>% distinct(gene) %>% mutate(gene = toupper(gene))
 
 # pca data
-pca.Rn <- read_csv("../data/01_pca.all.csv") %>% 
+pca.Rn <- read_csv("../data/suppletable3.csv") %>% 
   filter(trialNum == 9) %>%  
   select(ID:PC2) %>%
-  left_join(colData) %>% drop_na() %>% select(ID, treatment, training, trialNum, Day, RNAseqID, subfield, PC1, PC2)
+  left_join(colData) %>% drop_na() %>% select(ID, treatment, training, trialNum, RNAseqID, subfield, PC1, PC2)
 head(pca.Rn)
 
 prepvsdforjoin <- function(pathtovsd, mysubfield){
@@ -241,6 +240,7 @@ getcandidategenecorrelations <- function(df, candidategenes, whichsubfield){
   return(newdf)
   
 }
+
 DGcorrswithpvalue <- getcandidategenecorrelations(vsdDG, topcorrrs, "DG")
 
 newp1 <- ggplot(DGcorrswithpvalue, aes(x = reorder(column, cor), y = cor, label = round(cor,2), fill = cor)) +
@@ -274,12 +274,23 @@ plot(fig4)
 dev.off()
 ```
 
+## data in one supplement
+
+
+```{r}
+corrsPC1sig
+PC1corrsDEGS
+```
+
+
+
 ```{r citation}
 citation("corrr")
 ```
 
 ```{r write}
-write.csv(corrsTop10, "../data/04_corrsTop10.csv", row.names = F)
-write.csv(corrsPC1sig, "../data/04_corrsPC1sig.csv", row.names = F)
-write.csv(top10pc1withpc2, "../data/04_top10pc1withpc2.csv", row.names = F)
+suppltable6 <-  corrrmat %>%  focus(PC1, topcorrrs,  mirror = TRUE) %>% arrange(desc(PC1))
+suppltable6
+
+write.csv(suppltable6, "../data/suppltable6.csv", row.names = F)
 ```

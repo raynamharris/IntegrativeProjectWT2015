@@ -383,22 +383,6 @@ Volcano plots
                       padj = scientific(padj, digits = 3),
                       logpadj = round(logpadj, 2)) %>%
       arrange(tissue, comparison, gene)
-    head(allDEGs) 
-
-    ##   tissue          gene   lfc     padj logpadj
-    ## 1    CA1 1110032F04Rik  3.70 7.54e-02    1.12
-    ## 2    CA1 1600002K03Rik -4.51 5.71e-02    1.24
-    ## 3    CA1 1810030O07Rik -1.73 6.86e-02    1.16
-    ## 4    CA1 2010107G23Rik -2.14 1.76e-02    1.75
-    ## 5    CA1 2210013O21Rik -2.38 5.17e-02    1.29
-    ## 6    CA1 2210016L21Rik -0.85 9.57e-02    1.02
-    ##                          comparison      direction
-    ## 1 standard.yoked vs. conflict.yoked conflict.yoked
-    ## 2 standard.yoked vs. conflict.yoked standard.yoked
-    ## 3 standard.yoked vs. conflict.yoked standard.yoked
-    ## 4 standard.yoked vs. conflict.yoked standard.yoked
-    ## 5 standard.yoked vs. conflict.yoked standard.yoked
-    ## 6 standard.yoked vs. conflict.yoked standard.yoked
 
     suppltable4 <- allDEGs %>% filter(tissue == "DG"  & comparison == "yoked vs. trained")
     head(suppltable4)

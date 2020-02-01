@@ -1,13 +1,13 @@
     library(tidyverse)
 
-    ## ── Attaching packages ────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ─────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✔ ggplot2 3.2.1     ✔ purrr   0.3.3
     ## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
     ## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
     ## ✔ readr   1.3.1     ✔ forcats 0.4.0
 
-    ## ── Conflicts ───────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -52,14 +52,14 @@ Sample information and PC1
     # read the sample data, set levels, join iwth behvior PCA data
     colData <- read.csv("../data/00_colData.csv", row.names = 1, stringsAsFactors = T)
     colData <- colData %>% filter(subfield == "DG")
-    pca.Rn <- read_csv("../data/01_pca.Rn.csv")
+    pca.Rn <- read_csv("../data/suppletable3.csv") %>% dplyr::filter(trialNum == 9)
 
     ## Parsed with column specification:
     ## cols(
     ##   ID = col_character(),
     ##   treatment = col_character(),
+    ##   trial = col_character(),
     ##   trialNum = col_double(),
-    ##   Day = col_double(),
     ##   PC1 = col_double(),
     ##   PC2 = col_double()
     ## )
@@ -76,13 +76,13 @@ Sample information and PC1
 
     head(colData)
 
-    ##       ID subfield        treatment training trialNum Day        PC1
-    ## 1 15143A       DG conflict.trained  trained        9   3 -0.2275039
-    ## 2 15143B       DG   conflict.yoked    yoked        9   3 -3.1436627
-    ## 3 15143D       DG   standard.yoked    yoked        9   3 -2.7532719
-    ## 4 15144A       DG conflict.trained  trained        9   3  6.7041815
-    ## 5 15144C       DG standard.trained  trained        9   4  7.0499369
-    ## 6 15144D       DG   standard.yoked    yoked        9   3 -3.3026284
+    ##       ID subfield        treatment training     trial trialNum        PC1
+    ## 1 15143A       DG conflict.trained  trained Retention        9 -0.2275039
+    ## 2 15143B       DG   conflict.yoked    yoked Retention        9 -3.1436627
+    ## 3 15143D       DG   standard.yoked    yoked Retention        9 -2.7532719
+    ## 4 15144A       DG conflict.trained  trained Retention        9  6.7041815
+    ## 5 15144C       DG standard.trained  trained Retention        9  7.0499369
+    ## 6 15144D       DG   standard.yoked    yoked Retention        9 -3.3026284
     ##           PC2
     ## 1  3.03543738
     ## 2 -0.48834291
@@ -134,13 +134,13 @@ Sample information and PC1
 
     head(vsd)[1:10]
 
-    ##       ID subfield        treatment training trialNum Day        PC1
-    ## 1 15143A       DG conflict.trained  trained        9   3 -0.2275039
-    ## 2 15143B       DG   conflict.yoked    yoked        9   3 -3.1436627
-    ## 3 15143D       DG   standard.yoked    yoked        9   3 -2.7532719
-    ## 4 15144A       DG conflict.trained  trained        9   3  6.7041815
-    ## 5 15144C       DG standard.trained  trained        9   4  7.0499369
-    ## 6 15144D       DG   standard.yoked    yoked        9   3 -3.3026284
+    ##       ID subfield        treatment training     trial trialNum        PC1
+    ## 1 15143A       DG conflict.trained  trained Retention        9 -0.2275039
+    ## 2 15143B       DG   conflict.yoked    yoked Retention        9 -3.1436627
+    ## 3 15143D       DG   standard.yoked    yoked Retention        9 -2.7532719
+    ## 4 15144A       DG conflict.trained  trained Retention        9  6.7041815
+    ## 5 15144C       DG standard.trained  trained Retention        9  7.0499369
+    ## 6 15144D       DG   standard.yoked    yoked Retention        9 -3.3026284
     ##           PC2 0610007p14rik 0610009b22rik
     ## 1  3.03543738      6.497231      5.933401
     ## 2 -0.48834291      6.520310      5.821822
@@ -246,7 +246,7 @@ Correlate ALL genes with PC1 and PC2
     head(names(vsd),10)
 
     ##  [1] "ID"            "subfield"      "treatment"     "training"     
-    ##  [5] "trialNum"      "Day"           "PC1"           "PC2"          
+    ##  [5] "trial"         "trialNum"      "PC1"           "PC2"          
     ##  [9] "0610007p14rik" "0610009b22rik"
 
     tail(names(vsd),5)
@@ -368,21 +368,29 @@ What genes genes correlated with PC1? How many gene correlated with PC1 and are 
 
     # 214 DEGs in DG
     # read DG DEGs
-    DG_DEGs <- read.csv("../data/03_DG_DEGs_yokedtrained.csv", row.names = 1, check.names = F) 
-    DG_DEGs$gene <- str_to_title(DG_DEGs$gene)
-    dim(DG_DEGs)
+    DG_DEGs <- read_csv("../data/suppltable-4.csv") %>%
+      dplyr::select(tissue,comparison, gene)
 
-    ## [1] 214   5
+    ## Parsed with column specification:
+    ## cols(
+    ##   tissue = col_character(),
+    ##   gene = col_character(),
+    ##   lfc = col_double(),
+    ##   padj = col_double(),
+    ##   logpadj = col_double(),
+    ##   comparison = col_character(),
+    ##   direction = col_character()
+    ## )
+
+    length(DG_DEGs$gene)
+
+    ## [1] 214
 
     # 42 found  in both correlate and deg datasets
     PC1corrsDEGS <- inner_join(corrsPC1sig, DG_DEGs) %>% 
       arrange(gene) %>% select(gene,PC1)   
 
     ## Joining, by = "gene"
-
-    length(PC1corrsDEGS$gene)
-
-    ## [1] 42
 
     PC1corrsDEGS$gene
 
@@ -443,42 +451,34 @@ new correlation analysis with p-values
     ## )
 
     # pca data
-    pca.Rn <- read_csv("../data/01_pca.all.csv") %>% 
+    pca.Rn <- read_csv("../data/suppletable3.csv") %>% 
       filter(trialNum == 9) %>%  
       select(ID:PC2) %>%
-      left_join(colData) %>% drop_na() %>% select(ID, treatment, training, trialNum, Day, RNAseqID, subfield, PC1, PC2)
+      left_join(colData) %>% drop_na() %>% select(ID, treatment, training, trialNum, RNAseqID, subfield, PC1, PC2)
 
     ## Parsed with column specification:
     ## cols(
     ##   ID = col_character(),
     ##   treatment = col_character(),
+    ##   trial = col_character(),
     ##   trialNum = col_double(),
-    ##   Day = col_double(),
     ##   PC1 = col_double(),
-    ##   PC2 = col_double(),
-    ##   PC3 = col_double(),
-    ##   PC4 = col_double(),
-    ##   PC5 = col_double(),
-    ##   PC6 = col_double(),
-    ##   PC7 = col_double(),
-    ##   PC8 = col_double(),
-    ##   PC9 = col_double(),
-    ##   PC10 = col_double()
+    ##   PC2 = col_double()
     ## )
 
     ## Joining, by = c("ID", "treatment")
 
     head(pca.Rn)
 
-    ## # A tibble: 6 x 9
-    ##   ID     treatment training trialNum   Day RNAseqID subfield    PC1     PC2
-    ##   <chr>  <chr>     <chr>       <dbl> <dbl> <chr>    <chr>     <dbl>   <dbl>
-    ## 1 15143A conflict… trained         9     3 143A-CA… CA3      -0.228  3.04  
-    ## 2 15143A conflict… trained         9     3 143A-DG… DG       -0.228  3.04  
-    ## 3 15143B conflict… yoked           9     3 143B-CA… CA1      -3.14  -0.488 
-    ## 4 15143B conflict… yoked           9     3 143B-DG… DG       -3.14  -0.488 
-    ## 5 15143C standard… trained         9     3 143C-CA… CA1       5.89   0.332 
-    ## 6 15143D standard… yoked           9     3 143D-CA… CA1      -2.75  -0.0758
+    ## # A tibble: 6 x 8
+    ##   ID     treatment      training trialNum RNAseqID  subfield    PC1     PC2
+    ##   <chr>  <chr>          <chr>       <dbl> <chr>     <chr>     <dbl>   <dbl>
+    ## 1 15143A conflict.trai… trained         9 143A-CA3… CA3      -0.228  3.04  
+    ## 2 15143A conflict.trai… trained         9 143A-DG-1 DG       -0.228  3.04  
+    ## 3 15143B conflict.yoked yoked           9 143B-CA1… CA1      -3.14  -0.488 
+    ## 4 15143B conflict.yoked yoked           9 143B-DG-1 DG       -3.14  -0.488 
+    ## 5 15143C standard.trai… trained         9 143C-CA1… CA1       5.89   0.332 
+    ## 6 15143D standard.yoked yoked           9 143D-CA1… CA1      -2.75  -0.0758
 
     prepvsdforjoin <- function(pathtovsd, mysubfield){
       #read all count data
@@ -563,6 +563,7 @@ new correlation analysis with p-values
       return(newdf)
       
     }
+
     DGcorrswithpvalue <- getcandidategenecorrelations(vsdDG, topcorrrs, "DG")
 
     ##    row   column       cor            p         padj
@@ -614,6 +615,43 @@ all figures together
     ## quartz_off_screen 
     ##                 2
 
+data in one supplement
+----------------------
+
+    corrsPC1sig
+
+    ## # A tibble: 58 x 2
+    ##    gene      PC1
+    ##    <chr>   <dbl>
+    ##  1 Abra    0.764
+    ##  2 Acan    0.784
+    ##  3 Adamts1 0.730
+    ##  4 Aim1l   0.709
+    ##  5 Amigo2  0.715
+    ##  6 Arc     0.806
+    ##  7 Areg    0.784
+    ##  8 Arl4d   0.738
+    ##  9 Arl5b   0.724
+    ## 10 Armcx5  0.776
+    ## # … with 48 more rows
+
+    PC1corrsDEGS
+
+    ## # A tibble: 42 x 2
+    ##    gene      PC1
+    ##    <chr>   <dbl>
+    ##  1 Acan    0.784
+    ##  2 Adamts1 0.730
+    ##  3 Amigo2  0.715
+    ##  4 Arc     0.806
+    ##  5 Arl4d   0.738
+    ##  6 Arl5b   0.724
+    ##  7 Armcx5  0.776
+    ##  8 Atf3    0.774
+    ##  9 Bdnf    0.707
+    ## 10 Btg2    0.706
+    ## # … with 32 more rows
+
     citation("corrr")
 
     ## 
@@ -633,6 +671,24 @@ all figures together
     ##     url = {https://CRAN.R-project.org/package=corrr},
     ##   }
 
-    write.csv(corrsTop10, "../data/04_corrsTop10.csv", row.names = F)
-    write.csv(corrsPC1sig, "../data/04_corrsPC1sig.csv", row.names = F)
-    write.csv(top10pc1withpc2, "../data/04_top10pc1withpc2.csv", row.names = F)
+    suppltable6 <-  corrrmat %>%  focus(PC1, topcorrrs,  mirror = TRUE) %>% arrange(desc(PC1))
+    suppltable6
+
+    ## # A tibble: 21 x 22
+    ##    rowname   PC1  Naf1 Ptgs2  Rgs2 Hist1h1d Col10a1   Arc Hspb3 Npas4  Fzd5
+    ##    <chr>   <dbl> <dbl> <dbl> <dbl>    <dbl>   <dbl> <dbl> <dbl> <dbl> <dbl>
+    ##  1 PC1     1     0.862 0.840 0.834    0.815   0.813 0.806 0.803 0.802 0.799
+    ##  2 Naf1    0.862 1     0.854 0.810    0.822   0.803 0.747 0.682 0.814 0.823
+    ##  3 Ptgs2   0.840 0.854 1     0.943    0.748   0.886 0.933 0.716 0.964 0.903
+    ##  4 Rgs2    0.834 0.810 0.943 1        0.709   0.945 0.899 0.694 0.877 0.881
+    ##  5 Hist1h… 0.815 0.822 0.748 0.709    1       0.748 0.609 0.602 0.712 0.687
+    ##  6 Col10a1 0.813 0.803 0.886 0.945    0.748   1     0.842 0.659 0.860 0.883
+    ##  7 Arc     0.806 0.747 0.933 0.899    0.609   0.842 1     0.663 0.904 0.858
+    ##  8 Hspb3   0.803 0.682 0.716 0.694    0.602   0.659 0.663 1     0.709 0.705
+    ##  9 Npas4   0.802 0.814 0.964 0.877    0.712   0.860 0.904 0.709 1     0.912
+    ## 10 Fzd5    0.799 0.823 0.903 0.881    0.687   0.883 0.858 0.705 0.912 1    
+    ## # … with 11 more rows, and 11 more variables: Acan <dbl>, Areg <dbl>,
+    ## #   Hist1h3i <dbl>, Armcx5 <dbl>, Atf3 <dbl>, Syt4 <dbl>, Nexn <dbl>,
+    ## #   Hoxc4 <dbl>, Abra <dbl>, Fosl2 <dbl>, Ubc <dbl>
+
+    write.csv(suppltable6, "../data/suppltable6.csv", row.names = F)

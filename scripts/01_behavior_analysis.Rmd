@@ -176,7 +176,7 @@ head(pca.Rn)
 suppletable3 <- pca.all %>% 
   full_join(., trialnameandnumber)  %>% 
   select(ID, treatment, trial, trialNum, PC1, PC2) 
-suppletable3
+head(suppletable3)
 
 pca.Rn.summary <- pca.all %>% filter(trialNum == 9) %>% 
   group_by(treatment) %>% 
@@ -213,7 +213,7 @@ e <- fviz_contrib_rmh(res.pca, choice = "var", axes = 1, top = 8,
   theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
 # Contributions of variables to PC2
 f <- fviz_contrib_rmh(res.pca, choice = "var", axes = 2, top = 8, 
-                 ylab = "PC2 % contrib." , xlab = "estimates of activity", subtitle = " ") +
+                 ylab = "PC2 % contrib." , xlab = "estimates of activity and memory", subtitle = " ") +
   theme_ms() + theme(axis.text.x = element_text(angle=45, hjust = 1))
 
 e
@@ -307,11 +307,21 @@ PC.APA <- PC.APA %>%
 table1 <- as.data.frame(rbind(Q1,Q2,Q3,Q4,Q5, PC.APA))
 table1$F <- as.numeric(table1$F)
 table1$p <- as.numeric(table1$p)
+
+# show if sig or not
+table1$sig <- ifelse(table1$p < 0.001, '***',
+                     ifelse(table1$p < 0.01, '**',
+                            ifelse(table1$p < 0.05, '*', " ")))
+# clean for printing
 table1$F <- round(table1$F, 2)
-table1$p <- scientific(table1$p, digits = 3)
-table1
+table1$p <- round(table1$p, 3)
+
+head(table1)
 
 ## for inline citation
+
+summary(aov(PC1 ~ treatment , data=pca.all))
+summary(aov(PC2 ~ treatment , data=pca.all))
 
 summary(aov(PC1 ~ treatment , data=pca.Rn))
 summary(aov(PC2 ~ treatment , data=pca.Rn))
