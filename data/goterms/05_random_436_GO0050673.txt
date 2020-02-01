@@ -1,0 +1,647 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:2143261	A4gnt	alpha-1,4-N-acetylglucosaminyltransferase	9		negative regulation of epithelial cell proliferation	happens in stomach pyloric region,regulates the proliferation of glandular cell of stomach|happens in stomach glandular region epithelium,regulates the proliferation of glandular cell of stomach		IMP	MGI:5425954 	J:184485 	
+MGI:102806	Acvr2a	activin receptor IIA	2		Sertoli cell proliferation			IMP	MGI:1861779 	J:71932 	
+MGI:1338946	Acvrl1	activin A receptor, type II-like 1	15		negative regulation of endothelial cell proliferation			IDA		J:164086 	
+MGI:1338946	Acvrl1	activin A receptor, type II-like 1	15		positive regulation of endothelial cell proliferation			IDA		J:164086 	
+MGI:1096335	Adam17	a disintegrin and metallopeptidase domain 17	12		positive regulation of vascular endothelial cell proliferation			ISO	P78536 	J:164563 	
+MGI:87930	Adk	adenosine kinase	14		type B pancreatic cell proliferation			ISO	RGD:2046 	J:155856 	
+MGI:99403	Adora2b	adenosine A2b receptor	11		positive regulation of endothelial cell proliferation			ISO	RGD:2050 	J:155856 	
+MGI:3580016	Agap2	ArfGAP with GTPase domain, ankyrin repeat and PH domain 2	10		positive regulation of mammary gland epithelial cell proliferation	regulates a function/process that happens in mammary gland alveolus,regulates the proliferation of epithelial cell		IGI	MGI:88313 	J:158376 	
+MGI:3580016	Agap2	ArfGAP with GTPase domain, ankyrin repeat and PH domain 2	10		positive regulation of mammary gland epithelial cell proliferation			IMP		J:158376 	
+MGI:3580016	Agap2	ArfGAP with GTPase domain, ankyrin repeat and PH domain 2	10		positive regulation of mammary gland epithelial cell proliferation	regulates a function/process that happens in mammary gland alveolus,regulates the proliferation of epithelial cell		IMP	MGI:4439325 	J:158376 	
+MGI:893592	Ager	advanced glycosylation end product-specific receptor	17		negative regulation of endothelial cell proliferation			ISO	RGD:69258 	J:155856 	
+MGI:1913799	Aggf1	angiogenic factor with G patch and FHA domains 1	13		positive regulation of endothelial cell proliferation			ISO	Q8N302 	J:164563 	
+MGI:87964	Agtr1a	angiotensin II receptor, type 1a	13		positive regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	P30556 	J:164563 	
+MGI:102774	Aimp1	aminoacyl tRNA synthetase complex-interacting multifunctional protein 1	3		negative regulation of endothelial cell proliferation			ISO	Q12904 	J:164563 	
+MGI:87986	Akt1	thymoma viral proto-oncogene 1	12		positive regulation of endothelial cell proliferation			ISO	P31749 	J:164563 	
+MGI:1345147	Akt3	thymoma viral proto-oncogene 3	1		positive regulation of endothelial cell proliferation			ISO	Q9Y243 	J:164563 	
+MGI:1345147	Akt3	thymoma viral proto-oncogene 3	1		positive regulation of vascular endothelial cell proliferation			ISO	Q9Y243 	J:164563 	
+MGI:107928	Aldh1a2	aldehyde dehydrogenase family 1, subfamily A2	9		regulation of endothelial cell proliferation	regulates a function/process that happens in yolk sac,regulates the proliferation of blood vessel endothelial cell		IMP	MGI:1857891 	J:86515 	
+MGI:1934606	Alms1	ALMS1, centrosome and basal body associated	6		epithelial cell proliferation	happens in renal cortex,affects a population of epithelial cell		IMP	MGI:3699224 	J:118221 	
+MGI:88022	Ang	angiogenin, ribonuclease, RNase A family, 5	14		positive regulation of endothelial cell proliferation			ISO	P03950 	J:164563 	
+MGI:3643534	Angptl8	angiopoietin-like 8	9	NOT	type B pancreatic cell proliferation			IDA		J:217254 	
+MGI:3643534	Angptl8	angiopoietin-like 8	9	NOT	type B pancreatic cell proliferation			IMP		J:217383 	
+MGI:88039	Apc	APC, WNT signaling pathway regulator	18		negative regulation of epithelial cell proliferation	happens in intestine epithelium,regulates the proliferation of epithelial cell		IGI	MGI:101884 	J:88127 	
+MGI:88039	Apc	APC, WNT signaling pathway regulator	18		negative regulation of epithelial cell proliferation	happens in intestine		IGI	MGI:104642 	J:52560 	
+MGI:88039	Apc	APC, WNT signaling pathway regulator	18		negative regulation of epithelial cell proliferation	happens in intestine		IGI	MGI:1857932 	J:38609 	
+MGI:88039	Apc	APC, WNT signaling pathway regulator	18		negative regulation of epithelial cell proliferation	happens in large intestine crypt of lieberkuhn,regulates the proliferation of gut endothelial cell		IMP	MGI:1856318 	J:38930 	
+MGI:88039	Apc	APC, WNT signaling pathway regulator	18		negative regulation of epithelial cell proliferation	negatively regulates molecular_function,negatively regulates transcription by RNA polymerase II,negatively regulates positive regulation of molecular function,negatively regulates positive regulation of transcription by RNA polymerase II,negatively regulates epithelial cell proliferation,negatively regulates canonical Wnt signaling pathway,positively regulates glandular epithelial cell differentiation		TAS		J:92787 	
+MGI:88039	Apc	APC, WNT signaling pathway regulator	18		negative regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in prostate gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:1857966 MGI:2385927 	J:120308 	
+MGI:3642370	Apela	apelin receptor early endogenous ligand	8		positive regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			IMP		J:245878 	
+MGI:1353624	Apln	apelin	X		positive regulation of vascular endothelial cell proliferation			ISO	Q9ULZ1 	J:164563 	
+MGI:1346086	Aplnr	apelin receptor	2		positive regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			IMP		J:245878 	
+MGI:88049	Apoa1	apolipoprotein A-I	9		endothelial cell proliferation			IMP	MGI:1857127 	J:118063 	
+MGI:88057	Apoe	apolipoprotein E	7		negative regulation of endothelial cell proliferation			ISO	P02649 	J:164563 	
+MGI:88058	Apoh	apolipoprotein H	11		negative regulation of endothelial cell proliferation			ISO	P02749 	J:164563 	
+MGI:1913583	Aqp11	aquaporin 11	7		negative regulation of epithelial cell proliferation			IMP		J:280414 	
+MGI:88064	Ar	androgen receptor	X		negative regulation of epithelial cell proliferation	happens in prostate gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:2385927 MGI:2451025 	J:123402 	
+MGI:88064	Ar	androgen receptor	X		positive regulation of epithelial cell proliferation involved in prostate gland development			IDA		J:71472 	
+MGI:88068	Areg	amphiregulin	5		epithelial cell proliferation involved in mammary gland duct elongation	regulates a function/process that happens in mammary gland duct		IMP	MGI:2176531 	J:120116 	
+MGI:88070	Arg1	arginase, liver	10		positive regulation of endothelial cell proliferation			ISO	RGD:2150 	J:155856 	
+MGI:109349	Atf2	activating transcription factor 2	2		negative regulation of epithelial cell proliferation			ISO	RGD:621862 	J:155856 	
+MGI:1918343	Atoh8	atonal bHLH transcription factor 8	6		negative regulation of endothelial cell proliferation			ISO	Q96SQ7 	J:164563 	
+MGI:88115	Atp5a1	ATP synthase, H+ transporting, mitochondrial F1 complex, alpha subunit 1	18		negative regulation of endothelial cell proliferation			ISO	P25705 	J:164563 	
+MGI:99400	Atp7a	ATPase, Cu++ transporting, alpha polypeptide	X		positive regulation of epithelial cell proliferation			ISO	RGD:2179 	J:155856 	
+MGI:1196457	Atpif1	ATPase inhibitory factor 1	4		negative regulation of endothelial cell proliferation			ISO	Q9UII2 	J:164563 	
+MGI:1859169	Azin1	antizyme inhibitor 1	15		positive regulation of epithelial cell proliferation			ISO	RGD:61934 	J:155856 	
+MGI:88127	B2m	beta-2 microglobulin	2		negative regulation of epithelial cell proliferation			ISO	P61769 	J:164563 	
+MGI:95705	B4galt1	UDP-Gal:betaGlcNAc beta 1,4- galactosyltransferase, polypeptide 1	4		positive regulation of epithelial cell proliferation involved in wound healing	regulates a function/process that happens in skin,regulates the proliferation of epithelial cell		IMP	MGI:2450889 	J:89125 	
+MGI:1096330	Bad	BCL2-associated agonist of cell death	19		positive regulation of epithelial cell proliferation			ISO	Q92934 	J:164563 	
+MGI:1096330	Bad	BCL2-associated agonist of cell death	19		type B pancreatic cell proliferation			IMP		J:133563 	
+MGI:99702	Bax	BCL2-associated X protein	7		regulation of mammary gland epithelial cell proliferation	regulates a function/process that happens in mammary gland,regulates the proliferation of epithelial cell		IMP	MGI:1857429 	J:55402 	
+MGI:99702	Bax	BCL2-associated X protein	7		Sertoli cell proliferation			IGI	MGI:1857389 MGI:1857429 	J:72582 	
+MGI:2136782	BC004004	cDNA sequence BC004004	17		epithelial cell proliferation			ISO	Q6UWU4 	J:164563 	
+MGI:108052	Bcl2l2	BCL2-like 2	14		Sertoli cell proliferation			IGI	MGI:1857389 MGI:1857429 	J:72582 	
+MGI:1929913	Bcl11b	B cell leukemia/lymphoma 11B	12		regulation of keratinocyte proliferation	regulates a function/process that happens in integumental system,regulates the proliferation of keratinocyte		IMP	MGI:3839578 	J:147182 	
+MGI:88157	Bglap2	bone gamma-carboxyglutamate protein 2	3		type B pancreatic cell proliferation			IMP	MGI:2180471 	J:126780 	
+MGI:1203517	Birc5	baculoviral IAP repeat-containing 5	11		regulation of type B pancreatic cell proliferation	regulates a function/process that happens in pancreas		IMP	MGI:3046203 	J:151770 	
+MGI:88177	Bmp2	bone morphogenetic protein 2	2		positive regulation of endothelial cell proliferation			ISO	P12643 	J:164563 	
+MGI:88180	Bmp4	bone morphogenetic protein 4	14		blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	P12644 	J:164563 	
+MGI:88180	Bmp4	bone morphogenetic protein 4	14		epithelial cell proliferation involved in lung morphogenesis			ISO	P12644 	J:33591 	
+MGI:88180	Bmp4	bone morphogenetic protein 4	14		negative regulation of epithelial cell proliferation			IMP	MGI:1857137 	J:69382 	
+MGI:88180	Bmp4	bone morphogenetic protein 4	14		positive regulation of endothelial cell proliferation			IDA		J:164086 	
+MGI:88180	Bmp4	bone morphogenetic protein 4	14		positive regulation of endothelial cell proliferation			ISO	P12644 	J:164563 	
+MGI:88180	Bmp4	bone morphogenetic protein 4	14		positive regulation of epithelial cell proliferation			ISO	P12644 	J:164563 	
+MGI:88180	Bmp4	bone morphogenetic protein 4	14		regulation of endothelial cell proliferation			TAS		J:164086 	
+MGI:88181	Bmp5	bone morphogenetic protein 5	9		positive regulation of epithelial cell proliferation			ISO	P22003 	J:164563 	
+MGI:88182	Bmp6	bone morphogenetic protein 6	13		positive regulation of endothelial cell proliferation			IDA		J:164086 	
+MGI:88182	Bmp6	bone morphogenetic protein 6	13		positive regulation of epithelial cell proliferation			ISO	P22004 	J:164563 	
+MGI:1920480	Bmper	BMP-binding endothelial regulator	9		blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	Q8N8U9 	J:164563 	
+MGI:1338938	Bmpr1a	bone morphogenetic protein receptor, type 1A	14		positive regulation of epithelial cell proliferation	happens in lung,regulates the proliferation of epithelial cell of lung		IMP	MGI:2158390 MGI:3574949 	J:106392 	
+MGI:1338938	Bmpr1a	bone morphogenetic protein receptor, type 1A	14	NOT	regulation of endothelial cell proliferation			IDA		J:164086 	
+MGI:1095407	Bmpr2	bone morphogenetic protein receptor, type II (serine/threonine kinase)	1		endothelial cell proliferation			ISO	Q13873 	J:164563 	
+MGI:1095407	Bmpr2	bone morphogenetic protein receptor, type II (serine/threonine kinase)	1		positive regulation of endothelial cell proliferation			ISO	Q13873 	J:164563 	
+MGI:1097164	Bnc1	basonuclin 1	7		positive regulation of epithelial cell proliferation	happens in cornea epithelium,regulates the proliferation of corneal epithelial cell		IMP	MGI:3771811 	J:130266 	
+MGI:109337	Brca2	breast cancer 2, early onset	5		negative regulation of mammary gland epithelial cell proliferation			ISO	P51587 	J:164563 	
+MGI:1916065	Btbd10	BTB (POZ) domain containing 10	7		type B pancreatic cell proliferation			ISO	RGD:1306301 	J:155856 	
+MGI:1338871	Btrc	beta-transducin repeat containing protein	19		mammary gland epithelial cell proliferation	happens in mammary gland epithelium,affects a population of epithelial cell		IMP	MGI:3055737 	J:92886 	
+MGI:88232	C5ar1	complement component 5a receptor 1	7		positive regulation of epithelial cell proliferation			ISO	P21730 	J:164563 	
+MGI:2442013	C5ar2	complement component 5a receptor 2	7		positive regulation of epithelial cell proliferation			IEA	IPR027809 	J:72247 	
+MGI:1309489	Cask	calcium/calmodulin-dependent serine protein kinase (MAGUK family)	X		negative regulation of keratinocyte proliferation			ISO	O14936 	J:164563 	
+MGI:102709	Cav1	caveolin 1, caveolae protein	6		negative regulation of endothelial cell proliferation			IBA	PTN000090213 	J:265628 	
+MGI:102709	Cav1	caveolin 1, caveolae protein	6		negative regulation of endothelial cell proliferation	regulates a function/process that happens in alveolar system		IMP	MGI:2180364 	J:75490 	
+MGI:102709	Cav1	caveolin 1, caveolae protein	6		negative regulation of endothelial cell proliferation			ISO	RGD:2280 	J:155856 	
+MGI:102709	Cav1	caveolin 1, caveolae protein	6		positive regulation of endothelial cell proliferation			ISO	RGD:2280 	J:155856 	
+MGI:107571	Cav2	caveolin 2	6		negative regulation of endothelial cell proliferation			IBA	PTN000090157 	J:265628 	
+MGI:107571	Cav2	caveolin 2	6		negative regulation of endothelial cell proliferation	regulates a function/process that happens in alveolar system		IMP	MGI:2180372 	J:75490 	
+MGI:107571	Cav2	caveolin 2	6		negative regulation of endothelial cell proliferation			ISO	RGD:620348 	J:155856 	
+MGI:107571	Cav2	caveolin 2	6		positive regulation of endothelial cell proliferation	regulates a function/process that happens in lung,regulates the proliferation of endothelial cell		IGI	MGI:98728 	J:178359 	
+MGI:98259	Ccl2	chemokine (C-C motif) ligand 2	11		positive regulation of endothelial cell proliferation			ISO	RGD:3645 	J:155856 	
+MGI:98262	Ccl5	chemokine (C-C motif) ligand 5	11		positive regulation of epithelial cell proliferation	happens in colon,regulates the proliferation of colon epithelial cell		IMP	MGI:2180195 	J:197406 	
+MGI:103576	Ccl11	chemokine (C-C motif) ligand 11	11		positive regulation of endothelial cell proliferation			ISO	P51671 	J:164563 	
+MGI:108224	Ccl12	chemokine (C-C motif) ligand 12	11		negative regulation of vascular endothelial cell proliferation			ISO	P13500 	J:164563 	
+MGI:1928953	Ccl24	chemokine (C-C motif) ligand 24	5		positive regulation of endothelial cell proliferation			ISO	O00175 	J:164563 	
+MGI:109185	Ccn3	cellular communication network factor 3	15		type B pancreatic cell proliferation			IDA		J:202162 	
+MGI:88313	Ccnd1	cyclin D1	7		mammary gland epithelial cell proliferation	happens in mammary gland alveolus,affects a population of epithelial cell		IGI	MGI:99484 	J:90978 	
+MGI:88313	Ccnd1	cyclin D1	7		positive regulation of epithelial cell proliferation	positively regulates epithelial cell proliferation		IGI	MGI:88039 	J:92787 	
+MGI:88313	Ccnd1	cyclin D1	7		positive regulation of mammary gland epithelial cell proliferation	regulates a function/process that happens in mammary gland alveolus,regulates the proliferation of epithelial cell		IGI	MGI:3580016 	J:158376 	
+MGI:88314	Ccnd2	cyclin D2	6		positive regulation of epithelial cell proliferation			ISO	RGD:621083 	J:155856 	
+MGI:104616	Ccr3	chemokine (C-C motif) receptor 3	9		positive regulation of endothelial cell proliferation			IMP		J:150352 	
+MGI:88329	Cd34	CD34 antigen	1		endothelial cell proliferation			ISO	P28906 	J:164563 	
+MGI:2445221	Cd109	CD109 antigen	9		negative regulation of keratinocyte proliferation	regulates the proliferation of basal cell of epidermis		IMP	MGI:5443927 	J:188696 	
+MGI:103198	Cdc25a	cell division cycle 25A	9		positive regulation of cholangiocyte proliferation			ISO	RGD:621498 	J:155856 	
+MGI:106211	Cdc42	cell division cycle 42	4		positive regulation of epithelial cell proliferation involved in lung morphogenesis			IMP		J:193093 	
+MGI:2384876	Cdc73	cell division cycle 73, Paf1/RNA polymerase II complex component	1		negative regulation of epithelial cell proliferation			ISO	Q6P1J9 	J:164563 	
+MGI:88354	Cdh1	cadherin 1	8		negative regulation of epithelial cell proliferation			IMP		J:190582 	
+MGI:88356	Cdh3	cadherin 3	8		positive regulation of keratinocyte proliferation			ISO	P22223 	J:164563 	
+MGI:99551	Cdh13	cadherin 13	8		keratinocyte proliferation			ISO	P55290 	J:164563 	
+MGI:99551	Cdh13	cadherin 13	8		positive regulation of endothelial cell proliferation			ISO	P55290 	J:164563 	
+MGI:1277162	Cdk6	cyclin-dependent kinase 6	5		negative regulation of epithelial cell proliferation			ISO	Q00534 	J:164563 	
+MGI:104565	Cdkn1b	cyclin-dependent kinase inhibitor 1B	6		negative regulation of epithelial cell proliferation			IMP	MGI:1857146 	J:53290 	
+MGI:104565	Cdkn1b	cyclin-dependent kinase inhibitor 1B	6		negative regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in ventral prostate gland,regulates the proliferation of epithelial cell|regulates a function/process that happens in prostate gland dorsolateral lobe,regulates the proliferation of epithelial cell		IMP	MGI:1888808 	J:115443 	
+MGI:104738	Cdkn2a	cyclin dependent kinase inhibitor 2A	4		negative regulation of hepatocyte proliferation			ISO	RGD:2323 	J:155856 	
+MGI:104738	Cdkn2a	cyclin dependent kinase inhibitor 2A	4		negative regulation of mammary gland epithelial cell proliferation	regulates a function/process that happens in mammary gland		IMP	MGI:1926877 	J:91428 	
+MGI:104737	Cdkn2b	cyclin dependent kinase inhibitor 2B	4		negative regulation of epithelial cell proliferation			ISO	P42772 	J:164563 	
+MGI:1347245	Ceacam1	carcinoembryonic antigen-related cell adhesion molecule 1	7		negative regulation of hepatocyte proliferation			IMP		J:93419 	
+MGI:88373	Cebpb	CCAAT/enhancer binding protein (C/EBP), beta	2		hepatocyte proliferation			IDA		J:133506 	
+MGI:88373	Cebpb	CCAAT/enhancer binding protein (C/EBP), beta	2		hepatocyte proliferation			ISO	RGD:2327 	J:155856 	
+MGI:88373	Cebpb	CCAAT/enhancer binding protein (C/EBP), beta	2		mammary gland epithelial cell proliferation	happens in mammary gland,affects a population of epithelial cell		IMP	MGI:2149329 	J:60671 	
+MGI:1336166	Cflar	CASP8 and FADD-like apoptosis regulator	1		positive regulation of hepatocyte proliferation			ISO	RGD:620847 	J:155856 	
+MGI:99484	Chuk	conserved helix-loop-helix ubiquitous kinase	19		mammary gland epithelial cell proliferation	happens in mammary gland alveolus,affects a population of epithelial cell		IGI	MGI:88313 	J:90978 	
+MGI:99484	Chuk	conserved helix-loop-helix ubiquitous kinase	19		mammary gland epithelial cell proliferation	happens in mammary gland alveolus,affects a population of epithelial cell		IMP	MGI:3045616 	J:90978 	
+MGI:1276109	Cldn1	claudin 1	16		positive regulation of epithelial cell proliferation involved in wound healing			ISO	O95832 	J:164563 	
+MGI:1341171	Cnmd	chondromodulin	14		negative regulation of endothelial cell proliferation			IBA	PTN000362559 	J:265628 	
+MGI:1341171	Cnmd	chondromodulin	14		negative regulation of endothelial cell proliferation			IDA		J:83025 	
+MGI:104688	Col4a3	collagen, type IV, alpha 3	1		negative regulation of vascular endothelial cell proliferation			ISO	Q01955 	J:164563 	
+MGI:88463	Col8a1	collagen, type VIII, alpha 1	16		epithelial cell proliferation	happens in cornea epithelium,affects a population of corneal endothelial cell		IGI	MGI:88464 	J:100136 	
+MGI:88464	Col8a2	collagen, type VIII, alpha 2	4		epithelial cell proliferation	happens in cornea epithelium,affects a population of corneal endothelial cell		IGI	MGI:88463 	J:100136 	
+MGI:1891837	Cpb2	carboxypeptidase B2 (plasma)	14		negative regulation of hepatocyte proliferation			ISO	RGD:71035 	J:155856 	
+MGI:88276	Ctnnb1	catenin (cadherin associated protein), beta 1	9		positive regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in prostate gland epithelium		IMP	MGI:1858008 	J:84340 	
+MGI:88564	Ctsl	cathepsin L	13		negative regulation of keratinocyte proliferation	regulates a function/process that happens in back skin		IMP	MGI:2136432 	J:70118 	
+MGI:1201679	Cxadr	coxsackie virus and adenovirus receptor	16		positive regulation of epithelial cell proliferation involved in wound healing			IC	GO:0046629 	J:163519 	
+MGI:103556	Cxcl12	chemokine (C-X-C motif) ligand 12	6		positive regulation of endothelial cell proliferation			ISO	RGD:3651 	J:155856 	
+MGI:1277207	Cxcr3	chemokine (C-X-C motif) receptor 3	X		negative regulation of endothelial cell proliferation			ISO	P49682 	J:164563 	
+MGI:1316658	Cyba	cytochrome b-245, alpha polypeptide	8		positive regulation of endothelial cell proliferation			ISO	RGD:620573 	J:155856 	
+MGI:104978	Cyp7b1	cytochrome P450, family 7, subfamily b, polypeptide 1	3		positive regulation of epithelial cell proliferation	happens in prostate gland epithelium,regulates the proliferation of epithelial cell|happens in ventral prostate gland,regulates the proliferation of epithelial cell		IMP	MGI:2182328 	J:126711 	
+MGI:109175	Dab2	disabled 2, mitogen-responsive phosphoprotein	15		negative regulation of epithelial cell proliferation			ISO	RGD:621007 	J:155856 	
+MGI:1916851	Dab2ip	disabled 2 interacting protein	2		negative regulation of epithelial cell proliferation			ISO	Q5VWQ8 	J:164563 	
+MGI:1858496	Deaf1	DEAF1, transcription factor	7		regulation of mammary gland epithelial cell proliferation			IMP		J:142812 	
+MGI:1858496	Deaf1	DEAF1, transcription factor	7		regulation of mammary gland epithelial cell proliferation			ISO	O75398 	J:164563 	
+MGI:107231	Dlg1	discs large MAGUK scaffold protein 1	16		endothelial cell proliferation			ISO	Q12959 	J:164563 	
+MGI:107231	Dlg1	discs large MAGUK scaffold protein 1	16		negative regulation of epithelial cell proliferation	happens in lens anterior epithelium|happens in lens equatorial epithelium		IMP	MGI:2680670 	J:86871 	
+MGI:94900	Dlk1	delta like non-canonical Notch ligand 1	12		negative regulation of vascular endothelial cell proliferation			IDA		J:210259 	
+MGI:1859388	Dll4	delta like canonical Notch ligand 4	2		negative regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	Q9NR61 	J:164563 	
+MGI:101926	Dlx5	distal-less homeobox 5	6		positive regulation of epithelial cell proliferation	happens in otocyst epithelium		IGI	MGI:101927 	J:114449 	
+MGI:101927	Dlx6	distal-less homeobox 6	6		positive regulation of epithelial cell proliferation	happens in otocyst epithelium		IGI	MGI:101926 	J:114449 	
+MGI:1927070	Dusp10	dual specificity phosphatase 10	1		negative regulation of epithelial cell proliferation	happens in colon		IMP		J:242446 	
+MGI:1349385	Dysf	dysferlin	6		positive regulation of endothelial cell proliferation			IMP		J:186896 	
+MGI:2146616	Eaf2	ELL associated factor 2	16		negative regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in heart|regulates a function/process that happens in prostate gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:3834174 	J:145228 	
+MGI:103060	Ecm1	extracellular matrix protein 1	3		positive regulation of endothelial cell proliferation			ISO	Q16610 	J:164563 	
+MGI:105923	Ednra	endothelin receptor type A	8		regulation of epithelial cell proliferation			ISO	RGD:2535 	J:155856 	
+MGI:102720	Ednrb	endothelin receptor type B	14		regulation of epithelial cell proliferation			ISO	RGD:2536 	J:155856 	
+MGI:105097	Efnb2	ephrin B2	8		negative regulation of keratinocyte proliferation	regulates a function/process that happens in epidermis stratum basale		IMP	MGI:2176538 MGI:4430073 	J:157054 	
+MGI:2449923	Egfl7	EGF-like domain 7	2		positive regulation of endothelial cell proliferation			ISO	Q9UHF1 	J:73065 	
+MGI:95294	Egfr	epidermal growth factor receptor	11		positive regulation of epithelial cell proliferation			IBA	PTN002814603 	J:265628 	
+MGI:95294	Egfr	epidermal growth factor receptor	11		positive regulation of epithelial cell proliferation	happens in esophagus basal epithelium,regulates the proliferation of epithelial cell		IMP	MGI:1856402 	J:26833 	
+MGI:95294	Egfr	epidermal growth factor receptor	11		positive regulation of epithelial cell proliferation			ISO	P00533 	J:164563 	
+MGI:1306780	Egr3	early growth response 3	14		positive regulation of endothelial cell proliferation			ISO	Q06889 	J:164563 	
+MGI:1270840	Ehf	ets homologous factor	2		epithelial cell proliferation			IEA	IPR033071 	J:72247 	
+MGI:1916933	Emc10	ER membrane protein complex subunit 10	7		positive regulation of endothelial cell proliferation			IDA		J:262524 	
+MGI:1916933	Emc10	ER membrane protein complex subunit 10	7		positive regulation of endothelial cell proliferation			ISO	Q5UCC4 	J:164563 	
+MGI:95392	Eng	endoglin	2		negative regulation of endothelial cell proliferation			ISO	P17813 	J:164563 	
+MGI:1919170	Epgn	epithelial mitogen	5		positive regulation of epithelial cell proliferation			IDA		J:69582 	
+MGI:95278	Epha2	Eph receptor A2	4		blood vessel endothelial cell proliferation involved in sprouting angiogenesis			IMP	MGI:3040415 	J:148922 	
+MGI:95278	Epha2	Eph receptor A2	4		mammary gland epithelial cell proliferation			IMP		J:175142 	
+MGI:2386306	Eppk1	epiplakin 1	15		negative regulation of epithelial cell proliferation			ISO	P58107 	J:164563 	
+MGI:2386306	Eppk1	epiplakin 1	15		negative regulation of keratinocyte proliferation			IMP		J:144147 	
+MGI:2386306	Eppk1	epiplakin 1	15		positive regulation of epithelial cell proliferation involved in wound healing			IMP		J:215291 	
+MGI:95410	Erbb2	erb-b2 receptor tyrosine kinase 2	11		positive regulation of epithelial cell proliferation			ISO	P04626 	J:164563 	
+MGI:104771	Erbb4	erb-b2 receptor tyrosine kinase 4	1		positive regulation of epithelial cell proliferation			ISO	RGD:620486 	J:155856 	
+MGI:107508	Ereg	epiregulin	5		keratinocyte proliferation			ISO	O14944 	J:164563 	
+MGI:1930134	Ern1	endoplasmic reticulum (ER) to nucleus signalling 1	11		endothelial cell proliferation			ISO	O75460 	J:164563 	
+MGI:1921405	Errfi1	ERBB receptor feedback inhibitor 1	4		regulation of type B pancreatic cell proliferation			ISO	RGD:1307599 	J:155856 	
+MGI:1352467	Esr1	estrogen receptor 1 (alpha)	10		epithelial cell proliferation involved in mammary gland duct elongation	regulates a function/process that happens in mammary gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:2150897 	J:109714 	
+MGI:1352467	Esr1	estrogen receptor 1 (alpha)	10		positive regulation of epithelial cell proliferation			ISO	RGD:2581 	J:155856 	
+MGI:1352467	Esr1	estrogen receptor 1 (alpha)	10		Sertoli cell proliferation			ISO	RGD:2581 	J:155856 	
+MGI:109392	Esr2	estrogen receptor 2 (beta)	12		negative regulation of epithelial cell proliferation	happens in prostate gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:2152217 	J:91449 	
+MGI:109392	Esr2	estrogen receptor 2 (beta)	12		negative regulation of epithelial cell proliferation	happens in prostate gland epithelium,regulates the proliferation of epithelial cell|happens in ventral prostate gland,regulates the proliferation of epithelial cell		IMP	MGI:2152217 	J:126711 	
+MGI:109392	Esr2	estrogen receptor 2 (beta)	12		negative regulation of epithelial cell proliferation			ISO	RGD:2582 	J:155856 	
+MGI:109392	Esr2	estrogen receptor 2 (beta)	12		Sertoli cell proliferation			ISO	RGD:2582 	J:155856 	
+MGI:1917326	Esrp1	epithelial splicing regulatory protein 1	4		positive regulation of epithelial cell proliferation	happens in skin,regulates the proliferation of epidermal cell,regulates a function/process that happens in skin		IGI	MGI:1924661 	J:226997 	
+MGI:1924661	Esrp2	epithelial splicing regulatory protein 2	8		positive regulation of epithelial cell proliferation	regulates a function/process that happens in EMAPA:0000362,happens in EMAPA:0000362,regulates the proliferation of epidermal cell		IGI	MGI:1917326 	J:226997 	
+MGI:99423	Etv4	ets variant 4	11		negative regulation of mammary gland epithelial cell proliferation			IMP	MGI:2445834 	J:143771 	
+MGI:109344	Eya1	EYA transcriptional coactivator and phosphatase 1	1		positive regulation of epithelial cell proliferation	happens in otic placode epithelium,regulates the proliferation of epithelial cell		IMP	MGI:2150426 	J:119574 	
+MGI:88381	F3	coagulation factor III	3		positive regulation of endothelial cell proliferation			ISO	P13726 	J:164563 	
+MGI:101916	Fabp7	fatty acid binding protein 7, brain	10		epithelial cell proliferation			ISO	RGD:69312 	J:155856 	
+MGI:109608	Fap	fibroblast activation protein	2		melanocyte proliferation			IDA		J:91461 	
+MGI:2443583	Fermt1	fermitin family member 1	2		keratinocyte proliferation			ISO	Q9BQL6 	J:164563 	
+MGI:95515	Fgf1	fibroblast growth factor 1	18		positive regulation of epithelial cell proliferation	happens in lung,regulates the proliferation of epithelial cell of lung		IDA		J:119174 	
+MGI:95515	Fgf1	fibroblast growth factor 1	18		positive regulation of hepatocyte proliferation			ISO	RGD:2605 	J:155856 	
+MGI:95516	Fgf2	fibroblast growth factor 2	3		positive regulation of endothelial cell proliferation	regulates a function/process that happens in lymphatic vessel endothelium,regulates the proliferation of endothelial cell of lymphatic vessel		IDA		J:111764 	
+MGI:95516	Fgf2	fibroblast growth factor 2	3		positive regulation of endothelial cell proliferation			ISO	P09038 	J:164563 	
+MGI:95516	Fgf2	fibroblast growth factor 2	3		positive regulation of epithelial cell proliferation	happens in lung,regulates the proliferation of epithelial cell of lung		IDA		J:119174 	
+MGI:95516	Fgf2	fibroblast growth factor 2	3		positive regulation of vascular endothelial cell proliferation			ISO	P09038 	J:164563 	
+MGI:95521	Fgf7	fibroblast growth factor 7	2		positive regulation of epithelial cell proliferation	happens in lung,regulates the proliferation of epithelial cell of lung		IDA		J:119174 	
+MGI:95521	Fgf7	fibroblast growth factor 7	2		positive regulation of epithelial cell proliferation			ISO	RGD:61805 	J:155856 	
+MGI:95521	Fgf7	fibroblast growth factor 7	2		positive regulation of epithelial cell proliferation			ISO	P21781 	J:69847 J:164563 	
+MGI:95521	Fgf7	fibroblast growth factor 7	2		positive regulation of epithelial cell proliferation involved in lung morphogenesis			ISO	P21781 	J:73065 	
+MGI:95521	Fgf7	fibroblast growth factor 7	2		positive regulation of keratinocyte proliferation			ISO	P21781 	J:164563 	
+MGI:104723	Fgf9	fibroblast growth factor 9	14		positive regulation of epithelial cell proliferation	happens in hindgut epithelium,regulates the proliferation of epithelial cell		IDA		J:104353 	
+MGI:104723	Fgf9	fibroblast growth factor 9	14		positive regulation of epithelial cell proliferation	happens in left lung rudiment epithelium,regulates the proliferation of epithelial cell of lung|happens in right lung rudiment epithelium,regulates the proliferation of epithelial cell of lung		IDA		J:107406 	
+MGI:104723	Fgf9	fibroblast growth factor 9	14		positive regulation of epithelial cell proliferation	happens in hindgut epithelium,regulates the proliferation of epithelial cell		IMP	MGI:2135961 	J:104353 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		epithelial cell proliferation			ISO	O15520 	J:164563 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		epithelial cell proliferation involved in salivary gland morphogenesis	has the participant submandibular gland primordium epithelium,has the participant epithelial cell		IGI	MGI:95523 	J:119849 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		epithelial cell proliferation involved in salivary gland morphogenesis	has the participant submandibular gland primordium epithelium,has the participant epithelial cell		IMP	MGI:1859647 	J:119849 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		positive regulation of epithelial cell proliferation			IMP	MGI:1859647 	J:100429 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		positive regulation of epithelial cell proliferation	happens in gut,regulates the proliferation of epithelial cell		IMP	MGI:1859647 	J:115048 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		positive regulation of epithelial cell proliferation	regulates a function/process that happens in submandibular gland primordium epithelium,regulates the proliferation of epithelial cell		IMP	MGI:1859647 	J:119849 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		positive regulation of epithelial cell proliferation			ISO	O15520 	J:164563 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		positive regulation of keratinocyte proliferation	happens in epidermis stratum basale,regulates the proliferation of keratinocyte|happens in epidermis stratum basale,regulates the proliferation of basal cell		IMP	MGI:1859647 	J:64492 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		positive regulation of keratinocyte proliferation			ISO	O15520 	J:164563 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		positive regulation of urothelial cell proliferation			ISO	O15520 	J:73065 	
+MGI:1099809	Fgf10	fibroblast growth factor 10	13		urothelial cell proliferation			ISO	O15520 	J:164563 	
+MGI:1277980	Fgf18	fibroblast growth factor 18	11		positive regulation of hepatocyte proliferation			ISO	RGD:2608 	J:155856 	
+MGI:1096350	Fgfbp1	fibroblast growth factor binding protein 1	5		positive regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	Q14512 	J:164563 	
+MGI:95522	Fgfr1	fibroblast growth factor receptor 1	8		positive regulation of vascular endothelial cell proliferation			ISO	P11362 	J:164563 	
+MGI:95523	Fgfr2	fibroblast growth factor receptor 2	7		epithelial cell proliferation involved in salivary gland morphogenesis	has the participant submandibular gland primordium epithelium,has the participant epithelial cell		IGI	MGI:1099809 	J:119849 	
+MGI:95523	Fgfr2	fibroblast growth factor receptor 2	7		epithelial cell proliferation involved in salivary gland morphogenesis	has the participant submandibular gland primordium epithelium,has the participant epithelial cell		IMP	MGI:2153811 	J:119849 	
+MGI:95523	Fgfr2	fibroblast growth factor receptor 2	7		negative regulation of epithelial cell proliferation			ISO	RGD:2611 	J:155856 	
+MGI:95523	Fgfr2	fibroblast growth factor receptor 2	7		positive regulation of epithelial cell proliferation	happens in submandibular gland primordium epithelium,regulates the proliferation of epithelial cell		IGI	MGI:1098809 	J:119849 	
+MGI:95523	Fgfr2	fibroblast growth factor receptor 2	7		positive regulation of epithelial cell proliferation	happens in urethra of male,regulates the proliferation of urothelial cell		IMP	MGI:2153818 	J:98380 	
+MGI:95523	Fgfr2	fibroblast growth factor receptor 2	7		positive regulation of epithelial cell proliferation involved in lung morphogenesis			IMP	MGI:3629660 	J:114396 	
+MGI:95523	Fgfr2	fibroblast growth factor receptor 2	7		regulation of epithelial cell proliferation	regulates a function/process that happens in prostate gland,regulates the proliferation of epithelial cell		IMP		J:131096 	
+MGI:95523	Fgfr2	fibroblast growth factor receptor 2	7		regulation of epithelial cell proliferation	regulates a function/process that happens in prostate gland epithelium		IMP	MGI:3044679 	J:119911 	
+MGI:95524	Fgfr3	fibroblast growth factor receptor 3	5		negative regulation of epithelial cell proliferation	happens in lens,regulates the proliferation of epithelial cell		IMP		J:68695 	
+MGI:95524	Fgfr3	fibroblast growth factor receptor 3	5		negative regulation of epithelial cell proliferation	happens in pancreas,regulates the proliferation of epithelial cell		IMP	MGI:1931521 	J:121934 	
+MGI:95524	Fgfr3	fibroblast growth factor receptor 3	5		negative regulation of epithelial cell proliferation			ISO	Q9JHX9 	J:73065 	
+MGI:95524	Fgfr3	fibroblast growth factor receptor 3	5		positive regulation of endothelial cell proliferation	regulates a function/process that happens in lymphatic vessel endothelium,regulates the proliferation of endothelial cell of lymphatic vessel		IMP		J:111764 	
+MGI:102795	Fgl1	fibrinogen-like protein 1	8		hepatocyte proliferation			ISO	Q08830 	J:164563 	
+MGI:95558	Flt1	FMS-like tyrosine kinase 1	5		negative regulation of vascular endothelial cell proliferation			ISO	P17948 	J:164563 	
+MGI:95561	Flt4	FMS-like tyrosine kinase 4	11		positive regulation of endothelial cell proliferation			ISO	P35916 	J:164563 	
+MGI:1913367	Fmc1	formation of mitochondrial complex V assembly factor 1	6		regulation of type B pancreatic cell proliferation			IDA		J:228369 	
+MGI:1353569	Foxe3	forkhead box E3	4		positive regulation of epithelial cell proliferation	happens in lens anterior epithelium,regulates the proliferation of epithelial cell|happens in lens vesicle epithelium,regulates the proliferation of epithelial cell		IMP	MGI:3604211 	J:101355 	
+MGI:1353569	Foxe3	forkhead box E3	4		positive regulation of lens epithelial cell proliferation			IMP		J:59880 J:101355 	
+MGI:1353569	Foxe3	forkhead box E3	4		positive regulation of lens epithelial cell proliferation			ISS	Q13461 	J:220587 	
+MGI:1914004	Foxp1	forkhead box P1	6		positive regulation of epithelial cell proliferation	happens in lung		IGI	MGI:2148705 	J:121421 	
+MGI:2148705	Foxp2	forkhead box P2	6		positive regulation of epithelial cell proliferation	happens in lung		IGI	MGI:1914004 	J:121421 	
+MGI:2148705	Foxp2	forkhead box P2	6		positive regulation of epithelial cell proliferation involved in lung morphogenesis	regulates a function/process that happens in lung		IGI	MGI:1914004 	J:121421 	
+MGI:1100860	Frs2	fibroblast growth factor receptor substrate 2	10		regulation of epithelial cell proliferation	regulates a function/process that happens in prostate gland,regulates the proliferation of epithelial cell		IMP	MGI:3689997 MGI:3768912 	J:131096 	
+MGI:95582	Fshb	follicle stimulating hormone beta	2		Sertoli cell proliferation			IMP	MGI:1857434 	J:71932 	
+MGI:95583	Fshr	follicle stimulating hormone receptor	17		Sertoli cell proliferation			IMP	MGI:2384087 	J:137427 	
+MGI:95583	Fshr	follicle stimulating hormone receptor	17		Sertoli cell proliferation	happens in seminiferous tubule,affects a population of Sertoli cell		IMP	MGI:2384087 	J:70680 	
+MGI:95586	Fst	follistatin	13		keratinocyte proliferation	happens in hair follicle,affects a population of keratinocyte		IMP	MGI:1857467 	J:118511 	
+MGI:108570	Fzd7	frizzled class receptor 7	1		positive regulation of epithelial cell proliferation involved in wound healing			ISO	O75084 	J:164563 	
+MGI:95655	Gas1	growth arrest specific 1	13		negative regulation of epithelial cell proliferation			IMP	MGI:2388397 	J:70735 	
+MGI:95655	Gas1	growth arrest specific 1	13		positive regulation of epithelial cell proliferation	happens in primary palate epithelium		IMP	MGI:2388397 	J:122159 	
+MGI:95662	Gata2	GATA binding protein 2	6		positive regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	P23769 	J:164563 	
+MGI:95663	Gata3	GATA binding protein 3	2		negative regulation of mammary gland epithelial cell proliferation			ISO	P23771 	J:164563 	
+MGI:1321394	Gdf2	growth differentiation factor 2	14		negative regulation of endothelial cell proliferation			ISO	Q9UK05 	J:164563 	
+MGI:1321394	Gdf2	growth differentiation factor 2	14		positive regulation of endothelial cell proliferation			IDA		J:164086 	
+MGI:1321394	Gdf2	growth differentiation factor 2	14		positive regulation of endothelial cell proliferation			ISO	Q9UK05 	J:164563 	
+MGI:95688	Gdf5	growth differentiation factor 5	2		negative regulation of epithelial cell proliferation			ISO	P43026 	J:164563 	
+MGI:1930008	Ghrl	ghrelin	6		negative regulation of endothelial cell proliferation			ISO	Q9UBU3 	J:164563 	
+MGI:1930008	Ghrl	ghrelin	6		positive regulation of vascular endothelial cell proliferation			ISO	RGD:632283 	J:155856 	
+MGI:2441906	Ghsr	growth hormone secretagogue receptor	3		positive regulation of vascular endothelial cell proliferation			ISO	RGD:621397 	J:155856 	
+MGI:95713	Gja1	gap junction protein, alpha 1	10		negative regulation of endothelial cell proliferation			ISO	RGD:2690 	J:155856 	
+MGI:1916138	Gkn3	gastrokine 3	6		negative regulation of epithelial cell proliferation			IDA		J:159596 	
+MGI:95727	Gli1	GLI-Kruppel family member GLI1	10		regulation of hepatocyte proliferation			IMP		J:201786 	
+MGI:95739	Glul	glutamate-ammonia ligase (glutamine synthetase)	1		positive regulation of epithelial cell proliferation			ISO	RGD:2710 	J:155856 	
+MGI:2653863	Gpbar1	G protein-coupled bile acid receptor 1	1		positive regulation of cholangiocyte proliferation			ISO	RGD:631400 	J:155856 	
+MGI:104903	Gpc3	glypican 3	X		negative regulation of epithelial cell proliferation	happens in metanephros,regulates the proliferation of epithelial cell		IMP	MGI:2159356 	J:73877 	
+MGI:104887	Gpx1	glutathione peroxidase 1	9		regulation of mammary gland epithelial cell proliferation			ISO	P07203 	J:164563 	
+MGI:95832	Grn	granulin	11		positive regulation of epithelial cell proliferation	happens in trophectoderm,regulates the proliferation of trophectodermal cell		IDA		J:100669 	
+MGI:95832	Grn	granulin	11		positive regulation of epithelial cell proliferation			ISO	P28799 	J:164563 	
+MGI:107821	Has2	hyaluronan synthase 2	15		positive regulation of keratinocyte proliferation			ISO	RGD:2781 	J:155856 	
+MGI:104853	Hes1	hes family bHLH transcription factor 1	16		regulation of epithelial cell proliferation			IGI	MGI:104876 MGI:1341800 	J:171468 	
+MGI:104876	Hes5	hes family bHLH transcription factor 5	4		regulation of epithelial cell proliferation			IGI	MGI:104853 MGI:1341800 	J:171468 	
+MGI:1341800	Hey1	hairy/enhancer-of-split related with YRPW motif 1	3		regulation of epithelial cell proliferation			IGI	MGI:104853 MGI:104876 	J:171468 	
+MGI:96079	Hgf	hepatocyte growth factor	5		epithelial cell proliferation			IDA		J:78319 J:92782 	
+MGI:101761	Hmga2	high mobility group AT-hook 2	10		positive regulation of epithelial cell proliferation involved in lung morphogenesis			IMP	MGI:1858043 	J:221285 	
+MGI:96113	Hmgb1	high mobility group box 1	5		endothelial cell proliferation			IDA		J:126243 	
+MGI:96157	Hmgb2	high mobility group box 2	8		positive regulation of endothelial cell proliferation			ISO	P26583 	J:164563 	
+MGI:96120	Hmgn1	high mobility group nucleosomal binding domain 1	16		regulation of epithelial cell proliferation	regulates a function/process that happens in cornea epithelium,regulates the proliferation of epithelial cell		IMP	MGI:3590648 	J:105284 	
+MGI:96163	Hmox1	heme oxygenase 1	8		positive regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	P09601 	J:164563 	
+MGI:98505	Hnf1b	HNF1 homeobox B	11		epithelial cell proliferation			IMP		J:98014 	
+MGI:96177	Hoxa5	homeobox A5	6		regulation of mammary gland epithelial cell proliferation	regulates a function/process that happens in mammary gland alveolus,regulates the proliferation of epithelial cell		IMP	MGI:2150397 	J:108822 	
+MGI:1196620	Hpn	hepsin	7		negative regulation of epithelial cell proliferation			ISO	P05981 	J:164563 	
+MGI:1196620	Hpn	hepsin	7		positive regulation of hepatocyte proliferation			ISO	P05981 	J:164563 	
+MGI:96224	Hras	Harvey rat sarcoma virus oncogene	7		positive regulation of epithelial cell proliferation			ISO	P01112 	J:164563 	
+MGI:2139279	Hrh3	histamine receptor H3	2		positive regulation of epithelial cell proliferation			ISO	RGD:620630 	J:155856 	
+MGI:109323	Htr2b	5-hydroxytryptamine (serotonin) receptor 2B	1		positive regulation of endothelial cell proliferation			IMP		J:162980 	
+MGI:109323	Htr2b	5-hydroxytryptamine (serotonin) receptor 2B	1		positive regulation of endothelial cell proliferation			ISO	P41595 	J:164563 	
+MGI:1929076	Htra1	HtrA serine peptidase 1	7		positive regulation of epithelial cell proliferation			ISO	RGD:69235 	J:155856 	
+MGI:96298	Hyal1	hyaluronoglucosaminidase 1	9		positive regulation of epithelial cell proliferation			ISO	Q12794 	J:164563 	
+MGI:96396	Id1	inhibitor of DNA binding 1, HLH protein	2		positive regulation of epithelial cell proliferation			ISO	RGD:2858 	J:155856 	
+MGI:96397	Id2	inhibitor of DNA binding 2	12		mammary gland epithelial cell proliferation			IMP		J:80648 	
+MGI:107656	Ifng	interferon gamma	10		regulation of hepatocyte proliferation			ISO	RGD:2866 	J:155856 	
+MGI:2387217	Ift52	intraflagellar transport 52	2		negative regulation of epithelial cell proliferation	regulates the proliferation of keratinocyte		IMP		J:173367 	
+MGI:1921166	Ift57	intraflagellar transport 57	16		negative regulation of epithelial cell proliferation	regulates the proliferation of keratinocyte		IMP		J:173367 	
+MGI:1914944	Ift74	intraflagellar transport 74	4		negative regulation of epithelial cell proliferation	regulates the proliferation of keratinocyte|happens in epidermis		IMP		J:173367 	
+MGI:1915509	Ift80	intraflagellar transport 80	3		negative regulation of epithelial cell proliferation	regulates the proliferation of keratinocyte		IMP		J:173367 	
+MGI:98715	Ift88	intraflagellar transport 88	14		negative regulation of epithelial cell proliferation	regulates the proliferation of keratinocyte		IMP		J:173367 	
+MGI:98715	Ift88	intraflagellar transport 88	14		negative regulation of epithelial cell proliferation	happens in epidermis|regulates the proliferation of keratinocyte		IMP	MGI:1926500 MGI:3710185 	J:173367 	
+MGI:1932386	Ift122	intraflagellar transport 122	6		negative regulation of epithelial cell proliferation	regulates the proliferation of keratinocyte		IMP		J:173367 	
+MGI:2682064	Ift172	intraflagellar transport 172	5		negative regulation of epithelial cell proliferation	happens in epidermis|regulates the proliferation of keratinocyte		IMP		J:173367 	
+MGI:96432	Igf1	insulin-like growth factor 1	10		positive regulation of epithelial cell proliferation			ISO	P05019 	J:164563 	
+MGI:96432	Igf1	insulin-like growth factor 1	10		positive regulation of vascular endothelial cell proliferation			ISO	RGD:2868 	J:155856 	
+MGI:96434	Igf2	insulin-like growth factor 2	7		positive regulation of vascular endothelial cell proliferation			ISO	RGD:2870 	J:155856 	
+MGI:96438	Igfbp3	insulin-like growth factor binding protein 3	11		type B pancreatic cell proliferation	happens in islets of Langerhans,affects a population of type B pancreatic cell		IGI	MGI:96439 MGI:96440 	J:112029 	
+MGI:96439	Igfbp4	insulin-like growth factor binding protein 4	11		type B pancreatic cell proliferation	happens in islets of Langerhans,affects a population of type B pancreatic cell		IGI	MGI:96438 MGI:96440 	J:112029 	
+MGI:96440	Igfbp5	insulin-like growth factor binding protein 5	1		type B pancreatic cell proliferation	happens in islets of Langerhans,affects a population of type B pancreatic cell		IGI	MGI:96438 MGI:96439 	J:112029 	
+MGI:96533	Ihh	Indian hedgehog	1		positive regulation of epithelial cell proliferation			ISO	RGD:620021 	J:155856 	
+MGI:96559	Il6	interleukin 6	5		epithelial cell proliferation involved in salivary gland morphogenesis	has the participant submandibular gland primordium		IDA		J:68367 	
+MGI:96559	Il6	interleukin 6	5		positive regulation of epithelial cell proliferation	happens in submandibular gland primordium		IDA		J:68367 	
+MGI:96559	Il6	interleukin 6	5		positive regulation of epithelial cell proliferation	happens in submandibular gland primordium		IMP		J:68367 	
+MGI:96537	Il10	interleukin 10	1		positive regulation of endothelial cell proliferation			IGI	P06804 	J:235312 	
+MGI:107936	Il18	interleukin 18	9		positive regulation of hepatocyte proliferation			ISO	RGD:2889 	J:155856 	
+MGI:2443752	Intu	inturned planar cell polarity protein	3		negative regulation of keratinocyte proliferation			IMP	MGI:4441401 	J:205544 	
+MGI:3028642	Iqgap3	IQ motif containing GTPase activating protein 3	3		positive regulation of mammary gland epithelial cell proliferation	regulates the proliferation of mammary gland epithelial cell		IMP		J:145651 	
+MGI:1859211	Irf6	interferon regulatory factor 6	1		keratinocyte proliferation	happens in skin,affects a population of keratinocyte|happens in skin,affects a population of basal cell		IGI	MGI:1891831 	J:116077 	
+MGI:1859211	Irf6	interferon regulatory factor 6	1		keratinocyte proliferation	happens in skin,affects a population of keratinocyte		IMP	MGI:3522096 	J:115343 	
+MGI:1859211	Irf6	interferon regulatory factor 6	1		keratinocyte proliferation	happens in skin		IMP	MGI:3693324 	J:116077 	
+MGI:101791	Isl1	ISL1 transcription factor, LIM/homeodomain	13		negative regulation of epithelial cell proliferation			ISO	RGD:61957 	J:155856 	
+MGI:96603	Itga4	integrin alpha 4	2		positive regulation of vascular endothelial cell proliferation			ISO	P13612 	J:164563 	
+MGI:1306802	Itgb1bp1	integrin beta 1 binding protein 1	12		blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	O14713 	J:164563 	
+MGI:96612	Itgb3	integrin beta 3	11		positive regulation of endothelial cell proliferation			ISO	P05106 	J:164563 	
+MGI:96623	Itpr1	inositol 1,4,5-trisphosphate receptor 1	6		positive regulation of hepatocyte proliferation			ISO	RGD:2933 	J:155856 	
+MGI:2685484	Jaml	junction adhesion molecule like	9		positive regulation of epithelial cell proliferation involved in wound healing			IDA		J:163519 	
+MGI:2685174	Jcad	junctional cadherin 5 associated	18		positive regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			IBA	PTN002857942 	J:265628 	
+MGI:2685174	Jcad	junctional cadherin 5 associated	18		positive regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	Q9P266 	J:164563 	
+MGI:96646	Jun	jun proto-oncogene	4		positive regulation of endothelial cell proliferation			IMP		J:111738 	
+MGI:1916323	Kdf1	keratinocyte differentiation factor 1	4		negative regulation of keratinocyte proliferation	regulates the proliferation of basal cell of epidermis,happens in skin		IGI	MGI:1330810 MGI:1891831 	J:203995 	
+MGI:1916323	Kdf1	keratinocyte differentiation factor 1	4		negative regulation of keratinocyte proliferation	regulates the proliferation of basal cell of epidermis,happens in skin		IMP	MGI:5559501 	J:203995 	
+MGI:1922855	Kdm5b	lysine (K)-specific demethylase 5B	1		positive regulation of mammary gland epithelial cell proliferation			IMP	MGI:4329395 	J:218960 	
+MGI:96683	Kdr	kinase insert domain protein receptor	5		positive regulation of endothelial cell proliferation			ISO	RGD:2965 	J:155856 	
+MGI:96683	Kdr	kinase insert domain protein receptor	5		positive regulation of endothelial cell proliferation			ISO	P35968 	J:164563 	
+MGI:96683	Kdr	kinase insert domain protein receptor	5		positive regulation of epithelial cell proliferation	happens in left lung epithelium,regulates the proliferation of epithelial cell|happens in right lung epithelium,regulates the proliferation of epithelial cell		IMP		J:104895 	
+MGI:96683	Kdr	kinase insert domain protein receptor	5		regulation of endothelial cell proliferation			TAS		J:164086 	
+MGI:107689	Kif3a	kinesin family member 3A	11		positive regulation of epithelial cell proliferation	regulates the proliferation of keratinocyte|happens in epidermis		IMP	MGI:1926500 MGI:2386464 	J:173367 	
+MGI:96677	Kit	KIT proto-oncogene receptor tyrosine kinase	5		epithelial cell proliferation			ISO	RGD:620568 	J:155856 	
+MGI:1333856	Klf9	Kruppel-like factor 9	19		negative regulation of keratinocyte proliferation			ISO	Q13886 	J:164563 	
+MGI:1343327	Klk8	kallikrein related-peptidase 8	7		keratinocyte proliferation			IMP		J:120872 	
+MGI:1930618	Krit1	KRIT1, ankyrin repeat containing	5		negative regulation of endothelial cell proliferation			ISO	O00522 	J:164563 	
+MGI:96701	Krt4	keratin 4	15		negative regulation of epithelial cell proliferation			IMP		J:49737 	
+MGI:104663	Lep	leptin	6		regulation of endothelial cell proliferation			ISO	P41159 	J:164563 	
+MGI:1891468	Lgr4	leucine-rich repeat-containing G protein-coupled receptor 4	2		epithelial cell proliferation			IMP	MGI:3052121 	J:105945 	
+MGI:1891468	Lgr4	leucine-rich repeat-containing G protein-coupled receptor 4	2		epithelial cell proliferation involved in renal tubule morphogenesis	happens in metanephros		IGI	MGI:1341817 	J:212415 	
+MGI:1341817	Lgr5	leucine rich repeat containing G protein coupled receptor 5	10		epithelial cell proliferation involved in renal tubule morphogenesis	happens in metanephros		IGI	MGI:1891468 	J:212415 	
+MGI:1195263	Lims1	LIM and senescent cell antigen-like domains 1	10		negative regulation of epithelial cell proliferation	regulates the proliferation of intrahepatic bile duct epithelial cell		IGI	MGI:2385067 	J:207543 	
+MGI:1195263	Lims1	LIM and senescent cell antigen-like domains 1	10		negative regulation of hepatocyte proliferation			IGI	MGI:2385067 	J:207543 	
+MGI:2385067	Lims2	LIM and senescent cell antigen like domains 2	18		negative regulation of epithelial cell proliferation	regulates the proliferation of intrahepatic bile duct epithelial cell		IGI	MGI:1195263 	J:207543 	
+MGI:2385067	Lims2	LIM and senescent cell antigen like domains 2	18		negative regulation of hepatocyte proliferation			IGI	MGI:1195263 	J:207543 	
+MGI:2137913	Loxl2	lysyl oxidase-like 2	14		endothelial cell proliferation			ISO	Q9Y4K0 	J:164563 	
+MGI:1924155	Lrg1	leucine-rich alpha-2-glycoprotein 1	17		positive regulation of endothelial cell proliferation			IMP		J:204744 	
+MGI:1298218	Lrp6	low density lipoprotein receptor-related protein 6	6		negative regulation of epithelial cell proliferation	happens in frontal process ectoderm|happens in latero-nasal process ectoderm|happens in medial-nasal process ectoderm		IMP	MGI:4415718 	J:152320 	
+MGI:1930187	Maged1	melanoma antigen, family D, 1	X		negative regulation of epithelial cell proliferation			ISO	Q9Y5V3 	J:164563 	
+MGI:1346866	Map2k1	mitogen-activated protein kinase kinase 1	9		epithelial cell proliferation involved in lung morphogenesis	happens in left lung epithelium|happens in right lung epithelium		IGI	MGI:1346867 	J:214083 	
+MGI:1346867	Map2k2	mitogen-activated protein kinase kinase 2	10		epithelial cell proliferation involved in lung morphogenesis	happens in left lung epithelium|happens in right lung epithelium		IGI	MGI:1346866 	J:214083 	
+MGI:1346345	Map2k5	mitogen-activated protein kinase kinase 5	9		positive regulation of epithelial cell proliferation			ISO	RGD:61890 	J:155856 	
+MGI:1346858	Mapk1	mitogen-activated protein kinase 1	16		mammary gland epithelial cell proliferation	affects a population of mammary gland epithelial cell		IDA		J:145651 	
+MGI:1920858	Marveld3	MARVEL (membrane-associating) domain containing 3	8		negative regulation of epithelial cell proliferation			IDA		J:212983 	
+MGI:1920858	Marveld3	MARVEL (membrane-associating) domain containing 3	8		negative regulation of epithelial cell proliferation			ISO	Q96A59 	J:73065 	
+MGI:96930	Mcc	mutated in colorectal cancers	18		negative regulation of epithelial cell proliferation			ISO	P23508 	J:164563 	
+MGI:96949	Mdk	midkine	2		positive regulation of hepatocyte proliferation			IMP		J:102069 	
+MGI:96949	Mdk	midkine	2		positive regulation of keratinocyte proliferation			ISO	P21741 	J:164563 	
+MGI:96949	Mdk	midkine	2		positive regulation of vascular endothelial cell proliferation			IMP		J:269128 	
+MGI:1100846	Med1	mediator complex subunit 1	11		epithelial cell proliferation involved in mammary gland duct elongation	regulates a function/process that happens in mammary gland duct		IMP	MGI:3511276 	J:98047 	
+MGI:1100846	Med1	mediator complex subunit 1	11		mammary gland epithelial cell proliferation	regulates a function/process that happens in mammary gland duct,regulates the proliferation of epithelial cell		IMP	MGI:3511276 	J:98407 	
+MGI:1100846	Med1	mediator complex subunit 1	11		mammary gland epithelial cell proliferation			IMP	MGI:4443002 	J:159303 	
+MGI:1100846	Med1	mediator complex subunit 1	11		negative regulation of keratinocyte proliferation			ISO	Q15648 	J:164563 	
+MGI:1100846	Med1	mediator complex subunit 1	11		positive regulation of hepatocyte proliferation			IMP	MGI:2176946 MGI:3511276 	J:123863 	
+MGI:99458	Mef2c	myocyte enhancer factor 2C	13		epithelial cell proliferation involved in renal tubule morphogenesis			IMP		J:158762 	
+MGI:99458	Mef2c	myocyte enhancer factor 2C	13		negative regulation of epithelial cell proliferation			IMP		J:158762 	
+MGI:99458	Mef2c	myocyte enhancer factor 2C	13		negative regulation of vascular endothelial cell proliferation			ISO	Q06413 	J:164563 	
+MGI:1316736	Men1	multiple endocrine neoplasia 1	19		negative regulation of epithelial cell proliferation			ISO	RGD:3078 	J:155856 	
+MGI:1316736	Men1	multiple endocrine neoplasia 1	19		regulation of type B pancreatic cell proliferation			ISO	RGD:3078 	J:155856 	
+MGI:2676880	Mir205	microRNA 205	1		positive regulation of epithelial cell proliferation			IDA		J:158532 	
+MGI:106035	Mki67	antigen identified by monoclonal antibody Ki 67	7		cholangiocyte proliferation			IDA		J:218171 	
+MGI:106035	Mki67	antigen identified by monoclonal antibody Ki 67	7		hepatocyte proliferation			IDA		J:218171 	
+MGI:97005	Mmp12	matrix metallopeptidase 12	9		positive regulation of epithelial cell proliferation involved in wound healing			ISO	P39900 	J:164563 	
+MGI:96080	Mst1	macrophage stimulating 1 (hepatocyte growth factor-like)	9		positive regulation of mammary gland epithelial cell proliferation			IBA	PTN000668418 	J:265628 	
+MGI:96080	Mst1	macrophage stimulating 1 (hepatocyte growth factor-like)	9		positive regulation of mammary gland epithelial cell proliferation			IMP	MGI:2445230 	J:217515 	
+MGI:1928394	Mtor	mechanistic target of rapamycin kinase	4		positive regulation of cholangiocyte proliferation			ISO	RGD:68371 	J:155856 	
+MGI:1928394	Mtor	mechanistic target of rapamycin kinase	4		positive regulation of endothelial cell proliferation			ISO	RGD:68371 	J:155856 	
+MGI:1928394	Mtor	mechanistic target of rapamycin kinase	4		positive regulation of granulosa cell proliferation			ISO	RGD:68371 	J:155856 	
+MGI:2384818	Mtss1	MTSS I-BAR domain containing 1	15		epithelial cell proliferation involved in renal tubule morphogenesis			IMP		J:158762 	
+MGI:2384818	Mtss1	MTSS I-BAR domain containing 1	15		negative regulation of epithelial cell proliferation			IMP		J:158762 	
+MGI:1920982	Muc16	mucin 16	9		negative regulation of epithelial cell proliferation	happens in cornea epithelium		IMP	MGI:3840843 	J:229835 	
+MGI:97250	Myc	myelocytomatosis oncogene	15		positive regulation of epithelial cell proliferation			ISO	P01106 	J:164563 	
+MGI:2156020	Mydgf	myeloid derived growth factor	17		positive regulation of endothelial cell proliferation			IBA	PTN001261366 	J:265628 	
+MGI:2156020	Mydgf	myeloid derived growth factor	17		positive regulation of endothelial cell proliferation			IDA		J:216795 	
+MGI:2156020	Mydgf	myeloid derived growth factor	17		positive regulation of endothelial cell proliferation			ISO	Q969H8 	J:164563 	
+MGI:1891700	Ncstn	nicastrin	1		epithelial cell proliferation			IGI	MGI:1202717 	J:125592 	
+MGI:1891700	Ncstn	nicastrin	1		epithelial cell proliferation			IMP	MGI:2667524 	J:125592 	
+MGI:97306	Nf1	neurofibromin 1	11		negative regulation of endothelial cell proliferation	regulates a function/process that happens in retina blood vessel|regulates a function/process that happens in cornea blood vessel		IMP	MGI:1857444 	J:108781 	
+MGI:97306	Nf1	neurofibromin 1	11		negative regulation of endothelial cell proliferation			ISO	P21359 	J:73065 	
+MGI:97306	Nf1	neurofibromin 1	11		positive regulation of endothelial cell proliferation	regulates a function/process that happens in aorta smooth muscle,regulates the proliferation of vascular associated smooth muscle cell		IGI	MGI:97528 	J:109530 	
+MGI:103188	Nfib	nuclear factor I/B	4		negative regulation of epithelial cell proliferation involved in lung morphogenesis			IMP		J:173651 	
+MGI:97323	Ngfr	nerve growth factor receptor (TNFR superfamily, member 16)	11		negative regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	P08138 	J:164563 	
+MGI:1270158	Nkx2-9	NK2 homeobox 9	12		negative regulation of epithelial cell proliferation	happens in bronchiole epithelium,regulates the proliferation of epithelial cell|happens in bronchus epithelium,regulates the proliferation of epithelial cell		IMP	MGI:3692933 	J:115581 	
+MGI:97352	Nkx3-1	NK3 homeobox 1	14		epithelial cell proliferation involved in salivary gland morphogenesis	has the participant minor salivary gland		IMP	MGI:1928654 	J:63764 	
+MGI:97352	Nkx3-1	NK3 homeobox 1	14		negative regulation of epithelial cell proliferation	happens in palatine gland,regulates the proliferation of epithelial cell|happens in prostate gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:1928655 	J:64981 	
+MGI:97352	Nkx3-1	NK3 homeobox 1	14		negative regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in ventral prostate gland|regulates a function/process that happens in prostate gland dorsolateral lobe		IMP	MGI:1928655 	J:64981 	
+MGI:97352	Nkx3-1	NK3 homeobox 1	14		negative regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in prostate gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:3045877 	J:74350 	
+MGI:1206039	Nkx6-1	NK6 homeobox 1	5		type B pancreatic cell proliferation			ISO	RGD:69318 	J:155856 	
+MGI:2444070	Nlrc3	NLR family, CARD domain containing 3	16		negative regulation of epithelial cell proliferation			IMP		J:240431 	
+MGI:97355	Nme1	NME/NM23 nucleoside diphosphate kinase 1	11		positive regulation of epithelial cell proliferation			ISO	P15531 	J:164563 	
+MGI:97356	Nme2	NME/NM23 nucleoside diphosphate kinase 2	11		positive regulation of epithelial cell proliferation			ISO	P22392 	J:164563 	
+MGI:2429397	Nod2	nucleotide-binding oligomerization domain containing 2	8		positive regulation of epithelial cell proliferation			IMP		J:169873 	
+MGI:97359	Nodal	nodal	10		positive regulation of epithelial cell proliferation			ISO	Q96S42 	J:164563 	
+MGI:104327	Nog	noggin	11		positive regulation of epithelial cell proliferation	happens in male reproductive system,regulates the proliferation of epithelial cell		IGI	MGI:88180 	J:130204 	
+MGI:104327	Nog	noggin	11		positive regulation of epithelial cell proliferation	happens in male reproductive system,regulates the proliferation of epithelial cell		IMP	MGI:1862000 	J:130204 	
+MGI:97363	Notch1	notch 1	2		positive regulation of epithelial cell proliferation	happens in small intestine crypt of lieberkuhn,regulates the proliferation of epithelial cell of small intestine		IGI	MGI:1202879 	J:147579 	
+MGI:97363	Notch1	notch 1	2		regulation of epithelial cell proliferation	regulates a function/process that happens in foregut duodenum,regulates the proliferation of stem cell		IMP	MGI:2684314 MGI:2684317 	J:101154 	
+MGI:97363	Notch1	notch 1	2		regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in prostate gland epithelium		IMP	MGI:1933835 	J:104805 	
+MGI:97364	Notch2	notch 2	3		cholangiocyte proliferation			IMP	MGI:3617328 	J:218171 	
+MGI:97364	Notch2	notch 2	3		hepatocyte proliferation			IMP	MGI:3617328 	J:218171 	
+MGI:97364	Notch2	notch 2	3		positive regulation of keratinocyte proliferation			ISO	Q04721 	J:164563 	
+MGI:106184	Npm1	nucleophosmin 1	11		negative regulation of epithelial cell proliferation			ISO	RGD:3192 	J:155856 	
+MGI:97368	Nppb	natriuretic peptide type B	4		negative regulation of cholangiocyte proliferation			ISO	RGD:3194 	J:155856 	
+MGI:2444210	Nr1d1	nuclear receptor subfamily 1, group D, member 1	11		regulation of type B pancreatic cell proliferation			IMP		J:181732 	
+MGI:1352452	Nr2f2	nuclear receptor subfamily 2, group F, member 2	7		negative regulation of endothelial cell proliferation			ISO	P24468 	J:164563 	
+MGI:1352454	Nr4a1	nuclear receptor subfamily 4, group A, member 1	15		positive regulation of endothelial cell proliferation			ISO	P22736 	J:164563 	
+MGI:1352454	Nr4a1	nuclear receptor subfamily 4, group A, member 1	15		regulation of type B pancreatic cell proliferation			ISO	RGD:620029 	J:155856 	
+MGI:1352457	Nr4a3	nuclear receptor subfamily 4, group A, member 3	4		positive regulation of epithelial cell proliferation			IMP		J:73971 	
+MGI:1352457	Nr4a3	nuclear receptor subfamily 4, group A, member 3	4		regulation of type B pancreatic cell proliferation			ISO	RGD:61882 	J:155856 	
+MGI:1914372	Nrarp	Notch-regulated ankyrin repeat protein	2		blood vessel endothelial cell proliferation involved in sprouting angiogenesis			IBA	PTN000653900 	J:265628 	
+MGI:1914372	Nrarp	Notch-regulated ankyrin repeat protein	2		blood vessel endothelial cell proliferation involved in sprouting angiogenesis	happens in retina blood vessel,affects a population of blood vessel endothelial cell		IMP	MGI:3833551 	J:144980 	
+MGI:1914372	Nrarp	Notch-regulated ankyrin repeat protein	2		positive regulation of endothelial cell proliferation			IBA	PTN000653900 	J:265628 	
+MGI:1914372	Nrarp	Notch-regulated ankyrin repeat protein	2		positive regulation of endothelial cell proliferation	regulates a function/process that happens in retina blood vessel,regulates the proliferation of blood vessel endothelial cell		IMP	MGI:3833551 	J:144980 	
+MGI:97376	Nras	neuroblastoma ras oncogene	3		positive regulation of endothelial cell proliferation			ISO	P01111 	J:164563 	
+MGI:1891834	Nupr1	nuclear protein transcription regulator 1	7		negative regulation of epithelial cell proliferation			IMP		J:271708 	
+MGI:1891834	Nupr1	nuclear protein transcription regulator 1	7		negative regulation of type B pancreatic cell proliferation			IMP		J:203693 	
+MGI:2157548	Olfr78	olfactory receptor 78	7		melanocyte proliferation			ISO	Q9H255 	J:164563 	
+MGI:1344424	Osr1	odd-skipped related transcription factor 1	12		positive regulation of epithelial cell proliferation			IGI	Q91ZD1 	J:149458 	
+MGI:1930813	Osr2	odd-skipped related 2	15		positive regulation of epithelial cell proliferation			IMP		J:149458 	
+MGI:1338039	Ovol2	ovo like zinc finger 2	2		regulation of keratinocyte proliferation			IMP		J:152595 	
+MGI:1338039	Ovol2	ovo like zinc finger 2	2		regulation of keratinocyte proliferation			ISO	Q9BRP0 	J:164563 	
+MGI:97486	Pax2	paired box 2	19		positive regulation of epithelial cell proliferation			ISO	Q02962 	J:164563 	
+MGI:97490	Pax6	paired box 6	2		negative regulation of epithelial cell proliferation	happens in cornea epithelium		IMP	MGI:1856158 	J:99962 	
+MGI:1915621	Pbld1	phenazine biosynthesis-like protein domain containing 1	10		negative regulation of epithelial cell proliferation			ISO	P30039 	J:164563 	
+MGI:109283	Pdcd6	programmed cell death 6	13		positive regulation of endothelial cell proliferation			ISO	O75340 	J:164563 	
+MGI:1928396	Pdcd10	programmed cell death 10	3		negative regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	Q9BUL8 	J:164563 	
+MGI:1916083	Pdcl3	phosducin-like 3	1		positive regulation of endothelial cell proliferation			ISO	Q9H2J4 	J:73065 	
+MGI:97528	Pdgfb	platelet derived growth factor, B polypeptide	15		epithelial cell proliferation involved in salivary gland morphogenesis	has the participant submandibular gland primordium,affects a population of epithelial cell		IMP		J:140258 	
+MGI:97528	Pdgfb	platelet derived growth factor, B polypeptide	15		positive regulation of endothelial cell proliferation	regulates a function/process that happens in aorta smooth muscle,regulates the proliferation of vascular associated smooth muscle cell		IGI	MGI:97306 	J:109530 	
+MGI:97528	Pdgfb	platelet derived growth factor, B polypeptide	15		positive regulation of endothelial cell proliferation			ISO	P01127 	J:164563 	
+MGI:1338068	Pdpk1	3-phosphoinositide dependent protein kinase 1	17		positive regulation of vascular endothelial cell proliferation			ISO	O15530 	J:164563 	
+MGI:107486	Pex2	peroxisomal biogenesis factor 2	3		negative regulation of epithelial cell proliferation			ISO	P28328 	J:164563 	
+MGI:105095	Pgf	placental growth factor	12		positive regulation of endothelial cell proliferation			IBA	PTN000246442 	J:265628 	
+MGI:105095	Pgf	placental growth factor	12		positive regulation of endothelial cell proliferation			ISO	RGD:619850 	J:155856 	
+MGI:97567	Pgr	progesterone receptor	9		regulation of epithelial cell proliferation			IMP	MGI:2674932 	J:85196 	
+MGI:102520	Phb2	prohibitin 2	6		negative regulation of mammary gland epithelial cell proliferation	regulates a function/process that happens in mammary gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:3574361 	J:117151 	
+MGI:1922019	Pik3cb	phosphatidylinositol-4,5-bisphosphate 3-kinase catalytic subunit beta	9		endothelial cell proliferation			IMP	MGI:3795849 	J:214815 	
+MGI:104642	Pla2g2a	phospholipase A2, group IIA (platelets, synovial fluid)	4		negative regulation of epithelial cell proliferation	happens in intestine		IGI	MGI:88039 	J:42722 	
+MGI:104642	Pla2g2a	phospholipase A2, group IIA (platelets, synovial fluid)	4		regulation of epithelial cell proliferation	regulates a function/process that happens in intestine		IGI	MGI:88039 	J:37223 J:37224 	
+MGI:104642	Pla2g2a	phospholipase A2, group IIA (platelets, synovial fluid)	4		regulation of epithelial cell proliferation	regulates a function/process that happens in crypt of lieberkuhn,regulates the proliferation of gut endothelial cell		IGI	MGI:88039 	J:40923 	
+MGI:97611	Plau	plasminogen activator, urokinase	14		regulation of hepatocyte proliferation			ISO	RGD:3343 	J:155856 	
+MGI:97615	Plcg1	phospholipase C, gamma 1	2		positive regulation of vascular endothelial cell proliferation			ISO	P19174 	J:164563 	
+MGI:2154240	Plxnb3	plexin B3	X		positive regulation of endothelial cell proliferation			ISO	Q9ULL4 	J:164563 	
+MGI:1916995	Pold4	polymerase (DNA-directed), delta 4	19		positive regulation of endothelial cell proliferation			IMP		J:96008 	
+MGI:101884	Ppard	peroxisome proliferator activator receptor delta	17		keratinocyte proliferation			IMP	MGI:3575004 	J:71271 	
+MGI:101884	Ppard	peroxisome proliferator activator receptor delta	17		negative regulation of epithelial cell proliferation	happens in intestine epithelium,regulates the proliferation of epithelial cell		IGI	MGI:88039 	J:88127 	
+MGI:101884	Ppard	peroxisome proliferator activator receptor delta	17	NOT	negative regulation of epithelial cell proliferation	happens in intestine,regulates the proliferation of epithelial cell		IGI	MGI:88039 	J:73557 	
+MGI:97747	Pparg	peroxisome proliferator activated receptor gamma	6		negative regulation of vascular endothelial cell proliferation			ISO	P37231 	J:164563 	
+MGI:2151841	Ppp1r16b	protein phosphatase 1, regulatory subunit 16B	2		positive regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	Q96T49 	J:164563 	
+MGI:2151841	Ppp1r16b	protein phosphatase 1, regulatory subunit 16B	2		positive regulation of endothelial cell proliferation			ISO	Q96T49 	J:164563 	
+MGI:97595	Prkca	protein kinase C, alpha	11		positive regulation of endothelial cell proliferation			ISO	P17252 	J:164563 	
+MGI:99879	Prkd1	protein kinase D1	12		positive regulation of endothelial cell proliferation			ISO	Q15139 	J:164563 	
+MGI:99879	Prkd1	protein kinase D1	12		regulation of keratinocyte proliferation			IMP		J:165839 	
+MGI:2141917	Prkd2	protein kinase D2	7		positive regulation of endothelial cell proliferation			ISO	Q9BZL6 	J:164563 	
+MGI:104779	Prkdc	protein kinase, DNA activated, catalytic polypeptide	16		regulation of epithelial cell proliferation			ISO	P78527 	J:164563 	
+MGI:1309999	Prkx	protein kinase, X-linked	X		endothelial cell proliferation			IMP		J:177220 	
+MGI:1309999	Prkx	protein kinase, X-linked	X		endothelial cell proliferation			ISO	P51817 	J:164563 	
+MGI:97762	Prl	prolactin	13		negative regulation of endothelial cell proliferation			ISO	P01236 	J:164563 	
+MGI:97762	Prl	prolactin	13		positive regulation of epithelial cell proliferation			ISO	RGD:3403 	J:155856 	
+MGI:1354178	Prok2	prokineticin 2	6		endothelial cell proliferation			ISO	Q9HC23 	J:164563 	
+MGI:97772	Prox1	prospero homeobox 1	1		hepatocyte proliferation			IMP	MGI:2386336 	J:63128 	
+MGI:97772	Prox1	prospero homeobox 1	1		positive regulation of endothelial cell proliferation			ISO	Q92786 	J:164563 	
+MGI:1202717	Psen1	presenilin 1	12		epithelial cell proliferation			IGI	MGI:1891700 	J:125592 	
+MGI:105373	Ptch1	patched 1	13		keratinocyte proliferation	happens in epidermis stratum basale,affects a population of keratinocyte|happens in epidermis stratum basale,affects a population of basal cell		IMP	MGI:1856954 	J:124280 	
+MGI:105373	Ptch1	patched 1	13		negative regulation of epithelial cell proliferation	happens in epidermis stratum basale,regulates the proliferation of keratinocyte|happens in epidermis stratum basale,regulates the proliferation of basal cell		IMP	MGI:1856954 	J:124280 	
+MGI:109583	Pten	phosphatase and tensin homolog	19		negative regulation of epithelial cell proliferation	happens in prostate gland epithelium		IMP	MGI:2183284 	J:99524 	
+MGI:97804	Ptn	pleiotrophin	6		negative regulation of epithelial cell proliferation			ISO	RGD:3444 	J:155856 	
+MGI:97804	Ptn	pleiotrophin	6		positive regulation of hepatocyte proliferation			IMP		J:102069 	
+MGI:97804	Ptn	pleiotrophin	6		positive regulation of hepatocyte proliferation			ISO	RGD:3444 	J:155856 	
+MGI:103310	Ptprk	protein tyrosine phosphatase, receptor type, K	10		negative regulation of keratinocyte proliferation			ISO	Q15262 	J:164563 	
+MGI:102694	Ptprm	protein tyrosine phosphatase, receptor type, M	17		negative regulation of endothelial cell proliferation			ISO	P28827 	J:164563 	
+MGI:102765	Ptprn	protein tyrosine phosphatase, receptor type, N	1		positive regulation of type B pancreatic cell proliferation			IMP		J:131027 	
+MGI:102765	Ptprn	protein tyrosine phosphatase, receptor type, N	1		positive regulation of type B pancreatic cell proliferation			ISO	RGD:620777 	J:155856 	
+MGI:102765	Ptprn	protein tyrosine phosphatase, receptor type, N	1		positive regulation of type B pancreatic cell proliferation			ISO	Q16849 	J:164563 	
+MGI:108027	Ptprv	protein tyrosine phosphatase, receptor type, V	1		type B pancreatic cell proliferation			IMP	MGI:3039948 	J:126780 	
+MGI:103079	Pura	purine rich element binding protein A	18		epithelial cell proliferation			IMP	MGI:2677937 	J:85759 	
+MGI:1916161	Pygo2	pygopus 2	3		regulation of mammary gland epithelial cell proliferation			IMP	MGI:3711738 	J:163218 	
+MGI:109338	Rap1gap	Rap1 GTPase-activating protein	4		negative regulation of thyroid gland epithelial cell proliferation			ISO	RGD:1309908 	J:155856 	
+MGI:97874	Rb1	RB transcriptional corepressor 1	14		negative regulation of epithelial cell proliferation	happens in gut,regulates the proliferation of epithelial cell		IMP	MGI:1931018 MGI:3574761 	J:119916 	
+MGI:97895	Reg1	regenerating islet-derived 1	6		positive regulation of acinar cell proliferation			ISO	RGD:3552 	J:155856 	
+MGI:97895	Reg1	regenerating islet-derived 1	6		positive regulation of type B pancreatic cell proliferation			ISO	RGD:3552 	J:155856 	
+MGI:109408	Reg3a	regenerating islet-derived 3 alpha	6		positive regulation of keratinocyte proliferation			IDA		J:196618 	
+MGI:109406	Reg3g	regenerating islet-derived 3 gamma	6		positive regulation of keratinocyte proliferation			IDA		J:196618 	
+MGI:1913464	Rgcc	regulator of cell cycle	14		negative regulation of endothelial cell proliferation			ISO	Q9H4X1 	J:164563 	
+MGI:108024	Rgn	regucalcin	X		negative regulation of epithelial cell proliferation			ISO	RGD:3560 	J:155856 	
+MGI:1926007	Rictor	RPTOR independent companion of MTOR, complex 2	15		positive regulation of endothelial cell proliferation			ISO	RGD:1307224 	J:155856 	
+MGI:1095401	Rida	reactive intermediate imine deaminase A homolog	15		negative regulation of epithelial cell proliferation			ISO	RGD:70940 	J:155856 	
+MGI:1274781	Robo1	roundabout guidance receptor 1	16		negative regulation of mammary gland epithelial cell proliferation			ISO	Q9Y6N7 	J:164563 	
+MGI:104558	Rps6ka1	ribosomal protein S6 kinase polypeptide 1	4		hepatocyte proliferation			IDA		J:133506 	
+MGI:1921620	Rptor	regulatory associated protein of MTOR, complex 1	11		positive regulation of endothelial cell proliferation			ISO	RGD:1311784 	J:155856 	
+MGI:2443664	Rreb1	ras responsive element binding protein 1	13		positive regulation of mammary gland epithelial cell proliferation			ISO	Q92766 	J:164563 	
+MGI:1915835	Rtn4	reticulon 4	11		positive regulation of hepatocyte proliferation			IMP		J:271690 	
+MGI:1915835	Rtn4	reticulon 4	11		positive regulation of mammary gland epithelial cell proliferation			ISO	Q9NQC3 	J:164563 	
+MGI:102672	Runx3	runt related transcription factor 3	4		negative regulation of epithelial cell proliferation			IMP		J:75869 	
+MGI:1927144	Sav1	salvador family WW domain containing 1	12		negative regulation of epithelial cell proliferation	happens in skin,regulates the proliferation of epithelial cell|happens in gut,regulates the proliferation of epithelial cell		IMP	MGI:3790763 	J:134270 	
+MGI:893578	Scarb1	scavenger receptor class B, member 1	5		endothelial cell proliferation			IMP	MGI:1888384 	J:118063 	
+MGI:103033	Scg2	secretogranin II	1		positive regulation of endothelial cell proliferation			ISO	P13521 	J:164563 	
+MGI:98251	Scn5a	sodium channel, voltage-gated, type V, alpha	9		positive regulation of epithelial cell proliferation			ISO	RGD:3637 	J:155856 	
+MGI:2668443	Sdr16c5	short chain dehydrogenase/reductase family 16C, member 5	4		keratinocyte proliferation			ISO	Q8N3Y7 	J:164563 	
+MGI:107556	Sema5a	sema domain, seven thrombospondin repeats (type 1 and type 1-like), transmembrane domain (TM) and short cytoplasmic domain, (semaphorin) 5A	15		blood vessel endothelial cell proliferation involved in sprouting angiogenesis			IDA		J:203404 	
+MGI:107556	Sema5a	sema domain, seven thrombospondin repeats (type 1 and type 1-like), transmembrane domain (TM) and short cytoplasmic domain, (semaphorin) 5A	15		positive regulation of endothelial cell proliferation			IDA		J:203404 	
+MGI:1913472	Serpinb1a	serine (or cysteine) peptidase inhibitor, clade B, member 1a	13		type B pancreatic cell proliferation			IDA		J:232736 	
+MGI:1913472	Serpinb1a	serine (or cysteine) peptidase inhibitor, clade B, member 1a	13		type B pancreatic cell proliferation			ISO	P30740 	J:164563 	
+MGI:109579	Serpinb5	serine (or cysteine) peptidase inhibitor, clade B, member 5	1		regulation of epithelial cell proliferation	regulates a function/process that happens in prostate gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:3040188 	J:138880 	
+MGI:108080	Serpinf1	serine (or cysteine) peptidase inhibitor, clade F, member 1	11		negative regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in prostate gland epithelium		IMP	MGI:2664515 	J:83748 	
+MGI:1891831	Sfn	stratifin	4		negative regulation of keratinocyte proliferation	happens in skin,regulates the proliferation of basal cell of epidermis		IGI	MGI:1859211 	J:116077 	
+MGI:1891831	Sfn	stratifin	4		negative regulation of keratinocyte proliferation	regulates the proliferation of basal cell of epidermis,regulates a function/process that happens in skin		IGI	MGI:1916323 	J:203995 	
+MGI:892014	Sfrp1	secreted frizzled-related protein 1	8		negative regulation of canonical Wnt signaling pathway involved in controlling type B pancreatic cell proliferation			ISO	Q8N474 	J:164563 	
+MGI:892014	Sfrp1	secreted frizzled-related protein 1	8		negative regulation of epithelial cell proliferation			ISO	Q8N474 	J:164563 	
+MGI:892014	Sfrp1	secreted frizzled-related protein 1	8		positive regulation of epithelial cell proliferation			ISO	Q8N474 	J:164563 	
+MGI:108078	Sfrp2	secreted frizzled-related protein 2	3		negative regulation of epithelial cell proliferation			ISO	Q96HF1 	J:164563 	
+MGI:3589109	Sgpp2	sphingosine-1-phosphate phosphotase 2	1		regulation of type B pancreatic cell proliferation			IMP		J:235035 	
+MGI:98297	Shh	sonic hedgehog	5		epithelial cell proliferation involved in salivary gland morphogenesis			IMP		J:89200 	
+MGI:98297	Shh	sonic hedgehog	5		positive regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in pelvic urethra of male,regulates the proliferation of epithelial cell		IMP		J:78990 	
+MGI:98297	Shh	sonic hedgehog	5		regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in pelvic urethra of male,regulates the proliferation of epithelial cell		IMP		J:78990 	
+MGI:2446134	Sidt2	SID1 transmembrane family, member 2	9		type B pancreatic cell proliferation			IMP	MGI:5532825 	J:204228 	
+MGI:2135607	Sirt1	sirtuin 1	10		positive regulation of endothelial cell proliferation			ISO	Q96EB6 	J:164563 	
+MGI:1354161	Sirt6	sirtuin 6	10		positive regulation of vascular endothelial cell proliferation			ISO	Q8N6T7 	J:164563 	
+MGI:102780	Six1	sine oculis-related homeobox 1	12		regulation of epithelial cell proliferation			IMP		J:145187 	
+MGI:106034	Six4	sine oculis-related homeobox 4	12		regulation of epithelial cell proliferation			IMP		J:145187 	
+MGI:1930923	Slurp1	secreted Ly6/Plaur domain containing 1	15		negative regulation of keratinocyte proliferation			IMP		J:210836 	
+MGI:1916712	Slurp2	secreted Ly6/Plaur domain containing 2	15		keratinocyte proliferation	happens in autopod skin		IMP	MGI:5006991 	J:231067 	
+MGI:1201674	Smad3	SMAD family member 3	9		regulation of epithelial cell proliferation	regulates a function/process that happens in ovary,regulates the proliferation of epithelial cell		IMP	MGI:1857695 	J:105918 	
+MGI:108075	Smo	smoothened, frizzled class receptor	6		positive regulation of epithelial cell proliferation			IMP	MGI:2176256 	J:147277 	
+MGI:1096393	Snai2	snail family zinc finger 2	16		negative regulation of keratinocyte proliferation			ISO	O43623 	J:164563 	
+MGI:98364	Sox2	SRY (sex determining region Y)-box 2	3		negative regulation of epithelial cell proliferation			ISO	P48431 	J:164563 	
+MGI:98371	Sox9	SRY (sex determining region Y)-box 9	11		epithelial cell proliferation involved in prostatic bud elongation			IMP	MGI:2429649 MGI:3689997 	J:135788 	
+MGI:98371	Sox9	SRY (sex determining region Y)-box 9	11		negative regulation of epithelial cell proliferation	happens in crypt of lieberkuhn		IMP	MGI:2429649 	J:128277 	
+MGI:98371	Sox9	SRY (sex determining region Y)-box 9	11		positive regulation of epithelial cell proliferation			IMP		J:156856 	
+MGI:98371	Sox9	SRY (sex determining region Y)-box 9	11		positive regulation of epithelial cell proliferation	happens in cochlear duct epithelium,regulates the proliferation of epithelial cell		IMP	MGI:2385468 MGI:3841145 	J:160473 	
+MGI:98371	Sox9	SRY (sex determining region Y)-box 9	11		regulation of epithelial cell proliferation involved in lung morphogenesis			IMP		J:202984 	
+MGI:98359	Sox11	SRY (sex determining region Y)-box 11	12		positive regulation of lens epithelial cell proliferation			IMP		J:136878 	
+MGI:98372	Sp1	trans-acting transcription factor 1	15		positive regulation of vascular endothelial cell proliferation			ISO	P08047 	J:164563 	
+MGI:98373	Sparc	secreted acidic cysteine rich glycoprotein	11		negative regulation of endothelial cell proliferation			ISO	P09486 	J:164563 	
+MGI:1915246	Srsf6	serine and arginine-rich splicing factor 6	2		positive regulation of epithelial cell proliferation involved in lung morphogenesis			ISO	Q13247 	J:193148 	
+MGI:1915246	Srsf6	serine and arginine-rich splicing factor 6	2		regulation of keratinocyte proliferation			ISO	Q13247 	J:164563 	
+MGI:103063	Stat1	signal transducer and activator of transcription 1	1		negative regulation of endothelial cell proliferation			ISO	P42224 	J:164563 	
+MGI:103038	Stat3	signal transducer and activator of transcription 3	11		positive regulation of vascular endothelial cell proliferation	affects a population of cardiac blood vessel endothelial cell		IDA		J:250042 	
+MGI:103036	Stat5a	signal transducer and activator of transcription 5A	11		positive regulation of endothelial cell proliferation			ISO	P42229 	J:164563 	
+MGI:103034	Stat6	signal transducer and activator of transcription 6	10		mammary gland epithelial cell proliferation	happens in mammary gland,affects a population of mammary gland epithelial cell		IMP	MGI:1888385 	J:184505 	
+MGI:1341870	Stk11	serine/threonine kinase 11	10		negative regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in prostate gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:3579498 	J:133330 	
+MGI:2684909	Stox1	storkhead box 1	10		positive regulation of epithelial cell proliferation	affects a population of auditory epithelial cell		IMP		J:220542 	
+MGI:1329037	Strap	serine/threonine kinase receptor associated protein	6		negative regulation of epithelial cell proliferation			ISO	Q9Y3F4 	J:164563 	
+MGI:1342296	Stxbp4	syntaxin binding protein 4	11		positive regulation of keratinocyte proliferation			ISO	Q6ZWJ1 	J:164563 	
+MGI:2138563	Sulf1	sulfatase 1	1		negative regulation of endothelial cell proliferation			ISO	Q8IWU6 	J:164563 	
+MGI:1919293	Sulf2	sulfatase 2	2		regulation of hepatocyte proliferation			IMP	MGI:3587954 	J:201786 	
+MGI:1261758	Suz12	SUZ12 polycomb repressive complex 2 subunit	11		negative regulation of epithelial cell proliferation			ISO	RGD:1593621 	J:155856 	
+MGI:1344347	Synj2bp	synaptojanin 2 binding protein	12		negative regulation of endothelial cell proliferation			ISO	P57105 	J:164563 	
+MGI:98475	Tacr1	tachykinin receptor 1	6		positive regulation of epithelial cell proliferation			ISO	RGD:3811 	J:155856 	
+MGI:98493	Tbx1	T-box 1	16		positive regulation of epithelial cell proliferation			IMP		J:175160 	
+MGI:98493	Tbx1	T-box 1	16		positive regulation of epithelial cell proliferation	happens in cochlear duct epithelium		IMP	MGI:2179136 	J:128008 	
+MGI:98493	Tbx1	T-box 1	16		positive regulation of epithelial cell proliferation	happens in lower jaw molar epithelium,regulates the proliferation of epithelial cell		IMP	MGI:2179136 	J:166613 	
+MGI:98493	Tbx1	T-box 1	16		positive regulation of epithelial cell proliferation	happens in lower jaw incisor enamel organ,regulates the proliferation of ameloblast|happens in upper jaw incisor enamel organ,regulates the proliferation of ameloblast		IMP	MGI:2179136 	J:149254 	
+MGI:98493	Tbx1	T-box 1	16		positive regulation of epithelial cell proliferation	happens in otocyst epithelium,regulates the proliferation of epithelial cell		IMP	MGI:3046793 	J:119950 	
+MGI:1923615	Tbx18	T-box18	9		positive regulation of epithelial cell proliferation	happens in ureter,regulates the proliferation of epithelial cell		IMP	MGI:3044914 	J:106499 	
+MGI:1202879	Tcf7l2	transcription factor 7 like 2, T cell specific, HMG box	19		positive regulation of epithelial cell proliferation	happens in small intestine crypt of lieberkuhn,regulates the proliferation of epithelial cell of small intestine		IMP	MGI:1926344 	J:147579 	
+MGI:1202879	Tcf7l2	transcription factor 7 like 2, T cell specific, HMG box	19		positive regulation of epithelial cell proliferation			ISO	Q9NQB0 	J:164563 	
+MGI:103180	Tcf19	transcription factor 19	17		type B pancreatic cell proliferation			IMP		J:203187 	
+MGI:98664	Tek	TEK receptor tyrosine kinase	4		endothelial cell proliferation			IBA	PTN002814572 	J:265628 	
+MGI:98664	Tek	TEK receptor tyrosine kinase	4		endothelial cell proliferation			IMP		J:20015 	
+MGI:98664	Tek	TEK receptor tyrosine kinase	4		regulation of endothelial cell proliferation			TAS		J:164086 	
+MGI:106032	Tfap2c	transcription factor AP-2, gamma	2		epithelial cell proliferation involved in mammary gland duct elongation	regulates a function/process that happens in mammary gland duct,regulates the proliferation of mammary gland epithelial cell|regulates a function/process that happens in mammary gland duct,regulates the proliferation of branched duct epithelial cell		IMP	MGI:3040993 	J:156927 	
+MGI:98724	Tgfa	transforming growth factor alpha	6		hepatocyte proliferation			IDA		J:133506 	
+MGI:98724	Tgfa	transforming growth factor alpha	6		hepatocyte proliferation			ISO	RGD:3849 	J:155856 	
+MGI:98724	Tgfa	transforming growth factor alpha	6		positive regulation of epithelial cell proliferation			ISO	P01135 	J:164563 	
+MGI:98725	Tgfb1	transforming growth factor, beta 1	7		negative regulation of epithelial cell proliferation			ISO	RGD:69051 	J:155856 	
+MGI:98725	Tgfb1	transforming growth factor, beta 1	7		negative regulation of epithelial cell proliferation			ISO	P01137 	J:164563 	
+MGI:98725	Tgfb1	transforming growth factor, beta 1	7		positive regulation of epithelial cell proliferation			ISO	RGD:69051 	J:155856 	
+MGI:98726	Tgfb2	transforming growth factor, beta 2	1		negative regulation of epithelial cell proliferation			ISO	P61812 	J:164563 	
+MGI:98728	Tgfbr1	transforming growth factor, beta receptor I	4		negative regulation of endothelial cell proliferation	regulates a function/process that happens in lung,regulates the proliferation of endothelial cell		IGI	MGI:107571 	J:178359 	
+MGI:104637	Tgfbr3	transforming growth factor, beta receptor III	5		negative regulation of epithelial cell proliferation			IMP		J:118378 	
+MGI:98730	Tgm1	transglutaminase 1, K polypeptide	14		positive regulation of keratinocyte proliferation			ISO	P22735 	J:164563 	
+MGI:1921004	Thap1	THAP domain containing, apoptosis associated protein 1	8		endothelial cell proliferation			ISO	Q9NVV9 	J:164563 	
+MGI:98737	Thbs1	thrombospondin 1	2		negative regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	P07996 	J:164563 	
+MGI:98737	Thbs1	thrombospondin 1	2		negative regulation of endothelial cell proliferation			IMP	MGI:2154534 	J:101420 	
+MGI:98737	Thbs1	thrombospondin 1	2		negative regulation of endothelial cell proliferation			ISO	P07996 	J:101420 J:164563 	
+MGI:1101779	Thbs4	thrombospondin 4	13		positive regulation of endothelial cell proliferation			ISO	P35443 	J:164563 	
+MGI:107246	Tinf2	Terf1 (TRF1)-interacting nuclear factor 2	14		negative regulation of epithelial cell proliferation			ISO	Q9BSI4 	J:164563 	
+MGI:96824	Tlr4	toll-like receptor 4	4		positive regulation of keratinocyte proliferation			ISO	O00206 	J:164563 	
+MGI:104798	Tnf	tumor necrosis factor	17		epithelial cell proliferation involved in salivary gland morphogenesis	has the participant submandibular gland epithelium,has the participant epithelial cell		IDA		J:67809 	
+MGI:104798	Tnf	tumor necrosis factor	17		negative regulation of endothelial cell proliferation			IDA		J:235312 	
+MGI:104798	Tnf	tumor necrosis factor	17		positive regulation of hepatocyte proliferation			ISO	RGD:3876 	J:155856 	
+MGI:1196377	Tnfaip3	tumor necrosis factor, alpha-induced protein 3	10		positive regulation of hepatocyte proliferation			IDA		J:169905 	
+MGI:1100089	Tnfsf11	tumor necrosis factor (ligand) superfamily, member 11	14		mammary gland epithelial cell proliferation	happens in mammary gland alveolus,affects a population of epithelial cell		IMP	MGI:1859962 	J:64718 	
+MGI:1929885	Tnmd	tenomodulin	X		negative regulation of endothelial cell proliferation			IBA	PTN000362559 	J:265628 	
+MGI:1929885	Tnmd	tenomodulin	X		negative regulation of endothelial cell proliferation			IDA		J:83025 	
+MGI:1330810	Trp63	transformation related protein 63	16		keratinocyte proliferation	happens in epidermis stratum basale,affects a population of keratinocyte|happens in epidermis stratum basale,affects a population of basal cell	PR:O88898-2	IDA		J:126411 	
+MGI:1330810	Trp63	transformation related protein 63	16		positive regulation of keratinocyte proliferation	regulates the proliferation of basal cell of epidermis,happens in skin		IGI	MGI:1916323 	J:203995 	
+MGI:102548	Tsc2	TSC complex subunit 2	17		negative regulation of epithelial cell proliferation			ISO	RGD:3908 	J:155856 	
+MGI:102548	Tsc2	TSC complex subunit 2	17		negative regulation of vascular endothelial cell proliferation			ISO	RGD:3908 	J:155856 	
+MGI:98872	Twist1	twist basic helix-loop-helix transcription factor 1	12		positive regulation of epithelial cell proliferation			ISO	RGD:621455 	J:155856 	
+MGI:104685	Twist2	twist basic helix-loop-helix transcription factor 2	1		positive regulation of keratinocyte proliferation	regulates a function/process that happens in cornea stroma|regulates the proliferation of keratinocyte		IMP	MGI:3044412 	J:171395 	
+MGI:1338889	Uhrf1	ubiquitin-like, containing PHD and RING finger domains, 1	17		regulation of epithelial cell proliferation			ISO	Q96T88 	J:164563 	
+MGI:2442543	Vash1	vasohibin 1	12		negative regulation of endothelial cell proliferation			ISO	Q7L8A9 	J:148726 J:164563 	
+MGI:2444826	Vash2	vasohibin 2	1		positive regulation of endothelial cell proliferation			ISO	Q86V25 	J:148726 	
+MGI:103076	Vdr	vitamin D (1,25-dihydroxyvitamin D3) receptor	15		negative regulation of keratinocyte proliferation			ISO	P11473 	J:164563 	
+MGI:103178	Vegfa	vascular endothelial growth factor A	17		positive regulation of blood vessel endothelial cell proliferation involved in sprouting angiogenesis			ISO	P15692 	J:164563 	
+MGI:103178	Vegfa	vascular endothelial growth factor A	17		positive regulation of endothelial cell proliferation			IBA	PTN000246442 	J:265628 	
+MGI:103178	Vegfa	vascular endothelial growth factor A	17		positive regulation of endothelial cell proliferation		PR:Q00731-4	IDA		J:45512 	
+MGI:103178	Vegfa	vascular endothelial growth factor A	17		positive regulation of endothelial cell proliferation	regulates the proliferation of endothelial cell	PR:Q00731-2	IDA		J:27451 	
+MGI:103178	Vegfa	vascular endothelial growth factor A	17		positive regulation of endothelial cell proliferation	regulates the proliferation of endothelial cell	PR:Q00731-3	IDA		J:27451 	
+MGI:103178	Vegfa	vascular endothelial growth factor A	17		positive regulation of endothelial cell proliferation			ISO	P15692 	J:83025 J:164563 	
+MGI:103178	Vegfa	vascular endothelial growth factor A	17		positive regulation of epithelial cell proliferation	happens in left lung epithelium,regulates the proliferation of epithelial cell of lung|happens in right lung epithelium,regulates the proliferation of epithelial cell of lung		IMP		J:99650 	
+MGI:106199	Vegfb	vascular endothelial growth factor B	19		positive regulation of endothelial cell proliferation			IBA	PTN000246442 	J:265628 	
+MGI:106199	Vegfb	vascular endothelial growth factor B	19		positive regulation of endothelial cell proliferation			ISO	P49765 	J:164563 	
+MGI:109124	Vegfc	vascular endothelial growth factor C	8		positive regulation of endothelial cell proliferation			IBA	PTN000246442 	J:265628 	
+MGI:109124	Vegfc	vascular endothelial growth factor C	8		positive regulation of epithelial cell proliferation			ISO	RGD:619800 	J:155856 	
+MGI:108037	Vegfd	vascular endothelial growth factor D	X		positive regulation of endothelial cell proliferation			IBA	PTN000246442 	J:265628 	
+MGI:103223	Vhl	von Hippel-Lindau tumor suppressor	6		positive regulation of epithelial cell proliferation			IMP	MGI:2136645 	J:185536 	
+MGI:98933	Vip	vasoactive intestinal polypeptide	10		positive regulation of endothelial cell proliferation			IBA	PTN002598709 	J:265628 	
+MGI:98933	Vip	vasoactive intestinal polypeptide	10		positive regulation of endothelial cell proliferation			ISO	RGD:621647 	J:155856 	
+MGI:1914661	Wdr13	WD repeat domain 13	X		negative regulation of type B pancreatic cell proliferation	happens in type B pancreatic cell		IMP	MGI:5694710 	J:225111 	
+MGI:1914811	Wdr48	WD repeat domain 48	9		positive regulation of epithelial cell proliferation			IMP	MGI:3877670 	J:206106 	
+MGI:1917715	Wdr77	WD repeat domain 77	3		negative regulation of epithelial cell proliferation involved in prostate gland development	regulates a function/process that happens in prostate gland epithelium,regulates the proliferation of epithelial cell		IMP	MGI:3798419 	J:137003 	
+MGI:1915116	Wfdc1	WAP four-disulfide core domain 1	8		negative regulation of epithelial cell proliferation			ISO	RGD:68938 	J:155856 	
+MGI:98954	Wnt2	wingless-type MMTV integration site family, member 2	6		positive regulation of endothelial cell proliferation			ISO	RGD:621346 	J:155856 	
+MGI:98954	Wnt2	wingless-type MMTV integration site family, member 2	6		positive regulation of epithelial cell proliferation involved in lung morphogenesis	regulates a function/process that happens in lung,regulates the proliferation of epithelial cell of lung		IMP	MGI:4361155 	J:153098 	
+MGI:98956	Wnt3a	wingless-type MMTV integration site family, member 3A	11		positive regulation of canonical Wnt signaling pathway involved in controlling type B pancreatic cell proliferation			IDA		J:164778 	
+MGI:98956	Wnt3a	wingless-type MMTV integration site family, member 3A	11		positive regulation of hepatocyte proliferation			IDA		J:201786 	
+MGI:98958	Wnt5a	wingless-type MMTV integration site family, member 5A	14		epithelial cell proliferation involved in mammary gland duct elongation	regulates a function/process that happens in mammary gland duct		IDA		J:126343 	
+MGI:98958	Wnt5a	wingless-type MMTV integration site family, member 5A	14		melanocyte proliferation			IDA		J:219051 	
+MGI:98958	Wnt5a	wingless-type MMTV integration site family, member 5A	14		negative regulation of epithelial cell proliferation	happens in mammary gland duct,regulates the proliferation of epithelial cell		IDA		J:126343 	
+MGI:98958	Wnt5a	wingless-type MMTV integration site family, member 5A	14		negative regulation of epithelial cell proliferation	happens in mammary gland duct,regulates the proliferation of epithelial cell		IMP	MGI:1857617 	J:126343 	
+MGI:98958	Wnt5a	wingless-type MMTV integration site family, member 5A	14		positive regulation of endothelial cell proliferation			ISO	P41221 	J:164563 	
+MGI:98958	Wnt5a	wingless-type MMTV integration site family, member 5A	14		positive regulation of epithelial cell proliferation	happens in midgut,regulates the proliferation of epithelial cell		IMP	MGI:1857617 	J:145166 	
+MGI:98961	Wnt7a	wingless-type MMTV integration site family, member 7A	6		positive regulation of epithelial cell proliferation involved in wound healing			ISO	O00755 	J:164563 	
+MGI:108061	Wnt10b	wingless-type MMTV integration site family, member 10B	15		negative regulation of epithelial cell proliferation			IDA		J:130875 	
+MGI:2136018	Wnt16	wingless-type MMTV integration site family, member 16	6		keratinocyte proliferation			ISO	Q9UBV4 	J:164563 	
+MGI:98970	Xbp1	X-box binding protein 1	11		endothelial cell proliferation			IMP		J:211440 	
+MGI:98970	Xbp1	X-box binding protein 1	11		endothelial cell proliferation			ISO	P17861 	J:164563 	
+MGI:98970	Xbp1	X-box binding protein 1	11		positive regulation of hepatocyte proliferation			IMP		J:59916 	
+MGI:98973	Xdh	xanthine dehydrogenase	17		negative regulation of endothelial cell proliferation			ISO	P47989 	J:164563 	
+MGI:103262	Yap1	yes-associated protein 1	9		positive regulation of epithelial cell proliferation			ISO	P46937 	J:164563 	
+MGI:103262	Yap1	yes-associated protein 1	9		regulation of keratinocyte proliferation	regulates the proliferation of keratinocyte		IMP		J:134270 	
+MGI:1916199	Zfas1	zinc finger, NFX1-type containing 1, antisense RNA 1	2		negative regulation of mammary gland epithelial cell proliferation			IMP		J:230787 	
+MGI:99180	Zfp36	zinc finger protein 36	7		regulation of keratinocyte proliferation			ISO	P26651 	J:164563 	
+MGI:107946	Zfp36l1	zinc finger protein 36, C3H type-like 1	12		regulation of keratinocyte proliferation			ISO	Q07352 	J:164563 	
+MGI:1916242	Zfp580	zinc finger protein 580	7		positive regulation of endothelial cell proliferation			ISO	Q9UK33 	J:164563 	
+MGI:2662729	Zfp703	zinc finger protein 703	8		positive regulation of mammary gland epithelial cell proliferation			IDA		J:169294 	
+MGI:2662729	Zfp703	zinc finger protein 703	8		positive regulation of mammary gland epithelial cell proliferation			ISO	Q9H7S9 	J:164563 	
+
