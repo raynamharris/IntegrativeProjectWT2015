@@ -28,7 +28,7 @@ source("./functions_RNAseq.R")
 # read the sample data, set levels, join iwth behvior PCA data
 colData <- read.csv("../data/00_colData.csv", row.names = 1, stringsAsFactors = T)
 colData <- colData %>% filter(subfield == "DG")
-pca.Rn <- read_csv("../data/suppletable3.csv") %>% dplyr::filter(trialNum == 9)
+pca.Rn <- read_csv("../data/suppletable-3.csv") %>% dplyr::filter(trialNum == 9)
 colData <- left_join(colData, pca.Rn)
 head(colData)
 ```
@@ -175,7 +175,7 @@ colData <- read_csv("../data/00_colData.csv")
 geneids <- read_csv("../data/00_geneids.csv") %>% distinct(gene) %>% mutate(gene = toupper(gene))
 
 # pca data
-pca.Rn <- read_csv("../data/suppletable3.csv") %>% 
+pca.Rn <- read_csv("../data/suppletable-3.csv") %>% 
   filter(trialNum == 9) %>%  
   select(ID:PC2) %>%
   left_join(colData) %>% drop_na() %>% select(ID, treatment, training, trialNum, RNAseqID, subfield, PC1, PC2)
@@ -292,5 +292,5 @@ citation("corrr")
 suppltable6 <-  corrrmat %>%  focus(PC1, topcorrrs,  mirror = TRUE) %>% arrange(desc(PC1))
 suppltable6
 
-write.csv(suppltable6, "../data/suppltable6.csv", row.names = F)
+write.csv(suppltable6, "../data/suppltable-6.csv", row.names = F)
 ```
