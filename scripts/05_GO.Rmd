@@ -7,78 +7,31 @@ output: md_document
 library(tidyverse)
 library(knitr)
 library(kableExtra)
+library(stringr)
 
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-## Hypothesised GO Terms
-
-```{r}
-GO_response <- read.table("../data/goterms/01_responsetostimulus.txt", sep = "\t", row.names = NULL,  fill=TRUE)
-GO_response$GO <- "1. Response to Stimulus (GO:0050896)"
-
-GO_translation <- read.table("../data/goterms/02_translation.txt", sep = "\t", row.names = NULL)
-GO_translation$GO <- "2. Translation (GO:0006412)"
-
-GO_synapse <- read.table("../data/goterms/03_synapseorganization.txt", sep = "\t", row.names = NULL)
-GO_synapse$GO <- "3. Synapse Organization (GO:0050808)"
-
-GO_learningormemory <- read.table("../data/goterms/04_learningormemory.txt", sep = "\t", row.names = NULL)
-GO_learningormemory$GO <- "4. Learning or Memory (GO:0007611)"
-
-GOterms <- rbind(GO_learningormemory, GO_response, GO_translation, GO_synapse)
-GOterms <- GOterms %>%
-  dplyr::mutate(gene = str_to_title(MGI.Gene.Marker.ID)) %>% 
-  dplyr::select(gene, GO) %>% 
-  dplyr::distinct(gene, GO) %>% 
- group_by(gene) 
-GOterms
-
-```
-
-## Upregulated DG DEGS
+## Hypothesised and random GO Terms
 
 
-```{r}
-DGDEGs <- read_csv("../data/suppltable-4.csv") %>% 
-  filter(tissue == "DG", comparison == "yoked vs. trained")
-DGDEGs$gene
+Do DEGs fall into one of four hypothesized GO catagoreis? Do they do this more often that 4 randomly selected GO terms that are similar in size to the hypothesized?
 
-GOtermsDEGs <- inner_join(GOterms, DGDEGs) %>%
-  arrange(GO,gene) %>%
-  dplyr::select(gene, GO) %>% 
-  group_by(GO) %>%
-  summarize(genes = str_c(gene, collapse = ", "))
-head(GOtermsDEGs)
-```
+GO terms and genes collected from http://www.informatics.jax.org/vocab/gene_ontology
 
-## are genes in GO term significant? what about random GO terms and significantly enriched GO terms
-
-Random 1 from http://geneontology.org/docs/ontology-documentation/ 
-The larger processes, or ‘biological programs’ accomplished by multiple molecular activities. **Examples of broad biological process terms** are _DNA repair_ or _signal transduction_. Examples of more specific terms are _pyrimidine nucleobase biosynthetic process_ or _glucose transmembrane transport_. Note that a biological process is not equivalent to a pathway. At present, the GO does not try to represent the dynamics or dependencies that would be required to fully describe a pathway. Examples of broad biological process terms are DNA repair or signal transduction. Examples of more specific terms are pyrimidine nucleobase biosynthetic process or glucose transmembrane transport. Found all those at http://www.informatics.jax.org/vocab/gene_ontology
-
-Random 2 from https://www.biorxiv.org/content/10.1101/2020.01.26.920447v1.full.pdf
-
-
-_Note: "pyrimidine nucleobase biosynthetic process" was too small, so I went up to leveles and chose "heterocycle biosynthetic process" instead._
-
-Top 4 GO terms from http://bioinformatics.sdstate.edu/go/ identified with 214 DG DEGs. 
-
-![](../figures/05_GO/Screen Shot 2020-01-30 at 11.19.35 AM.png)
-
-
-```{r moreGOterms}
+```{r readfiles}
+# list of random and hypothesized GO terms and associated gens 
 # https://serialmentor.com/blog/2016/6/13/reading-and-combining-many-tidy-data-files-in-R
 
 data_path <- "../data/goterms/"   # path to the data
 files <- dir(data_path, pattern = "*.txt") # get file names
 
 filesdf <- as.data.frame(files)
-filesdf$source <- c(1:17)
+filesdf$source <- c(1:8)
 filesdf
 
-data <- files %>%
+GOterms <- files %>%
   # read in all the files, appending the path before the filename
   map_df(~ read.table(file.path(data_path, .),  sep = "\t", 
                       row.names = NULL,  fill=TRUE), .id = "source") %>%
@@ -89,128 +42,97 @@ data <- files %>%
             pattern = ".txt", replacement = "") %>%
   dplyr::rename("GO" = "files",
          "gene" = "MGI.Gene.Marker.ID") %>%
-  dplyr::select(GO, gene)
-head(data)
+  dplyr::select(GO, gene)  %>%
+  dplyr::distinct(GO, gene) 
+head(GOterms)
 
-GOtermsDEGs2 <- inner_join(data, DGDEGs) %>%
-  arrange(GO,gene) %>%
-  dplyr::select(gene, GO) %>% 
-  dplyr::distinct(gene, GO) %>% 
+GOtermCounts <- GOterms %>%
   group_by(GO) %>%
-  summarize(genes = str_c(gene, collapse = ", "))
-head(GOtermsDEGs2)
-
-totalGOterm3 <- data %>%
-  group_by(GO) %>%
-  summarise(totalgenes = n())
-
-totalSignificantgenesperGO3 <- inner_join(data, DGDEGs) %>%
-  arrange(GO,gene) %>%
-  dplyr::select(gene, GO) %>% 
-  dplyr::distinct(gene, GO) %>% 
-  group_by(GO) %>%
-  summarise(significantgenes = n())
-totalSignificantgenesperGO3
-
-GOsummary3 <- full_join(totalGOterm3, totalSignificantgenesperGO3) %>%
-  mutate(percent = significantgenes / totalgenes * 100) %>%
-  mutate(percent = round(percent,2)) %>%
-  mutate(category = ifelse(grepl("01|02|03|04", GO), "hypothesis",
-                          ifelse(grepl("05|06|07|08", GO), "ShinyGO",
-                                 ifelse(grepl("09|10|11|12", GO), "random", 
-                                        ifelse(grepl("13|14|15|16|17", GO), "PANTHER", NA))))) %>%
-  select(category, GO, totalgenes, significantgenes, percent)   %>%
-  arrange(desc(percent)) %>%
-  left_join(.,GOtermsDEGs2)
-GOsummary3
-
-write.csv(GOtermsDEGs2, "../data/05_GOtermsDEGs2.csv", row.names = F)
-write.csv(GOsummary3, "../data/05_GOsummary3.csv", row.names = F)
-
-```
+  summarize("total" = n())
+head(GOtermCounts)
 
 
 
-## sanes
+# DEGs
+DGDEGs <- read_csv("../data/suppltable-4.csv") %>% 
+  filter(tissue == "DG", comparison == "yoked vs. trained") %>%
+  select(gene) 
+head(DGDEGs)
 
-```{r}
-sanesLichtman <- read_csv("../data/05_sanesLichtman.csv")  %>% 
-  dplyr::rename("gene" = "genes") %>%
-  dplyr::mutate(gene = str_to_title(gene))
-str(sanesLichtman)
-
-GOtermssanesLichtman <- left_join(sanesLichtman, data) %>%
-  arrange(GO,gene) %>%
-  dplyr::select(gene, GO) %>% 
-   dplyr::distinct(gene, GO) %>% 
- group_by(GO) %>%
- summarize(genes = str_c(gene, collapse = ", "))
-GOtermssanesLichtman
-
-GOtermssanesLichtmansummary <- left_join(sanesLichtman, data) %>%
-  arrange(GO,gene) %>%
-  dplyr::select(gene, GO) %>% 
-   dplyr::distinct(gene, GO) %>% 
- group_by(GO) %>%
- summarize(SanesLichtman = n())
-GOtermssanesLichtmansummary
-
-full_join(GOsummary3, GOtermssanesLichtmansummary) %>% 
-  mutate(SLpercent = SanesLichtman / totalgenes * 100)  %>% 
-  mutate(SLpercent = round(SLpercent, 2))  %>% 
-  select(category, GO, totalgenes, SanesLichtman, SLpercent, significantgenes, percent) %>% 
-  filter(category != "ShinyGO")  %>%
-  drop_na()
-
-
-
-```
-
-## DEGs and Sanes and top 10 memory genes
-
-
-```{r}
+# candidate genes
 candidategenes <- c("Camk2a" ,  "Gria2",  "Igf2" , "Nsf" , "Pick1",
-                        "Prkcb" ,  "Prkci",  "Prkcz", "Wwc1" ,
-          "Fmr1", "Mtor")
+                        "Prkcb" ,  "Prkci",  "Prkcz", "Wwc1" , "Fmr1", "Mtor")
 candidategenes <- as.data.frame(candidategenes) %>%
   dplyr::rename("gene" = "candidategenes")
+head(candidategenes)
 
-candidatesGO <- left_join(candidategenes, data, by = "gene")  %>%
-  arrange(GO,gene) %>%
-  dplyr::select(gene, GO) %>% 
-  dplyr::distinct(gene, GO) %>% 
- group_by(GO) %>%
- summarize(genes = str_c(gene, collapse = ", "))
-candidatesGO
+# Sanes & Lichtman genes
+sanesLichtman <- read_csv("../data/05_sanesLichtman.csv")  %>% 
+  dplyr::rename("gene" = "genes") %>%
+  dplyr::mutate(gene = str_to_title(gene))  
+head(sanesLichtman)
 
-AllGOgenelists <- full_join(candidatesGO, GOtermssanesLichtman, by = "GO") %>% 
-  full_join(., GOtermsDEGs2, by = "GO") %>% 
-  dplyr::rename("candidates" = "genes.x", 
-         "SanesLichtman" ="genes.y", 
-         "DG DEGs"  = "genes") %>% 
-  arrange(GO) %>%
-  filter(GO != "NA") %>%
-  mutate(category = ifelse(grepl("01|02|03|04", GO), "hypothesis",
-                          ifelse(grepl("05|06|07|08", GO), "ShinyGO",
-                                 ifelse(grepl("09|10|11|12", GO), "random", 
-                                 ifelse(grepl("13|14|15|16|17", GO), "PANTHER", NA))))) %>%
-  select(category, everything())
-  
-AllGOgenelists 
+joinGOnGenes <- function(whichgenes){
+  GOtermsgenes <- inner_join(GOterms, whichgenes) %>%
+    arrange(GO,gene) %>%
+    dplyr::select(gene, GO) %>% 
+    group_by(GO) %>%
+    summarize(genes = str_c(gene, collapse = ", ")) 
+  return(GOtermsgenes)
+}
 
-write_csv(AllGOgenelists, "../data/05_GO_AllGOgenelists.csv")
+GO_DEGs <- joinGOnGenes(DGDEGs)
+GO_candidates <- joinGOnGenes(candidategenes)
+GO_sanesLichtman <- joinGOnGenes(sanesLichtman)
+
+table2 <- left_join(GO_DEGs, GO_candidates, by = "GO") %>%
+  left_join(., GO_sanesLichtman, by = "GO") %>% 
+  rename("DG_DEGs" = "genes.x",
+        "candidates"  = "genes.y", 
+        "Sanes_Lichtman" = "genes") 
+table2$GO <- factor(table2$GO)
+table2 <- table2 %>%
+  mutate(GO = fct_recode(GO,
+                         "Response to stimulus (GO:0050896)" = "01_responsetostimulus",
+                          "Translation (GO:0006412)"   =   "02_translation" ,
+                    "Synapse organization (GO:0050808)" =    "03_synapseorganization" ,
+                        "Learning or memory (GO:0007611)" =   "04_learningormemory" ))  %>%
+  filter(!GO %in% c("05_random_436_GO0050673", "06_random_1513_GO0022414",
+                    "07_random_283_GO0048511" ,  "08_random_2720_GO0051704" ) ) %>%
+  rename("GO terms" = "GO",
+         "DG DEGs" = "DG_DEGs",
+         "Candidate genes" = "candidates",
+         "LTP genes" = "Sanes_Lichtman")
+table2
+
+DGDEGs$candidategene <- DGDEGs$gene
+
+GOtermsgenes <- full_join(GOterms, DGDEGs, by = "gene") %>%
+    arrange(GO,gene, candidategene) %>%
+    dplyr::select(gene, GO, candidategene)  %>%
+  mutate(category = ifelse(grepl("random", GO), "random", "hypothesis")) %>%
+  distinct(gene, .keep_all = T) %>%
+  group_by(category) %>%
+  summarize(total = length(gene),
+            DEGs = length(candidategene[!is.na(candidategene)]))  %>%
+  mutate(prop =  DEGs / total * 100) %>%
+  mutate(prop =  round(prop,3)) %>%
+  drop_na()
+GOtermsgenes
+
+res <- prop.test(x = c(196, 18), n = c(6823, 1199), alternative = "greater")
+# Printing the results
+res 
 
 ```
+
+
 
 
 ## PC1 correlations
 
 ```{r}
-corrsPC1sig <- read_csv("../data/04_corrsPC1sig.csv")
-corrsPC1sig$gene
-
-## these 58 genes were used for a go analysis using shinygo http://bioinformatics.sdstate.edu/go/
+## these 58 genes that are differentially expressed in DG and correlated with PC1 were use to query GO http://bioinformatics.sdstate.edu/go/
 ## results are stored as 
   #data/05_GO_PC1enrichmentBP.csv
 	#data/05_GO_PC1enrichmentCC.csv
@@ -220,34 +142,22 @@ BP <- read_csv("../data/05_GO_PC1enrichmentBP.csv", n_max = 5) %>% mutate(Domain
 CC <- read_csv("../data/05_GO_PC1enrichmentCC.csv", n_max = 5) %>% mutate(Domain = "CC") 
 MF <- read_csv("../data/05_GO_PC1enrichmentMF.csv", n_max = 5) %>% mutate(Domain = "MF") 
 
-GO_PC1 <- rbind(BP, CC, MF) %>% 
+table3 <- rbind(BP, CC, MF) %>% 
   select(Domain, `Functional Category`, `Total genes`, `Genes in list`, Genes) %>%
   rename(gene = Genes) %>%
   dplyr::mutate(gene = str_to_title(gene))
 
 # alphabetize
-GO_PC1$gene <- GO_PC1$gene %>% str_split(., ' ') %>% 
+table3$gene <- table3$gene %>% str_split(., ' ') %>% 
   lapply(., 'sort') %>%  
   lapply(., 'paste', collapse=' ') %>% 
   unlist(.)
 
-kable(GO_PC1) 
+head(table3) 
 ```
-
-## for GOrilla
-
-```{r}
-backgroundgeneset <- read_csv("../data/00_geneids.csv") %>% 
-  select(gene) %>%
-  distinct(gene) %>%
-  arrange(gene)
-head(backgroundgeneset,20)
-
-write.csv(backgroundgeneset, "../data/05_GO_backgroundgeneset.csv", row.names = F)
-```
-
 
 
 ```{r write}
-write.csv(GO_PC1, "../data/05_GO_PC1.csv", row.names = F)
+write.csv(table2, "../data/table2.csv", row.names = F)
+write.csv(table3, "../data/table3", row.names = F)
 ```
