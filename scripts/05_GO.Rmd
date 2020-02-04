@@ -9,7 +9,7 @@ library(knitr)
 library(kableExtra)
 library(stringr)
 
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = F, error = F, warning = F)
 ```
 
 
@@ -98,7 +98,7 @@ table2 <- table2 %>%
                     "Synapse organization (GO:0050808)" =    "03_synapseorganization" ,
                         "Learning or memory (GO:0007611)" =   "04_learningormemory" ))  %>%
   filter(!GO %in% c("05_random_436_GO0050673", "06_random_1513_GO0022414",
-                    "07_random_283_GO0048511" ,  "08_random_2720_GO0051704" ) ) %>%
+                  "07_random_283_GO0048511" ,  "08_random_2720_GO0051704" ) ) %>%
   rename("GO terms" = "GO",
          "DG DEGs" = "DG_DEGs",
          "Candidate genes" = "candidates",
@@ -107,22 +107,50 @@ table2
 
 DGDEGs$candidategene <- DGDEGs$gene
 
-GOtermsgenes <- full_join(GOterms, DGDEGs, by = "gene") %>%
-    arrange(GO,gene, candidategene) %>%
-    dplyr::select(gene, GO, candidategene)  %>%
+Allgogenes <- full_join(GOterms, DGDEGs, by = "gene") %>%
+    arrange(GO, candidategene,gene) %>%
+    dplyr::select( GO, gene)  %>%
   mutate(category = ifelse(grepl("random", GO), "random", "hypothesis")) %>%
-  distinct(gene, .keep_all = T) %>%
-  group_by(category) %>%
-  summarize(total = length(gene),
-            DEGs = length(candidategene[!is.na(candidategene)]))  %>%
-  mutate(prop =  DEGs / total * 100) %>%
-  mutate(prop =  round(prop,3)) %>%
-  drop_na()
-GOtermsgenes
+  drop_na() %>%
+  group_by(GO) %>%
+    summarize(total = n()) 
+Allgogenes
 
-res <- prop.test(x = c(196, 18), n = c(6823, 1199), alternative = "greater")
+DEGGOgenes <- full_join(GOterms, DGDEGs, by = "gene") %>%
+    arrange(GO, candidategene, gene) %>%
+    dplyr::select( GO, gene, candidategene)  %>%
+  mutate(category = ifelse(grepl("random", GO), "random", "hypothesis")) %>%
+  drop_na() %>%
+  group_by(GO) %>%
+    summarize(DEGs = n(),
+              genes = str_c(gene, collapse = ", ")) 
+DEGGOgenes
+
+propALLgoDEGs <- inner_join(Allgogenes, DEGGOgenes) %>%  
+  select(-genes) %>%  
+   mutate(prop = DEGs / total * 100)
+propALLgoDEGs
+
+
+ALLgoDEGs <- inner_join(Allgogenes, DEGGOgenes) %>%  
+  mutate(category = ifelse(grepl("random", GO), "random", "hypothesis")) %>%
+   group_by(category) %>%
+    summarize(totals = sum(total),
+              DEGss = sum(DEGs)) %>%
+  mutate(prop = DEGss / totals * 100)
+ALLgoDEGs
+
+res <- prop.test(x = c(106, 62), n = c(7156, 4373), alternative = "greater")
+res
+
+res <- prop.test(x = c(15, 62), n = c(292, 4373), alternative = "greater") #LM
 # Printing the results
 res 
+
+res <- prop.test(x = c(10, 62), n = c(465, 4373), alternative = "greater") #LM
+# Printing the results
+res 
+
 
 ```
 
@@ -143,7 +171,7 @@ CC <- read_csv("../data/05_GO_PC1enrichmentCC.csv", n_max = 5) %>% mutate(Domain
 MF <- read_csv("../data/05_GO_PC1enrichmentMF.csv", n_max = 5) %>% mutate(Domain = "MF") 
 
 table3 <- rbind(BP, CC, MF) %>% 
-  select(Domain, `Functional Category`, `Total genes`, `Genes in list`, Genes) %>%
+  select(Domain, `Functional Category`,  Genes) %>%
   rename(gene = Genes) %>%
   dplyr::mutate(gene = str_to_title(gene))
 
