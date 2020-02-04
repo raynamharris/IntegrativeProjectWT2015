@@ -97,6 +97,9 @@ F
 <th style="text-align:right;">
 p
 </th>
+<th style="text-align:left;">
+sig
+</th>
 </tr>
 </thead>
 <tbody>
@@ -119,6 +122,8 @@ treatment
 <td style="text-align:right;">
 0.967
 </td>
+<td style="text-align:left;">
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -138,6 +143,8 @@ treatment
 </td>
 <td style="text-align:right;">
 0.512
+</td>
+<td style="text-align:left;">
 </td>
 </tr>
 <tr>
@@ -159,6 +166,8 @@ treatment
 <td style="text-align:right;">
 0.506
 </td>
+<td style="text-align:left;">
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -178,6 +187,9 @@ treatment
 </td>
 <td style="text-align:right;">
 0.000
+</td>
+<td style="text-align:left;">
+\*\*\*
 </td>
 </tr>
 <tr>
@@ -199,6 +211,9 @@ trial
 <td style="text-align:right;">
 0.004
 </td>
+<td style="text-align:left;">
+\*\*
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -218,6 +233,8 @@ treatment x trial
 </td>
 <td style="text-align:right;">
 0.631
+</td>
+<td style="text-align:left;">
 </td>
 </tr>
 <tr>
@@ -239,6 +256,9 @@ treatment
 <td style="text-align:right;">
 0.000
 </td>
+<td style="text-align:left;">
+\*\*\*
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -258,6 +278,8 @@ trial
 </td>
 <td style="text-align:right;">
 0.419
+</td>
+<td style="text-align:left;">
 </td>
 </tr>
 <tr>
@@ -279,6 +301,8 @@ treatment x trial
 <td style="text-align:right;">
 0.736
 </td>
+<td style="text-align:left;">
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -298,6 +322,8 @@ treatment
 </td>
 <td style="text-align:right;">
 0.997
+</td>
+<td style="text-align:left;">
 </td>
 </tr>
 <tr>
@@ -319,6 +345,8 @@ trial
 <td style="text-align:right;">
 0.895
 </td>
+<td style="text-align:left;">
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -338,6 +366,9 @@ treatment x trial
 </td>
 <td style="text-align:right;">
 0.006
+</td>
+<td style="text-align:left;">
+\*\*
 </td>
 </tr>
 <tr>
@@ -359,6 +390,9 @@ treatment
 <td style="text-align:right;">
 0.000
 </td>
+<td style="text-align:left;">
+\*\*\*
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -378,6 +412,9 @@ treatment
 </td>
 <td style="text-align:right;">
 0.000
+</td>
+<td style="text-align:left;">
+\*\*\*
 </td>
 </tr>
 <tr>
@@ -399,6 +436,9 @@ treatment
 <td style="text-align:right;">
 0.000
 </td>
+<td style="text-align:left;">
+\*\*\*
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -418,6 +458,9 @@ treatment
 </td>
 <td style="text-align:right;">
 0.000
+</td>
+<td style="text-align:left;">
+\*\*\*
 </td>
 </tr>
 <tr>
@@ -439,6 +482,8 @@ trial
 <td style="text-align:right;">
 0.913
 </td>
+<td style="text-align:left;">
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -458,6 +503,9 @@ treatment x trial
 </td>
 <td style="text-align:right;">
 0.004
+</td>
+<td style="text-align:left;">
+\*\*
 </td>
 </tr>
 <tr>
@@ -479,6 +527,9 @@ treatment
 <td style="text-align:right;">
 0.000
 </td>
+<td style="text-align:left;">
+\*\*\*
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -498,6 +549,8 @@ trial
 </td>
 <td style="text-align:right;">
 0.972
+</td>
+<td style="text-align:left;">
 </td>
 </tr>
 <tr>
@@ -519,6 +572,8 @@ treatment x trial
 <td style="text-align:right;">
 0.174
 </td>
+<td style="text-align:left;">
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -538,6 +593,9 @@ treatment
 </td>
 <td style="text-align:right;">
 0.001
+</td>
+<td style="text-align:left;">
+\*\*
 </td>
 </tr>
 <tr>
@@ -559,6 +617,8 @@ trial
 <td style="text-align:right;">
 0.954
 </td>
+<td style="text-align:left;">
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -578,6 +638,8 @@ treatment x trial
 </td>
 <td style="text-align:right;">
 0.120
+</td>
+<td style="text-align:left;">
 </td>
 </tr>
 <tr>
@@ -599,6 +661,9 @@ treatment
 <td style="text-align:right;">
 0.000
 </td>
+<td style="text-align:left;">
+\*\*\*
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -618,6 +683,9 @@ treatment
 </td>
 <td style="text-align:right;">
 0.000
+</td>
+<td style="text-align:left;">
+\*\*\*
 </td>
 </tr>
 <tr>
@@ -639,6 +707,9 @@ treatment
 <td style="text-align:right;">
 0.003
 </td>
+<td style="text-align:left;">
+\*\*
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -658,6 +729,9 @@ treatment
 </td>
 <td style="text-align:right;">
 0.000
+</td>
+<td style="text-align:left;">
+\*\*\*
 </td>
 </tr>
 <tr>
@@ -679,6 +753,9 @@ treatment
 <td style="text-align:right;">
 0.000
 </td>
+<td style="text-align:left;">
+\*\*\*
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -698,6 +775,9 @@ treatment
 </td>
 <td style="text-align:right;">
 0.000
+</td>
+<td style="text-align:left;">
+\*\*\*
 </td>
 </tr>
 <tr>
@@ -719,9 +799,12 @@ treatment
 <td style="text-align:right;">
 0.035
 </td>
-</tr>
-</tbody>
-</table>
+<td style="text-align:left;">
+
+-   </td>
+    </tr>
+    </tbody>
+    </table>
 
 ### Figure 3: Subfield-specific gene expression
 
@@ -733,104 +816,104 @@ treatment
 <thead>
 <tr>
 <th style="text-align:left;">
-GO
+GO.terms
 </th>
 <th style="text-align:left;">
-Differentially.expressed.in.DG
+DG.DEGs
 </th>
 <th style="text-align:left;">
-Molecules.associated.with.LTP
+Candidate.genes
+</th>
+<th style="text-align:left;">
+LTP.genes
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-
-1.  Response to Stimulus
-    (<a href="GO:0050896" class="uri">GO:0050896</a>)
-    </td>
-    <td style="text-align:left;">
-    Abhd2, Adrb1, Ahr, Apaf1, Arc, Arid5b, Arl13b, Arpp21, Atf3, B3gnt2,
-    Bach1, Btg2, C2cd4b, Ccnk, Cited2, Fbxw7, Fermt2, Flrt3, Fos, Fosb,
-    Fosl2, Foxg1, Foxo1, Fzd4, Fzd5, Gadd45g, Gpr19, Hmgcr, Homer1,
-    Hspa1a, Hsph1, Il16, Ing2, Irs1, Irs2, Jun, Junb, Jund, Kdm6b, Kitl,
-    Klf2, Klf6, Lbh, Lemd3, Lmna, Mest, Myc, Nedd9, Nfil3, Npas4, Nptx2,
-    Nr4a1, Nr4a2, Nr4a3, Ppp1r15a, Slc16a1, Slc25a25, Slitrk5, Smad7,
-    Sox9, Srf, Syt4, Thbs1, Tiparp, Tnip2, Tra2b, Trib1, Tsc22d2,
-    Zbtb33, Zfand5
-    </td>
-    <td style="text-align:left;">
-    Adcy1, Adra2a, Adra2b, Adra2c, Adrb1, Adrb2, Adrb3, Cacna1a,
-    Cacna1b, Cacna1c, Cacna1d, Cacna1e, Cacna1f, Cacna1s, Calb1, Calm1,
-    Calm2, Calm3, Camk1, Camk4, Capn1, Capn10, Capn2, Capn3, Ccr7, Cd47,
-    Cdh1, Cdh2, Chrm1, Chrm2, Chrm3, Chrm4, Chrm5, Chrna1, Chrna3,
-    Chrna7, Chrnb1, Chrnb2, Chrnb3, Cnga2, Fgf2, Fyn, Gabbr1, Gabra1,
-    Gabra2, Gabra3, Gabra5, Gabra6, Gabrb1, Gabrb2, Gabrb3, Gabrr1,
-    Gap43, Gfap, Gria1, Gria2, Grin1, Grin2a, Grin2d, Grm1, Grm4, Grm5,
-    Grm7, Gucy1a2, Gucy1b2, Gucy2c, Gucy2d, Gucy2e, Gucy2g, Homer1,
-    Homer2, Homer3, Htr1a, Htr1b, Htr1f, Htr2a, Htr2b, Htr2c, Htr3a,
-    Htr3b, Htr4, Htr5a, Htr5b, Htr6, Htr7, Il1b, Inhba, Itga1, Itga10,
-    Itga11, Itga2, Itga2b, Itga3, Itga4, Itga5, Itga6, Itga7, Itga8,
-    Itga9, Itgad, Itgae, Itgal, Itgam, Itgav, Itgax, Itgb1, Itgb1bp1,
-    Itgb2, Itgb2l, Itgb3, Itgb4, Itgb5, Itgb6, Itgb7, Itgb8, Itgbl1,
-    Itpkb, L1cam, Mapk1, Mapk11, Mapk12, Mapk14, Mapk3, Mapk4, Mapk6,
-    Mapk7, Mapk8, Mapk9, Mas1, Ncam1, Ngf, Nos1, Nos3, Nrg1, Nrg2, Nrg3,
-    Nrgn, Pnoc, Sptbn1, Src, Stx1b, Syp, Th, Thy1, Tnc, Ube3a, Vamp2,
-    Vamp3, Vamp4, Vamp8
-    </td>
-    </tr>
-    <tr>
-    <td style="text-align:left;">
-
-    1.  Translation (<a href="GO:0006412" class="uri">GO:0006412</a>)
-        </td>
-        <td style="text-align:left;">
-        Cpeb4, Eif5
-        </td>
-        <td style="text-align:left;">
-        NA
-        </td>
-        </tr>
-        <tr>
-        <td style="text-align:left;">
-
-        1.  Synapse Organization
-            (<a href="GO:0050808" class="uri">GO:0050808</a>)
-            </td>
-            <td style="text-align:left;">
-            Amigo2, Arc, Bdnf, Flrt3, Fzd5, Homer1, Lrrtm2, Npas4,
-            Pcdh8, Slitrk5
-            </td>
-            <td style="text-align:left;">
-            Ache, Bdnf, Cacna1a, Cacna1s, Camk1, Cdh1, Cdh2, Chrna1,
-            Chrna7, Chrnb1, Chrnb2, Dlg4, Drd1, Efna5, Epha5, Erbb4,
-            Fyn, Gabra1, Gabrb2, Gabrb3, Gap43, Grin1, Grin2a, Grm5,
-            Homer1, Htr1a, Itga3, Itgam, Itpka, L1cam, Mapk14, Nrg1,
-            Nrg2, Ntrk2, Ptn, Rab3a, Syn1, Tnc, Ube3a
-            </td>
-            </tr>
-            <tr>
-            <td style="text-align:left;">
-
-            1.  Learning or Memory
-                (<a href="GO:0007611" class="uri">GO:0007611</a>)
-                </td>
-                <td style="text-align:left;">
-                Adrb1, Arc, Bdnf, Btg2, Egr1, Hmgcr, Jun, Npas4, Nptx2,
-                Pak6, Plk2, Ptgs2, Sgk1, Srf, Syt4
-                </td>
-                <td style="text-align:left;">
-                Adcy1, Adrb1, Adrb2, Bdnf, Cacna1c, Cacna1e, Calb1,
-                Camk4, Chrna7, Chrnb2, Cnr1, Creb1, Drd1, Egr1, Gabra5,
-                Gria1, Grin1, Grin2a, Grm4, Grm5, Grm7, Htr2a, Htr6,
-                Htr7, Il1b, Itga3, Itga5, Itga8, Itgb1, Ncam1, Ngf,
-                Ntrk2, Oprl1, Pla2g6, Plcb1, Prkar1b, Prkcz, Ptn, S100b,
-                Snap25, Th
-                </td>
-                </tr>
-                </tbody>
-                </table>
+Response to stimulus (<a href="GO:0050896" class="uri">GO:0050896</a>)
+</td>
+<td style="text-align:left;">
+Abhd2 Adrb1 Ahr Ankrd27 Apaf1 Arc Arid5b Arl13b Arpp21 Atf3 B3gnt2 Bach1
+BC048403 Bmt2 Btg2 C2cd4b Ccnk Cited2 Fbxw7 Fermt2 Flrt3 Fos Fosb Fosl2
+Foxg1 Foxo1 Fzd4 Fzd5 Gadd45g Gnaz Gpi1 Gpr19 Hmgcr Homer1 Hspa1a Hsph1
+Il16 Ing2 Irs1 Irs2 Jun Junb Jund Kdm6b Kitl Klf2 Klf6 Klkb1 Lbh Lemd3
+Lmna Mc1r Mest Myc Nedd9 Nfil3 Npas4 Nptx2 Nr4a1 Nr4a2 Nr4a3 Ppp1r15a
+Slc16a1 Slc25a25 Slitrk5 Smad7 Sox9 Srf Srgap1 Stac2 Syt4 Thbs1 Tiparp
+Tnip2 Tra2b Trib1 Tsc22d2 Zbtb33 Zfand5
+</td>
+<td style="text-align:left;">
+Camk2a Fmr1 Gria2 Igf2 Mtor Wwc1
+</td>
+<td style="text-align:left;">
+Adcy1 Adra2a Adra2b Adra2c Adrb1 Adrb2 Adrb3 Cacna1a Cacna1b Cacna1c
+Cacna1d Cacna1e Cacna1f Cacna1s Calb1 Calm1 Calm2 Calm3 Camk1 Camk4
+Capn1 Capn10 Capn2 Capn3 Ccr7 Cd47 Cdh1 Cdh2 Chrm1 Chrm2 Chrm3 Chrm4
+Chrm5 Chrna1 Chrna3 Chrna7 Chrnb1 Chrnb2 Chrnb3 Cnga2 Fgf2 Fyn Gabbr1
+Gabra1 Gabra2 Gabra3 Gabra5 Gabra6 Gabrb1 Gabrb2 Gabrb3 Gabrr1 Gap43
+Gfap Gria1 Gria2 Grin1 Grin2a Grin2d Grm1 Grm4 Grm5 Grm7 Gucy1a2 Gucy1b2
+Gucy2c Gucy2d Gucy2e Gucy2g Homer1 Homer2 Homer3 Htr1a Htr1b Htr1f Htr2a
+Htr2b Htr2c Htr3a Htr3b Htr4 Htr5a Htr5b Htr6 Htr7 Il1b Inhba Itga1
+Itga10 Itga11 Itga2 Itga2b Itga3 Itga4 Itga5 Itga6 Itga7 Itga8 Itga9
+Itgad Itgae Itgal Itgam Itgav Itgax Itgb1 Itgb1bp1 Itgb2 Itgb2l Itgb3
+Itgb4 Itgb5 Itgb6 Itgb7 Itgb8 Itgbl1 Itpkb L1cam Mapk1 Mapk11 Mapk12
+Mapk14 Mapk3 Mapk4 Mapk6 Mapk7 Mapk8 Mapk9 Mas1 Ncam1 Ngf Nos1 Nos3 Nrg1
+Nrg2 Nrg3 Nrgn Pnoc Sptbn1 Src Stx1b Syp Th Thy1 Tnc Ube3a Vamp2 Vamp3
+Vamp4 Vamp8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Translation (<a href="GO:0006412" class="uri">GO:0006412</a>)
+</td>
+<td style="text-align:left;">
+Cpeb4 Eif5
+</td>
+<td style="text-align:left;">
+Fmr1 Mtor
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Synapse organization (<a href="GO:0050808" class="uri">GO:0050808</a>)
+</td>
+<td style="text-align:left;">
+Amigo2 Arc Bdnf Flrt3 Fzd5 Homer1 Lrrtm2 Npas4 Pcdh8 Slitrk5
+</td>
+<td style="text-align:left;">
+Fmr1 Pick1
+</td>
+<td style="text-align:left;">
+Ache Bdnf Cacna1a Cacna1s Camk1 Cdh1 Cdh2 Chrna1 Chrna7 Chrnb1 Chrnb2
+Dlg4 Drd1 Efna5 Epha5 Erbb4 Fyn Gabra1 Gabrb2 Gabrb3 Gap43 Grin1 Grin2a
+Grm5 Homer1 Htr1a Itga3 Itgam Itpka L1cam Mapk14 Nrg1 Nrg2 Ntrk2 Ptn
+Rab3a Syn1 Tnc Ube3a
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Learning or memory (<a href="GO:0007611" class="uri">GO:0007611</a>)
+</td>
+<td style="text-align:left;">
+Adrb1 Arc Bdnf Btg2 Egr1 Hmgcr Jun Npas4 Nptx2 Pak6 Plk2 Ptgs2 Sgk1 Srf
+Syt4
+</td>
+<td style="text-align:left;">
+Igf2 Mtor Prkcz
+</td>
+<td style="text-align:left;">
+Adcy1 Adrb1 Adrb2 Bdnf Cacna1c Cacna1e Calb1 Camk4 Chrna7 Chrnb2 Cnr1
+Creb1 Drd1 Egr1 Gabra5 Gria1 Grin1 Grin2a Grm4 Grm5 Grm7 Htr2a Htr6 Htr7
+Il1b Itga3 Itga5 Itga8 Itgb1 Ncam1 Ngf Ntrk2 Oprl1 Pla2g6 Plcb1 Prkar1b
+Prkcz Ptn S100b Snap25 Th
+</td>
+</tr>
+</tbody>
+</table>
 
 ### Figure 4: Top twently genes whose expression in DG is correlations to the principle compenent of behavioral variation in avoidance learning
 
@@ -847,12 +930,6 @@ Domain
 <th style="text-align:left;">
 Functional.Category
 </th>
-<th style="text-align:right;">
-Total.genes
-</th>
-<th style="text-align:right;">
-Genes.in.list
-</th>
 <th style="text-align:left;">
 gene
 </th>
@@ -866,12 +943,6 @@ BP
 <td style="text-align:left;">
 Memory
 </td>
-<td style="text-align:right;">
-145
-</td>
-<td style="text-align:right;">
-9
-</td>
 <td style="text-align:left;">
 Arc Bdnf Egr1 Kcnk10 Npas4 Plk2 Ptgs2 Sgk1 Syt4
 </td>
@@ -883,12 +954,6 @@ BP
 <td style="text-align:left;">
 Learning or memory
 </td>
-<td style="text-align:right;">
-286
-</td>
-<td style="text-align:right;">
-10
-</td>
 <td style="text-align:left;">
 Arc Bdnf Btg2 Egr1 Kcnk10 Npas4 Plk2 Ptgs2 Sgk1 Syt4
 </td>
@@ -899,12 +964,6 @@ BP
 </td>
 <td style="text-align:left;">
 Tissue development
-</td>
-<td style="text-align:right;">
-1855
-</td>
-<td style="text-align:right;">
-21
 </td>
 <td style="text-align:left;">
 Acan Arc Areg Atf3 Bdnf Btg2 Col10a1 Egr1 Errfi1 Fosl2 Frmd6 Fzd5 Homer1
@@ -918,12 +977,6 @@ BP
 <td style="text-align:left;">
 Cognition
 </td>
-<td style="text-align:right;">
-317
-</td>
-<td style="text-align:right;">
-10
-</td>
 <td style="text-align:left;">
 Arc Bdnf Btg2 Egr1 Kcnk10 Npas4 Plk2 Ptgs2 Sgk1 Syt4
 </td>
@@ -934,12 +987,6 @@ BP
 </td>
 <td style="text-align:left;">
 Behavior
-</td>
-<td style="text-align:right;">
-693
-</td>
-<td style="text-align:right;">
-13
 </td>
 <td style="text-align:left;">
 Arc Bdnf Btg2 Egr1 Homer1 Kcnk10 Npas4 Nr4a3 Plk2 Ptgs2 Sgk1 Slc16a1
@@ -953,12 +1000,6 @@ CC
 <td style="text-align:left;">
 Neuron projection
 </td>
-<td style="text-align:right;">
-1486
-</td>
-<td style="text-align:right;">
-13
-</td>
 <td style="text-align:left;">
 Acan Arc Bdnf Cpeb4 Fzd5 Homer1 Nexn Pcdh8 Plk2 Ptgs2 Rgs2 Sgk1 Syt4
 </td>
@@ -969,12 +1010,6 @@ CC
 </td>
 <td style="text-align:left;">
 Cell junction
-</td>
-<td style="text-align:right;">
-1095
-</td>
-<td style="text-align:right;">
-10
 </td>
 <td style="text-align:left;">
 Arc Cpeb4 Frmd6 Fzd5 Homer1 Nexn Pcdh8 Slc16a1 Smad7 Syt4
@@ -987,12 +1022,6 @@ CC
 <td style="text-align:left;">
 Dendrite
 </td>
-<td style="text-align:right;">
-736
-</td>
-<td style="text-align:right;">
-8
-</td>
 <td style="text-align:left;">
 Arc Bdnf Cpeb4 Fzd5 Homer1 Pcdh8 Plk2 Syt4
 </td>
@@ -1003,12 +1032,6 @@ CC
 </td>
 <td style="text-align:left;">
 Dendritic tree
-</td>
-<td style="text-align:right;">
-738
-</td>
-<td style="text-align:right;">
-8
 </td>
 <td style="text-align:left;">
 Arc Bdnf Cpeb4 Fzd5 Homer1 Pcdh8 Plk2 Syt4
@@ -1021,12 +1044,6 @@ CC
 <td style="text-align:left;">
 Somatodendritic compartment
 </td>
-<td style="text-align:right;">
-1035
-</td>
-<td style="text-align:right;">
-9
-</td>
 <td style="text-align:left;">
 Acan Arc Bdnf Cpeb4 Fzd5 Homer1 Pcdh8 Plk2 Syt4
 </td>
@@ -1037,12 +1054,6 @@ MF
 </td>
 <td style="text-align:left;">
 Regulatory region nucleic acid binding
-</td>
-<td style="text-align:right;">
-949
-</td>
-<td style="text-align:right;">
-11
 </td>
 <td style="text-align:left;">
 Atf3 Egr1 Egr4 Fosl2 Hoxc4 Nfil3 Npas4 Nr4a3 Per1 Smad7 Tiparp
@@ -1055,12 +1066,6 @@ MF
 <td style="text-align:left;">
 Transcription regulatory region DNA binding
 </td>
-<td style="text-align:right;">
-946
-</td>
-<td style="text-align:right;">
-11
-</td>
 <td style="text-align:left;">
 Atf3 Egr1 Egr4 Fosl2 Hoxc4 Nfil3 Npas4 Nr4a3 Per1 Smad7 Tiparp
 </td>
@@ -1071,12 +1076,6 @@ MF
 </td>
 <td style="text-align:left;">
 RNA polymerase II regulatory region sequence-specific DNA binding
-</td>
-<td style="text-align:right;">
-782
-</td>
-<td style="text-align:right;">
-9
 </td>
 <td style="text-align:left;">
 Atf3 Egr1 Egr4 Fosl2 Hoxc4 Nfil3 Npas4 Nr4a3 Per1
@@ -1089,12 +1088,6 @@ MF
 <td style="text-align:left;">
 DNA-binding transcription factor activity, RNA polymerase II-specific
 </td>
-<td style="text-align:right;">
-738
-</td>
-<td style="text-align:right;">
-9
-</td>
 <td style="text-align:left;">
 Atf3 Btg2 Egr1 Egr4 Fosl2 Hoxc4 Nfil3 Npas4 Nr4a3
 </td>
@@ -1105,12 +1098,6 @@ MF
 </td>
 <td style="text-align:left;">
 RNA polymerase II regulatory region DNA binding
-</td>
-<td style="text-align:right;">
-788
-</td>
-<td style="text-align:right;">
-9
 </td>
 <td style="text-align:left;">
 Atf3 Egr1 Egr4 Fosl2 Hoxc4 Nfil3 Npas4 Nr4a3 Per1

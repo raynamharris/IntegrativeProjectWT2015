@@ -71,7 +71,7 @@ This project is organized into five main subdirectories:
 ### Table 1: Avoidance Behavior Statistics
 
 ```{r}
-table1 <- read.csv("./data/01_APA.csv")
+table1 <- read.csv("./data/table-1.csv")
 kable(table1)
 ```
 
@@ -82,7 +82,7 @@ kable(table1)
 ### Table 2: Hypothesis-driven Anlaysis of Gene Ontology of Differential Gene Expression
 
 ```{r}
-table2 <- read.csv("./data/05_GO_DEGsSanesLichtman.csv")
+table2 <- read.csv("./data/table-2.csv")
 kable(table2)
 ```
 
@@ -95,7 +95,7 @@ kable(table2)
 ### Table 3: Data-driven analysis of Gene Ontology related to Behavior
 
 ```{r}
-table3 <- read.csv("./data/05_GO_PC1.csv")
+table3 <- read.csv("./data/table-3.csv")
 kable(table3)
 ```
 
