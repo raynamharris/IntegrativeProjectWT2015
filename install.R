@@ -1,8 +1,9 @@
 pkgs = c("tidyverse", "knitr", "rmarkdown", "kableExtra",
          "forcats", 
-         "cowplot", "factoextra", "FactoMineR", "apaTables", "png", "grid",
+         "cowplot", "factoextra", "FactoMineR", "apaTables", "png", "grid", "scales",
          "Rtsne", 
-         "corrr",
+         "corrr", "Hmisc", "ggrepel",
+         "stringr", 
          "devtools", "BiocManager",
          "magick", 
          "gsl", "OpenMx", "MBESS")
