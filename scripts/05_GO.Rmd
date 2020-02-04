@@ -77,7 +77,7 @@ joinGOnGenes <- function(whichgenes){
     arrange(GO,gene) %>%
     dplyr::select(gene, GO) %>% 
     group_by(GO) %>%
-    summarize(genes = str_c(gene, collapse = ", ")) 
+    summarize(genes = str_c(gene, collapse = " ")) 
   return(GOtermsgenes)
 }
 
@@ -123,7 +123,7 @@ DEGGOgenes <- full_join(GOterms, DGDEGs, by = "gene") %>%
   drop_na() %>%
   group_by(GO) %>%
     summarize(DEGs = n(),
-              genes = str_c(gene, collapse = ", ")) 
+              genes = str_c(gene, collapse = " ")) 
 DEGGOgenes
 
 propALLgoDEGs <- inner_join(Allgogenes, DEGGOgenes) %>%  
