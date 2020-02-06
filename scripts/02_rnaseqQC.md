@@ -11,7 +11,7 @@
     source("functions_RNAseq.R")
 
     ## set output file for figures 
-    knitr::opts_chunk$set(fig.path = '../figures/02_rnaseqQC/')
+    knitr::opts_chunk$set(fig.path = '../figures/02_rnaseqQC/', cache= T)
 
 Quality control
 ===============
@@ -640,7 +640,8 @@ tSNE
 
     ## [1] 10
 
-    mytsneplot
+    mytsneplot + theme(legend.position = "none",
+                       axis.text = element_text(size = 8)) 
 
 ![](../figures/02_rnaseqQC/tSNE-1.png)
 
@@ -678,7 +679,7 @@ Session Info
 
     ## R version 3.6.0 (2019-04-26)
     ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-    ## Running under: macOS Mojave 10.14.6
+    ## Running under: macOS  10.15.2
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
@@ -707,34 +708,34 @@ Session Info
     ## loaded via a namespace (and not attached):
     ##  [1] colorspace_1.4-1       htmlTable_1.13.1       XVector_0.24.0        
     ##  [4] base64enc_0.1-3        fs_1.3.1               rstudioapi_0.10       
-    ##  [7] bit64_0.9-7            AnnotationDbi_1.46.0   lubridate_1.7.4       
-    ## [10] xml2_1.2.2             splines_3.6.0          geneplotter_1.62.0    
-    ## [13] knitr_1.24             zeallot_0.1.0          Formula_1.2-3         
-    ## [16] jsonlite_1.6           broom_0.5.2            annotate_1.62.0       
-    ## [19] cluster_2.0.9          dbplyr_1.4.2           png_0.1-7             
-    ## [22] compiler_3.6.0         httr_1.4.1             backports_1.1.4       
-    ## [25] assertthat_0.2.1       Matrix_1.2-17          lazyeval_0.2.2        
-    ## [28] cli_1.1.0              acepack_1.4.1          htmltools_0.3.6       
-    ## [31] tools_3.6.0            gtable_0.3.0           glue_1.3.1            
-    ## [34] GenomeInfoDbData_1.2.1 Rcpp_1.0.2             cellranger_1.1.0      
-    ## [37] vctrs_0.2.0            nlme_3.1-140           xfun_0.9              
-    ## [40] rvest_0.3.5            lifecycle_0.1.0        XML_3.98-1.19         
-    ## [43] zlibbioc_1.30.0        scales_1.0.0           hms_0.5.2             
-    ## [46] RColorBrewer_1.1-2     yaml_2.2.0             memoise_1.1.0         
-    ## [49] gridExtra_2.3          rpart_4.1-15           latticeExtra_0.6-28   
-    ## [52] stringi_1.4.3          RSQLite_2.1.1          genefilter_1.66.0     
-    ## [55] checkmate_1.9.3        rlang_0.4.1            pkgconfig_2.0.2       
-    ## [58] bitops_1.0-6           evaluate_0.14          lattice_0.20-38       
-    ## [61] htmlwidgets_1.3        labeling_0.3           bit_1.1-14            
-    ## [64] tidyselect_0.2.5       magrittr_1.5           R6_2.4.0              
-    ## [67] generics_0.0.2         Hmisc_4.2-0            DBI_1.0.0             
-    ## [70] pillar_1.4.2           haven_2.2.0            foreign_0.8-71        
-    ## [73] withr_2.1.2            survival_2.44-1.1      RCurl_1.95-4.12       
-    ## [76] nnet_7.3-12            modelr_0.1.5           crayon_1.3.4          
-    ## [79] rmarkdown_1.15         locfit_1.5-9.1         grid_3.6.0            
-    ## [82] readxl_1.3.1           data.table_1.12.2      blob_1.1.1            
-    ## [85] reprex_0.3.0           digest_0.6.20          xtable_1.8-4          
-    ## [88] munsell_0.5.0
+    ##  [7] bit64_0.9-7            AnnotationDbi_1.46.0   fansi_0.4.1           
+    ## [10] lubridate_1.7.4        xml2_1.2.2             codetools_0.2-16      
+    ## [13] splines_3.6.0          geneplotter_1.62.0     knitr_1.24            
+    ## [16] Formula_1.2-3          jsonlite_1.6.1         broom_0.5.2           
+    ## [19] annotate_1.62.0        cluster_2.0.9          dbplyr_1.4.2          
+    ## [22] png_0.1-7              compiler_3.6.0         httr_1.4.1            
+    ## [25] backports_1.1.5        assertthat_0.2.1       Matrix_1.2-17         
+    ## [28] lazyeval_0.2.2         cli_2.0.1              acepack_1.4.1         
+    ## [31] htmltools_0.3.6        tools_3.6.0            gtable_0.3.0          
+    ## [34] glue_1.3.1             GenomeInfoDbData_1.2.1 Rcpp_1.0.3            
+    ## [37] cellranger_1.1.0       vctrs_0.2.2            nlme_3.1-140          
+    ## [40] xfun_0.9               rvest_0.3.5            lifecycle_0.1.0       
+    ## [43] XML_3.98-1.19          zlibbioc_1.30.0        scales_1.0.0          
+    ## [46] hms_0.5.3              RColorBrewer_1.1-2     yaml_2.2.1            
+    ## [49] memoise_1.1.0          gridExtra_2.3          rpart_4.1-15          
+    ## [52] latticeExtra_0.6-28    stringi_1.4.5          RSQLite_2.1.1         
+    ## [55] genefilter_1.66.0      checkmate_1.9.3        rlang_0.4.4           
+    ## [58] pkgconfig_2.0.3        bitops_1.0-6           evaluate_0.14         
+    ## [61] lattice_0.20-38        labeling_0.3           htmlwidgets_1.3       
+    ## [64] bit_1.1-14             tidyselect_0.2.5       magrittr_1.5          
+    ## [67] R6_2.4.1               generics_0.0.2         Hmisc_4.2-0           
+    ## [70] DBI_1.0.0              pillar_1.4.2           haven_2.2.0           
+    ## [73] foreign_0.8-71         withr_2.1.2            survival_2.44-1.1     
+    ## [76] RCurl_1.95-4.12        nnet_7.3-12            modelr_0.1.5          
+    ## [79] crayon_1.3.4           rmarkdown_1.15         locfit_1.5-9.1        
+    ## [82] grid_3.6.0             readxl_1.3.1           data.table_1.12.2     
+    ## [85] blob_1.1.1             reprex_0.3.0           digest_0.6.23         
+    ## [88] xtable_1.8-4           munsell_0.5.0
 
     citation("tidyverse") 
 

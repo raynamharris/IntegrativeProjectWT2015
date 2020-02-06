@@ -18,7 +18,7 @@ source("figureoptions.R")
 source("functions_RNAseq.R")
 
 ## set output file for figures 
-knitr::opts_chunk$set(fig.path = '../figures/02_rnaseqQC/')
+knitr::opts_chunk$set(fig.path = '../figures/02_rnaseqQC/', cache= T)
 ```
 
 # Quality control
@@ -192,14 +192,15 @@ PCA12
 
 ## tSNE
 
-```{r tSNE}
+```{r tSNE, fig.width=1, fig.height = 1}
 vsddf <- as.data.frame(assay(vsd))
 vsddf <- as.data.frame(t(vsddf))
 
 euclidist <- dist(vsddf) # euclidean distances between the rows
 
 mytsneplot <- plot_tSNE(10, " ")
-mytsneplot
+mytsneplot + theme(legend.position = "none",
+                   axis.text = element_text(size = 8)) 
 ```
 
 ## pca + tsne

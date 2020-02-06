@@ -107,50 +107,25 @@ table2
 
 DGDEGs$candidategene <- DGDEGs$gene
 
-Allgogenes <- full_join(GOterms, DGDEGs, by = "gene") %>%
-    arrange(GO, candidategene,gene) %>%
-    dplyr::select( GO, gene)  %>%
+
+TotalGO <- GOterms %>%
   mutate(category = ifelse(grepl("random", GO), "random", "hypothesis")) %>%
-  drop_na() %>%
-  group_by(GO) %>%
+  group_by(category) %>%
     summarize(total = n()) 
-Allgogenes
+ TotalGO 
 
-DEGGOgenes <- full_join(GOterms, DGDEGs, by = "gene") %>%
-    arrange(GO, candidategene, gene) %>%
-    dplyr::select( GO, gene, candidategene)  %>%
-  mutate(category = ifelse(grepl("random", GO), "random", "hypothesis")) %>%
-  drop_na() %>%
-  group_by(GO) %>%
-    summarize(DEGs = n(),
-              genes = str_c(gene, collapse = " ")) 
-DEGGOgenes
-
-propALLgoDEGs <- inner_join(Allgogenes, DEGGOgenes) %>%  
-  select(-genes) %>%  
-   mutate(prop = DEGs / total * 100)
-propALLgoDEGs
+uniqueDEGs <- full_join(GOterms, DGDEGs, by = "gene") %>%
+   drop_na() %>%
+  distinct(gene, .keep_all = T) %>%  # only one hit per gene
+    mutate(category = ifelse(grepl("random", GO), "random", "hypothesis")) %>%
+    group_by(category) %>%
+    summarize(total = n()) 
+uniqueDEGs
 
 
-ALLgoDEGs <- inner_join(Allgogenes, DEGGOgenes) %>%  
-  mutate(category = ifelse(grepl("random", GO), "random", "hypothesis")) %>%
-   group_by(category) %>%
-    summarize(totals = sum(total),
-              DEGss = sum(DEGs)) %>%
-  mutate(prop = DEGss / totals * 100)
-ALLgoDEGs
 
-res <- prop.test(x = c(106, 62), n = c(7156, 4373), alternative = "greater")
-res
-
-res <- prop.test(x = c(15, 62), n = c(292, 4373), alternative = "greater") #LM
-# Printing the results
-res 
-
-res <- prop.test(x = c(10, 62), n = c(465, 4373), alternative = "greater") #LM
-# Printing the results
-res 
-
+18/4373*100
+90/7156*100
 
 ```
 
