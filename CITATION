@@ -1,0 +1,23 @@
+@article {Harris2020.02.05.935759,
+	author = {Harris, Rayna M and Kao, Hsin-Yi and Alarc{\'o}n, Juan Marcos and Fenton, Andr{\'e} A and Hofmann, Hans A},
+	title = {Transcriptome analysis of hippocampal subfields identifies gene expression profiles associated with long-term active place avoidance memory},
+	elocation-id = {2020.02.05.935759},
+	year = {2020},
+	doi = {10.1101/2020.02.05.935759},
+	publisher = {Cold Spring Harbor Laboratory},
+		URL = {https://www.biorxiv.org/content/early/2020/02/07/2020.02.05.935759},
+	eprint = {https://www.biorxiv.org/content/early/2020/02/07/2020.02.05.935759.full.pdf},
+	journal = {bioRxiv}
+}
+
+@software{rayna_m_harris_2017_1068356,
+  author       = {Rayna M Harris},
+  title        = {{raynamharris/IntegrativeProjectWT2015: GitHub 
+                   Repository for the Integrative WT 2015 Project}},
+  month        = nov,
+  year         = 2017,
+  publisher    = {Zenodo},
+  version      = {v1.3},
+  doi          = {10.5281/zenodo.1068356},
+  url          = {https://doi.org/10.5281/zenodo.1068356}
+}

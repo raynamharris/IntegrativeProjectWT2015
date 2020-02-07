@@ -14,9 +14,15 @@ knitr::opts_chunk$set(echo = F)
 *Click the button to launch a Binder R session. Navigate to the
 `scripts` directory and open any `.Rmd` file.*
 
-# IntegrativeProjectWT2015
+
+## Overview 
+
 
 This repo contains the experiment that I like to call "IntegrativeProjectWT2015" because it is an **integrative** analysis of behavior, electrophysiology, and RNA-seq data collected from **wild type** mice in **2015**. 
+
+This research is undergoing peer-review at Hippocampus. A preprint is available at [https://www.biorxiv.org/content/10.1101/2020.02.05.935759v1](https://www.biorxiv.org/content/10.1101/2020.02.05.935759v1).
+
+Please cite this GitHub repository as Rayna M Harris. (2017, November 29). raynamharris/IntegrativeProjectWT2015: GitHub Repository for the Integrative WT 2015 Project (Version v1.3). Zenodo. [http://doi.org/10.5281/zenodo.1068356](Rayna M Harris. (2017, November 29). raynamharris/IntegrativeProjectWT2015: GitHub Repository for the Integrative WT 2015 Project (Version v1.3). Zenodo. http://doi.org/10.5281/zenodo.1068356)
 
 ## Bioinformatics Workflow
 
@@ -50,69 +56,8 @@ This project is organized into five main subdirectories:
 
 ![](./figures/00_schematics/figure_workflow.png)
 
-	  
-## Figures and Tables
-
-### Figure 1: Experimental Design
-
-
-![](./figures/01_behavior/experimentaldesign-2.png)
-
-### Supplementary Figure 1: RNA-seq Quality Control
-
-![](./figures/02_rnaseqQC/supplfig-1.png)
 
 
 
-### Figure 2: Avoidance Behavior
-
-![](./figures/01_behavior/avoidance-1.png)
-
-### Table 1: Avoidance Behavior Statistics
-
-```{r}
-table1 <- read.csv("./data/table-1.csv")
-kable(table1)
-```
-
-### Figure 3: Subfield-specific gene expression
-
-![](./figures/03_rnaseqSubfield/volcanos-2.png)
-
-### Table 2: Hypothesis-driven Anlaysis of Gene Ontology of Differential Gene Expression
-
-```{r}
-table2 <- read.csv("./data/table-2.csv")
-kable(table2)
-```
-
-### Figure 4: Top twently genes whose expression in DG is correlations to the principle compenent of behavioral variation in avoidance learning
-
-![](./figures/04_correlations/correlations-1.png)
-
-
-
-### Table 3: Data-driven analysis of Gene Ontology related to Behavior
-
-```{r}
-table3 <- read.csv("./data/table-3.csv")
-kable(table3)
-```
-
-### Figure 5: Very few candidate memory genes are correlated with behavior or with each other in hippocampal subfields
-
-![](./figures/06_candidates/classicmemgenes-1.png)
-
-
-
-
-
-### Figure 6: Many astrocytic genes are are positively correlated with behavioral principal component 1 or with each other in hippocampal subfields.
-
-![](./figures/06_candidates/astrocyticgenes-1.png)
-
-### Supplemental Figure 3: More correlations
-
-![](./figures/06_candidates/supplefig3-3.png)
 
 
