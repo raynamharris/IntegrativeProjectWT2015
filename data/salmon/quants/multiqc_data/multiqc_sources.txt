@@ -1,0 +1,13 @@
+Module	Section	Sample Name	Source
+Salmon	all_sections	142C_DG_S_S21_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/142C_DG_S_S21_L003_quant/libParams/flenDist.txt
+Salmon	all_sections	148B_DG_4_S84_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/148B_DG_4_S84_L003_quant/libParams/flenDist.txt
+Salmon	all_sections	148_DG_2_S87_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/148_DG_2_S87_L003_quant/libParams/flenDist.txt
+Salmon	all_sections	148_CA3_2_S86_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/148_CA3_2_S86_L003_quant/libParams/flenDist.txt
+Salmon	all_sections	146B_CA3_2_S62_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/146B_CA3_2_S62_L003_quant/libParams/flenDist.txt
+Salmon	all_sections	148B_CA1_4_S82_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/148B_CA1_4_S82_L003_quant/libParams/flenDist.txt
+Salmon	all_sections	143C_DG_S_S22_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/143C_DG_S_S22_L003_quant/libParams/flenDist.txt
+Salmon	all_sections	146A_CA3_2_S59_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/146A_CA3_2_S59_L003_quant/libParams/flenDist.txt
+Salmon	all_sections	146D_DG_3_S69_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/146D_DG_3_S69_L003_quant/libParams/flenDist.txt
+Salmon	all_sections	144C_DG_2_S49_L002_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/144C_DG_2_S49_L002_quant/libParams/flenDist.txt
+Salmon	all_sections	146B_CA1_2_S61_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/146B_CA1_2_S61_L003_quant/libParams/flenDist.txt
+Salmon	all_sections	147D_DG_1_S75_L003_quant	/Users/raynamharris/GitHub/utexas/IntegrativeProjectWT2015/data/salmon/quants/147D_DG_1_S75_L003_quant/libParams/flenDist.txt

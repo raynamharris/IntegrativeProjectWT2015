@@ -1,0 +1,22 @@
+{
+    "read_files": "[ 146A_CA3_2_S59_L003_R1_001.fastq.gz, 146A_CA3_2_S59_L003_R2_001.fastq.gz]",
+    "expected_format": "IU",
+    "compatible_fragment_ratio": 1.0,
+    "num_compatible_fragments": 19239,
+    "num_assigned_fragments": 19239,
+    "num_frags_with_concordant_consistent_mappings": 16033,
+    "num_frags_with_inconsistent_or_orphan_mappings": 3518,
+    "strand_mapping_bias": 0.02108151936630699,
+    "MSF": 0,
+    "OSF": 0,
+    "ISF": 338,
+    "MSR": 0,
+    "OSR": 0,
+    "ISR": 15695,
+    "SF": 1733,
+    "SR": 1785,
+    "MU": 0,
+    "OU": 0,
+    "IU": 0,
+    "U": 0
+}

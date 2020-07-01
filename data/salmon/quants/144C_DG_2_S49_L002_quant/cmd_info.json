@@ -1,0 +1,11 @@
+{
+    "salmon_version": "1.2.1",
+    "index": "salmon_index",
+    "libType": "A",
+    "mates1": "144C_DG_2_S49_L002_R1_001.fastq.gz",
+    "mates2": "144C_DG_2_S49_L002_R2_001.fastq.gz",
+    "threads": "8",
+    "validateMappings": [],
+    "output": "../quants/144C_DG_2_S49_L002_quant",
+    "auxDir": "aux_info"
+}

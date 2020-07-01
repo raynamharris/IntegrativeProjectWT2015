@@ -1,0 +1,11 @@
+{
+    "salmon_version": "1.2.1",
+    "index": "salmon_index",
+    "libType": "A",
+    "mates1": "148_CA3_2_S86_L003_R1_001.fastq.gz",
+    "mates2": "148_CA3_2_S86_L003_R2_001.fastq.gz",
+    "threads": "8",
+    "validateMappings": [],
+    "output": "../quants/148_CA3_2_S86_L003_quant",
+    "auxDir": "aux_info"
+}
