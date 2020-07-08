@@ -670,6 +670,233 @@ pca + tsne
     ## quartz_off_screen 
     ##                 2
 
+    # import cembrowski markers
+    # Genes from Cembrowski sublement file 1 <https://elifesciences.org/articles/14997/figures>
+    cembrowskisupp <- read.table("../data/elife-14997-supp1-v1.txt", sep="\t", header = T)
+
+    # select just columns with gene symbol and enriched column
+    # then rename gene column and convert to uppercase
+    cembrowskisupp <- cembrowskisupp %>% dplyr::select(gene_short_name, enriched) %>%
+      mutate(tissue = fct_collapse(enriched,
+                                   "DG" = c("dg_d", "dg_d-dg_v"),
+                                   "CA1" = c("ca1_d", "ca1_d-ca1_v"),
+                                   "CA3" = c("ca3_d",  "ca3_d-ca3_v-ca2-ca1_d-ca1_v")))
+    colnames(cembrowskisupp)[1] <- "gene"
+    cembrowskisupp$gene <- str_to_upper(cembrowskisupp$gene)
+    head(cembrowskisupp)
+
+    ##       gene  enriched tissue
+    ## 1   ABLIM3 dg_d-dg_v     DG
+    ## 2    AKAP7 dg_d-dg_v     DG
+    ## 3 ARHGAP20 dg_d-dg_v     DG
+    ## 4     BTG2 dg_d-dg_v     DG
+    ## 5    C1QL2 dg_d-dg_v     DG
+    ## 6    CALD1 dg_d-dg_v     DG
+
+    # subset my maker
+
+    cembrowksimarkers <- function(subfields){
+      mylist <- cembrowskisupp %>% 
+        dplyr::filter(tissue %in% subfields) %>% 
+        pull(gene)
+      print(subfields)
+      print(mylist)
+      return(mylist)
+    }
+
+    # dorsal markers 
+    DGmarkers <- cembrowksimarkers("DG")
+
+    ## [1] "DG"
+    ##  [1] "ABLIM3"        "AKAP7"         "ARHGAP20"      "BTG2"         
+    ##  [5] "C1QL2"         "CALD1"         "CYGB"          "DGKH"         
+    ##  [9] "DOCK10"        "FAM163B"       "GLIS3"         "IGFBP5"       
+    ## [13] "IL1RAP"        "JUN"           "LRRC16A"       "LRRTM4"       
+    ## [17] "MAML2"         "MARCKS"        "MEF2C"         "NPNT"         
+    ## [21] "PCDH8"         "PDE7B"         "PITPNC1"       "PITPNM2"      
+    ## [25] "PLEKHA2"       "PRDM5"         "PROX1"         "RFX3"         
+    ## [29] "SCN3A"         "SHISA9"        "SIPA1L2"       "SLC29A4"      
+    ## [33] "SLC4A4"        "SNORD118"      "STXBP6"        "SV2C"         
+    ## [37] "TIAM1"         "TRPC6"         "ZFP536"        "AU040320"     
+    ## [41] "B4GALT3"       "B930041F14RIK" "CACNG7"        "CD47"         
+    ## [45] "DGAT2"         "DSP"           "EGR4"          "ETS2"         
+    ## [49] "EXT2"          "FAM163B"       "FAM53B"        "GM17322"      
+    ## [53] "GPRC5B"        "GSE1"          "GTF2A2"        "H2AFZ"        
+    ## [57] "INPP5J"        "KCNC3"         "KCNK1"         "KLF13"        
+    ## [61] "NAPA"          "NBEAL2"        "NCOR2"         "NEUROD2"      
+    ## [65] "NPY5R"         "NRGN"          "PDZD2"         "PLEKHA2"      
+    ## [69] "PLEKHG5"       "PNKP"          "RAVER1"        "ROBO3"        
+    ## [73] "SH3BP1"        "SNORA63"       "STRA6"         "TAOK2"        
+    ## [77] "VPS37B"        "ZFP536"
+
+    CA1markers <- cembrowksimarkers("CA1")
+
+    ## [1] "CA1"
+    ##  [1] "BC030500"      "CDS1"          "FIBCD1"        "LPHN2"        
+    ##  [5] "MAN1A"         "MPPED1"        "NOV"           "PEX5L"        
+    ##  [9] "SATB2"         "ZFP386"        "2610017I09RIK" "3110003A17RIK"
+    ## [13] "ENPP2"         "GM17711"       "KCNAB1"        "KCNH7"        
+    ## [17] "KLHL13"        "PLEKHG1"       "POU3F1"        "SCN3B"        
+    ## [21] "WFS1"          "ZDHHC2"
+
+    CA3markers <- cembrowksimarkers("CA3")
+
+    ## [1] "CA3"
+    ##  [1] "OCIAD2" "CD109"  "CHGB"   "EPHB1"  "IYD"    "PDLIM1" "PRKCD"  "PTGS2" 
+    ##  [9] "SLC1A2" "TRHDE"
+
+    ## calculate DEGs
+    returnDEGs <-  function(whichfactor, up, down){
+      
+      # calculate DEG results
+      res <- results(dds, contrast = c(whichfactor, up, down),
+                     independentFiltering = T, alpha = 0.1)
+      
+      # create dataframe with pvalues and lfc
+      data <- data.frame(gene = row.names(res),
+                         padj = res$padj, 
+                         logpadj = -log10(res$padj),
+                         lfc = res$log2FoldChange)
+      data <- na.omit(data)
+      data <- data %>%
+        dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
+                                         yes = up, no = ifelse(data$lfc < 0 & data$padj < 0.1, 
+                                                               yes = down, no = "NS")),
+                      gene = str_to_upper(gene)) 
+      data$direction <- factor(data$direction, levels = c(down, "NS", up))
+      data$comparison <- paste0(down, " vs. ", up, sep = "" )
+      data <- data %>% select(gene, lfc, padj, logpadj, comparison, direction)  
+      return(data)
+    }  
+
+
+    CA1DG <- returnDEGs("subfield", "CA1", "DG")
+    CA1CA3 <- returnDEGs("subfield", "CA1", "CA3")
+    CA3DG <- returnDEGs("subfield", "CA3", "DG")
+
+    allDEGs <- rbind(CA1DG, CA1CA3) %>%
+      rbind(., CA3DG)  %>%
+      filter(direction != "NS")
+    head(allDEGs)
+
+    ##             gene       lfc         padj  logpadj comparison direction
+    ## 1  0610037L13RIK -1.471686 0.0228844837 1.640459 DG vs. CA1        DG
+    ## 2  1600002K03RIK  4.489017 0.0360300944 1.443335 DG vs. CA1       CA1
+    ## 3  1700025G04RIK -1.976738 0.0002086962 3.680486 DG vs. CA1        DG
+    ## 4  1700037H04RIK  2.082836 0.0068817803 2.162299 DG vs. CA1       CA1
+    ## 5 1700047I17RIK2 -4.693341 0.0475656230 1.322707 DG vs. CA1        DG
+    ## 6  1700066M21RIK  1.252366 0.0836230979 1.077674 DG vs. CA1       CA1
+
+    DEGsigmarkers <- allDEGs %>%
+      filter(gene %in% DGmarkers, comparison %in% c("DG vs. CA1", "DG vs. CA3")) %>%
+      pivot_wider(gene, names_from = comparison, values_from = direction)
+    DEGsigmarkers
+
+    ## # A tibble: 58 x 3
+    ##    gene     `DG vs. CA1` `DG vs. CA3`
+    ##    <chr>    <fct>        <fct>       
+    ##  1 ABLIM3   DG           DG          
+    ##  2 AKAP7    DG           DG          
+    ##  3 ARHGAP20 DG           DG          
+    ##  4 AU040320 DG           <NA>        
+    ##  5 C1QL2    DG           DG          
+    ##  6 CALD1    DG           DG          
+    ##  7 CD47     DG           <NA>        
+    ##  8 CYGB     DG           <NA>        
+    ##  9 DGAT2    DG           DG          
+    ## 10 DGKH     DG           DG          
+    ## # … with 48 more rows
+
+    58/78
+
+    ## [1] 0.7435897
+
+    # 58 of 78 (or 74%) of the dorsal DG marker genes enrighted in the cembrowski study are increased in the DG relative the CA1 and/or CA3.  
+
+
+    CA1sigmarkers <- allDEGs %>%
+      filter(gene %in% CA1markers, comparison %in% c("DG vs. CA1", "CA3 vs. CA1")) %>%
+      pivot_wider(gene, names_from = comparison, values_from = direction)
+    CA1sigmarkers
+
+    ## # A tibble: 17 x 3
+    ##    gene     `DG vs. CA1` `CA3 vs. CA1`
+    ##    <chr>    <fct>        <fct>        
+    ##  1 BC030500 CA1          CA1          
+    ##  2 CDS1     CA1          CA1          
+    ##  3 FIBCD1   CA1          CA1          
+    ##  4 KCNAB1   CA1          CA1          
+    ##  5 KCNH7    CA1          CA1          
+    ##  6 KLHL13   CA1          <NA>         
+    ##  7 MAN1A    CA1          CA1          
+    ##  8 MPPED1   CA1          CA1          
+    ##  9 NOV      CA1          CA1          
+    ## 10 PEX5L    CA1          CA1          
+    ## 11 PLEKHG1  CA1          CA1          
+    ## 12 POU3F1   CA1          CA1          
+    ## 13 SATB2    CA1          CA1          
+    ## 14 SCN3B    CA1          CA1          
+    ## 15 WFS1     CA1          CA1          
+    ## 16 ZDHHC2   CA1          CA1          
+    ## 17 ENPP2    <NA>         CA3
+
+    17/22
+
+    ## [1] 0.7727273
+
+    # 17 of 22 (or 77%) of the dorsal CA1 marker genes enrighted in the cembrowski study are increased in the CA1 relative the DG and/or CA3. 
+
+
+    CA3sigmarkers <- allDEGs %>%
+      filter(gene %in% CA3markers, comparison %in% c("DG vs. CA3", "CA3 vs. CA1")) %>%
+      pivot_wider(gene, names_from = comparison, values_from = direction)
+    CA3sigmarkers
+
+    ## # A tibble: 9 x 3
+    ##   gene   `CA3 vs. CA1` `DG vs. CA3`
+    ##   <chr>  <fct>         <fct>       
+    ## 1 CD109  CA3           CA3         
+    ## 2 CHGB   CA3           CA3         
+    ## 3 EPHB1  CA3           CA3         
+    ## 4 IYD    CA3           <NA>        
+    ## 5 PRKCD  CA3           CA3         
+    ## 6 PTGS2  CA3           <NA>        
+    ## 7 SLC1A2 CA3           CA3         
+    ## 8 TRHDE  CA3           CA3         
+    ## 9 OCIAD2 <NA>          CA3
+
+    9/10
+
+    ## [1] 0.9
+
+    markeranalysis <- left_join(DEGsigmarkers, CA1sigmarkers) %>%
+      left_join(., CA3sigmarkers)
+
+    ## Joining, by = c("gene", "DG vs. CA1")
+
+    ## Joining, by = c("gene", "DG vs. CA3", "CA3 vs. CA1")
+
+    markeranalysis
+
+    ## # A tibble: 58 x 4
+    ##    gene     `DG vs. CA1` `DG vs. CA3` `CA3 vs. CA1`
+    ##    <chr>    <fct>        <fct>        <fct>        
+    ##  1 ABLIM3   DG           DG           <NA>         
+    ##  2 AKAP7    DG           DG           <NA>         
+    ##  3 ARHGAP20 DG           DG           <NA>         
+    ##  4 AU040320 DG           <NA>         <NA>         
+    ##  5 C1QL2    DG           DG           <NA>         
+    ##  6 CALD1    DG           DG           <NA>         
+    ##  7 CD47     DG           <NA>         <NA>         
+    ##  8 CYGB     DG           <NA>         <NA>         
+    ##  9 DGAT2    DG           DG           <NA>         
+    ## 10 DGKH     DG           DG           <NA>         
+    ## # … with 48 more rows
+
+    write.csv(markeranalysis, "../data/suppltable-7.csv", row.names = F)
+
+    # 9 of 10 (or 10%) of the dorsal CA3 marker genes enrighted in the cembrowski study are increased in the CA3 relative the DG and/or CA1. 
+
     write.csv(assay(vsd), file = "../data/02_vsd.csv", row.names = T)
 
 Session Info

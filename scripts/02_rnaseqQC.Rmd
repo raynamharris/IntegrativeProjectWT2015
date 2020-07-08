@@ -228,6 +228,107 @@ dev.off()
 
 
 
+```{r markergenes}
+
+# import cembrowski markers
+# Genes from Cembrowski sublement file 1 <https://elifesciences.org/articles/14997/figures>
+cembrowskisupp <- read.table("../data/elife-14997-supp1-v1.txt", sep="\t", header = T)
+
+# select just columns with gene symbol and enriched column
+# then rename gene column and convert to uppercase
+cembrowskisupp <- cembrowskisupp %>% dplyr::select(gene_short_name, enriched) %>%
+  mutate(tissue = fct_collapse(enriched,
+                               "DG" = c("dg_d", "dg_d-dg_v"),
+                               "CA1" = c("ca1_d", "ca1_d-ca1_v"),
+                               "CA3" = c("ca3_d",  "ca3_d-ca3_v-ca2-ca1_d-ca1_v")))
+colnames(cembrowskisupp)[1] <- "gene"
+cembrowskisupp$gene <- str_to_upper(cembrowskisupp$gene)
+head(cembrowskisupp)
+
+# subset my maker
+
+cembrowksimarkers <- function(subfields){
+  mylist <- cembrowskisupp %>% 
+    dplyr::filter(tissue %in% subfields) %>% 
+    pull(gene)
+  print(subfields)
+  print(mylist)
+  return(mylist)
+}
+
+# dorsal markers 
+DGmarkers <- cembrowksimarkers("DG")
+CA1markers <- cembrowksimarkers("CA1")
+CA3markers <- cembrowksimarkers("CA3")
+
+## calculate DEGs
+returnDEGs <-  function(whichfactor, up, down){
+  
+  # calculate DEG results
+  res <- results(dds, contrast = c(whichfactor, up, down),
+                 independentFiltering = T, alpha = 0.1)
+  
+  # create dataframe with pvalues and lfc
+  data <- data.frame(gene = row.names(res),
+                     padj = res$padj, 
+                     logpadj = -log10(res$padj),
+                     lfc = res$log2FoldChange)
+  data <- na.omit(data)
+  data <- data %>%
+    dplyr::mutate(direction = ifelse(data$lfc > 0 & data$padj < 0.1, 
+                                     yes = up, no = ifelse(data$lfc < 0 & data$padj < 0.1, 
+                                                           yes = down, no = "NS")),
+                  gene = str_to_upper(gene)) 
+  data$direction <- factor(data$direction, levels = c(down, "NS", up))
+  data$comparison <- paste0(down, " vs. ", up, sep = "" )
+  data <- data %>% select(gene, lfc, padj, logpadj, comparison, direction)  
+  return(data)
+}  
+
+
+CA1DG <- returnDEGs("subfield", "CA1", "DG")
+CA1CA3 <- returnDEGs("subfield", "CA1", "CA3")
+CA3DG <- returnDEGs("subfield", "CA3", "DG")
+
+allDEGs <- rbind(CA1DG, CA1CA3) %>%
+  rbind(., CA3DG)  %>%
+  filter(direction != "NS")
+head(allDEGs)
+
+DEGsigmarkers <- allDEGs %>%
+  filter(gene %in% DGmarkers, comparison %in% c("DG vs. CA1", "DG vs. CA3")) %>%
+  pivot_wider(gene, names_from = comparison, values_from = direction)
+DEGsigmarkers
+58/78
+
+# 58 of 78 (or 74%) of the dorsal DG marker genes enrighted in the cembrowski study are increased in the DG relative the CA1 and/or CA3.  
+
+
+CA1sigmarkers <- allDEGs %>%
+  filter(gene %in% CA1markers, comparison %in% c("DG vs. CA1", "CA3 vs. CA1")) %>%
+  pivot_wider(gene, names_from = comparison, values_from = direction)
+CA1sigmarkers
+17/22
+
+
+# 17 of 22 (or 77%) of the dorsal CA1 marker genes enrighted in the cembrowski study are increased in the CA1 relative the DG and/or CA3. 
+
+
+CA3sigmarkers <- allDEGs %>%
+  filter(gene %in% CA3markers, comparison %in% c("DG vs. CA3", "CA3 vs. CA1")) %>%
+  pivot_wider(gene, names_from = comparison, values_from = direction)
+CA3sigmarkers
+9/10
+
+markeranalysis <- left_join(DEGsigmarkers, CA1sigmarkers) %>%
+  left_join(., CA3sigmarkers)
+markeranalysis
+
+write.csv(markeranalysis, "../data/suppltable-7.csv", row.names = F)
+
+# 9 of 10 (or 10%) of the dorsal CA3 marker genes enrighted in the cembrowski study are increased in the CA3 relative the DG and/or CA1. 
+```
+
 
 ```{r save}
 write.csv(assay(vsd), file = "../data/02_vsd.csv", row.names = T)
