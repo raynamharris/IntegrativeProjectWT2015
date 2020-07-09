@@ -237,10 +237,12 @@ cembrowskisupp <- read.table("../data/elife-14997-supp1-v1.txt", sep="\t", heade
 # select just columns with gene symbol and enriched column
 # then rename gene column and convert to uppercase
 cembrowskisupp <- cembrowskisupp %>% dplyr::select(gene_short_name, enriched) %>%
-  mutate(tissue = fct_collapse(enriched,
+  mutate(marker = fct_collapse(enriched,
                                "DG" = c("dg_d", "dg_d-dg_v"),
                                "CA1" = c("ca1_d", "ca1_d-ca1_v"),
-                               "CA3" = c("ca3_d",  "ca3_d-ca3_v-ca2-ca1_d-ca1_v")))
+                               "CA3" = c("ca3_d",  "ca3_d-ca3_v-ca2-ca1_d-ca1_v"))) %>%
+  select(-enriched) %>%
+  filter(marker %in% c("CA1", "CA3", "DG"))
 colnames(cembrowskisupp)[1] <- "gene"
 cembrowskisupp$gene <- str_to_upper(cembrowskisupp$gene)
 head(cembrowskisupp)
@@ -249,7 +251,7 @@ head(cembrowskisupp)
 
 cembrowksimarkers <- function(subfields){
   mylist <- cembrowskisupp %>% 
-    dplyr::filter(tissue %in% subfields) %>% 
+    dplyr::filter(marker %in% subfields) %>% 
     pull(gene)
   print(subfields)
   print(mylist)
@@ -322,13 +324,42 @@ CA3sigmarkers
 
 markeranalysis <- full_join(DEGsigmarkers, CA1sigmarkers) %>%
   full_join(., CA3sigmarkers) %>%
-  arrange(gene)
+  full_join(., cembrowskisupp) %>% 
+  arrange(desc(marker),gene) %>%
+  select(marker, gene, everything())
 markeranalysis
 
 write.csv(markeranalysis, "../data/suppltable-7.csv", row.names = F)
 
 # 9 of 10 (or 10%) of the dorsal CA3 marker genes enrighted in the cembrowski study are increased in the CA3 relative the DG and/or CA1. 
 ```
+
+
+## variance 
+
+```{r variance}
+distsRL <- dist(t(assay(vsd)))
+mat <- as.matrix(distsRL)
+#rownames(mat) <-  colData(rld)$condition
+#colnames(mat) <-  colData(rld)$sampleNO
+
+# heatmaps
+library(RColorBrewer)
+library(gplots)
+hmcol <- colorRampPalette(brewer.pal(9, "Blues"))(255)
+heatmap.2(mat, trace="none", col = rev(hmcol))
+
+colData$RNAseqID
+outliers <- c("146D-DG-3", "145A-CA3-2", "146B-DG-2", "146D-CA1-3", "148B-CA1-4")
+
+dds <- dds[, !(colnames(dds) %in% outliers)] 
+vsd <- vst(dds, blind=FALSE) ## variance stabilized
+distsRL <- dist(t(assay(vsd)))
+mat <- as.matrix(distsRL)
+hmcol <- colorRampPalette(brewer.pal(9, "OrRd"))(255)
+heatmap.2(mat, trace="none", col = rev(hmcol))
+```
+
 
 
 ```{r save}

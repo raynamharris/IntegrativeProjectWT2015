@@ -677,27 +677,29 @@ pca + tsne
     # select just columns with gene symbol and enriched column
     # then rename gene column and convert to uppercase
     cembrowskisupp <- cembrowskisupp %>% dplyr::select(gene_short_name, enriched) %>%
-      mutate(tissue = fct_collapse(enriched,
+      mutate(marker = fct_collapse(enriched,
                                    "DG" = c("dg_d", "dg_d-dg_v"),
                                    "CA1" = c("ca1_d", "ca1_d-ca1_v"),
-                                   "CA3" = c("ca3_d",  "ca3_d-ca3_v-ca2-ca1_d-ca1_v")))
+                                   "CA3" = c("ca3_d",  "ca3_d-ca3_v-ca2-ca1_d-ca1_v"))) %>%
+      select(-enriched) %>%
+      filter(marker %in% c("CA1", "CA3", "DG"))
     colnames(cembrowskisupp)[1] <- "gene"
     cembrowskisupp$gene <- str_to_upper(cembrowskisupp$gene)
     head(cembrowskisupp)
 
-    ##       gene  enriched tissue
-    ## 1   ABLIM3 dg_d-dg_v     DG
-    ## 2    AKAP7 dg_d-dg_v     DG
-    ## 3 ARHGAP20 dg_d-dg_v     DG
-    ## 4     BTG2 dg_d-dg_v     DG
-    ## 5    C1QL2 dg_d-dg_v     DG
-    ## 6    CALD1 dg_d-dg_v     DG
+    ##       gene marker
+    ## 1   ABLIM3     DG
+    ## 2    AKAP7     DG
+    ## 3 ARHGAP20     DG
+    ## 4     BTG2     DG
+    ## 5    C1QL2     DG
+    ## 6    CALD1     DG
 
     # subset my maker
 
     cembrowksimarkers <- function(subfields){
       mylist <- cembrowskisupp %>% 
-        dplyr::filter(tissue %in% subfields) %>% 
+        dplyr::filter(marker %in% subfields) %>% 
         pull(gene)
       print(subfields)
       print(mylist)
@@ -871,32 +873,91 @@ pca + tsne
 
     markeranalysis <- full_join(DEGsigmarkers, CA1sigmarkers) %>%
       full_join(., CA3sigmarkers) %>%
-      arrange(gene)
+      full_join(., cembrowskisupp) %>% 
+      arrange(desc(marker),gene) %>%
+      select(marker, gene, everything())
 
     ## Joining, by = c("gene", "DG vs. CA1")
 
     ## Joining, by = c("gene", "DG vs. CA3", "CA3 vs. CA1")
 
+    ## Joining, by = "gene"
+
     markeranalysis
 
-    ## # A tibble: 84 x 4
-    ##    gene     `DG vs. CA1` `DG vs. CA3` `CA3 vs. CA1`
-    ##    <chr>    <fct>        <fct>        <fct>        
-    ##  1 ABLIM3   DG           DG           <NA>         
-    ##  2 AKAP7    DG           DG           <NA>         
-    ##  3 ARHGAP20 DG           DG           <NA>         
-    ##  4 AU040320 DG           <NA>         <NA>         
-    ##  5 B4GALT3  <NA>         DG           <NA>         
-    ##  6 BC030500 CA1          <NA>         CA1          
-    ##  7 C1QL2    DG           DG           <NA>         
-    ##  8 CALD1    DG           DG           <NA>         
-    ##  9 CD109    <NA>         CA3          CA3          
-    ## 10 CD47     DG           <NA>         <NA>         
-    ## # … with 74 more rows
+    ## # A tibble: 110 x 5
+    ##    marker gene          `DG vs. CA1` `DG vs. CA3` `CA3 vs. CA1`
+    ##    <fct>  <chr>         <fct>        <fct>        <fct>        
+    ##  1 DG     ABLIM3        DG           DG           <NA>         
+    ##  2 DG     AKAP7         DG           DG           <NA>         
+    ##  3 DG     ARHGAP20      DG           DG           <NA>         
+    ##  4 DG     AU040320      DG           <NA>         <NA>         
+    ##  5 DG     B4GALT3       <NA>         DG           <NA>         
+    ##  6 DG     B930041F14RIK <NA>         <NA>         <NA>         
+    ##  7 DG     BTG2          <NA>         <NA>         <NA>         
+    ##  8 DG     C1QL2         DG           DG           <NA>         
+    ##  9 DG     CACNG7        <NA>         <NA>         <NA>         
+    ## 10 DG     CALD1         DG           DG           <NA>         
+    ## # … with 100 more rows
 
     write.csv(markeranalysis, "../data/suppltable-7.csv", row.names = F)
 
     # 9 of 10 (or 10%) of the dorsal CA3 marker genes enrighted in the cembrowski study are increased in the CA3 relative the DG and/or CA1. 
+
+variance
+--------
+
+    distsRL <- dist(t(assay(vsd)))
+    mat <- as.matrix(distsRL)
+    #rownames(mat) <-  colData(rld)$condition
+    #colnames(mat) <-  colData(rld)$sampleNO
+
+    # heatmaps
+    library(RColorBrewer)
+    library(gplots)
+
+    ## 
+    ## Attaching package: 'gplots'
+
+    ## The following object is masked from 'package:IRanges':
+    ## 
+    ##     space
+
+    ## The following object is masked from 'package:S4Vectors':
+    ## 
+    ##     space
+
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     lowess
+
+    hmcol <- colorRampPalette(brewer.pal(9, "Blues"))(255)
+    heatmap.2(mat, trace="none", col = rev(hmcol))
+
+![](../figures/02_rnaseqQC/variance-1.png)
+
+    colData$RNAseqID
+
+    ##  [1] 143A-CA3-1 143A-DG-1  143B-CA1-1 143B-DG-1  143C-CA1-1 143D-CA1-3
+    ##  [7] 143D-DG-3  144A-CA1-2 144A-CA3-2 144A-DG-2  144B-CA1-1 144B-CA3-1
+    ## [13] 144C-CA1-2 144C-CA3-2 144C-DG-2  144D-CA3-2 144D-DG-2  145A-CA1-2
+    ## [19] 145A-CA3-2 145A-DG-2  145B-CA1-1 145B-DG-1  146A-CA1-2 146A-CA3-2
+    ## [25] 146A-DG-2  146B-CA1-2 146B-CA3-2 146B-DG-2  146C-CA1-4 146C-DG-4 
+    ## [31] 146D-CA1-3 146D-CA3-3 146D-DG-3  147C-CA1-3 147C-CA3-3 147C-DG-3 
+    ## [37] 147D-CA3-1 147D-DG-1  148A-CA1-3 148A-CA3-3 148A-DG-3  148B-CA1-4
+    ## [43] 148B-CA3-4 148B-DG-4 
+    ## 44 Levels: 143A-CA3-1 143A-DG-1 143B-CA1-1 143B-DG-1 143C-CA1-1 ... 148B-DG-4
+
+    outliers <- c("146D-DG-3", "145A-CA3-2", "146B-DG-2", "146D-CA1-3", "148B-CA1-4")
+
+    dds <- dds[, !(colnames(dds) %in% outliers)] 
+    vsd <- vst(dds, blind=FALSE) ## variance stabilized
+    distsRL <- dist(t(assay(vsd)))
+    mat <- as.matrix(distsRL)
+    hmcol <- colorRampPalette(brewer.pal(9, "OrRd"))(255)
+    heatmap.2(mat, trace="none", col = rev(hmcol))
+
+![](../figures/02_rnaseqQC/variance-2.png)
 
     write.csv(assay(vsd), file = "../data/02_vsd.csv", row.names = T)
 
