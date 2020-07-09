@@ -320,8 +320,9 @@ CA3sigmarkers <- allDEGs %>%
 CA3sigmarkers
 9/10
 
-markeranalysis <- left_join(DEGsigmarkers, CA1sigmarkers) %>%
-  left_join(., CA3sigmarkers)
+markeranalysis <- full_join(DEGsigmarkers, CA1sigmarkers) %>%
+  full_join(., CA3sigmarkers) %>%
+  arrange(gene)
 markeranalysis
 
 write.csv(markeranalysis, "../data/suppltable-7.csv", row.names = F)

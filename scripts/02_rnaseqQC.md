@@ -869,8 +869,9 @@ pca + tsne
 
     ## [1] 0.9
 
-    markeranalysis <- left_join(DEGsigmarkers, CA1sigmarkers) %>%
-      left_join(., CA3sigmarkers)
+    markeranalysis <- full_join(DEGsigmarkers, CA1sigmarkers) %>%
+      full_join(., CA3sigmarkers) %>%
+      arrange(gene)
 
     ## Joining, by = c("gene", "DG vs. CA1")
 
@@ -878,20 +879,20 @@ pca + tsne
 
     markeranalysis
 
-    ## # A tibble: 58 x 4
+    ## # A tibble: 84 x 4
     ##    gene     `DG vs. CA1` `DG vs. CA3` `CA3 vs. CA1`
     ##    <chr>    <fct>        <fct>        <fct>        
     ##  1 ABLIM3   DG           DG           <NA>         
     ##  2 AKAP7    DG           DG           <NA>         
     ##  3 ARHGAP20 DG           DG           <NA>         
     ##  4 AU040320 DG           <NA>         <NA>         
-    ##  5 C1QL2    DG           DG           <NA>         
-    ##  6 CALD1    DG           DG           <NA>         
-    ##  7 CD47     DG           <NA>         <NA>         
-    ##  8 CYGB     DG           <NA>         <NA>         
-    ##  9 DGAT2    DG           DG           <NA>         
-    ## 10 DGKH     DG           DG           <NA>         
-    ## # … with 48 more rows
+    ##  5 B4GALT3  <NA>         DG           <NA>         
+    ##  6 BC030500 CA1          <NA>         CA1          
+    ##  7 C1QL2    DG           DG           <NA>         
+    ##  8 CALD1    DG           DG           <NA>         
+    ##  9 CD109    <NA>         CA3          CA3          
+    ## 10 CD47     DG           <NA>         <NA>         
+    ## # … with 74 more rows
 
     write.csv(markeranalysis, "../data/suppltable-7.csv", row.names = F)
 
