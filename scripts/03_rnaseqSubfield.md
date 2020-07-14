@@ -602,7 +602,7 @@ pca analysis and bar plots functions
     ## quartz_off_screen 
     ##                 2
 
-    pdf(file="../figures/figure_3.pdf", width=6.69, height=6)
+    pdf(file="../figures/fig-3.pdf", width=6.69, height=6)
     plot(fig3)    
     dev.off()
 
