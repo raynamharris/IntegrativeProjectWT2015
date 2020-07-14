@@ -14,6 +14,7 @@ library(DESeq2) ## for gene expression analysis
 library(png)
 library(grid)
 library(scales)
+library(apaTables) #  for ANOVA tables
 
 library(BiocParallel)
 register(MulticoreParam(6))
@@ -26,17 +27,33 @@ source("functions_RNAseq.R")
 knitr::opts_chunk$set(fig.path = '../figures/03_rnaseqSubfield/', cache = T)
 ```
 
-## Get varience stabilized gene expression for each tissue
+## Wrangle data
 
 ```{r DGdeseq}
-# count data
-countData <- read.csv("../data/00_countData.csv", header = T, check.names = F, row.names = 1)
 
-# prep col data
-colData <- read.csv("../data/00_colData.csv", header = T)
+
+
+# prep col data,
+outliers <- c("146D-DG-3", "145A-CA3-2", "146B-DG-2", "146D-CA1-3", "148B-CA1-4")
+
+colData <- read.csv("../data/00_colData.csv", header = T) %>%
+  filter(!RNAseqID %in% outliers)
 colData$training <- factor(colData$training, levels = levelstraining)
 colData$treatment <- factor(colData$treatment, levels = levelstreatment)
 
+# remove outliers
+savecols <- as.character(colData$RNAseqID) #select the rowsname 
+savecols <- as.vector(savecols) # make it a vector
+
+countData <- read.csv("../data/00_countData.csv", 
+                      header = T, check.names = F, row.names = 1) %>%
+  dplyr::select(one_of(savecols)) # select just the columns 
+head(countData)
+```
+
+## Get varience stabilized gene expression for each tissue
+
+```{r}
 # DEGs with looking at all four treatments individually
 DGdds <- returnddstreatment("DG") 
 CA3dds <- returnddstreatment("CA3") 
@@ -111,6 +128,11 @@ write_csv(suppltable5, "../data/suppltable-5.csv")
 ```
 
 
+## bar plots
+
+
+
+
 
 ```{r volcanos, fig.width=6.69, fig.height=6}
 # volcano plots
@@ -172,8 +194,98 @@ dev.off()
 ```
 
 
+
+
+## pca analysis 
+
+
+```{r pca, fig.width=6.69, fig.height=6}
+# create the dataframe using my function pcadataframe
+
+plotPCs <- function(mydds, mysubtitle, mytitle){
+  
+  vsd <-  vst(mydds, blind=FALSE)
+  pcadata <- pcadataframe(vsd, intgroup=c("treatment"), returnData=TRUE)
+  percentVar <- round(100 * attr(pcadata, "percentVar"))
+
+  #print(summary(aov(PC1 ~ treatment, data=pcadata))) 
+  #print(TukeyHSD((aov(PC1 ~ treatment, data=pcadata)), which = "treatment"))
+
+  #summary(aov(PC2 ~ treatment, data=pcadata)) 
+  #TukeyHSD((aov(PC2 ~ treatment, data=pcadata)), which = "treatment") 
+  
+  apa1 <- apa.aov.table(aov(PC1 ~ treatment, data=pcadata))
+  apa1 <- as.data.frame(apa1$table_body) 
+  errodf <- apa1 %>% filter(Predictor == "Error") %>% pull(df)
+  pvalue <- apa1 %>% filter(Predictor == "treatment") %>% pull(p)
+  Fstat <- apa1 %>% filter(Predictor == "treatment") %>% pull(F)
+  treatmentdf <- apa1 %>% filter(Predictor == "treatment")  %>% pull(df)
+  
+  mynewsubtitle <- paste(mysubtitle, "\nF(",treatmentdf, ",",errodf, ") = ",
+                         Fstat, ", p=", pvalue, sep = "")
+
+  PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=treatment)) +
+    geom_point(size=2, alpha = 0.8) +
+    xlab(paste0("PC1: ", percentVar[1],"%")) +
+    ylab(paste0("PC2: ", percentVar[2],"%")) +
+    scale_color_manual(values = treatmentcolors) +
+    labs(subtitle = mynewsubtitle) +
+    theme_ms() +
+    theme(legend.position = "none")
+  PCA12
+}
+
+a <- plotPCs(DGdds, "DG")
+b <- plotPCs(CA3dds, "CA3")
+c <- plotPCs(CA1dds, "CA1")
+
+
+plotPCs2 <- function(mydds, mysubtitle){
+  
+  vsd <-  vst(mydds, blind=FALSE)
+  pcadata <- pcadataframe(vsd, intgroup=c("training"), returnData=TRUE)
+  percentVar <- round(100 * attr(pcadata, "percentVar"))
+
+  apa1 <- apa.aov.table(aov(PC1 ~ training, data=pcadata))
+  apa1 <- as.data.frame(apa1$table_body) 
+  errodf <- apa1 %>% filter(Predictor == "Error") %>% pull(df)
+  pvalue <- apa1 %>% filter(Predictor == "training") %>% pull(p)
+  Fstat <- apa1 %>% filter(Predictor == "training") %>% pull(F)
+  treatmentdf <- apa1 %>% filter(Predictor == "training")  %>% pull(df)
+  
+  mynewsubtitle <- paste(mysubtitle, "\nF(",treatmentdf, ",",errodf, ") = ",
+                         Fstat, ", p=", pvalue, sep = "")
+  
+  
+  PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=training)) +
+    geom_point(size=2, alpha = 0.8) +
+    xlab(paste0("PC1: ", percentVar[1],"%")) +
+    ylab(paste0("PC2: ", percentVar[2],"%")) +
+    scale_color_manual(values = volcano1) +
+    labs(subtitle = mynewsubtitle) +
+    theme_ms() +
+    theme(legend.position = "none")
+  PCA12
+}
+
+d <- plotPCs2(DGdds2, "DG")
+e <- plotPCs2(CA3dds2, "CA3")
+f <- plotPCs2(CA1dds2, "CA1")
+
+abc <- plot_grid(a,b,c, nrow = 1)
+def <- plot_grid(d,e,f, nrow = 1)
+
+legend1 <- get_legend(a + theme(legend.position = "bottom", legend.title = element_blank()))
+legend2 <- get_legend(d + theme(legend.position = "bottom", legend.title = element_blank()))
+
+abcdefg <- plot_grid(abc,legend1, def, legend2, ncol = 1, rel_heights = c(4,1,4,1))
+abcdefg
+
+```
+
+
 ```{r citations}
-citation("DESeq2") ## for gene expression analysis
+citation("DESeq2") 
 citation("png")
 citation("grid")
 citation("BiocParallel")

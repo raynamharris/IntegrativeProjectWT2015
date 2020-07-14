@@ -12,6 +12,7 @@ have been inserted just below the subheadings.
     library(png)
     library(grid)
     library(scales)
+    library(apaTables) #  for ANOVA tables
 
     library(BiocParallel)
     register(MulticoreParam(6))
@@ -23,16 +24,78 @@ have been inserted just below the subheadings.
     ## set output file for figures 
     knitr::opts_chunk$set(fig.path = '../figures/03_rnaseqSubfield/', cache = T)
 
-Get varience stabilized gene expression for each tissue
--------------------------------------------------------
+Wrangle data
+------------
 
-    # count data
-    countData <- read.csv("../data/00_countData.csv", header = T, check.names = F, row.names = 1)
+    # prep col data,
+    outliers <- c("146D-DG-3", "145A-CA3-2", "146B-DG-2", "146D-CA1-3", "148B-CA1-4")
 
-    # prep col data
-    colData <- read.csv("../data/00_colData.csv", header = T)
+    colData <- read.csv("../data/00_colData.csv", header = T) %>%
+      filter(!RNAseqID %in% outliers)
     colData$training <- factor(colData$training, levels = levelstraining)
     colData$treatment <- factor(colData$treatment, levels = levelstreatment)
+
+    # remove outliers
+    savecols <- as.character(colData$RNAseqID) #select the rowsname 
+    savecols <- as.vector(savecols) # make it a vector
+
+    countData <- read.csv("../data/00_countData.csv", 
+                          header = T, check.names = F, row.names = 1) %>%
+      dplyr::select(one_of(savecols)) # select just the columns 
+    head(countData)
+
+    ##               143A-CA3-1 143A-DG-1 143B-CA1-1 143B-DG-1 143C-CA1-1 143D-CA1-3
+    ## 0610007P14Rik         85       112         60        48         38         28
+    ## 0610009B22Rik         24        34         21        10         19          0
+    ## 0610009L18Rik          4         9         10         8          2          0
+    ## 0610009O20Rik         85       185         44        72         76         25
+    ## 0610010F05Rik        142       155         54       117         57         39
+    ## 0610010K14Rik         24        74         14        21         23         21
+    ##               143D-DG-3 144A-CA1-2 144A-CA3-2 144A-DG-2 144B-CA1-1 144B-CA3-1
+    ## 0610007P14Rik        43         80         21        80         72         34
+    ## 0610009B22Rik         1         30          9         9         14          9
+    ## 0610009L18Rik         2          9          5         0          1          4
+    ## 0610009O20Rik        38         95         20        82         49         24
+    ## 0610010F05Rik        61        119         17       138         75         25
+    ## 0610010K14Rik        12         32         10        20         41         11
+    ##               144C-CA1-2 144C-CA3-2 144C-DG-2 144D-CA3-2 144D-DG-2 145A-CA1-2
+    ## 0610007P14Rik         63         28        49         43       150        133
+    ## 0610009B22Rik         15         24        16         13        23         36
+    ## 0610009L18Rik          2          4         6          9        13         21
+    ## 0610009O20Rik         89         48        85         46       151         96
+    ## 0610010F05Rik         95         59        97        111       140        179
+    ## 0610010K14Rik         38         14        24         17        62         34
+    ##               145A-DG-2 145B-CA1-1 145B-DG-1 146A-CA1-2 146A-CA3-2 146A-DG-2
+    ## 0610007P14Rik        41         51        21         29         87        23
+    ## 0610009B22Rik        14         15        10         15          9         6
+    ## 0610009L18Rik         1          3         0          8          9         6
+    ## 0610009O20Rik        52        124        46         68        102        44
+    ## 0610010F05Rik        52         30        41         69         83        45
+    ## 0610010K14Rik        24         27        24         33         12        23
+    ##               146B-CA1-2 146B-CA3-2 146C-CA1-4 146C-DG-4 146D-CA3-3 147C-CA1-3
+    ## 0610007P14Rik         13         33         38        22         87         69
+    ## 0610009B22Rik          6         43          7         6         23         17
+    ## 0610009L18Rik          0          2          9         0          7          2
+    ## 0610009O20Rik         16         46         31        10         83         58
+    ## 0610010F05Rik         53        110         41        32        148        149
+    ## 0610010K14Rik         11         11          7         5         10         46
+    ##               147C-CA3-3 147C-DG-3 147D-CA3-1 147D-DG-1 148A-CA1-3 148A-CA3-3
+    ## 0610007P14Rik        164        82         79       305        135         55
+    ## 0610009B22Rik         30        39         41       105         59         24
+    ## 0610009L18Rik         11         3          9        67         16          7
+    ## 0610009O20Rik        191       145         88       377        162         65
+    ## 0610010F05Rik        328       185        222       446        198        149
+    ## 0610010K14Rik         31        27          0       173         60         40
+    ##               148A-DG-3 148B-CA3-4 148B-DG-4
+    ## 0610007P14Rik       104        122        16
+    ## 0610009B22Rik        15         45         2
+    ## 0610009L18Rik        11         11         1
+    ## 0610009O20Rik       226         70        18
+    ## 0610010F05Rik       176        177        23
+    ## 0610010K14Rik        17         39        10
+
+Get varience stabilized gene expression for each tissue
+-------------------------------------------------------
 
     # DEGs with looking at all four treatments individually
     DGdds <- returnddstreatment("DG") 
@@ -92,7 +155,7 @@ Get varience stabilized gene expression for each tissue
 
     ## final dispersion estimates, fitting model and testing: 6 workers
 
-    ## -- replacing outliers and refitting for 54 genes
+    ## -- replacing outliers and refitting for 58 genes
     ## -- DESeq argument 'minReplicatesForReplace' = 7 
     ## -- original counts are preserved in counts(dds)
 
@@ -114,14 +177,6 @@ Get varience stabilized gene expression for each tissue
 
     ## final dispersion estimates, fitting model and testing: 6 workers
 
-    ## -- replacing outliers and refitting for 53 genes
-    ## -- DESeq argument 'minReplicatesForReplace' = 7 
-    ## -- original counts are preserved in counts(dds)
-
-    ## estimating dispersions
-
-    ## fitting model and testing
-
     CA1dds2 <- returnddstraining("CA1") 
 
     ## [1] "CA1"
@@ -136,7 +191,7 @@ Get varience stabilized gene expression for each tissue
 
     ## final dispersion estimates, fitting model and testing: 6 workers
 
-    ## -- replacing outliers and refitting for 98 genes
+    ## -- replacing outliers and refitting for 82 genes
     ## -- DESeq argument 'minReplicatesForReplace' = 7 
     ## -- original counts are preserved in counts(dds)
 
@@ -146,48 +201,44 @@ Get varience stabilized gene expression for each tissue
 
     savevsds(DGdds2, "../data/03_DG_vsdtraining.csv")
 
-    ##       143A-DG-1 143B-DG-1 143D-DG-3 144A-DG-2 144C-DG-2 144D-DG-2
-    ## Xkr4   6.313612  6.338154  6.152779  6.685759  6.645869  6.562572
-    ## Rp1    5.205323  5.205323  5.205323  5.205323  5.205323  5.432477
-    ## Sox17  5.538459  5.205323  5.205323  5.952301  5.205323  5.575631
-    ##       145A-DG-2 145B-DG-1 146A-DG-2 146B-DG-2 146C-DG-4 146D-DG-3
-    ## Xkr4   6.748431  6.391415  6.018671  6.134992  5.784353  5.205323
-    ## Rp1    5.205323  5.205323  5.205323  5.205323  5.784353  5.205323
-    ## Sox17  5.205323  5.536576  5.465593  5.205323  5.205323  5.205323
-    ##       147C-DG-3 147D-DG-1 148A-DG-3 148B-DG-4
-    ## Xkr4   6.562180  6.412684  6.628153  6.504271
-    ## Rp1    5.205323  5.205323  5.205323  5.205323
-    ## Sox17  5.681239  5.465839  5.631358  5.530425
+    ##               143A-DG-1 143B-DG-1 143D-DG-3 144A-DG-2 144C-DG-2 144D-DG-2
+    ## 0610007P14Rik  7.153718  7.167228  7.569987  7.271891  7.178889  7.395072
+    ## 0610009B22Rik  6.607383  6.495129  6.172178  6.378164  6.648238  6.509850
+    ## 0610009L18Rik  6.268598  6.433471  6.282645  5.904182  6.362953  6.360970
+    ##               145A-DG-2 145B-DG-1 146A-DG-2 146C-DG-4 147C-DG-3 147D-DG-1
+    ## 0610007P14Rik  7.326240  6.920197  7.075780  7.654996  7.065253  7.242216
+    ## 0610009B22Rik  6.756751  6.612735  6.514596  6.858188  6.715943  6.707290
+    ## 0610009L18Rik  6.135124  5.904182  6.514596  5.904182  6.132069  6.548655
+    ##               148A-DG-3 148B-DG-4
+    ## 0610007P14Rik  7.247632  7.131677
+    ## 0610009B22Rik  6.430112  6.349605
+    ## 0610009L18Rik  6.355221  6.219767
 
     savevsds(CA3dds2, "../data/03_CA3_vsdtraining.csv")
 
-    ##       143A-CA3-1 144A-CA3-2 144B-CA3-1 144C-CA3-2 144D-CA3-2 145A-CA3-2
-    ## Xkr4    7.144177   6.159068   6.984430   6.730021   7.074841   6.554853
-    ## Rp1     5.734766   5.734766   5.734766   5.734766   5.734766   5.734766
-    ## Sox17   5.882802   5.734766   6.003174   6.082106   6.466140   6.407310
-    ##       146A-CA3-2 146B-CA3-2 146D-CA3-3 147C-CA3-3 147D-CA3-1 148A-CA3-3
-    ## Xkr4    6.207929   6.957251   6.833454   7.395364   7.273719   6.743914
-    ## Rp1     5.734766   5.734766   5.734766   5.734766   5.734766   6.169424
-    ## Sox17   6.682921   6.246227   6.221313   6.631627   5.734766   5.899584
-    ##       148B-CA3-4
-    ## Xkr4    6.937322
-    ## Rp1     5.734766
-    ## Sox17   5.879564
+    ##               143A-CA3-1 144A-CA3-2 144B-CA3-1 144C-CA3-2 144D-CA3-2 146A-CA3-2
+    ## 0610007P14Rik   7.159328   7.688310   7.347158   7.097481   6.973766   7.346091
+    ## 0610009B22Rik   6.518149   7.068934   6.600198   7.003315   6.435071   6.284311
+    ## 0610009L18Rik   6.064367   6.746786   6.320031   6.272773   6.320996   6.284311
+    ##               146B-CA3-2 146D-CA3-3 147C-CA3-3 147D-CA3-1 148A-CA3-3 148B-CA3-4
+    ## 0610007P14Rik   6.842126   7.230928   7.244900   6.929800   7.016913   7.377410
+    ## 0610009B22Rik   6.988761   6.533834   6.410424   6.609981   6.600412   6.768893
+    ## 0610009L18Rik   6.021975   6.184369   6.150573   6.155501   6.212184   6.259681
 
     savevsds(CA1dds2, "../data/03_CA1_vsdtraining.csv")
 
-    ##        143B-CA1-1 143C-CA1-1 143D-CA1-3 144A-CA1-2 144B-CA1-1 144C-CA1-2
-    ## Xkr4     7.037391   7.546158   7.423300   7.194215   7.064919   7.656286
-    ## Sox17    6.124712   6.516952   6.124712   6.693727   6.124712   6.422991
-    ## Mrpl15   7.037391   7.060431   7.135186   7.058082   7.351403   7.090106
-    ##        145A-CA1-2 145B-CA1-1 146A-CA1-2 146B-CA1-2 146C-CA1-4 146D-CA1-3
-    ## Xkr4     7.291669   7.342841   6.882083   7.578955   7.887459   7.549686
-    ## Sox17    6.807962   6.124712   6.663292   6.775876   6.636289   6.124712
-    ## Mrpl15   7.055680   6.908538   7.171401   7.062297   6.916169   6.124712
-    ##        147C-CA1-3 148A-CA1-3 148B-CA1-4
-    ## Xkr4     7.381679   7.587600   7.068189
-    ## Sox17    6.457302   6.316495   6.860615
-    ## Mrpl15   7.001988   6.991139   7.068189
+    ##               143B-CA1-1 143C-CA1-1 143D-CA1-3 144A-CA1-2 144B-CA1-1 144C-CA1-2
+    ## 0610007P14Rik   7.626135   7.205231   7.426464   7.430562   7.477774   7.258673
+    ## 0610009B22Rik   7.063836   6.916634   6.195554   6.965957   6.775834   6.723175
+    ## 0610009L18Rik   6.799392   6.431682   6.195554   6.621009   6.351612   6.389144
+    ##               145A-CA1-2 145B-CA1-1 146A-CA1-2 146B-CA1-2 146C-CA1-4 147C-CA1-3
+    ## 0610007P14Rik   7.492491   7.451376   7.197799   7.077403   7.494980   7.335370
+    ## 0610009B22Rik   6.886631   6.891557   6.923209   6.799601   6.768535   6.772299
+    ## 0610009L18Rik   6.725450   6.509225   6.729555   6.195554   6.844058   6.394538
+    ##               148A-CA1-3
+    ## 0610007P14Rik   7.411631
+    ## 0610009B22Rik   7.012540
+    ## 0610009L18Rik   6.625123
 
 Results to compare with volcano plots
 -------------------------------------
@@ -483,12 +534,98 @@ Volcano plots
     ## quartz_off_screen 
     ##                 2
 
-    citation("DESeq2") ## for gene expression analysis
+pca analysis
+------------
+
+    # create the dataframe using my function pcadataframe
+
+    plotPCs <- function(mydds, mysubtitle, mytitle){
+      
+      vsd <-  vst(mydds, blind=FALSE)
+      pcadata <- pcadataframe(vsd, intgroup=c("treatment"), returnData=TRUE)
+      percentVar <- round(100 * attr(pcadata, "percentVar"))
+
+      #print(summary(aov(PC1 ~ treatment, data=pcadata))) 
+      #print(TukeyHSD((aov(PC1 ~ treatment, data=pcadata)), which = "treatment"))
+
+      #summary(aov(PC2 ~ treatment, data=pcadata)) 
+      #TukeyHSD((aov(PC2 ~ treatment, data=pcadata)), which = "treatment") 
+      
+      apa1 <- apa.aov.table(aov(PC1 ~ treatment, data=pcadata))
+      apa1 <- as.data.frame(apa1$table_body) 
+      errodf <- apa1 %>% filter(Predictor == "Error") %>% pull(df)
+      pvalue <- apa1 %>% filter(Predictor == "treatment") %>% pull(p)
+      Fstat <- apa1 %>% filter(Predictor == "treatment") %>% pull(F)
+      treatmentdf <- apa1 %>% filter(Predictor == "treatment")  %>% pull(df)
+      
+      mynewsubtitle <- paste(mysubtitle, "\nF(",treatmentdf, ",",errodf, ") = ",
+                             Fstat, ", p=", pvalue, sep = "")
+
+      PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=treatment)) +
+        geom_point(size=2, alpha = 0.8) +
+        xlab(paste0("PC1: ", percentVar[1],"%")) +
+        ylab(paste0("PC2: ", percentVar[2],"%")) +
+        scale_color_manual(values = treatmentcolors) +
+        labs(subtitle = mynewsubtitle) +
+        theme_ms() +
+        theme(legend.position = "none")
+      PCA12
+    }
+
+    a <- plotPCs(DGdds, "DG")
+    b <- plotPCs(CA3dds, "CA3")
+    c <- plotPCs(CA1dds, "CA1")
+
+
+    plotPCs2 <- function(mydds, mysubtitle){
+      
+      vsd <-  vst(mydds, blind=FALSE)
+      pcadata <- pcadataframe(vsd, intgroup=c("training"), returnData=TRUE)
+      percentVar <- round(100 * attr(pcadata, "percentVar"))
+
+      apa1 <- apa.aov.table(aov(PC1 ~ training, data=pcadata))
+      apa1 <- as.data.frame(apa1$table_body) 
+      errodf <- apa1 %>% filter(Predictor == "Error") %>% pull(df)
+      pvalue <- apa1 %>% filter(Predictor == "training") %>% pull(p)
+      Fstat <- apa1 %>% filter(Predictor == "training") %>% pull(F)
+      treatmentdf <- apa1 %>% filter(Predictor == "training")  %>% pull(df)
+      
+      mynewsubtitle <- paste(mysubtitle, "\nF(",treatmentdf, ",",errodf, ") = ",
+                             Fstat, ", p=", pvalue, sep = "")
+      
+      
+      PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=training)) +
+        geom_point(size=2, alpha = 0.8) +
+        xlab(paste0("PC1: ", percentVar[1],"%")) +
+        ylab(paste0("PC2: ", percentVar[2],"%")) +
+        scale_color_manual(values = volcano1) +
+        labs(subtitle = mynewsubtitle) +
+        theme_ms() +
+        theme(legend.position = "none")
+      PCA12
+    }
+
+    d <- plotPCs2(DGdds2, "DG")
+    e <- plotPCs2(CA3dds2, "CA3")
+    f <- plotPCs2(CA1dds2, "CA1")
+
+    abc <- plot_grid(a,b,c, nrow = 1)
+    def <- plot_grid(d,e,f, nrow = 1)
+
+    legend1 <- get_legend(a + theme(legend.position = "bottom", legend.title = element_blank()))
+    legend2 <- get_legend(d + theme(legend.position = "bottom", legend.title = element_blank()))
+
+    abcdefg <- plot_grid(abc,legend1, def, legend2, ncol = 1, rel_heights = c(4,1,4,1))
+    abcdefg
+
+![](../figures/03_rnaseqSubfield/pca-1.png)
+
+    citation("DESeq2") 
 
     ## 
-    ##   Love, M.I., Huber, W., Anders, S. Moderated estimation of fold
-    ##   change and dispersion for RNA-seq data with DESeq2 Genome
-    ##   Biology 15(12):550 (2014)
+    ##   Love, M.I., Huber, W., Anders, S. Moderated estimation of fold change
+    ##   and dispersion for RNA-seq data with DESeq2 Genome Biology 15(12):550
+    ##   (2014)
     ## 
     ## A BibTeX entry for LaTeX users is
     ## 
@@ -521,8 +658,8 @@ Volcano plots
     ##     url = {https://CRAN.R-project.org/package=png},
     ##   }
     ## 
-    ## ATTENTION: This citation information has been auto-generated from
-    ## the package DESCRIPTION file and may need manual editing, see
+    ## ATTENTION: This citation information has been auto-generated from the
+    ## package DESCRIPTION file and may need manual editing, see
     ## 'help("citation")'.
 
     citation("grid")
@@ -530,9 +667,9 @@ Volcano plots
     ## 
     ## The 'grid' package is part of R.  To cite R in publications use:
     ## 
-    ##   R Core Team (2019). R: A language and environment for
-    ##   statistical computing. R Foundation for Statistical Computing,
-    ##   Vienna, Austria. URL https://www.R-project.org/.
+    ##   R Core Team (2019). R: A language and environment for statistical
+    ##   computing. R Foundation for Statistical Computing, Vienna, Austria.
+    ##   URL https://www.R-project.org/.
     ## 
     ## A BibTeX entry for LaTeX users is
     ## 
@@ -545,9 +682,9 @@ Volcano plots
     ##     url = {https://www.R-project.org/},
     ##   }
     ## 
-    ## We have invested a lot of time and effort in creating R, please
-    ## cite it when using it for data analysis. See also
-    ## 'citation("pkgname")' for citing R packages.
+    ## We have invested a lot of time and effort in creating R, please cite it
+    ## when using it for data analysis. See also 'citation("pkgname")' for
+    ## citing R packages.
 
     citation("BiocParallel")
 
