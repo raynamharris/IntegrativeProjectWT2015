@@ -137,60 +137,8 @@ write_csv(suppltable5, "../data/suppltable-5.csv")
 ```{r volcanos, fig.width=6.69, fig.height=6}
 # volcano plots
 
-p1 <- plot.volcano(DGa, volcano1, "214 DEGs") 
-p2 <-  plot.volcano(DGb,volcano2, "0 DEGs") 
-p3 <-  plot.volcano(DGc, volcano3, "3 DEGs") 
-
-p4 <- plot.volcano(CA3a,  volcano1, "0 DEGs") 
-p5 <-  plot.volcano(CA3b, volcano2, "0 DEGs") 
-p6 <-  plot.volcano(CA3c, volcano3, "2 DEGs") 
-
-p7 <- plot.volcano(CA1a,  volcano1, "16 DEGs") 
-p8 <-  plot.volcano(CA1b, volcano2, "0 DEGs") 
-p9 <-  plot.volcano(CA1c, volcano3, "917 DEGs") 
 
 
-# plot grid
-volcanos <- plot_grid(p1 + theme(legend.position = "none") + labs(y = "DG \n -log10(p-value)"),
-                      p2 + theme(legend.position = "none"), 
-                      p3 + theme(legend.position = "none"),
-                      
-                      p4 + theme(legend.position = "none") + labs(y = "CA3 \n -log10(p-value)"),
-                      p5 + theme(legend.position = "none"), 
-                      p6 + theme(legend.position = "none"), 
-                      
-                      p7  + labs( y = "CA1 \n -log10(p-value)", x = "log fold change") +
-                             guides(color=guide_legend(title="increased in")), 
-                      p8 + labs(x = "log fold change"), 
-                      p9 + labs(x = "log fold change"), 
-                      
-                      nrow = 3, 
-                      rel_heights =  c(1,1,1.25) ,
-                      rel_widths = c(1.2,1,1) ,
-                      labels =  c("a", "d", "g",
-                                  "b", "e", "h",
-                                  "c", "f", "i"),
-                      label_size = 8) 
-volcanos
-
-comparisons <- png::readPNG("../figures/00_schematics/figure_DEGcomparisons.png")
-
-comparisons <- ggdraw() +  draw_image(comparisons, scale = 1)
-
-circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
-circuit <- ggdraw() +  draw_image(circuit, scale = 1)
-
-volcanoscomparisons <- plot_grid(volcanos, comparisons, nrow = 2, rel_heights = c(1, 0.1))
-volcanoscomparisonscircuit <- plot_grid(circuit, volcanoscomparisons, nrow = 1, rel_widths = c(0.1,1))
-volcanoscomparisonscircuit
-
-pdf(file="../figures/03_rnaseqSubfield/volcanos.pdf", width=6.69, height=6)
-plot(volcanoscomparisonscircuit)    
-dev.off()
-
-pdf(file="../figures/figure_3.pdf", width=6.69, height=6)
-plot(volcanoscomparisonscircuit)    
-dev.off()
 ```
 
 
@@ -207,12 +155,6 @@ plotPCs <- function(mydds, mysubtitle, mytitle){
   vsd <-  vst(mydds, blind=FALSE)
   pcadata <- pcadataframe(vsd, intgroup=c("treatment"), returnData=TRUE)
   percentVar <- round(100 * attr(pcadata, "percentVar"))
-
-  #print(summary(aov(PC1 ~ treatment, data=pcadata))) 
-  #print(TukeyHSD((aov(PC1 ~ treatment, data=pcadata)), which = "treatment"))
-
-  #summary(aov(PC2 ~ treatment, data=pcadata)) 
-  #TukeyHSD((aov(PC2 ~ treatment, data=pcadata)), which = "treatment") 
   
   apa1 <- apa.aov.table(aov(PC1 ~ treatment, data=pcadata))
   apa1 <- as.data.frame(apa1$table_body) 
@@ -221,7 +163,7 @@ plotPCs <- function(mydds, mysubtitle, mytitle){
   Fstat <- apa1 %>% filter(Predictor == "treatment") %>% pull(F)
   treatmentdf <- apa1 %>% filter(Predictor == "treatment")  %>% pull(df)
   
-  mynewsubtitle <- paste(mysubtitle, "\nF",treatmentdf, ",",errodf, " = ",
+  mynewsubtitle <- paste("F",treatmentdf, ",",errodf, " = ",
                          Fstat, ", p=", pvalue, sep = "")
 
   PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=treatment)) +
@@ -229,7 +171,7 @@ plotPCs <- function(mydds, mysubtitle, mytitle){
     xlab(paste0("PC1: ", percentVar[1],"%")) +
     ylab(paste0("PC2: ", percentVar[2],"%")) +
     scale_color_manual(values = treatmentcolors) +
-    labs(subtitle = mynewsubtitle) +
+    labs(caption = mynewsubtitle) +
     theme_ms() +
     theme(legend.position = "none")
   PCA12
@@ -249,16 +191,15 @@ plotPCs2 <- function(mydds, mysubtitle){
   Fstat <- apa1 %>% filter(Predictor == "training") %>% pull(F)
   treatmentdf <- apa1 %>% filter(Predictor == "training")  %>% pull(df)
   
-  mynewsubtitle <- paste(mysubtitle, "\nF(",treatmentdf, ",",errodf, ") = ",
-                         Fstat, ", p=", pvalue, sep = "")
-  
+    mynewsubtitle <- paste("F",treatmentdf, ",",errodf, " = ",
+                         Fstat, ", p=", pvalue, sep = "")  
   
   PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=training)) +
     geom_point(size=2, alpha = 0.8) +
     xlab(paste0("PC1: ", percentVar[1],"%")) +
     ylab(paste0("PC2: ", percentVar[2],"%")) +
     scale_color_manual(values = volcano1) +
-    labs(subtitle = mynewsubtitle) +
+    labs(caption = mynewsubtitle) +
     theme_ms() +
     theme(legend.position = "none")
   PCA12
@@ -295,42 +236,51 @@ b <- plotPCs2(DGdds2, "DG")
 g <- plotPCs2(CA3dds2, "CA3")  
 l <- plotPCs2(CA1dds2, "CA1")  
 
-c <- DEGbargraph("DG", "standard.trained vs. conflict.trained", "standard trained vs.\nconflict trained")
-h<- DEGbargraph("CA3", "standard.trained vs. conflict.trained", "standard trained vs.\nconflict trained")
-m <- DEGbargraph("CA1", "standard.trained vs. conflict.trained", "standard trained vs.\nconflict trained")
-
-d <- DEGbargraph("DG", "standard.yoked vs. conflict.yoked", "standard yoked vs.\nconflict yoked") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
-i <- DEGbargraph("CA3", "standard.yoked vs. conflict.yoked", "standard yoked vs.\nconflict yoked") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
-n <- DEGbargraph("CA1", "standard.yoked vs. conflict.yoked", "standard yoked vs.\nconflict yoked") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
-
-e <- DEGbargraph("DG", "yoked vs. trained", "yoked vs. trained") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
-j <- DEGbargraph("CA3", "yoked vs. trained", "yoked vs. trained") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
-o <- DEGbargraph("CA1", "yoked vs. trained", "yoked vs. trained") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
-
-abcde <- plot_grid(a,b,c,d,e, nrow = 1)
-fghij <- plot_grid(f,g,h,i,j, nrow = 1)
-klmno <- plot_grid(k,l,m,n,o, nrow = 1)
-
-#legend1 <- get_legend(a + theme(legend.position = "bottom", legend.title = element_blank()))
-#legend2 <- get_legend(d + theme(legend.position = "bottom", legend.title = element_blank()))
-
-plot_grid(abcde,fghij, klmno, ncol = 1)
 
 
-p1 <- plot.volcano(DGa, volcano1, "214 DEGs") 
-p2 <-  plot.volcano(DGb,volcano2, "0 DEGs") 
-p3 <-  plot.volcano(DGc, volcano3, "3 DEGs") 
+p1 <- plot.volcano(DGa, volcano1, "yoked vs. \ntrained") + theme(axis.text.y = element_blank())
+p2 <-  plot.volcano(DGb,volcano2, "yoked vs. \ntrained") + theme(axis.text.y = element_blank())
+p3 <-  plot.volcano(DGc, volcano3, "yoked vs. \ntrained") + theme(axis.text.y = element_blank())
 
-p4 <- plot.volcano(CA3a,  volcano1, "0 DEGs") 
-p5 <-  plot.volcano(CA3b, volcano2, "0 DEGs") 
-p6 <-  plot.volcano(CA3c, volcano3, "2 DEGs") 
+p4 <- plot.volcano(CA3a,  volcano1, "standard vs. \nconflict trained") + labs(y = "-log10(p-value)")
+p5 <-  plot.volcano(CA3b, volcano2, "standard vs. \nconflict trained") + labs(y = "-log10(p-value)")
+p6 <-  plot.volcano(CA3c, volcano3, "standard vs. \nconflict trained") + labs(y = "-log10(p-value)")
 
-p7 <- plot.volcano(CA1a,  volcano1, "16 DEGs") 
-p8 <-  plot.volcano(CA1b, volcano2, "0 DEGs") 
-p9 <-  plot.volcano(CA1c, volcano3, "917 DEGs") 
+p7 <- plot.volcano(CA1a,  volcano1, "standard vs. \nconflict yoked") + theme(axis.text.y = element_blank())
+p8 <-  plot.volcano(CA1b, volcano2, "standard vs. \nconflict yoked") + theme(axis.text.y = element_blank())
+p9 <-  plot.volcano(CA1c, volcano3, "standard vs. \nconflict yoked") + theme(axis.text.y = element_blank())
 
 
+abcde <- plot_grid(a,b,p4,p7,p1, nrow = 1, labels = c("A", " ", "D"), label_size = 8)
+fghij <- plot_grid(f,g,p5,p8,p2, nrow = 1, labels = c("B", " ", "E"), label_size = 8)
+klmno <- plot_grid(k,l,p6,p9,p3, nrow = 1, labels = c("C", " ", "F"), label_size = 8)
+
+
+
+legend1 <- get_legend(a + theme(legend.position = "bottom", legend.title = element_blank()))
+legend2 <- get_legend(b + theme(legend.position = "bottom", legend.title = element_blank()))
+legends <- plot_grid(legend1, legend2, nrow = 1)
+
+mainplot <- plot_grid(abcde,fghij, klmno, legends, ncol = 1, rel_heights = c(1,1,1,0.1))
+
+circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
+circuit <- ggdraw() +  draw_image(circuit, scale = 1)
+
+fig3 <- plot_grid(circuit, mainplot, nrow = 1, rel_widths = c(0.1,1))
+fig3
+
+pdf(file="../figures/03_rnaseqSubfield/volcanos.pdf", width=6.69, height=6)
+plot(fig3)    
+dev.off()
+
+pdf(file="../figures/figure_3.pdf", width=6.69, height=6)
+plot(fig3)    
+dev.off()
 ```
+
+
+
+
 
 ```{r citations}
 citation("DESeq2") 

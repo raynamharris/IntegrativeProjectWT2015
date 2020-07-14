@@ -426,7 +426,7 @@ Volcano plots
 
     # save df with DEGs
 
-    allDEGs <- rbind(DGa, DGb, DGc, 
+    allDEG <- rbind(DGa, DGb, DGc, 
                            CA3a, CA3b, CA3c, 
                            CA1a, CA1b, CA1c) %>% 
       dplyr::filter(direction != "NS") %>%
@@ -435,107 +435,42 @@ Volcano plots
                       logpadj = round(logpadj, 2)) %>%
       arrange(tissue, comparison, gene)
 
-    suppltable4 <- allDEGs %>% filter(tissue == "DG"  & comparison == "yoked vs. trained")
+    suppltable4 <- allDEG %>% filter(tissue == "DG"  & comparison == "yoked vs. trained")
     head(suppltable4)
 
-    ##   tissue          gene  lfc     padj logpadj        comparison direction
-    ## 1     DG 1190002N15Rik 1.64 2.45e-04    3.61 yoked vs. trained   trained
-    ## 2     DG A830010M20Rik 1.53 7.89e-07    6.10 yoked vs. trained   trained
-    ## 3     DG         Abhd2 0.86 1.53e-02    1.81 yoked vs. trained   trained
-    ## 4     DG          Acan 1.97 4.54e-09    8.34 yoked vs. trained   trained
-    ## 5     DG       Adamts1 1.88 1.88e-03    2.73 yoked vs. trained   trained
-    ## 6     DG         Adrb1 0.98 3.11e-02    1.51 yoked vs. trained   trained
+    ##   tissue          gene   lfc     padj logpadj        comparison direction
+    ## 1     DG 1190002N15Rik  1.78 3.60e-04    3.44 yoked vs. trained   trained
+    ## 2     DG 2410002F23Rik -0.51 9.26e-02    1.03 yoked vs. trained     yoked
+    ## 3     DG A830010M20Rik  1.47 1.68e-07    6.78 yoked vs. trained   trained
+    ## 4     DG         Abhd2  0.68 1.33e-02    1.88 yoked vs. trained   trained
+    ## 5     DG          Acan  1.96 5.25e-10    9.28 yoked vs. trained   trained
+    ## 6     DG       Adamts1  1.75 1.28e-02    1.89 yoked vs. trained   trained
 
-    suppltable5 <- allDEGs %>% filter(tissue != "DG"  & comparison != "yoked vs. trained")
+    suppltable5 <- allDEG %>% filter(tissue != "DG"  & comparison != "yoked vs. trained")
     head(suppltable5)
 
-    ##   tissue          gene   lfc     padj logpadj
-    ## 1    CA1 1110032F04Rik  3.70 7.54e-02    1.12
-    ## 2    CA1 1600002K03Rik -4.51 5.71e-02    1.24
-    ## 3    CA1 1810030O07Rik -1.73 6.86e-02    1.16
-    ## 4    CA1 2010107G23Rik -2.14 1.76e-02    1.75
-    ## 5    CA1 2210013O21Rik -2.38 5.17e-02    1.29
-    ## 6    CA1 2210016L21Rik -0.85 9.57e-02    1.02
-    ##                          comparison      direction
-    ## 1 standard.yoked vs. conflict.yoked conflict.yoked
-    ## 2 standard.yoked vs. conflict.yoked standard.yoked
-    ## 3 standard.yoked vs. conflict.yoked standard.yoked
-    ## 4 standard.yoked vs. conflict.yoked standard.yoked
-    ## 5 standard.yoked vs. conflict.yoked standard.yoked
-    ## 6 standard.yoked vs. conflict.yoked standard.yoked
+    ##   tissue     gene   lfc     padj logpadj                            comparison
+    ## 1    CA1     Ank2 -0.58 9.38e-02    1.03 standard.trained vs. conflict.trained
+    ## 2    CA1 Arhgap35 -0.51 9.38e-02    1.03 standard.trained vs. conflict.trained
+    ## 3    CA1    Arpc2  0.43 9.38e-02    1.03 standard.trained vs. conflict.trained
+    ## 4    CA1  Atp6v0c  0.59 2.33e-02    1.63 standard.trained vs. conflict.trained
+    ## 5    CA1 Atp6v1e1  0.47 9.67e-02    1.01 standard.trained vs. conflict.trained
+    ## 6    CA1   Atxn10  0.43 8.26e-02    1.08 standard.trained vs. conflict.trained
+    ##          direction
+    ## 1 standard.trained
+    ## 2 standard.trained
+    ## 3 conflict.trained
+    ## 4 conflict.trained
+    ## 5 conflict.trained
+    ## 6 conflict.trained
 
     write_csv(suppltable4, "../data/suppltable-4.csv")
     write_csv(suppltable5, "../data/suppltable-5.csv")
 
     # volcano plots
 
-    p1 <- plot.volcano(DGa, volcano1, "214 DEGs") 
-    p2 <-  plot.volcano(DGb,volcano2, "0 DEGs") 
-    p3 <-  plot.volcano(DGc, volcano3, "3 DEGs") 
-
-    p4 <- plot.volcano(CA3a,  volcano1, "0 DEGs") 
-    p5 <-  plot.volcano(CA3b, volcano2, "0 DEGs") 
-    p6 <-  plot.volcano(CA3c, volcano3, "2 DEGs") 
-
-    p7 <- plot.volcano(CA1a,  volcano1, "16 DEGs") 
-    p8 <-  plot.volcano(CA1b, volcano2, "0 DEGs") 
-    p9 <-  plot.volcano(CA1c, volcano3, "917 DEGs") 
-
-
-    # plot grid
-    volcanos <- plot_grid(p1 + theme(legend.position = "none") + labs(y = "DG \n -log10(p-value)"),
-                          p2 + theme(legend.position = "none"), 
-                          p3 + theme(legend.position = "none"),
-                          
-                          p4 + theme(legend.position = "none") + labs(y = "CA3 \n -log10(p-value)"),
-                          p5 + theme(legend.position = "none"), 
-                          p6 + theme(legend.position = "none"), 
-                          
-                          p7  + labs( y = "CA1 \n -log10(p-value)", x = "log fold change") +
-                                 guides(color=guide_legend(title="increased in")), 
-                          p8 + labs(x = "log fold change"), 
-                          p9 + labs(x = "log fold change"), 
-                          
-                          nrow = 3, 
-                          rel_heights =  c(1,1,1.25) ,
-                          rel_widths = c(1.2,1,1) ,
-                          labels =  c("a", "d", "g",
-                                      "b", "e", "h",
-                                      "c", "f", "i"),
-                          label_size = 8) 
-    volcanos
-
-![](../figures/03_rnaseqSubfield/volcanos-1.png)
-
-    comparisons <- png::readPNG("../figures/00_schematics/figure_DEGcomparisons.png")
-
-    comparisons <- ggdraw() +  draw_image(comparisons, scale = 1)
-
-    circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
-    circuit <- ggdraw() +  draw_image(circuit, scale = 1)
-
-    volcanoscomparisons <- plot_grid(volcanos, comparisons, nrow = 2, rel_heights = c(1, 0.1))
-    volcanoscomparisonscircuit <- plot_grid(circuit, volcanoscomparisons, nrow = 1, rel_widths = c(0.1,1))
-    volcanoscomparisonscircuit
-
-![](../figures/03_rnaseqSubfield/volcanos-2.png)
-
-    pdf(file="../figures/03_rnaseqSubfield/volcanos.pdf", width=6.69, height=6)
-    plot(volcanoscomparisonscircuit)    
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-    pdf(file="../figures/figure_3.pdf", width=6.69, height=6)
-    plot(volcanoscomparisonscircuit)    
-    dev.off()
-
-    ## quartz_off_screen 
-    ##                 2
-
-pca analysis
-------------
+pca analysis and bar plots functions
+------------------------------------
 
     # create the dataframe using my function pcadataframe
 
@@ -544,12 +479,6 @@ pca analysis
       vsd <-  vst(mydds, blind=FALSE)
       pcadata <- pcadataframe(vsd, intgroup=c("treatment"), returnData=TRUE)
       percentVar <- round(100 * attr(pcadata, "percentVar"))
-
-      #print(summary(aov(PC1 ~ treatment, data=pcadata))) 
-      #print(TukeyHSD((aov(PC1 ~ treatment, data=pcadata)), which = "treatment"))
-
-      #summary(aov(PC2 ~ treatment, data=pcadata)) 
-      #TukeyHSD((aov(PC2 ~ treatment, data=pcadata)), which = "treatment") 
       
       apa1 <- apa.aov.table(aov(PC1 ~ treatment, data=pcadata))
       apa1 <- as.data.frame(apa1$table_body) 
@@ -558,7 +487,7 @@ pca analysis
       Fstat <- apa1 %>% filter(Predictor == "treatment") %>% pull(F)
       treatmentdf <- apa1 %>% filter(Predictor == "treatment")  %>% pull(df)
       
-      mynewsubtitle <- paste(mysubtitle, "\nF(",treatmentdf, ",",errodf, ") = ",
+      mynewsubtitle <- paste("F",treatmentdf, ",",errodf, " = ",
                              Fstat, ", p=", pvalue, sep = "")
 
       PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=treatment)) +
@@ -566,15 +495,11 @@ pca analysis
         xlab(paste0("PC1: ", percentVar[1],"%")) +
         ylab(paste0("PC2: ", percentVar[2],"%")) +
         scale_color_manual(values = treatmentcolors) +
-        labs(subtitle = mynewsubtitle) +
+        labs(caption = mynewsubtitle) +
         theme_ms() +
         theme(legend.position = "none")
       PCA12
     }
-
-    a <- plotPCs(DGdds, "DG")
-    b <- plotPCs(CA3dds, "CA3")
-    c <- plotPCs(CA1dds, "CA1")
 
 
     plotPCs2 <- function(mydds, mysubtitle){
@@ -590,35 +515,99 @@ pca analysis
       Fstat <- apa1 %>% filter(Predictor == "training") %>% pull(F)
       treatmentdf <- apa1 %>% filter(Predictor == "training")  %>% pull(df)
       
-      mynewsubtitle <- paste(mysubtitle, "\nF(",treatmentdf, ",",errodf, ") = ",
-                             Fstat, ", p=", pvalue, sep = "")
-      
+        mynewsubtitle <- paste("F",treatmentdf, ",",errodf, " = ",
+                             Fstat, ", p=", pvalue, sep = "")  
       
       PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=training)) +
         geom_point(size=2, alpha = 0.8) +
         xlab(paste0("PC1: ", percentVar[1],"%")) +
         ylab(paste0("PC2: ", percentVar[2],"%")) +
         scale_color_manual(values = volcano1) +
-        labs(subtitle = mynewsubtitle) +
+        labs(caption = mynewsubtitle) +
         theme_ms() +
         theme(legend.position = "none")
       PCA12
     }
 
-    d <- plotPCs2(DGdds2, "DG")
-    e <- plotPCs2(CA3dds2, "CA3")
-    f <- plotPCs2(CA1dds2, "CA1")
+    DEGbargraph <- function(whichtissue, whichcomparison, mylabels){
+        
+        p <- allDEG %>%
+        filter(tissue == whichtissue,
+               comparison == whichcomparison) %>%
+        ggplot(aes(x = direction,  fill = direction)) +
+        geom_bar(position = "dodge", drop = FALSE) +
+        theme_ms() +
+        theme(legend.position = "none")  +
+        guides(fill = guide_legend(nrow = 1)) +
+        labs( y = "DEGs w/ + LFC", x = NULL,  
+              subtitle = mylabels) +
+        geom_text(stat='count', aes(label=..count..), vjust =-0.5, 
+                  position = position_dodge(width = 1),
+                  size = 2, color = "black")  + 
+        ylim(0, 250) +
+        scale_fill_manual(values = allcolors, 
+                          name = "higher in",
+                          drop=FALSE) 
+      return(p)
+    }
 
-    abc <- plot_grid(a,b,c, nrow = 1)
-    def <- plot_grid(d,e,f, nrow = 1)
+
+    a <- plotPCs(DGdds, "DG")
+    f <- plotPCs(CA3dds, "CA3")
+    k <- plotPCs(CA1dds, "CA1")
+
+    b <- plotPCs2(DGdds2, "DG") 
+    g <- plotPCs2(CA3dds2, "CA3")  
+    l <- plotPCs2(CA1dds2, "CA1")  
+
+
+
+    p1 <- plot.volcano(DGa, volcano1, "yoked vs. \ntrained") + theme(axis.text.y = element_blank())
+    p2 <-  plot.volcano(DGb,volcano2, "yoked vs. \ntrained") + theme(axis.text.y = element_blank())
+    p3 <-  plot.volcano(DGc, volcano3, "yoked vs. \ntrained") + theme(axis.text.y = element_blank())
+
+    p4 <- plot.volcano(CA3a,  volcano1, "standard vs. \nconflict trained") + labs(y = "-log10(p-value)")
+    p5 <-  plot.volcano(CA3b, volcano2, "standard vs. \nconflict trained") + labs(y = "-log10(p-value)")
+    p6 <-  plot.volcano(CA3c, volcano3, "standard vs. \nconflict trained") + labs(y = "-log10(p-value)")
+
+    p7 <- plot.volcano(CA1a,  volcano1, "standard vs. \nconflict yoked") + theme(axis.text.y = element_blank())
+    p8 <-  plot.volcano(CA1b, volcano2, "standard vs. \nconflict yoked") + theme(axis.text.y = element_blank())
+    p9 <-  plot.volcano(CA1c, volcano3, "standard vs. \nconflict yoked") + theme(axis.text.y = element_blank())
+
+
+    abcde <- plot_grid(a,b,p4,p7,p1, nrow = 1, labels = c("A", " ", "D"), label_size = 8)
+    fghij <- plot_grid(f,g,p5,p8,p2, nrow = 1, labels = c("B", " ", "E"), label_size = 8)
+    klmno <- plot_grid(k,l,p6,p9,p3, nrow = 1, labels = c("C", " ", "F"), label_size = 8)
+
+
 
     legend1 <- get_legend(a + theme(legend.position = "bottom", legend.title = element_blank()))
-    legend2 <- get_legend(d + theme(legend.position = "bottom", legend.title = element_blank()))
+    legend2 <- get_legend(b + theme(legend.position = "bottom", legend.title = element_blank()))
+    legends <- plot_grid(legend1, legend2, nrow = 1)
 
-    abcdefg <- plot_grid(abc,legend1, def, legend2, ncol = 1, rel_heights = c(4,1,4,1))
-    abcdefg
+    mainplot <- plot_grid(abcde,fghij, klmno, legends, ncol = 1, rel_heights = c(1,1,1,0.1))
+
+    circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
+    circuit <- ggdraw() +  draw_image(circuit, scale = 1)
+
+    fig3 <- plot_grid(circuit, mainplot, nrow = 1, rel_widths = c(0.1,1))
+    fig3
 
 ![](../figures/03_rnaseqSubfield/pca-1.png)
+
+    pdf(file="../figures/03_rnaseqSubfield/volcanos.pdf", width=6.69, height=6)
+    plot(fig3)    
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
+
+    pdf(file="../figures/figure_3.pdf", width=6.69, height=6)
+    plot(fig3)    
+    dev.off()
+
+    ## quartz_off_screen 
+    ##                 2
 
     citation("DESeq2") 
 

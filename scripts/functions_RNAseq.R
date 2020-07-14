@@ -132,11 +132,8 @@ plot.volcano <- function(data, mycolors, mysubtitle){
                        drop = FALSE) +
     ylim(c(0,12.5)) +  
     xlim(c(-8,8)) +
-    labs(y = NULL, x = NULL, subtitle = mysubtitle)  +
-    theme(legend.position = "bottom",
-          legend.spacing.x = unit(-0.1, 'cm'),
-          legend.margin=margin(t=-0.25, r=0, b=0, l=0, unit="cm"),
-          panel.grid = element_blank()) 
+    labs(y = NULL, x = "log fold change", subtitle = mysubtitle)  +
+    theme(legend.position = "none")
   return(volcano)
   
 }
