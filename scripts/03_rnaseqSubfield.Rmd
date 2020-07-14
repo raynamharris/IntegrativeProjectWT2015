@@ -107,7 +107,7 @@ CA1c <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.yoked", "standard.y
 
 # save df with DEGs
 
-allDEGs <- rbind(DGa, DGb, DGc, 
+allDEG <- rbind(DGa, DGb, DGc, 
                        CA3a, CA3b, CA3c, 
                        CA1a, CA1b, CA1c) %>% 
   dplyr::filter(direction != "NS") %>%
@@ -116,10 +116,10 @@ allDEGs <- rbind(DGa, DGb, DGc,
                   logpadj = round(logpadj, 2)) %>%
   arrange(tissue, comparison, gene)
 
-suppltable4 <- allDEGs %>% filter(tissue == "DG"  & comparison == "yoked vs. trained")
+suppltable4 <- allDEG %>% filter(tissue == "DG"  & comparison == "yoked vs. trained")
 head(suppltable4)
 
-suppltable5 <- allDEGs %>% filter(tissue != "DG"  & comparison != "yoked vs. trained")
+suppltable5 <- allDEG %>% filter(tissue != "DG"  & comparison != "yoked vs. trained")
 head(suppltable5)
 
 write_csv(suppltable4, "../data/suppltable-4.csv")
@@ -131,6 +131,61 @@ write_csv(suppltable5, "../data/suppltable-5.csv")
 ## bar plots
 
 
+```{r}
+
+DEGbargraph <- function(whichtissue, whichcomparison){
+
+      p <- allDEG %>%
+    filter(tissue == whichtissue,
+           comparison == whichcomparison) %>%
+    ggplot(aes(x = comparison,  fill = direction)) +
+    geom_bar(position = "dodge", drop = FALSE) +
+    theme_ms() +
+    theme(legend.position = "none")  +
+    guides(fill = guide_legend(nrow = 1)) +
+    labs( y = "DEGs w/ + LFC", x = NULL, 
+          subtitle = paste(whichtissue, whichcomparison, sep = ", ")) +
+    geom_text(stat='count', aes(label=..count..), vjust =-0.5, 
+              position = position_dodge(width = 1),
+              size = 2, color = "black")  + 
+    #ylim(lowlim, higherlim) +
+    scale_fill_manual(values = allcolors, name = "higher in")    
+  return(p)
+}
+
+DEGbargraph("DG", "standard.yoked vs. conflict.yoked")
+DEGbargraph("CA3", "standard.yoked vs. conflict.yoked")
+DEGbargraph("CA1", "standard.yoked vs. conflict.yoked")
+
+DEGbargraph("DG", "yoked vs. trained")
+DEGbargraph("CA3", "yoked vs. trained")
+DEGbargraph("CA1", "yoked vs. trained")
+
+```
+
+
+```{r}
+makenewbargraph <- function(whichtissue, whichsex,  whichcomparison, lowlim, higherlim){
+  p <- allDEGs %>%
+    filter(tissue == whichtissue,
+           comparison == whichcomparison,
+           sex == whichsex) %>%
+    ggplot(aes(x = comparison,  fill = direction)) +
+    geom_bar(position = "dodge", drop = FALSE) +
+    theme_B3() +
+    theme(legend.position = "none")  +
+    guides(fill = guide_legend(nrow = 1)) +
+    labs( y = "DEGs w/ + LFC", x = NULL) +
+    geom_text(stat='count', aes(label=..count..), vjust =-0.5, 
+              position = position_dodge(width = 1),
+              size = 2, color = "black")  + 
+    ylim(lowlim, higherlim) +
+    scale_fill_manual(values = allcolors, name = "higher in")    
+  return(p)
+}
+
+makenewbargraph()
+```
 
 
 

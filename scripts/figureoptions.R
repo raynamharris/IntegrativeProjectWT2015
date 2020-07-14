@@ -43,3 +43,5 @@ volcano1 <-  c("trained" = "darkred", "yoked" = "black",  "NS" = "#d9d9d9")
 volcano2 <-  c("standard.trained" = "#ca0020", "conflict.trained" = "#f4a582", "NS" = "#d9d9d9")
 volcano3 <-  c("standard.yoked" = "#404040", "conflict.yoked" = "#969696",  "NS" = "#d9d9d9")
 
+
+allcolors <- c(treatmentcolors, colorvalsubfield, volcano1)
