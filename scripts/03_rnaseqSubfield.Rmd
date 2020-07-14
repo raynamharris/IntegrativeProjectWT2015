@@ -166,7 +166,7 @@ DEGbargraph("CA1", "yoked vs. trained")
 
 ```{r}
 makenewbargraph <- function(whichtissue, whichsex,  whichcomparison, lowlim, higherlim){
-  p <- allDEGs %>%
+  p <- allDEG %>%
     filter(tissue == whichtissue,
            comparison == whichcomparison,
            sex == whichsex) %>%
@@ -184,7 +184,7 @@ makenewbargraph <- function(whichtissue, whichsex,  whichcomparison, lowlim, hig
   return(p)
 }
 
-makenewbargraph()
+#makenewbargraph()
 ```
 
 
