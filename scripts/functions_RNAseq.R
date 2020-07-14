@@ -125,8 +125,7 @@ plot.volcano <- function(data, mycolors, mysubtitle){
   
   volcano <- data %>%
     ggplot(aes(x = lfc, y = logpadj)) + 
-    #geom_point(aes(color = direction), size = 1, alpha = 0.75, na.rm = T) +    
-    geom_bar(position = "dodge", drop = FALSE) +
+    geom_point(aes(color = direction), size = 1, alpha = 0.75, na.rm = T) +    
     theme_ms() +
     scale_color_manual(values = mycolors,
                        name = " ",

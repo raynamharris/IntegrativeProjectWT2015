@@ -128,64 +128,9 @@ write_csv(suppltable5, "../data/suppltable-5.csv")
 ```
 
 
-## bar plots
 
 
-```{r}
 
-DEGbargraph <- function(whichtissue, whichcomparison){
-
-      p <- allDEG %>%
-    filter(tissue == whichtissue,
-           comparison == whichcomparison) %>%
-    ggplot(aes(x = comparison,  fill = direction)) +
-    geom_bar(position = "dodge", drop = FALSE) +
-    theme_ms() +
-    theme(legend.position = "none")  +
-    guides(fill = guide_legend(nrow = 1)) +
-    labs( y = "DEGs w/ + LFC", x = NULL, 
-          subtitle = paste(whichtissue, whichcomparison, sep = ", ")) +
-    geom_text(stat='count', aes(label=..count..), vjust =-0.5, 
-              position = position_dodge(width = 1),
-              size = 2, color = "black")  + 
-    #ylim(lowlim, higherlim) +
-    scale_fill_manual(values = allcolors, name = "higher in")    
-  return(p)
-}
-
-DEGbargraph("DG", "standard.yoked vs. conflict.yoked")
-DEGbargraph("CA3", "standard.yoked vs. conflict.yoked")
-DEGbargraph("CA1", "standard.yoked vs. conflict.yoked")
-
-DEGbargraph("DG", "yoked vs. trained")
-DEGbargraph("CA3", "yoked vs. trained")
-DEGbargraph("CA1", "yoked vs. trained")
-
-```
-
-
-```{r}
-makenewbargraph <- function(whichtissue, whichsex,  whichcomparison, lowlim, higherlim){
-  p <- allDEG %>%
-    filter(tissue == whichtissue,
-           comparison == whichcomparison,
-           sex == whichsex) %>%
-    ggplot(aes(x = comparison,  fill = direction)) +
-    geom_bar(position = "dodge", drop = FALSE) +
-    theme_B3() +
-    theme(legend.position = "none")  +
-    guides(fill = guide_legend(nrow = 1)) +
-    labs( y = "DEGs w/ + LFC", x = NULL) +
-    geom_text(stat='count', aes(label=..count..), vjust =-0.5, 
-              position = position_dodge(width = 1),
-              size = 2, color = "black")  + 
-    ylim(lowlim, higherlim) +
-    scale_fill_manual(values = allcolors, name = "higher in")    
-  return(p)
-}
-
-#makenewbargraph()
-```
 
 
 
@@ -250,8 +195,8 @@ dev.off()
 
 
 
+## pca analysis and bar plots functions
 
-## pca analysis 
 
 
 ```{r pca, fig.width=6.69, fig.height=6}
@@ -276,7 +221,7 @@ plotPCs <- function(mydds, mysubtitle, mytitle){
   Fstat <- apa1 %>% filter(Predictor == "treatment") %>% pull(F)
   treatmentdf <- apa1 %>% filter(Predictor == "treatment")  %>% pull(df)
   
-  mynewsubtitle <- paste(mysubtitle, "\nF(",treatmentdf, ",",errodf, ") = ",
+  mynewsubtitle <- paste(mysubtitle, "\nF",treatmentdf, ",",errodf, " = ",
                          Fstat, ", p=", pvalue, sep = "")
 
   PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=treatment)) +
@@ -289,10 +234,6 @@ plotPCs <- function(mydds, mysubtitle, mytitle){
     theme(legend.position = "none")
   PCA12
 }
-
-a <- plotPCs(DGdds, "DG")
-b <- plotPCs(CA3dds, "CA3")
-c <- plotPCs(CA1dds, "CA1")
 
 
 plotPCs2 <- function(mydds, mysubtitle){
@@ -323,21 +264,73 @@ plotPCs2 <- function(mydds, mysubtitle){
   PCA12
 }
 
-d <- plotPCs2(DGdds2, "DG")
-e <- plotPCs2(CA3dds2, "CA3")
-f <- plotPCs2(CA1dds2, "CA1")
+DEGbargraph <- function(whichtissue, whichcomparison, mylabels){
+    
+    p <- allDEG %>%
+    filter(tissue == whichtissue,
+           comparison == whichcomparison) %>%
+    ggplot(aes(x = direction,  fill = direction)) +
+    geom_bar(position = "dodge", drop = FALSE) +
+    theme_ms() +
+    theme(legend.position = "none")  +
+    guides(fill = guide_legend(nrow = 1)) +
+    labs( y = "DEGs w/ + LFC", x = NULL,  
+          subtitle = mylabels) +
+    geom_text(stat='count', aes(label=..count..), vjust =-0.5, 
+              position = position_dodge(width = 1),
+              size = 2, color = "black")  + 
+    ylim(0, 250) +
+    scale_fill_manual(values = allcolors, 
+                      name = "higher in",
+                      drop=FALSE) 
+  return(p)
+}
 
-abc <- plot_grid(a,b,c, nrow = 1)
-def <- plot_grid(d,e,f, nrow = 1)
 
-legend1 <- get_legend(a + theme(legend.position = "bottom", legend.title = element_blank()))
-legend2 <- get_legend(d + theme(legend.position = "bottom", legend.title = element_blank()))
+a <- plotPCs(DGdds, "DG")
+f <- plotPCs(CA3dds, "CA3")
+k <- plotPCs(CA1dds, "CA1")
 
-abcdefg <- plot_grid(abc,legend1, def, legend2, ncol = 1, rel_heights = c(4,1,4,1))
-abcdefg
+b <- plotPCs2(DGdds2, "DG") 
+g <- plotPCs2(CA3dds2, "CA3")  
+l <- plotPCs2(CA1dds2, "CA1")  
+
+c <- DEGbargraph("DG", "standard.trained vs. conflict.trained", "standard trained vs.\nconflict trained")
+h<- DEGbargraph("CA3", "standard.trained vs. conflict.trained", "standard trained vs.\nconflict trained")
+m <- DEGbargraph("CA1", "standard.trained vs. conflict.trained", "standard trained vs.\nconflict trained")
+
+d <- DEGbargraph("DG", "standard.yoked vs. conflict.yoked", "standard yoked vs.\nconflict yoked") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+i <- DEGbargraph("CA3", "standard.yoked vs. conflict.yoked", "standard yoked vs.\nconflict yoked") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+n <- DEGbargraph("CA1", "standard.yoked vs. conflict.yoked", "standard yoked vs.\nconflict yoked") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+
+e <- DEGbargraph("DG", "yoked vs. trained", "yoked vs. trained") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+j <- DEGbargraph("CA3", "yoked vs. trained", "yoked vs. trained") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+o <- DEGbargraph("CA1", "yoked vs. trained", "yoked vs. trained") + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+
+abcde <- plot_grid(a,b,c,d,e, nrow = 1)
+fghij <- plot_grid(f,g,h,i,j, nrow = 1)
+klmno <- plot_grid(k,l,m,n,o, nrow = 1)
+
+#legend1 <- get_legend(a + theme(legend.position = "bottom", legend.title = element_blank()))
+#legend2 <- get_legend(d + theme(legend.position = "bottom", legend.title = element_blank()))
+
+plot_grid(abcde,fghij, klmno, ncol = 1)
+
+
+p1 <- plot.volcano(DGa, volcano1, "214 DEGs") 
+p2 <-  plot.volcano(DGb,volcano2, "0 DEGs") 
+p3 <-  plot.volcano(DGc, volcano3, "3 DEGs") 
+
+p4 <- plot.volcano(CA3a,  volcano1, "0 DEGs") 
+p5 <-  plot.volcano(CA3b, volcano2, "0 DEGs") 
+p6 <-  plot.volcano(CA3c, volcano3, "2 DEGs") 
+
+p7 <- plot.volcano(CA1a,  volcano1, "16 DEGs") 
+p8 <-  plot.volcano(CA1b, volcano2, "0 DEGs") 
+p9 <-  plot.volcano(CA1c, volcano3, "917 DEGs") 
+
 
 ```
-
 
 ```{r citations}
 citation("DESeq2") 
