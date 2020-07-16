@@ -49,3 +49,11 @@ allcolors <- c(treatmentcolors,
                colorvalsubfield, 
                trainingcolors,
                "NS" = "#d9d9d9")
+
+myshapes <- c( "standard.yoked" = 19, 
+             "standard.trained" = 15,
+             "conflict.yoked" = 18,
+             "conflict.trained" = 17,
+             "trained" = 9, 
+             "yoked" = 0,
+             "NS" = 1 )

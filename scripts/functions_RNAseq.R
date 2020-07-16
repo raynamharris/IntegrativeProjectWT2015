@@ -124,18 +124,21 @@ calculateDEGs <-  function(mydds, whichtissue, whichfactor, up, down){
 plot.volcano <- function(data, mysubtitle){
   
   volcano <- data %>%
-    ggplot(aes(x = lfc, y = logpadj)) + 
-    geom_point(aes(color = direction), size = 1, alpha = 0.75, na.rm = T) +    
+    ggplot(aes(x = lfc, y = logpadj, color = direction)) + 
+    geom_point(aes(shape = direction), 
+               size = 2, alpha = 1, na.rm = T,
+               show.legend = FALSE) +    
     theme_ms() +
     scale_color_manual(values = allcolors,
                        name = " ") +
+    scale_shape_manual(values = myshapes) +
     ylim(c(0,12.5)) +  
     xlim(c(-8,8)) +
     labs(y = NULL, x = NULL ,
          caption = "log fold change", 
          subtitle = mysubtitle)  +
     theme(legend.position = "none", plot.caption = element_text(hjust = 0.5),
-          axis.text.y = element_blank())
+          axis.text.y = element_blank())  
   return(volcano)
   
 }
@@ -315,18 +318,21 @@ plotPCs <- function(mydds, mysubtitle, mytitle){
                          Fstat, ", p=", pvalue, sep = "")
   
   PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2)) +
-    geom_point(size=2, alpha = 0.8, aes(color=treatment)) +
+    geom_point(size=2, alpha = 0.8, 
+               aes(color=treatment, shape = treatment)) +
     stat_ellipse(aes(color=training)) +
     xlab(paste0("PC1: ", percentVar[1],"%")) +
     ylab(paste0("PC2: ", percentVar[2],"%")) +
-    scale_color_manual(values = allcolors,
+    scale_color_manual(drop = F,
+                       values = allcolors,
                        breaks=c("standard.yoked", 
-                                "yoked", 
-                                "conflict.yoked",
                                 "standard.trained", 
-                                "trained",
+                                "conflict.yoked", 
                                 "conflict.trained", 
+                                "yoked", 
+                                "trained",
                                  "NS")) +
+    scale_shape_manual(values = myshapes, drop = F) +
     labs(subtitle = mynewsubtitle, title = "") +
     theme_ms() +
     theme(legend.position = "none")

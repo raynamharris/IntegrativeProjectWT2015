@@ -126,8 +126,6 @@ allDEG <- rbind(DGa, DGb, DGc, DGd, DGe,
 
 ```{r pca, fig.width=6.69, fig.height=6}
 
-circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
-circuit <- ggdraw() +  draw_image(circuit, scale = 1)
 
 a <- plotPCs(DGdds, "DG") 
 b <- plot.volcano(DGa, "std. trained vs.\nstd. yoked") + labs(y = "-log10(p-value)")
@@ -152,8 +150,14 @@ q <- plot.volcano(CA1d, " ")
 r <- plot.volcano(CA1e, " ")  
 
 legend <- get_legend(a + theme(legend.position = "bottom", 
-                               legend.title = element_blank()) + 
-                       guides(col = guide_legend(nrow = 1)))
+                               legend.title = element_blank()) +
+                       guides(color = guide_legend(nrow = 2),
+                              shape = guide_legend(nrow = 2)))
+legend2 <- get_legend(f + theme(legend.position = "bottom", 
+                               legend.title = element_blank()) +
+                       guides(shape = guide_legend(nrow = 2)))
+
+legends <- plot_grid(legend, legend2, rel_widths = c(2,1))
 
 mainplot <- plot_grid(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r, 
                       nrow = 3, rel_widths = c(1,1,0.8,0.8,0.8,0.8),
@@ -162,12 +166,12 @@ mainplot <- plot_grid(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,
                                  "CA1", "", "", "", "", ""),
                       label_size = 8)
 
-plotwithicons <- plot_grid(circuit, mainplot, ncol = 2, rel_widths = c(0.11,1))
+circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
+circuit <- ggdraw() +  draw_image(circuit, scale = 1)
+circuitmainplot <- plot_grid(circuit, mainplot, ncol = 2, rel_widths = c(0.11,1))
 
-fig3 <- plot_grid(plotwithicons, legend, ncol = 1, rel_heights = c(1, 0.1))
+fig3 <- plot_grid(circuitmainplot, legends, ncol = 1, rel_heights = c(1, 0.1))
 fig3
-
-
 ```
 
 ## save files 
