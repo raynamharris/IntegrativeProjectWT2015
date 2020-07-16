@@ -31,8 +31,6 @@ knitr::opts_chunk$set(fig.path = '../figures/03_rnaseqSubfield/', cache = T)
 
 ```{r DGdeseq}
 
-
-
 # prep col data,
 outliers <- c("146D-DG-3", "145A-CA3-2", "146B-DG-2", "146D-CA1-3", "148B-CA1-4")
 
@@ -93,179 +91,89 @@ res_summary_subfield(CA1dds, c("treatment", "conflict.yoked", "standard.yoked"))
 ```{r DEGs}
 
 # create data frame for making volcanos plots
-DGa <- calculateDEGs(DGdds2, "DG", "training", "trained", "yoked") 
-DGb <-  calculateDEGs(DGdds, "DG", "treatment", "conflict.trained", "standard.trained") 
-DGc <-  calculateDEGs(DGdds, "DG", "treatment", "conflict.yoked", "standard.yoked") 
+DGa <-  calculateDEGs(DGdds, "DG", "treatment", "standard.trained", "standard.yoked") 
+DGb <-  calculateDEGs(DGdds, "DG", "treatment", "conflict.trained", "conflict.yoked") 
+DGc <-  calculateDEGs(DGdds, "DG", "treatment", "conflict.trained", "standard.trained") 
+DGd <-  calculateDEGs(DGdds, "DG", "treatment", "conflict.yoked", "standard.yoked") 
+DGe <- calculateDEGs(DGdds2, "DG", "training", "trained", "yoked") 
 
-CA3a <- calculateDEGs(CA3dds2, "CA3", "training", "trained", "yoked") 
-CA3b <-  calculateDEGs(CA3dds, "CA3", "treatment", "conflict.trained", "standard.trained") 
-CA3c <-  calculateDEGs(CA3dds, "CA3", "treatment", "conflict.yoked", "standard.yoked") 
+CA3a <-  calculateDEGs(CA3dds, "CA3", "treatment", "standard.trained", "standard.yoked") 
+CA3b <-  calculateDEGs(CA3dds, "CA3", "treatment", "conflict.trained", "conflict.yoked") 
+CA3c <-  calculateDEGs(CA3dds, "CA3", "treatment", "conflict.trained", "standard.trained") 
+CA3d <-  calculateDEGs(CA3dds, "CA3", "treatment", "conflict.yoked", "standard.yoked") 
+CA3e <- calculateDEGs(CA3dds2, "CA3", "training", "trained", "yoked") 
 
-CA1a <- calculateDEGs(CA1dds2, "CA1", "training", "trained", "yoked") 
-CA1b <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.trained", "standard.trained") 
-CA1c <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.yoked", "standard.yoked") 
+CA1a <-  calculateDEGs(CA1dds, "CA1", "treatment", "standard.trained", "standard.yoked") 
+CA1b <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.trained", "conflict.yoked") 
+CA1c <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.trained", "standard.trained") 
+CA1d <-  calculateDEGs(CA1dds, "CA1", "treatment", "conflict.yoked", "standard.yoked") 
+CA1e <- calculateDEGs(CA1dds2, "CA1", "training", "trained", "yoked") 
 
 # save df with DEGs
 
-allDEG <- rbind(DGa, DGb, DGc, 
-                       CA3a, CA3b, CA3c, 
-                       CA1a, CA1b, CA1c) %>% 
+allDEG <- rbind(DGa, DGb, DGc, DGd, DGe,
+               CA3a, CA3b, CA3c, CA3d, CA3e, 
+               CA1a, CA1b, CA1c, CA1d, CA1e) %>% 
   dplyr::filter(direction != "NS") %>%
     dplyr::mutate(lfc = round(lfc, 2),
                   padj = scientific(padj, digits = 3),
                   logpadj = round(logpadj, 2)) %>%
   arrange(tissue, comparison, gene)
 
-suppltable4 <- allDEG %>% filter(tissue == "DG"  & comparison == "yoked vs. trained")
-head(suppltable4)
-
-suppltable5 <- allDEG %>% filter(tissue != "DG"  & comparison != "yoked vs. trained")
-head(suppltable5)
-
-write_csv(suppltable4, "../data/suppltable-4.csv")
-write_csv(suppltable5, "../data/suppltable-5.csv")
-
 ```
-
-
-
-
-
-
-
-
-```{r volcanos, fig.width=6.69, fig.height=6}
-# volcano plots
-
-
-
-```
-
-
 
 ## pca analysis and bar plots functions
 
-
-
 ```{r pca, fig.width=6.69, fig.height=6}
-# create the dataframe using my function pcadataframe
-
-plotPCs <- function(mydds, mysubtitle, mytitle){
-  
-  vsd <-  vst(mydds, blind=FALSE)
-  pcadata <- pcadataframe(vsd, intgroup=c("treatment"), returnData=TRUE)
-  percentVar <- round(100 * attr(pcadata, "percentVar"))
-  
-  apa1 <- apa.aov.table(aov(PC1 ~ treatment, data=pcadata))
-  apa1 <- as.data.frame(apa1$table_body) 
-  errodf <- apa1 %>% filter(Predictor == "Error") %>% pull(df)
-  pvalue <- apa1 %>% filter(Predictor == "treatment") %>% pull(p)
-  Fstat <- apa1 %>% filter(Predictor == "treatment") %>% pull(F)
-  treatmentdf <- apa1 %>% filter(Predictor == "treatment")  %>% pull(df)
-  
-  mynewsubtitle <- paste("F",treatmentdf, ",",errodf, " = ",
-                         Fstat, ", p=", pvalue, sep = "")
-
-  PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=treatment)) +
-    geom_point(size=2, alpha = 0.8) +
-    xlab(paste0("PC1: ", percentVar[1],"%")) +
-    ylab(paste0("PC2: ", percentVar[2],"%")) +
-    scale_color_manual(values = treatmentcolors) +
-    labs(caption = mynewsubtitle) +
-    theme_ms() +
-    theme(legend.position = "none")
-  PCA12
-}
-
-
-plotPCs2 <- function(mydds, mysubtitle){
-  
-  vsd <-  vst(mydds, blind=FALSE)
-  pcadata <- pcadataframe(vsd, intgroup=c("training"), returnData=TRUE)
-  percentVar <- round(100 * attr(pcadata, "percentVar"))
-
-  apa1 <- apa.aov.table(aov(PC1 ~ training, data=pcadata))
-  apa1 <- as.data.frame(apa1$table_body) 
-  errodf <- apa1 %>% filter(Predictor == "Error") %>% pull(df)
-  pvalue <- apa1 %>% filter(Predictor == "training") %>% pull(p)
-  Fstat <- apa1 %>% filter(Predictor == "training") %>% pull(F)
-  treatmentdf <- apa1 %>% filter(Predictor == "training")  %>% pull(df)
-  
-    mynewsubtitle <- paste("F",treatmentdf, ",",errodf, " = ",
-                         Fstat, ", p=", pvalue, sep = "")  
-  
-  PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2, color=training)) +
-    geom_point(size=2, alpha = 0.8) +
-    xlab(paste0("PC1: ", percentVar[1],"%")) +
-    ylab(paste0("PC2: ", percentVar[2],"%")) +
-    scale_color_manual(values = volcano1) +
-    labs(caption = mynewsubtitle) +
-    theme_ms() +
-    theme(legend.position = "none")
-  PCA12
-}
-
-DEGbargraph <- function(whichtissue, whichcomparison, mylabels){
-    
-    p <- allDEG %>%
-    filter(tissue == whichtissue,
-           comparison == whichcomparison) %>%
-    ggplot(aes(x = direction,  fill = direction)) +
-    geom_bar(position = "dodge", drop = FALSE) +
-    theme_ms() +
-    theme(legend.position = "none")  +
-    guides(fill = guide_legend(nrow = 1)) +
-    labs( y = "DEGs w/ + LFC", x = NULL,  
-          subtitle = mylabels) +
-    geom_text(stat='count', aes(label=..count..), vjust =-0.5, 
-              position = position_dodge(width = 1),
-              size = 2, color = "black")  + 
-    ylim(0, 250) +
-    scale_fill_manual(values = allcolors, 
-                      name = "higher in",
-                      drop=FALSE) 
-  return(p)
-}
-
-
-a <- plotPCs(DGdds, "DG")
-f <- plotPCs(CA3dds, "CA3")
-k <- plotPCs(CA1dds, "CA1")
-
-b <- plotPCs2(DGdds2, "DG") 
-g <- plotPCs2(CA3dds2, "CA3")  
-l <- plotPCs2(CA1dds2, "CA1")  
-
-
-
-p1 <- plot.volcano(DGa, volcano1, "yoked vs. \ntrained") + theme(axis.text.y = element_blank())
-p2 <-  plot.volcano(DGb,volcano2, "yoked vs. \ntrained") + theme(axis.text.y = element_blank())
-p3 <-  plot.volcano(DGc, volcano3, "yoked vs. \ntrained") + theme(axis.text.y = element_blank())
-
-p4 <- plot.volcano(CA3a,  volcano1, "standard vs. \nconflict trained") + labs(y = "-log10(p-value)")
-p5 <-  plot.volcano(CA3b, volcano2, "standard vs. \nconflict trained") + labs(y = "-log10(p-value)")
-p6 <-  plot.volcano(CA3c, volcano3, "standard vs. \nconflict trained") + labs(y = "-log10(p-value)")
-
-p7 <- plot.volcano(CA1a,  volcano1, "standard vs. \nconflict yoked") + theme(axis.text.y = element_blank())
-p8 <-  plot.volcano(CA1b, volcano2, "standard vs. \nconflict yoked") + theme(axis.text.y = element_blank())
-p9 <-  plot.volcano(CA1c, volcano3, "standard vs. \nconflict yoked") + theme(axis.text.y = element_blank())
-
-abcde <- plot_grid(a,b,p4,p7,p1, nrow = 1, labels = c("A", " ", "D"), label_size = 8)
-fghij <- plot_grid(f,g,p5,p8,p2, nrow = 1, labels = c("B", " ", "E"), label_size = 8)
-klmno <- plot_grid(k,l,p6,p9,p3, nrow = 1, labels = c("C", " ", "F"), label_size = 8)
-
-legend1 <- get_legend(a + theme(legend.position = "bottom", legend.title = element_blank()))
-legend2 <- get_legend(b + theme(legend.position = "bottom", legend.title = element_blank()))
-legends <- plot_grid(legend1, legend2, nrow = 1)
-
-mainplot <- plot_grid(abcde,fghij, klmno, legends, ncol = 1, rel_heights = c(1,1,1,0.1))
 
 circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
 circuit <- ggdraw() +  draw_image(circuit, scale = 1)
 
-fig3 <- plot_grid(circuit, mainplot, nrow = 1, rel_widths = c(0.1,1))
+a <- plotPCs(DGdds, "DG") 
+b <- plot.volcano(DGa, "std. trained vs.\nstd. yoked") + labs(y = "-log10(p-value)")
+c <- plot.volcano(DGb, "con. trained vs.\ncon. yoked")  
+d <- plot.volcano(DGc, "std. trained vs. \ncon. trained")  
+e <- plot.volcano(DGd, "std. yoked vs. \ncon. yoked")  
+f <- plot.volcano(DGe, "all yoked vs. \nall trained")  
+
+g <- plotPCs(CA3dds, "CA3")
+h <- plot.volcano(CA3a, " ") + labs(y = "-log10(p-value)")
+i <- plot.volcano(CA3b, " ")  
+j <- plot.volcano(CA3c, " ")  
+k <- plot.volcano(CA3d, " ")  
+l <- plot.volcano(CA3e, " ")  
+
+
+m <- plotPCs(CA1dds, "CA1")
+n <- plot.volcano(CA1a, " ") + labs(y = "-log10(p-value)")
+o <- plot.volcano(CA1b, " ")  
+p <- plot.volcano(CA1c, " ")   
+q <- plot.volcano(CA1d, " ")  
+r <- plot.volcano(CA1e, " ")  
+
+legend <- get_legend(a + theme(legend.position = "bottom", 
+                               legend.title = element_blank()) + 
+                       guides(col = guide_legend(nrow = 1)))
+
+mainplot <- plot_grid(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r, 
+                      nrow = 3, rel_widths = c(1,1,0.8,0.8,0.8,0.8),
+                      labels = c("DG", "", "", "", "", "", 
+                                 "CA3", "", "", "", "", "", 
+                                 "CA1", "", "", "", "", ""),
+                      label_size = 8)
+
+plotwithicons <- plot_grid(circuit, mainplot, ncol = 2, rel_widths = c(0.11,1))
+
+fig3 <- plot_grid(plotwithicons, legend, ncol = 1, rel_heights = c(1, 0.1))
 fig3
 
+
+```
+
+## save files 
+
+
+```{r save}
 pdf(file="../figures/03_rnaseqSubfield/volcanos.pdf", width=6.69, height=6)
 plot(fig3)    
 dev.off()
@@ -273,6 +181,17 @@ dev.off()
 pdf(file="../figures/fig-3.pdf", width=6.69, height=6)
 plot(fig3)    
 dev.off()
+
+suppltable4 <- allDEG %>% filter(tissue == "DG"  & comparison == "yoked vs. trained")
+head(suppltable4)
+
+suppltable5 <- allDEG %>% filter(tissue != "DG"  & comparison != "yoked vs. trained")
+head(suppltable5)
+
+
+write_csv(suppltable4, "../data/suppltable-4.csv")
+write_csv(suppltable5, "../data/suppltable-5.csv")
+
 ```
 
 

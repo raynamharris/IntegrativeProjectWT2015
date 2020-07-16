@@ -121,19 +121,21 @@ calculateDEGs <-  function(mydds, whichtissue, whichfactor, up, down){
 }  
 
 
-plot.volcano <- function(data, mycolors, mysubtitle){
+plot.volcano <- function(data, mysubtitle){
   
   volcano <- data %>%
     ggplot(aes(x = lfc, y = logpadj)) + 
     geom_point(aes(color = direction), size = 1, alpha = 0.75, na.rm = T) +    
     theme_ms() +
-    scale_color_manual(values = mycolors,
-                       name = " ",
-                       drop = FALSE) +
+    scale_color_manual(values = allcolors,
+                       name = " ") +
     ylim(c(0,12.5)) +  
     xlim(c(-8,8)) +
-    labs(y = NULL, x = "log fold change", subtitle = mysubtitle)  +
-    theme(legend.position = "none")
+    labs(y = NULL, x = NULL ,
+         caption = "log fold change", 
+         subtitle = mysubtitle)  +
+    theme(legend.position = "none", plot.caption = element_text(hjust = 0.5),
+          axis.text.y = element_blank())
   return(volcano)
   
 }
@@ -267,3 +269,66 @@ network_plot.cor_df <- function(rdf,
   
 }
 
+## unused bar graph 
+
+DEGbargraph <- function(whichtissue, whichcomparison, mylabels){
+  
+  p <- allDEG %>%
+    filter(tissue == whichtissue,
+           comparison == whichcomparison) %>%
+    ggplot(aes(x = direction,  fill = direction)) +
+    geom_bar(position = "dodge", drop = FALSE) +
+    theme_ms() +
+    theme(legend.position = "none")  +
+    guides(fill = guide_legend(nrow = 1)) +
+    labs( y = "DEGs w/ + LFC", x = NULL,  
+          subtitle = mylabels) +
+    geom_text(stat='count', aes(label=..count..), vjust =-0.5, 
+              position = position_dodge(width = 1),
+              size = 2, color = "black")  + 
+    ylim(0, 250) +
+    scale_fill_manual(values = allcolors, 
+                      name = "higher in",
+                      drop=FALSE) 
+  return(p)
+}
+
+
+## subfield specific pca plots 
+
+# create the dataframe using my function pcadataframe
+
+plotPCs <- function(mydds, mysubtitle, mytitle){
+  
+  vsd <-  vst(mydds, blind=FALSE)
+  pcadata <- pcadataframe(vsd, intgroup=c("treatment", "training"), returnData=TRUE)
+  percentVar <- round(100 * attr(pcadata, "percentVar"))
+  
+  apa1 <- apa.aov.table(aov(PC1 ~ treatment, data=pcadata))
+  apa1 <- as.data.frame(apa1$table_body) 
+  errodf <- apa1 %>% filter(Predictor == "Error") %>% pull(df)
+  pvalue <- apa1 %>% filter(Predictor == "treatment") %>% pull(p)
+  Fstat <- apa1 %>% filter(Predictor == "treatment") %>% pull(F)
+  treatmentdf <- apa1 %>% filter(Predictor == "treatment")  %>% pull(df)
+  
+  mynewsubtitle <- paste("F",treatmentdf, ",",errodf, " = ",
+                         Fstat, ", p=", pvalue, sep = "")
+  
+  PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2)) +
+    geom_point(size=2, alpha = 0.8, aes(color=treatment)) +
+    stat_ellipse(aes(color=training)) +
+    xlab(paste0("PC1: ", percentVar[1],"%")) +
+    ylab(paste0("PC2: ", percentVar[2],"%")) +
+    scale_color_manual(values = allcolors,
+                       breaks=c("standard.yoked", 
+                                "yoked", 
+                                "conflict.yoked",
+                                "standard.trained", 
+                                "trained",
+                                "conflict.trained", 
+                                 "NS")) +
+    labs(subtitle = mynewsubtitle, title = "") +
+    theme_ms() +
+    theme(legend.position = "none")
+  PCA12
+}

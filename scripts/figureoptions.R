@@ -31,17 +31,21 @@ treatment_labeller <- function(variable,value){
   }
 
 
-
 # colors schemes
 
-treatmentcolors <- c( "standard.yoked" = "#404040", "standard.trained" = "#ca0020",
-                      "conflict.yoked" = "#969696","conflict.trained" = "#f4a582")
+treatmentcolors <- c( "standard.yoked" = "#abd9e9", 
+                      "standard.trained" = "#fdae61",
+                      "conflict.yoked" = "#2c7bb6",
+                      "conflict.trained" = "#d7191c")
 
-colorvalsubfield <- c("DG" = "#d95f02", "CA3" = "#1b9e77", "CA1" = "#7570b3")
+colorvalsubfield <- c("DG" = "#d95f02", 
+                      "CA3" = "#1b9e77", 
+                      "CA1" = "#7570b3")
 
-volcano1 <-  c("trained" = "darkred", "yoked" = "black",  "NS" = "#d9d9d9")
-volcano2 <-  c("standard.trained" = "#ca0020", "conflict.trained" = "#f4a582", "NS" = "#d9d9d9")
-volcano3 <-  c("standard.yoked" = "#404040", "conflict.yoked" = "#969696",  "NS" = "#d9d9d9")
+trainingcolors <-  c("trained" = "#D7191C", 
+                     "yoked" = "#ABD9E9")
 
-
-allcolors <- c(treatmentcolors, colorvalsubfield, volcano1)
+allcolors <- c(treatmentcolors, 
+               colorvalsubfield, 
+               trainingcolors,
+               "NS" = "#d9d9d9")
