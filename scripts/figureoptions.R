@@ -6,7 +6,8 @@ theme_ms <- function () {
     theme(
       panel.grid.major  = element_blank(),  # remove major gridlines
       panel.grid.minor  = element_blank(),  # remove minor gridlines
-      plot.title = element_text(hjust = 0.5, face = "bold") # center & bold 
+      plot.title = element_text(hjust = 0, face = "bold", size = 7), # center & bold 
+      plot.subtitle = element_text(hjust = 0, size = 7)
     )
 }
 
@@ -33,27 +34,19 @@ treatment_labeller <- function(variable,value){
 
 # colors schemes
 
-treatmentcolors <- c( "standard.yoked" = "#abd9e9", 
-                      "standard.trained" = "#fdae61",
-                      "conflict.yoked" = "#2c7bb6",
-                      "conflict.trained" = "#d7191c")
+treatmentcolors <- c( "standard.yoked" = "#404040", 
+                      "standard.trained" = "#ca0020",
+                      "conflict.yoked" = "#969696",
+                      "conflict.trained" = "#f4a582")
 
 colorvalsubfield <- c("DG" = "#d95f02", 
                       "CA3" = "#1b9e77", 
                       "CA1" = "#7570b3")
 
-trainingcolors <-  c("trained" = "#D7191C", 
-                     "yoked" = "#ABD9E9")
+trainingcolors <-  c("trained" = "darkred", 
+                     "yoked" = "black")
 
 allcolors <- c(treatmentcolors, 
                colorvalsubfield, 
                trainingcolors,
                "NS" = "#d9d9d9")
-
-myshapes <- c( "standard.yoked" = 19, 
-             "standard.trained" = 15,
-             "conflict.yoked" = 18,
-             "conflict.trained" = 17,
-             "trained" = 9, 
-             "yoked" = 0,
-             "NS" = 1 )

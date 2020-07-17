@@ -125,20 +125,20 @@ plot.volcano <- function(data, mysubtitle){
   
   volcano <- data %>%
     ggplot(aes(x = lfc, y = logpadj, color = direction)) + 
-    geom_point(aes(shape = direction), 
-               size = 2, alpha = 1, na.rm = T,
+    geom_point(size = 1, alpha = 1, na.rm = T,
                show.legend = FALSE) +    
     theme_ms() +
     scale_color_manual(values = allcolors,
                        name = " ") +
-    scale_shape_manual(values = myshapes) +
     ylim(c(0,12.5)) +  
     xlim(c(-8,8)) +
     labs(y = NULL, x = NULL ,
          caption = "log fold change", 
          subtitle = mysubtitle)  +
     theme(legend.position = "none", plot.caption = element_text(hjust = 0.5),
-          axis.text.y = element_blank())  
+          axis.text.y = element_blank())  +
+    geom_hline(yintercept = 1, linetype = "dashed", color = "grey", size = 0.5) +
+    theme(plot.subtitle = element_text(hjust = 0))
   return(volcano)
   
 }
@@ -272,6 +272,50 @@ network_plot.cor_df <- function(rdf,
   
 }
 
+
+## subfield specific pca plots 
+
+# create the dataframe using my function pcadataframe
+
+plotPCs <- function(mydds, mytitle){
+  
+  vsd <-  vst(mydds, blind=FALSE)
+  pcadata <- pcadataframe(vsd, intgroup=c("treatment", "training"), returnData=TRUE)
+  percentVar <- round(100 * attr(pcadata, "percentVar"))
+  
+  apa1 <- apa.aov.table(aov(PC1 ~ treatment, data=pcadata))
+  apa1 <- as.data.frame(apa1$table_body) 
+  errodf <- apa1 %>% filter(Predictor == "Error") %>% pull(df)
+  pvalue <- apa1 %>% filter(Predictor == "treatment") %>% pull(p)
+  Fstat <- apa1 %>% filter(Predictor == "treatment") %>% pull(F)
+  treatmentdf <- apa1 %>% filter(Predictor == "treatment")  %>% pull(df)
+  
+  mynewsubtitle <- paste("F",treatmentdf, ",",errodf, "=",
+                         Fstat, ",p=", pvalue, sep = "")
+  
+  PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2)) +
+    geom_point(size=2, alpha = 0.8, 
+               aes(color=treatment)) +
+    stat_ellipse(aes(color=training)) +
+    xlab(paste0("PC1: ", percentVar[1],"%")) +
+    ylab(paste0("PC2: ", percentVar[2],"%")) +
+    scale_color_manual(drop = F,
+                       values = allcolors,
+                       breaks=c("standard.yoked", 
+                                "standard.trained", 
+                                "conflict.yoked", 
+                                "conflict.trained", 
+                                "yoked", 
+                                "trained",
+                                 "NS")) +
+    labs(subtitle = mynewsubtitle, title = mytitle) +
+    theme_ms() +
+    theme(legend.position = "none")
+  PCA12
+}
+
+
+
 ## unused bar graph 
 
 DEGbargraph <- function(whichtissue, whichcomparison, mylabels){
@@ -294,47 +338,4 @@ DEGbargraph <- function(whichtissue, whichcomparison, mylabels){
                       name = "higher in",
                       drop=FALSE) 
   return(p)
-}
-
-
-## subfield specific pca plots 
-
-# create the dataframe using my function pcadataframe
-
-plotPCs <- function(mydds, mysubtitle, mytitle){
-  
-  vsd <-  vst(mydds, blind=FALSE)
-  pcadata <- pcadataframe(vsd, intgroup=c("treatment", "training"), returnData=TRUE)
-  percentVar <- round(100 * attr(pcadata, "percentVar"))
-  
-  apa1 <- apa.aov.table(aov(PC1 ~ treatment, data=pcadata))
-  apa1 <- as.data.frame(apa1$table_body) 
-  errodf <- apa1 %>% filter(Predictor == "Error") %>% pull(df)
-  pvalue <- apa1 %>% filter(Predictor == "treatment") %>% pull(p)
-  Fstat <- apa1 %>% filter(Predictor == "treatment") %>% pull(F)
-  treatmentdf <- apa1 %>% filter(Predictor == "treatment")  %>% pull(df)
-  
-  mynewsubtitle <- paste("F",treatmentdf, ",",errodf, " = ",
-                         Fstat, ", p=", pvalue, sep = "")
-  
-  PCA12 <- ggplot(pcadata, aes(pcadata$PC1, pcadata$PC2)) +
-    geom_point(size=2, alpha = 0.8, 
-               aes(color=treatment, shape = treatment)) +
-    stat_ellipse(aes(color=training)) +
-    xlab(paste0("PC1: ", percentVar[1],"%")) +
-    ylab(paste0("PC2: ", percentVar[2],"%")) +
-    scale_color_manual(drop = F,
-                       values = allcolors,
-                       breaks=c("standard.yoked", 
-                                "standard.trained", 
-                                "conflict.yoked", 
-                                "conflict.trained", 
-                                "yoked", 
-                                "trained",
-                                 "NS")) +
-    scale_shape_manual(values = myshapes, drop = F) +
-    labs(subtitle = mynewsubtitle, title = "") +
-    theme_ms() +
-    theme(legend.position = "none")
-  PCA12
 }

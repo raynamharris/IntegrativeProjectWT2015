@@ -444,15 +444,12 @@ Volcano plots
 pca analysis and bar plots functions
 ------------------------------------
 
-    circuit <- png::readPNG("../figures/00_schematics/figure_hippocircuit.png")
-    circuit <- ggdraw() +  draw_image(circuit, scale = 1)
-
     a <- plotPCs(DGdds, "DG") 
-    b <- plot.volcano(DGa, "std. trained vs.\nstd. yoked") + labs(y = "-log10(p-value)")
-    c <- plot.volcano(DGb, "con. trained vs.\ncon. yoked")  
-    d <- plot.volcano(DGc, "std. trained vs. \ncon. trained")  
-    e <- plot.volcano(DGd, "std. yoked vs. \ncon. yoked")  
-    f <- plot.volcano(DGe, "all yoked vs. \nall trained")  
+    b <- plot.volcano(DGa, "\ns. trained vs s. yoked") + labs(y = "-log10(p-value)")
+    c <- plot.volcano(DGb, "\nc. trained vs c. yoked")  
+    d <- plot.volcano(DGc, "\ns. trained vs c. trained")  
+    e <- plot.volcano(DGd, "\ns. yoked vs. c. yoked")  
+    f <- plot.volcano(DGe, "\nyoked vs. trained")  
 
     g <- plotPCs(CA3dds, "CA3")
     h <- plot.volcano(CA3a, " ") + labs(y = "-log10(p-value)")
@@ -470,24 +467,22 @@ pca analysis and bar plots functions
     r <- plot.volcano(CA1e, " ")  
 
     legend <- get_legend(a + theme(legend.position = "bottom", 
-                                   legend.title = element_blank()) + 
-                           guides(col = guide_legend(nrow = 1)))
+                                   legend.title = element_blank()) +
+                           guides(color = guide_legend(nrow = 2)))
 
     mainplot <- plot_grid(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r, 
                           nrow = 3, rel_widths = c(1,1,0.8,0.8,0.8,0.8),
-                          labels = c("DG", "", "", "", "", "", 
-                                     "CA3", "", "", "", "", "", 
-                                     "CA1", "", "", "", "", ""),
+                          labels = c("(a)", "(b)", "", "", "", "(c)", 
+                                     "", "", "", "", "", "", 
+                                     "", "", "", "", "", ""),
                           label_size = 8)
 
     ## Warning in MASS::cov.trob(data[, vars]): Probable convergence failure
 
-    plotwithicons <- plot_grid(circuit, mainplot, ncol = 2, rel_widths = c(0.11,1))
-
-    fig3 <- plot_grid(plotwithicons, legend, ncol = 1, rel_heights = c(1, 0.1))
+    fig3 <- plot_grid(mainplot, legend, ncol = 1, rel_heights = c(1, 0.1))
     fig3
 
-![](../figures/03_rnaseqSubfield/pca-1.png)
+![](../figures/03_rnaseqSubfield/volcanos-1.png)
 
 save files
 ----------
