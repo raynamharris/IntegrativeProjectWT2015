@@ -36,7 +36,7 @@ head(colData)
 ```{r allvsd}
 # read all count data prep to join with sample colData
 
-combinePCvsd <- function(filename, whichsubfield){
+combinePCvsd <- function(filename, whichsubfield, whichgenes){
   
   
   vsd <- read.csv(filename, row.names = 1, check.names = F) 
@@ -52,21 +52,36 @@ combinePCvsd <- function(filename, whichsubfield){
   
   vsd <- left_join(colData, vsd) %>%
     select(ID:training, 
-         Prkcz, Prkci, Wwc1, Grin1, Gria1,
-         Pick1, Nsf, Fmr1, Camk2a,
-         Fos, Fosl2, Npas4, Arc) %>%
+           PC1, PC2,
+           whichgenes) %>%
     filter(subfield == whichsubfield) 
   print(head(vsd))
   return(vsd)
 }
 
-vsdDG <- combinePCvsd("../data/03_DG_vsdtraining.csv", "DG")
-vsdCA1 <- combinePCvsd("../data/03_CA3_vsdtraining.csv", "CA1")
-vsdCA3 <- combinePCvsd("../data/03_DG_vsdtraining.csv", "CA3")
+candidategenes <- c("Prkcz", "Prkci", "Wwc1", "Grin1", "Gria1",
+         "Pick1", "Nsf", "Fmr1", "Camk2a",
+         "Fos", "Fosl2", "Npas4", "Arc")
 
-allvsd <- rbind(vsdDG, vsdCA1) %>%
-  rbind(.,vsdCA3)
-allvsd
+vsdDG <- combinePCvsd("../data/03_DG_vsdtraining.csv", "DG", everything())
+vsdCA1 <- combinePCvsd("../data/03_CA3_vsdtraining.csv", "CA1", everything())
+vsdCA3 <- combinePCvsd("../data/03_DG_vsdtraining.csv", "CA3", everything())
+
+# save only genes in all
+DGgenes <- names(vsdDG)
+CA3genes <- names(vsdCA3)
+CA1genes <- names(vsdCA1)
+savecols <- intersect(DGgenes, CA3genes)
+savecols <- intersect(savecols, CA1genes)
+
+
+vsdDG <- vsdDG %>% dplyr::select(one_of(savecols)) 
+vsdCA1 <- vsdCA1 %>% dplyr::select(one_of(savecols)) 
+vsdCA3 <- vsdCA3 %>% dplyr::select(one_of(savecols)) 
+
+allvsd <- rbind(vsdDG, vsdCA1)
+allvsd <- rbind(allvsd, vsdCA3)
+head(allvsd)
 ```
 
 
@@ -105,12 +120,16 @@ a
 ```{r makecorrrmat}
 
 # I'm using the select function to get PC1, PC1, and all the genes. Use `tail(names(vsdDG),5)` to see that last genes is "ZZZ3"
+
+vsdDG <- vsdDG %>%
+  select(-trial, -trialNum)
 head(names(vsdDG),10)
 tail(names(vsdDG),5)
 
-# gene gene ames
-genenames <- data.frame(names(vsdDG[9:17002]))
-genenames
+
+forcorall <-  vsdDG %>% select(PC1:Zzz3)	# gene gene ames
+corrrmat <- correlate(forcorall, diagonal = 1) 
+head(corrrmat)[1:5]
 ```
 
 ## Top 11 correlations with PC1 and their relationship with PC2
@@ -186,7 +205,7 @@ head(top10pc1withpc2)
 
 ## new correlation analysis with p-values
 
-```{r sigcorrs}
+```{r sigcorrs, eval = F}
 # meta data
 colData <- read_csv("../data/00_colData.csv")
 geneids <- read_csv("../data/00_geneids.csv") %>% distinct(gene) %>% mutate(gene = toupper(gene))
@@ -276,7 +295,7 @@ newp1
 
 ## all figures together
 
-```{r correlations, fig.width=6.69, fig.height=3.5}
+```{r correlations, fig.width=6.69, fig.height=3.5, eval= F}
 
 fig4 <- plot_grid(a, newp1, p2, nrow = 1, rel_widths = c(1,1,1.5), 
                   labels = "auto", label_size = 8)
