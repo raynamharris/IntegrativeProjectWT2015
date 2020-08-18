@@ -26,52 +26,69 @@ source("./functions_RNAseq.R")
 
 ```{r DGDEGs}
 # read the sample data, set levels, join iwth behvior PCA data
-colData <- read.csv("../data/00_colData.csv", row.names = 1, stringsAsFactors = T)
-colData <- colData %>% filter(subfield == "DG")
-pca.Rn <- read_csv("../data/suppletable-3.csv") %>% dplyr::filter(trialNum == 9)
+colData <- read.csv("../data/00_colData.csv", row.names = 1, stringsAsFactors = T) 
+pca.Rn <- read_csv("../data/suppltable-3.csv") %>% dplyr::filter(trialNum == 9)
+
 colData <- left_join(colData, pca.Rn)
 head(colData)
 ```
 
-```{r DGvsd}
-# read all count data
-vsd <- read.csv("../data/03_DG_vsdtraining.csv", row.names = 1, check.names = F) 
-vsd$gene <- row.names(vsd)
-vsd$gene <- str_to_title(vsd$gene)
-vsd <- as.data.frame(vsd)
-row.names(vsd) <- vsd$gene
-vsd$gene <- NULL
-head(vsd)
+```{r allvsd}
+# read all count data prep to join with sample colData
 
-# prep to join with sample colData
-vsd <- as.data.frame(t(vsd))
-vsd$sample <- row.names(vsd)
-vsd$mouse <- sapply(strsplit(as.character(vsd$sample),"\\-"), "[", 1)
-vsd$ID <- paste(15, vsd$mouse, sep = "")
+combinePCvsd <- function(filename, whichsubfield){
+  
+  
+  vsd <- read.csv(filename, row.names = 1, check.names = F) 
+  vsd$gene <- row.names(vsd)
+  vsd$gene <- str_to_title(vsd$gene)
+  vsd <- as.data.frame(vsd)
+  row.names(vsd) <- vsd$gene
+  vsd$gene <- NULL
+  vsd <- as.data.frame(t(vsd))
+  vsd$sample <- row.names(vsd)
+  vsd$mouse <- sapply(strsplit(as.character(vsd$sample),"\\-"), "[", 1)
+  vsd$ID <- paste(15, vsd$mouse, sep = "")
+  
+  vsd <- left_join(colData, vsd) %>%
+    select(ID:training, 
+         Prkcz, Prkci, Wwc1, Grin1, Gria1,
+         Pick1, Nsf, Fmr1, Camk2a,
+         Fos, Fosl2, Npas4, Arc) %>%
+    filter(subfield == whichsubfield) 
+  print(head(vsd))
+  return(vsd)
+}
 
-vsd <- left_join(colData, vsd)
-head(vsd)[1:10]
+vsdDG <- combinePCvsd("../data/03_DG_vsdtraining.csv", "DG")
+vsdCA1 <- combinePCvsd("../data/03_CA3_vsdtraining.csv", "CA1")
+vsdCA3 <- combinePCvsd("../data/03_DG_vsdtraining.csv", "CA3")
 
+allvsd <- rbind(vsdDG, vsdCA1) %>%
+  rbind(.,vsdCA3)
+allvsd
 ```
 
 
 
-```{r Arc}
-summary(lm( PC1 ~ Arc, data = vsd))
-summary(lm( PC2 ~ Arc, data = vsd))
 
-cor.test(vsd$PC1, vsd$Arc, method = c("pearson"))
-cor.test(vsd$PC2, vsd$Arc, method = c("pearson"))
+
+```{r Arc}
+summary(lm( PC1 ~ Arc, data = vsdDG))
+summary(lm( PC2 ~ Arc, data = vsdDG))
+
+cor.test(vsdDG$PC1, vsdDG$Arc, method = c("pearson"))
+cor.test(vsdDG$PC2, vsdDG$Arc, method = c("pearson"))
 
 iconDG <- png::readPNG("../figures/00_schematics/DG.png")
 iconDG <-  grid::rasterGrob(iconDG, interpolate=TRUE)
 
-vsd$training <- factor(vsd$training, levels = levelstraining)
+vsdDG$training <- factor(vsdDG$training, levels = levelstraining)
 
-a <- ggplot(vsd, aes(x = Arc, y = PC1)) +
+a <- ggplot(vsdDG, aes(x = Arc, y = PC1)) +
    geom_point(aes( color = training)) + 
    geom_smooth(method = "lm", color = "grey") +
-   scale_color_manual(values = volcano1) +
+   scale_color_manual(values = allcolors) +
   theme_ms() +
    theme(legend.position = "bottom",
          axis.title.x = element_text(face = "italic"),
@@ -83,17 +100,17 @@ a
 ```
 
 
-## Correlate ALL genes with PC1 and PC2
+## Correlate DG genes with PC1 and PC2
 
 ```{r makecorrrmat}
 
-# I'm using the select function to get PC1, PC1, and all the genes. Use `tail(names(vsd),5)` to see that last genes is "ZZZ3"
-head(names(vsd),10)
-tail(names(vsd),5)
+# I'm using the select function to get PC1, PC1, and all the genes. Use `tail(names(vsdDG),5)` to see that last genes is "ZZZ3"
+head(names(vsdDG),10)
+tail(names(vsdDG),5)
 
-forcorall <-  vsd %>% select(PC1:Zzz3)
-corrrmat <- correlate(forcorall, diagonal = 1) 
-head(corrrmat)[1:5]
+# gene gene ames
+genenames <- data.frame(names(vsdDG[9:17002]))
+genenames
 ```
 
 ## Top 11 correlations with PC1 and their relationship with PC2
@@ -290,7 +307,8 @@ citation("corrr")
 
 ```{r write}
 suppltable6 <-  corrrmat %>%  focus(PC1, topcorrrs,  mirror = TRUE) %>% arrange(desc(PC1))
-suppltable6
 
 write.csv(suppltable6, "../data/suppltable-6.csv", row.names = F)
+
+write.csv(allvsd, "../data/for3Dplot.csv", row.names = F)
 ```
