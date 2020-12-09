@@ -12,12 +12,14 @@ theme_ms <- function () {
 }
 
 # facor levels
-levelstreatment =  c('standard.yoked' , 'standard.trained' ,'conflict.yoked' ,  'conflict.trained' )
+levelstreatment =  c('standard.yoked' , 'standard.trained' ,
+                     'conflict.yoked' ,  'conflict.trained' )
 levelstraining = c("yoked", "trained")
 levelssubfield = c("DG", "CA3", "CA1")
 
 
-levelstreatmentlegend = c('standard yoked' , 'standard trained' ,'conflict yoked' ,  'conflict trained' )
+levelstreatmentlegend = c('standard yoked' , 'standard trained' ,
+                          'conflict yoked' ,  'conflict trained' )
 
 
 treatment_names <- list(
